@@ -1885,6 +1885,7 @@
     <Content Include="Areas\Educational\Views\TeacherAddorBeonDuty\TeacherEACHView.cshtml" />
     <Content Include="Areas\Educational\Views\TeacherNight\EmpZhibanData.cshtml" />
     <Content Include="Areas\Market\Views\StudentDataKeep\updatePassword.cshtml" />
+    <Content Include="libman.json" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
