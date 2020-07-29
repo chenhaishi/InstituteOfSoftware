@@ -76,9 +76,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         /// <returns></returns>
         public ActionResult ChoiceQuestionIndex()
         {
-            SpecialtyBusiness specialtyBusiness = new SpecialtyBusiness();
+            GrandBusiness GrandBusiness = new GrandBusiness();
 
-            ViewBag.Major = specialtyBusiness.GetSpecialties();
+            ViewBag.grand = GrandBusiness.AllGrand();
             return View();
 
         }
@@ -292,7 +292,62 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             return View();
         }
-                        
+
+        public ActionResult ModifyChoice(int choiceId)
+        {
+            GrandBusiness grandBusiness = new GrandBusiness();
+
+            //提供难度级别数据
+
+            ViewBag.QuestionLevel = db_questionLevel.AllQuestionLevel();
+
+            //提供阶段数据
+            ViewBag.Grand = grandBusiness.AllGrand();
+
+            var question = db_choiceQuestion.GetEntity(choiceId);
+
+            CourseBusiness dbcourse = new CourseBusiness();
+            var course = dbcourse.GetEntity(question.Course);
+            ViewBag.course = course;
+            return View(question);
+        }
+        [HttpPost]
+        public ActionResult ModifyChoice(MultipleChoiceQuestion question)
+        {
+            AjaxResult result = new AjaxResult();
+
+            try
+            {
+                MultipleChoiceQuestion newquestion = db_choiceQuestion.GetEntity(question.Id);
+                newquestion.Answer = question.Answer;
+                newquestion.Course = question.Course;
+                newquestion.Grand = question.Grand;
+                newquestion.IsRadio = question.IsRadio;
+                newquestion.Level = question.Level;
+                newquestion.OptionA = question.OptionA;
+                newquestion.OptionB = question.OptionB;
+                newquestion.OptionC = question.OptionC;
+                newquestion.OptionD = question.OptionD;
+
+                newquestion.Remark = question.OptionD;
+                newquestion.Title = question.Title;
+
+                db_choiceQuestion.Update(newquestion);
+                result.ErrorCode = 200;
+                result.Msg = "成功";
+                result.Data = newquestion;
+
+            }
+            catch (Exception ex)
+            {
+
+                result.ErrorCode = 500;
+                result.Msg = "失败";
+                result.Data = null;
+            }
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
         /// <summary>
         /// 获取课程
         /// </summary>
@@ -337,13 +392,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
         }
 
-        public ActionResult CourseDataBYGrind(int majorid)
+        public ActionResult CourseDataBYGrind(int grandid)
         {
             CourseBusiness courseBusiness = new CourseBusiness();
 
             List<Curriculum> curricullist = new List<Curriculum>();
 
-            var list = courseBusiness.GetCurriculas().Where(d => d.MajorID == majorid);
+            var list = courseBusiness.GetCurriculas().Where(d => d.Grand_Id == grandid);
 
             if (list != null)
             {
@@ -417,7 +472,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         }
 
         /// <summary>
-        /// 修改选择题
+        /// 选择题详细
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -553,9 +608,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         /// <returns></returns>
         public ActionResult ClearlyQuestionIndex()
         {
-            SpecialtyBusiness specialtyBusiness = new SpecialtyBusiness();
+            GrandBusiness GrandBusiness = new GrandBusiness();
 
-            ViewBag.Major = specialtyBusiness.GetSpecialties();
+            ViewBag.grand = GrandBusiness.AllGrand();
 
 
             return View();
@@ -621,6 +676,61 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             return View();
         }
 
+        /// <summary>
+        /// 编辑
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ModifyAnswerQuestion(string questionid)
+        {
+            GrandBusiness grandBusiness = new GrandBusiness();
+
+            //提供难度级别数据
+
+            ViewBag.QuestionLevel = db_questionLevel.AllQuestionLevel();
+
+            //提供阶段数据
+            ViewBag.Grand = grandBusiness.AllGrand();
+
+            var question = db_answerQuestion.GetEntity(int.Parse(questionid));
+
+            CourseBusiness dbcourse = new CourseBusiness();
+            var course = dbcourse.GetEntity(question.Course);
+
+            ViewBag.course = course;
+            return View(question);
+        }
+
+        [HttpPost]
+        public ActionResult ModifyAnswerQuestion(AnswerQuestionBank In_question)
+        {
+            AjaxResult result = new AjaxResult();
+
+            try
+            {
+                var question = db_answerQuestion.GetEntity(In_question.ID);
+                question.Course = In_question.Course;
+                question.Grand = In_question.Grand;
+                question.Level = In_question.Level;
+                question.ReferenceAnswer = In_question.ReferenceAnswer;
+                question.Remark = In_question.Remark;
+                question.Title = In_question.Title;
+
+                db_answerQuestion.Update(question);
+
+                result.ErrorCode = 200;
+                result.Msg = "成功"; 
+                result.Data = question;
+            }
+            catch (Exception ex)
+            {
+
+                result.ErrorCode = 500;
+                result.Msg = "失败";
+                result.Data = null;
+            }
+
+            return Json(result,JsonRequestBehavior.AllowGet);
+        }
 
         /// <summary>
         /// 命题-解答题
@@ -783,9 +893,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             /// <returns></returns>
         public ActionResult ComputerTestQuestionsIndex()
         {
-            SpecialtyBusiness specialtyBusiness = new SpecialtyBusiness();
+            GrandBusiness GrandBusiness = new GrandBusiness();
 
-            ViewBag.Major = specialtyBusiness.GetSpecialties();
+            ViewBag.grand = GrandBusiness.AllGrand();
 
             return View();
         }

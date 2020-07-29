@@ -29,7 +29,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         private readonly StudentExamBusiness db_stuExam;
 
         private readonly ChoiceQuestionBusiness db_choiceQuestion;
-        private readonly ExamScoresBusiness db_examScores;
+        private readonly ExamScoresBusiness db_examScores; 
+
 
         public StudentExamSysController()
         {

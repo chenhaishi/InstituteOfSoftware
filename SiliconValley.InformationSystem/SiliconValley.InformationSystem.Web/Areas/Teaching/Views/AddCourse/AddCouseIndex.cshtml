@@ -1,0 +1,122 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>加课列表</title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+
+
+</head>
+<body>
+    <div>
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-sm" lay-event="getCheckData">申请</button>
+            </div>
+        </script>
+
+        <script type="text/html" id="barDemo">
+            <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+        </script>
+
+        <table class="layui-hide" id="addcoursetable" lay-filter="addcoursetable"></table>
+
+    </div>
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/layui/layui.js"></script>
+    
+    <script>
+
+        layui.use(['table', 'layer'], function () {
+
+            var table = layui.table;
+            var layer = layui.layer;
+
+            table.render({
+                elem: '#addcoursetable'
+                , url: '/Teaching/AddCourse/AddCourseData'
+                , toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
+                , title: '我的加课申请'
+                , cols: [[
+                    { type: 'checkbox', fixed: 'left' }
+                    , { field: 'ID', title: 'ID', width: 80, fixed: 'left', sort: true, hide: true }
+                    , {
+                        field: 'Teacher', title: '名字', width: 220, templet: function (data) {return data.Teacher.EmpName;}
+                    }
+                    , {
+                        field: 'ClassNumber', title: '班级', width: 250, templet: function (data) {return data.ClassNumber.ClassNumber;}
+                    }
+                    , { field: 'Ccourse', title: '课程', width: 200, templet: function (data) { return data.Course.CourseName; } }
+                    , {
+                        field: 'ApplyDate', title: '申请日期', width: 200, templet: function (data) {
+
+                            var dateutc = data.ApplyDate.substr(data.ApplyDate.indexOf('(') + 1,13);
+                            console.log(dateutc);
+
+                            var dateObj = new Date(parseInt(dateutc));
+
+                            return dateObj.getFullYear() + '-' + dateObj.getMonth() + '-' + dateObj.getDate() + "   " + dateObj.getHours() + ":" + dateObj.getMinutes(); 
+                        }
+                    }
+                    , {
+                        field: 'TeachDate', title: '上课日期', width: 200, templet: function (data) {
+
+                            var dateutc = data.TeachDate.substr(data.TeachDate.indexOf('(') + 1,13);
+                           
+                            var dateObj = new Date(parseInt(dateutc));
+
+                            return dateObj.getFullYear() + '-' + dateObj.getMonth() + '-' + dateObj.getDate() + "   " + dateObj.getHours() + ":" + dateObj.getMinutes();
+                        }
+                    }
+                    , {
+                        field: 'IsDel', title: '状态', width: 200, templet: function (data) {
+
+                            if (data.Isdel == true) {
+                                return "通过"
+                            }
+
+                            if (data.Isdel == false) {
+                                return "普通"
+                            }
+                          
+                        }
+                    }
+                    , { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150 }
+                ]]
+                , page: true
+            });
+
+
+            //监听行工具事件
+            table.on('tool(addcoursetable)', function (obj) {
+                var data = obj.data;
+                //console.log(obj)
+                if (obj.event === 'del') {
+                    layer.confirm('真的删除行么', function (index) {
+                        obj.del();
+                        layer.close(index);
+                    });
+                } else if (obj.event === 'edit') {
+                    console.log(data.Isdel);
+                    if (data.Isdel == true) {
+                        alert("禁止编辑");
+                        
+                        return;
+                    }
+
+
+
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>

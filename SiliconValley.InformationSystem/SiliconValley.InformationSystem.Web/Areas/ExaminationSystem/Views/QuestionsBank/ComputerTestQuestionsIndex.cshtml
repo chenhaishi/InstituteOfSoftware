@@ -41,14 +41,14 @@
 
 
             <div class="layui-inline">
-                <label class="layui-form-label">专业</label>
+                <label class="layui-form-label">阶段</label>
                 <div class="layui-input-inline">
                     <select lay-filter="major">
                         <option value="0">请选择</option>
                         @{
-                            foreach (var item in ViewBag.Major as List<Specialty>)
+                            foreach (var item in ViewBag.grand as List<Grand>)
                             {
-                                <option value="@item.Id">@item.SpecialtyName</option>
+                                <option value="@item.Id">@item.GrandName</option>
                             }
                         }
                     </select>
@@ -120,7 +120,7 @@
                 console.log("选中值" + value);
                 $.ajax({
                     url: "/ExaminationSystem/QuestionsBank/CourseDataBYGrind",
-                    data: { majorid: value },
+                    data: { grandid: value },
                     dataType: "json",
                     success: function (resultData) {
                         if (resultData.length > 0) {
