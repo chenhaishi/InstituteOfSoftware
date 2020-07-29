@@ -22,7 +22,50 @@
         border-radius: 50%;
     }
 </style>
+
 <div style="float:left;">
+    <ul class="layui-timeline">
+
+        @{
+    
+            foreach (var item in ViewBag.StudentPrentryfeeDate as List<vierprice>)
+            {
+                decimal db = 0;
+                <li class="layui-timeline-item">
+                    <i class="layui-icon layui-timeline-axis"></i>
+                    <div class="layui-timeline-content layui-text">
+                        @foreach (var item1 in item.Chicked)
+                        {
+
+                            db += item1.Amountofmoney;
+                          
+
+                        }
+                        <h3 class="layui-timeline-title">@item.Date (@db.ToString().Substring(0, db.ToString().Length - 2))</h3>
+
+                        @foreach (var s in item.Chicked.OrderBy(a => a.CostitemName).ToList().Select(a => a.CostitemName).ToList().Distinct().ToList())
+                        {
+                            <p>@s</p>
+                            foreach (var item1 in item.Chicked)
+                            {
+                                if (item1.CostitemName == s)
+                                {
+                                    <ul>
+                                        <li>@item1.GrandName 缴纳: @item1.Amountofmoney.ToString().Substring(0, @item1.Amountofmoney.ToString().Length - 2)</li>
+                                    </ul>
+                                }
+                            }
+
+                        }
+
+
+                    </div>
+                </li>
+            }
+        }
+
+
+    </ul>
     <ul class="layui-timeline">
 
         @{
@@ -40,7 +83,7 @@
                             Total += Convert.ToInt32(item1.Amountofmoney);
 
                         }
-                        <h3 class="layui-timeline-title">@item.Date (@db.ToString().Substring(0,db.ToString().Length-2))</h3>
+                        <h3 class="layui-timeline-title">@item.Date (@db.ToString().Substring(0, db.ToString().Length - 2))</h3>
 
                         @foreach (var s in item.Chicked.OrderBy(a => a.Rategory).ToList().Select(a => a.Rategory).ToList().Distinct().ToList())
                         {
@@ -50,7 +93,7 @@
                                 if (item1.Rategory == s)
                                 {
                                     <ul>
-                                        <li>@item1.GrandName @item1.CostitemName,缴纳: @item1.Amountofmoney.ToString().Substring(0, @item1.Amountofmoney.ToString().Length-2)</li>
+                                        <li>@item1.GrandName @item1.CostitemName,缴纳: @item1.Amountofmoney.ToString().Substring(0, @item1.Amountofmoney.ToString().Length - 2)</li>
                                     </ul>
                                 }
                             }

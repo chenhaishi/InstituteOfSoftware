@@ -792,7 +792,31 @@ namespace SiliconValley.InformationSystem.Web.Areas.BaseSysManage.Controllers
         {
             return View();
         }
+        /// <summary>
+        /// 密码修改
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public ActionResult Translate()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult Translate(string password)
+        {
+            try
+            {
+                var UserId = Base_UserBusiness.GetCurrentUser().UserId;
+                db_user.UpdatePassword(UserId, password);
+                return Json("更改成功");
+            }
+            catch (Exception)
+            {
 
+                return Json("更改失败");
+            }
+          
+        }
         /// <summary>
         /// 获取用户绑定的微信号信息
         /// </summary>

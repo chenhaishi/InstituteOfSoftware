@@ -443,9 +443,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                 foreach (var item in studentFeeRecords)
                 {
                     studentid= item.StudenID;
-                  
                     Payview studentFeeRecord = new Payview();
-                  
                     studentFeeRecord.IsDelete = false;
                     studentFeeRecord.AddDate = DateTime.Now;
                     studentFeeRecord.FinanceModelid = fine.id;
@@ -733,7 +731,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
         /// <param name="qBeginTime">开始时间</param>
         /// <param name="qEndTime">结束时间</param>
         /// <returns></returns>
-        public List<StudentFeeRecordView> Nominaldata(string StudentID, string Name, string TypeID, string qBeginTime, string qEndTime)
+        public List<StudentFeeRecordView> Nominaldata(string StudentID, string Name, string TypeID, string qBeginTime, string qEndTime, string CostitemsName)
         {
             BaseBusiness<StudentFeeRecordView> StudentFeeRecordViewBusiness = new BaseBusiness<StudentFeeRecordView>();
             EmployeesInfoManage employeesInfoManage = new EmployeesInfoManage();
@@ -792,6 +790,28 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                 }
                 x = feereview;
             }
+
+            if (!string.IsNullOrEmpty(CostitemsName))
+            {
+                List<Costitems> costli = new List<Costitems>();
+                List<StudentFeeRecordView> studentFeeRecordViews = new List<StudentFeeRecordView>();
+                if (CostitemsName=="全部学杂")
+                {
+                    costli = costitemsBusiness.GetList().Where(a =>  a.IsDelete == false && a.Rategory == 10).ToList();
+                }
+                else
+                {
+
+                    costli = costitemsBusiness.GetList().Where(a => a.Name == CostitemsName && a.IsDelete == false && a.Rategory == 10).ToList();
+                   
+                }
+                foreach (var item in costli)
+                {
+                    studentFeeRecordViews.AddRange(x.Where(a => a.Costitemsid == item.id).ToList());
+                }
+                x = studentFeeRecordViews;
+
+            }
             if (!string.IsNullOrEmpty(qBeginTime))
             {
                 DateTime time = Convert.ToDateTime(qBeginTime);
@@ -815,7 +835,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
         /// <param name="qBeginTime">开始时间</param>
         /// <param name="qEndTime">结束时间</param>
         /// <returns></returns>
-        public List<TotalcostView> DateTatal(string StudentID, string Name, string TypeID, string qBeginTime, string qEndTime)
+        public List<TotalcostView> DateTatal(string StudentID, string Name, string TypeID, string qBeginTime, string qEndTime, string CostitemsName)
         {
             List<TotalcostView> totalcostViews = new List<TotalcostView>();
             var cost = costitemssX.GetList().Select(a => new TotalcostView { TypeID = a.id, TypeName = a.Name }).ToList();
@@ -834,7 +854,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                 totalcostViews.Add(view);
 
             }
-            var x = this.Nominaldata(StudentID, Name, TypeID, qBeginTime, qEndTime);
+            var x = this.Nominaldata(StudentID, Name, TypeID, qBeginTime, qEndTime, CostitemsName);
             List<TotalcostView> MyViewList = new List<TotalcostView>();
 
             foreach (var item1 in totalcostViews)
@@ -1404,6 +1424,38 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                 data = dataList
             };
             return data;
+        }
+        /// <summary>
+        /// 根据学号获取预入费
+        /// </summary>
+        /// <param name="id">学号</param>
+        /// <returns></returns>
+        public List<vierprice> StudentPrentryfeeDate(string studentid)
+        {
+           
+            List<vierprice> vierpriceslist = new List<vierprice>();
+          var x=  Preentryfeebusenn.GetList().Where(a => a.IsDit == false && a.OddNumbers != null && a.keeponrecordid == studentInformationBusiness.GetEntity(studentid).StudentPutOnRecord_Id).ToList();
+          var date=  x.Select(a => a.AddDate).Distinct().ToList();
+            foreach (var item in date)
+            {
+                vierprice vierprice = new vierprice();
+                vierprice.Date = Convert.ToDateTime(item.ToString()).ToLongDateString().ToString() ;
+                foreach (var item1 in x)
+                {
+                    if (item==item1.AddDate)
+                    {
+                        vierprice vierprice1 = new vierprice();
+                        vierprice1.CostitemName = "预入费";
+                        vierprice1.Amountofmoney = item1.Amountofmoney;
+                        vierprice1.GrandName = item1.ClassID;
+                        vierprice1.Rategory = item1.Refundornot.ToString();
+                        vierprice.Chicked.Add(vierprice1);
+                    }
+                }
+                vierpriceslist.Add(vierprice);
+            }
+            return vierpriceslist;
+
         }
         /// <summary>
         /// 预入费退费

@@ -1,0 +1,36 @@
+﻿
+@{
+    ViewBag.Title = "Translate";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Translate</h2>
+<form class="layui-form" action="">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width:100px;">更改密码</label>
+        <div class="layui-input-inline">
+            <input type="password" name="password" maxlength="6" lay-verify="pass" placeholder="请输入密码" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">请填写6位密码</div>
+    </div>
+    <div style="position:absolute;width:200px;margin-left:430px;margin-top:-57px;">
+        <button class="layui-btn" lay-submit="" type="button" lay-filter="demo2">立即提交</button>
+    </div>
+</form>
+<script>
+    //Translate
+    layui.use(['form', 'layedit', 'laydate', 'layer'], function () {
+
+        var layer = layui.layer;
+        var form = layui.form;
+        //监听提交
+        form.on('submit(demo2)', function (data) {
+            $.post("/BaseSysManage/Base_UserRole/Translate", data.field, function (db) {
+                layer.msg(db);
+            })
+
+
+        });
+    });
+</script>

@@ -109,7 +109,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
                var dbclass= dbtext.GetListBySql<ClassSchedule>("select *from ClassSchedule").ToList();
                 if (Hadmst.GetList().Where(a => a.informatiees_Id == user.EmpNumber).FirstOrDefault() == null)
                 {
-                    list = dbclass.Where(a => a.ClassStatus == false && a.IsDelete == false).ToList();
+                    list = dbclass.Where(a => a.IsDelete == false).ToList();
                 }
                 else
                 {
@@ -145,17 +145,17 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
                             var x = HeadClassEnti.GetList().Where(a => a.IsDelete == false && a.LeaderID == HadnID.ID).ToList();
                             foreach (var item in x)
                             {
-                                list.Add(dbclass.Where(a => a.ClassStatus == false && a.IsDelete == false && a.id == item.ClassID).FirstOrDefault());
+                                list.Add(dbclass.Where(a => a.IsDelete == false && a.id == item.ClassID).FirstOrDefault());
                             }
                         }
                     }
 
                 }
-               
-                list1 = list.Where(a => a.ClassStatus == false && a.IsDelete == false && a.ClassstatusID==null).ToList();
+
+                list1 = list;
                 if (ClassstatusID=="")
                 {
-                    list1 = list1.Where(a => a.ClassStatus == false && a.IsDelete == false).ToList();
+                    list1 = list1.Where(a => a.IsDelete == false).ToList();
                 }
                 else 
                 {
@@ -163,7 +163,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
                     {
                         if (ClassstatusID!="null")
                         {
-                            list1 = list.Where(a => a.ClassStatus == false && a.IsDelete == false && a.ClassstatusID == int.Parse(ClassstatusID)).ToList();
+                            list1 = list.Where(a =>  a.IsDelete == false && a.ClassstatusID == int.Parse(ClassstatusID)).ToList();
+                        }
+                        else
+                        {
+                            list1 = list.Where(a => a.IsDelete == false && a.ClassstatusID ==null).ToList();
                         }
                     }
                         

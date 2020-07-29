@@ -316,6 +316,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             string student = Request.QueryString["student"];
             ViewBag.vier = dbtext.FienPrice(student);
             ViewBag.Tuitionrefund = dbtext.FienTuitionrefund(dbtext.FienPrice(student));
+            ViewBag.StudentPrentryfeeDate = dbtext.StudentPrentryfeeDate(student);
             return View();
         }
         [HttpGet]
@@ -345,7 +346,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
         /// <returns></returns>
         public ActionResult FeeReport()
         {
-            ViewBag.TypeID = costitemssX.GetList().Select(a => new SelectListItem { Text = a.Name, Value = a.id.ToString() });
+            ViewBag.TypeID = costitemssX.GetList().Where(a=>a.id!=10).Select(a => new SelectListItem { Text = a.Name, Value = a.id.ToString() });
+           // 
+              var cost = costitemsBusiness.GetList().Where(a => a.IsDelete == false && a.Rategory == 10).Select(a => a.Name).Distinct().ToList();
+            cost.Add("全部学杂");
+            ViewBag.CostitemsName = cost.Select(a => new SelectListItem { Text = a, Value = a });
+
             return View();
         }
         /// <summary>
@@ -357,9 +363,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
         /// <param name="qBeginTime">开始时间</param>
         /// <param name="qEndTime">结束时间</param>
         /// <returns></returns>
-        public ActionResult Nominaldata(int page, int limit, string StudentID, string Name, string TypeID, string qBeginTime, string qEndTime)
+        public ActionResult Nominaldata(int page, int limit, string StudentID, string Name, string TypeID, string qBeginTime, string qEndTime,string CostitemsName)
         {
-            var x = dbtext.Nominaldata(StudentID, Name, TypeID, qBeginTime, qEndTime);
+            var x = dbtext.Nominaldata(StudentID, Name, TypeID, qBeginTime, qEndTime, CostitemsName);
             var dataList = x.OrderBy(a => a.ID).Skip((page - 1) * limit).Take(limit).ToList();
             var data = new
             {
@@ -379,9 +385,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
         /// <param name="qBeginTime">开始时间</param>
         /// <param name="qEndTime">结束时间</param>
         /// <returns></returns>
-        public ActionResult DateTatal(string StudentID, string Name, string TypeID, string qBeginTime, string qEndTime)
+        public ActionResult DateTatal(string StudentID, string Name, string TypeID, string qBeginTime, string qEndTime,string CostitemsName)
         {
-            return Json(dbtext.DateTatal(StudentID, Name, TypeID, qBeginTime, qEndTime), JsonRequestBehavior.AllowGet);
+            return Json(dbtext.DateTatal(StudentID, Name, TypeID, qBeginTime, qEndTime, CostitemsName), JsonRequestBehavior.AllowGet);
         }
         /// <summary>
         /// 更改商品状态

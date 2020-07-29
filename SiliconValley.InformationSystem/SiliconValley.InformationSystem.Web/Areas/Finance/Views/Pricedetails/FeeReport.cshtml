@@ -19,17 +19,17 @@
         <div class="layui-row layui-form-item">
 
 
-            <div class="layui-col-xs2.5">
+            <div class="layui-col-xs3">
                 <label class="layui-form-label title">学员姓名</label>
                 <div class="layui-input-inline">
                     <input type="tel" name="Name" lay-verify="Name" id="Name" autocomplete="off" class="layui-input">
                 </div>
             </div>
-            <div class="layui-col-xs2.5" >
+            <div class="layui-col-xs3">
 
                 <label class="layui-form-label title">学&nbsp;&nbsp;&nbsp;&nbsp;号</label>
                 <div class="layui-input-inline">
-                    <input type="tel"  name="StudentID" lay-verify="number" id="StudentNumberID" autocomplete="off" class="layui-input">
+                    <input type="tel" name="StudentID" lay-verify="number" id="StudentNumberID" autocomplete="off" class="layui-input">
 
                 </div>
 
@@ -43,7 +43,7 @@
                     <div class="layui-input-inline startTime">
                         <input type="text" name="qBeginTime" id="qBeginTime" readonly="readonly" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
                     </div>
-                    <div class="layui-form-mid" >到</div>
+                    <div class="layui-form-mid">到</div>
                     <div class="layui-input-inline endTime">
 
                         <input type="text" name="qEndTime" id="qEndTime" readonly="readonly" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
@@ -51,8 +51,8 @@
                 </div>
 
             </div>
-
-            <div class="layui-col-xs3" >
+            
+            <div class="layui-col-xs3" style="margin-left:20px;">
 
                 <label class="layui-form-label labels">类&nbsp;&nbsp;&nbsp;&nbsp;型</label>
                 <div class="layui-input-inline">
@@ -63,7 +63,17 @@
                 </div>
 
             </div>
+            <div class="layui-col-xs3">
 
+                <label class="layui-form-label labels">学&nbsp;&nbsp;&nbsp;&nbsp;杂</label>
+                <div class="layui-input-inline">
+
+
+                    @Html.DropDownList("CostitemsName", ViewBag.CostitemsName as IEnumerable<SelectListItem>, "----请选择----", new Dictionary<string, object>() { { "class", "layui-input labels" } })
+
+                </div>
+
+            </div>
 
         </div>
 
@@ -268,7 +278,7 @@
             //查询功能
             form.on('submit(demo2)', function (data) {
                 var x = data.field;
-                console.log(x);
+          
                 Total(x);
                 table.reload('idTest', {
                     where: {
@@ -276,7 +286,8 @@
                         Name: x.Name,
                         TypeID: x.TypeID,
                         qBeginTime: x.qBeginTime,
-                        qEndTime: x.qEndTime
+                        qEndTime: x.qEndTime,
+                        CostitemsName: x.CostitemsName
                     }, page: {
                         curr: 1
                     }
