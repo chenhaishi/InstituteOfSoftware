@@ -185,8 +185,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 List<Staff_Cost_StatisticesDetailView> detaillist = new List<Staff_Cost_StatisticesDetailView>();
                 foreach (var item in list)
                 {
-                    string emp = "";
-
+                   
                     try
                     {
                         var data = db_staf_Cost.Staff_CostData(item.EmployeeId, DateTime.Parse(date), workingDays);
@@ -250,7 +249,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             //FileStream stream = new FileStream(Server.MapPath(pathName), FileMode.Open, FileAccess.Read);
             var filedata = client.GetObject("xinxihua", pathName);
 
-            return File(filedata.ObjectContent, "xls", filename);
+            return File(filedata.ObjectContent, "application/vnd.ms-excel", filename);
 
 
         }

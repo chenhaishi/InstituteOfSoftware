@@ -1066,17 +1066,20 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
             });
 
-            //string pathName = System.Web.HttpContext.Current.Server.MapPath("/Areas/Educational/CostHistoryFiles/" + filename + ".xls");
+            string pathName = System.Web.HttpContext.Current.Server.MapPath("/Areas/Educational/CostHistoryFiles/" + filename + ".xls");
 
-            //stream = new FileStream(pathName, FileMode.Create, FileAccess.ReadWrite);
+            var stream = new FileStream(pathName, FileMode.Create, FileAccess.ReadWrite);
 
+            workbook.Write(stream);
+
+            stream.Close();
+            FileInfo fileinfo = new FileInfo(pathName);
+            
             CloudstorageBusiness Bos = new CloudstorageBusiness();
 
             var client = Bos.BosClient();
 
-            var byteary = workbook.GetBytes();
-
-            client.PutObject("xinxihua", $"/CostHistoryFiles/{filename}.xls", byteary);
+            client.PutObject("xinxihua", $"/CostHistoryFiles/{filename}.xls", fileinfo);
 
             workbook.Close();
 
@@ -1710,20 +1713,23 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 count++;
             }
 
-            //string pathName = System.Web.HttpContext.Current.Server.MapPath("/Areas/Educational/CostHistoryFiles/" + fileName+".xls");
+            string LOACpathName = System.Web.HttpContext.Current.Server.MapPath("/Areas/Educational/CostHistoryFiles/" + fileName+".xls");
 
             string pathName = $"/CostHistoryFiles/{fileName}.xls";
 
-            //FileStream stream = new FileStream(pathName, FileMode.Create,FileAccess.ReadWrite);
+            FileStream stream = new FileStream(LOACpathName, FileMode.Create,FileAccess.ReadWrite);
 
             CloudstorageBusiness Bos = new CloudstorageBusiness();
 
             var client = Bos.BosClient();
 
-            var byteData = workbook.GetBytes();
+            workbook.Write(stream);
+            stream.Close();
 
-            client.PutObject("xinxihua", pathName, byteData);
+            var FILEINFO = new FileInfo(LOACpathName);
 
+            client.PutObject("xinxihua", pathName, FILEINFO);
+           
             workbook.Close();
 
             return pathName;
