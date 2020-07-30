@@ -333,6 +333,7 @@
     <Compile Include="SqlDate.cs" />
     <Compile Include="ViewEntity\AccdationView.cs" />
     <Compile Include="ViewEntity\AchievementView.cs" />
+    <Compile Include="ViewEntity\AddCourseView.cs" />
     <Compile Include="ViewEntity\ADDdataview.cs" />
     <Compile Include="ViewEntity\AddEnterpriseView.cs" />
     <Compile Include="ViewEntity\AmountTopView.cs" />

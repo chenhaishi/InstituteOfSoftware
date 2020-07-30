@@ -37,14 +37,14 @@
 
 
             <div class="layui-inline">
-                <label class="layui-form-label">专业</label>
+                <label class="layui-form-label">阶段</label>
                 <div class="layui-input-inline">
                     <select lay-filter="major">
                         <option value="0">请选择</option>
                         @{
-                            foreach (var item in ViewBag.Major as List<Specialty>)
+                            foreach (var item in ViewBag.grand as List<Grand>)
                             {
-                                <option value="@item.Id">@item.SpecialtyName</option>
+                                <option value="@item.Id">@item.GrandName</option>
                             }
                         }
                     </select>
@@ -95,6 +95,7 @@
 <!--行内工具按钮-->
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs" lay-event="detail">详情</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 <script type="text/html" id="InitHtm">
@@ -139,7 +140,7 @@
             console.log("选中值" + value);
             $.ajax({
                 url: "/ExaminationSystem/QuestionsBank/CourseDataBYGrind",
-                data: { majorid: value },
+                data: { grandid: value },
                 dataType: "json",
                 success: function (resultData) {
                     if (resultData.length > 0) {
@@ -417,7 +418,7 @@
 
                     }, function (error) {
                         layer.msg("异常！");
-                        });
+                    });
 
                     layer.close(index);
                 });
@@ -427,11 +428,24 @@
                     type: 2,
                     area: ["1000px", "820px;"],
                     title: "选择题-详细",
-                    content: '/ExaminationSystem/QuestionsBank/DetailChoiceQuestion/'+data.Id,
+                    content: '/ExaminationSystem/QuestionsBank/DetailChoiceQuestion/' + data.Id,
 
                 });
 
 
+            }
+
+            else if (obj.event === 'edit') {
+
+                var data = obj.data;
+
+                layer.open({
+                    type: 2,
+                    area: ["1000px", "820px;"],
+                    title: "选择题-编辑",
+                    content: '/ExaminationSystem/QuestionsBank/ModifyChoice?choiceId=' + data.Id,
+
+                });
             }
         });
 

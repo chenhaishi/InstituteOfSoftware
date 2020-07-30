@@ -184,41 +184,6 @@
         });
             layui.form.render("select");
 
-            form.on('radio(type)', function (data) {
-               
-
-                if (data.value == 1) {
-
-                  
-                    IsRadio = true;
-                    $(".anwser").next().removeClass("layui-form-checked");
-
-                    $(".anwser").removeAttr("disabled");
-                    form.render('select'); 
-                }
-
-                if (data.value == 0) {
-                    IsRadio = false;
-                  
-
-                    $(".anwser").next().removeClass("layui-form-checked");
-                    
-
-                    $(".anwser").removeAttr("disabled");
-                }
-            });  
-
-            //监听复选框--参考答案
-            form.on('checkbox(Option)', function (data) {
-                //如果是单选题
-                if (IsRadio) {
-
-                    //其余全部禁用
-
-                    $(data.elem).siblings().attr("disabled", "disabled");
-                }
-            });    
-
             form.on('submit(submit)', function (data) {
                
                 console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}

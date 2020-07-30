@@ -405,7 +405,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             var filedata = client.GetObject("xinxihua", computerPath);
 
-            return File(filedata.ObjectContent, "application/octet-stream", Server.UrlEncode("机试题"));
+            var filename = Path.GetFileName(computerPath);
+
+            return File(filedata.ObjectContent, "application/octet-stream", Server.UrlEncode(filename));
 
         }
 

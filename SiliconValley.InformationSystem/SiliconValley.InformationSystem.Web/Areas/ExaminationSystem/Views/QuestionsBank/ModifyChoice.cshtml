@@ -1,0 +1,290 @@
+﻿
+@{
+    Layout = null;
+}
+@using SiliconValley.InformationSystem.Entity.MyEntity
+@model SiliconValley.InformationSystem.Entity.MyEntity.MultipleChoiceQuestion
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ModifyChoice</title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+
+
+</head>
+<body>
+    <div id="myWarp">
+
+        <form class="layui-form">
+
+            <input type="hidden" name="Id" value="@Model.Id" />
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">阶段</label>
+                    <div class="layui-input-inline">
+                        <select name="grand" lay-filter="grand">
+                            <option value="0">请选择</option>
+                            @{
+                                foreach (var item in ViewBag.Grand as List<Grand>)
+                                {
+                                    if (item.Id == Model.Grand)
+                                    {
+                                        <option selected value="@item.Id">@item.GrandName</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@item.Id">@item.GrandName</option>
+                                    }
+
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">课程</label>
+                    <div class="layui-input-inline">
+                        <select lay-verify="required" name="course" id="course">
+
+                            @{
+                                if (ViewBag.course == null)
+                                {
+                                    <option selected value="0">升学题</option>
+                                }
+                                else
+                                {
+                                    <option selected value="@ViewBag.course.CurriculumID">@ViewBag.course.CourseName</option>
+                                }
+                            }
+
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">题目：</label>
+                <div class="layui-input-block">
+                    <textarea name="Title" class="layui-textarea">@Model.Title</textarea>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">选项A</label>
+                <div class="layui-input-block">
+                    <input type="text" name="OptionA" value="@Model.OptionA" lay-verify="title" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">选项B</label>
+                <div class="layui-input-block">
+                    <input type="text" name="OptionB" value="@Model.OptionB" lay-verify="title" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">选项C</label>
+                <div class="layui-input-block">
+                    <input type="text" name="OptionC" value="@Model.OptionC" lay-verify="title" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">选项D</label>
+                <div class="layui-input-block">
+                    <input type="text" name="OptionD" value="@Model.OptionD" lay-verify="title" class="layui-input">
+                </div>
+            </div>
+
+
+            <div class="layui-form-item" pane="">
+                <label class="layui-form-label">答案：</label>
+                <div class="layui-input-block">
+                    @{
+                        if (Model.Answer.Contains("A"))
+                        {
+                            <input lay-filter="Option" checked type="checkbox" value="A" class="anwser" name="Answer[A]" title="A">
+                        }
+                        else
+                        {
+                            <input lay-filter="Option" type="checkbox" value="A" class="anwser" name="Answer[A]" title="A">
+                        }
+
+                        if (Model.Answer.Contains("B"))
+                        {
+                            <input lay-filter="Option" checked type="checkbox" value="B" class="anwser" name="Answer[B]" title="B">
+                        }
+                        else
+                        {
+                            <input lay-filter="Option" type="checkbox" value="B" class="anwser" name="Answer[B]" title="B">
+                        }
+
+                        if (Model.Answer.Contains("C"))
+                        {
+                            <input lay-filter="Option" type="checkbox" checked value="C" class="anwser" name="Answer[C]" title="C">                        }
+                        else
+                        {
+                            <input lay-filter="Option" type="checkbox" value="C" class="anwser" name="Answer[C]" title="C">
+                        }
+
+                        if (Model.Answer.Contains("D"))
+                        {
+                            <input lay-filter="Option" type="checkbox" value="D" checked class="anwser" name="Answer[D]" title="D">
+                        }
+                        else
+                        {
+                            <input lay-filter="Option" type="checkbox" value="D" class="anwser" name="Answer[D]" title="D">
+                        }
+
+                    }
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">难度级别</label>
+                <div class="layui-input-block">
+
+                    @{
+                        foreach (var item in ViewBag.QuestionLevel as List<QuestionLevel>)
+                        {
+                            if (Model.Level == item.LevelID)
+                            {
+                                <input type="radio" name="Level" value="@item.LevelID" title="@item.LevelName" checked="">
+                            }
+                            else
+                            {
+                                <input type="radio" name="Level" value="@item.LevelID" title="@item.LevelName">
+                            }
+                        }
+                    }
+                </div>
+            </div>
+
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">备注：</label>
+                <div class="layui-input-block">
+                    <textarea name="Remark" class="layui-textarea">@Model.Remark</textarea>
+                </div>
+            </div>
+
+            <div style="text-align:center;">
+
+                <button id="commit" type="button" lay-submit="" lay-filter="submit"  class="layui-btn layui-btn-primary">提交</button>
+                <button id="close" type="button" class="layui-btn layui-btn-primary">关闭</button>
+            </div>
+        </form>
+    </div>
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/layui/layui.js"></script>
+
+    <script>
+       
+        layui.use(['form','layer'], function () {
+
+            var form = layui.form;
+            var layer = layui.layer;
+            //下拉框联动
+            form.on('select(grand)', function (data) {
+                var value = data.value;  //select选中的值
+                console.log("选中值" + value);
+                $.ajax({
+                    url: "/ExaminationSystem/QuestionsBank/CourseData",
+                    data: { grandid: value },
+                    dataType: "json",
+                    success: function (resultData) {
+                        if (resultData.length > 0) {
+                            //清空赋值
+                            $("#course").empty();
+                            console.log(resultData);
+                            $("#course").append(new Option("请选择项目", ""));
+                            $.each(resultData, function (index, item) {
+                                var grand_ = item.Grand == null ? "" : item.Grand.GrandName;
+                                var namaC = item.CourseName + '(' + grand_ + ')'
+                                //赋值
+                                $('#course')
+                                    .append(new Option(namaC, item.CurriculumID));
+                            });
+                        } else {
+                            $("#course").empty();
+                            $("#course").append(new Option("暂无数据", ""));
+                        }
+
+                        $("#course").append(new Option("升学题", "0"));
+                        layui.form.render("select");
+                    }
+                });
+            });
+            layui.form.render("select");
+
+            form.on('submit(submit)', function (data) {
+
+                console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+
+                var loadindex = layer.load(1);
+                //获取参考答案
+
+                var arr_box = [];
+                $('input[type=checkbox]:checked').each(function () {
+                    arr_box.push($(this).val());
+                });
+
+                var Answer = "";
+                for (var i = 0; i < arr_box.length; i++) {
+
+                    Answer += arr_box[i] + ',';
+
+                }
+
+                Answer = Answer.substring(0, Answer.length - 1);
+
+                //组装对象
+
+                var isRadio = Answer.length > 1 ? false : true;
+
+                var obj = {
+                    Id: data.field.Id,
+                    Title: data.field.Title,
+                    OptionA: data.field.OptionA,
+                    OptionB: data.field.OptionB,
+                    OptionC: data.field.OptionC,
+                    OptionD: data.field.OptionD,
+                    IsRadio: isRadio,
+                    Level: data.field.Level,
+                    Answer: Answer,
+                    Course: data.field.course,
+                    Remark: data.field.Remark,
+                    Grand: data.field.grand
+
+                };
+
+                console.log(obj);
+
+                $.post("/ExaminationSystem/QuestionsBank/ModifyChoice", obj, function (result) {
+
+                    layer.close(loadindex);
+
+                    if (result.ErrorCode == 200) {
+                        layer.msg("修改成功", { icon: 1 });
+                    }
+                    else {
+                        layer.msg("修改失败", { icon: 2 });
+                    }
+
+                });
+              
+
+                return false; 
+            });
+
+            $("#close").click(function () {
+                var index = parent.layer.getFrameIndex(window.name);
+                parent.layer.close(index);
+            });
+
+        });
+
+    </script>
+</body>
+</html>

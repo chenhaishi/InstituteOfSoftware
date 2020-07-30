@@ -6,7 +6,7 @@ function htmlmuban (mubanelem,) {
 
     var studentdata = studenthtml({ studentnumber: data[0].StudentNumber, studentname: data[0].Name });
 
-    $("#studenttable").append($(studentdata));..
+    $("#studenttable").append($(studentdata));
 
 }
 

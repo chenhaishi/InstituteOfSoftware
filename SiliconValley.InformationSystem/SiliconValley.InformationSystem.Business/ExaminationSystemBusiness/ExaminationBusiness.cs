@@ -453,7 +453,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
 
                 //发送短信
                 var classroom = dbclassroom.GetEntity(exammroom.Classroom_Id);
-                string smgText = "监考通知: "+ exam.Title +" -- 教室："+classroom.ClassroomName + "时间："+ exam.BeginDate;
+                string smgText = "监考通知: "+ exam.Title +" ， 教室："+classroom.ClassroomName + "，时间："+ exam.BeginDate;
 
                 PhoneMsgHelper.SendMsg(headmaster.Phone, smgText);
             }
@@ -467,7 +467,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
 
                     //发送短信
                     var classroom = dbclassroom.GetEntity(exammroom.Classroom_Id);
-                    string smgText = "监考通知: " + exam.Title + " -- 教室：" + classroom.ClassroomName + "时间：" + exam.BeginDate;
+                    string smgText = "监考通知: " + exam.Title + " ， 教室：" + classroom.ClassroomName + "，时间：" + exam.BeginDate;
 
                     PhoneMsgHelper.SendMsg(headmaster1.Phone, smgText);
 
