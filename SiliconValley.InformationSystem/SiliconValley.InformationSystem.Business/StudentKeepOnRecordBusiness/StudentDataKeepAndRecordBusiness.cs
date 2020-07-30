@@ -582,7 +582,7 @@ namespace SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness
                         fins.StuInfomationType_Id = olds.StuInfomationType_Id;
                     }
 
-                    if (fins.Party == null)
+                    if (fins.Party == null ||string.IsNullOrEmpty( fins.Party))
                     {
                         fins.Party = olds.Party;
                     }

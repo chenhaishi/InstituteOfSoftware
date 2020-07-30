@@ -175,7 +175,7 @@
                         </div>
                     </div>
                 </div>
-                @*<div class="layui-row layui-form-item">
+                <div class="layui-row layui-form-item">
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label">关&nbsp; 系&nbsp;人:</label>
                         <div class="layui-input-block">
@@ -183,38 +183,38 @@
                         </div>
                     </div>
 
-                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                        <label class="layui-form-label">备案 &nbsp; 人:</label>
-                        <div class="layui-input-block">
-                            <input type="hidden" id="EmployeesInfo_Id" name="EmployeesInfo_Id" />
-                            <div>
-                                <input name="e_Name" id="e_Name" class="layui-input linu" disabled="disabled" />
-                                <i onclick="EditBeanMan()" class="layui-icon layui-icon-search" style="font-size: 26px; color:lightseagreen;cursor:pointer;position:absolute;left:175px;top:5px;"></i>
-                            </div>  
-                        </div>
-                    </div>
-                </div>*@
-                <div class="layui-form-item">
-                    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
-                        <label class="layui-form-label">说 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 明:</label>
-                        <div class="layui-input-block">
-                            <textarea name="Reak" id="Reak" class="layui-input TextAreCss1"> </textarea>
-                            <input name="ShorPhone" id="ShorPhone" type="hidden" />
-                            <input name="ShorReacke" id="ShorReacke" type="hidden" />
-                        </div>
-                    </div>
-                </div>
-            <div class="layui-form-item">
-                <div class="layui-input-block">
-                    <div style="width:30%;margin:0px auto">
-                        <button class="layui-btn" lay-submit="" lay-filter="xiugai">修改</button>
-                        <button type="button" class="layui-btn" id="quxiao">取消</button>
-                    </div>                   
+                    @*<div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <label class="layui-form-label">备案 &nbsp; 人:</label>
+            <div class="layui-input-block">
+                <input type="hidden" id="EmployeesInfo_Id" name="EmployeesInfo_Id" />
+                <div>
+                    <input name="e_Name" id="e_Name" class="layui-input linu" disabled="disabled" />
+                    <i onclick="EditBeanMan()" class="layui-icon layui-icon-search" style="font-size: 26px; color:lightseagreen;cursor:pointer;position:absolute;left:175px;top:5px;"></i>
                 </div>
             </div>
-            <input name="have" id="have" type="hidden" value="no"/>
-            <input name="yu" id="yu" type="hidden" value="@ViewBag.UserId"/>
-        </form>
+        </div>*@
+                </div>
+                    <div class="layui-form-item">
+                        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                            <label class="layui-form-label">说 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 明:</label>
+                            <div class="layui-input-block">
+                                <textarea name="Reak" id="Reak" class="layui-input TextAreCss1"> </textarea>
+                                <input name="ShorPhone" id="ShorPhone" type="hidden" />
+                                <input name="ShorReacke" id="ShorReacke" type="hidden" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <div style="width:30%;margin:0px auto">
+                                <button class="layui-btn" lay-submit="" lay-filter="xiugai">修改</button>
+                                <button type="button" class="layui-btn" id="quxiao">取消</button>
+                            </div>
+                        </div>
+                    </div>
+                    <input name="have" id="have" type="hidden" value="no" />
+                    <input name="yu" id="yu" type="hidden" value="@ViewBag.UserId" />
+</form>
     </div>
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/layui/layui.js"></script>
@@ -306,7 +306,7 @@
 
             //修改数据
             form.on('submit(xiugai)', function (data) {
-                layer.confirm('系统温馨提示！', { icon: 3, title: '确定修改吗？已有的数据是不可以修改的喔！' }, function (Conindex) {
+                layer.confirm('确定修改吗？已有的数据是不可以修改的喔！', { icon: 3, title: '系统温馨提示！' }, function (Conindex) {
                  
                     var formindex = layer.load(1);
                     $.ajax({

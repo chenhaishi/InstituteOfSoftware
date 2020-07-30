@@ -255,6 +255,7 @@
     <Compile Include="Areas\Educational\Controllers\ReconcileController.cs" />
     <Compile Include="Areas\Educational\Controllers\Staff_Cost_StatisticsController.cs" />
     <Compile Include="Areas\Educational\Controllers\SubstituteTeachCourseController.cs" />
+    <Compile Include="Areas\Educational\Controllers\TeacherAddorBeonDutyController.cs" />
     <Compile Include="Areas\Educational\Controllers\TeacherNightController.cs" />
     <Compile Include="Areas\Educational\Controllers\TimetableController.cs" />
     <Compile Include="Areas\Educational\Controllers\WarehouseController.cs" />

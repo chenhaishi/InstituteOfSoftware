@@ -205,16 +205,25 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             var a = beonduty_list.GroupBy(b => b.Anpaidate);
             a.ForEach(b=>
             {
-                b.ForEach(d =>
+                try
                 {
-                    string dd = d.Anpaidate.ToString();
-                    var tempob = new Onbety_Print()
-                    {                        
-                        Content = $"{d.EmpName}({d.ClassNumber}/{d.curd_name})"
-                    };
+                    b.ForEach(d =>
+                    {
+                        string dd = d.Anpaidate.ToString();
+                        var tempob = new Onbety_Print()
+                        {
+                            Content = $"{d.EmpName}({d.ClassNumber}/{d.curd_name})"
+                        };
 
-                    list.Add(dd, tempob);
-                });
+                        list.Add(dd, tempob);
+                    });
+                }
+                catch (Exception ex)
+                {
+
+                    string mm = ex.Message;
+                }
+                 
             });
             string title = date[0] + "年" + date[1] + "月值班表";
 
