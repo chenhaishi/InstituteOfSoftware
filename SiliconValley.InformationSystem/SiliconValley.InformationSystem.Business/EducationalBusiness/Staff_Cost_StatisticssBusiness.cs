@@ -1724,6 +1724,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             var client = Bos.BosClient();
 
             workbook.Write(stream);
+
             stream.Close();
 
             var FILEINFO = new FileInfo(LOACpathName);
