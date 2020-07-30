@@ -73,17 +73,18 @@
 
             //监听提交
             form.on('submit(Anpai_CBig)', function (data) {
+                var mmyda = layer.load(1);
                 var grand = "";
                 $("input[name='glist']:checked").each(function (ind, ele) {
                     grand = grand + $(ele).val() + ",";
                 });
-                data.field.grands = grand;
-
+                data.field.grands = grand;            
                     $.ajax({
                         url: '/Educational/Reconcile/GrandChangData',
                         type: 'POST',
                         data: data.field,
                         success: function (sucdata) {
+                            layer.close(mmyda);
                             if (sucdata == false) {
                                 layer.msg('系统错误，请重试！！', { icon: 2 });
                             } else {

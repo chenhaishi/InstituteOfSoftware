@@ -50,6 +50,10 @@
             height: 15px;
             line-height: 15px;
         }
+
+        .DivCss2{
+        display:none;
+        }
     </style>
 }
 <div class="layui-collapse" lay-accordion>
@@ -78,6 +82,17 @@
                     </div>
                     <div class="layui-col-xs2 layui-col-sm2 layui-col-md2" style="text-align:center">
                         <button type="button" class="layui-btn" onclick="Sercher()">查询</button>
+                        @{
+                            if (ViewBag.emp)
+                            {
+                                <input name="emp" id="emp" type="hidden" value="是" />
+                            }
+                            else
+                            {
+                                <input name="emp" id="emp" type="hidden" value="否" />
+                            }
+                        }
+
                     </div>
                 </div>
             </form>
@@ -85,24 +100,54 @@
     </div>
 </div>
 <table id="TeacherNight_table" lay-filter="TeacherNight_table"></table>
+<div id="selectDate" class="DivCss2">
+    <form id="date_addview" class="layui-form" lay-filter="date_addview">
+        <div class="layui-row layui-form-item">
+            <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                <label class="LableCss1">日 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 期:</label>
+                <div class="layui-input-block">
+                    <input type="text" id="date_Anpaidate" name="date_Anpaidate" class="layui-input" />
+                </div>
+            </div>
+        </div>
+        <div class="layui-row layui-form-item">
+            <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                <label class="LableCss1">部 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 门:</label>
+                <div class="layui-input-block">
+                    <input type="radio" id="dep" name="dep" class="layui-input" title="s1、s2教学部" value="5"/>
+                    <input type="radio" id="dep" name="dep" class="layui-input" title="s3教学部" value="1009"/>
+                    <input type="radio" id="dep" name="dep" class="layui-input" title="s4教学部" value="1010"/>
+                </div>
+            </div>
+        </div>
+        <div class="layui-row layui-form-item">
+            <div class="layui-col-xs12 layui-col-sm12 layui-col-md12" style="text-align:center;margin-top:30px;">
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="handBtn">确定导出</button>
+                <button type="button" class="layui-btn" onclick="Close()">取消关闭</button>
+            </div>
+        </div>
+    </form>
+</div>
 <script src="~/Scripts/Tangmin_CssAndJs/com_js/MyOrther_tangmin.js"></script>
 <script type="text/html" id="toolbarDemo_Night">
     <div class="layui-btn-container">
         <button class="layui-btn layui-btn-sm" lay-event="getCheckData_addNight"><i class="layui-icon">&#xe624;</i>添加值班数据</button>
         <button class="layui-btn layui-btn-sm" lay-event="getCheckData_delNight"><i class="layui-icon">&#x1006;</i>批量删除数据</button>
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckData_outNight"><i class="layui-icon">&#x1006;</i>Excel导出</button>
         @*<button class="layui-btn layui-btn-sm" lay-event="getCheckData_timeChange"> <i class="layui-icon">&#xe642;</i>日期更改</button>
         <button class="layui-btn layui-btn-sm" lay-event="getCheckData_time"> <i class="layui-icon">&#xe642;</i>上课延迟或提前</button>*@
     </div>
 </script>
 
 <script type="text/html" id="barDemo_Night">
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a> 
+    @*<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>*@ 
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 
 
 
 <script>
+    var dateindex;
     function Sercher() {
         layui.use(['form','table'], function () {
             var form = layui.form;
@@ -121,44 +166,93 @@
             table.reload('TeacherNight_table');
         });
     }
-    layui.use(['table','element','laydate'], function () {
+    layui.use(['table','element','laydate','form'], function () {
         var table = layui.table;
         var layer = layui.layer;
         var laydate = layui.laydate;
         var element = layui.element;
+        var form = layui.form;
         //自定义事件
         laydate.render({
             elem: '#starTime'
-            , trigger: 'click' //采用click弹出
+            , trigger: 'click'  
         });
 
+        laydate.render({
+            elem: '#date_Anpaidate'
+            , type: 'month'
+            , trigger: 'click'
+        });
         //自定义事件
         laydate.render({
             elem: '#endTime'
             , trigger: 'click' //采用click弹出
         });
-        table.render({
-            elem: '#TeacherNight_table'
-            , url: '/Educational/TeacherAddorBeonDuty/Tabledata'
-            , toolbar: '#toolbarDemo_Night'
-            , cols: [[
-                { type: 'checkbox' }
-                , {
-                    field: 'Anpaidate', title: '值班日期', templet: function (res) {
-                        return TimeChange(res.Anpaidate);
+        var emp = $("#emp").val();
+        if (emp == "是") {
+            table.render({
+                elem: '#TeacherNight_table'
+                , url: '/Educational/TeacherAddorBeonDuty/Tabledata'
+                , toolbar: '#toolbarDemo_Night'
+                , cols: [[
+                    { type: 'checkbox' }
+                    , {
+                        field: 'Anpaidate', title: '值班日期', templet: function (res) {
+                            return TimeChange(res.Anpaidate);
+                        }
                     }
-                }
-                , { field: 'EmpName', title: '值班老师' }
-                , { field: 'TypeName', title: '值班类型' }
-                , { field: 'ClassNumber', title: '班级' }
-                , { field: 'ClassroomName', title: '教室' }
-                , { field: 'curd_name', title: '值班时间段' }
-                , { fixed: 'right', title: '操作', toolbar: '#barDemo_Night', width: 150 }
-            ]]
-            , page: true
-            , limits: [20, 30, 40, 50, 60,70,80,90]
-            ,limit:20
-        });
+                    , { field: 'EmpName', title: '值班老师' }
+                    , { field: 'TypeName', title: '值班类型' }
+                    , { field: 'ClassNumber', title: '班级' }
+                    , { field: 'ClassroomName', title: '教室' }
+                    , { field: 'curd_name', title: '值班时间段' }
+                    , {
+                        fixed: 'right', title: '操作', width: 150, templet: function (res) {
+                            if (res.IsDels == false) {
+                                return '<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="shenhe">核实</a>'
+                            } else {
+                                return '已核实'
+                            }
+                        }
+                    }
+                ]]
+                , page: true
+                , limits: [20, 30, 40, 50, 60, 70, 80, 90]
+                , limit: 20
+            });
+        } else {
+            table.render({
+                elem: '#TeacherNight_table'
+                , url: '/Educational/TeacherAddorBeonDuty/Tabledata'
+                , toolbar: '#toolbarDemo_Night'
+                , cols: [[
+                    { type: 'checkbox' }
+                    , {
+                        field: 'Anpaidate', title: '值班日期', templet: function (res) {
+                            return TimeChange(res.Anpaidate);
+                        }
+                    }
+                    , { field: 'EmpName', title: '值班老师' }
+                    , { field: 'TypeName', title: '值班类型' }
+                    , { field: 'ClassNumber', title: '班级' }
+                    , { field: 'ClassroomName', title: '教室' }
+                    , { field: 'curd_name', title: '值班时间段' }
+                    , {
+                        fixed: 'right', title: '操作', width: 150, templet: function (res) {
+                            if (res.IsDels == false) {
+                                return '<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>'
+                            } else {
+                                return '已核实'
+                            }
+                        }
+                    }
+                ]]
+                , page: true
+                , limits: [20, 30, 40, 50, 60, 70, 80, 90]
+                , limit: 20
+            });
+        }
+        
 
         //头工具栏事件
         table.on('toolbar(TeacherNight_table)', function (obj) {
@@ -230,6 +324,20 @@
                 //    });
                 //    break;
 
+                case 'getCheckData_outNight':
+                    //导出数据
+                    dateindex= layer.open({
+                        type: 1,
+                        shade: 0.8,
+                        title: '选择导出条件', //不显示标题
+                        content: $('#selectDate'), //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
+                        //cancel: function () {
+                        //    layer.msg('捕获就是从页面已经存在的元素上，包裹layer的结构', { time: 5000, icon: 6 });
+                        //}
+                    });
+
+                    break;
+
             };
         });
 
@@ -257,17 +365,72 @@
                     layer.close(index);
                 });
             } else if (obj.event === 'edit') {
-                layer.open({
-                    type: 2,
-                    content: '/Educational/TeacherAddorBeonDuty/EditFunction/' + data.Id,
-                    area: ['700px', '400px'],
-                    title: '编辑值班数据',
-                    shade: 0.8,
-                    anim: 4,
-                    skin: 'demo-class'
+                //layer.open({
+                //    type: 2,
+                //    content: '/Educational/TeacherAddorBeonDuty/EditFunction/' + data.Id,
+                //    area: ['700px', '400px'],
+                //    title: '编辑值班数据',
+                //    shade: 0.8,
+                //    anim: 4,
+                //    skin: 'demo-class'
+                //});
+            }
+            else if (obj.event === 'shenhe') {
+                layer.confirm('确定数据真实吗?', { icon: 3 }, function (index) {
+                    $.ajax({
+                        url: '/Educational/TeacherAddorBeonDuty/Shenhe/' + data.Id,
+                        success: function (suc) {
+                            if (suc.Success == false) {
+                                layer.msg(suc.Msg, { icon: 2 });
+                            } else {
+                                layer.msg(suc.Msg, { icon: 1, shade: 0.8 }, function () {
+                                    //刷新
+                                    TableFulsh();
+                                });
+                            }
+                        }
+                    });
+                    layer.close(index);
                 });
+                 
+                //layer.open({
+                //    type: 2,
+                //    content: '/Educational/TeacherAddorBeonDuty/EditFunction/' + data.Id,
+                //    area: ['700px', '400px'],
+                //    title: '编辑值班数据',
+                //    shade: 0.8,
+                //    anim: 4,
+                //    skin: 'demo-class'
+                //});
             }
         });
+
+
+        form.on('submit(handBtn)', function (data) {           
+            // console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+            if (data.field.date_Anpaidate == null) {
+                layer.msg('选择日期！');
+            } else if (data.field.dep == null) {
+                layer.msg('选择部门！');
+            } else {
+                $.ajax({
+                    url: '/Educational/TeacherAddorBeonDuty/OutData',
+                    data: data.field,
+                    type: 'post',
+                    success: function (res) {
+
+                    }
+                });
+            }
+             
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
     });
+
+    function Close() {
+        layui.use('layer', function () {           
+            parent.layer.close(dateindex); //再执行关闭
+        });
+    }
 </script>
 

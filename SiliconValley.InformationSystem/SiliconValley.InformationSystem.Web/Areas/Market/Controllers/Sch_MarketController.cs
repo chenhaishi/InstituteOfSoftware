@@ -10,6 +10,8 @@ using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 using SiliconValley.InformationSystem.Entity.MyEntity;
 using SiliconValley.InformationSystem.Business.Consult_Business;
 using SiliconValley.InformationSystem.Business.NetClientRecordBusiness;
+using SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data;
+using SiliconValley.InformationSystem.Business.Base_SysManage;
 
 namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
 {
@@ -18,6 +20,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
         // GET: /Market/Sch_Market/UpdateFunction
         Sch_MarketManeger s_entity = new Sch_MarketManeger();
         public NetClientRecordManage NetClient_Entity = new NetClientRecordManage();
+
+        public StudentbeanLogManeger log_s = new StudentbeanLogManeger();
+
         /// <summary>
         /// 数据详情页面
         /// </summary>
@@ -61,6 +66,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
         public ActionResult UpdateFunction(Sch_Market news)
         {
             Sch_Market old= s_entity.GetEntity(news.Id);
+            Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
             bool s = true;
             AjaxResult a = new AjaxResult();
              string Teacher=  Request.Form["TeacherId"];
@@ -90,37 +96,81 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
                 }                               
             }
             //如果是将信息来源改为网络，就将该数据添加到网络咨询这边
-            if (old.Source != "网络")
-            {
-                if (news.Source == "网络")
-                {
-                    Sch_Market ff = s_entity.Find(old.StudentName, old.Phone);
-                    bool mm = NetClient_Entity.IsExsitSprStu(ff.Id);
-                    if (!mm)
-                    {
-                        bool sm = NetClient_Entity.AddNCRData(ff.Id);
-                    }
-                }
-            }
+            //if (old.Source != "网络")
+            //{
+            //    if (news.Source == "网络")
+            //    {
+            //        Sch_Market ff = s_entity.Find(old.StudentName, old.Phone);
+            //        bool mm = NetClient_Entity.IsExsitSprStu(ff.Id);
+            //        if (!mm)
+            //        {
+            //            bool sm = NetClient_Entity.AddNCRData(ff.Id);
+            //        }
+            //    }
+            //}
             if (s)
             {
-                old.StudentName = news.StudentName;
-                old.Sex = news.Sex;
-                old.Phone = news.Phone;
+                //if (old.MarketState==null)
+                //{
+                //    if (!old.MarketState.Contains("已报名"))
+                //    {
+                //        old.StudentName = news.StudentName;
+                //    }
+                //}   
+                if (string.IsNullOrEmpty(old.Sex))
+                {
+                    old.Sex = news.Sex;
+                }
+                 
+                //old.Phone = news.Phone;
                 old.Remark = news.Remark;
-                old.QQ = news.QQ;
-                old.School = news.School;
-                old.Inquiry = news.Inquiry;
-                old.Source = news.Source;
-                old.Area = news.Area;
-                old.Education = news.Education;
+                if (string.IsNullOrEmpty(old.QQ))
+                {
+                    old.QQ = news.QQ;
+                }
+
+                if (string.IsNullOrEmpty(old.School))
+                {
+                    old.School = news.School;
+                }
+              
+                 old.Inquiry = news.Inquiry;             
+
+                if (string.IsNullOrEmpty(old.Area))
+                {
+                    old.Area = news.Area;
+                }
+
+                if (string.IsNullOrEmpty(old.Education))
+                {
+                    old.Education = news.Education;
+                }
+                 
                 old.Info = news.Info;
-                old.SalePerson = news.SalePerson;
-                old.RelatedPerson = news.RelatedPerson;
-                old.Age = news.Age;
-                old.MarketState = news.MarketState;
+
+                if (string.IsNullOrEmpty(old.RelatedPerson))
+                {
+                    old.RelatedPerson = news.RelatedPerson;
+                }
+
+                if (string.IsNullOrEmpty(old.Age))
+                {
+                    old.Age = news.Age;
+                }
+                                
                 old.MarketType = news.MarketType;
-                a = s_entity.MyUpdate(old);                
+                a = s_entity.MyUpdate(old);
+
+                if (a.Success)
+                {
+                    StudentbeanLog log = new StudentbeanLog() { insertDate = DateTime.Now, userId = UserName.EmpNumber, operationType = Entity.Base_SysManage.EnumType.LogType.编辑数据 + ":备案Id"+old.Id + ","+old.StudentName + "编辑数据成功！" };
+                    log_s.Add_data(log);
+                }
+                else
+                {
+                    StudentbeanLog log = new StudentbeanLog() { insertDate = DateTime.Now, userId = UserName.EmpNumber, operationType = Entity.Base_SysManage.EnumType.LogType.编辑数据error+":备案Id" +old.Id+ ","+old.StudentName + "编辑数据失败！" };
+                    log_s.Add_data(log);
+                }
             }
             else
             {

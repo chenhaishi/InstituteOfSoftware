@@ -968,7 +968,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             var days = endtime.Subtract(startime);
             int count = days.Days;
             GetYear years = Reconcile_Entity.MyGetYear(startime.Year.ToString(), Server.MapPath("~/Xmlconfigure/Reconcile_XML.xml"));
-            bool s = Reconcile_Entity.AidClassData(startime, count, class_id, years);
+            bool s = true;
+            if (count<=0)
+            {
+               s= Reconcile_Entity.DescClassData(startime, count, class_id, years);
+            }
+            else
+            {
+                 s = Reconcile_Entity.AidClassData(startime, count, class_id, years);
+            }
+          
             return Json(s, JsonRequestBehavior.AllowGet);
         }
 
@@ -1252,8 +1261,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
 
             GetYear years = Reconcile_Entity.MyGetYear(de1.Year.ToString(), Server.MapPath("~/Xmlconfigure/Reconcile_XML.xml"));
-
-            bool s = Reconcile_Entity.AidAllData(count, years, myclist);
+            bool s = true;
+            if (count<=0)
+            {
+               s= Reconcile_Entity.DescData(count, years, myclist);
+            }
+            else
+            {
+                s = Reconcile_Entity.AidAllData(count, years, myclist);
+            }
+           
 
             return Json(s, JsonRequestBehavior.AllowGet);
         }

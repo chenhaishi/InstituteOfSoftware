@@ -393,7 +393,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 
             }
 
-            var data = list_View.Skip((page - 1) * limit).Take(limit).ToList();
+            var data = list_View.OrderBy(l=>l.Time).Skip((page - 1) * limit).Take(limit).ToList();
  
             var jsondata = new { count = list_View.Count, code = 0, msg = "", data = list_View };
             return Json(jsondata, JsonRequestBehavior.AllowGet);

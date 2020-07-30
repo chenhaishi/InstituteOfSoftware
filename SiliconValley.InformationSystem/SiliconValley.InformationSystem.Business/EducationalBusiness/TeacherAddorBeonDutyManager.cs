@@ -6,12 +6,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SiliconValley.InformationSystem.Util;
+using SiliconValley.InformationSystem.Entity.MyEntity;
 
 namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 {
+    using SiliconValley.InformationSystem.Business.EmployeesBusiness;
    public class TeacherAddorBeonDutyManager:BaseBusiness<TeacherAddorBeonDuty>
     {
         public TeacherBusiness Teacher_Entity = new TeacherBusiness();
+
+        public EmployeesInfoManage EmployeesInfo_Entity = new EmployeesInfoManage();
         #region 查询
         /// <summary>
         /// 获取值班视图所有数据
@@ -148,6 +152,46 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
             return a;
         }
+      /// <summary>
+      /// 审核数据
+      /// </summary>
+      /// <param name="teacherAddor"></param>
+      /// <returns></returns>
+        public AjaxResult Upd_data(TeacherAddorBeonDuty teacherAddor)
+        {
+            AjaxResult a = new AjaxResult() { Msg="操作成功!",Success=true};
+            try
+            {
+                this.Update(teacherAddor);
+            }
+            catch (Exception)
+            {
+                a.Success = false;
+                a.Msg = "操作失败！";
+            }
+
+            return a;
+        }
+
+
+
         #endregion
+
+        /// <summary>
+        /// 判断是否是教务
+        /// </summary>
+        /// <param name="emp"></param>
+        /// <returns></returns>
+        public bool Isjiaowu(string emp)
+        {
+            bool s = true;
+            Position position= EmployeesInfo_Entity.GetPositionByEmpid(emp);
+            if (!position.PositionName.Contains("教务"))
+            {
+                s = false;
+            }
+
+            return s;
+        }
     }
 }

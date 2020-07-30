@@ -20,6 +20,7 @@
             查询数据error,
             查询数据success,
             编辑数据,
+            编辑数据error,
             上传文件,
             删除数据,
             Excle文件导入

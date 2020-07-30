@@ -8,6 +8,7 @@ using Microsoft.Office.Interop.Excel;
 using System.Reflection;
 using System.IO;
 using SiliconValley.InformationSystem.Entity.ViewEntity;
+using SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data.Print;
 
 namespace SiliconValley.InformationSystem.Business.NewExcel
 {
@@ -125,5 +126,41 @@ namespace SiliconValley.InformationSystem.Business.NewExcel
             }
             return IsCuss;
         }
+
+        /// <summary>
+        /// 值班数据导出
+        /// </summary>
+        public bool BeonbutyDataExport(List<Onbety_Print> data, string mypath,string titlie)
+        {
+            bool IsCuss = false;
+            object misValue = System.Reflection.Missing.Value;
+            Application xlApp = new Application();
+            Workbook xlWorkBook = xlApp.Workbooks.Add(misValue);
+            Worksheet xlWorkSheet = (Worksheet)xlWorkBook.Worksheets.get_Item(1);
+
+             
+                xlWorkSheet.Cells[1,1] = titlie; //write the column name
+                xlWorkSheet.Cells[2, 1] = "值班日期";
+                xlWorkSheet.Cells[2, 2] = "值班老师/所值班级/值班时间段";
+            for (int i = 0; i < data.Count; i++)
+            {
+               // xlWorkSheet.Cells[i + 3, 1] = data[i].date;
+                xlWorkSheet.Cells[i + 3, 2] = data[i].Content;                 
+            }
+
+            try
+            {
+                xlWorkBook.SaveAs(mypath, XlFileFormat.xlExcel8, null, null, false, false, XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
+                xlWorkBook.Close(true, misValue, misValue);
+                xlApp.Quit();
+                IsCuss = true;
+            }
+            catch (Exception ex)
+            {
+                return IsCuss;
+            }
+            return IsCuss;
+        }
+
     }
 }

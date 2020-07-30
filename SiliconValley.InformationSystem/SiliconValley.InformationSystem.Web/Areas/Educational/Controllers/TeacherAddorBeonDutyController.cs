@@ -7,18 +7,25 @@ using System.Web.Mvc;
 
 namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 {
+    using SiliconValley.InformationSystem.Business.Base_SysManage;
     using SiliconValley.InformationSystem.Business.EducationalBusiness;
     using SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data;
     using SiliconValley.InformationSystem.Util;
+    using SiliconValley.InformationSystem.Entity.MyEntity;
+    using SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data.Print;
     using System.Text;
 
+    [CheckLogin]
     public class TeacherAddorBeonDutyController : Controller
     {
-        // GET: /Educational/TeacherAddorBeonDuty/EditFunction
+        // GET: /Educational/TeacherAddorBeonDuty/OutData
         TeacherAddorBeonDutyManager Tb_Entity = new TeacherAddorBeonDutyManager();
 
         public ActionResult TeacherAddorBeonDutyIndex()
         {
+            //判断登录的是否是教务
+            Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
+            ViewBag.emp= Tb_Entity.Isjiaowu(UserName.EmpNumber);
             ////获取所有老师
 
             List<SelectListItem> teacherlist = Tb_Entity.Teacher_Entity.GetTeacherEmps().Select(e => new SelectListItem() { Text = e.EmpName, Value = e.EmployeeId }).ToList();
@@ -90,6 +97,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                         OnByReak = Request.Form["ramke"],
                         AttendDate = DateTime.Now,
                         evning_Id = id,
+                        IsDels=false
                     };
 
                     bool hava = Tb_Entity.Exits(new_t.evning_Id, time, new_t.Tearcher_Id);
@@ -124,7 +132,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 {
                     int id = Convert.ToInt32(item);
                     TeacherAddorBeonDuty find = Tb_Entity.Findid(id);
-                    if (find != null)
+                    if (find != null && find.IsDels==false)
                     {
                         list.Add(find);
                     }
@@ -136,18 +144,21 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             return Json(a, JsonRequestBehavior.AllowGet);
         }
 
+        #region 编辑页面
+
         /// <summary>
         /// 编辑页面
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public ActionResult EditFunction(int id)
-        {
-            TeacherAddorBeonDutyView find= Tb_Entity.FindViewid(id);
+        //public ActionResult EditFunction(int id)
+        //{
+        //    TeacherAddorBeonDutyView find= Tb_Entity.FindViewid(id);
 
-            return View(find);
-        }
-        
+        //    return View(find);
+        //}
+        #endregion
+      
         /// <summary>
         /// 教学老师模糊选择视图
         /// </summary>
@@ -157,5 +168,71 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             return View();
         }
 
+
+        public ActionResult Shenhe(int id)
+        {
+            TeacherAddorBeonDuty find = Tb_Entity.Findid(id);
+
+            find.IsDels = true;
+
+            AjaxResult a=  Tb_Entity.Upd_data(find);
+
+            return Json(a, JsonRequestBehavior.AllowGet);
+            
+        }
+
+
+        public ActionResult OutData()
+        {
+            string[] date =  Request.Form["date_Anpaidate"].Split('-');
+
+            int dep =Convert.ToInt32( Request.Form["dep"]);
+
+ 
+            //获取属于这个部门的员工
+
+            List<EmployeesInfo> emplist= Tb_Entity.EmployeesInfo_Entity.GetEmpsByDeptid(dep);
+
+            List<TeacherAddorBeonDutyView> beonduty_list = new List<TeacherAddorBeonDutyView>();
+
+            foreach (EmployeesInfo item in emplist)
+            {
+               var find= Tb_Entity.AttendSqlGetData(" select * from TeacherAddorBeonDutyView where YEAR(Anpaidate)='" + date[0] + "' and MONTH(Anpaidate)='" + date[1] + "' and  Tearcher_Id='"+item.EmployeeId+"'");
+
+                beonduty_list.AddRange(find);
+            }
+            Dictionary<string, Onbety_Print> list = new Dictionary<string, Onbety_Print>();
+            var a = beonduty_list.GroupBy(b => b.Anpaidate);
+            a.ForEach(b=>
+            {
+                try
+                {
+                    b.ForEach(d =>
+                    {
+                        string dd = d.Anpaidate.ToString();
+                        var tempob = new Onbety_Print()
+                        {
+                            Content = $"{d.EmpName}({d.ClassNumber}/{d.curd_name})"
+                        };
+
+                        list.Add(dd, tempob);
+                    });
+                }
+                catch (Exception ex)
+                {
+
+                    string mm = ex.Message;
+                }
+                 
+            });
+            string title = date[0] + "年" + date[1] + "月值班表";
+
+            string filename = DateTime.Now.ToString("yyyyMMddhhmmss") + ".xls";
+            SessionHelper.Session["filename"] = filename;
+            string path = "~/uploadXLSXfile/ConsultUploadfile/ExportAll/" + filename;
+            string truePath = Server.MapPath(path);
+
+            return null;
+        }
     }
 }

@@ -1168,7 +1168,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             return emp;
         }
         /// <summary>
-        /// 全体大批量的调课
+        /// 推后课程
         /// </summary>
         /// <param name="date">开始日期</param>
         /// <param name="days">天数</param>
@@ -1176,7 +1176,10 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         public bool AidAllData(int days, GetYear year, List<Reconcile> reconciles)
         {
             bool s = false;
-            days = days - 1;
+            //if (days>1)
+            //{
+            //    days = days - 1;
+            //}
             try
             {                
                 List<Reconcile> Recon = new List<Reconcile>();
@@ -1228,6 +1231,72 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
         }
         /// <summary>
+        /// 提前课程
+        /// </summary>
+        /// <param name="days"></param>
+        /// <param name="year"></param>
+        /// <param name="reconciles"></param>
+        /// <returns></returns>
+        public bool DescData(int days, GetYear year, List<Reconcile> reconciles)
+        {
+            bool s = false;
+            ////if (days <-1)
+            ////{
+            ////    days = days + 1;
+            ////}
+            try
+            {
+                List<Reconcile> Recon = new List<Reconcile>();
+                for (int i = days; i < 0; i++)
+                {
+                    foreach (Reconcile re in reconciles)
+                    {
+                        DayOfWeek week = re.AnPaiDate.DayOfWeek;
+                        if (re.AnPaiDate.Month >= year.StartmonthName && re.AnPaiDate.Month <= year.EndmonthName)
+                        {
+                            
+                            //单休
+                            if (week == DayOfWeek.Monday)
+                            {
+                                re.AnPaiDate = re.AnPaiDate.AddDays((-2));
+                            }
+                            else
+                            {
+                                re.AnPaiDate = re.AnPaiDate.AddDays(-1);
+                            }
+                        }
+                        else
+                        {
+                            //双休                        
+                            if (week == DayOfWeek.Monday)
+                            {
+                                re.AnPaiDate = re.AnPaiDate.AddDays((-3));
+                            }
+                            else
+                            {
+                                re.AnPaiDate = re.AnPaiDate.AddDays(-1);
+                            }
+                        }
+                        Recon.Add(re);
+                    }
+                    Recon = Recon.OrderBy(r => r.AnPaiDate).ToList();
+                    this.Update(Recon);
+                }
+
+
+
+                s = true;
+            }
+            catch (Exception)
+            {
+
+                s = false;
+            }
+
+            return s;
+        }
+        
+        /// <summary>
         /// 班级大批量的调课
         /// </summary>
         /// <param name="date">开始</param>
@@ -1278,6 +1347,60 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                     this.Update(recon);
                 }
                  
+                s = true;
+            }
+            catch (Exception)
+            {
+                s = false;
+            }
+
+            return s;
+        }
+      
+        public bool DescClassData(DateTime date, int days, int class_id, GetYear YearMon)
+        {
+            bool s = false;
+            //days = days - 1;
+            try
+            {
+                List<Reconcile> recon = new List<Reconcile>();
+                List<Reconcile> reconciles = GetReconcileDate(date, true).Where(r => r.ClassSchedule_Id == class_id).ToList();
+                for (int i = days; i < 0; i++)
+                {
+                    foreach (Reconcile re in reconciles)
+                    {
+                        if (re.AnPaiDate.Month >= YearMon.StartmonthName && re.AnPaiDate.Month <= YearMon.EndmonthName)
+                        {
+                            //单休
+                            if (this.IsSaturday(re.AnPaiDate) == 1)
+                            {
+                                re.AnPaiDate = re.AnPaiDate.AddDays(-1);
+                            }
+                            else
+                            {
+                                re.AnPaiDate = re.AnPaiDate.AddDays(-1);
+                            }
+                        }
+                        else
+                        {
+                            //双休
+                            DayOfWeek week = re.AnPaiDate.DayOfWeek;
+                            if (week == DayOfWeek.Friday)
+                            {
+                                re.AnPaiDate = re.AnPaiDate.AddDays((-1));
+                            }
+                            else
+                            {
+                                re.AnPaiDate = re.AnPaiDate.AddDays(-1);
+                            }
+                        }
+
+                        recon.Add(re);
+
+                    }
+                    this.Update(recon);
+                }
+
                 s = true;
             }
             catch (Exception)

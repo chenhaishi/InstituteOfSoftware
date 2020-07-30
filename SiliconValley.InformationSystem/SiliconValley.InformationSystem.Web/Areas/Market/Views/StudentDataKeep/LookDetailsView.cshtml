@@ -260,7 +260,7 @@
                         var date1 = new Date(parseInt(successdata.StuDateTime.slice(6)));
                         successdata.StuBirthy = TimeChange(successdata.StuBirthy);
                         $("#StuName")[0].value = successdata.StuName;
-                        $("#StuSex")[0].value = successdata.StuSex.toString() == "true" ? "男" : "女";
+                        $("#StuSex")[0].value = successdata.StuSex;
                         $("#StuPhone")[0].value = successdata.StuPhone;
                         $("#StuBirthy")[0].value = successdata.StuBirthy;
                         $("#StuSchoolName")[0].value = successdata.StuSchoolName;

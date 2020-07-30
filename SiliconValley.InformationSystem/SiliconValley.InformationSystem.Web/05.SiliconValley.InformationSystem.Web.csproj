@@ -255,6 +255,7 @@
     <Compile Include="Areas\Educational\Controllers\ReconcileController.cs" />
     <Compile Include="Areas\Educational\Controllers\Staff_Cost_StatisticsController.cs" />
     <Compile Include="Areas\Educational\Controllers\SubstituteTeachCourseController.cs" />
+    <Compile Include="Areas\Educational\Controllers\TeacherAddorBeonDutyController.cs" />
     <Compile Include="Areas\Educational\Controllers\TeacherNightController.cs" />
     <Compile Include="Areas\Educational\Controllers\TimetableController.cs" />
     <Compile Include="Areas\Educational\Controllers\WarehouseController.cs" />
@@ -1876,6 +1877,16 @@
     <Content Include="Areas\Teachingquality\Views\ClassSchedule\Shift.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\RecruitingDataSummary\IsEntry.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\RecruitingDataSummary\TrackDetailInfo.cshtml" />
+    <Content Include="Areas\Educational\Views\Reconcile\GrandChangDataView.cshtml" />
+    <Content Include="Areas\Educational\Views\Reconcile\GrandUpdatDataView.cshtml" />
+    <Content Include="Areas\Educational\Views\Reconcile\SingeAnpaiView.cshtml" />
+    <Content Include="Areas\Educational\Views\Reconcile\SysView.cshtml" />
+    <Content Include="Areas\Educational\Views\TeacherAddorBeonDuty\EditFunction.cshtml" />
+    <Content Include="Areas\Educational\Views\TeacherAddorBeonDuty\TeacherAddorBeonDutyIndex.cshtml" />
+    <Content Include="Areas\Educational\Views\TeacherAddorBeonDuty\TeacherEACHView.cshtml" />
+    <Content Include="Areas\Educational\Views\TeacherNight\EmpZhibanData.cshtml" />
+    <Content Include="Areas\Market\Views\StudentDataKeep\updatePassword.cshtml" />
+    <Content Include="libman.json" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />

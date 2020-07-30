@@ -36,6 +36,10 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data
         ///  --晚自习编号
         /// </summary>
         public int evning_Id { get; set; } 
+        /// <summary>
+        /// 是否已审核
+        /// </summary>
+        public bool IsDels { get; set; }
     }
 
     /// <summary>
@@ -66,6 +70,8 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data
         /// </summary>
         public string EmpName { get; set; }
 
+        public bool IsDels { get; set; }
+
        public static TeacherAddorBeonDuty ToModel(TeacherAddorBeonDutyView data)
         {
             TeacherAddorBeonDuty model = new TeacherAddorBeonDuty();
@@ -75,7 +81,7 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data
             model.Id = data.Id;
             model.OnByReak = data.OnByReak;
             model.Tearcher_Id = data.Tearcher_Id;
-
+            model.IsDels = data.IsDels;
             return model;
         }
 

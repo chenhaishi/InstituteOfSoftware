@@ -319,7 +319,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
                     news.IsDelete = false;
                     news.StuEntering = s_Entity.Enplo_Entity.GetEntity(UserName.EmpNumber).EmpName;
                     news.StuStatus_Id = 1013;
-
+                    news.StuSex = news.StuSex == "0" ? null : news.StuSex;
+                    news.StuEducational = news.StuEducational == "0" ? null : news.StuEducational;
                     if (news.ConsultTeacher == "0")
                     {
                         news.ConsultTeacher = null;
@@ -528,31 +529,37 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
             }
 
             //判断是否将其他来源改为网络，如果是将该信息添加到网咨跟踪表中
-            StudentPutOnRecord find= s_Entity.whereStudentId(olds.Id);
-            StuInfomationType fins2 = s_Entity.StuInfomationType_Entity.GetEntity(find.StuInfomationType_Id);
-            if (!fins2.Name.Contains("网络"))
-            {
-                if (fins.Name.Contains("网络"))
-                {
+            StudentPutOnRecord find= s_Entity.whereStudentId(olds.Id);           
+            //StuInfomationType fins2 = s_Entity.StuInfomationType_Entity.GetEntity(find.StuInfomationType_Id);
+            //if (!fins2.Name.Contains("网络"))
+            //{
+            //    if (fins.Name.Contains("网络"))
+            //    {
                      
-                        StudentPutOnRecord find_stu = s_Entity.StudentOrreideData_OnRecord(find.StuName, find.StuPhone, find.StuDateTime);
-                        bool s=  s_Entity.NetClient_Entity.IsExsitSprStu(find_stu.Id);
-                        if (!s)
-                        {
-                            bool sm = s_Entity.NetClient_Entity.AddNCRData(find_stu.Id);
-                        }                                                                                 
-                }
-            }
+            //            StudentPutOnRecord find_stu = s_Entity.StudentOrreideData_OnRecord(find.StuName, find.StuPhone, find.StuDateTime);
+            //            bool s=  s_Entity.NetClient_Entity.IsExsitSprStu(find_stu.Id);
+            //            if (!s)
+            //            {
+            //                bool sm = s_Entity.NetClient_Entity.AddNCRData(find_stu.Id);
+            //            }                                                                                 
+            //    }
+            //}
             a = s_Entity.Update_data(olds);
 
             if (a.Success==true)
             {
-                StudentbeanLog log = new StudentbeanLog() { insertDate = DateTime.Now, userId = UserName.EmpNumber, operationType = Entity.Base_SysManage.EnumType.LogType.编辑数据 + ":" + olds.StuName + "备案数据编辑成功！" };
+                StudentbeanLog log = new StudentbeanLog() { insertDate = DateTime.Now, userId = UserName.EmpNumber, operationType = Entity.Base_SysManage.EnumType.LogType.编辑数据 + ":备案编号为"+olds.Id+"," + olds.StuName + "备案数据编辑成功！" };
+                s_Entity.log_s.Add_data(log);
+            }
+            else
+            {
+                StudentbeanLog log = new StudentbeanLog() { insertDate = DateTime.Now, userId = UserName.EmpNumber, operationType = Entity.Base_SysManage.EnumType.LogType.编辑数据error + ":备案编号为" + olds.Id + "," + olds.StuName + "备案数据编辑失败！" };
                 s_Entity.log_s.Add_data(log);
             }
             string marketvalue= Request.Form["market"];
 
             string phoen = Request.Form["ShorPhone"];
+
             string reak = Request.Form["ShorReacke"];
 
             if (!string.IsNullOrEmpty(phoen) && !string.IsNullOrEmpty(reak) && a.Success==true)
@@ -629,7 +636,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
                         StuPhone = finds.Stuphone,
                         StuQQ = finds.StuQQ,
                         StuSchoolName = finds.StuSchoolName,
-                        StuSex = finds.StuSex == null ? "男" : finds.StuSex,
+                        StuSex = finds.StuSex,
                         StuVisit = finds.StuVisit,
                         StuWeiXin = finds.StuWeiXin,
                         e_Name = finds.empName,

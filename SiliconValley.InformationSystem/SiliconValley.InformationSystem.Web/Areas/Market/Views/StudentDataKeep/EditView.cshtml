@@ -51,18 +51,17 @@
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label">姓 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 名:</label><input type="hidden" id="Id" name="Id" value="@ViewBag.id"/>
                         <div class="layui-input-block">                          
-                            <input name="StuName" id="StuName" class="layui-input linu" style="color:red"/> 
+                            <input name="StuName" id="StuName" class="layui-input linu" style="color:red" disabled="disabled"/> 
                         </div>
                     </div>
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label">性 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 别:</label>
                         <div class="layui-input-block">
-                            <div class="layui-col-sm5">
                                 <input id="Sexone" type="radio" name="StuSex" value="男" title="男" checked="checked">
-                            </div>
-                            <div class="layui-col-sm3">
+                            
                                 <input id="Sextwo" type="radio" name="StuSex" value="女" title="女">
-                            </div>                                                      
+                             
+                                <input id="Sexthree" type="radio" name="StuSex" value="0" title="未知">
                         </div>
                     </div>
 
@@ -70,7 +69,7 @@
                 <div class="layui-row layui-form-item">
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label">电 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 话:</label>
-                        <div class="layui-input-block">            
+                        <div class="layui-input-block">                                   
                             <input name="StuPhone" id="StuPhone" class="layui-input linu" style="color:red"/> 
                         </div>
                     </div>
@@ -94,7 +93,7 @@
                         <label class="layui-form-label">学 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 历:</label>
                         <div class="layui-input-block">
                             <select style="width:200px;" class="layui-select" id="StuEducational" name="StuEducational">
-                                <option value="其他">其他</option>
+                                <option value="0">其他</option>
                                 <option value="初中">初中</option>
                                 <option value="高中">高中</option>
                                 <option value="大专">大专</option>
@@ -126,12 +125,13 @@
                             <input name="StuQQ" id="StuQQ" class="layui-input linu" placeholder="QQ"/>
                         </div>
                     </div>
-                    <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
+                    <input type="hidden" id="StuInfomationType_Id" name="StuInfomationType_Id"/>
+                    @*<div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
                         <label class="LableCss1">信息来源:</label>
                         <div class="layui-input-block">
                             @Html.DropDownListFor(s => s.StuInfomationType_Id, ViewBag.infomation as IEnumerable<SelectListItem>, new Dictionary<string, object>() { { "lay-filter", "Infoselect" } })
                         </div>
-                    </div>
+                    </div>*@
                 </div>
                 <div class="layui-row layui-form-item">
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
@@ -183,38 +183,38 @@
                         </div>
                     </div>
 
-                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                        <label class="layui-form-label">备案 &nbsp; 人:</label>
-                        <div class="layui-input-block">
-                            <input type="hidden" id="EmployeesInfo_Id" name="EmployeesInfo_Id" />
-                            <div>
-                                <input name="e_Name" id="e_Name" class="layui-input linu" disabled="disabled" />
-                                <i onclick="EditBeanMan()" class="layui-icon layui-icon-search" style="font-size: 26px; color:lightseagreen;cursor:pointer;position:absolute;left:175px;top:5px;"></i>
-                            </div>  
-                        </div>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
-                        <label class="layui-form-label">说 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 明:</label>
-                        <div class="layui-input-block">
-                            <textarea name="Reak" id="Reak" class="layui-input TextAreCss1"> </textarea>
-                            <input name="ShorPhone" id="ShorPhone" type="hidden" />
-                            <input name="ShorReacke" id="ShorReacke" type="hidden" />
-                        </div>
-                    </div>
-                </div>
-            <div class="layui-form-item">
-                <div class="layui-input-block">
-                    <div style="width:30%;margin:0px auto">
-                        <button class="layui-btn" lay-submit="" lay-filter="xiugai">修改</button>
-                        <button type="button" class="layui-btn" id="quxiao">取消</button>
-                    </div>                   
+                    @*<div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <label class="layui-form-label">备案 &nbsp; 人:</label>
+            <div class="layui-input-block">
+                <input type="hidden" id="EmployeesInfo_Id" name="EmployeesInfo_Id" />
+                <div>
+                    <input name="e_Name" id="e_Name" class="layui-input linu" disabled="disabled" />
+                    <i onclick="EditBeanMan()" class="layui-icon layui-icon-search" style="font-size: 26px; color:lightseagreen;cursor:pointer;position:absolute;left:175px;top:5px;"></i>
                 </div>
             </div>
-            <input name="have" id="have" type="hidden" value="no"/>
-            <input name="yu" id="yu" type="hidden" value="@ViewBag.UserId"/>
-        </form>
+        </div>*@
+                </div>
+                    <div class="layui-form-item">
+                        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                            <label class="layui-form-label">说 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 明:</label>
+                            <div class="layui-input-block">
+                                <textarea name="Reak" id="Reak" class="layui-input TextAreCss1"> </textarea>
+                                <input name="ShorPhone" id="ShorPhone" type="hidden" />
+                                <input name="ShorReacke" id="ShorReacke" type="hidden" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <div style="width:30%;margin:0px auto">
+                                <button class="layui-btn" lay-submit="" lay-filter="xiugai">修改</button>
+                                <button type="button" class="layui-btn" id="quxiao">取消</button>
+                            </div>
+                        </div>
+                    </div>
+                    <input name="have" id="have" type="hidden" value="no" />
+                    <input name="yu" id="yu" type="hidden" value="@ViewBag.UserId" />
+</form>
     </div>
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/layui/layui.js"></script>
@@ -306,42 +306,47 @@
 
             //修改数据
             form.on('submit(xiugai)', function (data) {
-                var formindex = layer.load(1);
-                $.ajax({
-                    url: "/Market/StudentDataKeep/EditFunction",
-                    data: data.field,
-                    type: "POST",
-                    success: function (successdata) {
-                        layer.close(formindex);
-                        if (successdata.Success == true) {
-                            layer.msg('操作成功', {
-                                icon: 1,
-                                time: 2000,
-                                shade:0.8
-                            }, function () {
-                                
-                                window.parent.LoadTable2();
-                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                                parent.layer.close(index); //再执行关闭   
-                               
-                            });
-                        } else {
-                            if (successdata.Msg != null) {
-                                layer.msg(successdata.Msg, {
-                                    icon: 2,
-                                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                layer.confirm('确定修改吗？已有的数据是不可以修改的喔！', { icon: 3, title: '系统温馨提示！' }, function (Conindex) {
+                 
+                    var formindex = layer.load(1);
+                    $.ajax({
+                        url: "/Market/StudentDataKeep/EditFunction",
+                        data: data.field,
+                        type: "POST",
+                        success: function (successdata) {
+                            layer.close(formindex);
+                            if (successdata.Success == true) {
+                                layer.msg('操作成功', {
+                                    icon: 1,
+                                    time: 2000,
+                                    shade: 0.8
+                                }, function () {
+
+                                    window.parent.LoadTable2();
+                                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                    parent.layer.close(index); //再执行关闭   
+
                                 });
                             } else {
-                                layer.msg('系统错误，请重试！！', {
-                                    icon: 2,
-                                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
-                                });
-                            }
-                             
-                        }
+                                if (successdata.Msg != null) {
+                                    layer.msg(successdata.Msg, {
+                                        icon: 2,
+                                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                                    });
+                                } else {
+                                    layer.msg('系统错误，请重试！！', {
+                                        icon: 2,
+                                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                                    });
+                                }
 
-                    }
+                            }
+
+                        }
+                    });
+                    layer.close(Conindex);
                 });
+                
                 return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
             });
 
@@ -385,15 +390,23 @@
                 type: 'POST',
                 success: function (successdata) {
                     if (this.success != "学生ID未拿到") {
+                        //console.log(successdata);
                         successdata.StuBirthy = TimeChange(successdata.StuBirthy);
                         successdata.StuVisit = TimeChange(successdata.StuVisit);
-                        successdata.StuSex = successdata.StuSex.toString();
+                        if (successdata.StuSex == null) {
+                            successdata.StuSex = "0";
+                        }  
+                         
                         successdata.StuIsGoto = successdata.StuIsGoto.toString();
+
+                        if (successdata.StuEducational == null) {
+                            successdata.StuEducational = "0";
+                        } 
                         layui.use(['form', 'layedit', 'laydate'], function () {
                             var form = layui.form;
                             $("#StuName")[0].innerText = successdata.StuName;
                             $("#StuPhone")[0].innerText = successdata.StuPhone;
-                            $("#e_Name")[0].innerText = successdata.e_Name;
+                            //$("#e_Name")[0].innerText = successdata.e_Name;
                             $("#StuAddress").attr("title", successdata.StuAddress);
                             form.val("myform1", successdata);
                         });
