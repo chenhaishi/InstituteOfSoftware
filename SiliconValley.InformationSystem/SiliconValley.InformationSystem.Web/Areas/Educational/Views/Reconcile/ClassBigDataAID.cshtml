@@ -23,34 +23,36 @@
     <div class="DivCss1">
         <form class="layui-form">
             <div class="layui-row layui-form-item">
-                <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
                     <label class="layui-form-label">阶 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 段:</label>
                     <div class="layui-input-block">
                        @Html.DropDownList("glist", ViewBag.grandlist as IEnumerable<SelectListItem>,new Dictionary <string, object>() { { "lay-filter", "grand"} })
                     </div>
-                </div>
-                <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                    <label class="layui-form-label">班 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 级:</label>
-                    <div id="Myclass_Div" class="layui-input-block">
-                        
-                    </div>
-                </div>
-
+                </div>                 
             </div>
             <div class="layui-row layui-form-item">
-                <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                    <label class="layui-form-label">班 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 级:</label>
+                    <div id="Myclass_Div" class="layui-input-block">
+
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
                     <label class="layui-form-label">原本日期:</label>
                     <div class="layui-input-block">
                         <input id="starTime" name="starTime" class="layui-input" lay-verify="required"/>
                     </div>
-                </div>
-                <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                    <label class="layui-form-label">上课日期:</label>
+                </div>                
+            </div>
+            <div>
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                    <label class="layui-form-label">调课天数:</label>
                     <div class="layui-input-block">
-                        <input id="endTime" name="endTime" class="layui-input"  lay-verify="required"/>
+                        <input id="endTime" name="endTime" class="layui-input" lay-verify="required|Zero|number" placeholder="正数是推迟课程，负数是提前课程！" />
                     </div>
                 </div>
-
             </div>
             <div class="layui-row layui-form-item">
                 <div class="layui-col-xs12 layui-col-sm12 layui-col-md12" style="text-align:center;margin-top:50px">
@@ -70,12 +72,7 @@
                 elem: '#starTime'
                 , theme: 'molv'
                 ,trigger: 'click' 
-            });
-            laydate.render({
-                elem: '#endTime'
-                , theme: 'molv'
-                , trigger: 'click' 
-            });
+            });            
 
             form.on('select(grand)', function (data) {
                 $("#Myclass_Div")[0].innerHTML = "";
@@ -96,8 +93,7 @@
             });      
 
             //监听提交
-            form.on('submit(Update_CBig)', function (data) {
-                //console.log(data.field);
+            form.on('submit(Update_CBig)', function (data) {                 
                 if (data.field.class_select == undefined || data.field.class_select == "0") {
                     layer.msg("请选择班级!!", { icon: 2, shade: 0.8 });
                 } else {
@@ -121,6 +117,19 @@
                 }
                 
                 return false;
+            });
+
+            //自定义验证规则
+            form.verify({
+                Zero: function (value) {
+                    if (value == "0") {
+                        return '值不能为0！';
+                    } else if (value.indexOf("0") == 0) {
+                        return '值不能为0！';
+                    } else if (value > 30) {
+                        return '值不能大于30！';
+                    }
+                }
             });
         });
 

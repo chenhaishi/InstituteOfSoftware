@@ -14,6 +14,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
     using SiliconValley.InformationSystem.Entity.MyEntity;
     using SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data.Print;
     using System.Text;
+    using SiliconValley.InformationSystem.Business.NewExcel;
 
     [CheckLogin]
     public class TeacherAddorBeonDutyController : Controller
@@ -168,7 +169,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             return View();
         }
 
-
+        /// <summary>
+        /// 教务审核数据（数据审核后就不能删除了）
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult Shenhe(int id)
         {
             TeacherAddorBeonDuty find = Tb_Entity.Findid(id);
@@ -181,7 +186,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             
         }
 
-
+        /// <summary>
+        /// 将值班表生成Excel文件
+        /// </summary>
+        /// <returns></returns>
         public ActionResult OutData()
         {
             string[] date =  Request.Form["date_Anpaidate"].Split('-');
@@ -197,42 +205,68 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
             foreach (EmployeesInfo item in emplist)
             {
-               var find= Tb_Entity.AttendSqlGetData(" select * from TeacherAddorBeonDutyView where YEAR(Anpaidate)='" + date[0] + "' and MONTH(Anpaidate)='" + date[1] + "' and  Tearcher_Id='"+item.EmployeeId+"'");
+               var find= Tb_Entity.AttendSqlGetData(" select * from TeacherAddorBeonDutyView where YEAR(Anpaidate)='" + date[0] + "' and MONTH(Anpaidate)='" + date[1] + "' and  Tearcher_Id='"+item.EmployeeId+ "'  and IsDels=1");
 
                 beonduty_list.AddRange(find);
             }
-            Dictionary<string, Onbety_Print> list = new Dictionary<string, Onbety_Print>();
-            var a = beonduty_list.GroupBy(b => b.Anpaidate);
-            a.ForEach(b=>
-            {
-                try
-                {
-                    b.ForEach(d =>
-                    {
-                        string dd = d.Anpaidate.ToString();
-                        var tempob = new Onbety_Print()
-                        {
-                            Content = $"{d.EmpName}({d.ClassNumber}/{d.curd_name})"
-                        };
-
-                        list.Add(dd, tempob);
-                    });
-                }
-                catch (Exception ex)
-                {
-
-                    string mm = ex.Message;
-                }
-                 
+           var a = beonduty_list.GroupBy(b => b.Anpaidate);
+            List<Onbety_Print> data = new List<Onbety_Print>();
+            List<string> list = new List<string>();
+            a.ForEach(b=> {                                 
+                    var y= b.Key;
+                    list.Add(y.ToString());                                      
             });
+     
+            foreach (string item in list)
+            {
+                Onbety_Print one = new Onbety_Print();
+                one.time =Convert.ToDateTime(item);
+                List<TeacherAddorBeonDutyView> find= beonduty_list.Where(b => b.Anpaidate.ToString() == item).ToList();
+                StringBuilder sb = new StringBuilder();
+                int i = 0;
+                foreach (TeacherAddorBeonDutyView orher in find)
+                {
+                    i++;
+                    sb.Append($"{orher.EmpName}({orher.ClassNumber} / {orher.curd_name})");
+                    if (i!=find.Count)
+                    {
+                        sb.Append(",");
+                    }
+                }
+
+                one.Content = sb.ToString();
+
+                data.Add(one);
+            }
+            #region
+            //a.ForEach(b=>
+            //{
+            //    try
+            //    {
+            //        b.ForEach(d =>
+            //        {
+            //            string dd = d.Anpaidate.ToString();
+            //            var tempob = new Onbety_Print()
+            //            {
+            //                Content = $"{d.EmpName}({d.ClassNumber}/{d.curd_name})"
+            //            };
+
+            //            list.Add(dd, tempob);
+            //        });
+            //    }
+            //    catch (Exception ex)
+            //    {
+
+            //        string mm = ex.Message;
+            //    }
+
+            //});
+
+            #endregion
             string title = date[0] + "年" + date[1] + "月值班表";
 
-            string filename = DateTime.Now.ToString("yyyyMMddhhmmss") + ".xls";
-            SessionHelper.Session["filename"] = filename;
-            string path = "~/uploadXLSXfile/ConsultUploadfile/ExportAll/" + filename;
-            string truePath = Server.MapPath(path);
-
-            return null;
+            var jsondata = new { titile =title,data= data.OrderBy(t=>t.time).ToList() };            
+            return Json(jsondata,JsonRequestBehavior.AllowGet);
         }
     }
 }

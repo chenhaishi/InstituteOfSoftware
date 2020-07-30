@@ -19,7 +19,7 @@ using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 using SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data.MyViewEntity;
 using SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data;
 
-namespace SiliconValley.InformationSystem.Business.EducationalBusiness
+namespace SiliconValley.InformationSystem.Business.EducationalBusiness 
 {
     public class ReconcileManeger : BaseBusiness<Reconcile>
     {
@@ -1240,10 +1240,6 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         public bool DescData(int days, GetYear year, List<Reconcile> reconciles)
         {
             bool s = false;
-            ////if (days <-1)
-            ////{
-            ////    days = days + 1;
-            ////}
             try
             {
                 List<Reconcile> Recon = new List<Reconcile>();
@@ -1364,17 +1360,18 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             try
             {
                 List<Reconcile> recon = new List<Reconcile>();
-                List<Reconcile> reconciles = GetReconcileDate(date, true).Where(r => r.ClassSchedule_Id == class_id).ToList();
+                List<Reconcile> reconciles = GetReconcileDate(date, true).Where(r => r.ClassSchedule_Id == class_id).OrderBy(r=>r.AnPaiDate).ToList();
                 for (int i = days; i < 0; i++)
                 {
                     foreach (Reconcile re in reconciles)
                     {
+                        DayOfWeek week = re.AnPaiDate.DayOfWeek;
                         if (re.AnPaiDate.Month >= YearMon.StartmonthName && re.AnPaiDate.Month <= YearMon.EndmonthName)
                         {
                             //单休
-                            if (this.IsSaturday(re.AnPaiDate) == 1)
+                            if ( week== DayOfWeek.Monday)
                             {
-                                re.AnPaiDate = re.AnPaiDate.AddDays(-1);
+                                re.AnPaiDate = re.AnPaiDate.AddDays(-2);
                             }
                             else
                             {
@@ -1384,10 +1381,10 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                         else
                         {
                             //双休
-                            DayOfWeek week = re.AnPaiDate.DayOfWeek;
-                            if (week == DayOfWeek.Friday)
+                           
+                            if (week == DayOfWeek.Monday)
                             {
-                                re.AnPaiDate = re.AnPaiDate.AddDays((-1));
+                                re.AnPaiDate = re.AnPaiDate.AddDays((-3));
                             }
                             else
                             {
@@ -2699,6 +2696,26 @@ Curriculum_Id like '职素' or Curriculum_Id like '班会' or Curriculum_Id like
             return cout > 0 ? true : false;
         }
         #endregion
+
+        #region 给教质提供的数据查询
+
+        /// <summary>
+        /// 用于查询XX班级是否已有XX课程
+        /// </summary>
+        /// <param name="class_id">班级编号</param>
+        /// <param name="currname">课程名称</param>
+        /// <returns></returns>
+        public bool Further_education(int class_id,string currname)
+        {
+            string sql = "select * from  ReconcileView where ClassSchedule_Id="+class_id+ " and Curriculum_Id='"+currname+ "' and AnPaiDate<='"+DateTime.Now+"'";
+
+            int count= this.GetListBySql<ReconcileView>(sql).Count;
+
+            return count > 0 ? true : false;
+        }
+
+        #endregion
+
     }
 }
 

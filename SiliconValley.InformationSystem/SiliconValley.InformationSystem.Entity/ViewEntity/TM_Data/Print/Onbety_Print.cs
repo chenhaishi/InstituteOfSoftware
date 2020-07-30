@@ -12,11 +12,15 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data.Print
     /// </summary>
     public class Onbety_Print
     {
-         
-
+        /// <summary>
+        /// 日期
+        /// </summary>
+        public DateTime time { get; set; }
         /// <summary>
         /// 内容(格式:值班老师姓名【班级名称/值班时间段】)
         /// </summary>
         public string Content { get; set; }
+
+
     }
 }

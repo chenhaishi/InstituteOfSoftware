@@ -41,9 +41,9 @@
             </div>
             <div class="layui-row layui-form-item">
                 <div class="layui-col-xs11 layui-col-sm11 layui-col-md11">
-                    <label class="layui-form-label">上课日期:</label>
+                    <label class="layui-form-label">调课天数:</label>
                     <div id="DateDiv" class="layui-input-block">
-                        <input id="endTime" name="endTime" class="layui-input" lay-verify="required" />
+                        <input id="endTime" name="endTime" class="layui-input" lay-verify="required|number|Zero" placeholder="负数是提前课程，正数是推迟课程"/>
                     </div>
                 </div>
 
@@ -65,20 +65,20 @@
             laydate.render({
                 elem: '#starTime'
                 , trigger: 'click'
-            });
-            laydate.render({
-                elem: '#endTime'
-                , trigger: 'click'
-            });
+            });            
 
             //监听提交
             form.on('submit(Anpai_CBig)', function (data) {
-                var mmyda = layer.load(1);
+                 
                 var grand = "";
                 $("input[name='glist']:checked").each(function (ind, ele) {
                     grand = grand + $(ele).val() + ",";
                 });
-                data.field.grands = grand;            
+                data.field.grands = grand;
+                if (grand.length <= 0) {
+                    layer.msg('请选择阶段！', { icon: 2, shade: 0.8 });
+                } else {
+                    var mmyda = layer.load(1);
                     $.ajax({
                         url: '/Educational/Reconcile/GrandChangData',
                         type: 'POST',
@@ -95,8 +95,23 @@
                             }
                         }
                     });
+                }
+                    
                 
                 return false;
+            });
+
+            //自定义验证规则
+            form.verify({
+                Zero: function (value) {
+                    if (value == "0") {
+                        return '值不能为0！';
+                    } else if (value.indexOf("0") == 0) {
+                        return '值不能为0！';
+                    } else if (value>30) {
+                        return '值不能大于30！';
+                    }
+                }                 
             });
         });
 

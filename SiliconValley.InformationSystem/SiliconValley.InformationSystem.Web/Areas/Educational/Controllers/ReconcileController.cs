@@ -698,7 +698,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
         public ActionResult GetReconAllData(int page, int limit)
         {
-            List<ReconcileView> all = Reconcile_Entity.SQLGetReconcileDate().OrderBy(r => r.Id).ToList();//获取所有排课数据                   
+            List<ReconcileView> all = Reconcile_Entity.SQLGetReconcileDate().OrderBy(r => r.AnPaiDate).ToList();//获取所有排课数据                   
             string class_select1 = Request.QueryString["class_select1"];
             string starTime = Request.QueryString["starTime"];
             string endTime = Request.QueryString["endTime"];
@@ -964,9 +964,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         {
             int class_id = Convert.ToInt32(Request.Form["class_select"]);
             DateTime startime = Convert.ToDateTime(Request.Form["starTime"]);
-            DateTime endtime = Convert.ToDateTime(Request.Form["endTime"]);
-            var days = endtime.Subtract(startime);
-            int count = days.Days;
+            int count = Convert.ToInt32(Request.Form["endTime"]);           
             GetYear years = Reconcile_Entity.MyGetYear(startime.Year.ToString(), Server.MapPath("~/Xmlconfigure/Reconcile_XML.xml"));
             bool s = true;
             if (count<=0)
@@ -1233,12 +1231,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
             DateTime de1 = Convert.ToDateTime(Request.Form["starTime"]);
 
-            DateTime de2 = Convert.ToDateTime(Request.Form["endTime"]);
-
-            var days = de2.Subtract(de1);
-            int count = days.Days;
-
-
+            int de2 = Convert.ToInt32(Request.Form["endTime"]);
+                         
             List<ClassSchedule> myclass = new List<ClassSchedule>();
 
             foreach (string it in grand)
@@ -1262,13 +1256,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
             GetYear years = Reconcile_Entity.MyGetYear(de1.Year.ToString(), Server.MapPath("~/Xmlconfigure/Reconcile_XML.xml"));
             bool s = true;
-            if (count<=0)
+            if (de2 <= 0)
             {
-               s= Reconcile_Entity.DescData(count, years, myclist);
+               s= Reconcile_Entity.DescData(de2, years, myclist);
             }
             else
             {
-                s = Reconcile_Entity.AidAllData(count, years, myclist);
+                s = Reconcile_Entity.AidAllData(de2, years, myclist);
             }
            
 

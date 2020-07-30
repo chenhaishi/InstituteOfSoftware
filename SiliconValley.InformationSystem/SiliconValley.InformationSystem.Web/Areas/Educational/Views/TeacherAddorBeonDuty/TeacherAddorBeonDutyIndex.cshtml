@@ -51,8 +51,9 @@
             line-height: 15px;
         }
 
-        .DivCss2{
-        display:none;
+        .DivCss2
+        {
+            display: none;
         }
     </style>
 }
@@ -114,9 +115,9 @@
             <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
                 <label class="LableCss1">部 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 门:</label>
                 <div class="layui-input-block">
-                    <input type="radio" id="dep" name="dep" class="layui-input" title="s1、s2教学部" value="5"/>
-                    <input type="radio" id="dep" name="dep" class="layui-input" title="s3教学部" value="1009"/>
-                    <input type="radio" id="dep" name="dep" class="layui-input" title="s4教学部" value="1010"/>
+                    <input type="radio" id="dep" name="dep" class="layui-input" title="s1、s2教学部" value="5" />
+                    <input type="radio" id="dep" name="dep" class="layui-input" title="s3教学部" value="1009" />
+                    <input type="radio" id="dep" name="dep" class="layui-input" title="s4教学部" value="1010" />
                 </div>
             </div>
         </div>
@@ -135,12 +136,12 @@
         <button class="layui-btn layui-btn-sm" lay-event="getCheckData_delNight"><i class="layui-icon">&#x1006;</i>批量删除数据</button>
         <button class="layui-btn layui-btn-sm" lay-event="getCheckData_outNight"><i class="layui-icon">&#x1006;</i>Excel导出</button>
         @*<button class="layui-btn layui-btn-sm" lay-event="getCheckData_timeChange"> <i class="layui-icon">&#xe642;</i>日期更改</button>
-        <button class="layui-btn layui-btn-sm" lay-event="getCheckData_time"> <i class="layui-icon">&#xe642;</i>上课延迟或提前</button>*@
+            <button class="layui-btn layui-btn-sm" lay-event="getCheckData_time"> <i class="layui-icon">&#xe642;</i>上课延迟或提前</button>*@
     </div>
 </script>
 
 <script type="text/html" id="barDemo_Night">
-    @*<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>*@ 
+    @*<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>*@
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 
@@ -148,8 +149,26 @@
 
 <script>
     var dateindex;
+
+    function TimeChange(newtime) {
+        if (newtime == null)
+            return "";
+
+        var date = new Date(parseInt(newtime.slice(6)));
+        var year = date.getFullYear();
+        var month = parseInt(date.getMonth()) + 1;
+        if (month < 10) {
+            month = "0" + month;
+        }
+        var days = date.getDate();
+        if (days < 10) {
+            days = "0" + days;
+        }
+        var result = year + '-' + month + '-' + days;
+        return result;
+    }
     function Sercher() {
-        layui.use(['form','table'], function () {
+        layui.use(['form', 'table'], function () {
             var form = layui.form;
             var table = layui.table;
             var data1 = form.val("TeacherSercher");
@@ -166,7 +185,7 @@
             table.reload('TeacherNight_table');
         });
     }
-    layui.use(['table','element','laydate','form'], function () {
+    layui.use(['table', 'element', 'laydate', 'form'], function () {
         var table = layui.table;
         var layer = layui.layer;
         var laydate = layui.laydate;
@@ -175,7 +194,7 @@
         //自定义事件
         laydate.render({
             elem: '#starTime'
-            , trigger: 'click'  
+            , trigger: 'click'
         });
 
         laydate.render({
@@ -252,7 +271,7 @@
                 , limit: 20
             });
         }
-        
+
 
         //头工具栏事件
         table.on('toolbar(TeacherNight_table)', function (obj) {
@@ -271,7 +290,7 @@
                     break;
                 case 'getCheckData_delNight':
                     //批量删除数据
-                     
+
                     if (checkStatus.data.length <= 0) {
                         layer.msg('至少要选择一条数据！', { icon: 2, shade: 0.8 });
 
@@ -284,7 +303,7 @@
                             $.ajax({
                                 url: '/Educational/TeacherAddorBeonDuty/DeleteFunction',
                                 type: 'POST',
-                                data: { "ids": str},
+                                data: { "ids": str },
                                 success: function (suc) {
                                     if (suc.Success == false) {
                                         layer.msg('删除失败！', { icon: 2 });
@@ -299,7 +318,7 @@
                             layer.close(index);
                         });
                     }
-                    
+
                     break;
                 //case 'getCheckData_timeChange':
                 //    layer.open({
@@ -326,7 +345,7 @@
 
                 case 'getCheckData_outNight':
                     //导出数据
-                    dateindex= layer.open({
+                    dateindex = layer.open({
                         type: 1,
                         shade: 0.8,
                         title: '选择导出条件', //不显示标题
@@ -350,7 +369,7 @@
                     $.ajax({
                         url: '/Educational/TeacherAddorBeonDuty/DeleteFunction',
                         type: 'POST',
-                        data: { "ids": data.Id},
+                        data: { "ids": data.Id },
                         success: function (suc) {
                             if (suc.Success == false) {
                                 layer.msg('删除失败！', { icon: 2 });
@@ -392,7 +411,7 @@
                     });
                     layer.close(index);
                 });
-                 
+
                 //layer.open({
                 //    type: 2,
                 //    content: '/Educational/TeacherAddorBeonDuty/EditFunction/' + data.Id,
@@ -406,7 +425,7 @@
         });
 
 
-        form.on('submit(handBtn)', function (data) {           
+        form.on('submit(handBtn)', function (data) {
             // console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
             if (data.field.date_Anpaidate == null) {
                 layer.msg('选择日期！');
@@ -417,18 +436,45 @@
                     url: '/Educational/TeacherAddorBeonDuty/OutData',
                     data: data.field,
                     type: 'post',
-                    success: function (res) {
+                     success: function (res) {
+                        console.log(res);
 
-                    }
+                        //列标题，逗号隔开，每一个逗号就是隔开一个单元格
+                        let str = res.titile + `\n`;
+                        //增加\t为了不让表格显示科学计数法或者其他格式
+                        for (let i = 0; i < res.data.length; i++) {
+                            if (i == 0) {
+                                str += `值班日期\t,值班内容\t`;
+                            } else {
+                                var mm = TimeChange(res.data[i].time);
+                                var mydate = new Date(mm)
+                                var da = (Number(mydate.getMonth()) + 1) + "月" + mydate.getDate() + "日"
+                                str += '' + da + '\t,' + res.data[i].Content + '\t';
+                            }
+                            
+                            str += '\n';
+                        }
+                        //encodeURIComponent解决中文乱码
+                        let uri = 'data:text/csv;charset=utf-8,\ufeff' + encodeURIComponent(str);
+                        //通过创建a标签实现
+                        var link = document.createElement("a");
+                        link.href = uri;
+                        //对下载的文件命名
+                        link.download = "值班表.xls";
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                     }
+
                 });
             }
-             
+
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
     });
 
     function Close() {
-        layui.use('layer', function () {           
+        layui.use('layer', function () {
             parent.layer.close(dateindex); //再执行关闭
         });
     }
