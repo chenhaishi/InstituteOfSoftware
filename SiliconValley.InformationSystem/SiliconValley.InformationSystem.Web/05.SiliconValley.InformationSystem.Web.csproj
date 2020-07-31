@@ -1887,6 +1887,7 @@
     <Content Include="Areas\Educational\Views\TeacherNight\EmpZhibanData.cshtml" />
     <Content Include="Areas\Market\Views\StudentDataKeep\updatePassword.cshtml" />
     <Content Include="libman.json" />
+    <Content Include="Areas\BaseSysManage\Views\Base_UserRole\Translate.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
@@ -3604,6 +3605,10 @@
     <Folder Include="Areas\Educational\Models\" />
     <Folder Include="Areas\Educational\Views\CheckGoods\" />
     <Folder Include="Areas\Educational\Views\Check\" />
+    <Folder Include="Areas\Educational\Views\GoodsType\" />
+    <Folder Include="Areas\Educational\Views\InStockGoods\" />
+    <Folder Include="Areas\Educational\Views\InStock\" />
+    <Folder Include="Areas\Educational\Views\IsGoodOrBad\" />
     <Folder Include="Areas\Educational\Views\PurchaseType\" />
     <Folder Include="Areas\Educational\Views\Shared\" />
     <Folder Include="Areas\Educational\Views\ShppingDetail\" />
