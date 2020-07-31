@@ -304,13 +304,20 @@
         </div>
     </div>
     <div class="layui-colla-item">
-        <h2 class="layui-colla-title"> 班级群号管理</h2>
+        <h2 class="layui-colla-title"> 班级管理</h2>
         <div class="layui-colla-content layui-anim">
             <div>
                 <button type="button" id="but1" class="layui-btn layui-btn-fluid mybut">群号设置</button>
             </div>
 
-
+            @{
+                if (ViewBag.Stage == "S1" || ViewBag.Stage == "Y1")
+                {
+                    <div>
+                        <button type="button" id="Shiftchange" class="layui-btn layui-btn-fluid mybut">换班</button>
+                    </div>
+                }
+            }
         </div>
     </div>
 
@@ -386,7 +393,8 @@
                 <h2 class="layui-colla-title"> 升学管理</h2>
                 <div class="layui-colla-content layui-anim">
                     @{
-                        if (ViewBag.Stage == "S1" || ViewBag.Stage == "Y1" && ViewBag.Status == null)
+                     
+                        if (ViewBag.Stage == "S1" || ViewBag.Stage == "Y1" && ViewBag.Status == "Ca" && ViewBag.Status == null)
                         {
                             <div>
                                 <button type="button" id="Dismantleclasses" class="layui-btn layui-btn-fluid mybut">升学分配班级</button>
