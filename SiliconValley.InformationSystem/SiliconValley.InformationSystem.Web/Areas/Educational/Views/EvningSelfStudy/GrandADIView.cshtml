@@ -1,0 +1,125 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>GrandADIView</title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+</head>
+<body>
+    <div style="margin-top:40px;width:90%;margin-left:auto;margin-right:auto">
+        <form class="layui-form">
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs11 layui-col-sm11 layui-col-md11">
+                    <label class="layui-form-label">阶 &nbsp;&nbsp;&nbsp;&nbsp; 段:</label>
+                    <div class="layui-input-block">
+
+                        @{
+                            List<SelectListItem> list = ViewBag.Mygrandlist as List<SelectListItem>;
+                            foreach (var item in list)
+                            {
+                                <input name="glist" class="layui-col-xs3" type="checkbox" value="@item.Value" title="@item.Text" />
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs11 layui-col-sm11 layui-col-md11">
+                    <label class="layui-form-label">原来日期:</label>
+                    <div id="DateDiv" class="layui-input-block">
+                        <input id="starTime" name="starTime" class="layui-input" lay-verify="required" />
+                    </div>
+                </div>
+
+            </div>
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs11 layui-col-sm11 layui-col-md11">
+                    <label class="layui-form-label">调课天数:</label>
+                    <div id="DateDiv" class="layui-input-block">
+                        <input id="endTime" name="endTime" class="layui-input" lay-verify="required|number|Zero" placeholder="负数是提前课程，正数是推迟课程" />
+                    </div>
+                </div>
+
+            </div>
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12" style="text-align:center;margin-top:50px">
+                    <button type="submit" class="layui-btn" lay-submit="" lay-filter="Anpai_CBig">确定调改</button>
+                    <button type="button" class="layui-btn" onclick="MyClose()">取消关闭</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/layui/layui.js"></script>
+    <script>
+        layui.use(['form', 'laydate'], function () {
+            var form = layui.form;
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#starTime'
+                , trigger: 'click'
+            });
+
+            //监听提交
+            form.on('submit(Anpai_CBig)', function (data) {
+
+                var grand = "";
+                $("input[name='glist']:checked").each(function (ind, ele) {
+                    grand = grand + $(ele).val() + ",";
+                });
+                data.field.grands = grand;
+                if (grand.length <= 0) {
+                    layer.msg('请选择阶段！', { icon: 2, shade: 0.8 });
+                } else {
+                    var mmyda = layer.load(1);
+                    $.ajax({
+                        url: '/Educational/EvningSelfStudy/GrandADIfuntion',
+                        type: 'POST',
+                        data: data.field,
+                        success: function (sucdata) {
+                            layer.close(mmyda);
+                            if (sucdata == false) {
+                                layer.msg('系统错误，请重试！！', { icon: 2 });
+                            } else {
+                                layer.msg('调课成功！！', { icon: 1, shade: 0.8 }, function () {
+                                    window.parent.TableFulsh();
+                                    MyClose();
+                                });
+                            }
+                        }
+                    });
+                }
+
+
+                return false;
+            });
+
+            //自定义验证规则
+            form.verify({
+                Zero: function (value) {
+                    if (value == "0") {
+                        return '值不能为0！';
+                    } else if (value.indexOf("0") == 0) {
+                        return '值不能为0！';
+                    } else if (value > 30) {
+                        return '值不能大于30！';
+                    }
+                }
+            });
+        });
+
+        function MyClose() {
+            var layer = layui.layer;
+            //当你在iframe页面关闭自身时
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭
+        }
+    </script>
+</body>
+</html>

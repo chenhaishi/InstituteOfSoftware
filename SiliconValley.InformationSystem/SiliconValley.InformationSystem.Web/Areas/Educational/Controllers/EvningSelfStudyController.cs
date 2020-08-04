@@ -16,13 +16,20 @@ using SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data.MyViewEntity;
 
 namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 {
+
+    using System.Text;
+
     [CheckLogin]
     public class EvningSelfStudyController : Controller
     {
-        // GET: /Educational/EvningSelfStudy/EvningSelfStudyIndexView
+        // GET: /Educational/EvningSelfStudy/ChangeGrandADIfuntion
 
-        EvningSelfStudyManeger EvningSelefstudy_Entity = new EvningSelfStudyManeger();
+        EvningSelfStudyManeger EvningSelefstudy_Entity = new EvningSelfStudyManeger();//DBCC CHECKIDENT (Reconcile,reseed,5304) 
 
+        /// <summary>
+        /// 数据主页显示
+        /// </summary>
+        /// <returns></returns>
         public ActionResult EvningSelfStudyIndexView()
         {
             //获取阶段
@@ -232,6 +239,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             ViewBag.tt = teachers;
             //获取排课日期
             ViewBag.date = find_e.Anpaidate.Year + "-" + find_e.Anpaidate.Month + "-" + find_e.Anpaidate.Day;
+            ClassSchedule findclass=  Reconcile_Com.ClassSchedule_Entity.GetEntity(find_e.ClassSchedule_id);
+            //获取阶段
+            ViewBag.grand=  Reconcile_Com.GetGrand_Id().Select(g => new SelectListItem() { Text = g.GrandName, Value = g.Id.ToString(),Selected=g.Id== findclass.grade_Id?true:false }).ToList();
+            //获取校区
+            Classroom find_classroom = Reconcile_Com.Classroom_Entity.GetEntity(find_e.Classroom_id);
+            ViewBag.address=  EvningSelefstudy_Entity.BaseDataEnum_Entity.GetsameFartherData("校区地址").Select(ress=>new SelectListItem() { Text=ress.Name,Value=ress.Id.ToString(),Selected=ress.Id==find_classroom.BaseData_Id?true:false});
             return View(find_e);
         }
 
@@ -248,6 +261,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             evning.Classroom_id = e.Classroom_id;
             evning.curd_name = e.curd_name;
             evning.Anpaidate = e.Anpaidate;
+            evning.emp_id = e.EmpName;
             evning.Rmark = e.Rmark;
             AjaxResult a = EvningSelefstudy_Entity.Update_Data(evning);
 
@@ -287,7 +301,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             var days = endtime.Subtract(startime);
             int count = days.Days;
             List<EvningSelfStudy> e_list = EvningSelefstudy_Entity.GetEmpClass(startime, false);//获取这个日期之后的所有数据
-            AjaxResult a = EvningSelefstudy_Entity.ALLDataADI(count, e_list);
+            GetYear years = EvningSelefstudy_Entity.MyGetYear(startime.Year.ToString(), Server.MapPath("~/Xmlconfigure/Reconcile_XML.xml"));
+            AjaxResult a = EvningSelefstudy_Entity.ALLDataADI(count, e_list, years);
             return Json(a, JsonRequestBehavior.AllowGet);
         }
 
@@ -305,10 +320,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         public ActionResult ClassDataADIfunction()
         {
             DateTime startime = Convert.ToDateTime(Request.Form["starTime"]);
-            DateTime endtime = Convert.ToDateTime(Request.Form["endTime"]);
+            int count = Convert.ToInt32(Request.Form["endTime"]);
             string[] id_String = Request.Form["checkid_Str"].Split(',');//获取班级id数组
-            var days = endtime.Subtract(startime);
-            int count = days.Days;
+            AjaxResult a = new AjaxResult();
             List<EvningSelfStudy> e_list = new List<EvningSelfStudy>();
             foreach (string id in id_String)
             {
@@ -318,9 +332,122 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                     e_list.AddRange(updatedata);
                 }
             }
-            AjaxResult a = EvningSelefstudy_Entity.ALLDataADI(count, e_list);
+
+            GetYear years = EvningSelefstudy_Entity.MyGetYear(startime.Year.ToString(), Server.MapPath("~/Xmlconfigure/Reconcile_XML.xml"));
+            if(count>0)
+            {
+                a = EvningSelefstudy_Entity.ALLDataADI(count, e_list, years);
+            }
+            else
+            {
+                a = EvningSelefstudy_Entity.AccoreDataADI(count, e_list, years);
+            }
+              
             return Json(a, JsonRequestBehavior.AllowGet);
         }
+        
+        /// <summary>
+        /// 阶段延迟、提前页面
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult GrandADIView()
+        {
+            //获取所有阶段
+            List<SelectListItem> g_list = Reconcile_Com.GetGrand_Id().Select(g => new SelectListItem() { Text = g.GrandName, Value = g.Id.ToString() }).ToList();
+            ViewBag.Mygrandlist = g_list;
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult GrandADIfuntion()
+        {
+            string[] grands= Request.Form["grands"].Split(',');
+
+            DateTime startTime =Convert.ToDateTime( Request.Form["starTime"]);//获取开始的日期
+
+            int count =Convert.ToInt32(Request.Form["endTime"]);//天数
+
+            List<EvningSelfStudy> list = new List<EvningSelfStudy>();
+            //获取符合的数据
+            foreach (string item in grands)
+            {
+                if (!string.IsNullOrEmpty(item))
+                {
+                    StringBuilder sb = new StringBuilder("select * from EvningSelfStudyView where Anpaidate>='"+startTime + "' and grandid="+item);
+
+                    list.AddRange( EvningSelefstudy_Entity.GetSQLDat(sb.ToString()).Select(e=>new EvningSelfStudy() {
+                        id=e.id,
+                        ClassSchedule_id=e.ClassSchedule_id,
+                        Classroom_id=e.Classroom_id,
+                        curd_name=e.curd_name,
+                        Anpaidate=e.Anpaidate,
+                        Newdate=e.Newdate,
+                        Rmark=e.Rmark,
+                        IsDelete=e.IsDelete,
+                        emp_id=e.emp_id
+                    }));
+                }
+            }
+
+            GetYear years = EvningSelefstudy_Entity.MyGetYear(startTime.Year.ToString(), Server.MapPath("~/Xmlconfigure/Reconcile_XML.xml"));
+
+            AjaxResult a = new AjaxResult();
+            if (count > 0)
+            {
+                a = EvningSelefstudy_Entity.ALLDataADI(count, list, years);
+            }
+            else
+            {
+                a = EvningSelefstudy_Entity.AccoreDataADI(count, list, years);
+            }
+            return Json(a,JsonRequestBehavior.AllowGet);
+        }
+       
+        /// <summary>
+        /// 阶段日期调换
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ChangeGrandADIView()
+        {
+            return View();
+        }
+
+        public ActionResult ChangeGrandADIfuntion()
+        {
+            DateTime stardate =Convert.ToDateTime( Request.Form["starTime"]);
+
+            DateTime enddate = Convert.ToDateTime(Request.Form["endTime"]);
+
+            string[] grands = Request.Form["grand"].Split(',');
+
+            List<EvningSelfStudy> list = new List<EvningSelfStudy>();
+            //获取符合的数据
+            foreach (string item in grands)
+            {
+                if (!string.IsNullOrEmpty(item))
+                {
+                    StringBuilder sb = new StringBuilder("select * from EvningSelfStudyView where Anpaidate>='" + stardate + "' and grandid=" + item);
+
+                    list.AddRange(EvningSelefstudy_Entity.GetSQLDat(sb.ToString()).Select(e => new EvningSelfStudy()
+                    {
+                        id = e.id,
+                        ClassSchedule_id = e.ClassSchedule_id,
+                        Classroom_id = e.Classroom_id,
+                        curd_name = e.curd_name,
+                        Anpaidate = e.Anpaidate,
+                        Newdate = e.Newdate,
+                        Rmark = e.Rmark,
+                        IsDelete = e.IsDelete,
+                        emp_id = e.emp_id
+                    }));
+                }
+            }
+
+            AjaxResult a= EvningSelefstudy_Entity.ChangDate(list, enddate);
+
+            return Json(a,JsonRequestBehavior.AllowGet);
+        }
+        
         #endregion
 
         #region 日期调换
@@ -373,6 +500,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         }
         #endregion
 
+        #region 其他
         /// <summary>
         /// 获取空教室
         /// </summary>
@@ -453,6 +581,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             AjaxResult a = EvningSelefstudy_Entity.Delete_Data(evn_list);
             return Json(a, JsonRequestBehavior.AllowGet);
         }
-       
+
+        #endregion
     }
 }

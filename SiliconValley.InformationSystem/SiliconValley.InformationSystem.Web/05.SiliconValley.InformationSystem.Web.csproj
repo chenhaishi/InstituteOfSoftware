@@ -1871,7 +1871,6 @@
     <Content Include="Areas\Teachingquality\Views\ClassSchedule\Combinedclasses.cshtml" />
     <Content Include="Areas\Teachingquality\Views\Stuportfolio\Dormitoryinformation.cshtml" />
     <Content Include="Areas\BaseSysManage\Views\Base_UserRole\SetUp.cshtml" />
-    <Content Include="Areas\Educational\Views\Timetable\TeacherTable.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\RecruitingDataSummary\AddTrack.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\RecruitingDataSummary\EditTrack.cshtml" />
     <Content Include="Areas\Teachingquality\Views\ClassSchedule\Shift.cshtml" />
@@ -1887,6 +1886,9 @@
     <Content Include="Areas\Educational\Views\TeacherNight\EmpZhibanData.cshtml" />
     <Content Include="Areas\Market\Views\StudentDataKeep\updatePassword.cshtml" />
     <Content Include="libman.json" />
+    <Content Include="Areas\BaseSysManage\Views\Base_UserRole\Translate.cshtml" />
+    <Content Include="Areas\Educational\Views\EvningSelfStudy\GrandADIView.cshtml" />
+    <Content Include="Areas\Educational\Views\EvningSelfStudy\ChangeGrandADIView.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />

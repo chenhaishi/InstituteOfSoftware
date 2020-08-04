@@ -27,6 +27,10 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data.MyViewEntity
        public string ClassNumber { get; set; }
        public string ClassroomName { get; set; }
        public string EmpName { get; set; }
+        /// <summary>
+        /// 班级所在阶段
+        /// </summary>
+       public int grandid { get; set; }
 
         /// <summary>
         /// 转为实体模型

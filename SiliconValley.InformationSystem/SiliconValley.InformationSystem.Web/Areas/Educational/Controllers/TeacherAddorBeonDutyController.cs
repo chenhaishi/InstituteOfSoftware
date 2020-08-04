@@ -38,7 +38,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
         public ActionResult Tabledata(int limit, int page)
         {
-            List<TeacherAddorBeonDutyView> list = Tb_Entity.GetViewAll().OrderByDescending(l => l.Anpaidate).ToList();
+            List<TeacherAddorBeonDutyView> list = Tb_Entity.GetViewAll().OrderBy(l => l.Anpaidate).ToList();
             var jsondata = new { code = 0, Msg = "", count = list.Count, data = list.Skip((page - 1) * limit).Take(limit).ToList() };
             return Json(jsondata, JsonRequestBehavior.AllowGet);
         }
@@ -70,7 +70,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
 
 
-            List<TeacherAddorBeonDutyView> list = Tb_Entity.AttendSqlGetData(sb.ToString());
+            List<TeacherAddorBeonDutyView> list = Tb_Entity.AttendSqlGetData(sb.ToString()).OrderBy(l=>l.Anpaidate).ToList();
             var jsondata = new { code = 0, Msg = "", count = list.Count, data = list.Skip((page - 1) * limit).Take(limit).ToList() };
             return Json(jsondata, JsonRequestBehavior.AllowGet);
         }
@@ -119,7 +119,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 a.Msg = "数据已重复，请删除数据在进行添加！";
             }
 
-            return Json(a, JsonRequestBehavior.AllowGet); ;
+            return Json(a, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]

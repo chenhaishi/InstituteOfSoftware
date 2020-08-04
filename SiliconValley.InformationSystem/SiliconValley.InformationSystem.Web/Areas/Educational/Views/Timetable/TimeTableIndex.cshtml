@@ -108,7 +108,7 @@
             layer.open({
                 type: 2,
                 content: '/Educational/EvningSelfStudy/UpdateEvning/' + id,
-                area: ['800px', '500px'],
+                area: ['800px', '600px'],
                 title: '编辑晚自习数据'
                 , shade: 0.8
                 , anim: 4
@@ -423,6 +423,7 @@
                                         //单条数据
                                         SetEvningValue(rid);
                                     } else {
+                                        console.log(rid);
                                         //多条数据
                                         layer.open({
                                             type: 2

@@ -132,11 +132,21 @@
 <script src="~/Scripts/Tangmin_CssAndJs/com_js/MyOrther_tangmin.js"></script>
 <script type="text/html" id="toolbarDemo_Night">
     <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-sm" lay-event="getCheckData_addNight"><i class="layui-icon">&#xe624;</i>添加值班数据</button>
-        <button class="layui-btn layui-btn-sm" lay-event="getCheckData_delNight"><i class="layui-icon">&#x1006;</i>批量删除数据</button>
-        <button class="layui-btn layui-btn-sm" lay-event="getCheckData_outNight"><i class="layui-icon">&#x1006;</i>Excel导出</button>
+        @{
+            if (ViewBag.emp)
+            {
+                <button class="layui-btn layui-btn-sm" lay-event="getCheckData_outNight"><i class="layui-icon">&#x1006;</i>Excel导出</button>
+            }
+            else
+            {
+                <button class="layui-btn layui-btn-sm" lay-event="getCheckData_addNight"><i class="layui-icon">&#xe624;</i>添加值班数据</button>
+                <button class="layui-btn layui-btn-sm" lay-event="getCheckData_delNight"><i class="layui-icon">&#x1006;</i>批量删除数据</button>
+            }
+        }
+
+
         @*<button class="layui-btn layui-btn-sm" lay-event="getCheckData_timeChange"> <i class="layui-icon">&#xe642;</i>日期更改</button>
-            <button class="layui-btn layui-btn-sm" lay-event="getCheckData_time"> <i class="layui-icon">&#xe642;</i>上课延迟或提前</button>*@
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckData_time"> <i class="layui-icon">&#xe642;</i>上课延迟或提前</button>*@
     </div>
 </script>
 

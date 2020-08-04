@@ -84,12 +84,14 @@
 <table id="Eving_table" lay-filter="Eving_table"></table>
 <script type="text/html" id="Ev_toolbarDemo">
     <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-sm" lay-event="NightAnpai"> <i class="layui-icon">&#xe608;</i>安排晚自习</button>
+        <button class="layui-btn layui-btn-sm" lay-event="NightAnpai"> <i class="layui-icon">&#xe608;</i>手动安排晚自习</button>
         <button class="layui-btn layui-btn-sm" lay-event="NightGoodAnpai"> <i class="layui-icon">&#xe608;</i>阶段安排晚自习</button>
+        <button class="layui-btn layui-btn-sm" lay-event="NightGrandchange"> <i class="layui-icon">&#xe642;</i>阶段提前、延迟晚自习</button>
+        <button class="layui-btn layui-btn-sm" lay-event="NightGrandupdate"> <i class="layui-icon">&#xe642;</i>阶段晚自习日期调换</button>
         @*<button class="layui-btn layui-btn-sm" lay-event="getCheckData"><i class="layui-icon">&#xe642;</i>全体延迟、提前课程</button>*@
         <button class="layui-btn layui-btn-sm" lay-event="getCheckLength"><i class="layui-icon">&#xe642;</i>班级延迟、提前课程</button>
         @*<button class="layui-btn layui-btn-sm" lay-event="getCheckData2"><i class="layui-icon">&#xe642;</i>全体上课日期调换</button>*@
-        <button class="layui-btn layui-btn-sm" lay-event="getCheckLength2"><i class="layui-icon">&#xe642;</i>班级上课日期调换</button>
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckLength2"><i class="layui-icon">&#xe642;</i>班级晚自习日期调换</button>
         <button class="layui-btn layui-btn-sm" lay-event="Deletegrand"><i class="layui-icon">&#xe642;</i>按阶段删除</button>
         <button class="layui-btn layui-btn-sm" lay-event="DeleteData"><i class="layui-icon">&#xe642;</i>大批量删除</button>
 
@@ -231,6 +233,30 @@
                             content: '/Educational/EvningSelfStudy/DeleteDateView',
                             area: ['600px', '450px'],
                             title: '阶段删除晚自习页面'
+                            , shade: 0.8
+                            , anim: 4
+                            , skin: 'demo-class'
+                        });  
+                        break;
+                    case 'NightGrandchange':
+                        //日期提前或延迟
+                        layer.open({
+                            type: 2,
+                            content: '/Educational/EvningSelfStudy/GrandADIView',
+                            area: ['600px', '450px'],
+                            title: '阶段删除晚自习页面'
+                            , shade: 0.8
+                            , anim: 4
+                            , skin: 'demo-class'
+                        });  
+                        break;
+                    case 'NightGrandupdate':
+                        //日期调换
+                        layer.open({
+                            type: 2,
+                            content: '/Educational/EvningSelfStudy/ChangeGrandADIView',
+                            area: ['600px', '450px'],
+                            title: '阶段晚自习日期调换页面'
                             , shade: 0.8
                             , anim: 4
                             , skin: 'demo-class'

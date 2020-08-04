@@ -1,0 +1,113 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ChangeGrandADIView</title>
+</head>
+<body>
+    <div style="margin-top:40px;width:90%;margin-left:auto;margin-right:auto">
+        <form class="layui-form">
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs11 layui-col-sm11 layui-col-md11">
+                    <label class="layui-form-label">阶 &nbsp;&nbsp;&nbsp;&nbsp; 段:</label>
+                    <div class="layui-input-block">
+
+                        @{
+                            List<SelectListItem> list = ViewBag.Mygrandlist as List<SelectListItem>;
+                            foreach (var item in list)
+                            {
+                                <input name="glist" class="layui-col-xs3" type="checkbox" value="@item.Value" title="@item.Text" />
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs11 layui-col-sm11 layui-col-md11">
+                    <label class="layui-form-label">原来日期:</label>
+                    <div id="DateDiv" class="layui-input-block">
+                        <input id="starTime" name="starTime" class="layui-input" lay-verify="required" />
+                    </div>
+                </div>
+
+            </div>
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs11 layui-col-sm11 layui-col-md11">
+                    <label class="layui-form-label">上课日期:</label>
+                    <div id="DateDiv" class="layui-input-block">
+                        <input id="endTime" name="endTime" class="layui-input" lay-verify="required" />
+                    </div>
+                </div>
+
+            </div>
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12" style="text-align:center;margin-top:50px">
+                    <button type="submit" class="layui-btn" lay-submit="" lay-filter="Anpai_CBig">确定修改</button>
+                    <button type="button" class="layui-btn" onclick="MyClose()">取消关闭</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/layui/layui.js"></script>
+    <script>
+        layui.use(['form', 'laydate'], function () {
+            var form = layui.form;
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#starTime'
+                , trigger: 'click'
+            });
+            laydate.render({
+                elem: '#endTime'
+                , trigger: 'click'
+            });
+
+            //监听提交
+            form.on('submit(Anpai_CBig)', function (data) {
+                var grand = "";
+                $("input[name='glist']:checked").each(function (ind, ele) {
+                    grand = grand + $(ele).val() + ",";
+                });
+                data.field.grands = grand;
+                if (grand.length <= 0) {
+                    layer.msg('请选择阶段！！', { icon: 2, shade: 0.8 });
+                } else {
+                    $.ajax({
+                        url: '/Educational/EvningSelfStudy/ChangeGrandADIfuntion',
+                        type: 'POST',
+                        data: data.field,
+                        success: function (sucdata) {
+                            if (sucdata == false) {
+                                layer.msg('系统错误，请重试！！', { icon: 2 });
+                            } else {
+                                layer.msg('操作成功！！', { icon: 1, shade: 0.8 }, function () {
+                                    window.parent.TableFulsh();
+                                    MyClose();
+                                });
+                            }
+                        }
+                    });
+                }
+                    
+
+                return false;
+            });
+        });
+
+        function MyClose() {
+            var layer = layui.layer;
+            //当你在iframe页面关闭自身时
+            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(index); //再执行关闭
+        }
+    </script>
+
+</body>
+</html>

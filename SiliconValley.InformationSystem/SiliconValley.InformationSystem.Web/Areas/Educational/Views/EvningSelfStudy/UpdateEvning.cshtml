@@ -17,7 +17,7 @@
     <style>
         .DivCss1
         {
-            margin-top: 50px;
+            margin-top: 10px;
             margin-left: auto;
             margin-right: auto;
             width: 90%;
@@ -49,56 +49,77 @@
 <body>
     <div class="DivCss1">
         <form class="layui-form">
-            
-                <div class="layui-row layui-form-item">
-                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                        <label class="layui-form-label">班 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 级:</label>
-                        @Html.HiddenFor(e => e.id)
-                        <div class="layui-input-block">
-                            @Html.DropDownListFor(e => e.ClassSchedule_id, ViewBag.Classlist as IEnumerable<SelectListItem>, new Dictionary<string, object>() { { "class", "layui-select" } })
-                        </div>
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                    <label class="LableCss1">安排日期:</label>
+                    <div class="layui-input-block">
+                        <input type="text" value="@ViewBag.date" class="layui-input" name="Anpaidate" id="Anpaidate" />
                     </div>
-                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                        <label class="layui-form-label">教 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 室:</label>
-                        <div class="layui-input-block">
-                            @Html.DropDownListFor(e => e.Classroom_id, ViewBag.classroom as IEnumerable<SelectListItem>, new Dictionary<string, object>() { { "class", "layui-select" } })
-                        </div>
+                </div>
+            </div>
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                    <label class="layui-form-label">阶 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 段:</label>                    
+                    <div class="layui-input-block">
+                        @Html.DropDownList("updategrand", ViewBag.grand as IEnumerable<SelectListItem>, new Dictionary<string, object>() { { "class", "layui-select" },{ "lay-filter", "updategrand" } })
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                    <label class="layui-form-label">班 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 级:</label>
+                    @Html.HiddenFor(e => e.id)
+                    <div class="layui-input-block" id="update_classDiv">
+                        @Html.DropDownListFor(e => e.ClassSchedule_id, ViewBag.Classlist as IEnumerable<SelectListItem>, new Dictionary<string, object>() { { "class", "layui-select" } })
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                    <label class="layui-form-label">校&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 区 :</label>
+                    <div class="layui-input-block">
+                        @Html.DropDownList("updateaddress", ViewBag.address as IEnumerable<SelectListItem>, new Dictionary<string, object>() { { "class", "layui-select" }, { "lay-filter", "updateaddress" } })
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                    <label class="layui-form-label">教 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 室:</label>
+                    <div class="layui-input-block" id="update_classroomDiv">
+                        @Html.DropDownListFor(e => e.Classroom_id, ViewBag.classroom as IEnumerable<SelectListItem>, new Dictionary<string, object>() { { "class", "layui-select" } })
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                    <label class="layui-form-label">上课时间:</label>
+                    <div class="layui-input-block">
+                        @Html.DropDownListFor(e => e.curd_name, ViewBag.timename as IEnumerable<SelectListItem>, new Dictionary<string, object>() { { "class", "layui-select" } })
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                    <label class="LableCss1">上课老师:</label>
+                    <div class="layui-input-block">
+                        @Html.DropDownListFor(e => e.EmpName, ViewBag.tt as List<SelectListItem>, new Dictionary<string, object>() { { "class", "layui-select" } })
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                    <label class="layui-form-label">说 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 明:</label>
+                    <div class="layui-input-block">
+                        @Html.TextAreaFor(e => e.Rmark, new Dictionary<string, object>() { { "class", "Text" } });
                     </div>
 
                 </div>
-                <div class="layui-row layui-form-item">
-                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                        <label class="layui-form-label">上课时间:</label>
-                        <div class="layui-input-block">
-                            @Html.DropDownListFor(e => e.curd_name, ViewBag.timename as IEnumerable<SelectListItem>, new Dictionary<string, object>() { { "class", "layui-select" } })
-                        </div>
-                    </div>
-                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-
-                        <label class="LableCss1">安排日期:</label>
-                        <div class="layui-input-block">
-                            <input type="text" value="@ViewBag.date" class="layui-input" name="Anpaidate" id="Anpaidate" />
-                        </div>
-
-                    </div>
-                </div>
-                <div class="layui-row layui-form-item">
-                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                        <label class="LableCss1">上课老师:</label>
-                        <div class="layui-input-block">                            
-                            @Html.DropDownListFor(e=>e.EmpName, ViewBag.tt as List<SelectListItem>, new Dictionary<string, object>() { { "class", "layui-select" } })
-
-                        </div>
-                    </div>
-                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                        <label class="layui-form-label">说 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 明:</label>
-                        <div class="layui-input-block">
-                            @Html.TextAreaFor(e => e.Rmark, new Dictionary<string, object>() { { "class", "Text" } });
-                        </div>
-
-                    </div>
-                </div>
-                <div class="layui-row layui-form-item">
+            </div>
+            <div class="layui-row layui-form-item">
                 <div class="layui-col-xs16 layui-col-sm16 layui-col-md16" style="text-align:center;margin-top:20px;">
                     <button type="submit" class="layui-btn" lay-submit="" lay-filter="update_ev">确定修改</button>
                     <button type="button" class="layui-btn" onclick="MyClose()">取消关闭</button>
@@ -136,6 +157,60 @@
                 });
                 return false;
             });
+
+            //获取阶段班级
+            form.on('select(updategrand)', function (data) {
+                $("#update_classDiv")[0].innerHTML = "";
+                if (data.value != "0") {
+                    $.ajax({
+                        url: '/Educational/Reconcile/GetClassScheduleSelect/' + data.value,
+                        success: function (sudata) {
+                            //获取班级slect
+                            var classselect = $('<select id="ClassSchedule_id" name="ClassSchedule_id" class="layui-select"><option value="0" selected>--请选择--</select>');
+                            for (var i = 0; i < sudata.length; i++) {
+                                $('<option value=' + sudata[i].id + '>' + sudata[i].ClassNumber + '<option>').appendTo(classselect);
+                            }
+                            $("#update_classDiv").append(classselect);
+                            form.render(); //更新全部
+                        }
+                    });
+                } else {
+                    var classselect = $('<select id="ClassSchedule_id" name="ClassSchedule_id" class="layui-select"><option value="0" selected>--请选择--</select>');
+                    $("#update_classDiv").append(classselect);
+                    form.render(); //更新全部
+                }
+            });
+            //获取校区教室
+            form.on('select(updateaddress)', function (data) {
+                $("#update_classroomDiv")[0].innerHTML = "";
+                if (data.value == "0") {
+                    var sele = $('<select</select>').appendTo($("#update_classroomDiv"));
+                    form.render(); //更新全部
+                } else {
+                    var MY = { "schooldaddressval": data.value };
+                    //加载教室
+                    $.ajax({
+                        url: '/Educational/Reconcile/GetSchoolEmptyRoom',
+                        type: 'POST',
+                        data: MY,
+                        success: function (suc) {
+                            if (suc.Data.length > 0) {
+                                var sele = $('<select></select>');
+                                for (var i = 0; i < suc.Data.length; i++) {                                 
+                                    $('<option value=' + suc.Data[i].Value + '>' + suc.Data[i].Text + '</option>').appendTo($(sele));
+                                }
+                                $(sele).appendTo($("#update_classroomDiv"));
+                                form.render(); //更新全部
+                            } else {
+                                layer.msg('该校区没有教室!!', { icon: 2, shade: 0.8 });
+                            }
+                        }
+                    });
+                }
+
+            });
+
+
         });
 
         function MyClose() {

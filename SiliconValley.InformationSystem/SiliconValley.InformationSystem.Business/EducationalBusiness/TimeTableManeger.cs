@@ -72,7 +72,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                             {
                                 sbclassname.Add(rr.ClassNumber);
                             }
-                            string emp = rr.EmpName == null ? "无" : rr.EmpName;
+                            string emp = rr.EmpName;
                             int teachercount= sbTeacher.Where(t => t ==emp).Count();
                             if (teachercount <= 0)
                             {                               
@@ -158,7 +158,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                     {                        
                         a.R_Id = finddata[0].id.ToString();
                         a.ClassName =Reconcile_Com.ClassSchedule_Entity.GetEntity( finddata[0].ClassSchedule_id).ClassNumber;
-                        a.Teacher = finddata[0].EmpName == null ? "无" : finddata[0].EmpName;
+                        a.Teacher = finddata[0].EmpName;
                         a_list.Add(a);
                     }
                     else if(finddata.Count >1)
@@ -184,7 +184,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                             {
                                 classname.Add(item.ClassNumber);
                             }
-                            string emp = item.EmpName==null?"无":item.EmpName;
+                            string emp = item.EmpName;
                             int teachercount = classname.Where(t => t == emp).Count();
                             if (teachercount<=0)
                             {
@@ -192,19 +192,19 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                             }                             
                         }
 
-                        for (int i = (rid.Count-1); i >=0 ; i++)
+                        for (int i = (rid.Count-1); i >=0 ; i--)
                         {
                             if (i==0)
                             {
-                                sbrid.Append(rid[i].Length.ToString());
+                                sbrid.Append(rid[i].ToString());
                             }
                             else
                             {
-                                sbrid.Append(rid[i].Length.ToString()+",");
+                                sbrid.Append(rid[i].ToString()+",");
                             }
                         }
 
-                        for (int i = (classname.Count-1); i >=0; i++)
+                        for (int i = (classname.Count-1); i >=0; i--)
                         {
                             if (i==0)
                             {
@@ -216,7 +216,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                             }
                         }
 
-                        for (int i = (teacher.Count-1); i >=0; i++)
+                        for (int i = (teacher.Count-1); i >=0; i--)
                         {
                             if (i==0)
                             {

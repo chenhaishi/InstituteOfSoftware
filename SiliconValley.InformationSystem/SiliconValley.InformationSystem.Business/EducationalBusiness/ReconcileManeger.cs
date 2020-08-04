@@ -1205,7 +1205,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                             DayOfWeek week = re.AnPaiDate.DayOfWeek;
                             if (week == DayOfWeek.Friday)
                             {
-                                re.AnPaiDate = re.AnPaiDate.AddDays((2));
+                                re.AnPaiDate = re.AnPaiDate.AddDays((3));
                             }
                             else
                             {

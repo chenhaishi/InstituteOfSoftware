@@ -316,12 +316,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             List<TeacherNightView> getall = new List<TeacherNightView>();
             if (TeacherNight_Entity.IsShowData(UserName.EmpNumber)==0)
             {
-                getall = TeacherNight_Entity.GetHeadMasterAll(id1,id2);
+                getall = TeacherNight_Entity.GetHeadMasterAll(id1,id2).OrderBy(l=>l.OrwatchDate).ToList();
             }
             else if (TeacherNight_Entity.IsShowData(UserName.EmpNumber)==2 || TeacherNight_Entity.IsShowData(UserName.EmpNumber) == 3)
             {
                 List<EmployeesInfo> li = TeacherNight_Entity.AccordingtoEmplyess(UserName.EmpNumber);
-                getall= TeacherNight_Entity.AccordingtoDepartMentData(li, id1, id2);
+                getall= TeacherNight_Entity.AccordingtoDepartMentData(li, id1, id2).OrderBy(l=>l.OrwatchDate).ToList();
             }
              //TeacherNight_Entity.GetAllTeacherNight().Where(t => t.BeOnDuty_Id == id1 || t.BeOnDuty_Id == id2).OrderByDescending(t => t.Id).ToList();
             string mid = Request.QueryString["tid"];
@@ -606,7 +606,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             int id2 = beOnDuty_Entity.GetSingleBeOnButy("班主任晚自习", false).Id;
             Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
             
-            List<TeacherNightView> list = TeacherNight_Entity.AccordingtoEmpGetData(UserName.EmpNumber, id1, id2);
+            List<TeacherNightView> list = TeacherNight_Entity.AccordingtoEmpGetData(UserName.EmpNumber, id1, id2).OrderBy(l=>l.OrwatchDate).ToList();
             string da1 = Request.QueryString["d1"];
 
             if (!string.IsNullOrEmpty(da1))

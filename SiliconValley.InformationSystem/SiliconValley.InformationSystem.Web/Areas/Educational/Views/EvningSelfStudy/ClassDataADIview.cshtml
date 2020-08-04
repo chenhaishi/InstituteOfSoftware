@@ -41,9 +41,9 @@
             </div>
             <div class="layui-row layui-form-item">
                 <div class="layui-col-xs11 layui-col-sm11 layui-col-md11">
-                    <label class="layui-form-label">上课日期:</label>
+                    <label class="layui-form-label">调课天数:</label>
                     <div class="layui-input-block">
-                        <input id="endTime" name="endTime" class="layui-input" lay-verify="required" />
+                        <input id="endTime" name="endTime" class="layui-input" lay-verify="required|Zero|number" placeholder="正数是推迟课程，负数是提前课程！"/>
                     </div>
                 </div>
 
@@ -67,9 +67,18 @@
                 elem: '#starTime',
                 trigger: 'click'
             });
-            laydate.render({
-                elem: '#endTime',
-                trigger: 'click'
+
+            //自定义验证规则
+            form.verify({
+                Zero: function (value) {
+                    if (value == "0") {
+                        return '值不能为0！';
+                    } else if (value.indexOf("0") == 0) {
+                        return '值不能为0！';
+                    } else if (value > 30) {
+                        return '值不能大于30！';
+                    } 
+                }
             });
 
             form.on('select(grand)', function (data) {
@@ -98,22 +107,27 @@
                     checkid_Str+= $(check[i]).val()+",";
                 }
                 var new_data = { "checkid_Str": checkid_Str, "starTime": data.field.starTime, "endTime": data.field.endTime };
-                $.ajax({
-                    url: '/Educational/EvningSelfStudy/ClassDataADIfunction',
-                    type: 'POST',
-                    data: new_data,
-                    success: function (sucdata) {
-                        layer.close(indess);
-                        if (sucdata.Success == false) {
-                            layer.msg('系统错误，请重试！！', { icon: 2 });
-                        } else {
-                            layer.msg('调课成功！！', { icon: 1, shade: 0.8 }, function () {
-                                window.parent.TableFulsh();
-                                MyClose();
-                            });
+                if (checkid_Str.length <= 0) {
+                    layer.msg('请选择班级!!', { icon: 2, shade:0.8 })
+                } else {
+                    $.ajax({
+                        url: '/Educational/EvningSelfStudy/ClassDataADIfunction',
+                        type: 'POST',
+                        data: new_data,
+                        success: function (sucdata) {
+                            layer.close(indess);
+                            if (sucdata.Success == false) {
+                                layer.msg('系统错误，请重试！！', { icon: 2 });
+                            } else {
+                                layer.msg('调课成功！！', { icon: 1, shade: 0.8 }, function () {
+                                    window.parent.TableFulsh();
+                                    MyClose();
+                                });
+                            }
                         }
-                    }
-                });
+                    });
+                }
+                
                 return false;
             });
         });

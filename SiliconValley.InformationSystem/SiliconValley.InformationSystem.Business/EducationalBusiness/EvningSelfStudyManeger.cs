@@ -14,8 +14,8 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
     public class EvningSelfStudyManeger : BaseBusiness<EvningSelfStudy>
     {
         //static readonly RedisCache redisCache = new RedisCache();
-        private BaseDataEnumManeger BaseDataEnum_Entity;
-
+        public BaseDataEnumManeger BaseDataEnum_Entity =new BaseDataEnumManeger();
+        
         #region 查询数据
         /// <summary>
         /// 获取所有晚自习视图数据
@@ -290,24 +290,20 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         }
 
         /// <summary>
-        /// 修改(只修改安排的日期跟上课时间段)
+        /// 修改 
         /// </summary>
         /// <param name="new_e"></param>
         /// <returns></returns>
         public AjaxResult Update_Data(EvningSelfStudy new_e)
         {
             AjaxResult a = new AjaxResult();
-            EvningSelfStudy old_e = this.GetEntity(new_e.id);
+            
             try
             {
-                if (old_e != null)
-                {
-                    old_e.Anpaidate = new_e.Anpaidate;
-                    old_e.curd_name = new_e.curd_name;
-                    this.Update(old_e);
-                    //redisCache.RemoveCache("EvningSelfStudyList");
-                    a.Success = true;
-                }
+                
+                this.Update(new_e);
+
+                a.Success = true;                
             }
             catch (Exception ex)
             {
@@ -655,22 +651,52 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         }
 
         /// <summary>
-        /// 日期往前挪或往后退(全体调课)
+        /// 日期推迟
         /// </summary>
         /// <param name="s1ors3"></param>
         /// <param name="count"></param>
         /// <param name="starTime"></param>
         /// <returns></returns>
-        public AjaxResult ALLDataADI(int count, List<EvningSelfStudy> e_list)
+        public AjaxResult ALLDataADI(int count, List<EvningSelfStudy> e_list,GetYear year)
         {
             AjaxResult a = new AjaxResult();
             try
             {
-                foreach (EvningSelfStudy item in e_list)
+                for (int i = 0; i < count; i++)
                 {
-                    item.Anpaidate = item.Anpaidate.AddDays(count);
-                    this.Update(item);
+                    foreach (EvningSelfStudy item in e_list)
+                    {
+                        DayOfWeek week = item.Anpaidate.DayOfWeek;
+                        if (item.Anpaidate.Month>=year.StartmonthName && item.Anpaidate.Month<=year.EndmonthName)
+                        {
+                            //单休
+                            if (week==DayOfWeek.Saturday)
+                            {
+                                item.Anpaidate = item.Anpaidate.AddDays(2);
+                            }
+                            else
+                            {
+                                item.Anpaidate = item.Anpaidate.AddDays(1);
+                            }
+                        }
+                        else
+                        {
+                            //双休
+                            if (week == DayOfWeek.Friday)
+                            {
+                                item.Anpaidate = item.Anpaidate.AddDays(3);
+                            }
+                            else
+                            {
+                                item.Anpaidate = item.Anpaidate.AddDays(1);
+                            }
+
+                        }
+                         
+                        this.Update(item);
+                    }
                 }
+                
                 a.Success = true;
             }
             catch (Exception ex)
@@ -681,6 +707,63 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             return a;
         }
 
+        /// <summary>
+        /// 日期提前
+        /// </summary>
+        /// <param name="count"></param>
+        /// <param name="e_list"></param>
+        /// <param name="year"></param>
+        /// <returns></returns>
+        public AjaxResult AccoreDataADI(int count, List<EvningSelfStudy> e_list, GetYear year)
+        {
+            AjaxResult a = new AjaxResult();
+            try
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    foreach (EvningSelfStudy item in e_list)
+                    {
+                        DayOfWeek week = item.Anpaidate.DayOfWeek;
+                        if (item.Anpaidate.Month >= year.StartmonthName && item.Anpaidate.Month <= year.EndmonthName)
+                        {
+                            //单休
+                            if (week == DayOfWeek.Saturday)
+                            {
+                                item.Anpaidate = item.Anpaidate.AddDays(-2);
+                            }
+                            else
+                            {
+                                item.Anpaidate = item.Anpaidate.AddDays(-1);
+                            }
+                        }
+                        else
+                        {
+                            //双休
+                            if (week == DayOfWeek.Friday)
+                            {
+                                item.Anpaidate = item.Anpaidate.AddDays(-3);
+                            }
+                            else
+                            {
+                                item.Anpaidate = item.Anpaidate.AddDays(-1);
+                            }
+
+                        }
+
+                        this.Update(item);
+                    }
+                }
+
+                a.Success = true;
+            }
+            catch (Exception ex)
+            {
+                a.Success = false;
+                a.Msg = ex.Message;
+            }
+            return a;
+        }
+       
         /// <summary>
         /// 上课日期调换
         /// </summary>
@@ -709,12 +792,12 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             return a;
         }
 
+
         #endregion
         
         
         #region 其他
-
-         
+        
 
         /// <summary>
         /// 判断XX班级是否安排了晚自习
@@ -727,9 +810,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             int count = GetAllView().Where(e => e.Anpaidate == time && e.ClassSchedule_id == class_id).Count();
             return count > 0 ? true : false;
         }
-        
-        
-        
+                
         /// <summary>
         /// 获取空教室
         /// </summary>
@@ -740,7 +821,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         {
 
             ClassRoom_AddCourse result = new ClassRoom_AddCourse();
-            BaseDataEnum_Entity = new BaseDataEnumManeger();
+      
             List<EvningSelfStudy> getlist = GetEmpClass(dateTime,true);
             int base_id = 0;
             if (old)
@@ -827,7 +908,6 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
             return list;
         }
-
     
 
         /// <summary>
@@ -850,6 +930,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
             return a_list;
         }
+
 
         #endregion
 
