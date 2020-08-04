@@ -289,7 +289,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
         //查看班级的学员
         public ActionResult ClassStudent()
         {
-           //EducationalBusiness educationalBusiness = new EducationalBusiness();
+            ReconcileManeger reconcileManeger = new ReconcileManeger();
            var classNumberss =int.Parse( Request.QueryString["ClassNumber"]);
             ViewBag.ClassName =dbtext.GetEntity(classNumberss).ClassNumber;
             ViewBag.GrandName= Grandcontext.GetEntity(dbtext.GetEntity(classNumberss).grade_Id).GrandName;
@@ -298,7 +298,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
             ViewBag.Members = dbtext.MembersList();
             ViewBag.Stage = dbtext.GetClassGrand((int)classNumberss, 234);
             ViewBag.Status= dbtext.GetEntity(classNumberss).ClassstatusID;
-           // ViewBag.Shiftchange=
+            ViewBag.Shiftchange = reconcileManeger.Further_education(classNumberss, "开学典礼");
             return View();
         }
         /// <summary>

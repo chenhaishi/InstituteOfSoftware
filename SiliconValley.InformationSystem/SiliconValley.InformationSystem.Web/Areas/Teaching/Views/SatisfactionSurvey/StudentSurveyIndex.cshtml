@@ -1,146 +1,145 @@
 ﻿
 @{
     ViewBag.Title = "StudentSurveyIndex";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = null;
 }
 
-@section style{
-    <style>
+<link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+<style>
 
 
-        #currentwarp {
-            width: 80%;
-            margin: 0 auto;
-            height: 600px;
-            background-color: #ffffff;
-        }
-
-        .SatisfactionItems {
-            display: inline-block;
-            width: 200px;
-            height: 80px;
-            /*border:1px solid red;*/
-            text-align: center;
-            font-size: 15px;
-            color: gray;
-            margin-left: 50px;
-            margin-top: 100px;
-        }
-
-    </style>
+    #currentwarp {
+        width: 80%;
+        margin: 0 auto;
+        height: 600px;
+        background-color: #ffffff;
     }
 
+    .SatisfactionItems {
+        display: inline-block;
+        width: 200px;
+        height: 80px;
+        /*border:1px solid red;*/
+        text-align: center;
+        font-size: 15px;
+        color: gray;
+        margin-left: 50px;
+        margin-top: 100px;
+    }
+</style>
 
 
 
 
-    <div id="currentwarp">
 
 
-        <div class="SatisfactionItems" id="Headmaster">
-            <i class="layui-icon layui-icon-friends" style="font-size: 50px; color: #1E9FFF;"></i>
-            <br />
-            <span>班主任</span>
-        </div>
-
-        <div class="SatisfactionItems" id="Teacher">
-            <i class="layui-icon layui-icon-friends" style="font-size: 50px; color: #1E9FFF;"></i>
-            <br />
-            <span>教员</span>
-        </div>
+<div id="currentwarp">
 
 
+    <div class="SatisfactionItems" id="Headmaster">
+        <i class="layui-icon layui-icon-friends" style="font-size: 50px; color: #1E9FFF;"></i>
+        <br />
+        <span>班主任</span>
+    </div>
+
+    <div class="SatisfactionItems" id="Teacher">
+        <i class="layui-icon layui-icon-friends" style="font-size: 50px; color: #1E9FFF;"></i>
+        <br />
+        <span>教员</span>
     </div>
 
 
-
-@section script{
-    
-    <script>
+</div>
 
 
-        layui.use(['layer'], function () {
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
 
-            var layer = layui.layer;
-
-            //班主任点击事件
-            $("#Headmaster").click(function () {
-      
-
-                $.post("/Teaching/SatisfactionSurvey/IsHaveSatisfaction", { type: "jiaozhi" }, function (data) {
+<script src="~/Scripts/layui/layui.js"></script>
+<script>
 
 
-                    if (data.ErrorCode == 200) {
+    layui.use(['layer'], function () {
 
-                        if (data.Data.length > 0) {
-                            
+        var layer = layui.layer;
 
-                            layer.open({
-
-                                type: 2,
-                                area: ['1000px', '900px'],
-                                content: "/Teaching/SatisfactionSurvey/HeadMasterSatisfactionQuestionnaire?surveyId=" + data.Data[0].ID
+        //班主任点击事件
+        $("#Headmaster").click(function () {
 
 
-                            });
-                        }
+            $.post("/Teaching/SatisfactionSurvey/IsHaveSatisfaction", { type: "jiaozhi" }, function (data) {
 
-                        else {
 
-                            layer.msg('当前没有课填写的满意度调查单', { icon: 2 });
+                if (data.ErrorCode == 200) {
 
-                        }
+                    if (data.Data.length > 0) {
+
+
+                        layer.open({
+
+                            type: 2,
+                            area: ['1000px', '900px'],
+                            content: "/Teaching/SatisfactionSurvey/HeadMasterSatisfactionQuestionnaire?surveyId=" + data.Data[0].ID
+
+
+                        });
                     }
+
                     else {
-                        layer.msg('数据加载异常。。', { icon: 2 });
-                    }
 
-                });
+                        layer.msg('当前没有课填写的满意度调查单', { icon: 2 });
+
+                    }
+                }
+                else {
+                    layer.msg('数据加载异常。。', { icon: 2 });
+                }
+
             });
-
-
-        //教员点击事件
-            $("#Teacher").click(function () {
-
-                //首先判断
-                
-                $.post("/Teaching/SatisfactionSurvey/IsHaveSatisfaction", {type:"teacher"}, function (data) {
-
-                    
-                    if (data.ErrorCode == 200) {
-
-                        if (data.Data.length > 0) {
-                            layer.open({
-                                title: "调查问卷",
-                                type: 2,
-                                area: ['1000px', '900px'],
-                                content: "/Teaching/SatisfactionSurvey/TeacherSatisfactionQuestionnaire?surveyId="+data.Data[0].ID
-
-
-                            });
-                        }
-
-                        else {
-
-                            layer.msg('当前没有课填写的满意度调查单', { icon: 2 });
-
-                        }
-                    }
-                    else {
-                        layer.msg('数据加载异常。。', { icon: 2 });
-                    }
-
-                });
-
-
-              
-               
-            });
-
         });
 
 
-    </script>
-    
-    }
+        //教员点击事件
+        $("#Teacher").click(function () {
+
+            //首先判断
+
+            $.post("/Teaching/SatisfactionSurvey/IsHaveSatisfaction", { type: "teacher" }, function (data) {
+
+
+                if (data.ErrorCode == 200) {
+
+                    if (data.Data.length > 0) {
+                        layer.open({
+                            title: "调查问卷",
+                            type: 2,
+                            area: ['1000px', '900px'],
+                            content: "/Teaching/SatisfactionSurvey/TeacherSatisfactionQuestionnaire?surveyId=" + data.Data[0].ID
+
+
+                        });
+                    }
+
+                    else {
+
+                        layer.msg('当前没有课填写的满意度调查单', { icon: 2 });
+
+                    }
+                }
+                else {
+                    layer.msg('数据加载异常。。', { icon: 2 });
+                }
+
+            });
+
+
+
+
+        });
+
+    });
+
+
+</script>
+
+
 
