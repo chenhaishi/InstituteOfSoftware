@@ -311,12 +311,16 @@
             </div>
 
             @{
-                if (ViewBag.Stage == "S1" || ViewBag.Stage == "Y1")
+                if (ViewBag.Shiftchange==true)
                 {
-                    <div>
-                        <button type="button" id="Shiftchange" class="layui-btn layui-btn-fluid mybut">换班</button>
-                    </div>
+                    if (ViewBag.Stage == "S1" || ViewBag.Stage == "Y1")
+                    {
+                        <div>
+                            <button type="button" id="Shiftchange" class="layui-btn layui-btn-fluid mybut">换班</button>
+                        </div>
+                    }
                 }
+
             }
         </div>
     </div>
