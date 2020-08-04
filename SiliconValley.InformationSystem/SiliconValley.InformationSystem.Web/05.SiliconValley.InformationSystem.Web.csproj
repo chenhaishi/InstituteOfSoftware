@@ -473,6 +473,7 @@
     <Content Include="Areas\ExaminationSystem\js\trumbowyg\trumbowyg.js" />
     <Content Include="Areas\ExaminationSystem\js\trumbowyg\trumbowyg.min.js" />
     <Content Include="Areas\Finance\images\shouju.jpg" />
+    <Content Include="Areas\Finance\images\预览图_千图网_编号19485118.png" />
     <Content Include="Areas\Obtainemployment\css\bootstrap.css" />
     <Content Include="Areas\Obtainemployment\css\mycss.css" />
     <Content Include="Areas\Obtainemployment\Scripts\Drawing.js" />
@@ -1888,6 +1889,10 @@
     <Content Include="Areas\Market\Views\StudentDataKeep\updatePassword.cshtml" />
     <Content Include="libman.json" />
     <Content Include="Areas\BaseSysManage\Views\Base_UserRole\Translate.cshtml" />
+    <Content Include="Areas\Teaching\Views\AddCourse\AddCouseIndex.cshtml" />
+    <Content Include="Areas\Educational\Views\EvningSelfStudy\GrandADIView.cshtml" />
+    <Content Include="Areas\Educational\Views\EvningSelfStudy\ChangeGrandADIView.cshtml" />
+    <Content Include="Areas\Finance\images\2020年5月学生学费明细表.xlsx" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
@@ -3603,15 +3608,6 @@
     <Folder Include="Areas\Courseware\首页\word文档\S4NET\" />
     <Folder Include="Areas\Courseware\首页\word文档\Y1\" />
     <Folder Include="Areas\Educational\Models\" />
-    <Folder Include="Areas\Educational\Views\CheckGoods\" />
-    <Folder Include="Areas\Educational\Views\Check\" />
-    <Folder Include="Areas\Educational\Views\GoodsType\" />
-    <Folder Include="Areas\Educational\Views\InStockGoods\" />
-    <Folder Include="Areas\Educational\Views\InStock\" />
-    <Folder Include="Areas\Educational\Views\IsGoodOrBad\" />
-    <Folder Include="Areas\Educational\Views\PurchaseType\" />
-    <Folder Include="Areas\Educational\Views\Shared\" />
-    <Folder Include="Areas\Educational\Views\ShppingDetail\" />
     <Folder Include="Areas\Finance\Models\" />
     <Folder Include="Areas\Finance\Views\Shared\" />
     <Folder Include="Areas\flow\Controllers\" />
