@@ -1872,7 +1872,6 @@
     <Content Include="Areas\Teachingquality\Views\ClassSchedule\Combinedclasses.cshtml" />
     <Content Include="Areas\Teachingquality\Views\Stuportfolio\Dormitoryinformation.cshtml" />
     <Content Include="Areas\BaseSysManage\Views\Base_UserRole\SetUp.cshtml" />
-    <Content Include="Areas\Educational\Views\Timetable\TeacherTable.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\RecruitingDataSummary\AddTrack.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\RecruitingDataSummary\EditTrack.cshtml" />
     <Content Include="Areas\Teachingquality\Views\ClassSchedule\Shift.cshtml" />
