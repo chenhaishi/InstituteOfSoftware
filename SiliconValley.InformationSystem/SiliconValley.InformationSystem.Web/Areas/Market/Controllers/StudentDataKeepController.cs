@@ -119,7 +119,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
         public ActionResult TableData(int limit, int page)
         {
            
-            List<ExportStudentBeanData> list = s_Entity.GetAllTopNumber(74000).OrderByDescending(s => s.StuDateTime).ToList();
+            List<ExportStudentBeanData> list = s_Entity.GetAllTopNumber(76400).OrderByDescending(s => s.StuDateTime).ToList();
 
             var data = list.Skip((page - 1) * limit).Take(limit).ToList();
 
@@ -180,8 +180,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
                 }
                 if (!string.IsNullOrEmpty(findPhonevalue))
                 {
-                    sb1.Append(" and Stuphone = '" + findPhonevalue + "'");
-                    sb2.Append(" and Phone = '" + findPhonevalue + "'");
+                    sb1.Append(" and Stuphone like '%" + findPhonevalue + "%'");
+                    sb2.Append(" and Phone like'%" + findPhonevalue + "%'");
                 }
                 if (findInformationvalue != "0" && !string.IsNullOrEmpty(findInformationvalue))
                 {

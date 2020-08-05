@@ -593,6 +593,21 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             return this.GetListBySql<TeacherNightView>(sb.ToString());
         }
          
-        
+        /// <summary>
+        /// 判断是否是教务（false--否，true--是）
+        /// </summary>
+        /// <param name="empnumber"></param>
+        /// <returns></returns>
+        public bool IsJiaowu(string empnumber)
+        {
+          Position findp=  Reconcile_Com.Employees_Entity.GetPositionByEmpid(empnumber);
+            bool s = false;
+            if (findp.PositionName.Contains("教务"))
+            {
+                s = true;
+            }
+
+            return s;
+        }
     }
 }

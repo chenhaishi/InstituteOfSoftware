@@ -27,6 +27,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         TeacherBusiness Teacher_Entity;
         //ClassroomManeger Classoom_Entity;
         BeOnDutyManeger beOnDuty_Entity = new BeOnDutyManeger(); //获取教员晚自习
+        
         #region  教员晚自习值班
         public ActionResult TeacherNightViewIndex()
         {
@@ -304,98 +305,142 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             list = list.OrderBy(l => l.Value).ToList();
 
             ViewBag.master = list;
+
+            Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
+
+            //判断是否是教务
+            ViewBag.isjiaowu = TeacherNight_Entity.IsJiaowu(UserName.EmpNumber);
+
             return View();
         }
 
+        /// <summary>
+        /// 给班主任显示的数据
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
         public ActionResult GetClassMasterFunction(int page, int limit)
         {
             EmployeesInfoManage e = new EmployeesInfoManage();
-            int id1 = beOnDuty_Entity.GetSingleBeOnButy("周末值班", false).Id;
-            int id2 = beOnDuty_Entity.GetSingleBeOnButy("班主任晚自习", false).Id;
+            int id1 = 2;//beOnDuty_Entity.GetSingleBeOnButy("周末值班", false).Id;
+            int id2 = 6;//beOnDuty_Entity.GetSingleBeOnButy("班主任晚自习", false).Id;
             Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
-            List<TeacherNightView> getall = new List<TeacherNightView>();
-            if (TeacherNight_Entity.IsShowData(UserName.EmpNumber)==0)
+            List<HeadmasterView> ishava = SessionHelper.Session["data"] as List<HeadmasterView>;
+            if (ishava!=null)
             {
-                getall = TeacherNight_Entity.GetHeadMasterAll(id1,id2).OrderBy(l=>l.OrwatchDate).ToList();
-            }
-            else if (TeacherNight_Entity.IsShowData(UserName.EmpNumber)==2 || TeacherNight_Entity.IsShowData(UserName.EmpNumber) == 3)
-            {
-                List<EmployeesInfo> li = TeacherNight_Entity.AccordingtoEmplyess(UserName.EmpNumber);
-                getall= TeacherNight_Entity.AccordingtoDepartMentData(li, id1, id2).OrderBy(l=>l.OrwatchDate).ToList();
-            }
-             //TeacherNight_Entity.GetAllTeacherNight().Where(t => t.BeOnDuty_Id == id1 || t.BeOnDuty_Id == id2).OrderByDescending(t => t.Id).ToList();
-            string mid = Request.QueryString["tid"];
-            string old = Request.QueryString["olddate"];
-            string news = Request.QueryString["newdate"];
-            if (!string.IsNullOrEmpty(mid) && mid != "0")
-            {
-                getall = getall.Where(g => g.Tearcher_Id == mid).ToList();
-            }
+                var data1 = ishava.OrderBy(l => l.Time).Skip((page - 1) * limit).Take(limit).ToList();
 
-            if (!string.IsNullOrEmpty(old))
-            {
-                DateTime date = Convert.ToDateTime(old);
-                getall = getall.Where(g => g.OrwatchDate >= date).ToList();
+                var jsondata1 = new { count = ishava.Count, code = 0, msg = "", data = data1 };
+                return Json(jsondata1, JsonRequestBehavior.AllowGet);
             }
-
-            if (!string.IsNullOrEmpty(news))
+            else
             {
-                DateTime date = Convert.ToDateTime(news);
-                getall = getall.Where(g => g.OrwatchDate <= date).ToList();
-            }
-
-            List<HeadmasterView> list_View = new List<HeadmasterView>();
-
-            for (int i = 0; i < getall.Count;)
-            {
-                List<TeacherNightView> sametime= getall.Where(g => g.OrwatchDate == getall[i].OrwatchDate && g.BeOnDuty_Id==getall[i].BeOnDuty_Id && e.GetDeptByEmpid(g.Tearcher_Id).DeptId== e.GetDeptByEmpid(getall[i].Tearcher_Id).DeptId).ToList();
-                HeadmasterView headmaster = new HeadmasterView();
-                headmaster.Time = getall[i].OrwatchDate;
-                headmaster.Types = getall[i].timename;
-                string ids = null;
-                string teachers = null;
-                int index = 1;
-                if (sametime.Count<=0)
+                List<TeacherNightView> getall = new List<TeacherNightView>();
+                if (TeacherNight_Entity.IsShowData(UserName.EmpNumber) == 0)
                 {
-                    headmaster.Teachers = e.GetEntity(getall[i].Tearcher_Id).EmpName;
-
-                    headmaster.Id = getall[i].Id.ToString();
-
-                    list_View.Add(headmaster);
+                    getall = TeacherNight_Entity.GetHeadMasterAll(id1, id2).OrderBy(l => l.OrwatchDate).ToList();
                 }
-                else
+                else if (TeacherNight_Entity.IsShowData(UserName.EmpNumber) == 2 || TeacherNight_Entity.IsShowData(UserName.EmpNumber) == 3)
                 {
-                    sametime.ForEach(s => {
-                        if (index == sametime.Count)
-                        {
-                            ids = ids + s.Id;
-                            teachers = teachers + e.GetEntity(s.Tearcher_Id).EmpName;
-                        }
-                        else
-                        {
-                            ids = ids + s.Id + ",";
-                            teachers = teachers + e.GetEntity(s.Tearcher_Id).EmpName + ",";
-                        }
-                        index++;
-
-                        getall.Remove(s);
-
-                        headmaster.Teachers = teachers;
-
-                        headmaster.Id = ids;
-
-
-                    });
-
-                    list_View.Add(headmaster);
-                    i=0;
+                    List<EmployeesInfo> li = TeacherNight_Entity.AccordingtoEmplyess(UserName.EmpNumber);
+                    getall = TeacherNight_Entity.AccordingtoDepartMentData(li, id1, id2).OrderBy(l => l.OrwatchDate).ToList();
                 }
-                
-            }
+                //TeacherNight_Entity.GetAllTeacherNight().Where(t => t.BeOnDuty_Id == id1 || t.BeOnDuty_Id == id2).OrderByDescending(t => t.Id).ToList();
+                string mid = Request.QueryString["tid"];
+                string old = Request.QueryString["olddate"];
+                string news = Request.QueryString["newdate"];
+                if (!string.IsNullOrEmpty(mid) && mid != "0")
+                {
+                    getall = getall.Where(g => g.Tearcher_Id == mid).ToList();
+                }
 
-            var data = list_View.OrderBy(l=>l.Time).Skip((page - 1) * limit).Take(limit).ToList();
- 
-            var jsondata = new { count = list_View.Count, code = 0, msg = "", data = list_View };
+                if (!string.IsNullOrEmpty(old))
+                {
+                    DateTime date = Convert.ToDateTime(old);
+                    getall = getall.Where(g => g.OrwatchDate >= date).ToList();
+                }
+
+                if (!string.IsNullOrEmpty(news))
+                {
+                    DateTime date = Convert.ToDateTime(news);
+                    getall = getall.Where(g => g.OrwatchDate <= date).ToList();
+                }
+
+                List<HeadmasterView> list_View = new List<HeadmasterView>();
+
+                for (int i = 0; i < getall.Count;)
+                {
+                    List<TeacherNightView> sametime = getall.Where(g => g.OrwatchDate == getall[i].OrwatchDate && g.BeOnDuty_Id == getall[i].BeOnDuty_Id && e.GetDeptByEmpid(g.Tearcher_Id).DeptId == e.GetDeptByEmpid(getall[i].Tearcher_Id).DeptId).ToList();
+                    HeadmasterView headmaster = new HeadmasterView();
+                    headmaster.Time = getall[i].OrwatchDate;
+                    headmaster.Types = getall[i].timename;
+                    string ids = null;
+                    string teachers = null;
+                    int index = 1;
+                    if (sametime.Count <= 0)
+                    {
+                        headmaster.Teachers = e.GetEntity(getall[i].Tearcher_Id).EmpName;
+
+                        headmaster.Id = getall[i].Id.ToString();
+
+                        list_View.Add(headmaster);
+                    }
+                    else
+                    {
+                        sametime.ForEach(s => {
+                            if (index == sametime.Count)
+                            {
+                                ids = ids + s.Id;
+                                teachers = teachers + e.GetEntity(s.Tearcher_Id).EmpName;
+                            }
+                            else
+                            {
+                                ids = ids + s.Id + ",";
+                                teachers = teachers + e.GetEntity(s.Tearcher_Id).EmpName + ",";
+                            }
+                            index++;
+
+                            getall.Remove(s);
+
+                            headmaster.Teachers = teachers;
+
+                            headmaster.Id = ids;
+
+
+                        });
+
+                        list_View.Add(headmaster);
+                        i = 0;
+                    }
+
+                }
+
+                SessionHelper.Session["data"] = list_View;
+                var data = list_View.OrderBy(l => l.Time).Skip((page - 1) * limit).Take(limit).ToList();
+
+                var jsondata = new { count = list_View.Count, code = 0, msg = "", data = data };
+                return Json(jsondata, JsonRequestBehavior.AllowGet);
+            }
+            
+        }
+
+        /// <summary>
+        /// 该数据是显示给教务审核的数据
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        public ActionResult GetJiaoMasterFuntion(int page,int limit)
+        {
+            int id1 = 2;//beOnDuty_Entity.GetSingleBeOnButy("周末值班", false).Id;
+            int id2 = 6;//beOnDuty_Entity.GetSingleBeOnButy("班主任晚自习", false).Id;
+
+            List<TeacherNightView> list= TeacherNight_Entity.GetHeadMasterAll(id1, id2).ToList();
+
+            var data = list.OrderBy(l => l.OrwatchDate).Skip((page - 1) * limit).Take(limit).ToList();
+
+            var jsondata = new { count = list.Count, code = 0, msg = "", data = data };
             return Json(jsondata, JsonRequestBehavior.AllowGet);
         }
 
