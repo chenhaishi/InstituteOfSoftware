@@ -314,7 +314,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
             EmployeesInfo employees = new EmployeesInfo();
             if (key)
             {
-                 List<EmployeesInfo> list2 = this.GetListBySql<EmployeesInfo>("select * from EmpView where EmployeeId='" + name + "'").ToList();
+                List<EmployeesInfo> list2 = this.GetListBySql<EmployeesInfo>("select * from EmpView where EmployeeId='" + name + "'").ToList();
                 employees = list2.Count > 0 ? list2[0] : null;
             }
             else
@@ -323,7 +323,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
                 if (list.Count > 0)
                 {
                     employees = list[0];
-                }                
+                }
             }
             return employees;
         }
@@ -411,7 +411,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
                 HeadmasterBusiness hmmanage = new HeadmasterBusiness();
                 result = hmmanage.removeHeadmaster(emp.EmployeeId);
             }
-            if ((dname.Equals("s1、s2教质部") || dname.Equals("s3教质部")) && pname.Equals("教官")||dname.Equals("教导大队"))
+            if ((dname.Equals("s1、s2教质部") || dname.Equals("s3教质部")) && pname.Equals("教官") || dname.Equals("教导大队"))
             {
                 InstructorListBusiness itmanage = new InstructorListBusiness();
                 result = itmanage.RemoveInstructorList(emp.EmployeeId);
@@ -435,7 +435,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
         }
 
         /// <summary>
-        /// 将导过来的excel数据赋给考勤视图类中
+        /// 将导过来的excel数据赋给员工视图类中
         /// </summary>
         /// <param name="sheet"></param>
         /// <returns></returns>
@@ -584,7 +584,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
         }
 
         /// <summary>
-        /// 将excel数据类的数据存入到数据库的考勤表中
+        /// 将excel数据类的数据存入到数据库的员工表中
         /// </summary>
         /// <returns></returns>
         public AjaxResult ExcelImportEmpSql(ISheet sheet)
@@ -710,7 +710,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
                                                         emp.Material = item.paperyMaterial;
                                                         emp.Remark = item.Remark;
                                                         emp.RecruitSource = item.original;
-                                                        emp.IsDel = false;                                                       
+                                                        emp.IsDel = false;
                                                         emp.Image = "guigu.jpg";
                                                         this.Insert(emp);
                                                         rc.RemoveCache("InRedisEmpInfoData");
@@ -752,7 +752,6 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
             return ajaxresult;
         }
 
-
         public AjaxResult ImportDataFormExcel(Stream stream, string contentType)
         {
             var ajaxresult = new AjaxResult();
@@ -776,6 +775,163 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
 
             return result;
         }
+
+
+        public AjaxResult SqlDataToExcel()
+        {
+            var ajaxresult = new AjaxResult();
+            return ajaxresult;
+        }
+
+        //保存详细数据
+        public void EmpDataToExcel(List<EmployeesInfo> data, string filename)
+        {//SaveStaff_CostData
+
+            if (data == null)
+            {
+                return;
+
+            }
+            var workbook = new HSSFWorkbook();
+
+            //创建工作区
+            var sheet = workbook.CreateSheet("员工信息");
+
+            #region 表头样式
+
+            HSSFCellStyle HeadercellStyle = (HSSFCellStyle)workbook.CreateCellStyle();
+            HSSFFont HeadercellFont = (HSSFFont)workbook.CreateFont();
+
+            HeadercellStyle.Alignment = HorizontalAlignment.Center;
+            HeadercellFont.IsBold = true;
+
+            HeadercellStyle.SetFont(HeadercellFont);
+
+            #endregion
+
+
+            HSSFCellStyle ContentcellStyle = (HSSFCellStyle)workbook.CreateCellStyle();
+            HSSFFont ContentcellFont = (HSSFFont)workbook.CreateFont();
+
+            ContentcellStyle.Alignment = HorizontalAlignment.Center;
+
+            CreateHeader();
+
+            int num = 1;
+
+          //  CourseBusiness dbcourse = new CourseBusiness();
+
+            GrandBusiness dbgrand = new GrandBusiness();
+            
+            data.ForEach(d =>
+            {
+                var row = (HSSFRow)sheet.CreateRow(num);
+
+                CreateCell(row, ContentcellStyle, 0, d.EmployeeId);//员工编号
+                CreateCell(row, ContentcellStyle, 1,d.DDAppId.ToString());//钉钉号
+
+                CreateCell(row, ContentcellStyle, 2,d.EmpName );//员工名称
+                CreateCell(row, ContentcellStyle, 3,this.GetDeptByPid(d.PositionId).DeptName );//部门名称
+                CreateCell(row, ContentcellStyle, 4, this.GetPobjById(d.PositionId).PositionName);//岗位名称
+
+                CreateCell(row, ContentcellStyle, 5, d.Sex);//性别
+
+                CreateCell(row, ContentcellStyle, 6, d.Age.ToString());//年龄
+                CreateCell(row, ContentcellStyle, 7, d.Nation);//民族
+                CreateCell(row, ContentcellStyle, 8, d.Phone);//电话号码
+                CreateCell(row, ContentcellStyle, 9, d.IdCardNum);//身份证号
+                CreateCell(row, ContentcellStyle, 10, d.EntryTime.ToString());//入职时间
+                CreateCell(row, ContentcellStyle, 11, d.PositiveDate.ToString());//转正时间
+          
+                CreateCell(row, ContentcellStyle, 12, d.ContractStartTime.ToString());//合同起始时间
+                CreateCell(row, ContentcellStyle, 13, d.ContractEndTime.ToString());//合同终止时间
+                CreateCell(row, ContentcellStyle, 14, d.Birthdate.ToString());//出生日期
+                CreateCell(row, ContentcellStyle, 15, d.Birthday);//生日
+                CreateCell(row, ContentcellStyle, 16, d.ContractStartTime.ToString());//紧急联系电话
+                CreateCell(row, ContentcellStyle, 17, d.DomicileAddress);//户籍地址
+                CreateCell(row, ContentcellStyle, 18, d.Address);//现居地址
+                CreateCell(row, ContentcellStyle, 18, d.Education);//学历
+                CreateCell(row, ContentcellStyle, 18, d.MaritalStatus==true?"已婚":"未婚");//婚姻状态
+                CreateCell(row, ContentcellStyle, 18, d.IdCardIndate.ToString());//身份证有效期
+                CreateCell(row, ContentcellStyle, 18, d.PoliticsStatus);//政治面貌
+
+                num++;
+
+            });
+
+            //string pathName = System.Web.HttpContext.Current.Server.MapPath("/Areas/Educational/CostHistoryFiles/" + filename + ".xls");
+
+            //stream = new FileStream(pathName, FileMode.Create, FileAccess.ReadWrite);
+
+            //CloudstorageBusiness Bos = new CloudstorageBusiness();
+
+            //var client = Bos.BosClient();
+
+            //var byteary = workbook.GetBytes();
+
+            //client.PutObject("xinxihua", $"/CostHistoryFiles/{filename}.xls", byteary);
+
+            workbook.Close();
+
+
+            void CreateHeader()
+            {
+                HSSFRow Header = (HSSFRow)sheet.CreateRow(0);
+                Header.HeightInPoints = 40;
+
+                CreateCell(Header, HeadercellStyle, 0, "姓名");
+
+                CreateCell(Header, HeadercellStyle, 1, "职务");
+
+                CreateCell(Header, HeadercellStyle, 2, "Y1课时");
+
+                CreateCell(Header, HeadercellStyle, 3, "S1课时");
+
+                CreateCell(Header, HeadercellStyle, 4, "S2课时");
+
+                CreateCell(Header, HeadercellStyle, 5, "S3课时");
+
+                CreateCell(Header, HeadercellStyle, 6, "S4课时");
+
+                CreateCell(Header, HeadercellStyle, 7, "S1内训课时");
+
+                CreateCell(Header, HeadercellStyle, 8, "S2内训课时");
+
+                CreateCell(Header, HeadercellStyle, 9, "S3内训课时");
+
+                CreateCell(Header, HeadercellStyle, 10, "S4内训课时");
+
+                CreateCell(Header, HeadercellStyle, 11, "Y1内训课时");
+
+                CreateCell(Header, HeadercellStyle, 12, "质素，语数外，体育课时");
+
+                CreateCell(Header, HeadercellStyle, 13, "底课时");
+
+                CreateCell(Header, HeadercellStyle, 14, "满意度分数");
+
+                CreateCell(Header, HeadercellStyle, 15, "课时费");
+
+                CreateCell(Header, HeadercellStyle, 16, "阅卷费");
+
+                CreateCell(Header, HeadercellStyle, 17, "监考费");
+
+                CreateCell(Header, HeadercellStyle, 18, "课程研发费");
+            }
+
+            void CreateCell(HSSFRow row, HSSFCellStyle TcellStyle, int index, string value)
+            {
+                HSSFCell Header_Name = (HSSFCell)row.CreateCell(index);
+
+                Header_Name.SetCellValue(value);
+
+                Header_Name.CellStyle = TcellStyle;
+            }
+
+        }
+
+
+
+
 
         /// <summary>
         /// 根据部门的名称获取部门对象
@@ -967,7 +1123,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
         /// <returns></returns>
         public List<EmpTransactionView> GetEmpEtrdetails(string empid) {
             EmpTransactionManage etrmanage = new EmpTransactionManage();
-            var etrlist = etrmanage.GetList().Where(s => s.EmployeeId == empid && s.IsDel==false).ToList();
+            var etrlist = etrmanage.GetList().Where(s => s.EmployeeId == empid && s.IsDel == false).ToList();
             MoveTypeManage mtmanage = new MoveTypeManage();
             List<EmpTransactionView> etrviewlist = new List<EmpTransactionView>();
             foreach (var item in etrlist)
@@ -992,15 +1148,16 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
                 etrview.AfterContractEndTime = item.AfterContractEndTime;
 
                 etrview.Transactionname = mtmanage.GetEntity(item.TransactionType).MoveTypeName;
-                etrview.beforedname =item.PreviousDept==null?null:this.GetDeptById((int)item.PreviousDept).DeptName;
-                etrview.beforepname =item.PreviousPosition==null?null:this.GetPobjById((int)item.PreviousPosition).PositionName;
-                etrview.afterdname =item.PresentDept==null?null:this.GetDeptById((int)item.PresentDept).DeptName;
-                etrview.afterpname =item.PresentPosition==null?null: this.GetPobjById((int)item.PresentPosition).PositionName;
+                etrview.beforedname = item.PreviousDept == null ? null : this.GetDeptById((int)item.PreviousDept).DeptName;
+                etrview.beforepname = item.PreviousPosition == null ? null : this.GetPobjById((int)item.PreviousPosition).PositionName;
+                etrview.afterdname = item.PresentDept == null ? null : this.GetDeptById((int)item.PresentDept).DeptName;
+                etrview.afterpname = item.PresentPosition == null ? null : this.GetPobjById((int)item.PresentPosition).PositionName;
                 etrview.ename = this.GetInfoByEmpID(item.EmployeeId).EmpName;
                 etrview.EntryTime = this.GetInfoByEmpID(item.EmployeeId).EntryTime;
                 etrviewlist.Add(etrview);
             }
             return etrviewlist;
         }
+
     }
 }

@@ -124,14 +124,18 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
         public List<MyAtdDataFromExcelView> CreateExcelData(ISheet sheet)
         {
             List<MyAtdDataFromExcelView> result = new List<MyAtdDataFromExcelView>();
-            int num = 3;
+            int num = 2;
             AjaxResult ajaxresult = new AjaxResult();
             try
             {
                 //获取第一行数据（年月份）
-                string time = sheet.GetRow(1).Cells[1].StringCellValue;
+                //  string time = sheet.GetRow(1).Cells[1].StringCellValue;
+                string time1 = sheet.GetRow(0).Cells[0].StringCellValue;
+                string[] str = time1.Split(':');
+                string[] strtime = str[1].Split('至');
+                var time = strtime[0];
                 //获取第二行数据（应到勤天数）
-                double DeserveToRegularDays = sheet.GetRow(2).Cells[1].NumericCellValue;
+                //   double DeserveToRegularDays = sheet.GetRow(2).Cells[1].NumericCellValue;
                 while (true)
                 {
                     MyAtdDataFromExcelView matd = new MyAtdDataFromExcelView();
@@ -141,55 +145,134 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     if (getrow == null)
                     {
                         break;
-                    }
+                    }  
+                    //姓名[0]
                     string name = getrow.GetCell(0).StringCellValue;
-                    //获取第三行"钉钉号"列的数据
-                    string ddid = getrow.GetCell(1).NumericCellValue.ToString();
-                    //获取第三行"到勤天数"列的数据
+                    //工号(钉钉号)[1]
+                    string ddid = getrow.GetCell(1).StringCellValue;
+                    //到勤天数[2]
                     string workeddays = getrow.GetCell(2).NumericCellValue.ToString();
-                    //获取第三行"请假天数"列的数据
-                   // ICell leaveddays_cell = sheet.GetRow(num).GetCell(3);
-                    string leaveddays = getrow.GetCell(3) == null ? null : getrow.GetCell(3).NumericCellValue.ToString();
-                    //获取第三行"上班缺卡次数"列的数据
-                    string workAbsentNum = getrow.GetCell(4)==null? null : getrow.GetCell(4).NumericCellValue.ToString();
-                    //获取第三行"上班缺卡记录"列的数据
-                    string workAbsentRecord = getrow.GetCell(5) == null ? null : getrow.GetCell(5).StringCellValue;
-                    //获取第三行"下班缺卡次数"列的数据
-                    string offDutyAbsentNum = getrow.GetCell(6) == null ? null : getrow.GetCell(6).NumericCellValue.ToString();
-                    //获取第三行"下班缺卡记录"列的数据
-                    string OffDutyAbsentRecord = getrow.GetCell(7) == null ? null : getrow.GetCell(7).StringCellValue;
-                    //获取第三行"迟到次数"列的数据
-                    string tardyNum = getrow.GetCell(8) == null ? null : getrow.GetCell(8).NumericCellValue.ToString();
-                    //获取第三行"迟到记录"列的数据
-                    string tardyRecord = getrow.GetCell(9) == null ? null : getrow.GetCell(9).StringCellValue;
-                    //获取第三行"迟到扣款"列的数据
-                    string tardyWithhold = getrow.GetCell(10) == null ? null : getrow.GetCell(10).NumericCellValue.ToString();
-                    //获取第三行"早退次数"列的数据
-                    string leaveEarlyNum = getrow.GetCell(11) == null ? null : getrow.GetCell(11).NumericCellValue.ToString();
-                    //获取第三行"早退记录"列的数据
-                    string leaveEarlyRecord = getrow.GetCell(12) == null ? null : getrow.GetCell(12).StringCellValue;
-                    //获取第三行"早退扣款"列的数据
-                    string leaveWithhold = getrow.GetCell(13) == null ? null : getrow.GetCell(13).NumericCellValue.ToString();
-                    //获取第三行"备注"列的数据
-                    string remark = getrow.GetCell(14) == null ? null : getrow.GetCell(14).StringCellValue;
+                  
+                    //迟到次数[5]
+                    string tardyNum = getrow.GetCell(5) == null ? null : getrow.GetCell(5).NumericCellValue.ToString();
+                    //早退次数[10]
+                    string leaveEarlyNum = getrow.GetCell(10) == null ? null : getrow.GetCell(10).NumericCellValue.ToString();
+                    //上班缺卡次数[12]
+                    string workAbsentNum = getrow.GetCell(12) == null ? null : getrow.GetCell(12).NumericCellValue.ToString();
+                    //下班缺卡次数[13]
+                    string offDutyAbsentNum = getrow.GetCell(13) == null ? null : getrow.GetCell(13).NumericCellValue.ToString();
+
+                    //请假天数
+                    string leaveddays = "";
+
+                    //迟到记录[5]
+                    string tardyRecord="" /*= getrow.GetCell(9) == null ? null : getrow.GetCell(9).StringCellValue*/;
+                    //早退记录
+                    string leaveEarlyRecord = "";
+                    //上班缺卡记录
+                    string workAbsentRecord = "";
+                    //下班缺卡记录
+                    string OffDutyAbsentRecord = "";
+                    //迟到扣款
+                    string tardyWithhold ="";
+                   
+                    int cells = 0;
+                    while (true)
+                    {
+                        cells++;
+                        if (getrow.GetCell(cells)==null)
+                        {                            
+                            break;
+                        }
+                        var getcell = getrow.GetCell(cells);
+                        var titlerow= sheet.GetRow(2);
+                        var title = titlerow.GetCell(cells).StringCellValue;
+                        var pretitle = titlerow.GetCell(cells - 1).StringCellValue;
+                        if (title == "六")
+                        {
+                            title = pretitle + 1;
+                        }
+                        if (title == "日")
+                        {
+                            title = pretitle + 2;
+                        }
+                        if (getcell.StringCellValue.Contains("迟到"))
+                        {
+                            tardyRecord += title + "号," + getcell.StringCellValue + ";";
+                        } else if (getcell.StringCellValue.Contains("早退")) {
+                            leaveEarlyRecord += title + "号," + getcell.StringCellValue + ";";
+                        }
+                        else if (getcell.StringCellValue.Contains("上班缺卡"))
+                        {
+                            workAbsentRecord += title + "号," + getcell.StringCellValue + ";";
+                        }
+                        else if (getcell.StringCellValue.Contains("下班缺卡"))
+                        {
+                            OffDutyAbsentRecord += title + "号," + getcell.StringCellValue + ";";
+                        }
+                        else if (getcell.StringCellValue.Contains("事假")) {
+                            leaveddays = title + "号" + getcell.StringCellValue + ";";
+                        }
+                        
+                    }
+
+
+                    // string leaveddays = getrow.GetCell(3) == null ? null : getrow.GetCell(3).NumericCellValue.ToString();
+                    // string tardyWithhold = getrow.GetCell(10) == null ? null : getrow.GetCell(10).NumericCellValue.ToString();
+                    // string leaveWithhold = getrow.GetCell(13) == null ? null : getrow.GetCell(13).NumericCellValue.ToString();
+                    // string remark = getrow.GetCell(14) == null ? null : getrow.GetCell(14).StringCellValue;
+
+                    #region 统计好的考勤数据导入
+                    // string name = getrow.GetCell(0).StringCellValue;
+                    // //获取第三行"钉钉号"列的数据
+                    // string ddid = getrow.GetCell(1).NumericCellValue.ToString();
+                    // //获取第三行"到勤天数"列的数据
+                    // string workeddays = getrow.GetCell(2).NumericCellValue.ToString();
+                    // //获取第三行"请假天数"列的数据
+                    //// ICell leaveddays_cell = sheet.GetRow(num).GetCell(3);
+                    // string leaveddays = getrow.GetCell(3) == null ? null : getrow.GetCell(3).NumericCellValue.ToString();
+                    // //获取第三行"上班缺卡次数"列的数据
+                    // string workAbsentNum = getrow.GetCell(4)==null? null : getrow.GetCell(4).NumericCellValue.ToString();
+                    // //获取第三行"上班缺卡记录"列的数据
+                    // string workAbsentRecord = getrow.GetCell(5) == null ? null : getrow.GetCell(5).StringCellValue;
+                    // //获取第三行"下班缺卡次数"列的数据
+                    // string offDutyAbsentNum = getrow.GetCell(6) == null ? null : getrow.GetCell(6).NumericCellValue.ToString();
+                    // //获取第三行"下班缺卡记录"列的数据
+                    // string OffDutyAbsentRecord = getrow.GetCell(7) == null ? null : getrow.GetCell(7).StringCellValue;
+                    // //获取第三行"迟到次数"列的数据
+                    // string tardyNum = getrow.GetCell(8) == null ? null : getrow.GetCell(8).NumericCellValue.ToString();
+                    // //获取第三行"迟到记录"列的数据
+                    // string tardyRecord = getrow.GetCell(9) == null ? null : getrow.GetCell(9).StringCellValue;
+                    // //获取第三行"迟到扣款"列的数据
+                    // string tardyWithhold = getrow.GetCell(10) == null ? null : getrow.GetCell(10).NumericCellValue.ToString();
+                    // //获取第三行"早退次数"列的数据
+                    // string leaveEarlyNum = getrow.GetCell(11) == null ? null : getrow.GetCell(11).NumericCellValue.ToString();
+                    // //获取第三行"早退记录"列的数据
+                    // string leaveEarlyRecord = getrow.GetCell(12) == null ? null : getrow.GetCell(12).StringCellValue;
+                    // //获取第三行"早退扣款"列的数据
+                    // string leaveWithhold = getrow.GetCell(13) == null ? null : getrow.GetCell(13).NumericCellValue.ToString();
+                    // //获取第三行"备注"列的数据
+                    // string remark = getrow.GetCell(14) == null ? null : getrow.GetCell(14).StringCellValue;
+
+                    #endregion
 
                     matd.YearAndMonth = Convert.ToDateTime(time);
-                    matd.DeserveToRegularDays =Convert.ToDecimal(DeserveToRegularDays);
+                   //matd.DeserveToRegularDays =Convert.ToDecimal(DeserveToRegularDays);
                     matd.EmpName = name;
                     matd.EmpDDid = Convert.ToInt32(ddid);
                     matd.ToRegularDays = Convert.ToInt32(workeddays);
-                    matd.LeaveDays =leaveddays== null ?matd.LeaveDays= null: Convert.ToDecimal(leaveddays);
-                    matd.WorkAbsentNum = workAbsentNum==null ? matd.WorkAbsentNum= null: Convert.ToInt32(workAbsentNum);
-                    matd.WorkAbsentRecord = workAbsentRecord;
-                    matd.OffDutyAbsentNum =offDutyAbsentNum==null?matd.OffDutyAbsentNum= null: Convert.ToInt32(offDutyAbsentNum);
-                    matd.OffDutyAbsentRecord = OffDutyAbsentRecord;
-                    matd.TardyNum =tardyNum==null?matd.TardyNum=null: Convert.ToInt32(tardyNum);
-                    matd.TardyRecord = tardyRecord;
-                    matd.TardyWithhold =tardyWithhold==null?matd.TardyWithhold=null: Convert.ToInt32(tardyWithhold);
-                    matd.LeaveEarlyNum =leaveEarlyNum==null?matd.LeaveEarlyNum=null: Convert.ToInt32(leaveEarlyNum);
-                    matd.LeaveEarlyRecord = leaveEarlyRecord;
-                    matd.LeaveWithhold =leaveWithhold==null?matd.LeaveWithhold=null: Convert.ToInt32(leaveWithhold);
-                    matd.Remark = remark;
+                    //matd.LeaveDays =leaveddays== null ?matd.LeaveDays= null: Convert.ToDecimal(leaveddays);
+                    //matd.WorkAbsentNum = workAbsentNum==null ? matd.WorkAbsentNum= null: Convert.ToInt32(workAbsentNum);
+                    //matd.WorkAbsentRecord = workAbsentRecord;
+                    //matd.OffDutyAbsentNum =offDutyAbsentNum==null?matd.OffDutyAbsentNum= null: Convert.ToInt32(offDutyAbsentNum);
+                    //matd.OffDutyAbsentRecord = OffDutyAbsentRecord;
+                    //matd.TardyNum =tardyNum==null?matd.TardyNum=null: Convert.ToInt32(tardyNum);
+                    //matd.TardyRecord = tardyRecord;
+                    //matd.TardyWithhold =tardyWithhold==null?matd.TardyWithhold=null: Convert.ToInt32(tardyWithhold);
+                    //matd.LeaveEarlyNum =leaveEarlyNum==null?matd.LeaveEarlyNum=null: Convert.ToInt32(leaveEarlyNum);
+                    //matd.LeaveEarlyRecord = leaveEarlyRecord;
+                    //matd.LeaveWithhold =leaveWithhold==null?matd.LeaveWithhold=null: Convert.ToInt32(leaveWithhold);
+                    //matd.Remark = remark;
 
                     result.Add(matd);
                 }
