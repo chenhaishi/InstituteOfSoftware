@@ -417,7 +417,7 @@ namespace SiliconValley.InformationSystem.Business.ClassesBusiness
             //学员班级
             ClassScheduleBusiness classScheduleBusiness = new ClassScheduleBusiness();
             //班主任带班数据
-          var list=  Hoadclass.GetList().Where(a => a.LeaderID == informatiees_Id).ToList();
+            var list=  Hoadclass.GetList().Where(a => a.LeaderID == informatiees_Id).ToList();
             if (Endtime==true)
             {
                 list = list.Where(a => a.EndingTime == null).ToList();

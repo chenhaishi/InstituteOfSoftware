@@ -314,9 +314,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
         public ActionResult Printrecord()
         {
             string student = Request.QueryString["student"];
-            ViewBag.vier = dbtext.FienPrice(student);
+            ViewBag.vier = dbtext.FienPrice(student);//查询缴费记录
             ViewBag.Tuitionrefund = dbtext.FienTuitionrefund(dbtext.FienPrice(student));
             ViewBag.StudentPrentryfeeDate = dbtext.StudentPrentryfeeDate(student);
+            
             return View();
         }
         [HttpGet]

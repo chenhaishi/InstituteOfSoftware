@@ -20,7 +20,7 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity
             get; set;
         }
         public decimal Amountofmoney { get; set; }
-        public string CostitemName { get; set; }
+        public string CostitemName { get; set; }//名目
         public List<vierprice> Chicked { get; set; }
         public string GrandName { get; set; }
         public int id { get; set; }
