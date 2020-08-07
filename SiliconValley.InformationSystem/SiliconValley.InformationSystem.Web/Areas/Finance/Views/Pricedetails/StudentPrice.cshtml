@@ -177,7 +177,7 @@
                     success: function (da) {//执行成功
                         closeLoad(i);
                         var price = 0;
-                        console.log(da);
+                    
                         $.each(da, function (i, item) {
                             if (item.Rategory == "学杂费") {
                                 if (item.countfee < 1) {
@@ -248,9 +248,9 @@
 
 
                         if (Amountofmoney > 0) {
-                            Totalsum = Totalsum - Amountofmoney;
+                            //Totalsum = Totalsum - Amountofmoney;
                             $("#Tuitionrefund").css("display", "block");
-                            $("#Tuitionrefund").text("已扣除预入费" + Amountofmoney + "元");
+                            $("#Tuitionrefund").text("预入费" + Amountofmoney + "元");
                         }
                         $("#Totalsum").text(Totalsum)
                         form.render();
@@ -304,7 +304,7 @@
         form.on('submit(demo1)', function (data) {
          //  window.parent.StudentShow("/Finance/Pricedetails/Receipt", "收费收据", 1, 900, 600);
             var db = data.field;
-
+            console.log(db);
         
             if (Number(db.Amountofmoney) > 0 || Number(db.Amountofmoneys) > 0) {
                 if (Number(db.Amountofmoney) > 0 ) {
