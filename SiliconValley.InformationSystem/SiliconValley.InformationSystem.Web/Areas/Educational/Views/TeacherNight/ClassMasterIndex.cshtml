@@ -56,6 +56,7 @@
 <div class="layui-collapse" lay-accordion>
     <div class="layui-colla-item">
         <h2 class="layui-colla-title">简单查询</h2>
+        <input type="hidden" value="@ViewBag.isjiaowu" id="ishavejiaowu"/>
         <div class="layui-colla-content">
             <form class="layui-form" lay-filter="MasterSercher">
                 <div class="layui-row layui-form-item">
@@ -177,22 +178,47 @@
             elem: '#endTime'
             , trigger: 'click' //采用click弹出
         });
+        var ishava = $("#ishavejiaowu").val();
+        if (ishava == "true") {
+            table.render({
+                elem: '#headmaster_table'
+                , url: '/Educational/TeacherNight/GetClassMasterFunction'
+                , toolbar: '#toolbarDemo_Night' //开启头部工具栏，并为其绑定左侧模板
+                , cols: [[
+                    { type: 'radio' }
+                    , { field: 'Time', title: '值班日期', templet: function (res) { return TimeChange(res.Time); } }
+                    , { field: 'Teachers', title: '值班老师' }
+                    , { field: 'Types', title: '值班类型' }
+                    , {
+                        fixed: 'right', title: '操作', toolbar: '#barDemo_Night', width: 150, templet: function (res) {
+                            if () {
 
-        table.render({
-            elem: '#headmaster_table'
-            , url: '/Educational/TeacherNight/GetClassMasterFunction'
-            , toolbar: '#toolbarDemo_Night' //开启头部工具栏，并为其绑定左侧模板
-            , cols: [[
-                { type: 'radio' }
-                , {field: 'Time', title: '值班日期', templet: function (res) {return TimeChange(res.Time);}}
-                , { field: 'Teachers', title: '值班老师' }
-                , { field: 'Types', title: '值班类型' }
-                , { fixed: 'right', title: '操作', toolbar: '#barDemo_Night', width: 150 }
-            ]]
-            , page: true
-            , limits: [20, 40, 60, 80, 100]
-            ,limit:20
-        });
+                            }
+                        }
+                    }
+                ]]
+                , page: true
+                , limits: [20, 40, 60, 80, 100]
+                , limit: 20
+            });
+        } else {
+            table.render({
+                elem: '#headmaster_table'
+                , url: '/Educational/TeacherNight/GetClassMasterFunction'
+                , toolbar: '#toolbarDemo_Night' //开启头部工具栏，并为其绑定左侧模板
+                , cols: [[
+                    { type: 'radio' }
+                    , { field: 'Time', title: '值班日期', templet: function (res) { return TimeChange(res.Time); } }
+                    , { field: 'Teachers', title: '值班老师' }
+                    , { field: 'Types', title: '值班类型' }
+                    , { fixed: 'right', title: '操作', toolbar: '#barDemo_Night', width: 150 }
+                ]]
+                , page: true
+                , limits: [20, 40, 60, 80, 100]
+                , limit: 20
+            });
+        }
+         
 
         //头工具栏事件
         table.on('toolbar(headmaster_table)', function (obj) {

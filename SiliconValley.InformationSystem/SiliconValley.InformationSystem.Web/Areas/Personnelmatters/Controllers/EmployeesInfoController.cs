@@ -46,53 +46,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         /// <returns></returns>
         public ActionResult GetData(int page, int limit, string AppCondition)
         {
-            EmployeesInfoManage empinfo = new EmployeesInfoManage();
-            var list = empinfo.GetEmpInfoData().Where(e => e.IsDel == false).ToList();
-            if (!string.IsNullOrEmpty(AppCondition))
-            {
-                string[] str = AppCondition.Split(',');
-                string ename = str[0];
-                string deptname = str[1];
-                string pname = str[2];
-                string Education = str[3];
-                string sex = str[4];
-                string PoliticsStatus = str[5];
-                string start_time = str[6];
-                string end_time = str[7];
-                list = list.Where(e => e.EmpName.Contains(ename)).ToList();
-                if (!string.IsNullOrEmpty(deptname))
-                {
-
-                    list = list.Where(e => empinfo.GetDept((int)e.PositionId).DeptId == int.Parse(deptname)).ToList();
-                }
-                if (!string.IsNullOrEmpty(pname))
-                {
-                    list = list.Where(e => e.PositionId == int.Parse(pname)).ToList();
-                }
-                if (!string.IsNullOrEmpty(Education))
-                {
-                    list = list.Where(e => e.Education == Education).ToList();
-                }
-                if (!string.IsNullOrEmpty(sex))
-                {
-                    list = list.Where(e => e.Sex == sex).ToList();
-                }
-                if (!string.IsNullOrEmpty(PoliticsStatus))
-                {
-                    list = list.Where(e => e.PoliticsStatus == PoliticsStatus).ToList();
-                }
-
-                if (!string.IsNullOrEmpty(start_time))
-                {
-                    DateTime stime = Convert.ToDateTime(start_time + " 00:00:00.000");
-                    list = list.Where(a => a.EntryTime >= stime).ToList();
-                }
-                if (!string.IsNullOrEmpty(end_time))
-                {
-                    DateTime etime = Convert.ToDateTime(end_time + " 23:59:59.999");
-                    list = list.Where(a => a.EntryTime <= etime).ToList();
-                }
-            }
+            var list = GetConditionEmplist(AppCondition);
             var mylist = list.OrderBy(e => e.EmployeeId).Skip((page - 1) * limit).Take(limit).ToList();
             var newlist = from e in mylist
                           select new
@@ -143,6 +97,57 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             return Json(newobj, JsonRequestBehavior.AllowGet);
         }
 
+        public List<EmployeesInfo> GetConditionEmplist( string AppCondition)
+        {
+            EmployeesInfoManage empinfo = new EmployeesInfoManage();
+            var list = empinfo.GetEmpInfoData().Where(e => e.IsDel == false).ToList();
+            if (!string.IsNullOrEmpty(AppCondition))
+            {
+                string[] str = AppCondition.Split(',');
+                string ename = str[0];
+                string deptname = str[1];
+                string pname = str[2];
+                string Education = str[3];
+                string sex = str[4];
+                string PoliticsStatus = str[5];
+                string start_time = str[6];
+                string end_time = str[7];
+                list = list.Where(e => e.EmpName.Contains(ename)).ToList();
+                if (!string.IsNullOrEmpty(deptname))
+                {
+
+                    list = list.Where(e => empinfo.GetDept((int)e.PositionId).DeptId == int.Parse(deptname)).ToList();
+                }
+                if (!string.IsNullOrEmpty(pname))
+                {
+                    list = list.Where(e => e.PositionId == int.Parse(pname)).ToList();
+                }
+                if (!string.IsNullOrEmpty(Education))
+                {
+                    list = list.Where(e => e.Education == Education).ToList();
+                }
+                if (!string.IsNullOrEmpty(sex))
+                {
+                    list = list.Where(e => e.Sex == sex).ToList();
+                }
+                if (!string.IsNullOrEmpty(PoliticsStatus))
+                {
+                    list = list.Where(e => e.PoliticsStatus == PoliticsStatus).ToList();
+                }
+
+                if (!string.IsNullOrEmpty(start_time))
+                {
+                    DateTime stime = Convert.ToDateTime(start_time + " 00:00:00.000");
+                    list = list.Where(a => a.EntryTime >= stime).ToList();
+                }
+                if (!string.IsNullOrEmpty(end_time))
+                {
+                    DateTime etime = Convert.ToDateTime(end_time + " 23:59:59.999");
+                    list = list.Where(a => a.EntryTime <= etime).ToList();
+                }
+            }
+            return list;
+        }
         /// <summary>
         /// 根据员工编号获取对应员工
         /// </summary>
@@ -396,10 +401,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         #endregion
 
         #region 批量导入员工相关
+
         public ActionResult BatchImportEmps()
         {
             return View();
         }
+             
         [HttpPost]
         public ActionResult BatchImportEmps(HttpPostedFileBase excelfile)//当文件类型错误，则excelfile=null
         {
@@ -427,6 +434,18 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         public ActionResult BatchExportEmps() {
             return View();
         }
+        [HttpPost]
+        public ActionResult EmpInfoToExcel(string condition, HttpPostedFileBase excelfile)
+        {
+            var list = GetConditionEmplist(condition);
+            string Detailfilename = "湖南硅谷云教育科技有限公司员工信息";
+            EmployeesInfoManage empmanage = new EmployeesInfoManage();
+
+            var result="";
+                empmanage.EmpDataToExcel(list, Detailfilename);
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
         #endregion
 
         #region 部门及岗位相关业务

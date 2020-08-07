@@ -97,15 +97,17 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
         /// <returns></returns>
         public bool GetmcempByEmpid(string empid)
         {
-            bool result = false;
+            bool result = true;
             try
             {
                 var mcemp = this.GetEmpMCData().Where(s => s.EmployeeId == empid).FirstOrDefault();
-                mcemp.FinalGrade = 100;
-                this.Update(mcemp);
-                rc.RemoveCache("InRedisMCData");
-                result = true;
-                BusHelper.WriteSysLog("将该员工绩效分默认修改为100成功！", Entity.Base_SysManage.EnumType.LogType.编辑数据);
+                if (mcemp!=null) {
+                    mcemp.FinalGrade = 100;
+                    this.Update(mcemp);
+                    rc.RemoveCache("InRedisMCData");
+                    result = true;
+                    BusHelper.WriteSysLog("将该员工绩效分默认修改为100成功！", Entity.Base_SysManage.EnumType.LogType.编辑数据);
+                }
 
             }
             catch (Exception ex)

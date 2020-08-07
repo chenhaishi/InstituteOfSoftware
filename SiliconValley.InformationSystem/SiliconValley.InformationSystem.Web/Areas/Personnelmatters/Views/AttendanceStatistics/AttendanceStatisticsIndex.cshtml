@@ -6,7 +6,7 @@
 @*头部工具栏*@
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-sm" lay-event="BatchImport"><i class="layui-icon layui-icon-upload-drag"></i>excel批量导入</button>
+        @*<button class="layui-btn layui-btn-sm" lay-event="BatchImport"><i class="layui-icon layui-icon-upload-drag"></i>excel批量导入</button>*@
         <button class="layui-btn layui-btn-sm" lay-event="BatchAdd"><i class="layui-icon layui-icon-addition"></i>批量添加</button>
         <button class="layui-btn layui-btn-sm" lay-event="timeanddaysChange"><i class="layui-icon layui-icon-search"></i>查看记录</button>
         <button class="layui-btn layui-btn-sm" lay-event="Approved"><i class="layui-icon layui-icon-edit"></i>确认审批</button>
@@ -233,7 +233,7 @@
                 var layer = layui.layer;      //layui对象
                 layer.open({
                     type: 2
-                    , area: ["400px", "400px"]
+                    , area: ["600px", "600px"]
                     , title: "批量导入"
                     , content: '/Personnelmatters/AttendanceStatistics/BatchImport'
                     , anim: 2

@@ -112,7 +112,6 @@
             var ids = $.map(checked, function (item) {
                 return item['Id'];
             });
-
             dialogComfirm('È·ÈÏÉ¾³ýÂð£¿', function () {
                 $.postJSON(rootUrl + 'Base_SysManage/Base_AppSecret/DeleteData', { ids: JSON.stringify(ids) }, function (resJson) {
                     if (resJson.Success) {
