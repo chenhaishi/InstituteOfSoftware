@@ -72,6 +72,7 @@
     <Compile Include="Base_SysManage\ViewEntity\AccountView.cs" />
     <Compile Include="Base_SysManage\ViewEntity\Weixin_info.cs" />
     <Compile Include="Cloudstorage.cs" />
+    <Compile Include="CostitemView.cs" />
     <Compile Include="Entity\Accdationinformation.cs" />
     <Compile Include="Entity\AddCourse.cs" />
     <Compile Include="Entity\AdmissArrangement.cs" />
@@ -328,6 +329,7 @@
     <Compile Include="Entity\Undergraduateschool.cs" />
     <Compile Include="Entity\UnemployedStudent.cs" />
     <Compile Include="Entity\Warehouse.cs" />
+    <Compile Include="Feedetails.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Registerforexamination.cs" />
     <Compile Include="SqlDate.cs" />

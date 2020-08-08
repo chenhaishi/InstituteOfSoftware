@@ -16,6 +16,7 @@ using SiliconValley.InformationSystem.Util;
 using SiliconValley.InformationSystem.Business.EnrollmentBusiness;
 using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 using SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness;
+using SiliconValley.InformationSystem.Entity;
 
 namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
 {
@@ -1070,28 +1071,10 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
         /// <returns></returns>
         public object Expenseentry(int page, int limit,string StudentID, string Name, string IsaDopt, string OddNumbers)
         {
-            List<CostitemViews> costlist = new List<CostitemViews>();
-            foreach (var item in PaymentverificationBusiness.GetList())
-            {
-                CostitemViews costitemViews = new CostitemViews();
-                costitemViews.id = item.id;
-                costitemViews.Passornot = item.Passornot;
-                costitemViews.OddNumbers = item.OddNumbers;
-                costitemViews.Paymentmethod = item.Paymentmethod;
-                var pay = PayviewPaymentverBusiness.GetList().Where(z => z.Paymentver == item.id).ToList();
-                foreach (var item1 in pay)
-                {
-                  
-                    var x = PayviewBusiness.GetEntity(item1.Payviewid);
-                    var student = studentInformationBusiness.GetEntity(x.StudenID);
-                    costitemViews.name = student.Name;
-                    costitemViews.IDnumber= student.identitydocument;
-                    costitemViews.studentid = x.StudenID;
-                    costitemViews.Amountofmoney= costitemViews.Amountofmoney+ (decimal)x.Amountofmoney;
-                    costitemViews.AddDate =(DateTime) x.AddDate;
-                }
-                costlist.Add(costitemViews);
-            }
+            BaseBusiness<Feedetails> FeedetailsBusiness = new BaseBusiness<Feedetails>();
+            
+              var costlist=  FeedetailsBusiness.GetList();
+
             if (!string.IsNullOrEmpty(StudentID))
             {
                 costlist = costlist.Where(a => a.studentid.Contains(StudentID)).ToList();
