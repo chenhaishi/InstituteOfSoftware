@@ -1543,6 +1543,7 @@
     <Content Include="Tree\js\underscore-min.js" />
     <Content Include="Tree\js\vix.js" />
     <Content Include="Tree\js\vroom.js" />
+    <Content Include="uploadXLSXfile\EmpImage\birth2.gif" />
     <Content Include="uploadXLSXfile\EmpImage\guigu.jpg" />
     <Content Include="uploadXLSXfile\SelfObtainRcoredImg\1709JA肖战.jpg" />
     <Content Include="uploadXLSXfile\SelfObtainRcoredImg\1908NA舒克.png" />

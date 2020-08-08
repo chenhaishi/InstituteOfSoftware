@@ -46,6 +46,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         /// <returns></returns>
         public ActionResult GetData(int page, int limit, string AppCondition)
         {
+            EmployeesInfoManage empinfo = new EmployeesInfoManage();
             var list = GetConditionEmplist(AppCondition);
             var mylist = list.OrderBy(e => e.EmployeeId).Skip((page - 1) * limit).Take(limit).ToList();
             var newlist = from e in mylist
@@ -82,8 +83,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                               e.BCNum,
                               e.Material,
                               e.Remark,
-                              e.IsDel,
-                              e.RecruitSource
+                              e.IsDel
                               #endregion
 
                           };
@@ -196,7 +196,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 e.Remark,
                 e.IsDel,
                 Image= db_Bos.ImagesFine("xinxihua","EmpImage",e.Image,4),
-                e.RecruitSource,
                 deltime = etmobj == null ? null : etmobj.TransactionTime,//离职时间
                 delreason = etmobj == null ? null : etmobj.Reason//离职原因
                 #endregion
@@ -250,7 +249,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 e1.Material,
                 e1.Remark,
                 e1.IsDel,
-                e1.RecruitSource,
                 deltime = etm.GetDelEmp(e1.EmployeeId).TransactionTime,//离职时间
                 delreason = etm.GetDelEmp(e1.EmployeeId).Reason//离职原因
                 #endregion
@@ -342,6 +340,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             }
             return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
         }
+       
         //获取时间（网络时间/当前计算机时间）
         public string Date()
         {

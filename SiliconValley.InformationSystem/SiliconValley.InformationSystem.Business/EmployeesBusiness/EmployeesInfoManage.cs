@@ -709,7 +709,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
                                                         emp.BCNum = item.bankCardnum;
                                                         emp.Material = item.paperyMaterial;
                                                         emp.Remark = item.Remark;
-                                                        emp.RecruitSource = item.original;
+                                                        emp.InvitedSource = item.original;
                                                         emp.IsDel = false;
                                                         emp.Image = "guigu.jpg";
                                                         this.Insert(emp);
@@ -790,7 +790,6 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
             if (data == null)
             {
                 return;
-
             }
             var workbook = new HSSFWorkbook();
 
@@ -831,10 +830,9 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
                 CreateCell(row, ContentcellStyle, 1,d.DDAppId.ToString());//钉钉号
 
                 CreateCell(row, ContentcellStyle, 2,d.EmpName );//员工名称
-                CreateCell(row, ContentcellStyle, 3,this.GetDeptByPid(d.PositionId).DeptName );//部门名称
-                CreateCell(row, ContentcellStyle, 4, this.GetPobjById(d.PositionId).PositionName);//岗位名称
-
-                CreateCell(row, ContentcellStyle, 5, d.Sex);//性别
+                CreateCell(row, ContentcellStyle, 3, d.Sex);//性别
+                CreateCell(row, ContentcellStyle, 4,this.GetDeptByPid(d.PositionId).DeptName );//部门名称
+                CreateCell(row, ContentcellStyle, 5, this.GetPobjById(d.PositionId).PositionName);//岗位名称
 
                 CreateCell(row, ContentcellStyle, 6, d.Age.ToString());//年龄
                 CreateCell(row, ContentcellStyle, 7, d.Nation);//民族
@@ -850,26 +848,22 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
                 CreateCell(row, ContentcellStyle, 16, d.ContractStartTime.ToString());//紧急联系电话
                 CreateCell(row, ContentcellStyle, 17, d.DomicileAddress);//户籍地址
                 CreateCell(row, ContentcellStyle, 18, d.Address);//现居地址
-                CreateCell(row, ContentcellStyle, 18, d.Education);//学历
-                CreateCell(row, ContentcellStyle, 18, d.MaritalStatus==true?"已婚":"未婚");//婚姻状态
-                CreateCell(row, ContentcellStyle, 18, d.IdCardIndate.ToString());//身份证有效期
-                CreateCell(row, ContentcellStyle, 18, d.PoliticsStatus);//政治面貌
+                CreateCell(row, ContentcellStyle, 19, d.Education);//学历
+                CreateCell(row, ContentcellStyle, 20, d.MaritalStatus==true?"已婚":"未婚");//婚姻状态
+                CreateCell(row, ContentcellStyle, 21, d.IdCardIndate.ToString());//身份证有效期
+                CreateCell(row, ContentcellStyle, 22, d.PoliticsStatus);//政治面貌
+                CreateCell(row, ContentcellStyle, 23, d.InvitedSource);//招聘来源
+                CreateCell(row, ContentcellStyle, 24, d.ProbationSalary.ToString());//试用期工资
+                CreateCell(row, ContentcellStyle, 25, d.Salary.ToString());//转正后工资
+                CreateCell(row, ContentcellStyle, 26, d.SSStartMonth.ToString());//社保起始月份
+                CreateCell(row, ContentcellStyle, 27, d.BCNum);//银行卡号
+                CreateCell(row, ContentcellStyle, 28, d.Material);//材料
+                CreateCell(row, ContentcellStyle, 29, d.Remark);//备注
+                CreateCell(row, ContentcellStyle, 30, d.IsDel==false?"在职":"离职");//员工状态
 
                 num++;
 
             });
-
-            //string pathName = System.Web.HttpContext.Current.Server.MapPath("/Areas/Educational/CostHistoryFiles/" + filename + ".xls");
-
-            //stream = new FileStream(pathName, FileMode.Create, FileAccess.ReadWrite);
-
-            //CloudstorageBusiness Bos = new CloudstorageBusiness();
-
-            //var client = Bos.BosClient();
-
-            //var byteary = workbook.GetBytes();
-
-            //client.PutObject("xinxihua", $"/CostHistoryFiles/{filename}.xls", byteary);
 
             workbook.Close();
 
@@ -879,43 +873,57 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
                 HSSFRow Header = (HSSFRow)sheet.CreateRow(0);
                 Header.HeightInPoints = 40;
 
-                CreateCell(Header, HeadercellStyle, 0, "姓名");
+                CreateCell(Header, HeadercellStyle, 0, "员工编号");
 
-                CreateCell(Header, HeadercellStyle, 1, "职务");
+                CreateCell(Header, HeadercellStyle, 1, "钉钉号");
 
-                CreateCell(Header, HeadercellStyle, 2, "Y1课时");
+                CreateCell(Header, HeadercellStyle, 2, "姓名");
 
-                CreateCell(Header, HeadercellStyle, 3, "S1课时");
+                CreateCell(Header, HeadercellStyle, 3, "性别");
 
-                CreateCell(Header, HeadercellStyle, 4, "S2课时");
+                CreateCell(Header, HeadercellStyle, 4, "所属部门");
 
-                CreateCell(Header, HeadercellStyle, 5, "S3课时");
+                CreateCell(Header, HeadercellStyle, 5, "所属岗位");
 
-                CreateCell(Header, HeadercellStyle, 6, "S4课时");
+                CreateCell(Header, HeadercellStyle, 6, "年龄");
 
-                CreateCell(Header, HeadercellStyle, 7, "S1内训课时");
+                CreateCell(Header, HeadercellStyle, 7, "民族");
 
-                CreateCell(Header, HeadercellStyle, 8, "S2内训课时");
+                CreateCell(Header, HeadercellStyle, 8, "电话号码");
 
-                CreateCell(Header, HeadercellStyle, 9, "S3内训课时");
+                CreateCell(Header, HeadercellStyle, 9, "身份证号码");
 
-                CreateCell(Header, HeadercellStyle, 10, "S4内训课时");
+                CreateCell(Header, HeadercellStyle, 10, "入职时间");
 
-                CreateCell(Header, HeadercellStyle, 11, "Y1内训课时");
+                CreateCell(Header, HeadercellStyle, 11, "转正时间");
 
-                CreateCell(Header, HeadercellStyle, 12, "质素，语数外，体育课时");
+                CreateCell(Header, HeadercellStyle, 12, "合同起始时间");
 
-                CreateCell(Header, HeadercellStyle, 13, "底课时");
+                CreateCell(Header, HeadercellStyle, 13, "合同终止时间");
 
-                CreateCell(Header, HeadercellStyle, 14, "满意度分数");
+                CreateCell(Header, HeadercellStyle, 14, "出生日期");
 
-                CreateCell(Header, HeadercellStyle, 15, "课时费");
+                CreateCell(Header, HeadercellStyle, 15, "生日");
 
-                CreateCell(Header, HeadercellStyle, 16, "阅卷费");
+                CreateCell(Header, HeadercellStyle, 16, "紧急联系电话");
 
-                CreateCell(Header, HeadercellStyle, 17, "监考费");
+                CreateCell(Header, HeadercellStyle, 17, "户籍地址");
 
-                CreateCell(Header, HeadercellStyle, 18, "课程研发费");
+                CreateCell(Header, HeadercellStyle, 18, "现居地址");
+
+                CreateCell(Header, HeadercellStyle, 19, "学历");
+                CreateCell(Header, HeadercellStyle, 20, "婚姻状态");
+                CreateCell(Header, HeadercellStyle, 21, "身份证有效期");
+                CreateCell(Header, HeadercellStyle, 22, "政治面貌");
+                CreateCell(Header, HeadercellStyle, 23, "招聘来源");
+                CreateCell(Header, HeadercellStyle, 24, "试用期工资");
+                CreateCell(Header, HeadercellStyle, 25, "转正后工资");
+                CreateCell(Header, HeadercellStyle, 26, "社保起始月份");
+                CreateCell(Header, HeadercellStyle, 27, "银行卡号");
+                CreateCell(Header, HeadercellStyle, 28, "材料");
+                CreateCell(Header, HeadercellStyle, 29, "备注");
+                CreateCell(Header, HeadercellStyle, 30, "员工状态");
+
             }
 
             void CreateCell(HSSFRow row, HSSFCellStyle TcellStyle, int index, string value)
@@ -1019,6 +1027,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
 
             return strAge;
         }
+        #region 员工编号生成相关
         /// <summary>
         ///生成员工编号
         /// </summary>
@@ -1094,6 +1103,8 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
             string result = year + "-" + month + "-" + date;
             return result;
         }
+        #endregion
+
         /// <summary>
         /// 判断某钉钉号是否已存在
         /// </summary>
