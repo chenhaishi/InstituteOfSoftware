@@ -154,6 +154,30 @@
         var element = layui.element;
 
         var list = [];
+
+        form.on('checkbox(aihao2)', function (data) {
+            var Amountofmoney = $(this).attr("Amountofmoney");
+            var Costitemsid = $(this).attr("Costitemsid");
+           
+            list = [];
+           
+            $('input[type=checkbox]:checked').each(function () {
+                var obj = {};
+                obj.Costitemsid = $(this).attr("Costitemsid");
+                obj.Amountofmoney = $(this).attr("Amountofmoney");
+                obj.StudenID = $("#StudentNumber").text();
+                list.push(obj);
+            });
+            
+            if (data.elem.checked == true) {
+                $("#Totalsum").text(Number($(this).attr("Amountofmoney")) + Number($("#Totalsum").text()));
+            } else {
+                $("#Totalsum").text(Number(Number($("#Totalsum").text()) - $(this).attr("Amountofmoney")));
+        
+            }
+            
+          
+        })
         //监听阶段下拉框
         form.on('select(Stage)', function (data) {
             list.length = 0;
@@ -204,8 +228,8 @@
                                     obj.StudenID = $("#StudentNumber").text();
 
                                     list.push(obj);
-
-                                    optionstring += '<button type="button"  class="layui-btn layui-btn-normal layui-btn-radius">' + item.Name + '(' + item.Amountofmoney + ')</button> ';
+                                  
+                                    optionstring += '<input type="checkbox" name="like[game]" lay-filter="aihao2" Costitemsid=' + item.id + ' Amountofmoney=' + item.Amountofmoney + ' title="' + item.Name + '(' + item.Amountofmoney + ') " checked="">';
 
                                     count++;
                                     if (count > 2) {
@@ -219,8 +243,8 @@
                                         obj.Costitemsid = item.id;
                                         obj.Amountofmoney = item.Amountofmoney;
                                         obj.StudenID = $("#StudentNumber").text();
-                                        list.push(obj);
-                                        optionstring += '<button type="button"  class="layui-btn layui-btn-normal layui-btn-radius">' + item.Name + '(' + item.Amountofmoney + ')</button> ';
+                                    list.push(obj);
+                                    optionstring += '<input type="checkbox" name="like[game]" lay-filter="aihao2" Costitemsid=' + item.id + ' Amountofmoney=' + item.Amountofmoney+ ' title="' + item.Name + '(' + item.Amountofmoney + ') " checked="">';
                                         optionstring += "<div style='height:10px;'></div>";
                                  
                                   
@@ -238,6 +262,7 @@
                             }
 
                         });
+                        console.log(list);
                         if (price > 0) {
                             $("#zafei").css("display", "block");
                         } else {
@@ -259,6 +284,7 @@
                         closeLoad(i);
 
                     }
+                   
                 });
               
             } else {
