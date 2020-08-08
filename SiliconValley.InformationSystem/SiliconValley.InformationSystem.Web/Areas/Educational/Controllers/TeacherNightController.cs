@@ -168,19 +168,19 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             }
              
             a = TeacherNight_Entity.My_Delete(DELE);
-            if (a.Success)
-            {
-                //修改晚自习数据
-                List<EvningSelfStudy> updateTeacher = new List<EvningSelfStudy>();
-                foreach (TeacherNight item in DELE)
-                {
-                   List<EvningSelfStudy> findlist = TeacherNight_Entity.EvningSelfStudent_Entity.GetSQLDat("select * from EvningSelfStudy where ClassSchedule_id=" + item.ClassSchedule_Id + " and Anpaidate='" + item.OrwatchDate + "'");
+            //if (a.Success)
+            //{
+            //    //修改晚自习数据
+            //    List<EvningSelfStudy> updateTeacher = new List<EvningSelfStudy>();
+            //    foreach (TeacherNight item in DELE)
+            //    {
+            //       List<EvningSelfStudy> findlist = TeacherNight_Entity.EvningSelfStudent_Entity.GetSQLDat("select * from EvningSelfStudy where ClassSchedule_id=" + item.ClassSchedule_Id + " and Anpaidate='" + item.OrwatchDate + "'");
 
-                    //findlist[0].emp_id = null;
-                    updateTeacher.Add(findlist[0]);
-                }
-              a=  TeacherNight_Entity.EvningSelfStudent_Entity.Update_Data(updateTeacher);
-            }
+            //        //findlist[0].emp_id = null;
+            //        updateTeacher.Add(findlist[0]);
+            //    }
+            //  a=  TeacherNight_Entity.EvningSelfStudent_Entity.Update_Data(updateTeacher);
+            //}
             return Json(a, JsonRequestBehavior.AllowGet);
         }
 
@@ -188,48 +188,48 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         /// 编辑页面
         /// </summary>
         /// <returns></returns>
-        public ActionResult EditView(int id)
-        {
+        //public ActionResult EditView(int id)
+        //{
             
-            TeacherNight_Entity = new TeacherNightManeger();//获取数据
-            TeacherNight find_data = TeacherNight_Entity.GetEntity(id);
-            ViewBag.time = find_data.OrwatchDate.ToString("yyyy-MM-dd");
-            Teacher_Entity = new TeacherBusiness();
-            List<SelectListItem> teacherlist = Teacher_Entity.GetTeachers().Select(t => new SelectListItem() { Text = Reconcile_Com.GetEmpName(t.EmployeeId), Value = t.EmployeeId, Selected = find_data.Tearcher_Id == t.EmployeeId ? true : false }).ToList();
+        //    TeacherNight_Entity = new TeacherNightManeger();//获取数据
+        //    TeacherNight find_data = TeacherNight_Entity.GetEntity(id);
+        //    ViewBag.time = find_data.OrwatchDate.ToString("yyyy-MM-dd");
+        //    Teacher_Entity = new TeacherBusiness();
+        //    List<SelectListItem> teacherlist = Teacher_Entity.GetTeachers().Select(t => new SelectListItem() { Text = Reconcile_Com.GetEmpName(t.EmployeeId), Value = t.EmployeeId, Selected = find_data.Tearcher_Id == t.EmployeeId ? true : false }).ToList();
 
-            ViewBag.teacherlist = teacherlist;
-            ViewBag.className = Reconcile_Com.GetClassName(Convert.ToInt32(find_data.ClassSchedule_Id));
-            ViewBag.classroom = Reconcile_Com.Classroom_Entity.GetEntity(find_data.ClassRoom_id).ClassroomName;
-            return View(find_data);
-        }
+        //    ViewBag.teacherlist = teacherlist;
+        //    ViewBag.className = Reconcile_Com.GetClassName(Convert.ToInt32(find_data.ClassSchedule_Id));
+        //    ViewBag.classroom = Reconcile_Com.Classroom_Entity.GetEntity(find_data.ClassRoom_id).ClassroomName;
+        //    return View(find_data);
+        //}
 
-        [HttpPost]
-        public ActionResult EditFunction(TeacherNight t)
-        {
-            TeacherNight find = TeacherNight_Entity.GetEntity(t.Id);
-            t.ClassSchedule_Id = find.ClassSchedule_Id;
-            t.BeOnDuty_Id = find.BeOnDuty_Id;
-            t.AttendDate = find.AttendDate;
-            t.ClassRoom_id = find.ClassRoom_id;
-            AjaxResult a = new AjaxResult();
-            bool istrue= TeacherNightandEvningStudet.IsUpdateTeacherNightData(t.OrwatchDate,Convert.ToInt32(t.ClassSchedule_Id));
-            if (istrue==true)
-            {
-                 a = TeacherNight_Entity.Edit_Data(t);
-                if (a.Success)
-                {
-                    //学生晚自习数据
-                   a=  TeacherNightandEvningStudet.SetEvningStudentData(t.OrwatchDate,Convert.ToInt32( t.ClassSchedule_Id), t.Tearcher_Id);                     
-                }
-            }
-            else
-            {
-                a.Success = false;
-                a.Msg = "该日期没有安排该班级的晚自习！，请重新选择日期或去安排班级在这个日期的晚自习";
-            }
+        //[HttpPost]
+        //public ActionResult EditFunction(TeacherNight t)
+        //{
+        //    TeacherNight find = TeacherNight_Entity.GetEntity(t.Id);
+        //    t.ClassSchedule_Id = find.ClassSchedule_Id;
+        //    t.BeOnDuty_Id = find.BeOnDuty_Id;
+        //    t.AttendDate = find.AttendDate;
+        //    t.ClassRoom_id = find.ClassRoom_id;
+        //    AjaxResult a = new AjaxResult();
+        //    bool istrue= TeacherNightandEvningStudet.IsUpdateTeacherNightData(t.OrwatchDate,Convert.ToInt32(t.ClassSchedule_Id));
+        //    if (istrue==true)
+        //    {
+        //         a = TeacherNight_Entity.Edit_Data(t);
+        //        if (a.Success)
+        //        {
+        //            //学生晚自习数据
+        //           a=  TeacherNightandEvningStudet.SetEvningStudentData(t.OrwatchDate,Convert.ToInt32( t.ClassSchedule_Id), t.Tearcher_Id);                     
+        //        }
+        //    }
+        //    else
+        //    {
+        //        a.Success = false;
+        //        a.Msg = "该日期没有安排该班级的晚自习！，请重新选择日期或去安排班级在这个日期的晚自习";
+        //    }
 
-            return Json(a, JsonRequestBehavior.AllowGet);
-        }
+        //    return Json(a, JsonRequestBehavior.AllowGet);
+        //}
 
         [HttpPost]
         public ActionResult GetEmtpyClassroom()
@@ -375,7 +375,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                     List<TeacherNightView> sametime = getall.Where(g => g.OrwatchDate == getall[i].OrwatchDate && g.BeOnDuty_Id == getall[i].BeOnDuty_Id && e.GetDeptByEmpid(g.Tearcher_Id).DeptId == e.GetDeptByEmpid(getall[i].Tearcher_Id).DeptId).ToList();
                     HeadmasterView headmaster = new HeadmasterView();
                     headmaster.Time = getall[i].OrwatchDate;
-                    headmaster.Types = getall[i].timename;
+                    //headmaster.Types = getall[i].timename;
                     string ids = null;
                     string teachers = null;
                     int index = 1;
@@ -495,7 +495,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                             new_t.IsDelete = false;
                             new_t.OrwatchDate = time;
                             new_t.Tearcher_Id = id;
-                            new_t.timename = types == true ? "晚自习值班" : "周末值班";
+                            //new_t.timename = types == true ? "晚自习值班" : "周末值班";
                             night.Add(new_t);
                         }
                     }
