@@ -46,6 +46,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         /// <returns></returns>
         public ActionResult GetData(int page, int limit, string AppCondition)
         {
+            EmployeesInfoManage empinfo = new EmployeesInfoManage();
             var list = GetConditionEmplist(AppCondition);
             var mylist = list.OrderBy(e => e.EmployeeId).Skip((page - 1) * limit).Take(limit).ToList();
             var newlist = from e in mylist
