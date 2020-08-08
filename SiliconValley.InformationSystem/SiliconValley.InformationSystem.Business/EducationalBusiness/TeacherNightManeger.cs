@@ -24,6 +24,18 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         public EvningSelfStudyManeger EvningSelfStudent_Entity = new EvningSelfStudyManeger();
         ReconcileManeger reconcile_Entity = new ReconcileManeger();
 
+
+        /// <summary>
+        /// 根据Id获取数据
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public TeacherNight FindId(int id)
+        {
+           List<TeacherNight> list= this.GetListBySql<TeacherNight>("select * from TeacherNight where Id=" + id);
+            return list.Count > 0 ? list[0] : null;
+        }
+
         /// <summary>
         /// 获取所有数据
         /// </summary>
@@ -139,107 +151,6 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
             return a;
         }
-
-        #region 系统自动安排晚自习
-        /// <summary>
-        /// 系统自动安排晚自习值班
-        /// </summary>
-        /// <param name="starTime"></param>
-        /// <param name="endTime"></param>
-        /// <param name="s1ors3"></param>
-        /// <returns></returns>
-        //public AjaxResult AnpaiNight(DateTime starTime, DateTime endTime,List<ClassSchedule> Class_All)
-        //{
-        //    AjaxResult a = new AjaxResult();
-        //    BeOnDuty_Entity = new BeOnDutyManeger();
-        //    BeOnDuty finfb = BeOnDuty_Entity.GetSingleBeOnButy("教员晚自习", false);
-
-        //    EvningSelfStudent_Entity = new EvningSelfStudyManeger();
-        //    List<EvningSelfStudy> evning_list = EvningSelfStudent_Entity.Getdaterange(starTime,endTime); //获取在这段期间有晚自习安排的数据
-
-        //    List<EvningSelfStudy> evningSelves_have = new List<EvningSelfStudy>();//这个时间段有晚自习的班级
-
-
-        //    Random random = new Random();  //随机抽取
-        //    foreach (ClassSchedule e in Class_All)
-        //    {
-        //        List<EvningSelfStudy> E_list_findclass = evning_list.Where(ev => ev.ClassSchedule_id == e.id).ToList();
-        //        if (E_list_findclass.Count != 0 && E_list_findclass.Count == 1)
-        //        {
-        //            evningSelves_have.AddRange(E_list_findclass);
-        //        }
-        //        else
-        //        {
-        //            int num = random.Next(0, E_list_findclass.Count);
-        //            EvningSelfStudy findata = E_list_findclass[num];
-        //            //判断这天是否考试，如果是考试就重新选
-        //            bool s= reconcile_Entity.FindCouse(findata.Anpaidate, findata.ClassSchedule_id);
-        //            if (s)
-        //            {
-        //                if (num != 0)
-        //                {
-        //                    num = 0;
-        //                }
-        //                else
-        //                {
-        //                    num = 1;
-        //                }
-        //            }
-        //            evningSelves_have.Add(E_list_findclass[num]);
-        //        }
-        //    }
-
-        //    List<TeacherNight> list_new = new List<TeacherNight>();   //系统安排的值班数据
-
-        //    foreach (EvningSelfStudy ev in evningSelves_have)
-        //    {                
-        //        //获取排课数据
-        //        Reconcile reconcile = reconcile_Entity.Teacher_Reconfile(ev.Anpaidate, ev.ClassSchedule_id);
-        //        if (reconcile != null)
-        //        {
-        //            //系统安排值班
-        //            TeacherNight new_teachernight_data = new TeacherNight();
-        //            new_teachernight_data.ClassRoom_id = ev.Classroom_id;
-        //            new_teachernight_data.ClassSchedule_Id = ev.ClassSchedule_id;
-        //            new_teachernight_data.IsDelete = false;
-        //            new_teachernight_data.OrwatchDate = ev.Anpaidate;
-        //            new_teachernight_data.Tearcher_Id = reconcile.EmployeesInfo_Id;
-        //            new_teachernight_data.timename = ev.curd_name;
-        //            new_teachernight_data.AttendDate = DateTime.Now;
-        //            new_teachernight_data.BeOnDuty_Id = finfb.Id;
-        //            list_new.Add(new_teachernight_data);
-        //        }
-        //    }
-
-        //    List<TeacherNight> all = this.GetAllTeacherNight();    //判断在这期间是否已安排晚自习值班
-        //    for (int i = 0; i < list_new.Count; i++)
-        //    {
-        //        int count = this.GetTimeClassNight(starTime, endTime, Convert.ToInt32(list_new[i].ClassSchedule_Id));
-        //        if (count > 0)
-        //        {
-        //            //删除
-        //            list_new.Remove(list_new[i]);
-        //        }
-        //    }
-
-        //    a = this.Add_data(list_new); //添加数据
-        //    if (a.Success)
-        //    {
-        //        //修改值班数据
-        //        List<EvningSelfStudy> updateTeacher = new List<EvningSelfStudy>();
-        //        foreach (TeacherNight item in list_new)
-        //        {
-        //           EvningSelfStudy find= evningSelves_have.Where(c => c.ClassSchedule_id == item.ClassSchedule_Id).FirstOrDefault();
-        //            find.emp_id = item.Tearcher_Id;
-        //            updateTeacher.Add(find);
-        //        }
-
-        //        EvningSelfStudent_Entity.Update_Data(updateTeacher);
-        //    }
-        //    return a;
-        //}
-
-        #endregion
 
         /// <summary>
         /// 判断XX日期XX时间XX班级XX老师是否值班
