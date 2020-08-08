@@ -47,6 +47,59 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         public ActionResult GetData(int page, int limit, string AppCondition)
         {
             EmployeesInfoManage empinfo = new EmployeesInfoManage();
+            var list = GetConditionEmplist(AppCondition);
+            var mylist = list.OrderBy(e => e.EmployeeId).Skip((page - 1) * limit).Take(limit).ToList();
+            var newlist = from e in mylist
+                          select new
+                          {
+                              #region 获取属性值 
+                              e.EmployeeId,
+                              e.DDAppId,
+                              e.EmpName,
+                              Position = empinfo.GetPosition((int)e.PositionId).PositionName,
+                              Depart = empinfo.GetDept((int)e.PositionId).DeptName,
+                              e.Sex,
+                              e.Age,
+                              e.Nation,
+                              e.Phone,
+                              e.IdCardNum,
+                              e.ContractStartTime,
+                              e.ContractEndTime,
+                              e.EntryTime,
+                              e.Birthdate,
+                              e.Birthday,
+                              e.PositiveDate,
+                              e.UrgentPhone,
+                              e.DomicileAddress,
+                              e.Address,
+                              e.Education,
+                              e.MaritalStatus,
+                              e.IdCardIndate,
+                              e.PoliticsStatus,
+                              e.InvitedSource,
+                              e.ProbationSalary,
+                              e.Salary,
+                              e.SSStartMonth,
+                              e.BCNum,
+                              e.Material,
+                              e.Remark,
+                              e.IsDel
+                              #endregion
+
+                          };
+            var newobj = new
+            {
+                code = 0,
+                msg = "",
+                count = list.Count(),
+                data = newlist
+            };
+            return Json(newobj, JsonRequestBehavior.AllowGet);
+        }
+
+        public List<EmployeesInfo> GetConditionEmplist( string AppCondition)
+        {
+            EmployeesInfoManage empinfo = new EmployeesInfoManage();
             var list = empinfo.GetEmpInfoData().Where(e => e.IsDel == false).ToList();
             if (!string.IsNullOrEmpty(AppCondition))
             {
@@ -93,56 +146,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                     list = list.Where(a => a.EntryTime <= etime).ToList();
                 }
             }
-            var mylist = list.OrderBy(e => e.EmployeeId).Skip((page - 1) * limit).Take(limit).ToList();
-            var newlist = from e in mylist
-                          select new
-                          {
-                              #region 获取属性值 
-                              e.EmployeeId,
-                              e.DDAppId,
-                              e.EmpName,
-                              Position = empinfo.GetPosition((int)e.PositionId).PositionName,
-                              Depart = empinfo.GetDept((int)e.PositionId).DeptName,
-                              e.Sex,
-                              e.Age,
-                              e.Nation,
-                              e.Phone,
-                              e.IdCardNum,
-                              e.ContractStartTime,
-                              e.ContractEndTime,
-                              e.EntryTime,
-                              e.Birthdate,
-                              e.Birthday,
-                              e.PositiveDate,
-                              e.UrgentPhone,
-                              e.DomicileAddress,
-                              e.Address,
-                              e.Education,
-                              e.MaritalStatus,
-                              e.IdCardIndate,
-                              e.PoliticsStatus,
-                              e.InvitedSource,
-                              e.ProbationSalary,
-                              e.Salary,
-                              e.SSStartMonth,
-                              e.BCNum,
-                              e.Material,
-                              e.Remark,
-                              e.IsDel,
-                              e.RecruitSource
-                              #endregion
-
-                          };
-            var newobj = new
-            {
-                code = 0,
-                msg = "",
-                count = list.Count(),
-                data = newlist
-            };
-            return Json(newobj, JsonRequestBehavior.AllowGet);
+            return list;
         }
-
         /// <summary>
         /// 根据员工编号获取对应员工
         /// </summary>
@@ -191,7 +196,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 e.Remark,
                 e.IsDel,
                 Image= db_Bos.ImagesFine("xinxihua","EmpImage",e.Image,4),
-                e.RecruitSource,
                 deltime = etmobj == null ? null : etmobj.TransactionTime,//离职时间
                 delreason = etmobj == null ? null : etmobj.Reason//离职原因
                 #endregion
@@ -245,7 +249,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 e1.Material,
                 e1.Remark,
                 e1.IsDel,
-                e1.RecruitSource,
                 deltime = etm.GetDelEmp(e1.EmployeeId).TransactionTime,//离职时间
                 delreason = etm.GetDelEmp(e1.EmployeeId).Reason//离职原因
                 #endregion
@@ -337,6 +340,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             }
             return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
         }
+       
         //获取时间（网络时间/当前计算机时间）
         public string Date()
         {
@@ -396,10 +400,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         #endregion
 
         #region 批量导入员工相关
+
         public ActionResult BatchImportEmps()
         {
             return View();
         }
+             
         [HttpPost]
         public ActionResult BatchImportEmps(HttpPostedFileBase excelfile)//当文件类型错误，则excelfile=null
         {
@@ -427,6 +433,18 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         public ActionResult BatchExportEmps() {
             return View();
         }
+        [HttpPost]
+        public ActionResult EmpInfoToExcel(string condition, HttpPostedFileBase excelfile)
+        {
+            var list = GetConditionEmplist(condition);
+            string Detailfilename = "湖南硅谷云教育科技有限公司员工信息";
+            EmployeesInfoManage empmanage = new EmployeesInfoManage();
+
+            var result="";
+                empmanage.EmpDataToExcel(list, Detailfilename);
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
         #endregion
 
         #region 部门及岗位相关业务

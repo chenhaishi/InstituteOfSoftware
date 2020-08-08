@@ -56,9 +56,8 @@
     <Reference Include="AutoMapper, Version=8.1.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoMapper.8.1.0\lib\net461\AutoMapper.dll</HintPath>
     </Reference>
-    <Reference Include="BceSdkDotNet, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\SiliconValley.InformationSystem.Business\bin\Debug\bce-dotnet-sdk-1.0.4\BceSdkDotNet.dll</HintPath>
+    <Reference Include="BceSdkDotNet">
+      <HintPath>..\packages\BceSdkDotNet.1.0.1.0\lib\net35\BceSdkDotNet.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -1544,6 +1543,7 @@
     <Content Include="Tree\js\underscore-min.js" />
     <Content Include="Tree\js\vix.js" />
     <Content Include="Tree\js\vroom.js" />
+    <Content Include="uploadXLSXfile\EmpImage\birth2.gif" />
     <Content Include="uploadXLSXfile\EmpImage\guigu.jpg" />
     <Content Include="uploadXLSXfile\SelfObtainRcoredImg\1709JA肖战.jpg" />
     <Content Include="uploadXLSXfile\SelfObtainRcoredImg\1908NA舒克.png" />

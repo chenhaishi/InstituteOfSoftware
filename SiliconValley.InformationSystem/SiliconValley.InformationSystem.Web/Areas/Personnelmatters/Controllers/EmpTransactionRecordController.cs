@@ -425,12 +425,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                             rc.RemoveCache("InRedisESEData");
                             ajaxresult = esemanage.Success();
                             //并将该员工绩效分默认改为100
-                            if (ajaxresult.Success)
-                            {
-                                MeritsCheckManage mcmanage = new MeritsCheckManage();
-                                var mcemp = mcmanage.GetmcempByEmpid(emp.EmployeeId);
-                                ajaxresult.Success = mcemp;
-                            }
+                            //if (ajaxresult.Success)
+                            //{
+                            //    MeritsCheckManage mcmanage = new MeritsCheckManage();
+                            //    var mcemp = mcmanage.GetmcempByEmpid(emp.EmployeeId);
+                            //    ajaxresult.Success = mcemp;
+                            //}
                         }
                     }
                 }

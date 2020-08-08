@@ -247,18 +247,18 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
      
             if (personlist[0].Costitemsid>0)
             {
-                var Amonet = dbtext.PreentryfeeFinet(personlist[0].StudenID);
-                if (Amonet > 0)
-                {
-                    foreach (var item in personlist)
-                    {
-                        var costit = costitemsBusiness.GetEntity(item.Costitemsid);
-                        if (costit.Rategory == 8)
-                        {
-                            item.Amountofmoney = item.Amountofmoney - Amonet;
-                        }
-                    }
-                }
+                //var Amonet = dbtext.PreentryfeeFinet(personlist[0].StudenID);
+                //if (Amonet > 0)
+                //{
+                //    foreach (var item in personlist)
+                //    {
+                //        var costit = costitemsBusiness.GetEntity(item.Costitemsid);
+                //        if (costit.Rategory == 8)
+                //        {
+                //            item.Amountofmoney = item.Amountofmoney - Amonet;
+                //        }
+                //    }
+                //}
                 string Invoicenumber = "";
 
                 ViewBag.Invoicenumber = Invoicenumber;
@@ -314,9 +314,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
         public ActionResult Printrecord()
         {
             string student = Request.QueryString["student"];
-            ViewBag.vier = dbtext.FienPrice(student);
+            ViewBag.vier = dbtext.FienPrice(student);//查询缴费记录
             ViewBag.Tuitionrefund = dbtext.FienTuitionrefund(dbtext.FienPrice(student));
             ViewBag.StudentPrentryfeeDate = dbtext.StudentPrentryfeeDate(student);
+            
             return View();
         }
         [HttpGet]
