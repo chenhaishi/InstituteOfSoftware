@@ -916,9 +916,8 @@ namespace SiliconValley.InformationSystem.Business.ClassSchedule_Business
             ClassSchedules.ClassstatusID = staid;
                
             //先修改原来班级
-               this.Update(ClassSchedules);
+            this.Update(ClassSchedules);
             var x=  GotoschoolStageBusiness.GetList().Where(a => a.CurrentStageID == ClassSchedules.grade_Id).FirstOrDefault();
-
             ClassSchedules.grade_Id = x.NextStageID;
             ClassSchedules.ClassstatusID = null;
          
