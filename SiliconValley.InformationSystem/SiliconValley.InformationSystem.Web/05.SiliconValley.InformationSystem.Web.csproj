@@ -1853,7 +1853,6 @@
     <Content Include="Areas\Teachingquality\Views\Stuportfolio\Traineeinterview.cshtml" />
     <Content Include="Areas\Finance\Views\Pricedetails\RefunditemsDate.cshtml" />
     <Content Include="Areas\Courseware\Views\Coursewaremaking\text2.cshtml" />
-    <Content Include="Areas\Personnelmatters\Views\EmployeesInfo\BatchExportEmps.cshtml" />
     <Content Include="Areas\Teachingquality\Views\Messagenotification\NoticeDate.cshtml" />
     <Content Include="Areas\Teachingquality\Views\Messagenotification\Release.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\EmployeesInfo\GetEmpETRDetail.cshtml" />

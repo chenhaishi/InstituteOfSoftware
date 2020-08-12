@@ -384,8 +384,6 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
             return result;
         }
 
-
-
         /// <summary>
         /// 员工离职将对应的部门员工状态改变(删除)
         /// </summary>
@@ -433,6 +431,8 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
             }
             return result;
         }
+
+
 
         /// <summary>
         /// 将导过来的excel数据赋给员工视图类中
@@ -783,14 +783,12 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
             return ajaxresult;
         }
 
-        //保存详细数据
-        public void EmpDataToExcel(List<EmployeesInfo> data, string filename)
-        {//SaveStaff_CostData
 
-            if (data == null)
-            {
-                return;
-            }
+        //保存员工数据
+        public AjaxResult EmpDataToExcel(List<EmployeesInfo> data, string filename)
+        {//SaveStaff_CostData
+            var ajaxresult = new AjaxResult();
+           
             var workbook = new HSSFWorkbook();
 
             //创建工作区
@@ -865,7 +863,31 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
 
             });
 
-            workbook.Close();
+            var path = System.AppDomain.CurrentDomain.BaseDirectory;    //获得项目的基目录
+            var Path = System.IO.Path.Combine(path, @"导入数据\Excel\\"); //进到基目录录找“Uploadss->Excel”文件夹
+
+            if (!System.IO.Directory.Exists(Path))     //判断是否有该文件夹
+                System.IO.Directory.CreateDirectory(Path); //如果没有在Uploads文件夹下创建文件夹Excel
+            string saveFileName = Path + "\\" + "员工信息" + ".xlsx"; //路径+表名+文件类型
+            try
+            {
+                using (FileStream fs = new FileStream(saveFileName, FileMode.Create, FileAccess.Write))
+                {
+                    workbook.Write(fs);  //写入文件
+                    workbook.Close();  //关闭
+                    ajaxresult.ErrorCode = 200;
+                    ajaxresult.Msg = "导入成功！文件地址："+saveFileName;
+                   // ajaxresult.Data = list;
+                }
+            }
+            catch (Exception ex)
+            {
+                ajaxresult.ErrorCode = 100;
+                ajaxresult.Msg = "导入失败，"+ex.Message;
+
+            }
+            return ajaxresult;
+            //workbook.Close();
 
 
             void CreateHeader()
