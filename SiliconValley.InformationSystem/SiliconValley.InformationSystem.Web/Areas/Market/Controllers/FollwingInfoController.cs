@@ -14,6 +14,7 @@ using SiliconValley.InformationSystem.Business.StuSatae_Maneger;
 using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 using SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness;
 using SiliconValley.InformationSystem.Business.StudentBusiness;
+using SiliconValley.InformationSystem.Business.ClassesBusiness;
 
 namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
 {
@@ -413,6 +414,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
                 StuSex = l.StuSex,
                 Stuphone = l.Stuphone,
                 StuSchoolName = l.StuSchoolName,
+
                 StuEducational = l.StuEducational,
                 StuAddress = l.StuAddress,
                 stuinfomation = l.stuinfomation,
@@ -531,8 +533,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
         /// <returns></returns>
          public ActionResult select_class(string keepID)
         {
+            BaseBusiness<ScheduleForTrainees> select_cl = new BaseBusiness<ScheduleForTrainees>();
             BaseBusiness<StudentInformation> su = new BaseBusiness<StudentInformation>();
             var student = su.GetList().Where(d => d.StudentPutOnRecord_Id == int.Parse(keepID)).SingleOrDefault();
+            var clID = select_cl.GetList().Where(d => d.StudentID == student.StudentNumber).SingleOrDefault();
             return Json(new
             {
                 code=0,
@@ -548,6 +552,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
         /// <returns></returns>
         public ActionResult Update_Class(string keepID,string classID,string ClassName)
         {
+           
             BaseBusiness<StudentInformation> su = new BaseBusiness<StudentInformation>();
             BaseBusiness<ScheduleForTrainees> cl = new BaseBusiness<ScheduleForTrainees>();
             var suid = su.GetList().Where(d => d.StudentPutOnRecord_Id == int.Parse(keepID)).SingleOrDefault();
