@@ -523,5 +523,38 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+
+        /// <summary>
+        /// 查询班级
+        /// </summary>
+        /// <param name="studentID">备案id</param>
+        /// <returns></returns>
+         public ActionResult select_class(string keepID)
+        {
+            BaseBusiness<StudentInformation> su = new BaseBusiness<StudentInformation>();
+            var student = su.GetList().Where(d => d.StudentPutOnRecord_Id == int.Parse(keepID)).SingleOrDefault();
+            return Json(new
+            {
+                code=0,
+                data=student
+            });
+        }
+
+        public ActionResult Update_Class(string keepID,string classID,string ClassName)
+        {
+            BaseBusiness<StudentInformation> su = new BaseBusiness<StudentInformation>();
+            BaseBusiness<ScheduleForTrainees> cl = new BaseBusiness<ScheduleForTrainees>();
+            var suid = su.GetList().Where(d => d.StudentPutOnRecord_Id == int.Parse(keepID)).SingleOrDefault();
+            var clID = cl.GetList().Where(d => d.StudentID == suid.StudentNumber).SingleOrDefault();
+            clID.ClassID = classID;
+            clID.ID_ClassName = int.Parse(classID);
+            cl.Update(clID);
+            return Json(new
+            {
+                code = 0,
+                msg = "修改班级成功"
+            });
+        }
+
     }
 }

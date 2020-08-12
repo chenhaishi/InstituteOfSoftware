@@ -250,7 +250,7 @@ namespace SiliconValley.InformationSystem.Depository
         }
 
         #endregion
-
+      
         #region 增加数据
 
         /// <summary>
