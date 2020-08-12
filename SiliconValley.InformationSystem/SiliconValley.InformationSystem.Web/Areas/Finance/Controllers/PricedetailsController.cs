@@ -436,7 +436,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             //学员信息
             StudentInformationBusiness studentInformationBusiness = new StudentInformationBusiness();
             string studentid = Request.QueryString["studentid"];
-           ViewBag.student = studentInformationBusiness.GetEntity(studentid);
+            ViewBag.student = studentInformationBusiness.GetEntity(studentid);
             ViewBag.id = id;
             ViewBag.vier = dbtext.FienPricesa(id);
             ViewBag.OddNumbers = Request.QueryString["OddNumbers"];
@@ -1057,5 +1057,43 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
            var x= studentfee.GetList().Where(a => a.Costitemsid == 10 || a.Costitemsid == 11).ToList();
             return null;
         }
+        //订单重审
+  
+        public ActionResult reviewOpen(string check_id,string studentid)
+        {
+            //当前登陆人
+            Base_UserModel user = Base_UserBusiness.GetCurrentUser();
+            EmployeesInfoManage employeesInfoManage = new EmployeesInfoManage();
+            //学员信息
+            StudentInformationBusiness studentInformationBusiness = new StudentInformationBusiness();
+            ViewBag.student = studentInformationBusiness.GetEntity(studentid);
+            ViewBag.id = check_id;
+            ViewBag.vier = dbtext.FienPricesa(int.Parse(check_id));
+            ViewBag.OddNumbers = Request.QueryString["OddNumbers"];
+            ViewBag.Passornot = Request.QueryString["Passornot"];
+            ViewBag.paymentmethod = Request.QueryString["paymentmethod"];
+            ViewBag.reviewList = pay.GetList().Where(d => d.id == int.Parse(check_id)).ToList();
+            //岗位数据
+            var positon = employeesInfoManage.GetPositionByEmpid(user.EmpNumber);
+            ViewBag.postName = positon.PositionName.Contains("会计") == true ? 1 : 0;
+            return PartialView("/Areas/Finance/Views/Shared/Review.cshtml");
+        }
+        //订单表数据
+        BaseBusiness<Paymentverification> pay = new BaseBusiness<Paymentverification>();
+        public ActionResult review(string checkID,string OddNumbers,string Paymentmethod)
+        {
+           
+            var iq_reID = pay.GetList().Where(d => d.id == int.Parse(checkID)).SingleOrDefault();
+            iq_reID.OddNumbers = OddNumbers;
+            iq_reID.Paymentmethod = Paymentmethod;
+            pay.Update(iq_reID);
+            return Json(new
+            {
+                code=0,
+                msg="修改成功"
+            });
+            
+        }
+
     } 
 }

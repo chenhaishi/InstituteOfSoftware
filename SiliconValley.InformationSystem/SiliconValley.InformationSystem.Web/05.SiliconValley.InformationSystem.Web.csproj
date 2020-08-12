@@ -1733,7 +1733,9 @@
     <Content Include="Areas\Capital\Views\Capital\DoPrefundingList.cshtml" />
     <Content Include="Config\MyExcelClass.json" />
     <Content Include="Config\Obempstaff.config" />
-    <Content Include="Config\UserMapRole.config" />
+    <Content Include="Config\UserMapRole.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Areas\Educational\Views\Staff_Cost_Statistics\Staff_Cost_StatisticsIndex.cshtml" />
     <Content Include="Areas\Educational\Views\Staff_Cost_Statistics\CreateCostStatistics.cshtml" />
     <Content Include="Areas\Educational\Views\Staff_Cost_Statistics\PersonalCostStatics.cshtml" />
@@ -1892,7 +1894,7 @@
     <Content Include="Areas\Educational\Views\EvningSelfStudy\GrandADIView.cshtml" />
     <Content Include="Areas\Educational\Views\EvningSelfStudy\ChangeGrandADIView.cshtml" />
     <Content Include="Areas\Finance\images\2020年5月学生学费明细表.xlsx" />
-    <Content Include="Areas\Market\Views\FollwingInfo\UpdateChange.cshtml" />
+    <Content Include="Areas\Finance\Views\Shared\Review.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
@@ -3609,7 +3611,6 @@
     <Folder Include="Areas\Courseware\首页\word文档\Y1\" />
     <Folder Include="Areas\Educational\Models\" />
     <Folder Include="Areas\Finance\Models\" />
-    <Folder Include="Areas\Finance\Views\Shared\" />
     <Folder Include="Areas\flow\Controllers\" />
     <Folder Include="Areas\Logistics\Controllers\" />
     <Folder Include="Areas\Logistics\Models\" />
