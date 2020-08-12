@@ -539,7 +539,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
                 data=student
             });
         }
-
+        /// <summary>
+        /// 修改学员入错班级
+        /// </summary>
+        /// <param name="keepID">备案id</param>
+        /// <param name="classID">班级名</param>
+        /// <param name="ClassName">班级id</param>
+        /// <returns></returns>
         public ActionResult Update_Class(string keepID,string classID,string ClassName)
         {
             BaseBusiness<StudentInformation> su = new BaseBusiness<StudentInformation>();
