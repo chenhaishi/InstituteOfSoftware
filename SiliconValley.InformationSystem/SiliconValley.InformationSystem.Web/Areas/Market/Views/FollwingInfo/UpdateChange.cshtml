@@ -1,0 +1,135 @@
+﻿
+@{
+    Layout = null;
+}
+@using SiliconValley.InformationSystem.Entity.ViewEntity
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>UpdateChange</title>
+	 <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+	 <style>
+	  .LableCss1
+        {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            float: left;
+            display: block;
+            padding: 9px 15px;
+            width: 80px;
+            line-height: 20px;
+            text-align: right;
+        }
+	 </style>
+</head>
+<body>
+    <div> 
+	<form class="layui-form">
+                                    <div class="layui-row layui-form-item">
+                                        <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
+                                            <label class="LableCss1">学生姓名:</label>
+                                            <div class="layui-input-block">
+                                                <input type="hidden" value="@Model.Id"  id="Id" name="Id"/>
+                                                <input type="text" disabled="disabled" class="layui-input" value="@Model.StuName" name="stuName" id="stuName"/>
+                                            </div>
+                                        </div>
+                                        <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
+                                            <label class="LableCss1">联系电话:</label>
+                                            <div class="layui-input-block">
+                                                <input type="text" disabled="disabled" class="layui-input" value="@Model.Stuphone" name="stuPhone" id="stuPhone"/>
+                                            </div>
+                                        </div>
+                                        <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
+                                            <label class="LableCss1">学生性别:</label>
+                                            <div class="layui-input-block">
+                                                <input type="text" disabled="disabled" class="layui-input" value="@Model.StuSex" name="stuSex" id="stuSex"/>
+                                            </div>
+                                        </div>
+                                    </div>
+									<div class="layui-row layui-form-item">
+                                        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                                            <label class="LableCss1">原来班级:</label>
+                                            <div class="layui-input-block">                                                 
+                                                <input type="text" name="class_old" class="layui-input" id="class_old" disabled="disabled" value="@ViewBag.classold"/>           
+                                            </div>
+                                        </div>
+                                    </div>
+                                     <div class="layui-row layui-form-item">
+                                        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                                            <label class="LableCss1">选择班级:</label>
+                                            <div class="layui-input-block">
+                                                <input type="hidden" name="Class_ID" id="Class_ID" />
+                                                <input type="hidden" name="gradeName" id="gradeName" />
+                                                <i id="iconid" class="layui-icon" style="color:#009688;font-size: 30px;position:absolute;right:10px;top:5px;cursor:pointer">&#xe615;</i><input id="Class_Name" name="Class_Name" type="text" disabled="disabled" class="layui-input" lay-verify="required" />
+                                            </div>
+                                        </div>
+                                    </div>                                     
+                                     
+                                    <br />
+                                    <br />
+                                    <br />
+                                    <br />
+                                    <div class="layui-row layui-form-item">
+                                        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12" style="text-align:center">
+                                            <button type="button" class="layui-btn" lay-submit lay-filter="updateclass">确定修改</button>
+                                        </div>
+                                    </div>
+                                </form>
+    </div>
+     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/layui/layui.js"></script>
+	<script>
+	function GetPartsItmes(data){
+		   $("#Class_Name").val(data.ClassNumber);
+		   $("#Class_ID").val(data.id);
+		 }
+	  $(function(){
+	     var form;
+		 var layer;
+
+		 //给用户选中的班级赋值
+		  
+
+		 layui.use(['form','layer'],function(){
+		  form=layui.form;
+		  layer=layui.layer;
+
+		  form.on('submit(updateclass)', function (data) {
+               var myindex= layer.load(1);              
+                $.ajax({
+                    url: '/Market/StudentDataKeep/RegistersFunction',
+                    type: 'POST',
+                    data: data.field,
+                    success: function (su) {
+                        layer.close(myindex);
+                        if (su.Success) {
+                            layer.msg(su.Msg, { icon: 1, shade: 0.8 })
+                        } else {
+                            layer.msg(su.Msg, { icon: 2, shade: 0.8 })
+                        }                         
+                    }
+                });
+                
+                return false; 
+            });
+		 });
+
+		 $("#iconid").click(
+		   function(){
+		   layer.open({
+                    type: 2
+                    , content: '/Teachingquality/StudentInformation/StudentclassView'
+                    , area: ['600px', '320px']
+                    , title: '班级选择页面'
+                    , shade: 0.8
+                    , anim: 4
+                    , skin: 'demo-class'
+                });
+		   }
+		 );
+	  });
+	</script>
+</body>
+</html>

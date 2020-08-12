@@ -1892,6 +1892,7 @@
     <Content Include="Areas\Educational\Views\EvningSelfStudy\GrandADIView.cshtml" />
     <Content Include="Areas\Educational\Views\EvningSelfStudy\ChangeGrandADIView.cshtml" />
     <Content Include="Areas\Finance\images\2020年5月学生学费明细表.xlsx" />
+    <Content Include="Areas\Market\Views\FollwingInfo\UpdateChange.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />

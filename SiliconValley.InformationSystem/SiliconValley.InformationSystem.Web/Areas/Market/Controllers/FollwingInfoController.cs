@@ -24,8 +24,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
         StuStateManeger ST_Entity = new StuStateManeger();
         EmployeesInfoManage Enplo_Entity;
         ConsultTeacherManeger ConsultTeacher;
-        // GET: /Market/FollwingInfo/GetTableData
-        
+        // GET: /Market/FollwingInfo/UpdateChange
+
 
         public List<SelectListItem> GetMarketGrand()
         {
@@ -523,5 +523,23 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
+        //修改班级注册错误页面
+        public ActionResult UpdateChange(int id)
+        {
+            ExportStudentBeanData data= CM_Entity.Stu_Entity.findId(id.ToString());
+            //通过备案id获取这个学生注册的班级
+            ViewBag.classold = "20200403";
+            return View(data);
+        }
+
+        [HttpPost]
+        public ActionResult UpdateChangeFunction()
+        {
+            int id=Convert.ToInt32(Request.QueryString["Id"]);
+
+            int classid = Convert.ToInt32(Request.QueryString["Class_ID"]);
+
+            return null;
+        }
     }
 }

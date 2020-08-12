@@ -61,42 +61,87 @@
     <div class="layui-colla-item">
         <h2 class="layui-colla-title">简单查询</h2>
         <div class="layui-colla-content">
-            <form class="layui-form" lay-filter="TeacherSercher">
-                <div class="layui-row layui-form-item">
-                    <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
-                        <label class="LableCss1">值班老师:</label>
-                        <div class="layui-input-block">
-                            @Html.DropDownList("teacherid", ViewBag.teacher as IEnumerable<SelectListItem>, new Dictionary<string, object>() { { "lay-filter", "teacher" } })
+            @{
+                if (ViewBag.emp)
+                {
+                    <form class="layui-form" lay-filter="sercherjiaowu">
+                        <div class="layui-row layui-form-item">
+                            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                                <label class="LableCss1">选择部门:</label>
+                                <div class="layui-input-block">
+                                    <select name="ser_jiaowu_depet">
+                                        <option value="0" selected="selected">---不限---</option>
+                                        <option value="5">s1/s2教学部</option>
+                                        <option value="1009">s3教学部</option>
+                                        <option value="1010">s4教学部</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                                <label class="LableCss1">选择老师:</label>
+                                <div id="teacher_jiaowu_ser_Div" class="layui-input-block">
+                                    <select name="ser_jiaowu_teacher">
+                                        <option value="0">---不限---</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                                <label class="LableCss1">开始时间:</label>
+                                <div class="layui-input-block">
+                                    <input type="text" placeholder="开始时间" class="layui-input" name="starTime" id="starTime" />
+                                </div>
+                            </div>
+                            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                                <label class="LableCss1">结束时间:</label>
+                                <div id="ClssTime" class="layui-input-block">
+                                    <input type="text" placeholder="结束时间" class="layui-input" name="endTime" id="endTime" />
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
-                        <label class="LableCss1">开始时间:</label>
-                        <div class="layui-input-block">
-                            <input type="text" placeholder="开始时间" class="layui-input" name="starTime" id="starTime" />
-                        </div>
-                    </div>
-                    <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
-                        <label class="LableCss1">结束时间:</label>
-                        <div id="ClssTime" class="layui-input-block">
-                            <input type="text" placeholder="结束时间" class="layui-input" name="endTime" id="endTime" />
-                        </div>
-                    </div>
-                    <div class="layui-col-xs2 layui-col-sm2 layui-col-md2" style="text-align:center">
-                        <button type="button" class="layui-btn" onclick="Sercher()">查询</button>
-                        @{
-                            if (ViewBag.emp)
-                            {
-                                <input name="emp" id="emp" type="hidden" value="是" />
-                            }
-                            else
-                            {
-                                <input name="emp" id="emp" type="hidden" value="否" />
-                            }
-                        }
+                    </form>
 
-                    </div>
-                </div>
-            </form>
+                }
+                else
+                {
+                    <form class="layui-form" lay-filter="TeacherSercher">
+                        <div class="layui-row layui-form-item">
+                            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                                <label class="LableCss1">值班老师:</label>
+                                <div class="layui-input-block">
+                                    @Html.DropDownList("teacherid", ViewBag.teacher as IEnumerable<SelectListItem>, new Dictionary<string, object>() { { "lay-filter", "teacher" } })
+                                </div>
+                            </div>
+                            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                                <label class="LableCss1">开始时间:</label>
+                                <div class="layui-input-block">
+                                    <input type="text" placeholder="开始时间" class="layui-input" name="starTime" id="starTime" />
+                                </div>
+                            </div>
+                            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                                <label class="LableCss1">结束时间:</label>
+                                <div id="ClssTime" class="layui-input-block">
+                                    <input type="text" placeholder="结束时间" class="layui-input" name="endTime" id="endTime" />
+                                </div>
+                            </div>
+                            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2" style="text-align:center">
+                                <button type="button" class="layui-btn" onclick="Sercher()">查询</button>
+                                @{
+                                    if (ViewBag.emp)
+                                    {
+                                        <input name="emp" id="emp" type="hidden" value="是" />
+                                    }
+                                    else
+                                    {
+                                        <input name="emp" id="emp" type="hidden" value="否" />
+                                    }
+                                }
+
+                            </div>
+                        </div>
+                    </form>
+                }
+            }
+
         </div>
     </div>
 </div>
@@ -136,6 +181,7 @@
             if (ViewBag.emp)
             {
                 <button class="layui-btn layui-btn-sm" lay-event="getCheckData_outNight"><i class="layui-icon">&#x1006;</i>Excel导出</button>
+                <button class="layui-btn layui-btn-sm" lay-event="getCheckData_changIsdele"><i class="layui-icon">&#x1006;</i>批量审批</button>
             }
             else
             {
@@ -146,7 +192,7 @@
 
 
         @*<button class="layui-btn layui-btn-sm" lay-event="getCheckData_timeChange"> <i class="layui-icon">&#xe642;</i>日期更改</button>
-        <button class="layui-btn layui-btn-sm" lay-event="getCheckData_time"> <i class="layui-icon">&#xe642;</i>上课延迟或提前</button>*@
+            <button class="layui-btn layui-btn-sm" lay-event="getCheckData_time"> <i class="layui-icon">&#xe642;</i>上课延迟或提前</button>*@
     </div>
 </script>
 
@@ -366,6 +412,19 @@
                     });
 
                     break;
+                case 'getCheckData_changIsdele':
+                    //批量审批
+                    dateindex = layer.open({
+                        type: 1,
+                        shade: 0.8,
+                        title: '选择导出条件', //不显示标题
+                        content: $('#selectDate'), //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
+                        //cancel: function () {
+                        //    layer.msg('捕获就是从页面已经存在的元素上，包裹layer的结构', { time: 5000, icon: 6 });
+                        //}
+                    });
+
+                    break;
 
             };
         });
@@ -434,7 +493,7 @@
             }
         });
 
-
+        //数据导出
         form.on('submit(handBtn)', function (data) {
             // console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
             if (data.field.date_Anpaidate == null) {
@@ -446,14 +505,14 @@
                     url: '/Educational/TeacherAddorBeonDuty/OutData',
                     data: data.field,
                     type: 'post',
-                     success: function (res) {
+                    success: function (res) {
                         console.log(res);
 
                         //列标题，逗号隔开，每一个逗号就是隔开一个单元格
                         let str = res.titile + `\n`;
                         //增加\t为了不让表格显示科学计数法或者其他格式
-                        for (let i = 0; i < res.data.length; i++) {
-                            if (i == 0) {
+                        for (let i = -1; i < res.data.length; i++) {
+                            if (i == -1) {
                                 str += `值班日期\t,值班内容\t`;
                             } else {
                                 var mm = TimeChange(res.data[i].time);
@@ -461,7 +520,7 @@
                                 var da = (Number(mydate.getMonth()) + 1) + "月" + mydate.getDate() + "日"
                                 str += '' + da + '\t,' + res.data[i].Content + '\t';
                             }
-                            
+
                             str += '\n';
                         }
                         //encodeURIComponent解决中文乱码
@@ -474,13 +533,30 @@
                         document.body.appendChild(link);
                         link.click();
                         document.body.removeChild(link);
-                     }
+                    }
 
                 });
             }
 
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
+
+        //获取某个部门的老师
+        form.on('select(filter)', function (data) {
+             
+            console.log(data.value); //得到被选中的值
+            $.ajax({
+			url:'/Educational/TeacherAddorBeonDuty/GetDetEmp/'+data.value,
+			type:'POST',
+			success:function(res){
+			   if(res.Length>0){
+			     for(int i=0;i<res.Length;i++){
+
+				 }
+			   }
+			}
+			});
+        });      
     });
 
     function Close() {

@@ -205,7 +205,7 @@
 
             form.on('submit(add)', function (data) {
                var myindex= layer.load(1);
-                console.log(data.field);
+              
                 $.ajax({
                     url: '/Market/StudentDataKeep/RegistersFunction',
                     type: 'POST',
@@ -245,7 +245,7 @@
         }
 
         function GetPartsItmes(data) {
-            console.log(data);
+           
             $("input[name='Class_Name']").each(function (index, ele) {
                 if (index == myindex) {
                     $(ele)[0].value = data.ClassNumber

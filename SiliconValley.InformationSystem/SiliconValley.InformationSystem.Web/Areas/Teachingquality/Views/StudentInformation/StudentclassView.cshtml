@@ -87,7 +87,7 @@
         table.on('rowDouble(test)', function (obj) {
 
             var id = obj.data;
-            layer.confirm('您真的要选择吗?', function (index) {
+            layer.confirm('您真的要选择吗?', function (index) {			 
                 parent.GetPartsItmes(id);
                 parent.layer.close(parent.layer.index);
             });

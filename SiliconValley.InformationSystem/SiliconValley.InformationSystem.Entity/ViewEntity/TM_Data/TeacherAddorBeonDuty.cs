@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data
 {
     /// <summary>
-    /// 教员值班，晚自习加班数据表
+    /// 教员值班数据表
     /// </summary>
    [Table("TeacherAddorBeonDuty")]
    public class TeacherAddorBeonDuty
