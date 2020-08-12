@@ -54,7 +54,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             }
             return teacherNights;
         }
-
+         
         /// <summary>
         /// 判断上课老师是否冲突(大于0--有冲突，小于或等于0--没有冲突)
         /// </summary>

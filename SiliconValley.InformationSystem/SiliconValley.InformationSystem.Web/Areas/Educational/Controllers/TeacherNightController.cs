@@ -145,8 +145,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         //    return Json(a, JsonRequestBehavior.AllowGet);
         //}
         #endregion
-       
-        
+              
 
         /// <summary>
         /// 删除数据

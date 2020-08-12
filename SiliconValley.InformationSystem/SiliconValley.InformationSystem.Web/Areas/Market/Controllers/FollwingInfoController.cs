@@ -24,8 +24,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
         StuStateManeger ST_Entity = new StuStateManeger();
         EmployeesInfoManage Enplo_Entity;
         ConsultTeacherManeger ConsultTeacher;
-        // GET: /Market/FollwingInfo/GetTableData
-        
+        // GET: /Market/FollwingInfo/UpdateChange
+
 
         public List<SelectListItem> GetMarketGrand()
         {
@@ -523,44 +523,23 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-
-        /// <summary>
-        /// 查询班级
-        /// </summary>
-        /// <param name="studentID">备案id</param>
-        /// <returns></returns>
-         public ActionResult select_class(string keepID)
+        //修改班级注册错误页面
+        public ActionResult UpdateChange(int id)
         {
-            BaseBusiness<StudentInformation> su = new BaseBusiness<StudentInformation>();
-            var student = su.GetList().Where(d => d.StudentPutOnRecord_Id == int.Parse(keepID)).SingleOrDefault();
-            return Json(new
-            {
-                code=0,
-                data=student
-            });
-        }
-        /// <summary>
-        /// 修改学员入错班级
-        /// </summary>
-        /// <param name="keepID">备案id</param>
-        /// <param name="classID">班级名</param>
-        /// <param name="ClassName">班级id</param>
-        /// <returns></returns>
-        public ActionResult Update_Class(string keepID,string classID,string ClassName)
-        {
-            BaseBusiness<StudentInformation> su = new BaseBusiness<StudentInformation>();
-            BaseBusiness<ScheduleForTrainees> cl = new BaseBusiness<ScheduleForTrainees>();
-            var suid = su.GetList().Where(d => d.StudentPutOnRecord_Id == int.Parse(keepID)).SingleOrDefault();
-            var clID = cl.GetList().Where(d => d.StudentID == suid.StudentNumber).SingleOrDefault();
-            clID.ClassID = classID;
-            clID.ID_ClassName = int.Parse(classID);
-            cl.Update(clID);
-            return Json(new
-            {
-                code = 0,
-                msg = "修改班级成功"
-            });
+            ExportStudentBeanData data= CM_Entity.Stu_Entity.findId(id.ToString());
+            //通过备案id获取这个学生注册的班级
+            ViewBag.classold = "20200403";
+            return View(data);
         }
 
+        [HttpPost]
+        public ActionResult UpdateChangeFunction()
+        {
+            int id=Convert.ToInt32(Request.QueryString["Id"]);
+
+            int classid = Convert.ToInt32(Request.QueryString["Class_ID"]);
+
+            return null;
+        }
     }
 }

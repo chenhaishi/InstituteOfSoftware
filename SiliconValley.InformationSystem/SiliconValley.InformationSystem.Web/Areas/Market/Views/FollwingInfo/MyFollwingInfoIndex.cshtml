@@ -143,6 +143,7 @@
     <button type="button" class="layui-btn layui-btn-sm" lay-event="add"> <i class="layui-icon">&#xe714;</i> 添加跟踪信息</button>
     <button type="button" class="layui-btn layui-btn-sm" lay-event="edit"> <i class="layui-icon">&#xe714;</i> 编辑跟踪信息</button>
     <button type="button" class="layui-btn layui-btn-sm" lay-event="serch"> <i class="layui-icon">&#xe714;</i> 查询跟踪信息</button>
+	<button type="button" class="layui-btn layui-btn-sm" lay-event="changeclass"> <i class="layui-icon">&#xe714;</i> 修改注册班级</button>
 </script>
    
 
@@ -343,6 +344,30 @@
                             layer.msg('只能选择一条数据！！！', { icon: 2, shade: 0.8 });
                         }                         
                         break;
+
+						case'changeclass':
+						if (checkStatus.data.length == 1) {
+						//判断是否已注册学号
+						 var ishava=checkStatus.data[0].Iszhuce;
+						 if(ishava==true){
+						  layer.open({
+                                type: 2,
+                                content: '/Market/FollwingInfo/UpdateChange/' + checkStatus.data[0].Id
+                                , area: ['680px', '380px']
+                                , title: '修改学生所在班级页面'
+                                , shade: 0.8
+                                , anim: 4
+                                , skin: 'demo-class2'
+                            });
+						 }else{
+						 layer.msg('该学生没有注册学号，不能修改班级！！！', { icon: 2, shade: 0.8 });
+						 }
+                            
+                        } else {
+                            layer.msg('只能选择一条数据！！！', { icon: 2, shade: 0.8 });
+                        }         
+						break;
+
                      
                 };
             });
