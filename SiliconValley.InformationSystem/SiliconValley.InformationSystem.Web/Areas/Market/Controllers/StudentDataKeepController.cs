@@ -175,8 +175,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
                 string S_School = Request.QueryString["S_School"];//学校
                 if (!string.IsNullOrEmpty(findNamevalue))
                 {
-                    sb1.Append("and  StuName like  '" + findNamevalue + "%'");
-                    sb2.Append(" and StudentName like  '" + findNamevalue + "%'");
+                    sb1.Append("and  StuName like  '%" + findNamevalue + "%'");
+                    sb2.Append(" and StudentName like  '%" + findNamevalue + "%'");
                 }
                 if (!string.IsNullOrEmpty(findPhonevalue))
                 {
