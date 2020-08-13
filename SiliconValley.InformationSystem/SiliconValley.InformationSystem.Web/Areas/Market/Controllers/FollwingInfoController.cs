@@ -14,6 +14,7 @@ using SiliconValley.InformationSystem.Business.StuSatae_Maneger;
 using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 using SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness;
 using SiliconValley.InformationSystem.Business.StudentBusiness;
+using SiliconValley.InformationSystem.Business.StuInfomationType_Maneger;
 
 namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
 {
@@ -24,6 +25,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
         StuStateManeger ST_Entity = new StuStateManeger();
         EmployeesInfoManage Enplo_Entity;
         ConsultTeacherManeger ConsultTeacher;
+        StuInfomationTypeManeger StuInfomationType = new StuInfomationTypeManeger();
         // GET: /Market/FollwingInfo/UpdateChange
 
 
@@ -532,19 +534,22 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
             ExportStudentBeanData data = CM_Entity.Stu_Entity.findId(id.ToString());
             //通过备案id获取这个学生注册的班级
             BaseBusiness<StudentInformation> su = new BaseBusiness<StudentInformation>();
-            var student = su.GetListBySql<StudentInformation>("select * from StudentInformation where StudentPutOnRecord_Id="+id).FirstOrDefault();
-            ViewBag.classold = "20200403";
+            
+            ViewBag.classold = StuInfomationType.select_class(id).Data;
             return View(data);
         }
 
         [HttpPost]
         public ActionResult UpdateChangeFunction()
         {
-            int id = Convert.ToInt32(Request.QueryString["Id"]);
+            int id = Convert.ToInt32(Request.Form["Id"]);
 
-            int classid = Convert.ToInt32(Request.QueryString["Class_ID"]);
+            int classid = Convert.ToInt32(Request.Form["Class_ID"]);
 
-            return null;
+            string classname = Request.Form["Class_Name"];
+
+           AjaxResult a= StuInfomationType.Update_Class(id, classname, classid);
+            return Json(a,JsonRequestBehavior.AllowGet);
         }
 
        

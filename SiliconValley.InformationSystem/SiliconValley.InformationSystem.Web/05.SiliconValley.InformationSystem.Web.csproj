@@ -1666,7 +1666,6 @@
     <Content Include="Areas\Educational\Views\ConvertCourse\ConvertCourseIndexView.cshtml" />
     <Content Include="Areas\Educational\Views\LeaderAddCourseToExamine\LeaderAddCourseToExamineIndex.cshtml" />
     <Content Include="Areas\Educational\Views\SubstituteTeachCourse\SubstituteTeachCourseIndexView.cshtml" />
-    <Content Include="Areas\Educational\Views\TeacherNight\TeacherNightViewIndex.cshtml" />
     <Content Include="Areas\Educational\Views\EvningSelfStudy\BigDataChangView.cshtml" />
     <Content Include="Areas\Educational\Views\EvningSelfStudy\BigDataClassChangView.cshtml" />
     <Content Include="Areas\Teachingquality\Views\StudentTransaction\Classinquiry.cshtml" />
@@ -1768,7 +1767,6 @@
     <Content Include="Areas\Personnelmatters\Views\PerformanceAssess\EditEmpPFAssess.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\AttendanceStatistics\BatchAdd.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\AttendanceStatistics\BatchImport.cshtml" />
-    <Content Include="Areas\Educational\Views\TeacherNight\ClassadjustmentView.cshtml" />
     <Content Include="Areas\Educational\Views\TeacherNight\ClassMasterIndex.cshtml" />
     <Content Include="Areas\Educational\Views\TeacherNight\EditDateChangeView.cshtml" />
     <Content Include="Areas\Educational\Views\TeacherNight\EditDateView.cshtml" />

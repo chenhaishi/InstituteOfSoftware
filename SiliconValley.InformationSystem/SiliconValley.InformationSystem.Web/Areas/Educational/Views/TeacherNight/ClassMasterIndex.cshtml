@@ -65,11 +65,19 @@
                             <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
                                 <label class="LableCss1">选择部门:</label>
                                 <div class="layui-input-block">
-                                    <select name="Depar_find" id="Depar_find">
-                                        <option selected value="0">不限</option>
+                                    <select name="Depar_find" id="Depar_find" lay-filter="jaiowu">
+                                        <option selected value="0">--不限--</option>
                                         <option value="6">s1/s2教质部</option>
                                         <option value="1008">s3教质部</option>
                                         <option value="4">就业部</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                                <label class="LableCss1">值班老师:</label>
+                                <div id="teacher_jiaowu_ser_Div" class="layui-input-block">
+                                    <select name="teacher_Div" id="teacher_Div">
+                                        <option selected value="0">--不限--</option>                                        
                                     </select>
                                 </div>
                             </div>
@@ -149,8 +157,8 @@
             {
                 <div class="layui-btn-container">
                     <button class="layui-btn layui-btn-sm" lay-event="getCheckData_week"> <i class="layui-icon">&#xe624;</i>安排值班</button>
-                    <button class="layui-btn layui-btn-sm" lay-event="getCheckData_time"> <i class="layui-icon">&#xe642;</i>修改值班日期</button>
-                    <button class="layui-btn layui-btn-sm" lay-event="getCheckChange_time"> <i class="layui-icon">&#xe642;</i>延迟、提前值班日期</button>
+                    @*<button class="layui-btn layui-btn-sm" lay-event="getCheckData_time"> <i class="layui-icon">&#xe642;</i>修改值班日期</button>
+                    <button class="layui-btn layui-btn-sm" lay-event="getCheckChange_time"> <i class="layui-icon">&#xe642;</i>延迟、提前值班日期</button>*@
                 </div>
             }
         }
@@ -239,11 +247,12 @@
                 }
             });
         }
-        layui.use(['table', 'element', 'laydate'], function () {
+        layui.use(['table', 'element', 'laydate','form'], function () {
             var table = layui.table;
             var layer = layui.layer;
             var element = layui.element;
             var laydate = layui.laydate;
+            var form = layui.form;
             laydate.render({
                 elem: '#starTime'
                 , trigger: 'click' //采用click弹出
@@ -256,7 +265,6 @@
             });
             var ishava = $("#ishavejiaowu").val();
 
-            console.log(ishava);
             if (ishava == "1") {
                 table.render({
                     elem: '#headmaster_table'
@@ -441,6 +449,33 @@
                         shade: 0.8,
                         anim: 4,
                         skin: 'demo-class'
+                    });
+                }
+            });
+
+
+            //获取某个部门的老师
+            form.on('select(jaiowu)', function (data) {
+                $("#teacher_jiaowu_ser_Div")[0].innerHTML = "";
+                if (data.value == 0) {
+                    $('<select name="teacher_Div"><option value="0"> --- 不限-- -</option></select >').appendTo($("#teacher_jiaowu_ser_Div"));
+                    form.render();
+                } else {
+                    $.ajax({
+                        url: '/Educational/TeacherAddorBeonDuty/GetDetEmp/' + data.value,
+                        type: 'POST',
+                        success: function (res) {
+                            console.log(res);
+                            if (res.length > 0) {
+                                var selectteacher = $(' <select name="teacher_Div"><option value = "0" > --- 不限-- -</option></select >');
+                                for (var i = 0; i < res.length; i++) {
+                                    $('<option value=' + res[i].Value + '>' + res[i].Text + '</option>').appendTo(selectteacher);
+
+                                }
+                                $(selectteacher).appendTo($("#teacher_jiaowu_ser_Div"));
+                                form.render();
+                            }
+                        }
                     });
                 }
             });

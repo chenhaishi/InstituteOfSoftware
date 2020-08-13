@@ -178,7 +178,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             return a;
         }
       /// <summary>
-      /// 审核数据
+      /// 修改数据
       /// </summary>
       /// <param name="teacherAddor"></param>
       /// <returns></returns>
@@ -199,6 +199,21 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         }
 
 
+        public AjaxResult Upd_data(List<TeacherAddorBeonDuty> teacherAddor)
+        {
+            AjaxResult a = new AjaxResult() { Msg = "操作成功!", Success = true };
+            try
+            {
+                this.Update(teacherAddor);
+            }
+            catch (Exception)
+            {
+                a.Success = false;
+                a.Msg = "操作失败！";
+            }
+
+            return a;
+        }
 
         #endregion
 
