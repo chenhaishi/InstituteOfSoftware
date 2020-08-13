@@ -90,7 +90,6 @@ namespace SiliconValley.InformationSystem.Depository
         public static DbContext GetDbContext(Object obj, DatabaseType dbType, string entityNamespace)
         {
             DbContext dbContext = null;
-
             if (obj.IsNullOrEmpty())
             {
                 dbContext = new BaseDbContext(null, dbType, entityNamespace);

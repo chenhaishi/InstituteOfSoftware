@@ -783,7 +783,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
                     StudentFeeRecordlist.Add(studentFeeRecord);
                 }
               
-                
             }
             //学员费用
             BaseBusiness<StudentFeeRecord> studentfee = new BaseBusiness<StudentFeeRecord>();
@@ -1002,7 +1001,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
                         te.x4 = t.Rows[i][3].ToString();//阶段
                         te.x5 = t.Rows[i][4].ToString();//缴费日期
                         te.x6 = t.Rows[i][5].ToString();//学费
-
                         te.x8 = t.Rows[i][6].ToString();//食宿费
                         te.x9 = t.Rows[i][9].ToString();//备注
                         telist.Add(te);

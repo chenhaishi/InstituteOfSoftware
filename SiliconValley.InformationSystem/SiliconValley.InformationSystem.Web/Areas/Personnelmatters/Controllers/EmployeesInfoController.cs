@@ -96,7 +96,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             };
             return Json(newobj, JsonRequestBehavior.AllowGet);
         }
-
+        /// <summary>
+        /// 获取相应条件的员工集合
+        /// </summary>
+        /// <param name="AppCondition"></param>
+        /// <returns></returns>
         public List<EmployeesInfo> GetConditionEmplist( string AppCondition)
         {
             EmployeesInfoManage empinfo = new EmployeesInfoManage();
@@ -430,19 +434,42 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         #endregion
 
         #region 批量导出
-        public ActionResult BatchExportEmps() {
-            return View();
-        }
-        [HttpPost]
-        public ActionResult EmpInfoToExcel(string condition, HttpPostedFileBase excelfile)
+      [HttpPost]
+        public ActionResult EmpInfoToExcel(string condition)
         {
-            var list = GetConditionEmplist(condition);
-            string Detailfilename = "湖南硅谷云教育科技有限公司员工信息";
-            EmployeesInfoManage empmanage = new EmployeesInfoManage();
+            //string condition = Request.QueryString["condition"];
+            var ajaxresult = new AjaxResult();
+         
+            try
+            {
+                //HttpPostedFileBase excelfile
+               // string condition= Request.QueryString["condition"];
 
-            var result="";
-                empmanage.EmpDataToExcel(list, Detailfilename);
-            return Json(result, JsonRequestBehavior.AllowGet);
+                var list = GetConditionEmplist(condition);
+                if (list.Count > 0)
+                {
+                    string Detailfilename = "湖南硅谷云教育科技有限公司员工信息";
+                    EmployeesInfoManage empmanage = new EmployeesInfoManage();
+
+                    var result = empmanage.EmpDataToExcel(list, Detailfilename);
+                    ajaxresult.ErrorCode = result.ErrorCode;
+                    ajaxresult.Msg = result.Msg;
+
+                }
+                else {
+                    ajaxresult.ErrorCode = 300;
+                    ajaxresult.Msg = "没有可导出的数据!";
+                    ajaxresult.Data = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                ajaxresult.ErrorCode = 500;
+                ajaxresult.Msg = ex.Message;
+                ajaxresult.Data = null;
+            }
+
+            return Json(ajaxresult, JsonRequestBehavior.AllowGet);
         }
 
         #endregion

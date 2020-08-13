@@ -32,7 +32,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         /// <summary>
         /// 是否为当前班级
         /// </summary>
-        public Nullable<bool> CurrentClass { get; set; }
+        public Nullable<bool> CurrentClass { get; set; }  
         /// <summary>
         /// 添加时间
         /// </summary>
