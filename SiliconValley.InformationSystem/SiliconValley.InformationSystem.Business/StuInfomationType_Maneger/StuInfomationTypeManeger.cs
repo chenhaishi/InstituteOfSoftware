@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SiliconValley.InformationSystem.Business.ClassesBusiness;
 using SiliconValley.InformationSystem.Entity;
 using SiliconValley.InformationSystem.Entity.MyEntity;
 using SiliconValley.InformationSystem.Util;
@@ -65,5 +66,88 @@ namespace SiliconValley.InformationSystem.Business.StuInfomationType_Maneger
             }
             return a;
         }
+
+        /// <summary>
+        /// 查询班级
+        /// </summary>
+        /// <param name="studentID">备案id</param>
+        /// <returns></returns>
+        public AjaxResult select_class(int keepID)
+        {
+            AjaxResult list = new AjaxResult();
+            BaseBusiness<ScheduleForTrainees> select_cl = new BaseBusiness<ScheduleForTrainees>();
+            BaseBusiness<StudentInformation> su = new BaseBusiness<StudentInformation>();
+            List<StudentInformation> student = su.GetListBySql<StudentInformation>("select * from StudentInformation where StudentPutOnRecord_Id="+keepID);
+            try
+            {
+                if (student.Count > 0)
+                {
+                    //list.Success = true;
+                    //list.Data = student[0];
+                    List<ScheduleForTrainees> clID = select_cl.GetListBySql<ScheduleForTrainees>("select * from ScheduleForTrainees where StudentID=" + student[0].StudentNumber);
+                    if (clID.Count > 0)
+                    {
+                        list.Success = true;
+                        list.Data = clID[0].ClassID;
+                    }
+                }
+                else
+                {
+                    list.Success = false;
+                    list.Msg = "没有该信息";
+                }
+            }
+            catch (Exception ex)
+            {
+                list.Success = false;
+                list.Msg = "数据错误，请刷新重试！！";
+            }
+            return list;
+        }
+        /// <summary>
+        /// 修改错误班级
+        /// </summary>
+        /// <param name="keepID">备案id</param>
+        /// <param name="classID">班级名</param>
+        /// <param name="ClassName">班级id</param>
+        /// <returns></returns>
+        public AjaxResult Update_Class(int keepID, string classID, int ClassName)
+        {
+            AjaxResult list = new AjaxResult();
+            ScheduleForTraineesBusiness update = new ScheduleForTraineesBusiness();
+            BaseBusiness<StudentInformation> su = new BaseBusiness<StudentInformation>();
+            BaseBusiness<ScheduleForTrainees> cl = new BaseBusiness<ScheduleForTrainees>();
+            List<StudentInformation> student = su.GetListBySql<StudentInformation>("select * from StudentInformation where StudentPutOnRecord_Id=" + keepID);
+            try
+            {
+                if (student.Count > 0)
+                {
+                    List<ScheduleForTrainees> clID = cl.GetListBySql<ScheduleForTrainees>("select * from ScheduleForTrainees where StudentID=" + student[0].StudentNumber);
+
+                    if (clID.Count > 0)
+                    {
+                        ScheduleForTrainees old = clID[0];
+                        old.ClassID = classID;
+                        old.ID_ClassName = ClassName;
+                        update.Update(old);
+                        list.Success = true;
+                    }
+
+                }
+                else
+                {
+                    list.Success = false;
+                    list.Msg = "数据为空";
+                }
+            }
+            catch (Exception ex)
+            {
+                list.Success = false;
+                list.Msg = "数据错误，请刷新重试！！";
+            }
+            return list;
+
+        }
+
     }
 }
