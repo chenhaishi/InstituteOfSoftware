@@ -258,6 +258,7 @@
     <Compile Include="Areas\Educational\Controllers\TeacherNightController.cs" />
     <Compile Include="Areas\Educational\Controllers\TimetableController.cs" />
     <Compile Include="Areas\Educational\Controllers\WarehouseController.cs" />
+    <Compile Include="Areas\Educational\Controllers\XmlBaseDataController.cs" />
     <Compile Include="Areas\Educational\EducationalAreaRegistration.cs" />
     <Compile Include="Areas\ExaminationSystem\Controllers\ExamArrangementController.cs" />
     <Compile Include="Areas\ExaminationSystem\Controllers\ExamScoresController.cs" />
@@ -1893,6 +1894,8 @@
     <Content Include="Areas\Finance\images\2020年5月学生学费明细表.xlsx" />
     <Content Include="Areas\Finance\Views\Shared\Review.cshtml" />
     <Content Include="Areas\Market\Views\FollwingInfo\UpdateChange.cshtml" />
+    <Content Include="Areas\Educational\Views\XmlBaseData\XmlDataIndex.cshtml" />
+    <Content Include="Areas\Educational\Views\XmlBaseData\AddView.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />

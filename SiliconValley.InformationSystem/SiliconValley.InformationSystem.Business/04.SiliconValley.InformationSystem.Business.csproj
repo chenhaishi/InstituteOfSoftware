@@ -183,6 +183,7 @@
     <Compile Include="EducationalBusiness\TeacherNightManeger.cs" />
     <Compile Include="EducationalBusiness\TimeTableManeger.cs" />
     <Compile Include="EducationalBusiness\WarehouseManeger.cs" />
+    <Compile Include="EducationalBusiness\XmlManeger.cs" />
     <Compile Include="EmployeesBusiness\EmployandCounTeacherCoom.cs" />
     <Compile Include="EmployeesBusiness\EmployeesInfoManage.cs" />
     <Compile Include="Employment\CDInterviewBusiness.cs" />
