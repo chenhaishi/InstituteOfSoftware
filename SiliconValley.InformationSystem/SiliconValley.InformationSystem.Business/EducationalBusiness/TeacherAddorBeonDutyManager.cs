@@ -72,6 +72,31 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         {
            return this.GetListBySql<TeacherAddorBeonDutyView>(sql);
         }
+       
+        /// <summary>
+        /// 根据员工编号获取值班数据
+        /// </summary>
+        /// <param name="employees"></param>
+        /// <returns></returns>
+        public List<TeacherAddorBeonDutyView> DepData(List<EmployeesInfo> employees)
+        {
+            List<TeacherAddorBeonDutyView> data = new List<TeacherAddorBeonDutyView>();
+            foreach (EmployeesInfo item in employees)
+            {
+                string sql = "select * from TeacherAddorBeonDutyView where Tearcher_Id="+item.EmployeeId;
+
+                List<TeacherAddorBeonDutyView> list= this.GetListBySql<TeacherAddorBeonDutyView>(sql);
+
+                if (list.Count>0)
+                {
+                    data.AddRange(list);
+                }
+                
+            }
+
+            return data;
+        }
+        
         #endregion
 
         #region 添加、编辑、删除数据
