@@ -14,20 +14,20 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    [Table(name: "DaysOff")]
+    [Table(name: "DaysOff")]//调休（申请）表
    public partial class DaysOff
     {
         [Key]
         public int Id { get; set; }
-        public string EmployeeId { get; set; }
-        public Nullable<System.DateTime> StartTime { get; set; }
-        public Nullable<System.DateTime> EndTime { get; set; }
-        public Nullable<decimal> Duration { get; set; }
-        public string LeaveReason { get; set; }
-        public string Image { get; set; }
-        public Nullable<bool> IsPassYear { get; set; }
-        public Nullable<bool> IsPass { get; set; }
-        public Nullable<bool> IsApproval { get; set; }
+        public string EmployeeId { get; set; }//员工编号
+        public Nullable<System.DateTime> StartTime { get; set; }//开始时间
+        public Nullable<System.DateTime> EndTime { get; set; }//结束时间
+        public Nullable<decimal> Duration { get; set; }//时长
+        public string LeaveReason { get; set; }//调休理由
+        public string Image { get; set; }//图片
+        public Nullable<bool> IsPassYear { get; set; }//是否过了年限
+        public Nullable<bool> IsPass { get; set; }//申请是否通过
+        public Nullable<bool> IsApproval { get; set; }//是否审批
 
     }
 }
