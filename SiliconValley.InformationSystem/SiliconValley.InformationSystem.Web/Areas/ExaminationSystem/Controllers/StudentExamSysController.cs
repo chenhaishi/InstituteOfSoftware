@@ -47,7 +47,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
           
             return View();
         }
-
         /// <summary>
         ///获取学员最近的一次考试
         /// </summary>
@@ -102,10 +101,27 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             return Json(result, JsonRequestBehavior.AllowGet);
         }
-
-
         /// <summary>
-        /// 学员答题页面
+        /// 学员答题机试页面
+        /// </summary>
+        /// <returns></returns>
+         public ActionResult MachineTest(int examid)
+        {
+            var exam = db_exam.AllExamination().Where(d => d.ID == examid).FirstOrDefault();
+            var EXAMVIEW = db_exam.ConvertToExaminationView(exam);
+            ViewBag.EXAMVIEW = EXAMVIEW;
+                //~获取答卷信息.
+                var studentNumber = SessionHelper.Session["studentnumber"].ToString();
+            //获取当前登录学员
+            var answerSheetInfo = db_stuExam.AnswerSheetInfos(examid, studentNumber);
+            
+            ViewBag.AnswerSheetInfo = answerSheetInfo;
+            
+                return View();
+        }
+    
+        /// <summary>
+        /// 学员答题笔试页面
         /// </summary>
         /// <returns></returns>
         public ActionResult AnswerSheet(int examid)
@@ -383,6 +399,66 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             int answerCount = int.Parse(answer.GetElementsByTagName("total")[0].InnerText);
 
             return Json((choiceCount+ answerCount).ToString(),JsonRequestBehavior.AllowGet);
+        }
+
+        //学员提交机试
+        public ActionResult MachineTestCommit(int examid)
+        {
+            AjaxResult result = new AjaxResult();
+            try
+            {
+                CloudstorageBusiness Bos = new CloudstorageBusiness();
+                var client = Bos.BosClient();
+
+                var studentNumber = SessionHelper.Session["studentnumber"].ToString();
+                string direName = $"/ExaminationSystem/AnswerSheet/{studentNumber + examid}/";
+                //2 将机试题保存到文件夹 
+                string computerfielnaem = "computerfielnaem";
+                var computerfile = Request.Files["rarfile"];
+
+                //保存的机试题路径
+                string computerUrl = "";
+                if (computerfile != null)
+                {
+                    //获取文件拓展名称 
+                    var exait = Path.GetExtension(computerfile.FileName);
+                    //computerUrl = Server.MapPath("/Areas/ExaminationSystem/Files/AnswerSheet/" + direName + "/" + computerfielnaem + exait);
+                    computerUrl = $"{direName}{computerfielnaem + exait}";
+                    //computerfile.SaveAs(computerUrl);
+                    Bos.Savefile("xinxihua", direName, computerfielnaem + exait, computerfile.InputStream);
+                }
+                db_exam.AllExamination().Where(d => d.ID == examid).FirstOrDefault();
+                var Candidateinfo = db_exam.AllCandidateInfo(examid).Where(d => d.Examination == examid && d.StudentID == studentNumber).FirstOrDefault();
+                Candidateinfo.ComputerPaper = computerUrl;
+                //获取需要替换的字符串路径
+
+                if (Candidateinfo.ComputerPaper != null)
+                {
+                    var old = Candidateinfo.ComputerPaper.Substring(Candidateinfo.ComputerPaper.IndexOf(',') + 1);
+
+                    if (old.Length == 0)
+                    {
+                        Candidateinfo.ComputerPaper = Candidateinfo.ComputerPaper + computerUrl;
+                    }
+                    else
+
+                    {
+                        Candidateinfo.ComputerPaper = Candidateinfo.ComputerPaper.Replace(old, computerUrl);
+                    }
+                }
+
+                db_exam.UpdateCandidateInfo(Candidateinfo);
+                result.ErrorCode = 200;
+                result.Msg = "成功";
+                result.Data = null;
+            }
+            catch (Exception ex)
+            {
+                result.ErrorCode = 500;
+                result.Msg = "失败";
+                result.Data = null;
+            }
+            return Json(result);
         }
 
 

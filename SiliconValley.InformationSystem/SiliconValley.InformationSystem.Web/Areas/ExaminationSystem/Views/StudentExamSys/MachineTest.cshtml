@@ -1,0 +1,261 @@
+﻿
+@{
+    Layout = null;
+}
+@using SiliconValley.InformationSystem.Entity.MyEntity
+@using SiliconValley.InformationSystem.Entity.ViewEntity.ExaminationSystemView
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>MachineTest</title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/Areas/ExaminationSystem/js/trumbowyg/design/css/trumbowyg.css" rel="stylesheet" />
+    <style>
+        #mypaper {
+            width: 80%;
+            margin: 50px auto;
+        }
+        #examinfo {
+            width: 100%;
+            height: 150px;
+        }
+        .detail ul li {
+            float: left;
+            width: 200px;
+        }
+
+            .detail ul li span {
+                color: green;
+            }
+            #examinfo .detail ul {
+                list-style-type: none;
+            }
+        #ComputerQuestion {
+            text-align: center;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div id="mypaper">
+        <input type="hidden" id="examid" value="@ViewBag.EXAMVIEW.ID" />
+        <input type="hidden" id="BeginDate" value="@ViewBag.EXAMVIEW.BeginDate" />
+        <input type="hidden" id="limit" value="@ViewBag.EXAMVIEW.TimeLimit" />
+        <div id="examinfo">
+            <h2 style="text-align:center;">@ViewBag.EXAMVIEW.Title</h2><h2>机试</h2>
+
+            <hr />
+            <div class="detail">
+                <ul>
+                    <li><label>答题人-- </label><span>@ViewBag.AnswerSheetInfo.AnswerPerson.Name</span></li>
+                    <li><label>考室-- </label><span>@ViewBag.AnswerSheetInfo.Classroom.ClassroomName</span></li>
+                    @*<li><label>开始时间-- </label><span>@ViewBag.AnswerSheetInfo.BeginDate</span></li>*@
+                    <li><label>时限-- </label><span>@ViewBag.AnswerSheetInfo.TimeLimit (小时)</span></li>
+                    <li><label>选择题得分-- </label><span class="choiceQuestionScoreshuode"></span></li>
+                    <li><label>笔试题总分-- </label><span>@ViewBag.AnswerSheetInfo.WrittenQuestionScores</span></li>
+                    <li><label>机试题总分-- </label><span>@ViewBag.AnswerSheetInfo.ComputerQuestionScores</span></li>
+                </ul>
+                <br />
+
+            </div>
+
+        </div>
+        <div id="ComputerQuestion">
+            <h3 style="text-align:center; font-size:18px;">机试题下载区</h3>
+            <br />
+            <br />
+            <a class="layui-btn layui-btn-warm" href="/ExaminationSystem/StudentExamSys/ComputerQuestionUpload?examid=@ViewBag.EXAMVIEW.ID">机试题下载</a>
+            <input class="layui-btn layui-btn-primary" id="Upload" type="file" name="computerQuestion" />
+            <button type="button" class="layui-btn layui-btn-warm" id="COMMIT">提交机试</button><text style="color:red">（请把项目打成压缩包提交）</text>
+        </div>
+    </div>
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/layui/layui.js"></script>
+    <script src="~/Scripts/underscore.js"></script>
+    <script src="~/Areas/ExaminationSystem/js/trumbowyg/trumbowyg.min.js"></script>
+    <script src="~/Areas/ExaminationSystem/js/trumbowyg/langs/fr.js"></script>
+    <script src="~/Areas/ExaminationSystem/js/trumbowyg/plugins/upload/trumbowyg.upload.min.js"></script>
+    <script src="~/Areas/ExaminationSystem/js/trumbowyg/plugins/base64/trumbowyg.base64.min.js"></script>
+    <script src="~/Areas/ExaminationSystem/js/jiami.js"></script>
+    <script>
+        if (!document.HTMLDOMtoString) {
+            document.HTMLDOMtoString = function (HTMLDOM) {
+                const div = document.createElement("div")
+                div.appendChild(HTMLDOM)
+                return div.innerHTML
+            }
+        }
+        var ExamEndDateUTC;
+        ///获取考试的结束时间
+        function getEndTime() {
+            var examid = $("#examid").val();
+            $.post("/ExaminationSystem/StudentExamSys/GetExamEndDate", { examid: examid }, function (data) {
+
+
+                if (data.ErrorCode == 200) {
+
+                    var utc = data.Data.substr(data.Data.indexOf('(') + 1, 13);
+
+                    ExamEndDateUTC = utc;
+
+                    console.log(ExamEndDateUTC);
+                }
+
+            });
+        }
+        getEndTime();
+        function escapeHTMLString(str) {
+            str = str.replace(/</g, '&lt;');
+            str = str.replace(/>/g, '&gt;');
+
+            return str;
+        }
+        var formData = new FormData();  //点击提交时将要提交的数据
+        layui.use(['form', 'layer'], function () {
+            
+            var form = layui.form;
+            var layer = layui.layer;
+            //点击提交
+            $("#COMMIT").click(function () {
+
+                Commit(false);
+            });
+            function CommitAnswerSheet() {
+                //var index = layer.load(2, { time: 10 * 1000 }); 
+                //需要先清空AnswerCommit 表单数据
+                //clearformData(formData, ["AnswerCommit"]);
+                var loadindex = layer.load(1, {
+                    shade: [0.1, '#fff'] //0.1透明度的白色背景
+                });
+                var examid = $("#examid").val();
+                formData.append("examid", examid);
+                //提交
+                $.ajax({
+                    url: '/ExaminationSystem/StudentExamSys/MachineTestCommit',
+                    type: "post",
+                    contentType: false,
+                    processData: false,
+                    dataType: "json",//返回的数据格式
+                    data: formData,
+                    success: function (result) {
+
+                        layer.close(loadindex);
+
+                        if (result.ErrorCode == 200) {
+
+                            layer.msg('成功。。', { icon: 1 }, function () {
+
+                                window.location.href = '/ExaminationSystem/StudentExamSys/StuExamIndex';
+                            });
+
+                            layui.form.render();
+                        }
+                        
+                        else {
+                            layer.msg('请下载机试题目', { icon: 2 });
+                        }
+                    },
+                    error: function () {
+                        layer.msg('异常。。', { icon: 2 });
+
+                    }
+
+
+                });
+
+                //layer.close(index);
+                //layer.closeAll();
+            }
+
+            function Commit(IsAutoCommit) {
+
+                if (IsAutoCommit == true) {
+
+                    layer.msg("考试时间已到，正在自动提交！");
+
+                    CommitAnswerSheet();
+
+                }
+                else {
+                    var msg = "是否继续提交机试？";
+
+                    if (formData.get("rarfile") == undefined) {
+                        msg = "机试未上传,是否继续提交";
+                    }
+
+                    //layer.confirm(msg, function (index) {
+                    //    CommitAnswerSheet();
+                    //});
+                    layer.open({
+                        type: 1
+                        , content: '<div style="padding: 20px 100px;">' + msg + '</div>'
+                        , btn: ['确认', '取消']
+                        , yes: function () {
+                            CommitAnswerSheet();
+                        }, btn2: function () {
+                            layer.closeAll();
+                        }
+                    });
+                }
+
+            }
+
+
+            //监听选择文件  表单数据
+            $("#Upload").change(function () {
+
+                var fileElem = document.getElementsByName("computerQuestion")[0];
+
+                //获取上传的文件
+                var file = fileElem.files[0];
+
+                console.log(file);
+
+                //上传条件 1.文件必须是压缩包(rar)
+                var index = file.name.lastIndexOf(".");
+                var suffix = file.name.substr(index + 1); //文件拓展名
+
+                if (suffix == "rar" || suffix == "zip") {
+
+                    formData.append("rarfile", file);
+                } else {
+
+                    layer.msg("请将文件压缩后再上产 (rar,zip)");
+                }
+
+            });
+
+            $(document).off("click", ".optiond").on("click", ".optiond", function () {
+
+                $(this).find("input").click();
+            });
+
+            //创建一个定时器 检查是否已经到了考试结束时间
+            setInterval(function () {
+
+                if (ExamEndDateUTC == undefined) {
+                    getEndTime();
+                }
+
+                var currentDate = new Date();
+
+                var EndDate = new Date(parseInt(ExamEndDateUTC));
+
+
+                if (currentDate > EndDate) {
+
+                    //自动点击提交
+                    Commit(true);
+                }
+                else {
+                    console.log("考试中......");
+                }
+
+            }, 60000);
+        });
+    </script>
+</body>
+</html>
+

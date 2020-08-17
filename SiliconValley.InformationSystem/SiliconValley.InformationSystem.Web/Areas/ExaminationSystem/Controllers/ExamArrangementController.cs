@@ -74,7 +74,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             return View();
         }
-
         /// <summary>
         /// 选择题数据
         /// </summary>
@@ -245,6 +244,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         /// </summary>
         public ActionResult ReleaseExamination()
         {
+            return View();
             return View();
         }
 

@@ -58,7 +58,7 @@
     </Reference>
     <Reference Include="BceSdkDotNet, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\SiliconValley.InformationSystem.Business\bin\Debug\bce-dotnet-sdk-1.0.4\BceSdkDotNet.dll</HintPath>
+      <HintPath>..\packages\BceSdkDotNet.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -1892,6 +1892,7 @@
     <Content Include="Areas\Educational\Views\EvningSelfStudy\GrandADIView.cshtml" />
     <Content Include="Areas\Educational\Views\EvningSelfStudy\ChangeGrandADIView.cshtml" />
     <Content Include="Areas\Finance\images\2020年5月学生学费明细表.xlsx" />
+    <Content Include="Areas\ExaminationSystem\Views\StudentExamSys\MachineTest.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />

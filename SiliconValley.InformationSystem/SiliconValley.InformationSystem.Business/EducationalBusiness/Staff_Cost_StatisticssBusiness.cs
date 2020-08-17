@@ -634,7 +634,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         /// <returns></returns>
         public List<TeachingItem> teachingitems(EmployeesInfo emp, DateTime date, string type="skill")
         {
-
+            //从排课数据里面获取到这个老师上的专业课
             var templist = ScreenReconcile(emp.EmployeeId, date, type: type);
 
             return GetteachingNum();

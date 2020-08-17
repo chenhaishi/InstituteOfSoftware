@@ -384,11 +384,6 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
 
             }
 
-
-
-
-
-
         }
 
         public void UpdateCandidateInfo(CandidateInfo candidateInfo)
