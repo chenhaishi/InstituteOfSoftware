@@ -863,22 +863,29 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
 
             });
 
-            var path = System.AppDomain.CurrentDomain.BaseDirectory;    //获得项目的基目录
-            var Path = System.IO.Path.Combine(path, @"导入数据\Excel\\"); //进到基目录录找“Uploadss->Excel”文件夹
+            string path = System.AppDomain.CurrentDomain.BaseDirectory.Split('\\')[0];    //获得项目的基目录
+            //var s = path.Split('\\'); 
+            //var mypath = s[0];
+            var Path = System.IO.Path.Combine(path, @"\XinxihuaData\Excel"); //进到基目录录找“Uploadss->Excel”文件夹
 
             if (!System.IO.Directory.Exists(Path))     //判断是否有该文件夹
                 System.IO.Directory.CreateDirectory(Path); //如果没有在Uploads文件夹下创建文件夹Excel
             string saveFileName = Path + "\\" + "员工信息" + ".xlsx"; //路径+表名+文件类型
+            //var path = System.Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            //string saveFileName = path + "\\XinxihuaData\\信息表.xlsx";
+            //if (!System.IO.Directory.Exists(saveFileName))
+            //{
+            //    System.IO.Directory.CreateDirectory(saveFileName);
+            //}
             try
             {
-                using (FileStream fs = new FileStream(saveFileName, FileMode.Create, FileAccess.Write))
-                {
-                    workbook.Write(fs);  //写入文件
-                    workbook.Close();  //关闭
-                    ajaxresult.ErrorCode = 200;
-                    ajaxresult.Msg = "导入成功！文件地址："+saveFileName;
-                   // ajaxresult.Data = list;
-                }
+                FileStream fs = new FileStream(saveFileName, FileMode.Create, FileAccess.Write);
+                workbook.Write(fs);  //写入文件
+                workbook.Close();  //关闭
+                ajaxresult.ErrorCode = 200;
+                ajaxresult.Msg = "导入成功！文件地址：" + saveFileName;
+                // ajaxresult.Data = list;
+               
             }
             catch (Exception ex)
             {
