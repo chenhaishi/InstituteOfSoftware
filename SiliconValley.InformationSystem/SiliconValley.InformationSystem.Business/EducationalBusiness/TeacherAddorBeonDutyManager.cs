@@ -72,6 +72,31 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         {
            return this.GetListBySql<TeacherAddorBeonDutyView>(sql);
         }
+       
+        /// <summary>
+        /// 根据员工编号获取值班数据
+        /// </summary>
+        /// <param name="employees"></param>
+        /// <returns></returns>
+        public List<TeacherAddorBeonDutyView> DepData(List<EmployeesInfo> employees)
+        {
+            List<TeacherAddorBeonDutyView> data = new List<TeacherAddorBeonDutyView>();
+            foreach (EmployeesInfo item in employees)
+            {
+                string sql = "select * from TeacherAddorBeonDutyView where Tearcher_Id="+item.EmployeeId;
+
+                List<TeacherAddorBeonDutyView> list= this.GetListBySql<TeacherAddorBeonDutyView>(sql);
+
+                if (list.Count>0)
+                {
+                    data.AddRange(list);
+                }
+                
+            }
+
+            return data;
+        }
+        
         #endregion
 
         #region 添加、编辑、删除数据
@@ -153,7 +178,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             return a;
         }
       /// <summary>
-      /// 审核数据
+      /// 修改数据
       /// </summary>
       /// <param name="teacherAddor"></param>
       /// <returns></returns>
@@ -174,6 +199,21 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         }
 
 
+        public AjaxResult Upd_data(List<TeacherAddorBeonDuty> teacherAddor)
+        {
+            AjaxResult a = new AjaxResult() { Msg = "操作成功!", Success = true };
+            try
+            {
+                this.Update(teacherAddor);
+            }
+            catch (Exception)
+            {
+                a.Success = false;
+                a.Msg = "操作失败！";
+            }
+
+            return a;
+        }
 
         #endregion
 

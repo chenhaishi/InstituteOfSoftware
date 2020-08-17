@@ -119,7 +119,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
         public ActionResult TableData(int limit, int page)
         {
            
-            List<ExportStudentBeanData> list = s_Entity.GetAllTopNumber(74000).OrderByDescending(s => s.StuDateTime).ToList();
+            List<ExportStudentBeanData> list = s_Entity.GetAllTopNumber(76400).OrderByDescending(s => s.StuDateTime).ToList();
 
             var data = list.Skip((page - 1) * limit).Take(limit).ToList();
 
@@ -175,13 +175,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
                 string S_School = Request.QueryString["S_School"];//学校
                 if (!string.IsNullOrEmpty(findNamevalue))
                 {
-                    sb1.Append("and  StuName like  '" + findNamevalue + "%'");
-                    sb2.Append(" and StudentName like  '" + findNamevalue + "%'");
+                    sb1.Append("and  StuName like  '%" + findNamevalue + "%'");
+                    sb2.Append(" and StudentName like  '%" + findNamevalue + "%'");
                 }
                 if (!string.IsNullOrEmpty(findPhonevalue))
                 {
-                    sb1.Append(" and Stuphone = '" + findPhonevalue + "'");
-                    sb2.Append(" and Phone = '" + findPhonevalue + "'");
+                    sb1.Append(" and Stuphone like '%" + findPhonevalue + "%'");
+                    sb2.Append(" and Phone like'%" + findPhonevalue + "%'");
                 }
                 if (findInformationvalue != "0" && !string.IsNullOrEmpty(findInformationvalue))
                 {

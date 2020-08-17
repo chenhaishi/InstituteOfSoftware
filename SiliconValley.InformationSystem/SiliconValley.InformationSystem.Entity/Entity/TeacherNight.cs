@@ -29,7 +29,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         /// <summary>
         /// 班级
         /// </summary>
-        public System.Nullable<int> ClassSchedule_Id { get; set; } //要去数据库修改
+        //public System.Nullable<int> ClassSchedule_Id { get; set; } //要去数据库修改
         /// <summary>
         /// 值班情况
         /// </summary>
@@ -52,11 +52,11 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         /// <summary>
         /// 值班时间段
         /// </summary>
-        public string timename { get; set; }
+        //public string timename { get; set; }
         /// <summary>
         /// 教室
         /// </summary>
-        public System.Nullable<int> ClassRoom_id { get; set; }
+       //public System.Nullable<int> ClassRoom_id { get; set; }
         /// <summary>
         /// 安排日期
         /// </summary>

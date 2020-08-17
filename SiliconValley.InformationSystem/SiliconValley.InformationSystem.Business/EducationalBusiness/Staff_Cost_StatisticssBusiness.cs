@@ -906,7 +906,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
             }
             var workbook = new HSSFWorkbook();
-
+            
             //创建工作区
             var sheet = workbook.CreateSheet("课时费费用详细");
 
@@ -1082,6 +1082,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             client.PutObject("xinxihua", $"/CostHistoryFiles/{filename}.xls", fileinfo);
 
             workbook.Close();
+
 
             void CreateHeader()
             {

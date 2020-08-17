@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Text;
 
 namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 {
@@ -24,87 +25,14 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         // GET: /Educational/TeacherNight/TeacherSerch
 
         TeacherNightManeger TeacherNight_Entity = new TeacherNightManeger();
-        TeacherBusiness Teacher_Entity;
-        //ClassroomManeger Classoom_Entity;
-        BeOnDutyManeger beOnDuty_Entity = new BeOnDutyManeger(); //获取教员晚自习
-        #region  教员晚自习值班
-        public ActionResult TeacherNightViewIndex()
-        {
-            //获取所有老师
-            Teacher_Entity = new TeacherBusiness();
-            List<SelectListItem> teacherlist = Teacher_Entity.GetTeacherEmps().Select(e=>new SelectListItem() { Text=e.EmpName,Value=e.EmployeeId}).ToList();
-            teacherlist.Add(new SelectListItem() { Text="--请选择--",Value="0"});
-            teacherlist = teacherlist.OrderBy(t => t.Value).ToList();
-            ViewBag.teacher = teacherlist;
-            return View();
-        }
+        //TeacherBusiness Teacher_Entity;
 
-        public ActionResult TeacherTableData(int page, int limit)
-        {
-            int id = beOnDuty_Entity.GetSingleBeOnButy("教员晚自习", false).Id;
-            TeacherNight_Entity = new TeacherNightManeger();
-            List<TeacherNightView> getall = new List<TeacherNightView>();
-            Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
-            int forginKay = TeacherNight_Entity.IsShowData(UserName.EmpNumber);
-            if (forginKay==0)
-            {
-                getall = TeacherNight_Entity.AccordingtoEmpGetData(false, "",id);//获取所有数据
-            }else if (forginKay==1 || forginKay == 2 || forginKay == 3)
-            {
-                //获取登录人所在部门
-               List<EmployeesInfo> find= TeacherNight_Entity.AccordingtoEmplyess(UserName.EmpNumber);
-                getall= TeacherNight_Entity.AccordingtoDepartMentData(find, id);
-            }else
-            {
-                getall= TeacherNight_Entity.AccordingtoEmpGetData(true, UserName.EmpNumber,id);
-            }
-            string tid= Request.QueryString["tid"];
-            string old = Request.QueryString["olddate"];
-            string news = Request.QueryString["newdate"];
-            if (!string.IsNullOrEmpty(tid) && tid!="0")
-            {
-                getall = getall.Where(g => g.Tearcher_Id == tid).ToList();
-            }
-
-            if (!string.IsNullOrEmpty(old))
-            {
-                DateTime date = Convert.ToDateTime(old);
-                getall = getall.Where(g => g.OrwatchDate >= date).ToList();
-            }
-
-            if (!string.IsNullOrEmpty(news))
-            {
-                DateTime date = Convert.ToDateTime(news);
-                getall = getall.Where(g => g.OrwatchDate <= date).ToList();
-            }
-            var data = getall.OrderByDescending(t => t.Id).Skip((page - 1) * limit).Take(limit).ToList();
-            var jsondata = new { count = getall.Count, code = 0, msg = "", data = data };
-            return Json(jsondata, JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult AnpaiTeacherNight()
-        {
-            return null;
-        }
-
+        BeOnDutyManeger beOnDuty_Entity = new BeOnDutyManeger(); //获取值班类型        
+       
         /// <summary>
-        /// 模糊查询教员
+        /// 添加教员值班页面
         /// </summary>
         /// <returns></returns>
-        [HttpPost]
-        public ActionResult TeacherSerch()
-        {
-            AjaxResult a = new AjaxResult();
-            Teacher_Entity = new TeacherBusiness();
-            string teachername= Request.Form["teachername"];
-
-            List<SelectListItem> teacherlist = Teacher_Entity.GetTeacherEmps().Where(t => t.EmpName.Contains(teachername)).Select(e => new SelectListItem() { Text = e.EmpName, Value = e.EmployeeId }).ToList();
-            a.Success = true;
-            a.Data = teacherlist;
-
-            return Json(a, JsonRequestBehavior.AllowGet);
-        }
-
         public ActionResult AddDataView()
         {            
             List<SelectListItem> sle_grand = Reconcile_Com.GetGrand_Id().Select(cl => new SelectListItem() { Text = cl.GrandName, Value = cl.Id.ToString() ,Selected=false}).ToList();  //获取阶段
@@ -113,39 +41,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
  
             return View();
         }
-
-        #region 系统安排晚自习
-
-        /// <summary>
-        /// 系统自动安排晚自习方法
-        /// </summary>
-        /// <returns></returns>
-        //[HttpPost]
-        //public ActionResult SystemAnpaiFunction()
-        //{
-        //    TeacherNight_Entity = new TeacherNightManeger();
-        //    string[] times = Request.Form["times"].Split('到');
-        //    DateTime start = Convert.ToDateTime(times[0]);
-        //    DateTime end = Convert.ToDateTime(times[1]);
-        //    string[] grand_id = Request.Form["str"].Split(',');
-        //    //获取这个阶段的班级
-        //    List<ClassSchedule> grand_class_list = new List<ClassSchedule>();
-        //    foreach (string item in grand_id)
-        //    {
-        //        if (!string.IsNullOrEmpty(item))
-        //        {
-        //            int gid = Convert.ToInt32(item);
-        //            grand_class_list.AddRange( Reconcile_Com.GetClass().Where(c=>c.grade_Id==gid));
-        //        }
-        //    }
-
-        //    AjaxResult a = TeacherNight_Entity.AnpaiNight(start, end,grand_class_list);
-        //    return Json(a, JsonRequestBehavior.AllowGet);
-        //}
-        #endregion
        
-        
-
         /// <summary>
         /// 删除数据
         /// </summary>
@@ -161,140 +57,25 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 if (!string.IsNullOrEmpty(item))
                 {
                     int tid = Convert.ToInt32(item);
-                    DELE.Add(TeacherNight_Entity.GetEntity(tid));
+                    TeacherNight finda = TeacherNight_Entity.GetEntity(tid);
+                    if (finda!=null)
+                    {
+                       if(finda.IsDelete == false)
+                        {
+                            DELE.Add(finda);
+                        }
+                       
+                    }
+                    
                 }
             }
              
             a = TeacherNight_Entity.My_Delete(DELE);
-            if (a.Success)
-            {
-                //修改晚自习数据
-                List<EvningSelfStudy> updateTeacher = new List<EvningSelfStudy>();
-                foreach (TeacherNight item in DELE)
-                {
-                   List<EvningSelfStudy> findlist = TeacherNight_Entity.EvningSelfStudent_Entity.GetSQLDat("select * from EvningSelfStudy where ClassSchedule_id=" + item.ClassSchedule_Id + " and Anpaidate='" + item.OrwatchDate + "'");
-
-                    //findlist[0].emp_id = null;
-                    updateTeacher.Add(findlist[0]);
-                }
-              a=  TeacherNight_Entity.EvningSelfStudent_Entity.Update_Data(updateTeacher);
-            }
+             
             return Json(a, JsonRequestBehavior.AllowGet);
         }
-
-        /// <summary>
-        /// 编辑页面
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult EditView(int id)
-        {
-            
-            TeacherNight_Entity = new TeacherNightManeger();//获取数据
-            TeacherNight find_data = TeacherNight_Entity.GetEntity(id);
-            ViewBag.time = find_data.OrwatchDate.ToString("yyyy-MM-dd");
-            Teacher_Entity = new TeacherBusiness();
-            List<SelectListItem> teacherlist = Teacher_Entity.GetTeachers().Select(t => new SelectListItem() { Text = Reconcile_Com.GetEmpName(t.EmployeeId), Value = t.EmployeeId, Selected = find_data.Tearcher_Id == t.EmployeeId ? true : false }).ToList();
-
-            ViewBag.teacherlist = teacherlist;
-            ViewBag.className = Reconcile_Com.GetClassName(Convert.ToInt32(find_data.ClassSchedule_Id));
-            ViewBag.classroom = Reconcile_Com.Classroom_Entity.GetEntity(find_data.ClassRoom_id).ClassroomName;
-            return View(find_data);
-        }
-
-        [HttpPost]
-        public ActionResult EditFunction(TeacherNight t)
-        {
-            TeacherNight find = TeacherNight_Entity.GetEntity(t.Id);
-            t.ClassSchedule_Id = find.ClassSchedule_Id;
-            t.BeOnDuty_Id = find.BeOnDuty_Id;
-            t.AttendDate = find.AttendDate;
-            t.ClassRoom_id = find.ClassRoom_id;
-            AjaxResult a = new AjaxResult();
-            bool istrue= TeacherNightandEvningStudet.IsUpdateTeacherNightData(t.OrwatchDate,Convert.ToInt32(t.ClassSchedule_Id));
-            if (istrue==true)
-            {
-                 a = TeacherNight_Entity.Edit_Data(t);
-                if (a.Success)
-                {
-                    //学生晚自习数据
-                   a=  TeacherNightandEvningStudet.SetEvningStudentData(t.OrwatchDate,Convert.ToInt32( t.ClassSchedule_Id), t.Tearcher_Id);                     
-                }
-            }
-            else
-            {
-                a.Success = false;
-                a.Msg = "该日期没有安排该班级的晚自习！，请重新选择日期或去安排班级在这个日期的晚自习";
-            }
-
-            return Json(a, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpPost]
-        public ActionResult GetEmtpyClassroom()
-        {
-            int s_id = Convert.ToInt32(Request.Form["schooladdress"]);
-            List<TreeClass> tree =Reconcile_Com.Classroom_Entity.GetAddreeClassRoom(s_id).Select(c => new TreeClass() { id = c.Id.ToString(), title = c.ClassroomName }).ToList();
-            return Json(tree, JsonRequestBehavior.AllowGet);
-        }
-
-        /// <summary>
-        /// 获取班级晚自习安排数据
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        public ActionResult GetClassData()
-        {
-            int classid=Convert.ToInt32(Request.Form["classid"]);
-            DateTime date = Convert.ToDateTime(Request.Form["date"]);
-            //获取班级在这个日期中的晚自习安排数据
-           List<EvningSelfStudy> findata= TeacherNightandEvningStudet.GetEvningData(date, classid);
-            AjaxResult a = new AjaxResult();
-            if (findata.Count>0)
-            {
-               var data= findata.Select(l => new { id = l.id, curname = l.curd_name }).ToList();
-                a.Success = true;
-                a.Data = data;
-            }
-            else
-            {
-                a.Success = false;
-                a.Msg = "该班级在此日期中没有安排晚自习";
-            }
-
-            return Json(a,JsonRequestBehavior.AllowGet);
-        }
-
-        #region 调课或上课日期更换
-        public ActionResult ClassadjustmentView(bool id)
-        {
-            ViewBag.Is = id;//如果是0--》只需要调换日期1-->日期往前推迟或往后推迟
-            return View();
-        }
-
-        public ActionResult ClassadjustmentFunction()
-        {
-            int id = beOnDuty_Entity.GetSingleBeOnButy("教员晚自习", false).Id;
-            DateTime old = Convert.ToDateTime(Request.Form["oldtime"]);
-            DateTime new_old = Convert.ToDateTime(Request.Form["newtime"]);
-            bool Whychangedate = Convert.ToBoolean(Request.Form["mybool"]);
-            List<TeacherNight> list = TeacherNight_Entity.GetAllTeacherNight();
-            int count = (new_old-old).Days;
-            if (Whychangedate)//调课
-            {
-                list = list.Where(t => t.OrwatchDate >= old && t.BeOnDuty_Id == id).ToList();
-            }
-            else //日期更改
-            {
-                list = list.Where(t => t.OrwatchDate == old && t.BeOnDuty_Id == id).ToList();
-            }
-            AjaxResult a = TeacherNight_Entity.Update_Date(Whychangedate, list, count, new_old);
-            return Json(a, JsonRequestBehavior.AllowGet);
-        }
-        #endregion
-
-         
-        #endregion
-
+       
+             
         #region 班主任晚自习值班
         public ActionResult ClassMasterIndex()
         {
@@ -304,98 +85,133 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             list = list.OrderBy(l => l.Value).ToList();
 
             ViewBag.master = list;
+
+            Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
+
+            //判断是否是教务
+            ViewBag.isjiaowu = TeacherNight_Entity.IsJiaowu(UserName.EmpNumber)==true?1:0;
+
             return View();
         }
 
+        /// <summary>
+        /// 给班主任显示的数据
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
         public ActionResult GetClassMasterFunction(int page, int limit)
         {
             EmployeesInfoManage e = new EmployeesInfoManage();
-            int id1 = beOnDuty_Entity.GetSingleBeOnButy("周末值班", false).Id;
-            int id2 = beOnDuty_Entity.GetSingleBeOnButy("班主任晚自习", false).Id;
+            int id1 = 2;//beOnDuty_Entity.GetSingleBeOnButy("周末值班", false).Id;
+            int id2 = 6;//beOnDuty_Entity.GetSingleBeOnButy("班主任晚自习", false).Id;
             Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
-            List<TeacherNightView> getall = new List<TeacherNightView>();
-            if (TeacherNight_Entity.IsShowData(UserName.EmpNumber)==0)
-            {
-                getall = TeacherNight_Entity.GetHeadMasterAll(id1,id2).OrderBy(l=>l.OrwatchDate).ToList();
-            }
-            else if (TeacherNight_Entity.IsShowData(UserName.EmpNumber)==2 || TeacherNight_Entity.IsShowData(UserName.EmpNumber) == 3)
-            {
-                List<EmployeesInfo> li = TeacherNight_Entity.AccordingtoEmplyess(UserName.EmpNumber);
-                getall= TeacherNight_Entity.AccordingtoDepartMentData(li, id1, id2).OrderBy(l=>l.OrwatchDate).ToList();
-            }
-             //TeacherNight_Entity.GetAllTeacherNight().Where(t => t.BeOnDuty_Id == id1 || t.BeOnDuty_Id == id2).OrderByDescending(t => t.Id).ToList();
-            string mid = Request.QueryString["tid"];
-            string old = Request.QueryString["olddate"];
-            string news = Request.QueryString["newdate"];
-            if (!string.IsNullOrEmpty(mid) && mid != "0")
-            {
-                getall = getall.Where(g => g.Tearcher_Id == mid).ToList();
-            }
-
-            if (!string.IsNullOrEmpty(old))
-            {
-                DateTime date = Convert.ToDateTime(old);
-                getall = getall.Where(g => g.OrwatchDate >= date).ToList();
-            }
-
-            if (!string.IsNullOrEmpty(news))
-            {
-                DateTime date = Convert.ToDateTime(news);
-                getall = getall.Where(g => g.OrwatchDate <= date).ToList();
-            }
-
-            List<HeadmasterView> list_View = new List<HeadmasterView>();
-
-            for (int i = 0; i < getall.Count;)
-            {
-                List<TeacherNightView> sametime= getall.Where(g => g.OrwatchDate == getall[i].OrwatchDate && g.BeOnDuty_Id==getall[i].BeOnDuty_Id && e.GetDeptByEmpid(g.Tearcher_Id).DeptId== e.GetDeptByEmpid(getall[i].Tearcher_Id).DeptId).ToList();
-                HeadmasterView headmaster = new HeadmasterView();
-                headmaster.Time = getall[i].OrwatchDate;
-                headmaster.Types = getall[i].timename;
-                string ids = null;
-                string teachers = null;
-                int index = 1;
-                if (sametime.Count<=0)
+           
+                List<TeacherNightView> getall = new List<TeacherNightView>();
+                if (TeacherNight_Entity.IsShowData(UserName.EmpNumber) == 0)
                 {
-                    headmaster.Teachers = e.GetEntity(getall[i].Tearcher_Id).EmpName;
-
-                    headmaster.Id = getall[i].Id.ToString();
-
-                    list_View.Add(headmaster);
+                    getall = TeacherNight_Entity.GetHeadMasterAll(id1, id2).OrderBy(l => l.OrwatchDate).ToList();
                 }
-                else
+                else if (TeacherNight_Entity.IsShowData(UserName.EmpNumber) == 2 || TeacherNight_Entity.IsShowData(UserName.EmpNumber) == 3)
                 {
-                    sametime.ForEach(s => {
-                        if (index == sametime.Count)
-                        {
-                            ids = ids + s.Id;
-                            teachers = teachers + e.GetEntity(s.Tearcher_Id).EmpName;
-                        }
-                        else
-                        {
-                            ids = ids + s.Id + ",";
-                            teachers = teachers + e.GetEntity(s.Tearcher_Id).EmpName + ",";
-                        }
-                        index++;
-
-                        getall.Remove(s);
-
-                        headmaster.Teachers = teachers;
-
-                        headmaster.Id = ids;
-
-
-                    });
-
-                    list_View.Add(headmaster);
-                    i=0;
+                    List<EmployeesInfo> li = TeacherNight_Entity.AccordingtoEmplyess(UserName.EmpNumber);
+                    getall = TeacherNight_Entity.AccordingtoDepartMentData(li, id1, id2).OrderBy(l => l.OrwatchDate).ToList();
                 }
-                
-            }
+                //TeacherNight_Entity.GetAllTeacherNight().Where(t => t.BeOnDuty_Id == id1 || t.BeOnDuty_Id == id2).OrderByDescending(t => t.Id).ToList();
+                string mid = Request.QueryString["tid"];
+                string old = Request.QueryString["olddate"];
+                string news = Request.QueryString["newdate"];
+                if (!string.IsNullOrEmpty(mid) && mid != "0")
+                {
+                    getall = getall.Where(g => g.Tearcher_Id == mid).ToList();
+                }
 
-            var data = list_View.OrderBy(l=>l.Time).Skip((page - 1) * limit).Take(limit).ToList();
- 
-            var jsondata = new { count = list_View.Count, code = 0, msg = "", data = list_View };
+                if (!string.IsNullOrEmpty(old))
+                {
+                    DateTime date = Convert.ToDateTime(old);
+                    getall = getall.Where(g => g.OrwatchDate >= date).ToList();
+                }
+
+                if (!string.IsNullOrEmpty(news))
+                {
+                    DateTime date = Convert.ToDateTime(news);
+                    getall = getall.Where(g => g.OrwatchDate <= date).ToList();
+                }
+
+                List<HeadmasterView> list_View = new List<HeadmasterView>();
+
+                for (int i = 0; i < getall.Count;)
+                {
+                    List<TeacherNightView> sametime = getall.Where(g => g.OrwatchDate == getall[i].OrwatchDate && g.BeOnDuty_Id == getall[i].BeOnDuty_Id && e.GetDeptByEmpid(g.Tearcher_Id).DeptId == e.GetDeptByEmpid(getall[i].Tearcher_Id).DeptId).ToList();
+                    HeadmasterView headmaster = new HeadmasterView();
+                    headmaster.Time = getall[i].OrwatchDate;
+                    //headmaster.Types = getall[i].timename;
+                    string ids = null;
+                    string teachers = null;
+                    int index = 1;
+                    if (sametime.Count <= 0)
+                    {
+                        headmaster.Teachers = e.GetEntity(getall[i].Tearcher_Id).EmpName;
+
+                        headmaster.Id = getall[i].Id.ToString();
+
+                        list_View.Add(headmaster);
+                    }
+                    else
+                    {
+                        sametime.ForEach(s => {
+                            if (index == sametime.Count)
+                            {
+                                ids = ids + s.Id;
+                                teachers = teachers + e.GetEntity(s.Tearcher_Id).EmpName;
+                            }
+                            else
+                            {
+                                ids = ids + s.Id + ",";
+                                teachers = teachers + e.GetEntity(s.Tearcher_Id).EmpName + ",";
+                            }
+                            index++;
+
+                            getall.Remove(s);
+
+                            headmaster.Teachers = teachers;
+
+                            headmaster.Id = ids;
+
+
+                        });
+
+                        list_View.Add(headmaster);
+                        i = 0;
+                    }
+
+                }
+
+                SessionHelper.Session["data"] = list_View;
+                var data = list_View.OrderBy(l => l.Time).Skip((page - 1) * limit).Take(limit).ToList();
+
+                var jsondata = new { count = list_View.Count, code = 0, msg = "", data = data };
+                return Json(jsondata, JsonRequestBehavior.AllowGet);
+          
+            
+        }
+
+        /// <summary>
+        /// 该数据是显示给教务审核的数据
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        public ActionResult GetJiaoMasterFuntion(int page,int limit)
+        {
+            int id1 = 2;//beOnDuty_Entity.GetSingleBeOnButy("周末值班", false).Id;
+            int id2 = 6;//beOnDuty_Entity.GetSingleBeOnButy("班主任晚自习", false).Id;
+
+            List<TeacherNightView> list= TeacherNight_Entity.GetHeadMasterAll(id1, id2).ToList();
+
+            var data = list.OrderBy(l => l.OrwatchDate).Skip((page - 1) * limit).Take(limit).ToList();
+
+            var jsondata = new { count = list.Count, code = 0, msg = "", data = data };
             return Json(jsondata, JsonRequestBehavior.AllowGet);
         }
 
@@ -449,7 +265,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                             new_t.IsDelete = false;
                             new_t.OrwatchDate = time;
                             new_t.Tearcher_Id = id;
-                            new_t.timename = types == true ? "晚自习值班" : "周末值班";
+                            //new_t.timename = types == true ? "晚自习值班" : "周末值班";
                             night.Add(new_t);
                         }
                     }
@@ -474,8 +290,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 if (!string.IsNullOrEmpty(item))
                 {
                     int intid = Convert.ToInt32(item);
-                    time = TeacherNight_Entity.GetEntity(intid).OrwatchDate;
-                    findlist.Add(e.GetEntity(TeacherNight_Entity.GetEntity(intid).Tearcher_Id).EmpName);
+                    TeacherNight finda = TeacherNight_Entity.GetEntity(intid);
+                    if (finda!=null)
+                    {
+                       time= finda.OrwatchDate;
+                        findlist.Add(e.GetEntity(TeacherNight_Entity.GetEntity(intid).Tearcher_Id).EmpName);
+                    }
+                  
                 }
             }
 
@@ -600,32 +421,127 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             return View();
         }
         
+        /// <summary>
+        /// 给教务显示的数据(第一次数据加载)
+        /// </summary>
+        /// <param name="limit"></param>
+        /// <param name="page"></param>
+        /// <returns></returns>
         public ActionResult TaableData(int limit,int page)
         {
-            int id1 = beOnDuty_Entity.GetSingleBeOnButy("周末值班", false).Id;
-            int id2 = beOnDuty_Entity.GetSingleBeOnButy("班主任晚自习", false).Id;
-            Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
+            int id1 = 2;//beOnDuty_Entity.GetSingleBeOnButy("周末值班", false).Id;
+            int id2 = 6; //beOnDuty_Entity.GetSingleBeOnButy("班主任晚自习", false).Id;
+            //Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
             
-            List<TeacherNightView> list = TeacherNight_Entity.AccordingtoEmpGetData(UserName.EmpNumber, id1, id2).OrderBy(l=>l.OrwatchDate).ToList();
-            string da1 = Request.QueryString["d1"];
-
-            if (!string.IsNullOrEmpty(da1))
-            {
-                DateTime d1 = Convert.ToDateTime(da1);
-                list = list.Where(l => l.OrwatchDate >= d1).ToList();
-            }
-            string da2 = Request.QueryString["d2"];
-
-            if (!string.IsNullOrEmpty(da2))
-            {
-                DateTime d2 = Convert.ToDateTime(da2);
-                list = list.Where(l => l.OrwatchDate <= d2).ToList();
-            }
+            List<TeacherNightView> list = TeacherNight_Entity.GetHeadMasterAll(id1, id2).OrderBy(l=>l.OrwatchDate).ToList();
+           
             var data = list.Skip((page - 1) * limit).Take(limit).ToList();
 
             var jsondata = new { count = list.Count, code = 0, msg = "", data = data };
             return Json(jsondata, JsonRequestBehavior.AllowGet);
 
+        }
+       
+        [HttpPost]
+        public ActionResult ShenHe()
+        {
+            string[] strs = Request.Form["strs"].Split(',');
+            List<TeacherNight> list = new List<TeacherNight>();
+            foreach (string item in strs)
+            {
+                if (!string.IsNullOrEmpty(item))
+                {
+                   int id=  Convert.ToInt32(item);
+
+                   if(TeacherNight_Entity.FindId(id)!=null)
+                    {
+                        TeacherNight FIDNA = TeacherNight_Entity.FindId(id);
+                        FIDNA.IsDelete = true;
+                        list.Add(FIDNA);
+                    }
+                }
+            }
+
+           AjaxResult a= TeacherNight_Entity.Edit_Data(list);
+
+            return Json(a,JsonRequestBehavior.AllowGet);
+        }
+        
+        /// <summary>
+        /// 用于教务查询值班数据的方法
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult SercherTable(int limit,int page )
+        {
+            string did = Request.QueryString["Depar_find"];//部门编号
+            string startime = Request.QueryString["starTime"];//开始日期
+            string endtime = Request.QueryString["endTime"];//结束日期
+            string type = Request.QueryString["Type_find"];//值班类型
+ 
+            string teacherid=  Request.QueryString["teacher_Div"];//值班老师
+            //int type1 = 6;//类型班主任晚自习
+            //int type2 = 2;//类型为周末值班
+
+            
+
+            StringBuilder sb = new StringBuilder("select * from TeacherNightView where 1=1");
+
+            if (!string.IsNullOrEmpty(startime))
+            {
+                sb.Append(" and OrwatchDate>='"+startime+"'");
+            }
+
+            if (!string.IsNullOrEmpty(endtime))
+            {
+                sb.Append(" and OrwatchDate<='" + endtime + "'");
+            }
+
+            if (type!="0")
+            {
+                sb.Append(" and BeOnDuty_Id="+type);
+            }
+
+            List<TeacherNightView> teacherlist = TeacherNight_Entity.GetListBySql<TeacherNightView>(sb.ToString());
+
+            if (teacherid!="0")
+            {
+                sb.Append(" and Tearcher_Id='"+ teacherid + "'");
+                teacherlist = TeacherNight_Entity.GetListBySql<TeacherNightView>(sb.ToString());
+
+                var data = teacherlist.OrderBy(d => d.OrwatchDate).Skip((page - 1) * limit).Take(limit).ToList();
+
+                var jsondata = new { code = 0, mag = "", data = data, count = teacherlist.Count };
+
+                return Json(jsondata, JsonRequestBehavior.AllowGet);
+            }
+            else if (did != "0" && teacherid == "0")
+            {
+                EmployeesInfoManage employeesInfo = new EmployeesInfoManage();
+                List<EmployeesInfo> emplist = employeesInfo.GetEmpsByDeptid(Convert.ToInt32(did));//获取属于这个部门点员工
+
+                List<TeacherNightView> list = new List<TeacherNightView>();
+                foreach (EmployeesInfo item in emplist)
+                {
+                    var dd = teacherlist.Where(l => l.Tearcher_Id == item.EmployeeId).ToList();
+                    list.AddRange(dd);
+                }
+
+                var data = list.OrderBy(d => d.OrwatchDate).Skip((page - 1) * limit).Take(limit).ToList();
+
+                var jsondata = new { code = 0, mag = "", data = data, count = list.Count };
+
+                return Json(jsondata, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                var data = teacherlist.OrderBy(d => d.OrwatchDate).Skip((page - 1) * limit).Take(limit).ToList();
+
+                var jsondata = new { code = 0, mag = "", data = data, count = teacherlist.Count };
+
+                return Json(jsondata, JsonRequestBehavior.AllowGet);
+            }
+
+           
         }
        
         #endregion

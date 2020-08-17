@@ -1,4 +1,5 @@
 ﻿
+
 @{
     ViewBag.Title = "ClassStudent";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -398,7 +399,7 @@
                 <div class="layui-colla-content layui-anim">
                     @{
                      
-                        if (ViewBag.Stage == "S1" || ViewBag.Stage == "Y1" && ViewBag.Status == "Ca" && ViewBag.Status == null)
+                        if (ViewBag.Stage == "S1" || ViewBag.Stage == "Y1" || ViewBag.Status == "Ca" || ViewBag.Status == null)
                         {
                             <div>
                                 <button type="button" id="Dismantleclasses" class="layui-btn layui-btn-fluid mybut">升学分配班级</button>
@@ -1165,7 +1166,6 @@
                 for (var i = 0; i < list.length; i++) {
                     x += $($(list[i]).children()[0]).text() + ",";
                 }
-
                 layer.open({
                     title: "拆班",
                     type: 2,
@@ -1209,7 +1209,6 @@
                 for (var i = 0; i < list.length; i++) {
                     x += $($(list[i]).children()[0]).text() + ",";
                 }
-
                 layer.open({
                     title: "拆班",
                     type: 2,

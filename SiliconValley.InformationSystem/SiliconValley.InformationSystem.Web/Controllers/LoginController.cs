@@ -38,11 +38,9 @@ namespace SiliconValley.InformationSystem.Web.Controllers
         //登录方法
         public ActionResult LoginFunction(Base_User u, string loginType, string mobile, string smsCaptcha, string code)
         {
-
             ErrorResult err = new ErrorResult();
             try
             {
-
                 //账号密码登录
                 if (loginType == "account")
                 {
@@ -63,8 +61,6 @@ namespace SiliconValley.InformationSystem.Web.Controllers
                         var permisslist = PermissionManage.GetOperatorPermissionValues();
 
                         SessionHelper.Session["OperatorPermission"] = permisslist;
-
-
                         return Json(err, JsonRequestBehavior.AllowGet);
                     }
                     else

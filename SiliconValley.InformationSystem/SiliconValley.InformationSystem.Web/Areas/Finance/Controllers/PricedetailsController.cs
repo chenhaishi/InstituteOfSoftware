@@ -247,18 +247,18 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
      
             if (personlist[0].Costitemsid>0)
             {
-                var Amonet = dbtext.PreentryfeeFinet(personlist[0].StudenID);
-                if (Amonet > 0)
-                {
-                    foreach (var item in personlist)
-                    {
-                        var costit = costitemsBusiness.GetEntity(item.Costitemsid);
-                        if (costit.Rategory == 8)
-                        {
-                            item.Amountofmoney = item.Amountofmoney - Amonet;
-                        }
-                    }
-                }
+                //var Amonet = dbtext.PreentryfeeFinet(personlist[0].StudenID);
+                //if (Amonet > 0)
+                //{
+                //    foreach (var item in personlist)
+                //    {
+                //        var costit = costitemsBusiness.GetEntity(item.Costitemsid);
+                //        if (costit.Rategory == 8)
+                //        {
+                //            item.Amountofmoney = item.Amountofmoney - Amonet;
+                //        }
+                //    }
+                //}
                 string Invoicenumber = "";
 
                 ViewBag.Invoicenumber = Invoicenumber;
@@ -314,9 +314,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
         public ActionResult Printrecord()
         {
             string student = Request.QueryString["student"];
-            ViewBag.vier = dbtext.FienPrice(student);
+            ViewBag.vier = dbtext.FienPrice(student);//查询缴费记录
             ViewBag.Tuitionrefund = dbtext.FienTuitionrefund(dbtext.FienPrice(student));
             ViewBag.StudentPrentryfeeDate = dbtext.StudentPrentryfeeDate(student);
+            
             return View();
         }
         [HttpGet]
@@ -435,7 +436,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             //学员信息
             StudentInformationBusiness studentInformationBusiness = new StudentInformationBusiness();
             string studentid = Request.QueryString["studentid"];
-           ViewBag.student = studentInformationBusiness.GetEntity(studentid);
+            ViewBag.student = studentInformationBusiness.GetEntity(studentid);
             ViewBag.id = id;
             ViewBag.vier = dbtext.FienPricesa(id);
             ViewBag.OddNumbers = Request.QueryString["OddNumbers"];
@@ -782,7 +783,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
                     StudentFeeRecordlist.Add(studentFeeRecord);
                 }
               
-                
             }
             //学员费用
             BaseBusiness<StudentFeeRecord> studentfee = new BaseBusiness<StudentFeeRecord>();
@@ -1001,7 +1001,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
                         te.x4 = t.Rows[i][3].ToString();//阶段
                         te.x5 = t.Rows[i][4].ToString();//缴费日期
                         te.x6 = t.Rows[i][5].ToString();//学费
-
                         te.x8 = t.Rows[i][6].ToString();//食宿费
                         te.x9 = t.Rows[i][9].ToString();//备注
                         telist.Add(te);
@@ -1056,5 +1055,43 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
            var x= studentfee.GetList().Where(a => a.Costitemsid == 10 || a.Costitemsid == 11).ToList();
             return null;
         }
+        //订单重审
+  
+        public ActionResult reviewOpen(string check_id,string studentid)
+        {
+            //当前登陆人
+            Base_UserModel user = Base_UserBusiness.GetCurrentUser();
+            EmployeesInfoManage employeesInfoManage = new EmployeesInfoManage();
+            //学员信息
+            StudentInformationBusiness studentInformationBusiness = new StudentInformationBusiness();
+            ViewBag.student = studentInformationBusiness.GetEntity(studentid);
+            ViewBag.id = check_id;
+            ViewBag.vier = dbtext.FienPricesa(int.Parse(check_id));
+            ViewBag.OddNumbers = Request.QueryString["OddNumbers"];
+            ViewBag.Passornot = Request.QueryString["Passornot"];
+            ViewBag.paymentmethod = Request.QueryString["paymentmethod"];
+            ViewBag.reviewList = pay.GetList().Where(d => d.id == int.Parse(check_id)).ToList();
+            //岗位数据
+            var positon = employeesInfoManage.GetPositionByEmpid(user.EmpNumber);
+            ViewBag.postName = positon.PositionName.Contains("会计") == true ? 1 : 0;
+            return PartialView("/Areas/Finance/Views/Shared/Review.cshtml");
+        }
+        //订单表数据
+        BaseBusiness<Paymentverification> pay = new BaseBusiness<Paymentverification>();
+        public ActionResult review(string checkID,string OddNumbers,string Paymentmethod)
+        {
+           
+            var iq_reID = pay.GetList().Where(d => d.id == int.Parse(checkID)).SingleOrDefault();
+            iq_reID.OddNumbers = OddNumbers;
+            iq_reID.Paymentmethod = Paymentmethod;
+            pay.Update(iq_reID);
+            return Json(new
+            {
+                code=0,
+                msg="修改成功"
+            });
+            
+        }
+
     } 
 }

@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "Printrecord";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var list = ViewBag.vier as List<vierprice>;
 }
 
 @model SiliconValley.InformationSystem.Entity.ViewEntity.vierprice
@@ -9,6 +10,7 @@
 @section style{
 
 }
+
 <style>
     .site-doc-icon li .layui-anim {
         width: 150px;
@@ -22,12 +24,55 @@
         border-radius: 50%;
     }
 </style>
+<div>
+    <table class="layui-table" lay-skin="line">
+        <colgroup>
+            <col width="500">
+            <col width="400">
+            <col width="300">
+            <col>
+        </colgroup>
+        <tbody>
 
+            @{
+                decimal iqcount = 0;
+
+                foreach (var item_table in list)
+                {
+
+                    <tr>
+                        @foreach (var item_s in item_table.Chicked)
+                        {
+                            <th>@item_s.GrandName@item_s.CostitemName</th>
+
+                        }
+                        <th>缴费时间</th>
+                        <th>总金额</th>
+                    </tr>
+                    <tr>
+
+                        @foreach (var item_s in item_table.Chicked)
+                        {
+                            <th>@item_s.Amountofmoney</th>
+                            iqcount = iqcount + item_s.Amountofmoney;
+                        }
+                        <th> @item_table.Date</th>
+                        <th>@iqcount</th>
+
+                    </tr>
+                    iqcount = 0;
+                }
+
+            }
+        </tbody>
+    </table>
+</div>
 <div style="float:left;">
+
     <ul class="layui-timeline">
 
         @{
-    
+
             foreach (var item in ViewBag.StudentPrentryfeeDate as List<vierprice>)
             {
                 decimal db = 0;
@@ -38,7 +83,7 @@
                         {
 
                             db += item1.Amountofmoney;
-                          
+
 
                         }
                         <h3 class="layui-timeline-title">@item.Date (@db.ToString().Substring(0, db.ToString().Length - 2))</h3>
@@ -110,7 +155,7 @@
     </ul>
 </div>
 
-<div style="float:right;">
+<div>
 
     <ul class="layui-timeline">
 
@@ -188,6 +233,9 @@
 @section script{
 
 }
+<script>
+
+</script>
 <script>
     layui.use([], function () {
         var $ = layui.jquery;

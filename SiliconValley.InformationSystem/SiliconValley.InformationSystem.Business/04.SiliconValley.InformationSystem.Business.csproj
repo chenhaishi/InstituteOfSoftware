@@ -183,6 +183,7 @@
     <Compile Include="EducationalBusiness\TeacherNightManeger.cs" />
     <Compile Include="EducationalBusiness\TimeTableManeger.cs" />
     <Compile Include="EducationalBusiness\WarehouseManeger.cs" />
+    <Compile Include="EducationalBusiness\XmlManeger.cs" />
     <Compile Include="EmployeesBusiness\EmployandCounTeacherCoom.cs" />
     <Compile Include="EmployeesBusiness\EmployeesInfoManage.cs" />
     <Compile Include="Employment\CDInterviewBusiness.cs" />
@@ -229,9 +230,6 @@
     <Compile Include="Messagenotification_Business\MessagenotificationBusiness.cs" />
     <Compile Include="NetClientRecordBusiness\NetClientRecordManage.cs" />
     <Compile Include="NewExcel\ExcelHelper.cs" />
-    <Compile Include="obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
-    <Compile Include="obj\Debug\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
-    <Compile Include="obj\Debug\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
     <Compile Include="PositionBusiness\PositionManage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Psychro\ChannelAreaBusiness.cs" />
@@ -295,7 +293,6 @@
     <None Include="%24R9GAEVN\Release\SiliconValley.InformationSystem.Entity.dll.config" />
     <None Include="%24R9GAEVN\Release\SiliconValley.InformationSystem.Util.dll.config" />
     <None Include="app.config" />
-    <None Include="obj\Release\04.SiliconValley.InformationSystem.Business.csproj.CoreCompileInputs.cache" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

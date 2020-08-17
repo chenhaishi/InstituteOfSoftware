@@ -19,7 +19,7 @@ namespace SiliconValley.InformationSystem.Business.Consult_Business
         EmployeesInfoManage emp_Entity = new EmployeesInfoManage();
         ConsultTeacherManeger Ct_Entity = new ConsultTeacherManeger();
        public FollwingInfoManeger Fi_Entity = new FollwingInfoManeger();
-        StudentDataKeepAndRecordBusiness Stu_Entity = new StudentDataKeepAndRecordBusiness();
+       public  StudentDataKeepAndRecordBusiness Stu_Entity = new StudentDataKeepAndRecordBusiness();
         RegionManeges RM_Entity = new RegionManeges();
         StuInfomationTypeManeger ST_Entity = new StuInfomationTypeManeger();
         StuStateManeger SSta_Entity = new StuStateManeger();

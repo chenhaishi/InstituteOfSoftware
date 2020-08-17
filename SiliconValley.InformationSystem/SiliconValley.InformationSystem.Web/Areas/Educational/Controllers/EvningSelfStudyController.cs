@@ -403,51 +403,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             return Json(a,JsonRequestBehavior.AllowGet);
         }
        
-        /// <summary>
-        /// 阶段日期调换
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult ChangeGrandADIView()
-        {
-            return View();
-        }
-
-        public ActionResult ChangeGrandADIfuntion()
-        {
-            DateTime stardate =Convert.ToDateTime( Request.Form["starTime"]);
-
-            DateTime enddate = Convert.ToDateTime(Request.Form["endTime"]);
-
-            string[] grands = Request.Form["grand"].Split(',');
-
-            List<EvningSelfStudy> list = new List<EvningSelfStudy>();
-            //获取符合的数据
-            foreach (string item in grands)
-            {
-                if (!string.IsNullOrEmpty(item))
-                {
-                    StringBuilder sb = new StringBuilder("select * from EvningSelfStudyView where Anpaidate>='" + stardate + "' and grandid=" + item);
-
-                    list.AddRange(EvningSelefstudy_Entity.GetSQLDat(sb.ToString()).Select(e => new EvningSelfStudy()
-                    {
-                        id = e.id,
-                        ClassSchedule_id = e.ClassSchedule_id,
-                        Classroom_id = e.Classroom_id,
-                        curd_name = e.curd_name,
-                        Anpaidate = e.Anpaidate,
-                        Newdate = e.Newdate,
-                        Rmark = e.Rmark,
-                        IsDelete = e.IsDelete,
-                        emp_id = e.emp_id
-                    }));
-                }
-            }
-
-            AjaxResult a= EvningSelefstudy_Entity.ChangDate(list, enddate);
-
-            return Json(a,JsonRequestBehavior.AllowGet);
-        }
-        
+       
         #endregion
 
         #region 日期调换
@@ -498,6 +454,56 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             AjaxResult a = EvningSelefstudy_Entity.ChangDate(find_e, endtime);
             return Json(a, JsonRequestBehavior.AllowGet);
         }
+
+
+        /// <summary>
+        /// 阶段日期调换
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ChangeGrandADIView()
+        {
+            //获取所有阶段
+            List<SelectListItem> g_list = Reconcile_Com.GetGrand_Id().Select(g => new SelectListItem() { Text = g.GrandName, Value = g.Id.ToString() }).ToList();
+            ViewBag.Mygrandlist = g_list;
+            return View();
+        }
+
+        public ActionResult ChangeGrandADIfuntion()
+        {
+            DateTime stardate = Convert.ToDateTime(Request.Form["starTime"]);
+
+            DateTime enddate = Convert.ToDateTime(Request.Form["endTime"]);
+
+            string[] grands = Request.Form["grand"].Split(',');
+
+            List<EvningSelfStudy> list = new List<EvningSelfStudy>();
+            //获取符合的数据
+            foreach (string item in grands)
+            {
+                if (!string.IsNullOrEmpty(item))
+                {
+                    StringBuilder sb = new StringBuilder("select * from EvningSelfStudyView where Anpaidate>='" + stardate + "' and grandid=" + item);
+
+                    list.AddRange(EvningSelefstudy_Entity.GetSQLDat(sb.ToString()).Select(e => new EvningSelfStudy()
+                    {
+                        id = e.id,
+                        ClassSchedule_id = e.ClassSchedule_id,
+                        Classroom_id = e.Classroom_id,
+                        curd_name = e.curd_name,
+                        Anpaidate = e.Anpaidate,
+                        Newdate = e.Newdate,
+                        Rmark = e.Rmark,
+                        IsDelete = e.IsDelete,
+                        emp_id = e.emp_id
+                    }));
+                }
+            }
+
+            AjaxResult a = EvningSelefstudy_Entity.ChangDate(list, enddate);
+
+            return Json(a, JsonRequestBehavior.AllowGet);
+        }
+
         #endregion
 
         #region 其他

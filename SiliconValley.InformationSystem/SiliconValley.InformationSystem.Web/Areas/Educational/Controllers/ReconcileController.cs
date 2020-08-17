@@ -320,6 +320,34 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
                     }
                     break;
+                case "开班":
+                    //获取这个班级的班主任
+                    //如果这个班级是S4的话，获取就业部的老师
+                    //判断班级是否是S4阶段
+                    Grand find_g1 = Reconcile_Com.GetGrand_Id().Where(g => g.GrandName.Equals("S4", StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+                    if (find_c.grade_Id == find_g1.Id)
+                    {
+                        EmploymentStaff find_saff = Reconcile_Com.EmploymentStaff_Entity.GetStaffByclassid(find_c.id);
+                        bool s1 = Reconcile_Entity.IsHaveClass(find_saff.EmployeesInfo_Id, timename, anpai);
+                        if (s1 == false)
+                        {
+                            e_list.Add(Reconcile_Com.Employees_Entity.GetEntity(find_saff.EmployeesInfo_Id));
+                        }
+                    }
+                    else
+                    {
+                        EmployeesInfo e = Reconcile_Com.GetZhisuTeacher(class_id).Data as EmployeesInfo;
+                        if (e != null)
+                        {
+                            bool s1 = Reconcile_Entity.IsHaveClass(e.EmployeeId, timename, anpai);
+                            if (s1 == false)
+                            {
+                                e_list.Add(e);
+                            }
+                        }
+
+                    }
+                    break;
             }
             List<SelectListItem> select = e_list.Select(s => new SelectListItem() { Value = s.EmployeeId, Text = s.EmpName }).ToList();
             return Json(select, JsonRequestBehavior.AllowGet);

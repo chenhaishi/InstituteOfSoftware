@@ -16,6 +16,7 @@ using SiliconValley.InformationSystem.Util;
 using SiliconValley.InformationSystem.Business.EnrollmentBusiness;
 using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 using SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness;
+using SiliconValley.InformationSystem.Entity;
 
 namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
 {
@@ -364,33 +365,31 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
             int countfee = 0;
             int countfee1 = 0;
             var idcost = costitemssX.GetList().Where(a => a.IsDelete == false && a.Name == "学杂费").FirstOrDefault().id;
-            var costitemslist = costitemsBusiness.costitemslist().Where(a => a.Rategory == idcost&&a.IsDelete==false).ToList();
+            var costitemslist = costitemsBusiness.costitemslist().Where(a => a.Rategory == idcost&&a.IsDelete==false&&a.Grand_id==Grand_id).ToList();
+            List<Costitems> costlist = new List<Costitems>();
             foreach (var item in costitemslist)
             {
                 var x = studentfee.GetListBySql<StudentFeeRecord>("select * from StudentFeeRecord where IsDelete='false' and StudenID='" + studentid + "' and Costitemsid=" + item.id).FirstOrDefault();
                // studentfee.GetList().Where(a => a.IsDelete == false && a.StudenID == studentid && a.Costitemsid == item.id).FirstOrDefault();
                 if (x != null)
                 {
-                  //  var Paymentverid = PayviewPaymentverBusiness.GetList().Where(a => a.Payviewid == x.ID).FirstOrDefault().id;
-                    //if (PaymentverificationBusiness.GetEntity(Paymentverid).Passornot == true || PaymentverificationBusiness.GetEntity(Paymentverid).Passornot == null)
-                    //{
-                        countfee++;
-                   // }
+                        costlist.Add(item);
                 }
             }
-
-           var cost= costitemsBusiness.GetList().Where(a => a.Name == "宿舍押金" && a.IsDelete == false && a.Grand_id == Grand_id).FirstOrDefault();
-            if (cost!=null)
+            foreach (var item in costlist)
             {
-                if (studentfee.GetListBySql<StudentFeeRecord>("select * from StudentFeeRecord where IsDelete='false' and StudenID='" + studentid + "' and Costitemsid='" +cost.id +"'").FirstOrDefault() != null)
-                {
-                    countfee1 = 5;
-                }
+                costitemslist.Remove(item);
             }
-           
 
-           var z= costitemsBusiness.GetList().Where(a => a.Grand_id == Grand_id&&a.IsDelete==false).Select(a => new { a.id, a.Name, a.Amountofmoney, Rategory = costitemssX.GetEntity(a.Rategory).Name, countfee, countfee1 }).ToList();
-            return z;
+            List<Costitems> z = new List<Costitems>();
+
+       
+
+
+          z.AddRange(costitemsBusiness.GetList().Where(a => a.Grand_id == Grand_id && a.IsDelete == false & a.Rategory != 10).ToList());
+            z.AddRange(costitemslist);
+          var z1= z.Select(a => new { a.id, a.Name, a.Amountofmoney, Rategory = costitemssX.GetEntity(a.Rategory).Name, countfee, countfee1 }).ToList();
+            return z1;
         }
         /// <summary>
         /// 根据学号获取姓名，性别，班级，身份证，学号
@@ -1070,28 +1069,10 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
         /// <returns></returns>
         public object Expenseentry(int page, int limit,string StudentID, string Name, string IsaDopt, string OddNumbers)
         {
-            List<CostitemViews> costlist = new List<CostitemViews>();
-            foreach (var item in PaymentverificationBusiness.GetList())
-            {
-                CostitemViews costitemViews = new CostitemViews();
-                costitemViews.id = item.id;
-                costitemViews.Passornot = item.Passornot;
-                costitemViews.OddNumbers = item.OddNumbers;
-                costitemViews.Paymentmethod = item.Paymentmethod;
-                var pay = PayviewPaymentverBusiness.GetList().Where(z => z.Paymentver == item.id).ToList();
-                foreach (var item1 in pay)
-                {
-                  
-                    var x = PayviewBusiness.GetEntity(item1.Payviewid);
-                    var student = studentInformationBusiness.GetEntity(x.StudenID);
-                    costitemViews.name = student.Name;
-                    costitemViews.IDnumber= student.identitydocument;
-                    costitemViews.studentid = x.StudenID;
-                    costitemViews.Amountofmoney= costitemViews.Amountofmoney+ (decimal)x.Amountofmoney;
-                    costitemViews.AddDate =(DateTime) x.AddDate;
-                }
-                costlist.Add(costitemViews);
-            }
+            BaseBusiness<Feedetails> FeedetailsBusiness = new BaseBusiness<Feedetails>();
+            
+              var costlist=  FeedetailsBusiness.GetList();
+
             if (!string.IsNullOrEmpty(StudentID))
             {
                 costlist = costlist.Where(a => a.studentid.Contains(StudentID)).ToList();

@@ -56,9 +56,8 @@
     <Reference Include="AutoMapper, Version=8.1.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoMapper.8.1.0\lib\net461\AutoMapper.dll</HintPath>
     </Reference>
-    <Reference Include="BceSdkDotNet, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\BceSdkDotNet.dll</HintPath>
+    <Reference Include="BceSdkDotNet">
+      <HintPath>..\packages\BceSdkDotNet.1.0.1.0\lib\net35\BceSdkDotNet.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -259,6 +258,7 @@
     <Compile Include="Areas\Educational\Controllers\TeacherNightController.cs" />
     <Compile Include="Areas\Educational\Controllers\TimetableController.cs" />
     <Compile Include="Areas\Educational\Controllers\WarehouseController.cs" />
+    <Compile Include="Areas\Educational\Controllers\XmlBaseDataController.cs" />
     <Compile Include="Areas\Educational\EducationalAreaRegistration.cs" />
     <Compile Include="Areas\ExaminationSystem\Controllers\ExamArrangementController.cs" />
     <Compile Include="Areas\ExaminationSystem\Controllers\ExamScoresController.cs" />
@@ -1544,6 +1544,7 @@
     <Content Include="Tree\js\underscore-min.js" />
     <Content Include="Tree\js\vix.js" />
     <Content Include="Tree\js\vroom.js" />
+    <Content Include="uploadXLSXfile\EmpImage\birth2.gif" />
     <Content Include="uploadXLSXfile\EmpImage\guigu.jpg" />
     <Content Include="uploadXLSXfile\SelfObtainRcoredImg\1709JA肖战.jpg" />
     <Content Include="uploadXLSXfile\SelfObtainRcoredImg\1908NA舒克.png" />
@@ -1666,7 +1667,6 @@
     <Content Include="Areas\Educational\Views\ConvertCourse\ConvertCourseIndexView.cshtml" />
     <Content Include="Areas\Educational\Views\LeaderAddCourseToExamine\LeaderAddCourseToExamineIndex.cshtml" />
     <Content Include="Areas\Educational\Views\SubstituteTeachCourse\SubstituteTeachCourseIndexView.cshtml" />
-    <Content Include="Areas\Educational\Views\TeacherNight\TeacherNightViewIndex.cshtml" />
     <Content Include="Areas\Educational\Views\EvningSelfStudy\BigDataChangView.cshtml" />
     <Content Include="Areas\Educational\Views\EvningSelfStudy\BigDataClassChangView.cshtml" />
     <Content Include="Areas\Teachingquality\Views\StudentTransaction\Classinquiry.cshtml" />
@@ -1733,7 +1733,9 @@
     <Content Include="Areas\Capital\Views\Capital\DoPrefundingList.cshtml" />
     <Content Include="Config\MyExcelClass.json" />
     <Content Include="Config\Obempstaff.config" />
-    <Content Include="Config\UserMapRole.config" />
+    <Content Include="Config\UserMapRole.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Areas\Educational\Views\Staff_Cost_Statistics\Staff_Cost_StatisticsIndex.cshtml" />
     <Content Include="Areas\Educational\Views\Staff_Cost_Statistics\CreateCostStatistics.cshtml" />
     <Content Include="Areas\Educational\Views\Staff_Cost_Statistics\PersonalCostStatics.cshtml" />
@@ -1766,7 +1768,6 @@
     <Content Include="Areas\Personnelmatters\Views\PerformanceAssess\EditEmpPFAssess.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\AttendanceStatistics\BatchAdd.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\AttendanceStatistics\BatchImport.cshtml" />
-    <Content Include="Areas\Educational\Views\TeacherNight\ClassadjustmentView.cshtml" />
     <Content Include="Areas\Educational\Views\TeacherNight\ClassMasterIndex.cshtml" />
     <Content Include="Areas\Educational\Views\TeacherNight\EditDateChangeView.cshtml" />
     <Content Include="Areas\Educational\Views\TeacherNight\EditDateView.cshtml" />
@@ -1853,7 +1854,6 @@
     <Content Include="Areas\Teachingquality\Views\Stuportfolio\Traineeinterview.cshtml" />
     <Content Include="Areas\Finance\Views\Pricedetails\RefunditemsDate.cshtml" />
     <Content Include="Areas\Courseware\Views\Coursewaremaking\text2.cshtml" />
-    <Content Include="Areas\Personnelmatters\Views\EmployeesInfo\BatchExportEmps.cshtml" />
     <Content Include="Areas\Teachingquality\Views\Messagenotification\NoticeDate.cshtml" />
     <Content Include="Areas\Teachingquality\Views\Messagenotification\Release.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\EmployeesInfo\GetEmpETRDetail.cshtml" />
@@ -1892,7 +1892,10 @@
     <Content Include="Areas\Educational\Views\EvningSelfStudy\GrandADIView.cshtml" />
     <Content Include="Areas\Educational\Views\EvningSelfStudy\ChangeGrandADIView.cshtml" />
     <Content Include="Areas\Finance\images\2020年5月学生学费明细表.xlsx" />
-    <Content Include="Areas\ExaminationSystem\Views\StudentExamSys\MachineTest.cshtml" />
+    <Content Include="Areas\Finance\Views\Shared\Review.cshtml" />
+    <Content Include="Areas\Market\Views\FollwingInfo\UpdateChange.cshtml" />
+    <Content Include="Areas\Educational\Views\XmlBaseData\XmlDataIndex.cshtml" />
+    <Content Include="Areas\Educational\Views\XmlBaseData\AddView.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
@@ -3609,7 +3612,6 @@
     <Folder Include="Areas\Courseware\首页\word文档\Y1\" />
     <Folder Include="Areas\Educational\Models\" />
     <Folder Include="Areas\Finance\Models\" />
-    <Folder Include="Areas\Finance\Views\Shared\" />
     <Folder Include="Areas\flow\Controllers\" />
     <Folder Include="Areas\Logistics\Controllers\" />
     <Folder Include="Areas\Logistics\Models\" />

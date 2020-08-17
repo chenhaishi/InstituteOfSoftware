@@ -79,7 +79,7 @@
 
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-sm" lay-event="getRemove"><i class="layui-icon">&#xe62e;</i>订单撤销</button>
+        <a class="layui-btn layui-btn-sm" lay-event="getRemove"><i class="layui-icon">&#xe62e;</i>订单重审</a>
     </div>
 </script>
 <script src="~/Areas/Teachingquality/js/AjaxAddupdate.js"></script>
@@ -149,9 +149,8 @@
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
             var tr = obj.tr; //获得当前行 tr 的DOM对象
-
             if (layEvent === 'process') { //查看
-                console.log(data);
+        
                 layer.open({
                     type: 2,
                     content: "/Finance/Pricedetails/Entryreview/" + data.id + "?Passornot=" + data.Passornot + "&studentid=" + data.studentid + "&OddNumbers=" + data.OddNumbers + "&paymentmethod=" + data.Paymentmethod
@@ -165,16 +164,40 @@
                 });
 
             }
-
+      
         });
 
         //监听头部工具栏
         table.on('toolbar(test)', function (obj) {
             var checkStatus = table.checkStatus(obj.config.id);
+            var checkID = checkStatus.data;
             switch (obj.event) {
                 case 'getRemove':
-                    var a = "开设班级";
-                  
+                    if (checkStatus.data.length > 0) {
+                        $.get("/Finance/Pricedetails/reviewOpen", { check_id: checkID[0].id, studentid: checkID[0].studentid }, (r) => {
+                            layer.open({
+                                title: "订单重审",
+                                content: r,
+                                area: ['60%', '60%'],
+                                type: 1,
+                                btn: ["确定"],
+                                end: function () { table.reload('idTest'); },
+                                yes: function (index, layero) {
+                                    var OddNumbers = $("#OddNumbers").val();
+                                    var paymentmethod = $("#paymentmethod").val();
+                                    $.post("/Finance/Pricedetails/review", { checkID: checkID[0].id, OddNumbers: OddNumbers, paymentmethod: paymentmethod }, (r) => {
+                                        if (r.code == 0) {
+                                            layer.msg(r.msg);
+                                            layer.close(index);
+                                        }
+                                    })
+                                }
+                            });
+                        });
+                    }
+                    else {
+                        layer.msg("请选择一条数据");
+                    }
                     break;
            
             };
