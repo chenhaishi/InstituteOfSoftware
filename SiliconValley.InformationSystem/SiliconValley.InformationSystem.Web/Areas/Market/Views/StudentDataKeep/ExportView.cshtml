@@ -132,16 +132,44 @@
                       data: data.field,
                       success: function (suc) {
                           if (suc.Success == true) {
-                              //下载
-                              let a = document.createElement('a') // 创建a标签
-                              let e = document.createEvent('MouseEvents') // 创建鼠标事件对象
-                              e.initEvent('click', false, false) // 初始化事件对象
-                              a.href = "/Market/StudentDataKeep/GetExcelport" // 设置下载地址
-                              a.download = '' // 设置下载文件名
-                              a.dispatchEvent(e);
-                              layer.close(ind);
-                              MyClose();
-                              layer.msg('操作成功！！！', { icon: 1, shade: 0.8 });
+
+                              ////下载
+                              //let a = document.createElement('a') // 创建a标签
+                              //let e = document.createEvent('MouseEvents') // 创建鼠标事件对象
+                              //e.initEvent('click', false, false) // 初始化事件对象
+                              //a.href = "/Market/StudentDataKeep/GetExcelport" // 设置下载地址
+                              //a.download = '' // 设置下载文件名
+                              //a.dispatchEvent(e);
+                              //layer.close(ind);
+                              //MyClose();
+                              //layer.msg('操作成功！！！', { icon: 1, shade: 0.8 });
+                             
+
+                              //列标题，逗号隔开，每一个逗号就是隔开一个单元格
+                              let str = res.titile + `\n`;
+                              //增加\t为了不让表格显示科学计数法或者其他格式
+                              for (let i = -1; i < res.data.length; i++) {
+                                  if (i == -1) {
+                                      str += `姓名\t,性别\t,电话\t,学校\t,学历\t,家庭住址\t,微信\t,QQ\t,信息来源\t,区域\t,备案人\t,关系人\t`;
+                                  } else {
+                                      str += '' + res.data[i].StuName + '\t,' + res.data[i].StuSex + '\t,' + res.data[i].Stuphone + '\t,' + res.data[i].StuSchoolName + '\t,' + res.data[i].StuEducational + '\t,' + res.data[i].StuWeiXin + '\t,' + res.data[i].StuQQ + '\t,' + res.data[i].stuinfomation + '\t,' + res.data[i].empName+'';
+                                  }
+
+                                  str += '\n';
+                              }
+                              //encodeURIComponent解决中文乱码
+                              let uri = 'data:text/csv;charset=utf-8,\ufeff' + encodeURIComponent(str);
+                              //通过创建a标签实现
+                              var link = document.createElement("a");
+                              link.href = uri;
+                              //对下载的文件命名
+                              link.download = "备案表.xls";
+                              document.body.appendChild(link);
+                              link.click();
+                              document.body.removeChild(link);
+                          }
+
+
                           } else {
                               layer.close(ind);
 

@@ -49,7 +49,7 @@
 
                 <button class="layui-btn layui-btn-sm" onclick="ZhuceClass()"> <i class="layui-icon">&#xe714;</i> 注册学号</button>
                 <button class="layui-btn layui-btn-sm" onclick="ChangTeacher()"> <i class="layui-icon">&#xe714;</i> 转换咨询师</button>
-                @*<button class="layui-btn layui-btn-sm" onclick="GetMony()"> <i class="layui-icon">&#xe714;</i> 查看学生缴费信息</button>*@
+
             }
             if (r == 0)
             {
@@ -64,6 +64,7 @@
                 @*<button class="layui-btn layui-btn-sm" onclick="ExcelExport()"> <i class="layui-icon">&#xe681;</i> Excel文件导出</button>*@
                 <button class="layui-btn layui-btn-sm" onclick="InSchoolStudentData()"> <i class="layui-icon">&#xe714;</i> 查看在校学生信息</button>
                 <button class="layui-btn layui-btn-sm" onclick="updatePass()"> <i class="layui-icon">&#xe714;</i> 修改账号密码</button>
+                <button class="layui-btn layui-btn-sm" onclick="GetMony()"> <i class="layui-icon">&#xe714;</i> 查看学生缴费信息</button>
             }
 
         }
@@ -275,15 +276,15 @@
             var eduttion = $("#eduttion").val();
             var S_Reack = $("#S_Reack").val();
             var S_School = $("#S_School").val();
-            if (findNamevalue.length <= 0 && findPhonevalue.length <= 0 && findInformationvalue == "0" && findStartvalue.length <= 0 && findEndvalue.length <= 0 && findAreavalue == "0" && findBeanManvalue.length <= 0 && S_consultTeacher == "0" && S_status == "0" && S_intosysMan.length <= 0 && S_party.length <= 0 && S_QQ.length <= 0 && eduttion.length != "0" && S_Reack.length <= 0 && S_School.length<=0) {
+            if (findNamevalue.length <= 0 && findPhonevalue.length <= 0 && findInformationvalue == "0" && findStartvalue.length <= 0 && findEndvalue.length <= 0 && findAreavalue == "0" && findBeanManvalue.length <= 0 && S_consultTeacher == "0" && S_status == "0" && S_intosysMan.length <= 0 && S_party.length <= 0 && S_QQ.length <= 0 && eduttion.length != "0" && S_Reack.length <= 0 && S_School.length <= 0) {
                 table.reload('tabletest1', { url: '/Market/StudentDataKeep/TableData' });
             } else {
                 table.reload('tabletest1', {
                     url: '/Market/StudentDataKeep/GetTableData'
-                    , where: { 'findNamevalue': findNamevalue, 'findPhonevalue': findPhonevalue, 'findInformationvalue': findInformationvalue, 'findStartvalue': findStartvalue, 'findEndvalue': findEndvalue, 'findAreavalue': findAreavalue, 'findBeanManvalue': findBeanManvalue, "S_consultTeacher": S_consultTeacher, "S_status": S_status, "S_party": S_party, "S_intosysMan": S_intosysMan, "S_QQ": S_QQ, "eduttion": eduttion, "S_Reack": S_Reack, "S_School": S_School} //设定异步数据接口的额外参数
+                    , where: { 'findNamevalue': findNamevalue, 'findPhonevalue': findPhonevalue, 'findInformationvalue': findInformationvalue, 'findStartvalue': findStartvalue, 'findEndvalue': findEndvalue, 'findAreavalue': findAreavalue, 'findBeanManvalue': findBeanManvalue, "S_consultTeacher": S_consultTeacher, "S_status": S_status, "S_party": S_party, "S_intosysMan": S_intosysMan, "S_QQ": S_QQ, "eduttion": eduttion, "S_Reack": S_Reack, "S_School": S_School } //设定异步数据接口的额外参数
                 });
             }
-            
+
         });
     };
 
@@ -300,7 +301,7 @@
         $("#searchBtn").click(function () {
             my_searchBtn();
         });
-         
+
     });
 
     //数据导出页面
@@ -429,8 +430,8 @@
                     , { field: 'StuEntering', title: '录入人员', width: 100 }
                     , { field: 'StuDateTime', title: '备案日期', sort: true, width: 220, templet: function (res) { return formatDate(res.StuDateTime); } }
                     , {
-                        fixed: 'right', title: '操作', width: 180, templet: function (res) {                                  
-                            return '<a class="layui-btn layui-btn-xs" lay-event="edit">补充信息</a><a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" > 查看详情</a >';                                                             
+                        fixed: 'right', title: '操作', width: 180, templet: function (res) {
+                            return '<a class="layui-btn layui-btn-xs" lay-event="edit">补充信息</a><a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" > 查看详情</a >';
                         }
                     }
                 ]]
@@ -463,9 +464,9 @@
                     , { field: 'StuDateTime', title: '备案日期', width: 180, templet: function (res) { return formatDate(res.StuDateTime); } }
                     , {
                         fixed: 'right', title: '操作', width: 250, templet: function (res) {
-                            if (res.ConsultTeacher == null || res.ConsultTeacher.length <= 0) {                             
+                            if (res.ConsultTeacher == null || res.ConsultTeacher.length <= 0) {
                                 return '<a class="layui-btn layui-btn-xs" lay-event="edit">补充信息</a><a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" > 查看详情</a ><a class="layui-btn layui-btn-xs" lay-event="addconsult">指派咨询师</a>';
-                                
+
                             } else {
                                 return '<a class="layui-btn layui-btn-xs" lay-event="edit">补充信息</a><a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" > 查看详情</a >';
                             }
@@ -477,7 +478,7 @@
                 , limit: 18
             });
         }
-        
+
 
         //头工具栏事件
         table.on('toolbar(tabletest1)', function (obj) {
@@ -503,7 +504,7 @@
                         title: '导入Excle文件'
                         , shade: 0.8
                         , anim: 4
-                        , skin: 'demo-class'                        
+                        , skin: 'demo-class'
                     });
                     break;
             };
@@ -621,7 +622,7 @@
                     layer.close(index_2);
                     if (sucdata.Success) {
                         LoadTable2();
-                        layer.msg('操作成功！！！', { shade: 0.8, icon: 1 });                        
+                        layer.msg('操作成功！！！', { shade: 0.8, icon: 1 });
                     } else {
                         layer.msg('系统异常，请刷新重试！！！', { shade: 0.8, icon: 2 });
                     }
@@ -668,7 +669,7 @@
                 checkStatus.data.forEach(f => {
                     strid = strid + f.Id + ",";
                 });
-                dateChange= layer.open({
+                dateChange = layer.open({
                     type: 1,
                     title: '上门日期选择',
                     shade: 0.8,
@@ -798,6 +799,34 @@
     //查看学生缴费信息
     function GetMony() {
 
+        layui.use(['layer', 'table'], function () {
+            var layer = layui.layer;
+            var table = layui.table;
+            var checkStatus = table.checkStatus('tabletest1');
+            //console.log(checkStatus.data);
+            if (checkStatus.data.length <= 0) {
+                layer.msg('请选择备案数据', { icon: 2, shade: 0.8 });
+            } else {
+                $.ajax({
+                    url: '/Market/StudentDataKeep/GetStudentNumber/' + checkStatus.data[0].Id,
+                    success: function (res) {
+                        if (res.Success) {
+                            var student = res.Data.StudentNumber;
+                            layer.open({
+                                type: 2,
+                                title: '缴费详情',
+                                content: '/Market/StudentDataKeep/GetPayView/' + student,
+                                area: ['1200px', '700px'],
+                                
+                            });
+                        } else {
+                            layer.msg(res.Msg, { icon: 2, shade: 0.8 })
+                        }
+                    }
+                });
+
+            }
+        });
     }
 
     //短信发送
@@ -848,7 +877,7 @@
                         , skin: 'demo-class'
                     });
                 }
-                
+
             } else {
                 layer.msg('只能选择一条数据！！', { icon: 2, shade: 0.8 });
             }
@@ -892,7 +921,7 @@
     }
 
     function updatePass() {
-        
+
         layer.open({
             type: 2
             , content: '/Market/StudentDataKeep/updatePassword'
