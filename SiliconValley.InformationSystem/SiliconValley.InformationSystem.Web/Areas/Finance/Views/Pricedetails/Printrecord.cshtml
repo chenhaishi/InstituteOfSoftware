@@ -8,7 +8,6 @@
 @model SiliconValley.InformationSystem.Entity.ViewEntity.vierprice
 @using SiliconValley.InformationSystem.Entity.ViewEntity
 @section style{
-
 }
 
 <style>
@@ -53,11 +52,11 @@
 
                         @foreach (var item_s in item_table.Chicked)
                         {
-                            <th>@item_s.Amountofmoney</th>
+                            <th>@item_s.Amountofmoney.ToString().Substring(0, @item_s.Amountofmoney.ToString().Length - 2)</th>
                             iqcount = iqcount + item_s.Amountofmoney;
                         }
                         <th> @item_table.Date</th>
-                        <th>@iqcount</th>
+                        <th>@iqcount.ToString().Substring(0,8)</th>
 
                     </tr>
                     iqcount = 0;
@@ -126,7 +125,6 @@
 
                             db += item1.Amountofmoney;
                             Total += Convert.ToInt32(item1.Amountofmoney);
-
                         }
                         <h3 class="layui-timeline-title">@item.Date (@db.ToString().Substring(0, db.ToString().Length - 2))</h3>
 
@@ -142,10 +140,7 @@
                                     </ul>
                                 }
                             }
-
                         }
-
-
                     </div>
                 </li>
             }
@@ -242,7 +237,6 @@
         //演示动画开始
         $('.site-doc-icon .layui-anim ').on('click', function () {
             var othis = $(this), anim = othis.data('anim');
-
             //停止循环
             if (othis.hasClass('layui-anim-loop')) {
                 return othis.removeClass(anim);
