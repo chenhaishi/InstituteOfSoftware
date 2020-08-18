@@ -193,8 +193,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             
 
         }
-
-
         /// <summary>
         /// 考试信息 考场信息 试卷数量 以阅卷数量 
         /// </summary>
@@ -399,8 +397,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 return Json("404", JsonRequestBehavior.AllowGet);
             }
 
-            var computerPath = candidateinfo.ComputerPaper.Split(',')[1];
-
+            //var computerPath = candidateinfo.ComputerPaper.Split(',')[1];
+            var computerPath = candidateinfo.ComputerPaper;
             //FileStream fileStream = new FileStream(computerPath, FileMode.Open);
 
             var filedata = client.GetObject("xinxihua", computerPath);

@@ -1,9 +1,80 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <exam id="1018">
-    <course id="15"></course>
+    <course id="15">
+    </course>
   </exam>
   <exam id="1019">
-    <course id="15"></course>
+    <course id="15">
+    </course>
+  </exam>
+  <exam id="2020">
+    <course id="15" />
+  </exam>
+  <exam id="2022">
+    <course id="15" />
+  </exam>
+  <exam id="2023">
+    <course id="15" />
+  </exam>
+  <exam id="2025">
+    <course id="29" />
+  </exam>
+  <exam id="2026">
+    <course id="29" />
+  </exam>
+  <exam id="2027">
+    <course id="29" />
+  </exam>
+  <exam id="2028">
+    <course id="29" />
+  </exam>
+  <exam id="2029">
+    <course id="29" />
+  </exam>
+  <exam id="2030">
+    <course id="24" />
+  </exam>
+  <exam id="2031">
+    <course id="24" />
+  </exam>
+  <exam id="2032">
+    <course id="29" />
+  </exam>
+  <exam id="2033">
+    <course id="29" />
+  </exam>
+  <exam id="2034">
+    <course id="29" />
+  </exam>
+  <exam id="2035">
+    <course id="29" />
+  </exam>
+  <exam id="2036">
+    <course id="29" />
+  </exam>
+  <exam id="2037">
+    <course id="29" />
+  </exam>
+  <exam id="2038">
+    <course id="29" />
+  </exam>
+  <exam id="2039">
+    <course id="29" />
+  </exam>
+  <exam id="2040">
+    <course id="29" />
+  </exam>
+  <exam id="2041">
+    <course id="29" />
+  </exam>
+  <exam id="2042">
+    <course id="29" />
+  </exam>
+  <exam id="2044">
+    <course id="29" />
+  </exam>
+  <exam id="2045">
+    <course id="29" />
   </exam>
 </root>

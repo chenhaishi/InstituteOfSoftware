@@ -35,6 +35,7 @@ namespace SiliconValley.InformationSystem.Web.App_Start.IPHander
 
 
             var BrowseVersion = this.GetBrowseVersion();
+
             var OSVersion = this.GetOSVersion();
             ReqClient client = new ReqClient();
             client.GuidKey = Guid.NewGuid().ToString();

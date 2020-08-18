@@ -161,7 +161,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     string workAbsentNum = getrow.GetCell(12) == null ? null : getrow.GetCell(12).NumericCellValue.ToString();
                     //下班缺卡次数[13]
                     string offDutyAbsentNum = getrow.GetCell(13) == null ? null : getrow.GetCell(13).NumericCellValue.ToString();
-
+                    
                     //请假天数
                     string leaveddays = "";
 
@@ -174,8 +174,10 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     //下班缺卡记录
                     string OffDutyAbsentRecord = "";
                     //迟到扣款
-                    string tardyWithhold ="";
-                   
+                    //string tardyWithhold ="";
+                    //这些付款都是在员工工资表
+                    MonthlySalaryRecordManage msrmanage = new MonthlySalaryRecordManage();
+           
                     int cells = 0;
                     while (true)
                     {
@@ -214,9 +216,9 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                             leaveddays = title + "号" + getcell.StringCellValue + ";";
                         }
                         
+                        
                     }
-
-
+                   
                     // string leaveddays = getrow.GetCell(3) == null ? null : getrow.GetCell(3).NumericCellValue.ToString();
                     // string tardyWithhold = getrow.GetCell(10) == null ? null : getrow.GetCell(10).NumericCellValue.ToString();
                     // string leaveWithhold = getrow.GetCell(13) == null ? null : getrow.GetCell(13).NumericCellValue.ToString();
@@ -273,7 +275,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     //matd.LeaveEarlyRecord = leaveEarlyRecord;
                     //matd.LeaveWithhold =leaveWithhold==null?matd.LeaveWithhold=null: Convert.ToInt32(leaveWithhold);
                     //matd.Remark = remark;
-
+                    
                     result.Add(matd);
                 }
 

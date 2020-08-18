@@ -32,7 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BceSdkDotNet">
-      <HintPath>bin\Debug\bce-dotnet-sdk-1.0.4\BceSdkDotNet.dll</HintPath>
+      <HintPath>..\packages\BceSdkDotNet.1.0.1.0\lib\net35\BceSdkDotNet.dll</HintPath>
     </Reference>
     <Reference Include="BouncyCastle.Crypto, Version=1.8.6.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
       <HintPath>..\packages\Portable.BouncyCastle.1.8.6\lib\net40\BouncyCastle.Crypto.dll</HintPath>
@@ -221,6 +221,7 @@
     <Compile Include="ExaminationSystemBusiness\StudentExamBusiness.cs" />
     <Compile Include="FinaceBusines\CostitemsBusiness.cs" />
     <Compile Include="FinanceBusiness\FinanceModelBusiness.cs" />
+    <Compile Include="ipRequestBusiness\ClientBusiness.cs" />
     <Compile Include="Logger\ElasticSearchLogger.cs" />
     <Compile Include="Logger\ILogger.cs" />
     <Compile Include="Logger\LoggerFactory.cs" />

@@ -1,0 +1,131 @@
+﻿<head>
+    <div>
+        <h2>考试</h2>
+        <h2>认真考试</h2>
+        <h2>别给老子想着作弊</h2>
+        <h2>作弊是原则问题，也是道德问题，在这里呼吁各位考生考试不要作弊，诚信比分数更重要</h2>
+    </div>
+    <script language="JavaScript">
+        function call(htmlurl) {
+            var newwin = window.open(htmlurl, "airWin", "top=0,left=0,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=796,height=546");
+            //修改宽度和高度可bai控制窗口的大小 newwin.focus(); return false;}//-->
+        }
+    </script>
+</head>
+<script type="text/javascript">
+    document.onkeydown = function (e) {
+        e = window.event || e;
+        var k = e.keyCode;
+        //屏蔽ctrl+R，F5键，ctrl+F5键  F3键！验证
+        if ((e.ctrlKey == true && k == 82) || (k == 116)
+            || (e.ctrlKey == true && k == 116) || k == 114) {
+            e.keyCode = 0;
+            alert("当前页面不能刷新！");
+            e.returnValue = false;
+            e.cancelBubble = true;
+            return false;
+
+        }
+        if (k == 8) {
+            alert("不能返回或后退！");
+            e.keyCode = 0;
+            e.returnValue = false;
+            return false;
+        }
+        //屏蔽 Ctrl+n   验证可以实现效果
+        if (e.ctrlKey && k == 78) {
+            e.keyCode = 0;
+            e.returnValue = false;
+            e.cancelBubble = true;
+            return false;
+        }
+        //屏蔽F11   验证可以实现效果
+        if (k == 122) {
+            e.keyCode = 0;
+            e.returnValue = false;
+            e.cancelBubble = true;
+            return false;
+        }
+        //屏蔽 shift+F10  验证可以实现效果
+        if ((e.shiftKey && k == 121) || (e.ctrlKey && k == 121)) {
+            e.keyCode = 0;
+            e.returnValue = false;
+            e.cancelBubble = true;
+            return false;
+        }
+        
+        //屏蔽Alt+F4
+        if ((e.altKey) && (k == 115)) {
+            window.showModelessDialog("about:blank", "",
+                "dialogWidth:1px;dialogheight:1px");
+            e.keyCode = 0;
+            e.returnValue = false;
+            e.cancelBubble = true;
+            return false;
+        }
+        //屏蔽 Alt+ 方向键 ← ;屏蔽 Alt+ 方向键 → ！验证
+        if  ((e.altKey)
+            && ((k == 37) || (k == 39))) {
+            alert("不准你使用ALT+方向键前进或后退网页！");
+            e.keyCode = 0;
+            e.returnValue = false;
+            e.cancelBubble = true;
+            return false;
+        }
+
+    };
+
+    //屏蔽右键菜单，！验证
+    document.oncontextmenu = function (event) {
+        if (window.event) {
+            event = window.event;
+        }
+        try {
+            var the = event.srcElement;
+            if (!((the.tagName == "INPUT" && the.type.toLowerCase() == "text") || the.tagName == "TEXTAREA")) {
+                return false;
+            }
+            return true;
+        } catch (e) {
+            return false;
+        }
+    };
+    //页面打开默认全屏
+    //function openFullScreen(OpenUrl) {
+    //    var Pop;
+    //    if (self.screen) {
+    //        sw = screen.width;
+    //        sh = screen.height;
+    //        w = sw - 10; // to center: use desired width
+    //        h = sh - 70; // to center: use desired height
+    //        cx = 0;  // to center: (.5*sw) - (w*.5)
+    //        cy = 0; // to center: (.5*sh) - (h*.5)
+
+    //        var dimentions_and_such = 'width=' + w + ',' + 'height=' + h + ',' + 'screenX=' + cx + ',' + 'screenY=' + cy + ',' + 'left=' + cx + ',' + 'top=' + cy + ',toolbar=0,status=0,menubar=0,resizable=0';
+    //        var dimentions_and_such1 = 'scrollbars=0,width=' + w + ',' + 'height=' + h + ',' + 'screenX=' + cx + ',' + 'screenY=' + cy + ',' + 'left=' + cx + ',' + 'top=' + cy + ',toolbar=0,status=0,fullscreen=1,menubar=0,resizable=0';
+    //        if (screen.width < 900) {
+    //            Pop = window.open(OpenUrl, "", "toolbar=0,location=0,fullscreen=1,directories=0,status=0,menubar=0,scrollbars=0,resizable=0");
+    //        }
+    //        else if (screen.width > 1200) {
+    //            Pop = window.open(OpenUrl, "", dimentions_and_such1);
+    //        }
+    //        else {
+    //            Pop = window.open(OpenUrl, "", dimentions_and_such1);
+    //        }
+    //    }
+    //}
+    //openFullScreen(location.href)
+</script>
+<script>
+    var allowNum = 3; // 允许两次切屏，超过则提交
+    window.onblur = function () {
+        if (allowNum < 1) {
+            submitTest()
+        }
+        allowNum--;
+        alert("您已切屏,剩余" + allowNum + "次自动提交试卷");
+        if (allowNum == 0) {
+            alert("您切屏超过3次,自动交卷！");
+        }
+    }
+</script>
