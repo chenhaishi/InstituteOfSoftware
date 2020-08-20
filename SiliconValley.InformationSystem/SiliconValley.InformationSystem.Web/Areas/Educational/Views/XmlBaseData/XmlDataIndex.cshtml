@@ -3,14 +3,22 @@
     ViewBag.Title = "XmlDataIndex";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    body .demo-class .layui-layer-title
+    {
+        background: #009688;
+        color: #fff;
+        border: none;
+    }
 
+</style>
 
 <table id="table_xml" lay-filter="table_xml"></table>
 
 
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">添加数据</button>
+        <button class="layui-btn layui-btn-sm" lay-event="addClick">添加数据</button>
     </div>
 </script>
 
@@ -19,20 +27,20 @@
 </script>
 <script>
     $(function () {
-
+       
         var table;
-
-        layui.use(['table'], function () {
+        var layer;
+        layui.use(['table','layer'], function () {
             table = layui.table;
-
+            layer = layui.layer;
             table.render({
                 elem: '#table_xml'
                 , url: '/Educational/XmlBaseData/GetData'
                 , toolbar: '#toolbarDemo'
                 , cols: [[
                     { type: 'checkbox', fixed: 'left' }
-                    , { field: 'Year', title: '年份', width: 80, edit: 'text', sort: true }
-                    , { field: 'StartMonth', title: '单休开始月份', width: 100 }
+                    , { field: 'Year', title: '年份',  sort: true }
+                    , { field: 'StartMonth', title: '单休开始月份' }
                     , { field: 'EndMonth', title: '单休结束月份' }
                     , { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150 }
                 ]]
@@ -40,51 +48,50 @@
             });
 
             //头工具栏事件
-            table.on('toolbar(test)', function (obj) {
+            table.on('toolbar(table_xml)', function (obj) {
                 var checkStatus = table.checkStatus(obj.config.id);
                 switch (obj.event) {
-                    case 'getCheckData':
-                        var data = checkStatus.data;
-                        layer.alert(JSON.stringify(data));
-                        break;
-                    case 'getCheckLength':
-                        var data = checkStatus.data;
-                        layer.msg('选中了：' + data.length + ' 个');
-                        break;
-                    case 'isAll':
-                        layer.msg(checkStatus.isAll ? '全选' : '未全选');
-                        break;
+                    case 'addClick':
+                        //var data = checkStatus.data;
+                        //layer.alert(JSON.stringify(data));
+                        layer.open({
+                            type: 2,
+                            content: '/Educational/XmlBaseData/AddView'
+                            , area: ['700px', '400px'],
+                            title: '添加数据页面'
+                            , shade: 0.8
+                            , anim: 4
+                            , skin: 'demo-class'
+                        });
 
-                    //自定义头工具栏右侧图标 - 提示
-                    case 'LAYTABLE_TIPS':
-                        layer.alert('这是工具栏右侧自定义的一个图标按钮');
-                        break;
+                        break;                    
                 };
             });
 
             //监听行工具事件
-            table.on('tool(test)', function (obj) {
+            table.on('tool(table_xml)', function (obj) {
                 var data = obj.data;
-                //console.log(obj)
-                if (obj.event === 'del') {
-                    layer.confirm('真的删除行么', function (index) {
-                        obj.del();
-                        layer.close(index);
-                    });
-                } else if (obj.event === 'edit') {
-                    layer.prompt({
-                        formType: 2
-                        , value: data.email
-                    }, function (value, index) {
-                        obj.update({
-                            email: value
-                        });
-                        layer.close(index);
+                if (obj.event === 'edit') {
+                    layer.open({
+                        type: 2,
+                        content: '/Educational/XmlBaseData/UpdateView/' + data.Year
+                        , area: ['700px', '400px'],
+                        title: '添加数据页面'
+                        , shade: 0.8
+                        , anim: 4
+                        , skin: 'demo-class'
                     });
                 }
             });
-
-        })
+        })      
     });
+
+    function TableFush() {
+        layui.use('table', function () {
+            var table = layui.table;
+            table.reload('table_xml');
+        })
+        
+    }
 </script>
 

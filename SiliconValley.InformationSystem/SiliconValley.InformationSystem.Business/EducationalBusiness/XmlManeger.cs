@@ -58,11 +58,11 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                    string name= child[j].Name;
                     if (name== "startmonth")
                     {
-                        entity.StartMonth = child[j].Value;
+                        entity.StartMonth = child[j].InnerText;
                     }
                     else if(name == "endmonth")
                     {
-                        entity.EndMonth = child[j].Value;
+                        entity.EndMonth = child[j].InnerText;
                     }
                 }
 
@@ -89,7 +89,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 //XmlDeclaration declaration = document.CreateXmlDeclaration("1.0", "utf-8", null);
                 //将创建的描述信息加载到文档中
                 //document.AppendChild(declaration);
-
+                document.Load(path);
                 //获取XML文件的根节点
                 XmlElement root = document.DocumentElement;
                 //将根目录添加到文档中
@@ -105,17 +105,26 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 //给子节点添加name属性
                 element.Attributes.Append(attribute);
 
-                element.InnerText = "<startmonth>" + xmlEntity.StartMonth + "</startmonth>< endmonth >" + xmlEntity.EndMonth + "</ endmonth >";
+                XmlElement startmonth= document.CreateElement("startmonth");
+                startmonth.InnerText = xmlEntity.StartMonth;
+
+                XmlElement endmonth = document.CreateElement("endmonth");
+                endmonth.InnerText = xmlEntity.EndMonth;
+
+                element.AppendChild(startmonth);
+                element.AppendChild(endmonth);
+                
 
                 //将子节点添加到根节点中
                 root.AppendChild(element);
+
 
                 document.Save(path);
 
 
                
             }
-            catch (Exception)
+            catch (Exception e)
             {
 
                   s = false;
@@ -150,9 +159,9 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
                     if (xmlEntity.Year== value)
                     {
-                        list[i].ChildNodes[0].Value = xmlEntity.StartMonth;
+                        list[i].ChildNodes[0].InnerText = xmlEntity.StartMonth;
 
-                        list[i].ChildNodes[1].Value = xmlEntity.EndMonth;
+                        list[i].ChildNodes[1].InnerText = xmlEntity.EndMonth;
                     }
                 }
 

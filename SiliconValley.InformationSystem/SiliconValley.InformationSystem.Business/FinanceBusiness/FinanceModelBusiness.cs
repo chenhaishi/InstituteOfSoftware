@@ -26,7 +26,6 @@ namespace SiliconValley.InformationSystem.Business.FinanceBusiness
             try
             {  this.Insert(financeModel);
                 BusHelper.WriteSysLog("添加数据", Entity.Base_SysManage.EnumType.LogType.添加数据);
-              
                 str = true;
             }
             catch (Exception ex)

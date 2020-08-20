@@ -163,6 +163,8 @@ namespace SiliconValley.InformationSystem.Business.FinaceBusines
             return this.GetList().Where(a => a.IsDelete == false).ToList();
         }
 
+   
+
        
     }
 }

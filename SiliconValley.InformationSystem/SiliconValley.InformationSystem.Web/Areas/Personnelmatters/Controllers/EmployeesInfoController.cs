@@ -1120,7 +1120,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             string fname = file.FileName; //获取上传文件名称（包含扩展名）
             string f = Path.GetFileNameWithoutExtension(fname);//获取文件名称
             string name = Path.GetExtension(fname);//获取扩展名
-            string completefilePath = id + name;//将上传的文件名称转变为当前项目名称
+            string completefilePath = id + DateTime.Now.ToString("yyyyMMdd") + name;//将上传的文件名称转变为当前项目名称
             string pfilename = "EmpImage";
             db_Bos.PutObject("xinxihua", pfilename, completefilePath, file.InputStream);
 
