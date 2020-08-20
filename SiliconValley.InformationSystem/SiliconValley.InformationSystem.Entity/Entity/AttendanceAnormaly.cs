@@ -19,5 +19,6 @@ namespace SiliconValley.InformationSystem.Entity.Entity
         public Nullable<int> AnormalyTypeId { get; set; }//考勤异常类型
         public Nullable<System.DateTime> YearAndMonth { get; set; }//年月份
 
+     
     }
 }
