@@ -1777,6 +1777,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
         }
         #endregion
 
+
         #region 短信发送
         public ActionResult ShortInfoMationView(int id)
         {
@@ -1799,6 +1800,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
         //}
         #endregion        
 
+
         #region 报名、预录
         public ActionResult Sign_up()
         {
@@ -1820,6 +1822,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
 
         #endregion        
 
+
         #region 获取跟踪详情
         public ActionResult FllowView(int id)
         {
@@ -1830,6 +1833,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
             return View();
         }
         #endregion
+
 
         #region 给市场显示的数据
           public ActionResult MarkeView()

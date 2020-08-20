@@ -590,6 +590,31 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             list = list.OrderBy(l => l.Value).ToList();
             return Json(list, JsonRequestBehavior.AllowGet);
         }
+        
+        /// <summary>
+        /// 手动排课页面2
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ManualReconcileViewTwo()
+        {
+            //加载所有阶段
+            List<SelectListItem> g_list = Reconcile_Entity.GetEffectiveData().Select(g => new SelectListItem() { Text = g.GrandName, Value = g.Id.ToString() }).ToList();
+            g_list.Add(new SelectListItem() { Text = "--请选择--", Value = "0", Selected = true });
+            ViewBag.Child_grandlist = g_list;
+            //获取课程类型
+            List<SelectListItem> t_list = Reconcile_Com.CourseType_Entity.GetCourseTypes().Select(t => new SelectListItem() { Text = t.TypeName, Value = t.TypeName }).ToList();
+            t_list.Add(new SelectListItem() { Text = "其他", Value = "0", Selected = true });
+            ViewBag.Child_typelist = t_list;
+            BaseDataEnumManeger baseDataEnum_Entity = new BaseDataEnumManeger();
+            List<SelectListItem> schooladdress = baseDataEnum_Entity.GetsameFartherData("校区地址").Select(s => new SelectListItem() { Text = s.Name, Value = s.Id.ToString() }).ToList();
+            schooladdress.Add(new SelectListItem() { Text = "--请选择--", Value = "0", Selected = true });
+            ViewBag.schooladdress = schooladdress;
+
+            List<SelectListItem> list_t = Reconcile_Entity.GetTeacherAll().Select(s => new SelectListItem() { Text = s.EmpName, Value = s.EmployeeId }).ToList();//获取所有在职的专业老师
+            list_t.Add(new SelectListItem() { Text = "--请选择--", Value = "0" });
+            ViewBag.Teacher = list_t.OrderBy(l => l.Value).ToList();
+            return View();
+        }
         #endregion
 
         #region 非专业课排课
@@ -1398,6 +1423,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             ViewBag.Schooladdress = schooladdress;
             return View();
         }
-        #endregion 
+        #endregion
+
+        #region 加课
+
+
+        #endregion
+
     }
 }
