@@ -85,7 +85,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
         {
             return Json(costitemsBusiness.DateCostitems(page, limit,grade_Id,Typex), JsonRequestBehavior.AllowGet);
         }
-
         //学费明目类型
         [HttpGet]
         public ActionResult Typeeyesight()
@@ -477,7 +476,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
         /// <returns></returns>
         public ActionResult PrepaymentsDate(int page, int limit,string Name)
         {
-           var costlist= stuDataKeepAndRecordBusiness.GetSudentDataAll();
+            var costlist= stuDataKeepAndRecordBusiness.GetSudentDataAll();
             if (!string.IsNullOrEmpty(Name))
             {
                 costlist = costlist.Where(a => a.StuName.Contains(Name)).ToList();
