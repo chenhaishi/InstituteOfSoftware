@@ -40,6 +40,7 @@ using BaiduBce.Services.Bos;
 using System.Configuration;
 using SiliconValley.InformationSystem.Business.BaiduAPI_Business;
 using SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data;
+using SiliconValley.InformationSystem.Business.StudentmanagementBusinsess;
 
 namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
 {
@@ -47,7 +48,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
     [CheckLogin]
     public class StudentDataKeepController : BaseMvcController
     {
-        // GET: /Market/StudentDataKeep/UpDataStudentFunction
+        // GET: /Market/StudentDataKeep/GetPayView
 
         #region 创建实体
 
@@ -1297,37 +1298,37 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
             List<Sch_MarketView> entity2 = s_Entity.GetListBySql<Sch_MarketView>(str2);
 
 
-            string jsonfile = Server.MapPath("/Config/ExportStudentBean.json");//获取表头
-            System.IO.StreamReader file = System.IO.File.OpenText(jsonfile);
-            JsonTextReader reader = new JsonTextReader(file);
-            //转化为JObject
-            JObject ojb = (JObject)JToken.ReadFrom(reader);
+            //string jsonfile = Server.MapPath("/Config/ExportStudentBean.json");//获取表头
+            //System.IO.StreamReader file = System.IO.File.OpenText(jsonfile);
+            //JsonTextReader reader = new JsonTextReader(file);
+            ////转化为JObject
+            //JObject ojb = (JObject)JToken.ReadFrom(reader);
 
-            var jj = ojb["ExportStudentBeanData"].ToString();
+            //var jj = ojb["ExportStudentBeanData"].ToString();
 
-            JObject jo = (JObject)JsonConvert.DeserializeObject(jj);
+            //JObject jo = (JObject)JsonConvert.DeserializeObject(jj);
 
             //生成字段名称 
-            List<string> Head = new List<string>();
-            int indexss = 0;
-            try
-            {
-                foreach (DataColumn col in data.Columns)
-                {
-                    if (indexss != 0)
-                    {
-                        Head.Add(jo[col.ColumnName].ToString());
-                    }
-                    indexss++;
-                }
-            }
-            catch (Exception ex)
-            {
-                string s = ex.Message;
+            //List<string> Head = new List<string>();
+            //int indexss = 0;
+            //try
+            //{
+            //    foreach (DataColumn col in data.Columns)
+            //    {
+            //        if (indexss != 0)
+            //        {
+            //            Head.Add(jo[col.ColumnName].ToString());
+            //        }
+            //        indexss++;
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    string s = ex.Message;
                 
-            }
+            //}
            
-            Excel_Entity = new ExcelHelper();
+            //Excel_Entity = new ExcelHelper();
 
             List<ExportStudentBeanData> entity = s_Entity.GetListBySql<ExportStudentBeanData>(str).Select(s => new ExportStudentBeanData()
             {
@@ -1358,26 +1359,37 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
             entity.AddRange(s_Entity.LongrageDataToViewmodel(entity2));
 
 
-            string filename = DateTime.Now.ToString("yyyyMMddhhmmss") + ".xls";
-            SessionHelper.Session["filename"] = filename;
-            string path = "~/uploadXLSXfile/ConsultUploadfile/ExportAll/" + filename;
-            string truePath = Server.MapPath(path);
-
-            SessionHelper.Session["truePath"] = truePath;
-            bool result = Excel_Entity.DaoruExport(entity, truePath, Head);
-
-            a.Success = false;
-
-            if (result)
+            if (entity.Count>0)
             {
-                a.Success = result;
-                return Json(a, JsonRequestBehavior.AllowGet);
+                a.Success = true;
+                a.Data = entity;
             }
             else
             {
-                a.Msg = "网络异常，请刷新重试！";
-                return Json(a, JsonRequestBehavior.AllowGet);
+                a.Success = false;
             }
+            return Json(a, JsonRequestBehavior.AllowGet);
+
+            //string filename = DateTime.Now.ToString("yyyyMMddhhmmss") + ".xls";
+            //SessionHelper.Session["filename"] = filename;
+            //string path = "~/uploadXLSXfile/ConsultUploadfile/ExportAll/" + filename;
+            //string truePath = Server.MapPath(path);
+
+            //SessionHelper.Session["truePath"] = truePath;
+            //bool result = Excel_Entity.DaoruExport(entity, truePath, Head);
+
+            //a.Success = false;
+
+            //if (result)
+            //{
+            //    a.Success = result;
+            //    return Json(a, JsonRequestBehavior.AllowGet);
+            //}
+            //else
+            //{
+            //    a.Msg = "网络异常，请刷新重试！";
+            //    return Json(a, JsonRequestBehavior.AllowGet);
+            //}
         }
 
         /// <summary>
@@ -1639,7 +1651,96 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
 
 
         #region 获取缴费情况
+        public ActionResult GetStudentNumber(string id)
+        {
+            BaseBusiness<StudentInformation> su_entity = new BaseBusiness<StudentInformation>();
+            List<StudentInformation> list= su_entity.GetListBySql<StudentInformation>("select * from StudentInformation where StudentPutOnRecord_Id=" + id);
+            //判断当前登陆人(网络部只能看网络的数据)
+            Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
 
+            Department department= s_Entity.Enplo_Entity.GetDeptByEmpid(UserName.EmpNumber);
+
+            AjaxResult a = new AjaxResult();
+
+            ExportStudentBeanData findata= s_Entity.findId(id);
+
+            StudentFeeStandardBusinsess dbtext = new StudentFeeStandardBusinsess();
+
+            if (department.DeptName.Contains("网络部"))
+            {
+                if (findata.stuinfomation.Contains("网络"))
+                {
+                    if (list.Count > 0)
+                    {                        
+
+                        List<vierprice> list_cout= dbtext.FienPrice(list[0].StudentNumber);
+
+                        if (list_cout.Count>0)
+                        {
+                            a.Success = true;
+                            a.Data = list[0];
+                        }
+                        else
+                        {
+                            a.Success = false;
+                            a.Msg = "目前没有检测到缴费信息，请联系财务进行查询！";
+                        }
+                         
+                    }
+                    else
+                    {
+                        a.Success = false;
+                        a.Msg = "该学生没有学号，无法查询缴费！";
+                    }
+
+                }
+                else
+                {
+                    a.Success = false;
+                    a.Msg = "你没有权限查看该学生的缴费详情！！！";
+                }
+            }
+            else
+            {
+                if (list.Count > 0)
+                {
+                    List<vierprice> list_cout = dbtext.FienPrice(list[0].StudentNumber);
+
+                    if (list_cout.Count > 0)
+                    {
+                        a.Success = true;
+                        a.Data = list[0];
+                    }
+                    else
+                    {
+                        a.Success = false;
+                        a.Msg = "目前没有检测到缴费信息，请联系财务进行查询！";
+                    }
+
+                }
+                else
+                {
+                    a.Success = false;
+                    a.Msg = "该学生没有学号，无法查询缴费！";
+                }
+            }
+
+            return Json(a,JsonRequestBehavior.AllowGet);
+        }
+        
+        /// <summary>
+        /// 缴费详情
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult GetPayView(string id)
+        {
+            StudentFeeStandardBusinsess dbtext = new StudentFeeStandardBusinsess();
+            string student = id;
+            ViewBag.vier = dbtext.FienPrice(student);//查询缴费记录
+            ViewBag.Tuitionrefund = dbtext.FienTuitionrefund(dbtext.FienPrice(student));
+            ViewBag.StudentPrentryfeeDate = dbtext.StudentPrentryfeeDate(student);
+            return View();
+        }
         #endregion
 
 
@@ -1697,8 +1798,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
 
         //    return Json(t, JsonRequestBehavior.AllowGet);
         //}
-        #endregion
-         
+        #endregion        
+
 
         #region 报名、预录
         public ActionResult Sign_up()
@@ -1719,8 +1820,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
             return null;
         }
 
-        #endregion
-        
+        #endregion        
+
 
         #region 获取跟踪详情
         public ActionResult FllowView(int id)
@@ -1732,6 +1833,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
             return View();
         }
         #endregion
+
 
         #region 给市场显示的数据
           public ActionResult MarkeView()
@@ -1995,6 +2097,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
 
             return Json(result,JsonRequestBehavior.AllowGet);
         }
+       
         #endregion
 
     }

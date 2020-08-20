@@ -113,13 +113,13 @@
             <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                 <label class="layui-form-label needTextColor">电 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 话:</label>
                 <div class="layui-input-block">
-                    @Html.TextBoxFor(s => s.StuPhone, new Dictionary<string, object>() { { "placeholder", "联系电话" }, { "class", "layui-input linu" } })
+                    @Html.TextBoxFor(s => s.StuPhone, new Dictionary<string, object>() { { "placeholder", "联系电话" }, { "class", "layui-input linu" },{ "lay-verify", "phone" } })
                 </div>
             </div>
             <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                 <label class="LableCss1 needTextColor">信息来源:</label>
                 <div class="layui-input-block">
-                    @Html.DropDownListFor(s => s.StuInfomationType_Id, ViewBag.infomation as IEnumerable<SelectListItem>, new Dictionary<string, object>() { { "lay-filter", "infoselect" } })
+                    @Html.DropDownListFor(s => s.StuInfomationType_Id,ViewBag.infomation as IEnumerable<SelectListItem>, new Dictionary<string, object>() { { "lay-filter", "infoselect" } })
                 </div>
             </div>
         </div>

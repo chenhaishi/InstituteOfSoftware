@@ -2,26 +2,29 @@
 @{
     Layout = null;
 }
+@model SiliconValley.InformationSystem.Business.EducationalBusiness.XmlEntity
 
 <!DOCTYPE html>
 
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>AddView</title>
+    <title>UpdateView</title>
     <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
 </head>
 <body>
     <div style="margin-top:20px;margin-left:auto;margin-right:auto">
-        <form class="layui-form">
+        <form class="layui-form" lay-filter="XMLFORM">
             <div class="layui-container">
                 <div class="layui-row layui-form-item">
                     <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
                         <label class="layui-form-label">年 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 份:</label>
                         <div class="layui-input-block">
-                            <input type="text" id="Year" name="Year" lay-verify="required" placeholder="年份" class="layui-input" />
+                            <input type="text" id="Year" name="Year" lay-verify="required" placeholder="年份" class="layui-input" value="@Model.Year" />
+                            <input type="hidden" id="mm1" class="layui-input" value="@Model.StartMonth" />
+                            <input type="hidden" id="mm2" class="layui-input" value="@Model.EndMonth" />
                         </div>
-                    </div>                    
+                    </div>
                 </div>
                 <div class="layui-row layui-form-item">
                     <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
@@ -63,7 +66,7 @@
                                 <option value="11">十一月</option>
                                 <option value="12">十二月</option>
                             </select>
-                         
+
                         </div>
                     </div>
                 </div>
@@ -71,7 +74,7 @@
             <div class="layui-form-item" style="margin-top:80px;">
                 <div class="layui-input-block">
                     <div style="width:50%;text-align:right">
-                        <button class="layui-btn" lay-submit="" lay-filter="tijiao">添加</button>
+                        <button class="layui-btn" lay-submit="" lay-filter="tijiao">编辑</button>
                         <button class="layui-btn" id="claose">取消</button>
                     </div>
                 </div>
@@ -83,24 +86,21 @@
     <script>
         $(function () {
             var form;
-            var laydate;
             var layer;
-            layui.use(['form','laydate','layer'], function () {
+            layui.use(['form'], function () {
                 form = layui.form;
-                laydate = layui.laydate;
+
                 layer = layui.layer;
 
-                //年范围
-                laydate.render({
-                    elem: '#Year'
-                    , type: 'year'
-                    , range: false
+                form.val("XMLFORM", {
+                    "StartMonth": $("#mm1").val()
+                    , "EndMonth": $("#mm2").val()
                 });
 
-                form.on('submit(tijiao)', function (data) {                   
-                    console.log(data.field); //当前容器的全部表单字段，名值对形式：{name: value}
+                form.on('submit(tijiao)', function (data) {
+                    console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
                     $.ajax({
-                        url: '/Educational/XmlBaseData/AddFunction',
+                        url: '/Educational/XmlBaseData/UpdateFuntion',
                         type: 'POST',
                         data: data.field,
                         success: function (res) {
@@ -119,13 +119,14 @@
                 });
             });
 
-
             $('#claose').click(function () {
                 var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                 parent.layer.close(index); //再执行关闭   
             }); 
+
+             
+
         });
     </script>
-
 </body>
 </html>

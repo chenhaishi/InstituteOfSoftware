@@ -41,11 +41,15 @@ namespace SiliconValley.InformationSystem.Business.TeachingDepBusiness
             foreach (GoodSkill item1 in sk_list)
             {
                Teacher t= get_t.Where(g => g.TeacherID == item1.TearchID && g.IsDel == false).FirstOrDefault();
-                bool s = IsOrride(ts, t.TeacherID);
-                if (s == false)
+                if (t!=null)
                 {
-                    ts.Add(t);
-                }                
+                    bool s = IsOrride(ts, t.TeacherID);
+                    if (s == false)
+                    {
+                        ts.Add(t);
+                    }
+                }
+                            
             }
             return ts;
         }
