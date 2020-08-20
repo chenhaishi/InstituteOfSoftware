@@ -49,7 +49,6 @@
                         <th>总金额</th>
                     </tr>
                     <tr>
-
                         @foreach (var item_s in item_table.Chicked)
                         {
                             <th>@item_s.Amountofmoney.ToString().Substring(0, @item_s.Amountofmoney.ToString().Length - 2)</th>
@@ -69,7 +68,7 @@
 <div style="float:left;">
 
     <ul class="layui-timeline">
-
+        
         @{
 
             foreach (var item in ViewBag.StudentPrentryfeeDate as List<vierprice>)
