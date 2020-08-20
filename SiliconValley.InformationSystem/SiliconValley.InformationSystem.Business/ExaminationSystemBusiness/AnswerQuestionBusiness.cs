@@ -58,7 +58,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
         /// </summary>
         /// <param name="">AnswerQuestionBank类</param>
         /// <returns></returns>
-        public AnswerQuestionView ConvertToAnswerQuestionView(AnswerQuestionBank answerQuestionBank, bool IsNeedProposition)
+        public AnswerQuestionView ConvertToAnswerQuestionView(AnswerQuestionBank answerQuestionBank, bool IsNeedProposition = true)
         {
             AnswerQuestionView answerQuestionView = new AnswerQuestionView();
 
