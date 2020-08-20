@@ -182,11 +182,11 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     while (true)
                     {
                         cells++;
-                        if (getrow.GetCell(cells)==null)
+                        var getcell = getrow.GetCell(cells);
+                        if (getcell == null)
                         {                            
                             break;
                         }
-                        var getcell = getrow.GetCell(cells);
                         var titlerow= sheet.GetRow(2);
                         var title = titlerow.GetCell(cells).StringCellValue;
                         var pretitle = titlerow.GetCell(cells - 1).StringCellValue;
@@ -201,7 +201,8 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                         if (getcell.StringCellValue.Contains("迟到"))
                         {
                             tardyRecord += title + "号," + getcell.StringCellValue + ";";
-                        } else if (getcell.StringCellValue.Contains("早退")) {
+                        }
+                        else if (getcell.StringCellValue.Contains("早退")) {
                             leaveEarlyRecord += title + "号," + getcell.StringCellValue + ";";
                         }
                         else if (getcell.StringCellValue.Contains("上班缺卡"))
@@ -216,6 +217,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                             leaveddays = title + "号" + getcell.StringCellValue + ";";
                         }
                         
+
                         
                     }
                    
