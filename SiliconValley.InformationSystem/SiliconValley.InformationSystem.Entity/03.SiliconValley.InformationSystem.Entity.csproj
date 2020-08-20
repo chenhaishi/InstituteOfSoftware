@@ -519,6 +519,7 @@
     <Compile Include="ViewEntity\T_ConsultTeacherData.cs" />
     <Compile Include="ViewEntity\UninhabitedList.cs" />
     <Compile Include="ViewEntity\vierprice.cs" />
+    <Compile Include="ViewEntity\XYK_Data\Student .cs" />
     <Compile Include="ViewEntity\ZhuanghuanluData.cs" />
     <Compile Include="ZhuceShowData.cs" />
   </ItemGroup>
@@ -529,5 +530,6 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
