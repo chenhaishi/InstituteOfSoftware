@@ -1896,6 +1896,10 @@
     <Content Include="Areas\Market\Views\FollwingInfo\UpdateChange.cshtml" />
     <Content Include="Areas\Educational\Views\XmlBaseData\XmlDataIndex.cshtml" />
     <Content Include="Areas\Educational\Views\XmlBaseData\AddView.cshtml" />
+    <Content Include="Areas\ExaminationSystem\Views\QuestionsBank\DuplicateRemoval.cshtml" />
+    <Content Include="Areas\ExaminationSystem\Views\QuestionsBank\ModifyAnswerQuestion.cshtml" />
+    <Content Include="Areas\ExaminationSystem\Views\QuestionsBank\ModifyChoice.cshtml" />
+    <Content Include="Areas\ExaminationSystem\Views\QuestionsBank\DuplicateRemovalXZ.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />

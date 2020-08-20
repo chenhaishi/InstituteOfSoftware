@@ -15,7 +15,7 @@
 <body>
     <div>
         <form class="layui-form">
-            <input name="ID" value="@Model.ID" />
+            <input name="ID" type="hidden" value="@Model.ID" />
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label">阶段</label>
@@ -155,25 +155,60 @@
             form.on('submit(submit)', function (data) {
 
                 console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+                var obj = {
+                    Id: data.field.ID,
+                    Title: data.field.Title,
+                    Level: data.field.Level,
+                    Course: data.field.course,
+                    IsUsing: null,
+                    PropositionDate: null,
+                    Proposition: null,
 
-                $.post('/ExaminationSystem/QuestionsBank/ModifyAnswerQuestion', data.field, function (result) {
+                    Remark: data.field.Remark,
+                    Grand: data.field.grand,
+                    ReferenceAnswer: data.field.ReferenceAnswer
+                };
+                console.log(obj);
 
+                $.ajax({
+                    url: '/ExaminationSystem/QuestionsBank/ModifyAnswerQuestion',
+                    data: obj,
+                    type: 'POST',
+                    success: function (result) {
+                        if (result.ErrorCode == 200) {
 
-                    if (result.ErrorCode == 200) {
+                            layer.msg("修改成功！", { icon: 1 });
 
-                        layer.msg("修改成功！", { icon: 1 });
-
-                        layui.form.render();
+                            layui.form.render();
+                        }
+                        else {
+                            layer.msg("服务器错误！", { icon: 2 });
+                        }
                     }
-                    else {
-                        layer.msg("服务器错误！", { icon: 2 });
-                    }
+               })
 
-                }, function (error) {
 
-                        layer.msg("异常！", {icon:2});
 
-                });
+
+
+                //$.post('/{ExaminationSystem/QuestionsBank/ModifyAnswerQuestion', obj, function (result) {
+
+
+                //    if (result.ErrorCode == 200) {
+
+                //        layer.msg("修改成功！", { icon: 1 });
+
+                //        layui.form.render();
+                //    }
+                //    else {
+                //        layer.msg("服务器错误！", { icon: 2 });
+                //    }
+
+                //}, function (error) {
+
+                //        layer.msg("异常！", {icon:2});
+
+                //});
 
                 return false; 
             });

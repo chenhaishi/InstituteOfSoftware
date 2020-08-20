@@ -68,7 +68,28 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
              return View();
         }
+        /// <summary>
+        /// 选择题去重页
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult DuplicateRemovalXZ()
+        {
+            GrandBusiness GrandBusiness = new GrandBusiness();
 
+            ViewBag.grand = GrandBusiness.AllGrand();
+            return View();
+        }
+        /// <summary>
+        /// 解答题去重页
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult DuplicateRemoval()
+        {
+            GrandBusiness GrandBusiness = new GrandBusiness();
+
+            ViewBag.grand = GrandBusiness.AllGrand();
+            return View();
+        }
 
         /// <summary>
         /// 选择题题库页面
@@ -291,6 +312,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             return View();
         }
+         
 
         public ActionResult ModifyChoice(int choiceId)
         {
@@ -853,31 +875,49 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         /// <returns></returns>
         public ActionResult SearchAnswerQuestion(string Title, int course, int page, int limit)
         {
+            List<AnswerQuestionBank> resultlist = new List<AnswerQuestionBank>();
+            if (course == 0 && Title == "")
+            {
+                resultlist = db_answerQuestion.AllAnswerQuestion().ToList();
+            }
 
-           var list = db_answerQuestion.Search(Title, course);
+            if (course != 0 && Title == "")
+            {
+                resultlist = db_answerQuestion.AllAnswerQuestion().Where(d => d.Course == course).ToList();
+            }
 
-            var skiplist = list.Skip((page - 1) * limit).Take(limit).ToList();
+            if (Title != "" && course != 0)
+            {
+                resultlist = db_answerQuestion.AllAnswerQuestion().Where(d => d.Course == course && d.Title.Contains(Title)).ToList();
+            }
+            if (Title != "" && course == 0)
+            {
+                resultlist = db_answerQuestion.AllAnswerQuestion().Where(d => d.Title.Contains(Title)).ToList();
+            }
 
             //转换对象
-            List<AnswerQuestionView> resultlist = new List<AnswerQuestionView>();
 
-            foreach (var item in skiplist)
+            List<AnswerQuestionView> returnlist = new List<AnswerQuestionView>();
+            //转换对象
+
+            foreach (var item in resultlist)
             {
 
                var tempobj = db_answerQuestion.ConvertToAnswerQuestionView(item, true);
-                resultlist.Add(tempobj);
+                returnlist.Add(tempobj);
 
             }
 
-            var obj = new {
-                code=0,
-                msg="",
-                count=resultlist.Count,
-                data=resultlist
+           var obj = new
+            {
 
+                code = 0,
+                msg = "",
+                count = returnlist.Count,
+                data = returnlist.Skip((page - 1) * limit).Take(limit)
             };
 
-            return Json(obj,JsonRequestBehavior.AllowGet);
+            return Json(obj, JsonRequestBehavior.AllowGet);
 
         }
 
