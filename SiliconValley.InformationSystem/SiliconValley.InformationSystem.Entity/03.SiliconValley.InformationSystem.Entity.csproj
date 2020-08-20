@@ -82,6 +82,8 @@
     <Compile Include="Entity\ApplicationRepair.cs" />
     <Compile Include="Entity\ApplyForFullMember.cs" />
     <Compile Include="Entity\Assmeetings.cs" />
+    <Compile Include="Entity\AttendanceAnormaly.cs" />
+    <Compile Include="Entity\AttendanceAnormalyDetails.cs" />
     <Compile Include="Entity\AttendanceInfo.cs" />
     <Compile Include="Entity\Awardwinningtrainees.cs" />
     <Compile Include="Entity\BaseDataEnum.cs" />

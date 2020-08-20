@@ -13,13 +13,13 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    [Table("AttendanceInfo")]
+    [Table("AttendanceInfo")]//考勤表
     public partial class AttendanceInfo
     { 
         [Key]
         public int AttendanceId { get; set; }
         public string EmployeeId { get; set; }
-        public Nullable<System.DateTime> YearAndMonth { get; set; }
+        public Nullable<System.DateTime> YearAndMonth { get; set; }//年月份
         public Nullable<decimal> DeserveToRegularDays { get; set; }//应到勤天数
         public Nullable<decimal> ToRegularDays { get; set; }//到勤天数
         public Nullable<decimal> LeaveDays { get; set; }//请假天数
