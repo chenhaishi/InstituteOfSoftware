@@ -271,8 +271,17 @@ namespace SiliconValley.InformationSystem.Business
         /// <param name="entity">实体对象</param>
         public void Update(T entity)
         {
-            Service.Update(entity);
-            RedisRemove();
+
+            try
+            {
+                Service.Update(entity);
+                RedisRemove();
+            }
+            catch (Exception  e)
+            {
+                string ee = e.Message;
+            }
+          
         }
 
         /// <summary>

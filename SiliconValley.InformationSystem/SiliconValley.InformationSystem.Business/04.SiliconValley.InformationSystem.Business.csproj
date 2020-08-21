@@ -92,6 +92,7 @@
     <Compile Include="00Cache\BaseCache\BaseCache.T.cs" />
     <Compile Include="00Cache\BaseCache\IBaseCache.T.cs" />
     <Compile Include="00Cache\Base_UserModelCache.cs" />
+    <Compile Include="AttendanceAnormalyBusiness\AttendanceAnormalyManage.cs" />
     <Compile Include="BaiduAPI_Business\IdentificationBusines.cs" />
     <Compile Include="BaseBusiness\BaseBusiness.T.cs" />
     <Compile Include="BaseDataEnum_Business\BaseDataEnumBusiness.cs" />

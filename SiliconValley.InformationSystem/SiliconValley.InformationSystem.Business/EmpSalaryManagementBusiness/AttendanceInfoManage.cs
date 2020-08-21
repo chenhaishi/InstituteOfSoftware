@@ -216,9 +216,12 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                         else if (getcell.StringCellValue.Contains("事假")) {
                             leaveddays = title + "号" + getcell.StringCellValue + ";";
                         }
-                        
 
-                        
+                        //迟到扣款
+                        string tardyWithhold = "";
+
+
+
                     }
                    
                     // string leaveddays = getrow.GetCell(3) == null ? null : getrow.GetCell(3).NumericCellValue.ToString();
@@ -290,6 +293,19 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             return result;
 
         }
+
+        //public decimal GetTardyCount(string tardyRecord) {
+        //    var str = tardyRecord.Split(';');
+        //    var result=0;
+        //    int num = 0;
+        //    foreach (var item in str)
+        //    {
+        //        var tardy = item[num];
+               
+               
+        //    }
+        //    return result;
+        //}
 
         /// <summary>
         /// 将excel数据类的数据存入到数据库的考勤表中

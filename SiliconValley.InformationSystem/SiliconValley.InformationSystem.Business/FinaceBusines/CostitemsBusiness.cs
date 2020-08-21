@@ -147,6 +147,91 @@ namespace SiliconValley.InformationSystem.Business.FinaceBusines
             return retus;
         }
         /// <summary>
+        /// 查询缴费名单
+        /// </summary>
+        /// <param name="date">按时间查询</param>
+        /// <param name="type">按类型查询</param>
+        /// <returns></returns>
+        public AjaxResult TypeSelect(DateTime date,int type)
+        {
+            AjaxResult list = new AjaxResult();
+            try
+            {
+                
+                List<Entity.ViewEntity.XYK_Data.Student> obj = new List<Entity.ViewEntity.XYK_Data.Student>();
+                if (date == null)
+                {
+                    BaseBusiness<StudentFeeRecord> su = new BaseBusiness<StudentFeeRecord>();
+                    BaseBusiness<Entity.Entity.Preentryfee> pr = new BaseBusiness<Entity.Entity.Preentryfee>();
+                    BaseBusiness<StudentInformation> cu = new BaseBusiness<StudentInformation>();
+                    var StuList = su.GetList().Where(d => d.AddDate.Value.Year == date.Year && d.AddDate.Value.Month == date.Month).ToList();
+                    foreach (var item in StuList)
+                    {
+                        var SchaInfoList = cu.GetList().Where(d => d.identitydocument == item.StudenID).SingleOrDefault();
+                        var preen = pr.GetList().Where(d => d.identitydocument == item.StudenID).SingleOrDefault();
+                        Entity.ViewEntity.XYK_Data.Student stu = new Entity.ViewEntity.XYK_Data.Student()
+                        {
+                            Keepid = preen.keeponrecordid,
+                            num = item.Amountofmoney.Value,
+                            StuName = SchaInfoList.Name
+                        };
+                        obj.Add(stu);
+                    }
+                    list.Success = true;
+                    list.Data = obj;
+                }
+                else if (type == 1)
+                {
+                    BaseBusiness<Entity.Entity.Preentryfee> su = new BaseBusiness<Entity.Entity.Preentryfee>();
+                    BaseBusiness<StudentInformation> cu = new BaseBusiness<StudentInformation>();
+                    var PreeList = su.GetList().Where(d => d.AddDate.Year == date.Year && d.AddDate.Month == date.Month).ToList();
+                    foreach (var item in PreeList)
+                    {
+                        var SchList = cu.GetList().Where(d => d.identitydocument == item.identitydocument).SingleOrDefault();
+                        Entity.ViewEntity.XYK_Data.Student stu = new Entity.ViewEntity.XYK_Data.Student()
+                        {
+                            Keepid = item.keeponrecordid,
+                            num = item.Amountofmoney,
+                            StuName = SchList.Name
+                        };
+                        obj.Add(stu);
+                    }
+                    list.Success = true;
+                    list.Data = obj;
+                }
+                else if (type == 2)
+                {
+                    BaseBusiness<StudentFeeRecord> su = new BaseBusiness<StudentFeeRecord>();
+                    BaseBusiness<Entity.Entity.Preentryfee> pr = new BaseBusiness<Entity.Entity.Preentryfee>();
+                    BaseBusiness<StudentInformation> cu = new BaseBusiness<StudentInformation>();
+                    var StuList = su.GetList().Where(d => d.AddDate.Value.Year == date.Year && d.AddDate.Value.Month == date.Month).ToList();
+                    foreach (var item in StuList)
+                    {
+                        var SchaInfoList = cu.GetList().Where(d => d.identitydocument == item.StudenID).SingleOrDefault();
+                        var preen = pr.GetList().Where(d => d.identitydocument == item.StudenID).SingleOrDefault();
+                        Entity.ViewEntity.XYK_Data.Student stu = new Entity.ViewEntity.XYK_Data.Student()
+                        {
+                            Keepid = preen.keeponrecordid,
+                            num = item.Amountofmoney.Value,
+                            StuName = SchaInfoList.Name
+                        };
+                        obj.Add(stu);
+                    }
+
+                    list.Success = true;
+                    list.Data = obj;
+                }
+            }
+            catch (Exception ex)
+            {
+                list = new ErrorResult();
+                list.Msg = "服务器错误";
+                list.Success = false;
+                list.ErrorCode = 500;
+            }
+            return list;
+        }
+        /// <summary>
         /// 获取明目类型的所有数据
         /// </summary>
         /// <returns></returns>

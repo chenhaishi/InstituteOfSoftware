@@ -91,6 +91,7 @@
 
         <button class="layui-btn layui-btn-sm" lay-event="downloadTemplate"><i class="layui-icon layui-icon-download-circle"></i>下载题库模板</button>
 
+        <button type="button" class="layui-btn layui-btn-sm btn-info"  onclick="quchong()">去重</button>
     </div>
 </script>
 
@@ -104,7 +105,7 @@
 
 <script type="text/html" id="InitHtm">
 
-    <h4 style="text-align:center; margin-top:10px;">默认10个题目</h4>
+    <h4 style="text-align:center; margin-top:10px;">默认10个题 目</h4>
     <hr />
     <form class="layui-form">
         <div class="layui-inline">
@@ -134,7 +135,14 @@
                 return div.innerHTML;
             }
         }
-
+        var quchong = function () {
+            layer.open({
+                type: 2,
+                area: ['800px', '800px'],
+                title: "去重",
+                content: '/ExaminationSystem/QuestionsBank/DuplicateRemoval'
+            })
+        }
         function escapeHTMLString(str) {
             str = str.replace(/</g, '&lt;');
             str = str.replace(/>/g, '&gt;');
@@ -259,7 +267,7 @@
 
             ]],
             page: true
-        });
+        }); 
 
         //头工具栏事件
         table.on('toolbar(ClearlyQuestionsBank)', function (obj) {
@@ -367,6 +375,7 @@
         //监听行工具事件
         table.on('tool(ClearlyQuestionsBank)', function (obj) {
             var data = obj.data;
+            console.log(data.ID);
             //console.log(obj)
             if (obj.event === 'del') {
                 layer.confirm('真的删除行么', function (index) {
@@ -428,6 +437,5 @@
 
 
     </script>
-
 }
 
