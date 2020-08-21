@@ -41,5 +41,7 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity
         /// 备注说明
         /// </summary>
         public string Remark { get; set; }
+
+        public bool IsDel { get; set; }
     }
 }
