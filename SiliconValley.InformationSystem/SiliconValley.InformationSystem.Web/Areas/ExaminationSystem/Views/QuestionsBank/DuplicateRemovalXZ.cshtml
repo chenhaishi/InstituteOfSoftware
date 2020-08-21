@@ -14,42 +14,17 @@
 
     <form class="layui-form">
         <div style="" class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">阶段</label>
-                <div class="layui-input-inline">
-                    <select lay-filter="major">
-                        <option value="0">请选择</option>
-                        @{
-                            foreach (var item in ViewBag.grand as List<Grand>)
-                            {
-                                <option value="@item.Id">@item.GrandName</option>
-                            }
-                        }
-                    </select>
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">课程</label>
-                <div class="layui-input-inline">
-                    <select lay-verify="required" name="course" id="course">
-                        <option selected value="0"></option>
-                    </select>
-                </div>
-            </div>
 
-            <div class="layui-inline">
-                <button class="layui-btn layui-btn-primary" lay-submit="" lay-filter="search">查询相同</button>
-
+            <div style="text-align:center;" class="layui-inline">
+                <button style="width:800px; margin-top:30px;" type="button" lay-submit="" lay-filter="search" class="layui-btn layui-btn-radius layui-btn-primary">查询重复</button>
             </div>
         </div>
         <hr />
     </form>
     <table class="layui-hide" lay-filter="QuestionsBankS" id="QuestionsBankS"></table>
-    <!--头部工具栏-->
-    <script type="text/html" id="toolbarDemo">
-        <div class="layui-btn-container">
-            <button type="button" class="layui-btn layui-btn-sm btn-info" onclick="QC()">去重</button>
-        </div>
+    <!--行内工具按钮-->
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
     </script>
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/layui/layui.js"></script>
@@ -68,49 +43,16 @@
             var table = layui.table;
 
             $(".layui-layer-input").attr("type", "number")
-
-            //下拉框联动
-            form.on('select(major)', function (data) {
-                var value = data.value;  //select选中的值
-                console.log("选中值" + value);
-                $.ajax({
-                    url: "/ExaminationSystem/QuestionsBank/CourseDataBYGrind",
-                    data: { grandid: value },
-                    dataType: "json",
-                    success: function (resultData) {
-                        if (resultData.length > 0) {
-                            //清空赋值
-                            $("#course").empty();
-                            console.log(resultData);
-                            $("#course").append(new Option("请选择项目", 0));
-                            $.each(resultData, function (index, item) {
-                                //赋值
-                                $('#course')
-                                    .append(new Option(item.CourseName, item.CurriculumID));
-                            });
-                        } else {
-                            $("#course").empty();
-                            $("#course").append(new Option("暂无数据", 0));
-                        }
-                        layui.form.render("select");
-                    }
-                });
-            });
             //查询
-            form.on('submit(search)', function (data) {
-
-                console.log(data.field)
-
-
+            form.on('submit(search)', function () {
                 table.reload('QuestionsBankS', {
 
-                    url: '/ExaminationSystem/QuestionsBank/Search'
-                    , where: data.field
+                    url: '/ExaminationSystem/QuestionsBank/XianZeSelect'
                 });
 
                 return false;
             });
-
+            var bind = function () { 
             //渲染表格
             table.render({
                 elem: '#QuestionsBankS'
@@ -119,16 +61,16 @@
                 , url: '/ExaminationSystem/QuestionsBank/ChoiceQuestionTableData'
                 , cellMinWidth: 80
                 , cols: [[
-                    { field: 'Id', width: 80, title: 'ID', hide: true, sort: true }
+                    { field: 'Id', width: 90, title: 'ID', hide: true, sort: true }
                     , {
-                        field: 'Title', width: 200, title: '题目', templet: function (res) {
+                        field: 'Title', width: 250, title: '题目', templet: function (res) {
 
                             var result = escapeHTMLString(res.Title);
 
                             return result;
 
                         }
-                    } , {
+                    }, {
                         field: 'IsRadio', title: '单选/多选', sort: true, templet: function (data) {
 
                             if (data.IsRadio == true) {
@@ -141,10 +83,10 @@
 
                         }, width: 150
                     },
-                    { field: 'Answer', width: 80, title: '答案' },
+                    { field: 'Answer', width: 90, title: '答案' },
                     { field: 'EmpName', width: 80, title: '命题人', templet: '<div>{{d.Proposition.EmpName}}</div>' },
                     {
-                        field: 'CourseName', width: 120, title: '所属课程', templet: function (res) {
+                        field: 'CourseName', width: 100, title: '所属课程', templet: function (res) {
 
 
                             if (res.Course == null) {
@@ -156,25 +98,51 @@
 
 
                         }
-                    }
+                    },
+                    { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150 }
 
                 ]],
                 page: true
-            });
+                });
+            }
+            bind();
+            //监听行工具事件
+            table.on('tool(QuestionsBankS)', function (obj) {
+                var data = obj.data;
+                console.log(data.ID);
+                //console.log(obj)
+                if (obj.event === 'del') {
+                    layer.confirm('真的删除行么', function (index) {
+                        Ajax('/ExaminationSystem/QuestionsBank/DeleteChoiceQuestion/' + data.Id, {}, 'post', function (data) {
+
+                            if (data.ErrorCode == 200) {
+
+                                layer.msg("删除成功!");
+                                bind();
+                            }
+
+                            if (data.ErrorCode == 400) {
+
+                                layer.msg("删除失败!------原因:该题目已经被用于试卷");
+                            }
+
+                            if (data.ErrorCode == 500) {
+
+                                layer.msg("服务器错误!");
+                            }
 
 
-            //头工具栏事件
-            table.on('toolbar(QuestionsBankS)', function (obj) {
-                var checkStatus = table.checkStatus(obj.config.id);
-               switch (obj.event) {
-                    case 'QC':
-                        layer.confirm('确认去重吗?', function (index) {
-                            layer.close(index);
+
+
+                        }, function (error) {
+                            layer.msg("异常！");
                         });
-                        break;
-                };
+
+                        layer.close(index);
+                    });
+                }
             });
         });
     </script>
-    </body>
+</body>
 </html>
