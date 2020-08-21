@@ -152,16 +152,32 @@ namespace SiliconValley.InformationSystem.Business.FinaceBusines
         /// <param name="date">按时间查询</param>
         /// <param name="type">按类型查询</param>
         /// <returns></returns>
-        public AjaxResult TypeSelect(DateTime date,string type)
+        public AjaxResult TypeSelect(DateTime date,int type)
         {
             AjaxResult list = new AjaxResult();
             List<Entity.ViewEntity.XYK_Data.Student> obj = new List<Entity.ViewEntity.XYK_Data.Student>();
-            if (type=="")
+            if (date==null)
             {
-                list.Success = false;
-                list.Msg = "查询类型不能为空";
+                BaseBusiness<StudentFeeRecord> su = new BaseBusiness<StudentFeeRecord>();
+                BaseBusiness<Entity.Entity.Preentryfee> pr = new BaseBusiness<Entity.Entity.Preentryfee>();
+                BaseBusiness<StudentInformation> cu = new BaseBusiness<StudentInformation>();
+                var StuList = su.GetList().Where(d => d.AddDate.Value.Year == date.Year && d.AddDate.Value.Month == date.Month).ToList();
+                foreach (var item in StuList)
+                {
+                    var SchaInfoList = cu.GetList().Where(d => d.identitydocument == item.StudenID).SingleOrDefault();
+                    var preen = pr.GetList().Where(d => d.identitydocument == item.StudenID).SingleOrDefault();
+                    Entity.ViewEntity.XYK_Data.Student stu = new Entity.ViewEntity.XYK_Data.Student()
+                    {
+                        Keepid = preen.keeponrecordid,
+                        num = item.Amountofmoney.Value,
+                        StuName = SchaInfoList.Name
+                    };
+                    obj.Add(stu);
+                }
+                list.Success = true;
+                list.Data = obj;
             }
-            else if (type=="预录费")
+            else if (type==1)
             {
                 BaseBusiness<Entity.Entity.Preentryfee> su = new BaseBusiness<Entity.Entity.Preentryfee>();
                 BaseBusiness<StudentInformation> cu = new BaseBusiness<StudentInformation>();
@@ -180,7 +196,7 @@ namespace SiliconValley.InformationSystem.Business.FinaceBusines
                 list.Success = true;
                 list.Data = obj;
             }
-            else if (type == "学费")
+            else if (type == 2)
             {
                 BaseBusiness<StudentFeeRecord> su = new BaseBusiness<StudentFeeRecord>();
                 BaseBusiness<Entity.Entity.Preentryfee> pr = new BaseBusiness<Entity.Entity.Preentryfee>();
@@ -198,6 +214,7 @@ namespace SiliconValley.InformationSystem.Business.FinaceBusines
                     };
                     obj.Add(stu);
                 }
+
                 list.Success = true;
                 list.Data = obj;
             }
