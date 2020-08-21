@@ -155,68 +155,79 @@ namespace SiliconValley.InformationSystem.Business.FinaceBusines
         public AjaxResult TypeSelect(DateTime date,int type)
         {
             AjaxResult list = new AjaxResult();
-            List<Entity.ViewEntity.XYK_Data.Student> obj = new List<Entity.ViewEntity.XYK_Data.Student>();
-            if (date==null)
+            try
             {
-                BaseBusiness<StudentFeeRecord> su = new BaseBusiness<StudentFeeRecord>();
-                BaseBusiness<Entity.Entity.Preentryfee> pr = new BaseBusiness<Entity.Entity.Preentryfee>();
-                BaseBusiness<StudentInformation> cu = new BaseBusiness<StudentInformation>();
-                var StuList = su.GetList().Where(d => d.AddDate.Value.Year == date.Year && d.AddDate.Value.Month == date.Month).ToList();
-                foreach (var item in StuList)
+                
+                List<Entity.ViewEntity.XYK_Data.Student> obj = new List<Entity.ViewEntity.XYK_Data.Student>();
+                if (date == null)
                 {
-                    var SchaInfoList = cu.GetList().Where(d => d.identitydocument == item.StudenID).SingleOrDefault();
-                    var preen = pr.GetList().Where(d => d.identitydocument == item.StudenID).SingleOrDefault();
-                    Entity.ViewEntity.XYK_Data.Student stu = new Entity.ViewEntity.XYK_Data.Student()
+                    BaseBusiness<StudentFeeRecord> su = new BaseBusiness<StudentFeeRecord>();
+                    BaseBusiness<Entity.Entity.Preentryfee> pr = new BaseBusiness<Entity.Entity.Preentryfee>();
+                    BaseBusiness<StudentInformation> cu = new BaseBusiness<StudentInformation>();
+                    var StuList = su.GetList().Where(d => d.AddDate.Value.Year == date.Year && d.AddDate.Value.Month == date.Month).ToList();
+                    foreach (var item in StuList)
                     {
-                        Keepid = preen.keeponrecordid,
-                        num = item.Amountofmoney.Value,
-                        StuName = SchaInfoList.Name
-                    };
-                    obj.Add(stu);
+                        var SchaInfoList = cu.GetList().Where(d => d.identitydocument == item.StudenID).SingleOrDefault();
+                        var preen = pr.GetList().Where(d => d.identitydocument == item.StudenID).SingleOrDefault();
+                        Entity.ViewEntity.XYK_Data.Student stu = new Entity.ViewEntity.XYK_Data.Student()
+                        {
+                            Keepid = preen.keeponrecordid,
+                            num = item.Amountofmoney.Value,
+                            StuName = SchaInfoList.Name
+                        };
+                        obj.Add(stu);
+                    }
+                    list.Success = true;
+                    list.Data = obj;
                 }
-                list.Success = true;
-                list.Data = obj;
-            }
-            else if (type==1)
-            {
-                BaseBusiness<Entity.Entity.Preentryfee> su = new BaseBusiness<Entity.Entity.Preentryfee>();
-                BaseBusiness<StudentInformation> cu = new BaseBusiness<StudentInformation>();
-                var PreeList = su.GetList().Where(d => d.AddDate.Year == date.Year && d.AddDate.Month == date.Month).ToList();
-                foreach (var item in PreeList)
+                else if (type == 1)
                 {
-                    var SchList = cu.GetList().Where(d => d.identitydocument == item.identitydocument).SingleOrDefault();
-                    Entity.ViewEntity.XYK_Data.Student stu = new Entity.ViewEntity.XYK_Data.Student()
+                    BaseBusiness<Entity.Entity.Preentryfee> su = new BaseBusiness<Entity.Entity.Preentryfee>();
+                    BaseBusiness<StudentInformation> cu = new BaseBusiness<StudentInformation>();
+                    var PreeList = su.GetList().Where(d => d.AddDate.Year == date.Year && d.AddDate.Month == date.Month).ToList();
+                    foreach (var item in PreeList)
                     {
-                        Keepid = item.keeponrecordid,
-                        num = item.Amountofmoney,
-                        StuName = SchList.Name
-                    };
-                    obj.Add(stu);
+                        var SchList = cu.GetList().Where(d => d.identitydocument == item.identitydocument).SingleOrDefault();
+                        Entity.ViewEntity.XYK_Data.Student stu = new Entity.ViewEntity.XYK_Data.Student()
+                        {
+                            Keepid = item.keeponrecordid,
+                            num = item.Amountofmoney,
+                            StuName = SchList.Name
+                        };
+                        obj.Add(stu);
+                    }
+                    list.Success = true;
+                    list.Data = obj;
                 }
-                list.Success = true;
-                list.Data = obj;
-            }
-            else if (type == 2)
-            {
-                BaseBusiness<StudentFeeRecord> su = new BaseBusiness<StudentFeeRecord>();
-                BaseBusiness<Entity.Entity.Preentryfee> pr = new BaseBusiness<Entity.Entity.Preentryfee>();
-                BaseBusiness<StudentInformation> cu = new BaseBusiness<StudentInformation>();
-                var StuList = su.GetList().Where(d => d.AddDate.Value.Year==date.Year && d.AddDate.Value.Month == date.Month).ToList();
-                foreach (var item in StuList)
+                else if (type == 2)
                 {
-                    var SchaInfoList = cu.GetList().Where(d => d.identitydocument == item.StudenID).SingleOrDefault();
-                    var preen = pr.GetList().Where(d => d.identitydocument == item.StudenID).SingleOrDefault();
-                    Entity.ViewEntity.XYK_Data.Student stu = new Entity.ViewEntity.XYK_Data.Student()
+                    BaseBusiness<StudentFeeRecord> su = new BaseBusiness<StudentFeeRecord>();
+                    BaseBusiness<Entity.Entity.Preentryfee> pr = new BaseBusiness<Entity.Entity.Preentryfee>();
+                    BaseBusiness<StudentInformation> cu = new BaseBusiness<StudentInformation>();
+                    var StuList = su.GetList().Where(d => d.AddDate.Value.Year == date.Year && d.AddDate.Value.Month == date.Month).ToList();
+                    foreach (var item in StuList)
                     {
-                        Keepid = preen.keeponrecordid,
-                        num = item.Amountofmoney.Value,
-                        StuName = SchaInfoList.Name
-                    };
-                    obj.Add(stu);
-                }
+                        var SchaInfoList = cu.GetList().Where(d => d.identitydocument == item.StudenID).SingleOrDefault();
+                        var preen = pr.GetList().Where(d => d.identitydocument == item.StudenID).SingleOrDefault();
+                        Entity.ViewEntity.XYK_Data.Student stu = new Entity.ViewEntity.XYK_Data.Student()
+                        {
+                            Keepid = preen.keeponrecordid,
+                            num = item.Amountofmoney.Value,
+                            StuName = SchaInfoList.Name
+                        };
+                        obj.Add(stu);
+                    }
 
-                list.Success = true;
-                list.Data = obj;
+                    list.Success = true;
+                    list.Data = obj;
+                }
+            }
+            catch (Exception ex)
+            {
+                list = new ErrorResult();
+                list.Msg = "服务器错误";
+                list.Success = false;
+                list.ErrorCode = 500;
             }
             return list;
         }
