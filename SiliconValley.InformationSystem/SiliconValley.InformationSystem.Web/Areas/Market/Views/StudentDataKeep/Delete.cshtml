@@ -442,22 +442,29 @@
 
         form.on('submit(changdel)', function (data) {
             var value = $("#raamk").val();
-            $.ajax({
-                url: '/Market/StudentDataKeep/DeleteFunction/' + studentid,
-                data: { "reavke": value },
-                type: 'GET',
-                success: function (res) {
-                    if (res.Success) {
-                        layer.msg(res.Msg, { shade: 0.8, icon: 1 }, function () {
-                            layer.close(layerindex);
-                            LoadTable2();
-                        })
-                    } else {
-                        TiShi(res.Msg);
+
+            layer.confirm('是否真的要删除?', { icon: 3, title: '系统温馨提示！' }, function (muindex) {
+                //do something
+                $.ajax({
+                    url: '/Market/StudentDataKeep/DeleteFunction/' + studentid,
+                    data: { "reavke": value },
+                    type: 'GET',
+                    success: function (res) {
+                        if (res.Success) {
+                            layer.msg(res.Msg, { shade: 0.8, icon: 1 }, function () {
+                                layer.close(layerindex);
+                                LoadTable2();
+                            })
+                        } else {
+                            TiShi(res.Msg);
+                        }
                     }
-                }
+                });
+
+                layer.close(muindex);
             });
 
+           
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
 

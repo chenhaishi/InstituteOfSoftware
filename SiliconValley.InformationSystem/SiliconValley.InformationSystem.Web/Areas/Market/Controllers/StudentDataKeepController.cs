@@ -120,7 +120,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
         public ActionResult TableData(int limit, int page)
         {
             //82000
-            List<ExportStudentBeanData> list = s_Entity.GetAllTopNumber(70000).OrderByDescending(s => s.StuDateTime).ToList();
+            List<ExportStudentBeanData> list = s_Entity.GetAllTopNumber(82000).OrderByDescending(s => s.StuDateTime).ToList();
 
             var data = list.Skip((page - 1) * limit).Take(limit).ToList();
 

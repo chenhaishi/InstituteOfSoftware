@@ -615,6 +615,21 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             ViewBag.Teacher = list_t.OrderBy(l => l.Value).ToList();
             return View();
         }
+        
+        /// <summary>
+        /// 获取这个阶段的有效课程
+        /// </summary>
+        /// <param name="grandid"></param>
+        /// <returns></returns>
+        public ActionResult GetGrandCurrr(int id)
+        {
+           List<SelectListItem> curlist= Reconcile_Com.GetGrandCurr(id).Where(c=>c.IsDelete==false).Select(c=>new SelectListItem() { Text=c.CourseName,Value=c.CurriculumID.ToString()}).ToList();
+            curlist.Add(new SelectListItem() { Text="其他",Value="0"});
+
+            return Json(curlist,JsonRequestBehavior.AllowGet);
+        }
+        
+        
         #endregion
 
         #region 非专业课排课
