@@ -139,9 +139,7 @@
         <div class="layui-row layui-form-item">
             <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
                 <label class="LableCss1">查询老师:</label>
-                <div id="childteacher_div" class="layui-input-block">
-                    @*@Html.DropDownList("childview_teacher", ViewBag.Teacher as List<SelectListItem>, new Dictionary<string, object>() { { "class", "layui-input linu" } })*@
-                    @*<input class="layui-input" type="text" placeholder="任课老师名称" name="childview_teacher" id="childview_teacher" /><i class="layui-icon">&#xe615;</i>*@
+                <div id="childteacher_div" class="layui-input-block">                   
                     <input class="layui-input" type="text" placeholder="任课老师名称" name="Teache_Ser" id="Teache_Ser" /><i id="Geiteachericon" class="layui-icon IconCss">&#xe615;</i>
                 </div>
             </div>
@@ -187,7 +185,7 @@
                 </div>
             </div>
         </div>
-        <div class="layui-row layui-form-item" style="margin-top:60px;">
+        <div class="layui-row layui-form-item" style="margin-top:20px;">
             <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
                 <div style="width:47%;float:left;text-align:right">
                     <button type="submit" class="layui-btn" lay-submit="" lay-filter="childview_add">提交</button>
@@ -208,7 +206,7 @@
             var element;
             var layer;
 
-
+            var isNuber = true;//默认是数字
             layui.use(['form', 'laydate', 'element'], function () {
                 form = layui.form;
                 laydate = layui.laydate;
@@ -226,7 +224,7 @@
                         form.render();
                     }
                 });
-                var classnumber = 0;
+                
                 //阶段点击事件(获取班级,课程)
                 form.on('select(childview_grand)', function (data) {
                     $("#class_childdiv")[0].innerHTML = "";
@@ -252,7 +250,7 @@
                             success: function (sudata) {
                                 var cur_div = $("#childviewcurr_div");
                                 for (var i = 0; i < sudata.length; i++) {
-                                    $('<input value=' + sudata[i].Value + ' type="radio" name="currname" id="currname" title="' + sudata[i].Text + '" lay-skin="primary">').appendTo(cur_div);
+                                    $('<input value=' + sudata[i].Value + ' type="radio" lay-filter="curName" name="currname" id="currname" title="' + sudata[i].Text + '" lay-skin="primary">').appendTo(cur_div);
                                 }
                                 form.render(); //更新全部
                             }
@@ -262,31 +260,37 @@
 
                 //监听提交
                 form.on('submit(childview_add)', function (data) {
-                    var currname = $("#childview_currname").val();
-                    console.log(currname);
-                    if (data.field.child_class == undefined) {
+                   
+                    if (data.field.child_class == undefined || data.field.child_class=="0") {
                         layer.msg("请选择班级!!!", { icon: 2, shade: 0.8 });
-                    } else if (data.field.childview_currname == undefined || data.field.childview_currname == "" || data.field.childview_currname == "--请选择--") {
+                    } else if (data.field.currname == undefined || data.field.currname == "") {
                         layer.msg("请选择或填写课程!!!", { icon: 2, shade: 0.8 });
                     } else if (data.field.childview_AnpiDate == "") {
                         layer.msg("请选择上课日期!!!", { icon: 2, shade: 0.8 });
                     } else if (data.field.childview_timetype == "0" && data.field.childview_Currtype != "0") {
                         layer.msg("请选择上课时间段!!!", { icon: 2, shade: 0.8 });
-                    } else if (data.field.childview_Currtype == "专业课" && (data.field.childview_room == undefined || data.field.childview_room == "0")) {
+                    } else if (data.field.childview_room == undefined || data.field.childview_room == "0") {
                         layer.msg("请选择教室!!!", { icon: 2, shade: 0.8 });
                     } else {
+
                         var indexof = layer.load(1);
+                        if (isNuber) {
+                            $("input[name='currname']:checked").each(function (index, ele) {
+                                data.field.currname= $(ele).attr("title");
+                                
+                            });
+                        }
                         //提交数据
                         $.ajax({
-                            url: '/Educational/Reconcile/AddHandDataFunction',
+                            url: '/Educational/Reconcile/AddHandDataFunctionTwo',
                             type: 'POST',
                             data: data.field,
                             success: function (suc) {
-                                if (suc == "ok") {
+                                if (suc) {
                                     layer.close(indexof);
                                     layer.msg('操作成功！！！', { icon: 1, shade: 0.8 }, function () {
                                         //刷新表单
-                                        // window.parent.TableFulsh();
+                                         window.parent.TableFulsh();
                                         //关闭弹出层
                                         //Myclose();
                                     });
@@ -300,6 +304,7 @@
 
                     return false;
                 });
+
                 //获取空教室
                 form.on('select(childschool)', function (data) {
                     $("#childvieroom_div")[0].innerHTML = "";
@@ -361,7 +366,15 @@
 
                 });
 
-                //通过用户输入的老师获取老师
+                //添加输入框输入课程名字
+                form.on('radio(curName)', function (data) {                    
+                    if (data.value == "0") {
+                        isNuber = false;
+                        //添加一个输入框
+                        $("#childviewcurr_div")[0].innerHTML = "";
+                        $('<input class="layui-input" type="text" placeholder="课程名称" name="currname" id="currname" />').appendTo($("#childviewcurr_div"));
+                    }  
+                });  
 
             });
             //关闭弹出层
@@ -370,6 +383,7 @@
                 parent.layer.close(index); //再执行关闭
             });
 
+            //模糊查询老师
             $("#Geiteachericon").click(function () {
                 var Teache_Ser = $("#Teache_Ser").val();
                 if (Teache_Ser.length <= 0) {
@@ -377,13 +391,13 @@
                 } else {
                     var ddinde = layer.load(1);
                     $.ajax({
-                        url: '/Educational/TeacherNight/TeacherSerch',
+                        url: '/Educational/Reconcile/GetTeacherser',
                         data: { "teachername": Teache_Ser },
                         type: 'POST',
                         success: function (sucdata) {
                             $("#selecteacher_div")[0].innerHTML = "";
-                            for (var i = 0; i < sucdata.Data.length; i++) {
-                                $('<input type="radio" name="Teacherid" value="' + sucdata.Data[i].Value + '" title="' + sucdata.Data[i].Text + '">').appendTo($("#teachDiv"));
+                            for (var i = 0; i < sucdata.length; i++) {
+                                $('<input type="radio" name="Teacherid" value="' + sucdata[i].Value + '" title="' + sucdata[i].Text + '">').appendTo($("#selecteacher_div"));
                             }
                             layer.close(ddinde);
                             form.render();
@@ -392,6 +406,8 @@
                 }
 
             });
+
+           
         });
          
     </script>
