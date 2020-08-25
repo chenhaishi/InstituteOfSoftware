@@ -1894,6 +1894,7 @@
     <Content Include="Areas\Educational\Views\EvningSelfStudy\ChangeGrandADIView.cshtml" />
     <Content Include="Areas\Finance\images\2020年5月学生学费明细表.xlsx" />
     <Content Include="Areas\Finance\Views\Shared\Review.cshtml" />
+    <Content Include="Areas\Teachingquality\Views\Shared\errorClass.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
@@ -3630,7 +3631,6 @@
     <Folder Include="Areas\Studenteducation\Views\Education\" />
     <Folder Include="Areas\Studenteducation\Views\Shared\" />
     <Folder Include="Areas\Teachingquality\Models\" />
-    <Folder Include="Areas\Teachingquality\Views\Shared\" />
     <Folder Include="Areas\Teaching\Images\MajorLogoImages\" />
     <Folder Include="Areas\Teaching\Models\" />
     <Folder Include="Areas\Teaching\Views\StudentDataKeep\" />
