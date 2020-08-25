@@ -493,8 +493,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
             var posi = empid.GetPositionByEmpid(UserName.EmpNumber);//根据员工编号所属岗位
             if (dept.DeptName == "s1、s2教质部" && posi.PositionName.Contains("主任"))
             {
-
-
                 var id = stu.GetList().Where(d => d.StudentNumber == stuid).FirstOrDefault();
                 var class_error = sch.GetList().Where(d => d.StudentID == id.StudentNumber).FirstOrDefault();
                 if (class_error == null)
