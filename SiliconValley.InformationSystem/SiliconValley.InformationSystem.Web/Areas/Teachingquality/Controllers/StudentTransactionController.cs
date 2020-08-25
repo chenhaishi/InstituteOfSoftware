@@ -468,8 +468,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
             BaseBusiness<StudentInformation> stu = new BaseBusiness<StudentInformation>();
             BaseBusiness<ScheduleForTrainees> sch = new BaseBusiness<ScheduleForTrainees>();
             BaseBusiness<ClassSchedule> cs = new BaseBusiness<ClassSchedule>();
-            var id = stu.GetList().Where(d => d.StudentNumber == stuid).SingleOrDefault();//获取学生名称
-            var class_error = sch.GetList().Where(d => d.StudentID == id.StudentNumber).SingleOrDefault();//获取学生当前所在班级
+            var id = stu.GetList().Where(d => d.StudentNumber == stuid).FirstOrDefault();//获取学生名称
+            var class_error = sch.GetList().Where(d => d.StudentID == id.StudentNumber).FirstOrDefault();//获取学生当前所在班级
             var error = cs.GetList().ToList();//获取所有班级
             ViewBag.id = id.Name;
             ViewBag.class_error = class_error.ClassID;
@@ -495,8 +495,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
             {
 
 
-                var id = stu.GetList().Where(d => d.StudentNumber == stuid).SingleOrDefault();
-                var class_error = sch.GetList().Where(d => d.StudentID == id.StudentNumber).SingleOrDefault();
+                var id = stu.GetList().Where(d => d.StudentNumber == stuid).FirstOrDefault();
+                var class_error = sch.GetList().Where(d => d.StudentID == id.StudentNumber).FirstOrDefault();
                 if (class_error == null)
                 {
                     return Json(new
