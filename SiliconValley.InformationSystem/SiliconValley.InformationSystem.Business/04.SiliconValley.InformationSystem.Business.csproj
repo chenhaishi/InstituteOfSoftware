@@ -32,7 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BceSdkDotNet">
-      <HintPath>bin\Debug\bce-dotnet-sdk-1.0.4\BceSdkDotNet.dll</HintPath>
+      <HintPath>..\packages\BceSdkDotNet.1.0.1.0\lib\net35\BceSdkDotNet.dll</HintPath>
     </Reference>
     <Reference Include="BouncyCastle.Crypto, Version=1.8.6.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
       <HintPath>..\packages\Portable.BouncyCastle.1.8.6\lib\net40\BouncyCastle.Crypto.dll</HintPath>
@@ -92,6 +92,7 @@
     <Compile Include="00Cache\BaseCache\BaseCache.T.cs" />
     <Compile Include="00Cache\BaseCache\IBaseCache.T.cs" />
     <Compile Include="00Cache\Base_UserModelCache.cs" />
+    <Compile Include="AttendanceAnormalyBusiness\AttendanceAnormalyManage.cs" />
     <Compile Include="BaiduAPI_Business\IdentificationBusines.cs" />
     <Compile Include="BaseBusiness\BaseBusiness.T.cs" />
     <Compile Include="BaseDataEnum_Business\BaseDataEnumBusiness.cs" />
@@ -183,6 +184,7 @@
     <Compile Include="EducationalBusiness\TeacherNightManeger.cs" />
     <Compile Include="EducationalBusiness\TimeTableManeger.cs" />
     <Compile Include="EducationalBusiness\WarehouseManeger.cs" />
+    <Compile Include="EducationalBusiness\XmlManeger.cs" />
     <Compile Include="EmployeesBusiness\EmployandCounTeacherCoom.cs" />
     <Compile Include="EmployeesBusiness\EmployeesInfoManage.cs" />
     <Compile Include="Employment\CDInterviewBusiness.cs" />
@@ -220,6 +222,7 @@
     <Compile Include="ExaminationSystemBusiness\StudentExamBusiness.cs" />
     <Compile Include="FinaceBusines\CostitemsBusiness.cs" />
     <Compile Include="FinanceBusiness\FinanceModelBusiness.cs" />
+    <Compile Include="ipRequestBusiness\ClientBusiness.cs" />
     <Compile Include="Logger\ElasticSearchLogger.cs" />
     <Compile Include="Logger\ILogger.cs" />
     <Compile Include="Logger\LoggerFactory.cs" />
@@ -253,6 +256,7 @@
     <Compile Include="Shortmessage_Business\ShortmessageBusiness.cs" />
     <Compile Include="StageGrade_Business\StageGradeBusiness.cs" />
     <Compile Include="StudentBusiness\StudentInformationBusiness.cs" />
+    <Compile Include="StudentKeepOnRecordBusiness\Delte_StudentPutinfoManeger.cs" />
     <Compile Include="StudentKeepOnRecordBusiness\HeiHuManeger.cs" />
     <Compile Include="StudentKeepOnRecordBusiness\Sch_MarketManeger.cs" />
     <Compile Include="StudentKeepOnRecordBusiness\StudentbeanLogManeger.cs" />

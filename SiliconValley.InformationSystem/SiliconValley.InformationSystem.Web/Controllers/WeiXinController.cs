@@ -104,6 +104,7 @@ namespace SiliconValley.InformationSystem.Web.Controllers
 
             //跳转登录
             var redirectUrl = SessionHelper.Session["BindWXRedirectUrl"].ToString();
+
             return Redirect(redirectUrl);
 
         }

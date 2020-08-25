@@ -1,0 +1,477 @@
+﻿
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using SiliconValley.InformationSystem.Entity.MyEntity;
+@model SiliconValley.InformationSystem.Entity.MyEntity.StudentPutOnRecord
+@section style{
+    <link href="~/Scripts/Tangmin_CssAndJs/StudentDatakeep_Css/studentdatakeep.css" rel="stylesheet" />
+    <style>
+        .layui-colla-title
+        {
+            position: relative;
+            padding: 0 15px 0 35px;
+            color: #333;
+            background-color: #f2f2f2;
+            cursor: pointer;
+            font-size: 14px;
+            overflow: hidden;
+            height: 15px;
+            line-height: 15px;
+        }
+
+        .NoneCss
+        {
+            display: none;
+        }
+
+        .texCss
+        {
+            margin-top: 40px;
+            width: 90%;
+            height: 200px;
+        }
+    </style>
+}
+<script type="text/html" id="toolbarDemo1">
+    <div class="layui-btn-container">
+        @{
+            int r = Convert.ToInt32(ViewBag.Pers);
+            if (r != -1)
+            {
+                <button type="button" class="layui-btn layui-btn-sm" lay-event="getCheckData">
+                    <i class="layui-icon">&#xe624;</i> 添加
+                </button>
+                <button type="button" class="layui-btn layui-btn-sm" lay-event="getFileInto">
+                    <i class="layui-icon">&#xe601;</i>
+                    Excel文件导入
+                </button>
+
+            }
+            if (r == 4 || r == 0)
+            {
+                <button class="layui-btn layui-btn-sm" onclick="ChangeGotoSchoolstate()"> <i class="layui-icon">&#xe714;</i> 转上门</button>
+
+                <button class="layui-btn layui-btn-sm" onclick="ZhuceClass()"> <i class="layui-icon">&#xe714;</i> 注册学号</button>
+                <button class="layui-btn layui-btn-sm" onclick="ChangTeacher()"> <i class="layui-icon">&#xe714;</i> 转换咨询师</button>
+
+            }
+            if (r == 0)
+            {
+
+                @*<button class="layui-btn layui-btn-sm" onclick="SignUp()"> <i class="layui-icon">&#xe714;</i>报名/预录学生信息下载</button>*@
+                <button class="layui-btn layui-btn-sm" onclick="AddConsult()"> <i class="layui-icon">&#xe624;</i> 添加跟踪</button>
+                <button class="layui-btn layui-btn-sm" onclick="EditConsult()"> <i class="layui-icon">&#xe642;</i>编辑跟踪信息</button>
+            }
+
+            if (r == 0 || r == 2)
+            {
+                @*<button class="layui-btn layui-btn-sm" onclick="ExcelExport()"> <i class="layui-icon">&#xe681;</i> Excel文件导出</button>*@
+                <button class="layui-btn layui-btn-sm" onclick="InSchoolStudentData()"> <i class="layui-icon">&#xe714;</i> 查看在校学生信息</button>
+                <button class="layui-btn layui-btn-sm" onclick="updatePass()"> <i class="layui-icon">&#xe714;</i> 修改账号密码</button>
+                <button class="layui-btn layui-btn-sm" onclick="GetMony()"> <i class="layui-icon">&#xe714;</i> 查看学生缴费信息</button>
+            }
+
+        }
+    </div>
+</script>
+<script type="text/html" id="barDemo1">
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="edit">数据作废</a>
+</script>
+<div class="layui-collapse" lay-accordion>
+    <input type="hidden" id="rr" value="@r" />
+    <div class="layui-colla-item">
+        <h2 class="layui-colla-title">数据查询</h2>
+        <div class="layui-colla-content layui-show">
+            <form class="layui-form" id="form_serch" lay-filter="form_serch">
+                <div class="layui-row">
+                    <div class="layui-col-sm2">
+                        <label class="spanCss2">姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 名:</label>
+                        <input name="findNamevalue" id="findNamevalue" class="inputCss1" />
+                    </div>
+                    <div class="layui-col-sm2">
+                        <label class="spanCss2">联系电话:</label>
+                        <input name="findPhonevalue" id="findPhonevalue" class="inputCss1" />
+                    </div>
+                    <div class="layui-col-sm2">
+                        <label class="spanCss2">备&nbsp; 案&nbsp;&nbsp;人:</label>
+                        <input name="findBeanManvalue" id="findBeanManvalue" class="inputCss1" />
+                    </div>
+                    <div class="layui-col-sm2">
+                        <label class="spanCss2">关 &nbsp; 系&nbsp;人:</label>
+                        <input name="S_party" id="S_party" class="inputCss1" />
+                    </div>
+                    <div class="layui-col-sm2">
+                        <label class="spanCss2">信息来源:</label>
+                        <div class="divCss1">
+                            @Html.DropDownList("findInformationvalue", ViewBag.infomation as IEnumerable<SelectListItem>, new Dictionary<string, object>() { })
+                        </div>
+                    </div>
+                    <div class="layui-col-sm2">
+                        <label class="spanCss2">所在区域:</label>
+                        <div class="divCss1">
+                            @Html.DropDownList("findAreavalue", ViewBag.are as IEnumerable<SelectListItem>)
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-row divCss2">
+                    <div class="layui-col-sm2">
+                        <label class="spanCss2">开始时间:</label>
+                        <input name="findStartvalue" id="findStartvalue" class="inputCss1" />
+                    </div>
+                    <div class="layui-col-sm2">
+                        <label class="spanCss2">结束时间:</label>
+                        <div style="display: inline-block;width:150px;">
+                            <input name="findEndvalue" id="findEndvalue" class="inputCss1" />
+                        </div>
+                    </div>
+                    <div class="layui-col-sm2">
+                        <label class="spanCss2">咨 &nbsp; 询&nbsp;师:</label>
+                        <div class="divCss1">
+                            @Html.DropDownList("S_consultTeacher", ViewBag.teacherlist as IEnumerable<SelectListItem>, new Dictionary<string, object>() { })
+                        </div>
+                    </div>
+                    <div class="layui-col-sm2">
+                        <label class="spanCss2">市场类型:</label>
+                        <div class="divCss1">
+                            @Html.DropDownList("marketype", ViewBag.type as IEnumerable<SelectListItem>, new Dictionary<string, object>() { })
+                        </div>
+                    </div>
+                    <div class="layui-col-sm2">
+                        <label class="spanCss2">学生状态:</label>
+                        <div class="divCss1">
+                            @Html.DropDownList("S_status", ViewBag.slist as IEnumerable<SelectListItem>, new Dictionary<string, object>() { })
+                        </div>
+                    </div>
+
+                    <div class="layui-col-sm2">
+                        <label class="spanCss2">录 &nbsp; 入&nbsp;人:</label>
+                        <input name="S_intosysMan" id="S_intosysMan" class="inputCss1" />
+                    </div>
+
+                </div>
+
+                <div class="layui-row">
+                    <div class="layui-col-sm2">
+                        <label class="spanCss2">学生&nbsp;&nbsp;QQ:</label>
+                        <input name="S_QQ" id="S_QQ" class="inputCss1" />
+                    </div>
+                    <div class="layui-col-sm2">
+                        <label class="spanCss2">学生学历:</label>
+                        <div class="divCss1">
+                            <select class="layui-select" id="eduttion" name="eduttion">
+                                <option value="0" selected>--请选择--</option>
+                                <option value="其他">其他</option>
+                                <option value="初中">初中</option>
+                                <option value="高中">高中</option>
+                                <option value="大专">大专</option>
+                                <option value="本科">本科</option>
+                                <option value="中专">中专</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-col-sm2">
+                        <label class="spanCss2">学&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 校:</label>
+                        <input name="S_School" id="S_School" class="inputCss1" />
+                    </div>
+                    <div class="layui-col-sm2">
+                        <label class="spanCss2">其他备注:</label>
+                        <input name="S_Reack" id="S_Reack" class="inputCss1" />
+                    </div>
+
+                    <div class="layui-col-sm4">
+                        <div style="text-align:right">
+                            <button id="searchBtn" type="button" class="layui-btn" style="margin-right:45px;width:108px"><i class="layui-icon">&#xe615;</i> 查询</button>
+                            <button type="button" class="layui-btn" style="margin-right:45px;width:108px" onclick="LoadTable()"><i class="layui-icon">&#xe666;</i> 重新加载</button>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<table id="tabletest1" lay-filter="tabletest1"></table>
+
+<div id="TeacherDiv" class="NoneCss">
+    <form class="layui-form">
+        <div class="layui-row">
+            @Html.DropDownList("Teacher", ViewBag.Teacher as IEnumerable<SelectListItem>, new Dictionary<string, object>() { })
+        </div>
+        <div class="layui-row">
+            <div style="text-align:center;margin-top:100px">
+                <button type="button" class="layui-btn" lay-submit="" lay-filter="ToIes">确定</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div id="OutDateDiv" class="NoneCss" style="text-align:center">
+    <input type="text" class="layui-input" name="OutDate" id="OutDate" style="width:200px;margin-top:20px;display:inline-block" />
+
+    <button type="button" class="layui-btn" onclick="ChangeTime()">确定</button>
+</div>
+
+<div class="NoneCss" id="dele_div">
+    <form class="layui-form" id="form_delete" lay-filter="form_delete">
+        <div class="layui-row" style="text-align:center">
+            <textarea id="raamk" placeholder="请写明作废的原因" class="texCss" lay-verify="title"></textarea>
+        </div>
+        <div style="text-align:center">
+            <button type="button" class="layui-btn" lay-submit lay-filter="changdel">确定</button>
+        </div>
+    </form>
+</div>
+<script>
+    var date = "";
+    //转换时间的方法
+
+    //转换时间的方法包含时分秒
+    function formatTen(num) {
+        return num > 9 ? (num + "") : ("0" + num);
+    }
+    function formatDate(dates) {
+        var date = new Date(parseInt(dates.slice(6)));
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1;
+        var day = date.getDate();
+        var hour = date.getHours();
+        var minute = date.getMinutes();
+        var second = date.getSeconds();
+        return year + "-" + formatTen(month) + "-" + formatTen(day) + " " + formatTen(hour) + ":" + formatTen(minute) + ":" + formatTen(second);
+    }
+    //table重载的方法
+    function LoadTable() {
+        layui.use(['table', 'form'], function () {
+            var table = layui.table;
+            var form = layui.form;
+            $("#form_serch")[0].reset();
+            form.render();
+            table.reload('tabletest1', { url: '/Market/StudentDataKeep/TableData' });
+        });
+
+    }
+
+    function LoadTable2() {
+        layui.use(['table'], function () {
+            var table = layui.table;
+            table.reload('tabletest1', { url: '/Market/StudentDataKeep/TableData' });
+        });
+
+    }
+    //错误提示提示
+    function TiShi(msg) {
+        layui.use(['layer'], function () {
+            var layer = layui.layer;
+            layer.msg(msg, {
+                icon: 2,
+                shade: 0.8
+            });
+        });
+    }
+    //模糊查询
+    function my_searchBtn() {
+        layui.use(['table'], function () {
+            var table = layui.table;
+            var findNamevalue = $("#findNamevalue").val();
+            var findPhonevalue = $("#findPhonevalue").val();
+            var findInformationvalue = $("#findInformationvalue").val();
+            var findStartvalue = $("#findStartvalue").val();//获取开始时间
+            var findEndvalue = $("#findEndvalue").val();//获取结束时间
+            var findAreavalue = $("#findAreavalue").val();//获取区域
+            var findBeanManvalue = $("#findBeanManvalue").val();//获取备案人
+            var S_consultTeacher = $("#S_consultTeacher").val();
+            var S_status = $("#S_status").val();
+            var S_party = $("#S_party").val();
+            var S_intosysMan = $("#S_intosysMan").val();
+
+            var S_QQ = $("#S_QQ").val();
+            var eduttion = $("#eduttion").val();
+            var S_Reack = $("#S_Reack").val();
+            var S_School = $("#S_School").val();
+            if (findNamevalue.length <= 0 && findPhonevalue.length <= 0 && findInformationvalue == "0" && findStartvalue.length <= 0 && findEndvalue.length <= 0 && findAreavalue == "0" && findBeanManvalue.length <= 0 && S_consultTeacher == "0" && S_status == "0" && S_intosysMan.length <= 0 && S_party.length <= 0 && S_QQ.length <= 0 && eduttion.length != "0" && S_Reack.length <= 0 && S_School.length <= 0) {
+                table.reload('tabletest1', { url: '/Market/StudentDataKeep/TableData' });
+            } else {
+                table.reload('tabletest1', {
+                    url: '/Market/StudentDataKeep/GetTableData'
+                    , where: { 'findNamevalue': findNamevalue, 'findPhonevalue': findPhonevalue, 'findInformationvalue': findInformationvalue, 'findStartvalue': findStartvalue, 'findEndvalue': findEndvalue, 'findAreavalue': findAreavalue, 'findBeanManvalue': findBeanManvalue, "S_consultTeacher": S_consultTeacher, "S_status": S_status, "S_party": S_party, "S_intosysMan": S_intosysMan, "S_QQ": S_QQ, "eduttion": eduttion, "S_Reack": S_Reack, "S_School": S_School } //设定异步数据接口的额外参数
+                });
+            }
+
+        });
+    };
+
+    $(function () {
+        //这是一个模糊查询的Enter快捷键
+        $(document).keydown(function (event) {
+            //console.log(event);
+            if (event.keyCode === 13) {
+                my_searchBtn();
+            }
+        });
+
+        //这是一个模糊查询的方法
+        $("#searchBtn").click(function () {
+            my_searchBtn();
+        });
+
+    });
+    var studentid = 0;
+    var layerindex = 0;
+    layui.use(['table', 'laydate', 'form', 'element'], function () {
+        var table = layui.table;
+        var laydate = layui.laydate;
+        var form = layui.form;
+        var element = layui.element;
+        var layer = layui.layer;
+        //月份小于10的前面加个0
+        function MoDay(a) {
+            if (a < 10) {
+                return "0" + a;
+            }
+            return a;
+        }
+        ////系统时间
+
+        var curDate = new Date();
+        var curYearMonthrDay = curDate.getFullYear() + "-" + MoDay(parseInt(curDate.getMonth()) + 1) + "-" + MoDay(parseInt(curDate.getDate()));
+
+        // 时间选择器初始化 开始时间
+        laydate.render({
+            elem: '#findStartvalue',
+            format: 'yyyy-MM-dd',
+            done: function (value, date, endDate) {
+                var startDate = new Date(value).getTime();
+                var endTime = new Date($('#findEndvalue').val()).getTime();
+                if (endTime < startDate) {
+                    layer.msg('结束时间不能小于开始时间');
+                    $('#findStartvalue').val($('#findEndvalue').val());
+                }
+                if (startDate > curDate.getTime()) {
+                    layer.msg('开始时间不能大于当前时间');
+                    $('#findStartvalue').val(curYearMonthrDay);
+                }
+            }
+        })
+        // 时间选择器初始化 结束时间
+        laydate.render({ //结束时间
+            elem: '#findEndvalue',
+            format: 'yyyy-MM-dd',
+            done: function (value, date, endDate) {
+                var startDate = new Date($('#findStartvalue').val()).getTime();
+                var endTime = new Date(value).getTime();
+                if (endTime < startDate) {
+                    layer.msg('结束时间不能小于开始时间');
+                    $('#findEndvalue').val($('#findStartvalue').val());
+                }
+                if (endTime > curDate.getTime()) {
+                    layer.msg('结束时间不能大于当前时间');
+                    $('#findEndvalue').val(curYearMonthrDay);
+                }
+            }
+        })
+        //上门日期
+        laydate.render({
+            elem: '#OutDate',
+            format: 'yyyy-MM-dd',
+            done: function (value) {
+                date = value;
+            }
+        });
+
+        //给咨询部看的数据
+        table.render({
+            elem: '#tabletest1'
+            , url: '/Market/StudentDataKeep/TableData'
+            , toolbar: '#toolbarDemo1'
+            , cols: [[
+                { type: 'checkbox' }
+                , { field: 'StuName', title: '姓名', width: 80 }
+                , { field: 'StuSex', title: '性别', width: 60 }
+                , { field: 'Stuphone', title: '联系电话', width: 140 }
+                , { field: 'StuQQ', title: 'QQ', width: 60 }
+                , { field: 'StuSchoolName', title: '学校', width: 80 }
+                , { field: 'RegionName', title: '区域', width: 80 }
+                , { field: 'stuinfomation', title: '信息来源', width: 80 }
+                , { field: 'ConsultTeacher', title: '咨询师', width: 80 }
+                , { field: 'empName', title: '备案人', width: 80 }
+                , { field: 'StuEducational', title: '学历', width: 80 }
+                , { field: 'Party', title: '关联人', width: 100 }
+                , { field: 'StatusName', title: '学生状态', width: 80 }
+                , { field: 'MarketType', title: '市场类型', width: 60 }
+                , { field: 'StuEntering', title: '录入人员', width: 100 }
+                , { field: 'StuDateTime', title: '备案日期', width: 180, templet: function (res) { return formatDate(res.StuDateTime); } }
+                , { fixed: 'right', title: '操作', toolbar: '#barDemo1' }
+            ]]
+            , page: true
+            , limits: [18, 40, 50, 60, 80, 100]
+            , limit: 18
+        });
+
+        //自定义验证规则
+        form.verify({
+            title: function (value) {
+                if (value.length <= 0) {
+                    return '不能为空!';
+                }
+            }
+
+        });
+        //监听行工具事件
+        table.on('tool(tabletest1)', function (obj) {
+            var data = obj.data;
+            //console.log(obj)
+            if (obj.event === 'edit') {
+                var id = Number(data.Id);
+                studentid = id;
+                layerindex= layer.open({
+                    type: 1,
+                    title: '原因输入框',
+                    closeBtn: 1,
+                    shadeClose: true,
+                    skin: 'demo-class',
+                    area: ['700px', '450px'],
+                    content: $("#dele_div")
+                });
+
+            }
+        });
+
+        form.on('submit(changdel)', function (data) {
+            var value = $("#raamk").val();
+
+            layer.confirm('是否真的要删除?', { icon: 3, title: '系统温馨提示！' }, function (muindex) {
+                //do something
+                $.ajax({
+                    url: '/Market/StudentDataKeep/DeleteFunction/' + studentid,
+                    data: { "reavke": value },
+                    type: 'GET',
+                    success: function (res) {
+                        if (res.Success) {
+                            layer.msg(res.Msg, { shade: 0.8, icon: 1 }, function () {
+                                layer.close(layerindex);
+                                LoadTable2();
+                            })
+                        } else {
+                            TiShi(res.Msg);
+                        }
+                    }
+                });
+
+                layer.close(muindex);
+            });
+
+           
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+    });
+
+
+
+</script>
+
+

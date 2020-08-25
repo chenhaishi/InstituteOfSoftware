@@ -1,0 +1,97 @@
+﻿
+@{
+    ViewBag.Title = "XmlDataIndex";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    body .demo-class .layui-layer-title
+    {
+        background: #009688;
+        color: #fff;
+        border: none;
+    }
+
+</style>
+
+<table id="table_xml" lay-filter="table_xml"></table>
+
+
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="addClick">添加数据</button>
+    </div>
+</script>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+</script>
+<script>
+    $(function () {
+       
+        var table;
+        var layer;
+        layui.use(['table','layer'], function () {
+            table = layui.table;
+            layer = layui.layer;
+            table.render({
+                elem: '#table_xml'
+                , url: '/Educational/XmlBaseData/GetData'
+                , toolbar: '#toolbarDemo'
+                , cols: [[
+                    { type: 'checkbox', fixed: 'left' }
+                    , { field: 'Year', title: '年份',  sort: true }
+                    , { field: 'StartMonth', title: '单休开始月份' }
+                    , { field: 'EndMonth', title: '单休结束月份' }
+                    , { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150 }
+                ]]
+                , page: true
+            });
+
+            //头工具栏事件
+            table.on('toolbar(table_xml)', function (obj) {
+                var checkStatus = table.checkStatus(obj.config.id);
+                switch (obj.event) {
+                    case 'addClick':
+                        //var data = checkStatus.data;
+                        //layer.alert(JSON.stringify(data));
+                        layer.open({
+                            type: 2,
+                            content: '/Educational/XmlBaseData/AddView'
+                            , area: ['700px', '400px'],
+                            title: '添加数据页面'
+                            , shade: 0.8
+                            , anim: 4
+                            , skin: 'demo-class'
+                        });
+
+                        break;                    
+                };
+            });
+
+            //监听行工具事件
+            table.on('tool(table_xml)', function (obj) {
+                var data = obj.data;
+                if (obj.event === 'edit') {
+                    layer.open({
+                        type: 2,
+                        content: '/Educational/XmlBaseData/UpdateView/' + data.Year
+                        , area: ['700px', '400px'],
+                        title: '添加数据页面'
+                        , shade: 0.8
+                        , anim: 4
+                        , skin: 'demo-class'
+                    });
+                }
+            });
+        })      
+    });
+
+    function TableFush() {
+        layui.use('table', function () {
+            var table = layui.table;
+            table.reload('table_xml');
+        })
+        
+    }
+</script>
+

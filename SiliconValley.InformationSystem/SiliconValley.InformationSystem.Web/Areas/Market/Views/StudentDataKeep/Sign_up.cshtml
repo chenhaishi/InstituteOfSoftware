@@ -83,14 +83,14 @@
             form.on('submit(true)', function (data) {
 
                 console.log(data.field);
-                //$.ajax({
-                //    url: '/Market/StudentDataKeep/',
-                //    data: data.field,
-                //    type: 'POST',
-                //    success: function (suc) {
+                $.ajax({
+                    url: '/Market/StudentDataKeep/Signupfunction',
+                    data: data.field,
+                    type: 'POST',
+                    success: function (suc) {
                         
-                //    }
-                //});
+                    }
+                });
 
                 return false;
             });

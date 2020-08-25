@@ -1,0 +1,131 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>AddView</title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+</head>
+<body>
+    <div style="margin-top:20px;margin-left:auto;margin-right:auto">
+        <form class="layui-form">
+            <div class="layui-container">
+                <div class="layui-row layui-form-item">
+                    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                        <label class="layui-form-label">年 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 份:</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="Year" name="Year" lay-verify="required" placeholder="年份" class="layui-input" />
+                        </div>
+                    </div>                    
+                </div>
+                <div class="layui-row layui-form-item">
+                    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                        <label class="layui-form-label">开始月份:</label>
+                        <div class="layui-input-block">
+                            <select id="StartMonth" name="StartMonth">
+                                <option value="1">一月</option>
+                                <option value="2">二月</option>
+                                <option value="3">三月</option>
+                                <option value="4">四月</option>
+                                <option value="5">五月</option>
+                                <option value="6">六月</option>
+                                <option value="7">七月</option>
+                                <option value="8">八月</option>
+                                <option value="9">九月</option>
+                                <option value="10">十月</option>
+                                <option value="11">十一月</option>
+                                <option value="12">十二月</option>
+                            </select>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-row layui-form-item">
+                    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                        <label class="layui-form-label">结束月份:</label>
+                        <div class="layui-input-block">
+                            <select id="EndMonth" name="EndMonth">
+                                <option value="1">一月</option>
+                                <option value="2">二月</option>
+                                <option value="3">三月</option>
+                                <option value="4">四月</option>
+                                <option value="5">五月</option>
+                                <option value="6">六月</option>
+                                <option value="7">七月</option>
+                                <option value="8">八月</option>
+                                <option value="9">九月</option>
+                                <option value="10">十月</option>
+                                <option value="11">十一月</option>
+                                <option value="12">十二月</option>
+                            </select>
+                         
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item" style="margin-top:80px;">
+                <div class="layui-input-block">
+                    <div style="width:50%;text-align:right">
+                        <button class="layui-btn" lay-submit="" lay-filter="tijiao">添加</button>
+                        <button class="layui-btn" id="claose">取消</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/layui/layui.js"></script>
+    <script>
+        $(function () {
+            var form;
+            var laydate;
+            var layer;
+            layui.use(['form','laydate','layer'], function () {
+                form = layui.form;
+                laydate = layui.laydate;
+                layer = layui.layer;
+
+                //年范围
+                laydate.render({
+                    elem: '#Year'
+                    , type: 'year'
+                    , range: false
+                });
+
+                form.on('submit(tijiao)', function (data) {                   
+                    console.log(data.field); //当前容器的全部表单字段，名值对形式：{name: value}
+                    $.ajax({
+                        url: '/Educational/XmlBaseData/AddFunction',
+                        type: 'POST',
+                        data: data.field,
+                        success: function (res) {
+                            if (res.Success) {
+                                layer.msg(res.Msg, { icon: 1, shade: 0.8 }, function () {
+                                    window.parent.TableFush();
+                                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                    parent.layer.close(index); //再执行关闭   
+                                })
+                            } else {
+                                layer.msg(res.Msg, { icon: 2, shade: 0.8 })
+                            }
+                        }
+                    });
+                    return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+                });
+            });
+
+
+            $('#claose').click(function () {
+                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                parent.layer.close(index); //再执行关闭   
+            }); 
+        });
+    </script>
+
+</body>
+</html>

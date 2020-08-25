@@ -156,99 +156,59 @@ namespace SiliconValley.InformationSystem.Business.FinaceBusines
         {
             AjaxResult list = new AjaxResult();
             List<Entity.ViewEntity.XYK_Data.Student> obj = new List<Entity.ViewEntity.XYK_Data.Student>();
-            //if (type == 1)
-            //{
-            //    BaseBusiness<Entity.Entity.Preentryfee> su = new BaseBusiness<Entity.Entity.Preentryfee>();
-            //    BaseBusiness<StudentInformation> cu = new BaseBusiness<StudentInformation>();
-            //    var PreeList = su.GetList().Where(d => d.AddDate.Year == date.Year && d.AddDate.Month == date.Month).ToList();
-            //    foreach (var item in PreeList)
-            //    {
-            //        var SchList = cu.GetList().Where(d => d.identitydocument == item.identitydocument).SingleOrDefault();
-            //        Entity.ViewEntity.XYK_Data.Student stu = new Entity.ViewEntity.XYK_Data.Student()
-            //        {
-            //            Keepid = item.keeponrecordid,
-            //            num = item.Amountofmoney,
-            //            StuName = SchList.Name
-            //        };
-            //        obj.Add(stu);
-            //    }
-            //    list.Success = true;
-            //    list.Data = obj;
-            //}
-            //try
-            //{
 
-            //    List<Entity.ViewEntity.XYK_Data.Student> obj = new List<Entity.ViewEntity.XYK_Data.Student>();
-            //    if (date == null)
-            //    {
-            //        BaseBusiness<StudentFeeRecord> su = new BaseBusiness<StudentFeeRecord>();
-            //        BaseBusiness<Entity.Entity.Preentryfee> pr = new BaseBusiness<Entity.Entity.Preentryfee>();
-            //        BaseBusiness<StudentInformation> cu = new BaseBusiness<StudentInformation>();
-            //        var StuList = su.GetList().Where(d => d.AddDate.Value.Year == date.Year && d.AddDate.Value.Month == date.Month).ToList();
-            //        foreach (var item in StuList)
-            //        {
-            //            var SchaInfoList = cu.GetList().Where(d => d.identitydocument == item.StudenID).SingleOrDefault();
-            //            var preen = pr.GetList().Where(d => d.identitydocument == item.StudenID).SingleOrDefault();
-            //            Entity.ViewEntity.XYK_Data.Student stu = new Entity.ViewEntity.XYK_Data.Student()
-            //            {
-            //                Keepid = preen.keeponrecordid,
-            //                num = item.Amountofmoney.Value,
-            //                StuName = SchaInfoList.Name
-            //            };
-            //            obj.Add(stu);
-            //        }
-            //        list.Success = true;
-            //        list.Data = obj;
-            //    }
-            //    else if (type == 1)
-            //    {
-            //        BaseBusiness<Entity.Entity.Preentryfee> su = new BaseBusiness<Entity.Entity.Preentryfee>();
-            //        BaseBusiness<StudentInformation> cu = new BaseBusiness<StudentInformation>();
-            //        var PreeList = su.GetList().Where(d => d.AddDate.Year == date.Year && d.AddDate.Month == date.Month).ToList();
-            //        foreach (var item in PreeList)
-            //        {
-            //            var SchList = cu.GetList().Where(d => d.identitydocument == item.identitydocument).SingleOrDefault();
-            //            Entity.ViewEntity.XYK_Data.Student stu = new Entity.ViewEntity.XYK_Data.Student()
-            //            {
-            //                Keepid = item.keeponrecordid,
-            //                num = item.Amountofmoney,
-            //                StuName = SchList.Name
-            //            };
-            //            obj.Add(stu);
-            //        }
-            //        list.Success = true;
-            //        list.Data = obj;
-            //    }
-            //    else if (type == 2)
-            //    {
-            //        BaseBusiness<StudentFeeRecord> su = new BaseBusiness<StudentFeeRecord>();
-            //        BaseBusiness<Entity.Entity.Preentryfee> pr = new BaseBusiness<Entity.Entity.Preentryfee>();
-            //        BaseBusiness<StudentInformation> cu = new BaseBusiness<StudentInformation>();
-            //        var StuList = su.GetList().Where(d => d.AddDate.Value.Year == date.Year && d.AddDate.Value.Month == date.Month).ToList();
-            //        foreach (var item in StuList)
-            //        {
-            //            var SchaInfoList = cu.GetList().Where(d => d.identitydocument == item.StudenID).SingleOrDefault();
-            //            var preen = pr.GetList().Where(d => d.identitydocument == item.StudenID).SingleOrDefault();
-            //            Entity.ViewEntity.XYK_Data.Student stu = new Entity.ViewEntity.XYK_Data.Student()
-            //            {
-            //                Keepid = preen.keeponrecordid,
-            //                num = item.Amountofmoney.Value,
-            //                StuName = SchaInfoList.Name
-            //            };
-            //            obj.Add(stu);
-            //        }
+            try
+            {
+                if (type == 1)
+                {
+                    BaseBusiness<StudentFeeRecord> su = new BaseBusiness<StudentFeeRecord>();
+                    BaseBusiness<StudentInformation> cu = new BaseBusiness<StudentInformation>();
+                    BaseBusiness<StudentPutOnRecord> ru = new BaseBusiness<StudentPutOnRecord>();
+                    var SFeerecord = su.GetList().Where(d => d.AddDate.Value.Year == date.Year && d.AddDate.Value.Month == date.Month).ToList();
+                    foreach (var item in SFeerecord)
+                    {
+                        var SchList = cu.GetList().Where(d => d.StudentNumber == item.StudenID).SingleOrDefault();
+                        Entity.ViewEntity.XYK_Data.Student stu = new Entity.ViewEntity.XYK_Data.Student()
+                        {
+                            Keepid = SchList.StudentPutOnRecord_Id,
+                            num = item.Amountofmoney,
+                            StuName = SchList.Name
+                        };
+                        obj.Add(stu);
+                    }
+                    list.Success = true;
+                    list.Data = obj;
+                }
+                else if (type == 2)
+                {
 
-            //        list.Success = true;
-            //        list.Data = obj;
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    list = new ErrorResult();
-            //    list.Msg = "服务器错误";
-            //    list.Success = false;
-            //    list.ErrorCode = 500;
-            //}
+                    BaseBusiness<Entity.Entity.Preentryfee> pr = new BaseBusiness<Entity.Entity.Preentryfee>();
+                    BaseBusiness<StudentInformation> cu = new BaseBusiness<StudentInformation>();
+                    var StuList = pr.GetList().Where(d => d.AddDate.Year == date.Year && d.AddDate.Month == date.Month).ToList();
+                    foreach (var item in StuList)
+                    {
+                        // Where(d => d.identitydocument == SchaInfoList.identitydocument)
+                        var SchaInfoList = cu.GetList().Where(d => d.identitydocument == item.identitydocument).SingleOrDefault();
+                        Entity.ViewEntity.XYK_Data.Student stu = new Entity.ViewEntity.XYK_Data.Student()
+                        {
+                            Keepid = item.keeponrecordid,
+                            num = item.Amountofmoney,
+                            StuName = SchaInfoList.Name
+                        };
+                        obj.Add(stu);
+                    }
+
+                    list.Success = true;
+                    list.Data = obj;
+                }
+            }
+            catch (Exception ex)
+            {
+                list = new ErrorResult();
+                list.Msg = "服务器错误";
+                list.Success = false;
+                list.ErrorCode = 500;
+            }
             return list;
         }
         /// <summary>

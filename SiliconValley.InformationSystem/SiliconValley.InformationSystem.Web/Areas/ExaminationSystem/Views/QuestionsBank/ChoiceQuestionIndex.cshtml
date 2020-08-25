@@ -34,8 +34,6 @@
                     <input type="text" name="Title" value=""  autocomplete="off" class="layui-input">
                 </div>
             </div>
-
-
             <div class="layui-inline">
                 <label class="layui-form-label">阶段</label>
                 <div class="layui-input-inline">
@@ -88,6 +86,7 @@
 
         <button class="layui-btn layui-btn-sm" lay-event="downloadTemplate"><i class="layui-icon layui-icon-download-circle"></i>下载题库模板</button>
 
+        <button class="layui-btn layui-btn-sm btn-info" onclick="quchong()">去重</button>
     </div>
 </script>
 
@@ -118,7 +117,6 @@
 </script>
 @section script{
     <script src="~/Areas/Teaching/Scripts/Ajax.js"></script>
-
     <script>
         function escapeHTMLString(str) {
             str = str.replace(/</g, '&lt;');
@@ -126,7 +124,15 @@
 
             return str;
         }
-    layui.use(['table', 'layer','form'], function () {
+        var quchong = function () {
+            layer.open({
+                type: 2,
+                area: ['800px', '800px'],
+                title: "去重",
+                content: '/ExaminationSystem/QuestionsBank/DuplicateRemovalXZ'
+            })
+        }
+        layui.use(['table', 'layer', 'form'], function () {
 
         var form = layui.form;
         var layer = layui.layer;
@@ -161,8 +167,6 @@
                 }
             });
         });
-
-
         //查询
         form.on('submit(search)', function (data) {
          

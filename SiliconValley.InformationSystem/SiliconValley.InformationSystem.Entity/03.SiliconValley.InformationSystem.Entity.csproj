@@ -82,6 +82,8 @@
     <Compile Include="Entity\ApplicationRepair.cs" />
     <Compile Include="Entity\ApplyForFullMember.cs" />
     <Compile Include="Entity\Assmeetings.cs" />
+    <Compile Include="Entity\AttendanceAnormaly.cs" />
+    <Compile Include="Entity\AttendanceAnormalyDetails.cs" />
     <Compile Include="Entity\AttendanceInfo.cs" />
     <Compile Include="Entity\Awardwinningtrainees.cs" />
     <Compile Include="Entity\BaseDataEnum.cs" />
@@ -90,6 +92,7 @@
     <Compile Include="Entity\BeOnDuty.cs" />
     <Compile Include="Entity\BiddingRecord.cs" />
     <Compile Include="Entity\BookInformation.cs" />
+    <Compile Include="Entity\Delte_StudentPutinfo.cs" />
     <Compile Include="Entity\MyBreak.cs" />
     <Compile Include="Entity\CancelLeaveApply.cs" />
     <Compile Include="Entity\Cancelreceipt.cs" />

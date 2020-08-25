@@ -1,0 +1,164 @@
+﻿@using SiliconValley.InformationSystem.Entity.MyEntity
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Proposition</title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+</head>
+<body>
+    <table class="layui-hide" lay-filter="ClearlyQuestionsBankS" id="ClearlyQuestionsBankS"></table>
+    <!--头部工具栏-->
+    <script type="text/html" id="toolbarDemo">
+        <div class="layui-btn-container">
+            <button type="button" class="layui-btn layui-btn-sm btn-info" lay-event="quchong">去重</button>
+        </div>
+    </script>
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/layui/layui.js"></script>
+    <script src="~/Areas/Teaching/Scripts/Ajax.js"></script>
+    <script>
+        function escapeHTMLString(str) {
+            str = str.replace(/</g, '&lt;');
+            str = str.replace(/>/g, '&gt;');
+            return str;
+        }
+        layui.use(['table', 'layer', 'form'], function () {
+            var form = layui.form;
+            var layer = layui.layer;
+            var table = layui.table;
+            $(".layui-layer-input").attr("type", "number")
+
+            //监听表单提交
+            //查询
+            form.on('submit(search)', function () {
+                table.reload('ClearlyQuestionsBankS', {
+                    url: '/ExaminationSystem/QuestionsBank/JieDaSelect'
+                });
+
+                return false;
+            });
+            var bind = function () {
+            //渲染表格
+            table.render({
+                elem: '#ClearlyQuestionsBankS'
+                , toolbar: '#toolbarDemo'
+                , id: "ClearlyQuestionsBankS"
+                , url: '/ExaminationSystem/QuestionsBank/JieDaSelect'
+                , cellMinWidth: 80
+                , cols: [[
+                    { field: 'ID', width: 80, title: 'ID', hide: true, sort: true }
+                    , {
+                        field: 'Title', width: 270, title: '题目', templet: function (res) {
+
+                            var result = escapeHTMLString(res.Title);
+
+                            return result;
+
+                        }
+                    },
+                    {
+                        field: 'ReferenceAnswer', width: 200, title: '参考答案', templet: function (res) {
+
+                            //var label = $("<div></div>");
+
+                            //label.text(res.ReferenceAnswer);
+
+                            var result = escapeHTMLString(res.ReferenceAnswer);
+
+                            return result;
+
+                        }
+                    },
+                    { field: 'EmpName', width: 80, title: '命题人', templet: '<div>{{d.Proposition.EmpName}}</div>' },
+                    {
+                        field: 'CourseName', width: 130, title: '所属课程', templet: function (res) {
+
+
+                            if (res.Course == null) {
+                                return "升学题目";
+                            }
+                            else {
+                                return res.Course.CourseName
+                            }
+
+
+                        }
+                    },
+                    { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150 }
+                ]],
+                page: true
+            });
+        }
+            bind();
+            //头工具栏事件
+            table.on('toolbar(ClearlyQuestionsBankS)', function (obj) {
+                var checkStatus = table.checkStatus(obj.config.id);
+                switch (obj.event) {
+                    case 'quchong':
+                        layer.confirm('确认去重吗？', function (index) {
+                        Ajax('/ExaminationSystem/QuestionsBank/JieDaDelete', {}, 'post', function (data) {
+
+
+                            if (data.ErrorCode == 200) {
+
+                                layer.msg("去重成功");
+                            }
+                            else {
+                                layer.msg("服务器错误！");
+                            }
+
+
+
+                        }, function (error) {
+
+                            layer.msg("异常！");
+
+                            });
+                        layer.close(index);
+                });
+                        break;
+
+                };
+            });
+            //监听行工具事件
+            table.on('tool(ClearlyQuestionsBankS)', function (obj) {
+                var data = obj.data;
+                console.log(data.ID);
+                //console.log(obj)
+                if (obj.event === 'del') {
+                    layer.confirm('真的删除行么', function (index) {
+                        Ajax('/ExaminationSystem/QuestionsBank/DeleteAnswerQuestion/' + data.ID, {}, 'post', function (data) {
+
+                            if (data.ErrorCode == 200) {
+
+                                layer.msg("删除成功!");
+                                bind();
+                            }
+                            if (data.ErrorCode == 400) {
+
+                                layer.msg("删除失败!------原因:该题目已经被用于试卷");
+                            }
+                            if (data.ErrorCode == 500) {
+
+                                layer.msg("服务器错误!");
+                            }
+
+                        }, function (error) {
+                            layer.msg("异常！");
+                        });
+
+                        layer.close(index);
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+   
+        

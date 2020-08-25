@@ -69,7 +69,7 @@
                             <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
                                 <label class="LableCss1">选择部门:</label>
                                 <div class="layui-input-block">
-                                    <select name="ser_jiaowu_depet">
+                                    <select name="ser_jiaowu_depet" lay-filter="jaiowu">
                                         <option value="0" selected="selected">---不限---</option>
                                         <option value="5">s1/s2教学部</option>
                                         <option value="1009">s3教学部</option>
@@ -96,6 +96,9 @@
                                 <div id="ClssTime" class="layui-input-block">
                                     <input type="text" placeholder="结束时间" class="layui-input" name="endTime" id="endTime" />
                                 </div>
+                            </div>
+                            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2" style="text-align:center">
+                                <button type="button" class="layui-btn" onclick="server_jaiowu()">查询</button>
                             </div>
                         </div>
                     </form>
@@ -125,16 +128,7 @@
                             </div>
                             <div class="layui-col-xs2 layui-col-sm2 layui-col-md2" style="text-align:center">
                                 <button type="button" class="layui-btn" onclick="Sercher()">查询</button>
-                                @{
-                                    if (ViewBag.emp)
-                                    {
-                                        <input name="emp" id="emp" type="hidden" value="是" />
-                                    }
-                                    else
-                                    {
-                                        <input name="emp" id="emp" type="hidden" value="否" />
-                                    }
-                                }
+
 
                             </div>
                         </div>
@@ -146,6 +140,16 @@
     </div>
 </div>
 <table id="TeacherNight_table" lay-filter="TeacherNight_table"></table>
+@{
+    if (ViewBag.emp)
+    {
+        <input name="emp" id="emp" type="hidden" value="是" />
+    }
+    else
+    {
+        <input name="emp" id="emp" type="hidden" value="否" />
+    }
+}
 <div id="selectDate" class="DivCss2">
     <form id="date_addview" class="layui-form" lay-filter="date_addview">
         <div class="layui-row layui-form-item">
@@ -223,24 +227,33 @@
         var result = year + '-' + month + '-' + days;
         return result;
     }
+
+    //属于主任的模糊查询
     function Sercher() {
         layui.use(['form', 'table'], function () {
             var form = layui.form;
             var table = layui.table;
             var data1 = form.val("TeacherSercher");
-            table.reload('TeacherNight_table', {
-                url: '/Educational/TeacherAddorBeonDuty/TabledataSecher'
-                , where: { "tid": data1.teacherid, "olddate": data1.starTime, "newdate": data1.endTime }
-            });
+            if (data1.teacherid == "0" && data1.starTime.length <= 0 && data1.endTime.length < 0) {
+                table.reload('TeacherNight_table');
+            } else {
+                table.reload('TeacherNight_table', {
+                    url: '/Educational/TeacherAddorBeonDuty/TabledataSecher'
+                    , where: { "tid": data1.teacherid, "olddate": data1.starTime, "newdate": data1.endTime }
+                });
+            }
+
         });
 
     }
+
     function TableFulsh() {
         layui.use('table', function () {
             var table = layui.table;
             table.reload('TeacherNight_table');
         });
     }
+
     layui.use(['table', 'element', 'laydate', 'form'], function () {
         var table = layui.table;
         var layer = layui.layer;
@@ -264,6 +277,7 @@
             , trigger: 'click' //采用click弹出
         });
         var emp = $("#emp").val();
+        console.log(emp);
         if (emp == "是") {
             table.render({
                 elem: '#TeacherNight_table'
@@ -414,16 +428,33 @@
                     break;
                 case 'getCheckData_changIsdele':
                     //批量审批
-                    dateindex = layer.open({
-                        type: 1,
-                        shade: 0.8,
-                        title: '选择导出条件', //不显示标题
-                        content: $('#selectDate'), //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
-                        //cancel: function () {
-                        //    layer.msg('捕获就是从页面已经存在的元素上，包裹layer的结构', { time: 5000, icon: 6 });
-                        //}
-                    });
+                    if (checkStatus.data.length <= 0) {
+                        layer.msg('至少要选择一条数据！', { icon: 2, shade: 0.8 });
 
+                    } else {
+                        var str = "";
+                        for (var i = 0; i < checkStatus.data.length; i++) {
+                            str += checkStatus.data[i].Id + ",";
+                        }
+                        layer.confirm('一旦数据审核，不可以更改，你确定吗？', function (ydsm) {
+                            $.ajax({
+                                url: '/Educational/TeacherAddorBeonDuty/ShenheData',
+                                type: 'POST',
+                                data: { "str": str },
+                                success: function (suc) {
+                                    if (suc.Success == false) {
+                                        layer.msg('审核失败，请刷新重试！', { icon: 2 });
+                                    } else {
+                                        layer.msg(suc.Msg, { icon: 1, shade: 0.8 }, function () {
+                                            //刷新
+                                            TableFulsh();
+                                        });
+                                    }
+                                }
+                            });
+                            layer.close(ydsm);
+                        })                                                         
+                    }
                     break;
 
             };
@@ -506,7 +537,7 @@
                     data: data.field,
                     type: 'post',
                     success: function (res) {
-                        console.log(res);
+                        //console.log(res);
 
                         //列标题，逗号隔开，每一个逗号就是隔开一个单元格
                         let str = res.titile + `\n`;
@@ -533,8 +564,6 @@
                         document.body.appendChild(link);
                         link.click();
                         document.body.removeChild(link);
-                    }
-
                 });
             }
 
@@ -542,26 +571,52 @@
         });
 
         //获取某个部门的老师
-        form.on('select(filter)', function (data) {
-             
-            console.log(data.value); //得到被选中的值
-            $.ajax({
-			url:'/Educational/TeacherAddorBeonDuty/GetDetEmp/'+data.value,
-			type:'POST',
-			success:function(res){
-			   if(res.Length>0){
-			     for(int i=0;i<res.Length;i++){
+        form.on('select(jaiowu)', function (data) {
+            $("#teacher_jiaowu_ser_Div")[0].innerHTML = "";
+            if (data.value == 0) {
+                $('<select name="ser_jiaowu_teacher"><option value="0"> --- 不限-- -</option></select >').appendTo($("#teacher_jiaowu_ser_Div"));
+                form.render();
+            } else {
+                $.ajax({
+                    url: '/Educational/TeacherAddorBeonDuty/GetDetEmp/' + data.value,
+                    type: 'POST',
+                    success: function (res) {
+                        console.log(res);
+                        if (res.length > 0) {
+                            var selectteacher = $(' <select name="ser_jiaowu_teacher"><option value = "0" > --- 不限-- -</option></select >');
+                            for (var i = 0; i < res.length; i++) {
+                                $('<option value=' + res[i].Value + '>' + res[i].Text + '</option>').appendTo(selectteacher);
 
-				 }
-			   }
-			}
-			});
-        });      
+                            }
+                            $(selectteacher).appendTo($("#teacher_jiaowu_ser_Div"));
+                            form.render();
+                        }
+                    }
+                });
+            }
+        });
     });
 
     function Close() {
         layui.use('layer', function () {
             parent.layer.close(dateindex); //再执行关闭
+        });
+    }
+
+    //属于教务的模糊查询
+    function server_jaiowu() {
+        layui.use(['table', 'form'], function () {
+            var table = layui.table;
+            var form = layui.form;
+            var data1 = form.val("sercherjiaowu");
+            if (data1.ser_jiaowu_depet == "0" && data1.ser_jiaowu_teacher == "0" && data1.starTime.length <= 0 && data1.endTime.length <= 0) {
+                table.reload('TeacherNight_table');
+            } else {
+                table.reload('TeacherNight_table', {
+                    url: '/Educational/TeacherAddorBeonDuty/J_serchData'
+                    , where: data1
+                });
+            }
         });
     }
 </script>

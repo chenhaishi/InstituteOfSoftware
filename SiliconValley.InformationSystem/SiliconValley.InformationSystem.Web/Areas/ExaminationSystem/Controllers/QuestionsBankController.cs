@@ -68,8 +68,184 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
              return View();
         }
+        /// <summary>
+        /// 选择题去重页
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult DuplicateRemovalXZ()
+        {
+           
+            return View();
+        }
+        /// <summary>
+        /// 解答题去重页
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult DuplicateRemoval()
+        {
+            
+            return View();
+        }
+        /// <summary>
+        /// 解答题查询相同题 
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult JieDaSelect(int page, int limit)
+        {         
+            List<AnswerQuestionBank> resultlist = new List<AnswerQuestionBank>();
+            List<AnswerQuestionView> objList = new List<AnswerQuestionView>();
+            resultlist = db_answerQuestion.AllAnswerQuestion().ToList();
+            List<string> listone = new List<string>();
+            List<string> listtwo = new List<string>();
+            //循环找出重复题
+            for (int i = 0; i < resultlist.Count; i++)
+            {
+                if (listone.Contains(resultlist[i].Title))
+                {
+                    listtwo.Add(resultlist[i].Title);
+                }
+                else {
+                    listone.Add(resultlist[i].Title);
+                }
+            }
+            //把重复题查询出来，保存
+            if (listtwo.Count>0) {
+                for (int i = 0; i < listtwo.Count; i++)
+                {
+                    resultlist = db_answerQuestion.AllAnswerQuestion().Where(d=>d.Title == listtwo[i]).ToList();
+                    foreach (var item in resultlist)
+                    {
+                        var tempobj = db_answerQuestion.ConvertToAnswerQuestionView(item, true);
+                        objList.Add(tempobj);
+                    }
+                }
+            }
+            var obj = new
+            {
+                code = 0,
+                msg = "查询相同成功!",
+                count = objList.Count,
+                data = objList.Skip((page - 1) * limit).Take(limit)
+            };           
+            return Json(obj, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
+        /// 解答题去重删除
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult JieDaDelete()
+        {
+            AjaxResult result = new AjaxResult();
+            List<AnswerQuestionBank> resultlist = new List<AnswerQuestionBank>();
+            resultlist = db_answerQuestion.AllAnswerQuestion().ToList();
+            List<string> listone = new List<string>();
+            List<string> listtwo = new List<string>();
+            for (int i = 0; i < resultlist.Count; i++)
+            {
+                if (listone.Contains(resultlist[i].Title))
+                {
+                    listtwo.Add(resultlist[i].Title);
+                }
+                else
+                {
+                    listone.Add(resultlist[i].Title);
+                }
+            }
+            
+            if (listtwo.Count > 0)
+            {
+                for (int i = 0; i < listtwo.Count; i++)
+                {
+                    var id = db_answerQuestion.AllAnswerQuestion().Where(d => d.Title == listtwo[i]).FirstOrDefault().ID;
+                     result= db_answerQuestion.Remove(id);
+                }
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
+        /// 选择题的去重删除
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult XianZeDelete()
+        {
+            AjaxResult result = new AjaxResult();
+            List<MultipleChoiceQuestion> resultlist = new List<MultipleChoiceQuestion>();
+            resultlist = db_choiceQuestion.AllChoiceQuestionData().ToList();
+            List<string> listone = new List<string>();
+            List<string> listtwo = new List<string>();
+            for (int i = 0; i < resultlist.Count; i++)
+            {
+                if (listone.Contains(resultlist[i].Title))
+                {
+                    listtwo.Add(resultlist[i].Title);
+                }
+                else
+                {
+                    listone.Add(resultlist[i].Title);
+                }
+            }
+            if (listtwo.Count > 0)
+            {
+                for (int i = 0; i < listtwo.Count; i++)
+                {
+                    var id = db_choiceQuestion.AllChoiceQuestionData().Where(d => d.Title == listtwo[i]).FirstOrDefault().Id;
+                    result= db_choiceQuestion.RemoveChoiceQuestion(id);
+                }
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
+        /// 选择题查询相同题
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        public ActionResult XianZeSelect(int page, int limit)
+        {
+            List<MultipleChoiceQuestion> resultlist = new List<MultipleChoiceQuestion>();
+            List<ChoiceQuestionTableView> objList = new List<ChoiceQuestionTableView>();
+            resultlist = db_choiceQuestion.AllChoiceQuestionData().ToList();
+            List<string> listone = new List<string>();
+            List<string> listtwo = new List<string>();
+            for (int i = 0; i < resultlist.Count; i++)
+            {
+                if (listone.Contains(resultlist[i].Title))
+                {
+                    listtwo.Add(resultlist[i].Title);
+                }
+                else
+                {
+                    listone.Add(resultlist[i].Title);
+                }
+            }
+            if (listtwo.Count > 0)
+            {
+                for (int i = 0; i < listtwo.Count; i++)
+                {
+                    resultlist = db_choiceQuestion.AllChoiceQuestionData().Where(d => d.Title == listtwo[i]).ToList();
 
+                    foreach (var item in resultlist)
+                    {
+                        var tempobj = db_choiceQuestion.ConvertToChoiceQuestionTableView(item);
+                        objList.Add(tempobj);
+                    }
+                }
+            }
+            var obj = new
+            {
+                code = 0,
+                msg = "查询成功",
+                count = objList.Count,
+                data = objList.Skip((page - 1) * limit).Take(limit)
+            };
 
+            return Json(obj, JsonRequestBehavior.AllowGet);
+        }
+        
         /// <summary>
         /// 选择题题库页面
         /// </summary>
@@ -78,6 +254,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         {
             GrandBusiness GrandBusiness = new GrandBusiness();
 
+             
             ViewBag.grand = GrandBusiness.AllGrand();
             return View();
 
@@ -99,7 +276,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             return View();
 
         }
-
         /// <summary>
         /// 下载选择题模板
         /// </summary>
@@ -292,6 +468,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             return View();
         }
+         
 
         public ActionResult ModifyChoice(int choiceId)
         {
@@ -854,31 +1031,49 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         /// <returns></returns>
         public ActionResult SearchAnswerQuestion(string Title, int course, int page, int limit)
         {
+            List<AnswerQuestionBank> resultlist = new List<AnswerQuestionBank>();
+            if (course == 0 && Title == "")
+            {
+                resultlist = db_answerQuestion.AllAnswerQuestion().ToList();
+            }
 
-           var list = db_answerQuestion.Search(Title, course);
+            if (course != 0 && Title == "")
+            {
+                resultlist = db_answerQuestion.AllAnswerQuestion().Where(d => d.Course == course).ToList();
+            }
 
-            var skiplist = list.Skip((page - 1) * limit).Take(limit).ToList();
+            if (Title != "" && course != 0)
+            {
+                resultlist = db_answerQuestion.AllAnswerQuestion().Where(d => d.Course == course && d.Title.Contains(Title)).ToList();
+            }
+            if (Title != "" && course == 0)
+            {
+                resultlist = db_answerQuestion.AllAnswerQuestion().Where(d => d.Title.Contains(Title)).ToList();
+            }
 
             //转换对象
-            List<AnswerQuestionView> resultlist = new List<AnswerQuestionView>();
 
-            foreach (var item in skiplist)
+            List<AnswerQuestionView> returnlist = new List<AnswerQuestionView>();
+            //转换对象
+
+            foreach (var item in resultlist)
             {
 
                var tempobj = db_answerQuestion.ConvertToAnswerQuestionView(item, true);
-                resultlist.Add(tempobj);
+                returnlist.Add(tempobj);
 
             }
 
-            var obj = new {
-                code=0,
-                msg="",
-                count=resultlist.Count,
-                data=resultlist
+           var obj = new
+            {
 
+                code = 0,
+                msg = "",
+                count = returnlist.Count,
+                data = returnlist.Skip((page - 1) * limit).Take(limit)
             };
 
-            return Json(obj,JsonRequestBehavior.AllowGet);
+            return Json(obj, JsonRequestBehavior.AllowGet);
 
         }
 

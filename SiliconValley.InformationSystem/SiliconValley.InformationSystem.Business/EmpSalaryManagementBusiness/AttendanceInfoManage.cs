@@ -161,7 +161,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     string workAbsentNum = getrow.GetCell(12) == null ? null : getrow.GetCell(12).NumericCellValue.ToString();
                     //下班缺卡次数[13]
                     string offDutyAbsentNum = getrow.GetCell(13) == null ? null : getrow.GetCell(13).NumericCellValue.ToString();
-
+                    
                     //请假天数
                     string leaveddays = "";
 
@@ -174,17 +174,19 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     //下班缺卡记录
                     string OffDutyAbsentRecord = "";
                     //迟到扣款
-                    string tardyWithhold ="";
-                   
+                    //string tardyWithhold ="";
+                    //这些付款都是在员工工资表
+                    MonthlySalaryRecordManage msrmanage = new MonthlySalaryRecordManage();
+           
                     int cells = 0;
                     while (true)
                     {
                         cells++;
-                        if (getrow.GetCell(cells)==null)
+                        var getcell = getrow.GetCell(cells);
+                        if (getcell == null)
                         {                            
                             break;
                         }
-                        var getcell = getrow.GetCell(cells);
                         var titlerow= sheet.GetRow(2);
                         var title = titlerow.GetCell(cells).StringCellValue;
                         var pretitle = titlerow.GetCell(cells - 1).StringCellValue;
@@ -199,7 +201,8 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                         if (getcell.StringCellValue.Contains("迟到"))
                         {
                             tardyRecord += title + "号," + getcell.StringCellValue + ";";
-                        } else if (getcell.StringCellValue.Contains("早退")) {
+                        }
+                        else if (getcell.StringCellValue.Contains("早退")) {
                             leaveEarlyRecord += title + "号," + getcell.StringCellValue + ";";
                         }
                         else if (getcell.StringCellValue.Contains("上班缺卡"))
@@ -213,10 +216,14 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                         else if (getcell.StringCellValue.Contains("事假")) {
                             leaveddays = title + "号" + getcell.StringCellValue + ";";
                         }
-                        
+
+                        //迟到扣款
+                        string tardyWithhold = "";
+
+
+
                     }
-
-
+                   
                     // string leaveddays = getrow.GetCell(3) == null ? null : getrow.GetCell(3).NumericCellValue.ToString();
                     // string tardyWithhold = getrow.GetCell(10) == null ? null : getrow.GetCell(10).NumericCellValue.ToString();
                     // string leaveWithhold = getrow.GetCell(13) == null ? null : getrow.GetCell(13).NumericCellValue.ToString();
@@ -273,7 +280,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     //matd.LeaveEarlyRecord = leaveEarlyRecord;
                     //matd.LeaveWithhold =leaveWithhold==null?matd.LeaveWithhold=null: Convert.ToInt32(leaveWithhold);
                     //matd.Remark = remark;
-
+                    
                     result.Add(matd);
                 }
 
@@ -286,6 +293,19 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             return result;
 
         }
+
+        //public decimal GetTardyCount(string tardyRecord) {
+        //    var str = tardyRecord.Split(';');
+        //    var result=0;
+        //    int num = 0;
+        //    foreach (var item in str)
+        //    {
+        //        var tardy = item[num];
+               
+               
+        //    }
+        //    return result;
+        //}
 
         /// <summary>
         /// 将excel数据类的数据存入到数据库的考勤表中

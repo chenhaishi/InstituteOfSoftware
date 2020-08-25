@@ -114,6 +114,65 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         }
 
         /// <summary>
+        /// 属于教务的模糊查询
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult J_serchData(int limit,int page)
+        {
+            int dept =Convert.ToInt32(Request.QueryString["ser_jiaowu_depet"]);
+
+            string emp = Request.QueryString["ser_jiaowu_teacher"];
+
+            string starTime = Request.QueryString["starTime"];
+
+            string endTime = Request.QueryString["endTime"];
+
+            StringBuilder sb = new StringBuilder("select * from TeacherAddorBeonDutyView where 1=1");
+            if (!string.IsNullOrEmpty(starTime))
+            {
+                sb.Append(" and Anpaidate>='"+ starTime + "'");
+            }
+
+            if (!string.IsNullOrEmpty(endTime))
+            {
+                sb.Append(" and Anpaidate<='"+ endTime + "'");
+            }
+
+            List<TeacherAddorBeonDutyView> list = Tb_Entity.GetListBySql<TeacherAddorBeonDutyView>(sb.ToString());
+
+            if (emp!="0")
+            {
+                //获取属于这个老师的值班数据
+                list = list.Where(l => l.Tearcher_Id == emp).ToList();
+                var ee = list.OrderBy(l => l.Anpaidate).Skip((page - 1) * limit).Take(limit).ToList();
+
+                var data = new { code=0,msg="",count=list.Count,data= ee };
+
+                return Json(data,JsonRequestBehavior.AllowGet);
+            }
+            else if(dept!=0)
+            {
+                //获取属于部门的值班数据
+                List<EmployeesInfo> listemp = Tb_Entity.EmployeesInfo_Entity.GetEmpsByDeptid(dept);
+                List<TeacherAddorBeonDutyView> list2 = new List<TeacherAddorBeonDutyView>();
+                foreach (EmployeesInfo item in listemp)
+                {
+                    list2.AddRange( list.Where(l => l.Tearcher_Id == item.EmployeeId).ToList());
+                }
+                var data = list2.OrderBy(l => l.Anpaidate).Skip((page - 1) * limit).Take(limit).ToList();
+                var datajson = new { code = 0,msg="" ,count=list2.Count,data= data };
+                return Json(datajson,JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                var data= list.OrderBy(l => l.Anpaidate).Skip((page - 1) * limit).Take(limit).ToList();
+                var datajson = new { code = 0, msg = "", count = list.Count, data = data };
+                return Json(datajson, JsonRequestBehavior.AllowGet);
+            }
+
+           
+        }
+        /// <summary>
         /// 手动安排教员值班
         /// </summary>
         /// <returns></returns>
@@ -317,6 +376,37 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             List<SelectListItem> listemp = Tb_Entity.EmployeesInfo_Entity.GetEmpsByDeptid(id).Select(l=>new SelectListItem() { Text=l.EmpName,Value=l.EmployeeId}).ToList();
 
             return Json(listemp,JsonRequestBehavior.AllowGet);
+        }
+       
+        /// <summary>
+        /// 教务批量数据审核
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ShenheData()
+        {
+            string[] strs= Request.Form["str"].Split(',');
+            List<TeacherAddorBeonDuty> list = new List<TeacherAddorBeonDuty>();
+            foreach (string item in strs)
+            {
+                if (!string.IsNullOrEmpty(item))
+                {
+                    int id = Convert.ToInt32(item);
+                    TeacherAddorBeonDuty find = Tb_Entity.Findid(id);
+
+                    if (find!=null)
+                    {
+                        find.IsDels = true;
+
+                        list.Add(find);
+                    }
+                     
+                }
+            }
+
+            AjaxResult a = Tb_Entity.Upd_data(list);
+
+            return Json(a, JsonRequestBehavior.AllowGet);
+
         }
     }
 }
