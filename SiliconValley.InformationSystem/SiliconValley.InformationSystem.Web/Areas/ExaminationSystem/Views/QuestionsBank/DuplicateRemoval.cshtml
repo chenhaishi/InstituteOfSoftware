@@ -10,15 +10,13 @@
     <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" /
 </head>
 <body>
-    <form class="layui-form">
-        <div style="" class="layui-form-item">
-            <div style="text-align:center;" class="layui-inline">
-                <button style="width:800px; margin-top:30px;" type="button" lay-submit="" lay-filter="search" class="layui-btn layui-btn-radius layui-btn-primary">查询重复</button>
-            </div>
-        </div>
-        <hr />
-    </form>
     <table class="layui-hide" lay-filter="ClearlyQuestionsBankS" id="ClearlyQuestionsBankS"></table>
+    <!--头部工具栏-->
+    <script type="text/html" id="toolbarDemo">
+        <div class="layui-btn-container">
+            <button type="button" class="layui-btn layui-btn-sm btn-info" lay-event="quchong">去重</button>
+        </div>
+    </script>
     <script type="text/html" id="barDemo">
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
     </script>
@@ -52,7 +50,7 @@
                 elem: '#ClearlyQuestionsBankS'
                 , toolbar: '#toolbarDemo'
                 , id: "ClearlyQuestionsBankS"
-                , url: '/ExaminationSystem/QuestionsBank/AnswerQuestionTableData'
+                , url: '/ExaminationSystem/QuestionsBank/JieDaSelect'
                 , cellMinWidth: 80
                 , cols: [[
                     { field: 'ID', width: 80, title: 'ID', hide: true, sort: true }
@@ -99,6 +97,36 @@
             });
         }
             bind();
+            //头工具栏事件
+            table.on('toolbar(ClearlyQuestionsBankS)', function (obj) {
+                var checkStatus = table.checkStatus(obj.config.id);
+                switch (obj.event) {
+                    case 'quchong':
+                        layer.confirm('确认去重吗？', function (index) {
+                        Ajax('/ExaminationSystem/QuestionsBank/JieDaDelete', {}, 'post', function (data) {
+
+
+                            if (data.ErrorCode == 200) {
+
+                                layer.msg("去重成功");
+                            }
+                            else {
+                                layer.msg("服务器错误！");
+                            }
+
+
+
+                        }, function (error) {
+
+                            layer.msg("异常！");
+
+                            });
+                        layer.close(index);
+                });
+                        break;
+
+                };
+            });
             //监听行工具事件
             table.on('tool(ClearlyQuestionsBankS)', function (obj) {
                 var data = obj.data;
