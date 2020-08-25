@@ -22,7 +22,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
     [CheckLogin]
     public class ReconcileController : BaseMvcController
     {
-        // GET: /Educational/Reconcile/GetMarjioTeacher
+        // GET: /Educational/Reconcile/GetTeacherser
         readonly ReconcileManeger Reconcile_Entity = new ReconcileManeger();
 
 
@@ -577,7 +577,37 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             return Json(sb.ToString(), JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public ActionResult AddHandDataFunctionTwo()
+        {
+            Reconcile data = new Reconcile();
 
+            data.ClassSchedule_Id = Convert.ToInt32(Request.Form["child_class"]);//班级id
+
+            data.Curriculum_Id = Request.Form["currname"];//课程
+
+            data.AnPaiDate =Convert.ToDateTime( Request.Form["childview_AnpiDate"]);//日期
+
+            data.Curse_Id = Request.Form["childview_timetype"];//上课时间段
+
+            data.ClassRoom_Id =Convert.ToInt32(Request.Form["childview_room"]);//教室
+
+            string emp = Request.Form["Teacherid"];//员工编号
+
+            data.NewDate = DateTime.Now;
+
+            if (!string.IsNullOrEmpty(emp))
+            {
+                data.EmployeesInfo_Id = emp;
+            }
+
+            data.Rmark = Request.Form["childview_reak"];
+            data.IsDelete = false;
+
+            bool s= Reconcile_Entity.AddData(data);
+
+            return Json(s,JsonRequestBehavior.AllowGet);
+        }
         /// <summary>
         /// 获取所有老师
         /// </summary>
@@ -614,6 +644,31 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             list_t.Add(new SelectListItem() { Text = "--请选择--", Value = "0" });
             ViewBag.Teacher = list_t.OrderBy(l => l.Value).ToList();
             return View();
+        }
+        
+        /// <summary>
+        /// 获取这个阶段的有效课程
+        /// </summary>
+        /// <param name="grandid"></param>
+        /// <returns></returns>
+        public ActionResult GetGrandCurrr(int id)
+        {
+           List<SelectListItem> curlist= Reconcile_Com.GetGrandCurr(id).Where(c=>c.IsDelete==false).Select(c=>new SelectListItem() { Text=c.CourseName,Value=c.CurriculumID.ToString()}).ToList();
+            curlist.Add(new SelectListItem() { Text="其他",Value="0"});
+
+            return Json(curlist,JsonRequestBehavior.AllowGet);
+        }
+        
+        /// <summary>
+        /// 模糊查询老师
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult GetTeacherser()
+        {
+            string teachername = Request.Form["teachername"];
+            List<SelectListItem> list = Reconcile_Com.Employees_Entity.GetListBySql<EmployeesInfo>("select * from EmployeesInfo where EmpName like '%" + teachername + "%'").Select(e => new SelectListItem() { Text = e.EmpName, Value = e.EmployeeId }).ToList();
+
+            return Json(list,JsonRequestBehavior.AllowGet);
         }
         #endregion
 
@@ -1426,7 +1481,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         #endregion
 
         #region 加课
-
+        public ActionResult AddReconcileView()
+        {
+            return View();
+        }
 
         #endregion
 

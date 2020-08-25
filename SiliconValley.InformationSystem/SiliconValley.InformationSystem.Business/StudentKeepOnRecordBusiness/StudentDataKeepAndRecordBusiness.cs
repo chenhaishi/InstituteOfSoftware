@@ -91,6 +91,11 @@ namespace SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness
         /// 获取备案日志业务类
         /// </summary>
         public StudentbeanLogManeger log_s = new StudentbeanLogManeger();
+
+        /// <summary>
+        /// 数据作废记录业务类
+        /// </summary>
+        public Delte_StudentPutinfoManeger deletdata = new Delte_StudentPutinfoManeger();
         #endregion
 
 
@@ -190,9 +195,9 @@ namespace SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness
         /// <returns></returns>
         public List<ExportStudentBeanData> GetAll()
         {
-            List<ExportStudentBeanData> listall = this.GetListBySql<ExportStudentBeanData>("select * from StudentBeanView");
+            List<ExportStudentBeanData> listall = this.GetListBySql<ExportStudentBeanData>("select * from StudentBeanView where IsDelete=0");
 
-            List<Sch_MarketView> list2 = this.GetListBySql<Sch_MarketView>("select * from Sch_MarketView");
+            List<Sch_MarketView> list2 = this.GetListBySql<Sch_MarketView>("select * from Sch_MarketView where IsDel=0");
 
             listall.AddRange(LongrageDataToViewmodel(list2));
 
@@ -206,7 +211,7 @@ namespace SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness
         /// <returns></returns>
         public List<ExportStudentBeanData> GetAllTopNumber(int number)
         {
-            List<ExportStudentBeanData> listall = this.GetListBySql<ExportStudentBeanData>("select * from StudentBeanView where Id>=74000 order by BeanDate desc ");
+            List<ExportStudentBeanData> listall = this.GetListBySql<ExportStudentBeanData>("select * from StudentBeanView where Id>="+number+ " and IsDelete=0 order by BeanDate desc ");
             return listall;
         }
 
@@ -238,7 +243,7 @@ namespace SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness
         /// <returns></returns>
         public List<ExportStudentBeanData> GetSudentDataAll()
         {
-            List<ExportStudentBeanData> listall = this.GetListBySql<ExportStudentBeanData>("select * from StudentBeanView");
+            List<ExportStudentBeanData> listall = this.GetListBySql<ExportStudentBeanData>("select * from StudentBeanView where IsDelete=0");
 
             return listall;
         }
@@ -252,8 +257,8 @@ namespace SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness
 
             SqlConnection con = new SqlConnection("server=106.13.104.179;database=Coldairarrow.Fx.Net.Easyui.GitHub;uid=sa;pwd=tangdan2020@;Max Pool Size = 512;");
             con.Open();
-            SqlCommand cmd = new SqlCommand("select count(*) as count from StudentBeanView", con);
-            SqlCommand cmd2 = new SqlCommand("select count(*) as count from Sch_MarketView", con);
+            SqlCommand cmd = new SqlCommand("select count(*) as count from StudentBeanView where IsDelete=0", con);
+            SqlCommand cmd2 = new SqlCommand("select count(*) as count from Sch_MarketView where IsDel=0", con);
             int count = Convert.ToInt32(cmd.ExecuteScalar());
             count = count + Convert.ToInt32(cmd2.ExecuteScalar());
             con.Close();
@@ -270,9 +275,9 @@ namespace SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness
             if (!string.IsNullOrEmpty(stuName))
             {
                 stuName = stuName.Trim();
-                List<ExportStudentBeanData> listall = this.GetListBySql<ExportStudentBeanData>("select * from StudentBeanView where StuName='" + stuName + "'");
+                List<ExportStudentBeanData> listall = this.GetListBySql<ExportStudentBeanData>("select * from StudentBeanView where StuName='" + stuName + "' and IsDelete=0");
 
-                List<Sch_MarketView> listal2 = this.GetListBySql<Sch_MarketView>("select * from Sch_MarketView where StudentName='" + stuName + "'");
+                List<Sch_MarketView> listal2 = this.GetListBySql<Sch_MarketView>("select * from Sch_MarketView where StudentName='" + stuName + "' and IsDel=0");
 
 
                 listall.AddRange(this.LongrageDataToViewmodel(listal2));
@@ -297,8 +302,8 @@ namespace SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness
             stuName = stuName.Trim();
             StringBuilder sb1 = new StringBuilder();
             StringBuilder sb2 = new StringBuilder();
-            sb1.Append("select * from StudentBeanView where StuName='" + stuName + "'");
-            sb2.Append("select * from Sch_MarketView where StudentName='" + stuName + "'");
+            sb1.Append("select * from StudentBeanView where StuName='" + stuName + "' and IsDelete=0");
+            sb2.Append("select * from Sch_MarketView where StudentName='" + stuName + "' and IsDel=0");
             if (phone != null)
             {
                 sb1.Append(" and Stuphone='" + phone + "'");
@@ -321,7 +326,7 @@ namespace SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness
         {
             StringBuilder sb = new StringBuilder();
             string yy = date.Year + "-" + date.Month + "-" + date.Day;
-            sb.Append("select top 1 * from studentPutOnRecord where StuName='" + stuName + "' and BeanDate='" + yy + "'");
+            sb.Append("select top 1 * from studentPutOnRecord where StuName='" + stuName + "' and BeanDate='" + yy + "'  and IsDelete=0");
 
 
             if (phone != null)
@@ -1201,5 +1206,48 @@ namespace SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness
             return student.Identityid(id);
 
         }
+
+        /// <summary>
+        /// 数据作废
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public bool Shenhe_changeDele(int id)
+        {
+            bool s = true;
+            if (id>=54118)
+            {
+                StudentPutOnRecord entity= this.GetEntity(id);
+                entity.IsDelete = true;
+                try
+                {
+                    this.Update(entity);
+                }
+                catch (Exception)
+                {
+
+                    s = false;
+                }
+            }
+            else
+            {
+               Sch_Market sch= s_entity.GetEntity(id);
+                sch.IsDel = true;
+                try
+                {
+                    s_entity.Update(sch);
+                }
+                catch (Exception)
+                {
+
+                    s = false;
+                }
+                
+            }
+
+            return s;
+        }
+
+        
     }
 }

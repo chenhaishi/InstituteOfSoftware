@@ -95,7 +95,7 @@
             <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                 <label class="layui-form-label needTextColor">姓 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 名:</label>
                 <div class="layui-input-block">
-                    @Html.TextBoxFor(s => s.StuName, new Dictionary<string, object>() { { "lay-verify", "required" }, { "placeholder", "学生姓名" }, { "class", "layui-input linu" } })
+                    @Html.TextBoxFor(s => s.StuName, new Dictionary<string, object>() { { "lay-verify", "required|Replay" }, { "placeholder", "学生姓名" }, { "class", "layui-input linu" } })
                 </div>
             </div>
             <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
@@ -384,12 +384,33 @@
                     }
 
                 }
+            },
+            Replay: function (value) {
+                var sss = value.split(" ");
+                if (sss.length >= 2) {
+                    return '不能有空格！';
+                }
+                var reg = /^[\u4e00-\u9fa50-9A-Za-z]+$/;
+                var Is = reg.test(value);
+                if (Is == false) {
+                    return '不能出现标点符号！';
+                }
+
+                var reg2 = /\w/;
+                var Is2 = reg2.test(value);
+               // console.log(Is2);
+                if (Is2 == true) {
+                    return '不能出现数字、字母！';
+                }
+                
+
             }
+            
         });
 
         //提交数据
         form.on('submit(tijiao)', function (data) {
-            console.log(data.field);
+            
             if (data.field.StuPhone == "" && data.field.StuWeiXin == "" && data.field.StuQQ == "") {
                 layer.msg("电话、微信、QQ至少要填一个！", { icon: 2, shade: 0.8 });
             } else if (data.field.StuAddress == "" && data.field.StuSchoolName == "") {
@@ -400,7 +421,7 @@
                 var myindexdd = layer.load(1);
                 if (data.field.Region_id == "区域外") {
                     data.field.Region_id = null;
-                }
+                }               
                 $.ajax({
                     url: "/Market/StudentDataKeep/StudentDataKeepAdd",
                     data: data.field,

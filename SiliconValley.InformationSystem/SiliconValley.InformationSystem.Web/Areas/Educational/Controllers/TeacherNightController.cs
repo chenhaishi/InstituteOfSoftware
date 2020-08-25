@@ -25,7 +25,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         // GET: /Educational/TeacherNight/TeacherSerch
 
         TeacherNightManeger TeacherNight_Entity = new TeacherNightManeger();
-        //TeacherBusiness Teacher_Entity;
+        TeacherBusiness Teacher_Entity;
 
         BeOnDutyManeger beOnDuty_Entity = new BeOnDutyManeger(); //获取值班类型        
        
@@ -41,7 +41,26 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
  
             return View();
         }
-       
+
+
+        /// <summary>
+        /// 模糊查询教员
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult TeacherSerch()
+        {
+            AjaxResult a = new AjaxResult();
+            Teacher_Entity = new TeacherBusiness();
+            string teachername = Request.Form["teachername"];
+
+            List<SelectListItem> teacherlist = Teacher_Entity.GetTeacherEmps().Where(t => t.EmpName.Contains(teachername)).Select(e => new SelectListItem() { Text = e.EmpName, Value = e.EmployeeId }).ToList();
+            a.Success = true;
+            a.Data = teacherlist;
+
+            return Json(a, JsonRequestBehavior.AllowGet);
+        }
+
         /// <summary>
         /// 删除数据
         /// </summary>

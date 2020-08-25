@@ -127,5 +127,10 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity
         /// 市场类别
         /// </summary>
         public string MarketType { get; set; }
+
+        /// <summary>
+        /// 数据是否作废  ture--作废，false--不作废
+        /// </summary>
+        public  bool IsDel { get; set; }
     }
 }

@@ -96,9 +96,9 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         /// </summary>
         public string Reak { get; set; }
         /// <summary>
-        ///  
+        ///  是否作废---true--是，false--否
         /// </summary>
-        public Nullable<bool> IsDelete { get; set; }
+        public bool IsDelete { get; set; }
         /// <summary>
         /// 学生所在区域
         /// </summary>
