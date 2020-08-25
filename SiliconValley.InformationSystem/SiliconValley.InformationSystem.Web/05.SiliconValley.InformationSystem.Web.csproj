@@ -1904,6 +1904,7 @@
     <Content Include="Areas\Market\Views\StudentDataKeep\Delete.cshtml" />
     <Content Include="Areas\ExaminationSystem\Views\QuestionsBank\DuplicateRemoval.cshtml" />
     <Content Include="Areas\ExaminationSystem\Views\QuestionsBank\DuplicateRemovalXZ.cshtml" />
+    <Content Include="Areas\Educational\Views\Reconcile\AddReconcileView.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />

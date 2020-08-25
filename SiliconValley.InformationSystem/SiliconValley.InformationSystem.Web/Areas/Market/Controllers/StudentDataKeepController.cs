@@ -1814,7 +1814,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
             DateTime date =Convert.ToDateTime(Request.Form["date"]);//日期
             int type =Convert.ToInt32(Request.Form["type"]);//类型
             int infomation =Convert.ToInt32( Request.Form["infomation"]);//信息来源
-
+            AjaxResult data= s_Entity.Costitems.TypeSelect(date, type);
             return null;
         }
 

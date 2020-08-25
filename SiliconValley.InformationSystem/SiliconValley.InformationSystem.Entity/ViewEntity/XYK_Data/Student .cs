@@ -14,8 +14,8 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.XYK_Data
         //学生名字
         public string StuName { get; set; }
         //学生备案id
-        public int Keepid { get; set; }
+        public int? Keepid { get; set; }
         //费用
-        public decimal num { get; set; }
+        public decimal? num { get; set; }
     }
 }
