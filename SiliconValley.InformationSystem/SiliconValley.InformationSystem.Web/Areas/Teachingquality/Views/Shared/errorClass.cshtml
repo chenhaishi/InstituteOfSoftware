@@ -1,0 +1,37 @@
+﻿
+@{
+    var list = ViewBag.error as List<SiliconValley.InformationSystem.Entity.MyEntity.ClassSchedule>;
+
+}
+<script src="~/Scripts/bootstrap.js"></script>
+<form class="layui-form layui-form-pane" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">学生名字</label>
+        <div class="layui-input-block">
+            <input type="text" name="title" autocomplete="off" class="layui-input" value="@ViewBag.id" readonly="readonly" id="stuid">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">所在班级</label>
+        <div class="layui-input-block">
+            <input type="text" name="title" autocomplete="off" class="layui-input" value="@ViewBag.class_error" readonly="readonly">
+        </div>
+    </div>
+    
+</form><div class="layui-inline">
+    <label>选择班级</label>
+    <div class="layui-input-inline" style="margin-left:20px">
+        <select name="modules" lay-search="" id="modules" class="layui-select">
+            @{
+                foreach (var item in list)
+                {
+                    <option value="@item.id">@item.ClassNumber</option>
+                }
+            }
+        </select>
+    </div>
+</div>
+
+ 
+
+
