@@ -11,17 +11,13 @@
 
 </head>
 <body>
-
-    <form class="layui-form">
-        <div style="" class="layui-form-item">
-
-            <div style="text-align:center;" class="layui-inline">
-                <button style="width:800px; margin-top:30px;" type="button" lay-submit="" lay-filter="search" class="layui-btn layui-btn-radius layui-btn-primary">查询重复</button>
-            </div>
-        </div>
-        <hr />
-    </form>
     <table class="layui-hide" lay-filter="QuestionsBankS" id="QuestionsBankS"></table>
+    <!--头部工具栏-->
+    <script type="text/html" id="toolbarDemo">
+        <div class="layui-btn-container">
+            <button type="button" class="layui-btn layui-btn-sm btn-info" lay-event="quchong">去重</button>
+        </div>
+    </script>
     <!--行内工具按钮-->
     <script type="text/html" id="barDemo">
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
@@ -43,22 +39,22 @@
             var table = layui.table;
 
             $(".layui-layer-input").attr("type", "number")
-            //查询
-            form.on('submit(search)', function () {
-                table.reload('QuestionsBankS', {
+            ////查询
+            //form.on('submit(search)', function () {
+            //    table.reload('QuestionsBankS', {
 
-                    url: '/ExaminationSystem/QuestionsBank/XianZeSelect'
-                });
+            //        url: '/ExaminationSystem/QuestionsBank/XianZeSelect'
+            //    });
 
-                return false;
-            });
-            var bind = function () { 
+            //    return false;
+            //});
+            var bind = function () {
             //渲染表格
             table.render({
                 elem: '#QuestionsBankS'
                 , toolbar: '#toolbarDemo'
                 , id: "QuestionsBankS"
-                , url: '/ExaminationSystem/QuestionsBank/ChoiceQuestionTableData'
+                , url: '/ExaminationSystem/QuestionsBank/XianZeSelect'
                 , cellMinWidth: 80
                 , cols: [[
                     { field: 'Id', width: 90, title: 'ID', hide: true, sort: true }
@@ -106,6 +102,37 @@
                 });
             }
             bind();
+
+            //头工具栏事件
+            table.on('toolbar(QuestionsBankS)', function (obj) {
+                var checkStatus = table.checkStatus(obj.config.id);
+                switch (obj.event) {
+                    case 'quchong':
+                        layer.confirm('确认去重吗？', function (index) {
+                            Ajax('/ExaminationSystem/QuestionsBank/XianZeDelete', {}, 'post', function (data) {
+
+
+                            if (data.ErrorCode == 200) {
+
+                                layer.msg("去重成功");
+                            }
+                            else {
+                                layer.msg("服务器错误！");
+                            }
+
+
+
+                        }, function (error) {
+
+                            layer.msg("异常！");
+
+                                });
+                            layer.close(index);
+                        });
+                        break;
+
+                };
+            });
             //监听行工具事件
             table.on('tool(QuestionsBankS)', function (obj) {
                 var data = obj.data;

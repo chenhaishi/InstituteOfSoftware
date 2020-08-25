@@ -91,13 +91,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         /// </summary>
         /// <returns></returns>
         public ActionResult JieDaSelect(int page, int limit)
-        {
-            
+        {         
             List<AnswerQuestionBank> resultlist = new List<AnswerQuestionBank>();
             List<AnswerQuestionView> objList = new List<AnswerQuestionView>();
             resultlist = db_answerQuestion.AllAnswerQuestion().ToList();
             List<string> listone = new List<string>();
-            List<string> listtwo = new List<string>();         
+            List<string> listtwo = new List<string>();
+            //循环找出重复题
             for (int i = 0; i < resultlist.Count; i++)
             {
                 if (listone.Contains(resultlist[i].Title))
@@ -108,16 +108,15 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                     listone.Add(resultlist[i].Title);
                 }
             }
+            //把重复题查询出来，保存
             if (listtwo.Count>0) {
                 for (int i = 0; i < listtwo.Count; i++)
                 {
                     resultlist = db_answerQuestion.AllAnswerQuestion().Where(d=>d.Title == listtwo[i]).ToList();
                     foreach (var item in resultlist)
                     {
-
                         var tempobj = db_answerQuestion.ConvertToAnswerQuestionView(item, true);
                         objList.Add(tempobj);
-
                     }
                 }
             }
@@ -129,6 +128,75 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 data = objList.Skip((page - 1) * limit).Take(limit)
             };           
             return Json(obj, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
+        /// 解答题去重删除
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult JieDaDelete()
+        {
+            AjaxResult result = new AjaxResult();
+            List<AnswerQuestionBank> resultlist = new List<AnswerQuestionBank>();
+            resultlist = db_answerQuestion.AllAnswerQuestion().ToList();
+            List<string> listone = new List<string>();
+            List<string> listtwo = new List<string>();
+            for (int i = 0; i < resultlist.Count; i++)
+            {
+                if (listone.Contains(resultlist[i].Title))
+                {
+                    listtwo.Add(resultlist[i].Title);
+                }
+                else
+                {
+                    listone.Add(resultlist[i].Title);
+                }
+            }
+            
+            if (listtwo.Count > 0)
+            {
+                for (int i = 0; i < listtwo.Count; i++)
+                {
+                    var id = db_answerQuestion.AllAnswerQuestion().Where(d => d.Title == listtwo[i]).FirstOrDefault().ID;
+                     result= db_answerQuestion.Remove(id);
+                }
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
+        /// 选择题的去重删除
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult XianZeDelete()
+        {
+            AjaxResult result = new AjaxResult();
+            List<MultipleChoiceQuestion> resultlist = new List<MultipleChoiceQuestion>();
+            resultlist = db_choiceQuestion.AllChoiceQuestionData().ToList();
+            List<string> listone = new List<string>();
+            List<string> listtwo = new List<string>();
+            for (int i = 0; i < resultlist.Count; i++)
+            {
+                if (listone.Contains(resultlist[i].Title))
+                {
+                    listtwo.Add(resultlist[i].Title);
+                }
+                else
+                {
+                    listone.Add(resultlist[i].Title);
+                }
+            }
+            if (listtwo.Count > 0)
+            {
+                for (int i = 0; i < listtwo.Count; i++)
+                {
+                    var id = db_choiceQuestion.AllChoiceQuestionData().Where(d => d.Title == listtwo[i]).FirstOrDefault().Id;
+                    result= db_choiceQuestion.RemoveChoiceQuestion(id);
+                }
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
         /// 选择题查询相同题
@@ -177,6 +245,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             return Json(obj, JsonRequestBehavior.AllowGet);
         }
+        
         /// <summary>
         /// 选择题题库页面
         /// </summary>

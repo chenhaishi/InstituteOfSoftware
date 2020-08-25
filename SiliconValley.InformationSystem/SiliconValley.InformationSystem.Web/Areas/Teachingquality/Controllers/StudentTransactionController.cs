@@ -1,10 +1,12 @@
 ﻿using SiliconValley.InformationSystem.Business;
+using SiliconValley.InformationSystem.Business.Base_SysManage;
 using SiliconValley.InformationSystem.Business.ClassDynamics_Business;
 using SiliconValley.InformationSystem.Business.ClassesBusiness;
 using SiliconValley.InformationSystem.Business.ClassSchedule_Business;
 using SiliconValley.InformationSystem.Business.TeachingDepBusiness;
 using SiliconValley.InformationSystem.Entity.MyEntity;
 using SiliconValley.InformationSystem.Entity.ViewEntity;
+using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -460,6 +462,69 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
             string ClassName = Request.QueryString["ClassName"];
             return Json(dbtext.ClassProDate(ClassName), JsonRequestBehavior.AllowGet);
         }
-        
+
+        public ActionResult errorClass(string stuid)
+        {
+            BaseBusiness<StudentInformation> stu = new BaseBusiness<StudentInformation>();
+            BaseBusiness<ScheduleForTrainees> sch = new BaseBusiness<ScheduleForTrainees>();
+            BaseBusiness<ClassSchedule> cs = new BaseBusiness<ClassSchedule>();
+            var id = stu.GetList().Where(d => d.StudentNumber == stuid).FirstOrDefault();//获取学生名称
+            var class_error = sch.GetList().Where(d => d.StudentID == id.StudentNumber).FirstOrDefault();//获取学生当前所在班级
+            var error = cs.GetList().ToList();//获取所有班级
+            ViewBag.id = id.Name;
+            ViewBag.class_error = class_error.ClassID;
+            ViewBag.error = error;
+            return  PartialView("/Areas/Teachingquality/Views/Shared/errorClass.cshtml");
+        }
+        /// <summary>
+        /// 班级错误修改
+        /// </summary>
+        /// <param name="stuid">学员id</param>
+        /// <param name="classid">班级名称</param>
+        /// <param name="className">班级id</param>
+        /// <returns></returns>
+        public ActionResult error_class(string stuid,string classid,string className)
+        {
+            BaseBusiness<StudentInformation> stu = new BaseBusiness<StudentInformation>();
+            BaseBusiness<ScheduleForTrainees> sch = new BaseBusiness<ScheduleForTrainees>();
+            Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
+            EmployeesInfoManage empid = new EmployeesInfoManage();//员工业务类
+            var dept = empid.GetDeptByEmpid(UserName.EmpNumber);//根据员工编号获取员工所属部门
+            var posi = empid.GetPositionByEmpid(UserName.EmpNumber);//根据员工编号所属岗位
+            if (dept.DeptName == "s1、s2教质部" && posi.PositionName.Contains("主任"))
+            {
+
+
+                var id = stu.GetList().Where(d => d.StudentNumber == stuid).FirstOrDefault();
+                var class_error = sch.GetList().Where(d => d.StudentID == id.StudentNumber).FirstOrDefault();
+                if (class_error == null)
+                {
+                    return Json(new
+                    {
+                        code = -1,
+                        msg = "查询数据为空"
+                    });
+                }
+                class_error.ClassID = classid;
+                class_error.ID_ClassName = int.Parse(className);
+                sch.Update(class_error);
+                return Json(new
+                {
+                    code = 0,
+                    msg = "修改成功"
+                });
+            }
+            else
+            {
+                return Json(new
+                {
+                    code = -1,
+                    msg = "你没有该权限"
+                });
+            }
+
+        }
+
+
     }
 }
