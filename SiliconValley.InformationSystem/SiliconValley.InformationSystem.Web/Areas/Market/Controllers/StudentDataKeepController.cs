@@ -119,8 +119,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
         /// <returns></returns>
         public ActionResult TableData(int limit, int page)
         {
-           
-            List<ExportStudentBeanData> list = s_Entity.GetAllTopNumber(76400).OrderByDescending(s => s.StuDateTime).ToList();
+            //82000
+            List<ExportStudentBeanData> list = s_Entity.GetAllTopNumber(82000).OrderByDescending(s => s.StuDateTime).ToList();
 
             var data = list.Skip((page - 1) * limit).Take(limit).ToList();
 
@@ -134,8 +134,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
             List<ExportStudentBeanData> list = new List<ExportStudentBeanData>();
             StringBuilder sb1 = new StringBuilder();
             StringBuilder sb2 = new StringBuilder();
-            sb1.Append("select * from StudentBeanView where 1=1 ");
-            sb2.Append("select * from Sch_MarketView where 1=1 ");
+            sb1.Append("select * from StudentBeanView where IsDelete=0");
+            sb2.Append("select * from Sch_MarketView where IsDel=0");
             string findName = Request.QueryString["findName"];
             string findPhone = Request.QueryString["findPhone"];
             if (!string.IsNullOrEmpty(findName) || !string.IsNullOrEmpty(findPhone))
@@ -448,8 +448,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
             }
 
         }
-
-        
+       
 
         //查看是否有重复的学员信息名称
         public ActionResult FindStudent(string id)
@@ -610,7 +609,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
             return Json(a, JsonRequestBehavior.AllowGet);
         }
       
-
         //根据ID找到学生信息并赋值
         public ActionResult FindStudentInfomation(string id)
         {
@@ -2034,6 +2032,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
         }
         #endregion
 
+
         #region  修改账号密码
         public ActionResult updatePassword()
         {
@@ -2097,8 +2096,74 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
 
             return Json(result,JsonRequestBehavior.AllowGet);
         }
-       
+
         #endregion
 
+
+        #region 数据作废页面
+        public ActionResult Delete()
+        {
+            Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
+            //获取信息来源的所有数据
+            List<SelectListItem> se = s_Entity.StuInfomationType_Entity.GetList().Select(s => new SelectListItem { Text = s.Name, Value = s.Name }).ToList();
+            se.Add(new SelectListItem() { Text = "请选择", Selected = true, Value = "0" });
+            ViewBag.infomation = se;
+            //获取区域所有信息
+            SelectListItem newselectitem = new SelectListItem() { Text = "请选择", Value = "0", Selected = true };
+            var r_list = s_Entity.GetEffectiveRegionAll(true).Select(r => new SelectListItem { Text = r.RegionName, Value = r.RegionName }).ToList();
+            r_list.Add(newselectitem);
+            ViewBag.are = r_list;
+            //获取咨询师的所有数据
+            List<SelectListItem> list_cteacher = new List<SelectListItem>();
+            List<SelectListItem> list_one = new List<SelectListItem>();
+            list_cteacher.Add(new SelectListItem() { Text = "请选择", Value = "0", Selected = true });
+            list_one.Add(new SelectListItem() { Text = "请选择", Value = "0", Selected = true });
+            list_cteacher.AddRange(EmployandCounTeacherCoom.getallCountTeacher(true).Select(c => new SelectListItem() { Text = c.empname, Value = c.empname }).ToList());
+            list_one.AddRange(EmployandCounTeacherCoom.GetTeacher().Select(c => new SelectListItem() { Text = c.Employees_Id, Value = c.Id.ToString() }).ToList());
+            ViewBag.teacherlist = list_cteacher;
+            ViewBag.Teacher = list_one;
+            //获取学生状态所有数据
+            List<SelectListItem> ss = new List<SelectListItem>();
+            ss.Add(new SelectListItem() { Value = "0", Text = "请选择", Selected = true });
+            ss.AddRange(s_Entity.Stustate_Entity.GetList().Select(s => new SelectListItem { Text = s.StatusName, Value = s.StatusName }).ToList());
+
+            ViewBag.slist = ss;
+
+            ViewBag.Pers = s_Entity.GetPostion(UserName.EmpNumber);
+
+            //获取市场类型
+            ViewBag.type = Marketgrand();
+            return View();
+        }
+
+        public ActionResult DeleteFunction(int id)
+        {
+            AjaxResult a = new AjaxResult();
+            a.Success= s_Entity.Shenhe_changeDele(id);
+
+            Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
+
+
+            if (a.Success)
+            {
+                a.Msg = "操作成功！";
+
+                string reamk = Request.QueryString["reavke"];
+
+                Delte_StudentPutinfo putinfo = new Delte_StudentPutinfo();
+                putinfo.datetims = DateTime.Now;
+                putinfo.Reamk = reamk;
+                putinfo.StudentID = id;
+                putinfo.UserName =s_Entity.Enplo_Entity.FindEmpData(UserName.EmpNumber,true).EmpName;
+
+               a.Success= s_Entity.deletdata.Add_data(putinfo);
+            }
+            else
+            {
+                a.Msg = "数据异常！请刷新重试！";
+            }
+            return Json(a,JsonRequestBehavior.AllowGet);
+        }
+        #endregion
     }
 }

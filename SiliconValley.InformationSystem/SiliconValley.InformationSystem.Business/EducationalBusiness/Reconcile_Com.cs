@@ -327,6 +327,18 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         }
  
         /// <summary>
+        /// 获取这个阶段的课程
+        /// </summary>
+        /// <returns></returns>
+        public static List<Curriculum> GetGrandCurr(int grand)
+        {
+            List<Curriculum> list= Curriculum_Entity.GetListBySql<Curriculum>("select * from  Curriculum where Grand_Id="+grand);
+
+            return list;
+        }
+        
+    
+        /// <summary>
         /// 修改授课班级数据
         /// </summary>
         /// <param name="date"></param>
