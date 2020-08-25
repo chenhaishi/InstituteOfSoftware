@@ -1904,6 +1904,7 @@
     <Content Include="Areas\Market\Views\StudentDataKeep\Delete.cshtml" />
     <Content Include="Areas\ExaminationSystem\Views\QuestionsBank\DuplicateRemoval.cshtml" />
     <Content Include="Areas\ExaminationSystem\Views\QuestionsBank\DuplicateRemovalXZ.cshtml" />
+    <Content Include="Areas\Teachingquality\Views\Shared\errorClass.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
@@ -1914,6 +1915,7 @@
     <Content Include="Scripts\dtree2.5.4\layui_ext\dtree\font\dtreefont.ttf" />
     <Content Include="Scripts\dtree2.5.4\layui_ext\dtree\font\dtreefont.woff" />
     <Content Include="Scripts\dtree2.5.4\layui_ext\dtree\font\icons.json" />
+    <None Include="Properties\PublishProfiles\FolderProfile2.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\business\requestbusiness.js" />
     <Content Include="Scripts\config.js" />
@@ -3640,7 +3642,6 @@
     <Folder Include="Areas\Studenteducation\Views\Education\" />
     <Folder Include="Areas\Studenteducation\Views\Shared\" />
     <Folder Include="Areas\Teachingquality\Models\" />
-    <Folder Include="Areas\Teachingquality\Views\Shared\" />
     <Folder Include="Areas\Teaching\Images\MajorLogoImages\" />
     <Folder Include="Areas\Teaching\Models\" />
     <Folder Include="Areas\Teaching\Views\StudentDataKeep\" />
