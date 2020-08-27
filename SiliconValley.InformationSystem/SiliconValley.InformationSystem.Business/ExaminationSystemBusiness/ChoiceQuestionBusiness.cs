@@ -136,6 +136,49 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
 
 
         }
+        /// <summary>
+        /// 批量更改选择题难度
+        /// </summary>
+        /// <param name="questionIds"></param>
+        /// <param name="courseS"></param>
+        public void PiLiangXiuGaiND(List<string> questionIds, int Level)
+        {
+
+            foreach (var item in questionIds)
+            {
+
+                var obj = this.AllChoiceQuestionData().Where(d => d.Id == int.Parse(item)).FirstOrDefault();
+
+                int level = Level;
+                obj.Level = level;
+                this.Update(obj);
+
+            }
+
+
+
+        }
+        /// <summary>
+        /// 批量修改选择题课程
+        /// </summary>
+        /// <param name="questionIds"></param>
+        public void PiLiangXiuGai(List<string> questionIds, int courseS)
+        {
+
+            foreach (var item in questionIds)
+            {
+
+                var obj = this.AllChoiceQuestionData().Where(d => d.Id == int.Parse(item)).FirstOrDefault();
+
+                int course = courseS;
+                obj.Course = course;
+                this.Update(obj);
+
+            }
+
+
+
+        }
 
 
         /// <summary>
