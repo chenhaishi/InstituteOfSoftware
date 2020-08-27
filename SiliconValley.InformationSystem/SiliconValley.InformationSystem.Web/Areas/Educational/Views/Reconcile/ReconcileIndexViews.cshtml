@@ -21,6 +21,9 @@
              margin:0px auto;
              text-align:center;
         }
+        .divCss2{
+        margin-top:20px;
+        }
     </style>
 }
 
@@ -29,11 +32,11 @@
         <button id="Anan2" type="button" class="layui-btn"><i class="layui-icon">&#xe654;</i>手动排课</button>
         <button id="Anan3" type="button" class="layui-btn"><i class="layui-icon">&#xe654;</i>非专业课程排课</button>
         <button id="Anan4" type="button" class="layui-btn"><i class="layui-icon">&#xe654;</i>单个课程排课</button>
-
+    </div>
+    <div class="divCss1 divCss2">
+        <button id="AddBtn1" type="button" class="layui-btn"><i class="layui-icon">&#xe654;</i>加课</button>
     </div>
     
-
- 
  
     <script src="~/Scripts/Tangmin_CssAndJs/com_js/MyOrther_tangmin.js"></script>
     <script>         
@@ -92,6 +95,19 @@
                     content: '/Educational/Reconcile/SingeAnpaiView'
                     , area: ['900px', '550px'],
                     title: '单个课程排课页面'
+                    , shade: 0.8
+                    , anim: 4
+                    , skin: 'demo-class'
+                });
+            });
+            //打开加课页面
+            $("#AddBtn1").click(function () {
+                var layer = layui.layer;
+                layer.open({
+                    type: 2,
+                    content: '/Educational/Reconcile/AddReconcileView'
+                    , area: ['800px', '750px'],
+                    title: '加课页面'
                     , shade: 0.8
                     , anim: 4
                     , skin: 'demo-class'

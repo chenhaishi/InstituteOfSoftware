@@ -22,6 +22,7 @@ using SiliconValley.InformationSystem.Business.Cloudstorage_Business;
 using SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data;
 using SiliconValley.InformationSystem.Business.StudentmanagementBusinsess;
 using SiliconValley.InformationSystem.Business.Base_SysManage;
+using SiliconValley.InformationSystem.Business.FinaceBusines;
 
 namespace SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness
 {
@@ -96,6 +97,11 @@ namespace SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness
         /// 数据作废记录业务类
         /// </summary>
         public Delte_StudentPutinfoManeger deletdata = new Delte_StudentPutinfoManeger();
+
+        /// <summary>
+        /// 获取指点日期的报名、预录费用
+        /// </summary>
+        public CostitemsBusiness Costitems = new CostitemsBusiness();
         #endregion
 
 

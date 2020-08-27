@@ -1407,6 +1407,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
             return s;
         }
+         
         #region 提供修改排课数据的方法
         /// <summary>
         /// 获取XX班级在这XX天上XX课程的排课情况
@@ -2716,6 +2717,70 @@ Curriculum_Id like '职素' or Curriculum_Id like '班会' or Curriculum_Id like
 
         #endregion
 
+
+        #region 加课
+
+        /// <summary>
+        /// 添加课程
+        /// </summary>
+        /// <param name="count">天数</param>
+        /// <param name="date">加课日期</param>
+        /// <param name="class_id">班级编号</param>
+        /// <param name="year">单双休规则</param>
+        /// <param name="currname">课程名称</param>
+        /// <param name="classroomid">教室编号</param>
+        /// <param name="curse">上课时间段</param>
+        /// <param name="emp">上课老师</param>
+        /// <returns></returns>
+        public List<Reconcile> AddCurr(int count,DateTime date,int class_id ,GetYear year,string currname,int classroomid,string curse,string emp)
+        {
+            List<Reconcile> datalist = new List<Reconcile>();
+            for (int i = 0; i < count; i++)
+            {
+                Reconcile r = new Reconcile();
+                r.AnPaiDate = date;
+                if (date.Month>=year.StartmonthName && date.Month<=year.EndmonthName)
+                {
+                    //单休
+                    if (date.DayOfWeek==DayOfWeek.Saturday)
+                    {
+                        //星期六
+                        date = date.AddDays(2);
+                    }
+                    else
+                    {
+                        date = date.AddDays(1);
+                    }
+                }
+                else
+                {
+                    //双休
+                    if (date.DayOfWeek == DayOfWeek.Friday)
+                    {
+                        //星期五
+                        date = date.AddDays(3);
+                    }
+                    else
+                    {
+                        date = date.AddDays(1);
+                    }
+                }
+
+                r.ClassRoom_Id = classroomid;
+                r.ClassSchedule_Id = class_id;
+                r.Curse_Id = curse;
+                r.Curriculum_Id = currname;
+                r.EmployeesInfo_Id = emp;
+                r.IsDelete = false;
+                r.NewDate = DateTime.Now;
+                
+                datalist.Add(r);
+            }
+
+            return datalist;
+        }
+        
+        #endregion
     }
 }
 

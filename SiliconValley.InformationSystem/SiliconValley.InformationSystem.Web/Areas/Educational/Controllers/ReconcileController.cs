@@ -22,7 +22,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
     [CheckLogin]
     public class ReconcileController : BaseMvcController
     {
-        // GET: /Educational/Reconcile/GetTeacherser
+        // GET: /Educational/Reconcile/AddReconcileFunction
         readonly ReconcileManeger Reconcile_Entity = new ReconcileManeger();
 
 
@@ -1483,9 +1483,52 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         #region 加课
         public ActionResult AddReconcileView()
         {
+            //加载阶段
+            List<SelectListItem> g_list = Reconcile_Entity.GetEffectiveData().Select(g => new SelectListItem() { Text = g.GrandName, Value = g.Id.ToString() }).ToList();
+            g_list.Add(new SelectListItem() { Text = "--请选择--", Value = "0", Selected = true });
+            ViewBag.grandlist = g_list;
+
+            //加载校区
+            BaseDataEnumManeger baseDataEnum_Entity = new BaseDataEnumManeger();
+            List<SelectListItem> schooladdress = baseDataEnum_Entity.GetsameFartherData("校区地址").Select(s => new SelectListItem() { Text = s.Name, Value = s.Id.ToString() }).ToList();
+            schooladdress.Add(new SelectListItem() { Text = "--请选择--", Value = "0", Selected = true });
+            ViewBag.Schooladdress = schooladdress;
+
             return View();
         }
 
+        [HttpPost]
+        public ActionResult AddReconcileFunction()
+        {
+            int class_id =Convert.ToInt32(Request.Form["class_select"]);//班级
+
+            string currname =Request.Form["curselect"];//课程名字
+
+            int count =Convert.ToInt32(Request.Form["count"]);//加课数量
+
+            DateTime date = Convert.ToDateTime(Request.Form["startTime"]);//开始日期
+
+            int classroom_id = Convert.ToInt32(Request.Form["myclassroom"]);//教室编号
+
+            string curse = Request.Form["curse"];//上课时间
+
+            string emp = Request.Form["Teacherid"];
+
+            //步骤一:先将原本的数据往后推count天」
+            GetYear years = Reconcile_Entity.MyGetYear(date.Year.ToString(), Server.MapPath("~/Xmlconfigure/Reconcile_XML.xml"));
+            bool s= Reconcile_Entity.AidClassData(date, count, class_id, years);
+            AjaxResult a = new AjaxResult() { Success=false,Msg="操作失败，请刷新重试！"};
+            if (s)
+            {
+                //步骤二 
+               List<Reconcile> list= Reconcile_Entity.AddCurr(count, date, class_id, years, currname, classroom_id, curse, emp);
+
+              a=  Reconcile_Entity.AddData(list);
+            }
+
+            return Json(a,JsonRequestBehavior.AllowGet) ;
+        }
+        
         #endregion
 
     }
