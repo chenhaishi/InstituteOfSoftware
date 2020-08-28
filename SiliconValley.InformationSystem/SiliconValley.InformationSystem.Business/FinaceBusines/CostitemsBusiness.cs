@@ -1,6 +1,8 @@
 ﻿using SiliconValley.InformationSystem.Business.Common;
+using SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness;
 using SiliconValley.InformationSystem.Business.TeachingDepBusiness;
 using SiliconValley.InformationSystem.Entity.MyEntity;
+using SiliconValley.InformationSystem.Entity.ViewEntity.XYK_Data;
 using SiliconValley.InformationSystem.Util;
 using System;
 using System.Collections.Generic;
@@ -150,65 +152,38 @@ namespace SiliconValley.InformationSystem.Business.FinaceBusines
         /// 查询缴费名单
         /// </summary>
         /// <param name="date">按时间查询</param>
-        /// <param name="type">按类型查询</param>
+        /// <param name="type">按类型查询1--查询学费，2--查询预录费</param>
+        ///  <param name="grand">阶段</param>
         /// <returns></returns>
-        public AjaxResult TypeSelect(DateTime date,int type)
+        public AjaxResult TypeSelect(DateTime date,int type,int grand)
         {
-            AjaxResult list = new AjaxResult();
-            List<Entity.ViewEntity.XYK_Data.Student> obj = new List<Entity.ViewEntity.XYK_Data.Student>();
+            AjaxResult list = new AjaxResult() { Msg="没有查询到数据",Success=false};
 
-            try
+            StudentDataKeepAndRecordBusiness studentdatakeep = new StudentDataKeepAndRecordBusiness();
+
+            List<Student> liststudent = new List<Student>();
+
+            if (type==1)
             {
-                if (type == 1)
-                {
-                    BaseBusiness<StudentFeeRecord> su = new BaseBusiness<StudentFeeRecord>();
-                    BaseBusiness<StudentInformation> cu = new BaseBusiness<StudentInformation>();
-                    BaseBusiness<StudentPutOnRecord> ru = new BaseBusiness<StudentPutOnRecord>();
-                    var SFeerecord = su.GetList().Where(d => d.AddDate.Value.Year == date.Year && d.AddDate.Value.Month == date.Month).ToList();
-                    foreach (var item in SFeerecord)
-                    {
-                        var SchList = cu.GetList().Where(d => d.StudentNumber == item.StudenID).SingleOrDefault();
-                        Entity.ViewEntity.XYK_Data.Student stu = new Entity.ViewEntity.XYK_Data.Student()
-                        {
-                            Keepid = SchList.StudentPutOnRecord_Id,
-                            num = item.Amountofmoney,
-                            StuName = SchList.Name
-                        };
-                        obj.Add(stu);
-                    }
-                    list.Success = true;
-                    list.Data = obj;
-                }
-                else if (type == 2)
-                {
+                StringBuilder sb = new StringBuilder(@"select stu.Name as 'StuName',StudentPutOnRecord_Id as 'Keepid',SUM(Amountofmoney) as 'sumMoney' from StudentFeeRecord as s  inner join StudentInformation as stu  on stu.StudentNumber = s.StudenID where Costitemsid in (select c.id from Costitems as c inner join Grand as g on c.Grand_id = " + grand + "   where g.Id = 1) and MONTH(s.AddDate)= " + date.Month + " and YEAR(s.AddDate)= " + date.Year + " group by s.StudenID,stu.Name,stu.StudentPutOnRecord_Id");
 
-                    BaseBusiness<Entity.Entity.Preentryfee> pr = new BaseBusiness<Entity.Entity.Preentryfee>();
-                    BaseBusiness<StudentInformation> cu = new BaseBusiness<StudentInformation>();
-                    var StuList = pr.GetList().Where(d => d.AddDate.Year == date.Year && d.AddDate.Month == date.Month).ToList();
-                    foreach (var item in StuList)
-                    {
-                        // Where(d => d.identitydocument == SchaInfoList.identitydocument)
-                        var SchaInfoList = cu.GetList().Where(d => d.identitydocument == item.identitydocument).SingleOrDefault();
-                        Entity.ViewEntity.XYK_Data.Student stu = new Entity.ViewEntity.XYK_Data.Student()
-                        {
-                            Keepid = item.keeponrecordid,
-                            num = item.Amountofmoney,
-                            StuName = SchaInfoList.Name
-                        };
-                        obj.Add(stu);
-                    }
-
-                    list.Success = true;
-                    list.Data = obj;
-                }
+                    liststudent= this.GetListBySql<Student>(sb.ToString());
             }
-            catch (Exception ex)
+            else
             {
-                list = new ErrorResult();
-                list.Msg = "服务器错误";
-                list.Success = false;
-                list.ErrorCode = 500;
+                StringBuilder sb = new StringBuilder(@"select p.identitydocument as 'StuName',p.keeponrecordid as 'Keepid',Sum(p.Amountofmoney) as 'sumMoney' from Preentryfee as p 
+where MONTH(p.AddDate) = "+date.Month+" and YEAR(p.AddDate) = "+date.Year+" group by p.identitydocument, p.keeponrecordid");
+
+                liststudent = this.GetListBySql<Student>(sb.ToString()).Select(l=>new Student() { Keepid=l.Keepid,StuName= studentdatakeep.findId(l.Keepid.ToString())==null?"无":studentdatakeep.findId(l.Keepid.ToString()).StuName, sumMoney =l.sumMoney }).ToList();
+                
             }
+
+            if (liststudent.Count>0)
+            {
+                list.Success = true;
+                list.Data = liststudent;
+            }
+
             return list;
         }
         /// <summary>

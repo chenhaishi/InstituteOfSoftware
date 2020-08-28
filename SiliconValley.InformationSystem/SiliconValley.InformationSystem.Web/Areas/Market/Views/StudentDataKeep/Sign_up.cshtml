@@ -34,12 +34,20 @@
                 <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
                     <label class="layui-form-label">类 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 型:</label>
                     <div class="layui-input-block">
-                        <input type="radio" class="layui-input" value="1" title="已报名" name="type" checked/>
-                        <input type="radio" class="layui-input" value="2" title="已交预录费" name="type"/>
+                        <input type="radio" class="layui-input" value="1" title="已报名" name="type" checked />
+                        <input type="radio" class="layui-input" value="2" title="已交预录费" name="type" />
                     </div>
                 </div>
             </div>
             <div class="layui-row layui-form-item">
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                    <label class="layui-form-label">选择阶段:</label>
+                    <div class="layui-input-block">
+                         @Html.DropDownList("grand", ViewBag.glist as IEnumerable<SelectListItem>,new Dictionary<string, object>() { })
+                    </div>
+                </div>
+            </div>
+            @*<div class="layui-row layui-form-item">
                 <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
                     <label class="layui-form-label">信息来源:</label>
                     <div class="layui-input-block">
@@ -54,7 +62,7 @@
                         }
                     </div>
                 </div>
-            </div>
+            </div>*@
             <div class="layui-row layui-form-item">
                 <div style="text-align:center">
                     <button type="button" class="layui-btn" lay-submit="" lay-filter="true">确定下载</button>
@@ -80,15 +88,41 @@
             });
 
 
-            form.on('submit(true)', function (data) {
-
-                console.log(data.field);
+            form.on('submit(true)', function (data) {              
                 $.ajax({
                     url: '/Market/StudentDataKeep/Signupfunction',
                     data: data.field,
                     type: 'POST',
-                    success: function (suc) {
-                        
+                    success: function (res) {
+                        var ind = layer.load(1);
+                        if (res.Success) {
+                            //列标题，逗号隔开，每一个逗号就是隔开一个单元格
+                            let str = "学生费表" + `\n`;
+                            //增加\t为了不让表格显示科学计数法或者其他格式
+                            for (let i = -1; i < res.Data.length; i++) {
+                                if (i == -1) {
+                                    str += `姓名\t,费用\t,`;
+                                } else {
+                                    str += '' + res.Data[i].StuName + '\t,' + res.Data[i].sumMoney + '\t,';
+                                }
+                                str += '\n';
+                            }
+                            //encodeURIComponent解决中文乱码
+                            let uri = 'data:text/csv;charset=utf-8,\ufeff' + encodeURIComponent(str);
+                            //通过创建a标签实现
+                            var link = document.createElement("a");
+                            link.href = uri;
+                            //对下载的文件命名
+                            link.download = "费用报表.xls";
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            layer.close(ind);
+                        } else {
+                            layer.close(ind);
+
+                            layer.msg('系统错误，请刷新重试!!!', { icon: 2, shade: 0.8 });
+                        }
                     }
                 });
 
