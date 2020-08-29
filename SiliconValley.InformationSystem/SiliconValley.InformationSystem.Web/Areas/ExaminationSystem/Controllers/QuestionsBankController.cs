@@ -69,7 +69,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
              return View();
         }
         /// <summary>
-        /// 选择题去重页
+        /// 选择题去重分布视图
         /// </summary>
         /// <returns></returns>
         public ActionResult DuplicateRemovalXZ()
@@ -78,13 +78,142 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             return View();
         }
         /// <summary>
-        /// 解答题去重页
+        /// 解答题去重分布视图
         /// </summary>
         /// <returns></returns>
         public ActionResult DuplicateRemoval()
         {
             
             return View();
+        }
+        /// <summary>
+        /// 批量修改选择题难度
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <param name="Level"></param>
+        /// <returns></returns>
+        public ActionResult NanDuXuanZe(string ids, int Level)
+        {
+            AjaxResult result = new AjaxResult();
+
+            string[] ary1 = ids.Split(',');
+
+            var list = ary1.ToList();
+
+            list.RemoveAt(ary1.Length - 1);
+            try
+            {
+                db_choiceQuestion.PiLiangXiuGaiND(list, Level);
+
+                result.ErrorCode = 200;
+                result.Data = null;
+                result.Msg = "成功";
+            }
+            catch (Exception ex)
+            {
+
+                result.ErrorCode = 500;
+                result.Data = null;
+                result.Msg = ex.Message;
+            }
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+
+        }
+        /// <summary>
+        /// 批量更改解答题难度
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult NanDuJieDa(string ids,int Level)
+        {
+            AjaxResult result = new AjaxResult();
+
+            string[] ary1 = ids.Split(',');
+
+            var list = ary1.ToList();
+
+            list.RemoveAt(ary1.Length - 1);
+
+            try
+            {
+                db_answerQuestion.PiliangXiuGaiND(list, Level);
+
+                result.ErrorCode = 200;
+                result.Data = null;
+                result.Msg = "成功";
+            }
+            catch (Exception ex)
+            {
+
+                result.ErrorCode = 500;
+                result.Data = null;
+                result.Msg = ex.Message;
+            }
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
+        /// 批量更改解答题课程
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ChangeJieDa(string ids,int courseS)
+        {
+            AjaxResult result = new AjaxResult();
+
+            string[] ary1 = ids.Split(',');
+
+            var list = ary1.ToList();
+
+            list.RemoveAt(ary1.Length - 1);
+
+            try
+            {
+                db_answerQuestion.PiliangXiuGai(list, courseS);
+
+                result.ErrorCode = 200;
+                result.Data = null;
+                result.Msg = "成功";
+            }
+            catch (Exception ex)
+            {
+
+                result.ErrorCode = 500;
+                result.Data = null;
+                result.Msg = ex.Message;
+            }
+            
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
+        /// 批量更改选择题课程
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ChangeXuanZe(string ids,int courseS)
+        {
+            AjaxResult result = new AjaxResult();
+
+            string[] ary1 = ids.Split(',');
+
+            var list = ary1.ToList();
+
+            list.RemoveAt(ary1.Length - 1);
+            try
+            {
+                db_choiceQuestion.PiLiangXiuGai(list,courseS);
+
+                result.ErrorCode = 200;
+                result.Data = null;
+                result.Msg = "成功";
+            }
+            catch (Exception ex)
+            {
+
+                result.ErrorCode = 500;
+                result.Data = null;
+                result.Msg = ex.Message;
+            }
+
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
         /// 解答题查询相同题 
@@ -253,8 +382,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         public ActionResult ChoiceQuestionIndex()
         {
             GrandBusiness GrandBusiness = new GrandBusiness();
+            //提供难度级别数据
 
-             
+            ViewBag.QuestionLevel = db_questionLevel.AllQuestionLevel();
+
             ViewBag.grand = GrandBusiness.AllGrand();
             return View();
 
@@ -729,16 +860,22 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             {
                 resultlist = db_choiceQuestion.AllChoiceQuestionData().ToList();
             }
-
+            else
+            if (course != 0 && title == null)
+            {
+                resultlist = db_choiceQuestion.AllChoiceQuestionData().Where(d => d.Course == course).ToList();
+            }
+            else
             if (course != 0 && title =="")
             {
                 resultlist = db_choiceQuestion.AllChoiceQuestionData().Where(d => d.Course == course ).ToList();
             }
-
+            else
             if (title != "" && course != 0)
             {
                 resultlist = db_choiceQuestion.AllChoiceQuestionData().Where(d => d.Course == course && d.Title.Contains(title)).ToList();
             }
+            else
             if (title != "" && course == 0)
             {
                 resultlist = db_choiceQuestion.AllChoiceQuestionData().Where(d=>d.Title.Contains(title)).ToList();
@@ -786,6 +923,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         public ActionResult ClearlyQuestionIndex()
         {
             GrandBusiness GrandBusiness = new GrandBusiness();
+            //提供难度级别数据
+
+            ViewBag.QuestionLevel = db_questionLevel.AllQuestionLevel();
 
             ViewBag.grand = GrandBusiness.AllGrand();
 
@@ -1036,16 +1176,22 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             {
                 resultlist = db_answerQuestion.AllAnswerQuestion().ToList();
             }
-
+            else
+            if (course != 0 && Title == null)
+            {
+                resultlist = db_answerQuestion.AllAnswerQuestion().Where(d => d.Course == course).ToList();
+            }
+            else
             if (course != 0 && Title == "")
             {
                 resultlist = db_answerQuestion.AllAnswerQuestion().Where(d => d.Course == course).ToList();
             }
-
+            else
             if (Title != "" && course != 0)
             {
                 resultlist = db_answerQuestion.AllAnswerQuestion().Where(d => d.Course == course && d.Title.Contains(Title)).ToList();
             }
+            else
             if (Title != "" && course == 0)
             {
                 resultlist = db_answerQuestion.AllAnswerQuestion().Where(d => d.Title.Contains(Title)).ToList();

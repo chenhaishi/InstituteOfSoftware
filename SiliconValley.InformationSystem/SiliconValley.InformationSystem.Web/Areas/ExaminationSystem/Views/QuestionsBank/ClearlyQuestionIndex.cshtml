@@ -91,42 +91,92 @@
 
         <button class="layui-btn layui-btn-sm" lay-event="downloadTemplate"><i class="layui-icon layui-icon-download-circle"></i>下载题库模板</button>
 
-        <button type="button" class="layui-btn layui-btn-sm btn-info"  onclick="quchong()">去重</button>
+        <button class="layui-btn layui-btn-sm" lay-event="Batch">批量更改课程</button>
+
+        <button class="layui-btn layui-btn-sm" lay-event="Difficulty">批量更改难度</button>
+
+        <button type="button" class="layui-btn layui-btn-sm btn-info" onclick="quchong()">去重</button>
     </div>
 </script>
 
-
-<!--行内工具按钮-->
-<script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="detail">详情</a>
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-</script>
-
-<script type="text/html" id="InitHtm">
-
-    <h4 style="text-align:center; margin-top:10px;">默认10个题 目</h4>
-    <hr />
+<div id="TeacherDiv" style="display:none">
     <form class="layui-form">
-        <div class="layui-inline">
-            <label class="layui-form-label"></label>
-            <div class="layui-input-inline">
-                <input type="number" value="10" id="InitNumber" autocomplete="off" class="layui-input">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">阶段</label>
+                <div class="layui-input-inline">
+                    <select name="GrandS" lay-filter="majorS">
+                        <option value="0">请选择</option>
+
+                        @{
+                            foreach (var item in ViewBag.Grand as List<Grand>)
+                            {
+                                <option value="@item.Id">@item.GrandName</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">课程</label>
+                <div class="layui-input-inline">
+                    <select lay-verify="required" name="courseS" id="courseS"></select>
+                </div>
             </div>
         </div>
-        <hr />
-        <div style="text-align:center;">
-            <button type="button" id="initBtn" class="layui-btn layui-btn-primary" lay-event="UsingOrnoUsing">初始化</button>
-        </div>
-        
+        <button type="button" style="text-align:center;width:68%" class="layui-btn layui-btn layui-input-block" onclick="QueRen()">提交</button>
     </form>
-</script>
+</div>
 
-@section script{
+<div id="DifficultyDiv" style="display:none">
+    <form class="layui-form" lay-filter="NanDuid">
+        <div class="layui-form-item">
+            <div class="layui-form-item">
+                <label class="layui-form-label">难度级别</label>
+                <div class="layui-input-block">
 
-    <script src="~/Areas/Teaching/Scripts/Ajax.js"></script>
-    <script>
+                    @{
+                        foreach (var item in ViewBag.QuestionLevel as List<QuestionLevel>)
+                        {
+                            <input type="radio" name="Level" id="Level" value="@item.LevelID" title="@item.LevelName">
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        <button type="button" style="text-align:center;width:68%" class="layui-btn layui-btn layui-input-block" onclick="TiJiao()">提交</button>
+    </form>
+  </div>
+        <!--行内工具按钮-->
+        <script type="text/html" id="barDemo">
+            <a class="layui-btn layui-btn-xs" lay-event="detail">详情</a>
+            <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+        </script>
 
+        <script type="text/html" id="InitHtm">
+
+            <h4 style="text-align:center; margin-top:10px;">默认10个题 目</h4>
+            <hr />
+            <form class="layui-form">
+                <div class="layui-inline">
+                    <label class="layui-form-label"></label>
+                    <div class="layui-input-inline">
+                        <input type="number" value="10" id="InitNumber" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <hr />
+                <div style="text-align:center;">
+                    <button type="button" id="initBtn" class="layui-btn layui-btn-primary" lay-event="UsingOrnoUsing">初始化</button>
+                </div>
+
+            </form>
+        </script>
+
+        @section script{
+
+            <script src="~/Areas/Teaching/Scripts/Ajax.js"></script>
+            <script>
 
         if (!document.HTMLDOMtoString) {
             document.HTMLDOMtoString = function (HTMLDOM) {
@@ -134,6 +184,66 @@
                 div.appendChild(HTMLDOM);
                 return div.innerHTML;
             }
+                }
+                
+         var ids = "";
+         var KeCid = "";//课程id
+                var TiJiao = function ()
+                {
+                    layui.use('form', function () {
+                        var form = layui.form;
+                        var Level = form.val("NanDuid").Level;
+                        console.log(Level);
+                        layer.confirm('真的更改吗？', function (index) {
+
+                            Ajax('/ExaminationSystem/QuestionsBank/NanDuJieDa', { ids: ids, Level: Level }, 'post', function (data) {
+
+                                if (data.ErrorCode == 200) {
+
+                                    layer.msg("操作成功");
+
+                                }
+                                else {
+                                    layer.msg("服务器错误！");
+                                }
+
+
+
+                            }, function (error) {
+
+                                layer.msg("异常！");
+
+                            });
+
+                        });
+                    });
+                  
+         }
+        var QueRen = function () {
+            var courseS = $("#courseS").val();
+            console.log(courseS);
+            layer.confirm('真的更改吗？', function (index) {
+
+                Ajax('/ExaminationSystem/QuestionsBank/ChangeJieDa', { ids: ids, courseS: courseS }, 'post', function (data) {
+
+                    if (data.ErrorCode == 200) {
+
+                        layer.msg("操作成功");
+
+                    }
+                    else {
+                        layer.msg("服务器错误！");
+                    }
+
+
+
+                }, function (error) {
+
+                    layer.msg("异常！");
+
+                });
+
+            });
         }
         var quchong = function () {
             layer.open({
@@ -146,7 +256,7 @@
         function escapeHTMLString(str) {
             str = str.replace(/</g, '&lt;');
             str = str.replace(/>/g, '&gt;');
-           
+
             return str;
         }
 
@@ -155,7 +265,37 @@
         var table = layui.table;
         var layer = layui.layer;
         var form = layui.form;
+        //下拉框联动2
+        form.on('select(majorS)', function (data) {
+            var value = data.value;  //select选中的值
 
+            console.log("选中值" + value);
+            $.ajax({
+                url: "/ExaminationSystem/QuestionsBank/CourseData",
+                data: { grandid: value },
+                dataType: "json",
+                success: function (resultData) {
+                    if (resultData.length > 0) {
+                        //清空赋值
+                        $("#courseS").empty();
+                        console.log(resultData);
+                        $("#courseS").append(new Option("请选择项目", ""));
+                        $.each(resultData, function (index, item) {
+                            var grand_ = item.Grand == null ? "" : item.Grand.GrandName;
+                            var namaC = item.CourseName + '(' + grand_ + ')'
+                            //赋值
+                            $('#courseS')
+                                .append(new Option(namaC, item.CurriculumID));
+                        });
+                    } else {
+                        $("#courseS").empty();
+                        $("#courseS").append(new Option("暂无数据", ""));
+                    }
+                    $("#courseS").append(new Option("升学题", "0"));
+                    layui.form.render("select");
+                }
+            });
+        });
         //下拉框联动
         form.on('select(major)', function (data) {
             var value = data.value;  //select选中的值
@@ -188,7 +328,7 @@
         //查询
         form.on('submit(search)', function (data) {
 
-        
+
             table.reload('ClearlyQuestionsBank', {
 
                 url: '/ExaminationSystem/QuestionsBank/SearchAnswerQuestion'
@@ -227,10 +367,10 @@
 
                         //label.text(res.ReferenceAnswer);
 
-                        
+
 
                         var result = escapeHTMLString(res.ReferenceAnswer);
-                        
+
                         return result;
 
                     }
@@ -267,7 +407,7 @@
 
             ]],
             page: true
-        }); 
+        });
 
         //头工具栏事件
         table.on('toolbar(ClearlyQuestionsBank)', function (obj) {
@@ -298,7 +438,7 @@
 
                     if (checkStatus.data.length > 0) {
 
-                        var ids = "";
+                        ids = "";
 
                         for (var i = 0; i < checkStatus.data.length; i++) {
 
@@ -367,7 +507,64 @@
                         content: $("#InitHtm").html()
 
                     });
-                    
+
+                    break;
+                case 'Batch': //批量更改
+                     layer.open({
+                        type: 1,
+                        title: "更改",
+                        area: ["700px", "200px"],
+                        content: $('#TeacherDiv'),
+                        success: function () {
+                            if (checkStatus.data.length > 0) {
+
+                                ids = "";
+
+                                for (var i = 0; i < checkStatus.data.length; i++) {
+
+                                    ids += checkStatus.data[i].ID + ',';
+
+                                }
+                            }
+                            //发送请求
+                            console.log(ids);
+
+                         },end: function () {
+
+                             table.reload('ClearlyQuestionsBank', {
+
+                             });
+                         }
+
+                    });
+                    break;
+                case 'Difficulty':
+                    layer.open({
+                        type: 1,
+                        title: "更改",
+                        area: ["700px", "200px"],
+                        content: $('#DifficultyDiv'),
+                        success: function () {
+                            if (checkStatus.data.length > 0) {
+
+                                ids = "";
+
+                                for (var i = 0; i < checkStatus.data.length; i++) {
+
+                                    ids += checkStatus.data[i].ID + ',';
+
+                                }
+                            }
+                            //发送请求
+                            console.log(ids);
+
+                        }, end: function () {
+
+                            table.reload('ClearlyQuestionsBank', {
+
+                            });
+                        }
+                    });
                     break;
             };
         });
@@ -430,12 +627,12 @@
         $(document).off("click", "#initBtn").on("click", "#initBtn", function () {
             window.location.href = '/ExaminationSystem/QuestionsBank/DownLoadChoiceQuestionTemplate?templateType=解答题&init=' + $("#InitNumber").val();
             var indedx = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-            parent.layer.close(indedx); //再执行关闭  
+            parent.layer.close(indedx); //再执行关闭
         });
 
     });
 
 
-    </script>
-}
+            </script>
+        }
 

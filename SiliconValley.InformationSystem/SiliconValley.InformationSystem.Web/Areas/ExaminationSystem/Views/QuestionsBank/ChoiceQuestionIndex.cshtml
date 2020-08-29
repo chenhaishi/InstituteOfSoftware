@@ -13,7 +13,6 @@
             margin-top: 100px;
             margin-left: 100px;
         }
-       
     </style>
 
 }
@@ -23,7 +22,7 @@
 <!--筛选框-->
 
 <div id="searchDiv">
-    
+
     <form class="layui-form">
 
         <div style="" class="layui-form-item">
@@ -31,7 +30,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label">题目</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="Title" value=""  autocomplete="off" class="layui-input">
+                    <input type="text" name="Title" value="" autocomplete="off" class="layui-input">
                 </div>
             </div>
             <div class="layui-inline">
@@ -59,7 +58,7 @@
             </div>
 
             <div class="layui-inline">
-               <button class="layui-btn layui-btn-primary" lay-submit="" lay-filter="search">查询</button>
+                <button class="layui-btn layui-btn-primary" lay-submit="" lay-filter="search">查询</button>
 
             </div>
         </div>
@@ -86,11 +85,62 @@
 
         <button class="layui-btn layui-btn-sm" lay-event="downloadTemplate"><i class="layui-icon layui-icon-download-circle"></i>下载题库模板</button>
 
+        <button class="layui-btn layui-btn-sm" lay-event="Batch">批量更改课程</button>
+
+        <button class="layui-btn layui-btn-sm" lay-event="Difficulty">批量更改难度</button>
+
         <button class="layui-btn layui-btn-sm btn-info" onclick="quchong()">去重</button>
     </div>
 </script>
 
+<div id="TeacherDiv" style="display:none">
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">阶段</label>
+                <div class="layui-input-inline">
+                    <select name="GrandS" lay-filter="majorS">
+                        <option value="0">请选择</option>
 
+                        @{
+                            foreach (var item in ViewBag.Grand as List<Grand>)
+                            {
+                                <option value="@item.Id">@item.GrandName</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">课程</label>
+                <div class="layui-input-inline">
+                    <select lay-verify="required" name="courseS" id="courseS"></select>
+                </div>
+            </div>
+        </div>
+        <button type="button" style="text-align:center;width:68%" class="layui-btn layui-btn layui-input-block" onclick="QueRen()">提交</button>
+    </form>
+</div>
+
+<div id="DifficultyDiv" style="display:none">
+    <form class="layui-form" lay-filter="NanDuid">
+        <div class="layui-form-item">
+            <div class="layui-form-item">
+                <label class="layui-form-label">难度级别</label>
+                <div class="layui-input-block">
+
+                    @{
+                        foreach (var item in ViewBag.QuestionLevel as List<QuestionLevel>)
+                        {
+                            <input type="radio" name="Level" id="Level" value="@item.LevelID" title="@item.LevelName" >
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        <button type="button" style="text-align:center;width:68%" class="layui-btn layui-btn layui-input-block" onclick="TiJiao()">提交</button>
+    </form>
+</div>
 <!--行内工具按钮-->
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs" lay-event="detail">详情</a>
@@ -124,6 +174,63 @@
 
             return str;
         }
+        var ids = "";
+        var KeCid = "";//课程id
+        var TiJiao = function () {
+            layui.use('form', function () {
+                var form = layui.form;
+                var Level = form.val("NanDuid").Level;
+                console.log(Level);
+                layer.confirm('真的更改吗？', function (index) {
+
+                    Ajax('/ExaminationSystem/QuestionsBank/NanDuXuanZe', { ids: ids, Level: Level }, 'post', function (data) {
+
+                        if (data.ErrorCode == 200) {
+
+                            layer.msg("操作成功");
+
+                        }
+                        else {
+                            layer.msg("服务器错误！");
+                        }
+
+
+
+                    }, function (error) {
+
+                        layer.msg("异常！");
+
+                    });
+
+                });
+            });
+        }
+        var QueRen = function () {
+            var courseS = $("#courseS").val();
+            console.log(courseS);
+            layer.confirm('真的更改吗？', function (index) {
+
+                Ajax('/ExaminationSystem/QuestionsBank/ChangeXuanZe', { ids: ids, courseS: courseS }, 'post', function (data) {
+
+                    if (data.ErrorCode == 200) {
+
+                        layer.msg("操作成功");
+
+                    }
+                    else {
+                        layer.msg("服务器错误！");
+                    }
+
+
+
+                }, function (error) {
+
+                    layer.msg("异常！");
+
+                });
+
+            });
+        }
         var quchong = function () {
             layer.open({
                 type: 2,
@@ -139,7 +246,37 @@
         var table = layui.table;
 
         $(".layui-layer-input").attr("type","number")
+            //下拉框联动2
+            form.on('select(majorS)', function (data) {
+                var value = data.value;  //select选中的值
 
+                console.log("选中值" + value);
+                $.ajax({
+                    url: "/ExaminationSystem/QuestionsBank/CourseData",
+                    data: { grandid: value },
+                    dataType: "json",
+                    success: function (resultData) {
+                        if (resultData.length > 0) {
+                            //清空赋值
+                            $("#courseS").empty();
+                            console.log(resultData);
+                            $("#courseS").append(new Option("请选择项目", ""));
+                            $.each(resultData, function (index, item) {
+                                var grand_ = item.Grand == null ? "" : item.Grand.GrandName;
+                                var namaC = item.CourseName + '(' + grand_ + ')'
+                                //赋值
+                                $('#courseS')
+                                    .append(new Option(namaC, item.CurriculumID));
+                            });
+                        } else {
+                            $("#courseS").empty();
+                            $("#courseS").append(new Option("暂无数据", ""));
+                        }
+                        $("#courseS").append(new Option("升学题", "0"));
+                        layui.form.render("select");
+                    }
+                });
+            });
         //下拉框联动
         form.on('select(major)', function (data) {
             var value = data.value;  //select选中的值
@@ -169,8 +306,8 @@
         });
         //查询
         form.on('submit(search)', function (data) {
-         
-            console.log(data.field) 
+
+            console.log(data.field)
 
 
             table.reload('QuestionsBank', {
@@ -179,7 +316,7 @@
                 , where: data.field
             });
 
-            return false; 
+            return false;
         });
 
         //渲染表格
@@ -251,7 +388,7 @@
                 {
                     field: 'CourseName', width: 120, title: '所属课程', templet: function (res) {
 
-                    
+
                         if (res.Course == null) {
                             return "升学题目";
                         }
@@ -312,7 +449,7 @@
 
                     if (checkStatus.data.length > 0) {
 
-                        var ids = "";
+                         ids = "";
 
                         for (var i = 0; i < checkStatus.data.length; i++) {
 
@@ -382,6 +519,70 @@
 
                     });
 
+                    break;
+                case 'Batch': //批量更改
+                    layer.open({
+                        type: 1,
+                        title: "更改",
+                        area: ["700px", "200px"],
+                        content: $('#TeacherDiv'),
+                        success: function () {
+
+                            if (checkStatus.data.length > 0) {
+
+                                ids = "";
+
+                                for (var i = 0; i < checkStatus.data.length; i++) {
+
+
+
+                                    ids += checkStatus.data[i].Id + ',';
+
+                                }
+                            }
+                                //发送请求
+                                console.log(ids);
+
+                        }
+                        , end: function () {
+
+                            table.reload('QuestionsBank', {
+
+                            });
+                        }
+                    });
+                    break;
+                case 'Difficulty':
+                    layer.open({
+                        type: 1,
+                        title: "更改",
+                        area: ["700px", "200px"],
+                        content: $('#DifficultyDiv'),
+                        success: function () {
+
+                            if (checkStatus.data.length > 0) {
+
+                                ids = "";
+
+                                for (var i = 0; i < checkStatus.data.length; i++) {
+
+
+
+                                    ids += checkStatus.data[i].Id + ',';
+
+                                }
+                            }
+                            //发送请求
+                            console.log(ids);
+
+                        }
+                        , end: function () {
+
+                            table.reload('QuestionsBank', {
+
+                            });
+                        }
+                    });
                     break;
             };
 
@@ -461,7 +662,7 @@
 
             var inddex = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
 
-            parent.layer.close(inddex); //再执行关闭  
+            parent.layer.close(inddex); //再执行关闭
 
 
         });
