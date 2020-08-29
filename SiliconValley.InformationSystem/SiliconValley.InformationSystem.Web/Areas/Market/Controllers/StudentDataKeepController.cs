@@ -544,19 +544,23 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
             //            }                                                                                 
             //    }
             //}
-            if (s_Entity.StudentOrrideData(olds.StuName,olds.StuPhone,olds.StuWeiXin,olds.StuQQ)==null)
-            {
-                a = s_Entity.Update_data(olds);
-            }
-            else
-            {
-                a.Success = false;
-                a.Msg = "备案中已有重复的数据！";
-                StudentbeanLog log = new StudentbeanLog() { insertDate = DateTime.Now, userId = UserName.EmpNumber, operationType = Entity.Base_SysManage.EnumType.LogType.编辑数据 + ":备案编号为" + olds.Id + "," + olds.StuName + "备案数据编辑时，已有重复的电话，或微信，或QQ！" };
-                s_Entity.log_s.Add_data(log);
-            }
-            
 
+            //if (find.StuPhone==null)
+            //{
+            //    if (s_Entity.StudentOrrideData(olds.StuName, olds.StuPhone, olds.StuWeiXin, olds.StuQQ) == null)
+            //    {
+            //        
+            //    }
+            //    else
+            //    {
+            //        a.Success = false;
+            //        //a.Msg = "备案中已有重复的数据！";
+            //        //StudentbeanLog log = new StudentbeanLog() { insertDate = DateTime.Now, userId = UserName.EmpNumber, operationType = Entity.Base_SysManage.EnumType.LogType.编辑数据 + ":备案编号为" + olds.Id + "," + olds.StuName + "备案数据编辑时，已有重复的电话，或微信，或QQ！" };
+            //        //s_Entity.log_s.Add_data(log);
+            //    }
+
+            //}
+            a = s_Entity.Update_data(olds);
             if (a.Success==true)
             {
                 StudentbeanLog log = new StudentbeanLog() { insertDate = DateTime.Now, userId = UserName.EmpNumber, operationType = Entity.Base_SysManage.EnumType.LogType.编辑数据 + ":备案编号为"+olds.Id+"," + olds.StuName + "备案数据编辑成功！" };

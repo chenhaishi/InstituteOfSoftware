@@ -70,7 +70,7 @@
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label">电 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 话:</label>
                         <div class="layui-input-block">                                   
-                            <input name="StuPhone" id="StuPhone" class="layui-input linu" style="color:red"/> 
+                            <input name="StuPhone" id="StuPhone" class="layui-input linu" style="color:red" lay-verify="Replay"/> 
                         </div>
                     </div>
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
@@ -301,7 +301,31 @@
                     if (s < 0) {
                         return "时间选择错误，请重新选择";
                     }
-                }
+                },
+                  Replay: function (value) {
+                    if (value.length == 11) {
+                        var sss = value.split(" ");
+                        if (sss.length >= 2) {
+                            return '不能有空格！';
+                        }
+                        var reg = /^[\u4e00-\u9fa50-9A-Za-z]+$/;
+                        var Is = reg.test(value);
+                        if (Is == false) {
+                            return '不能出现标点符号！';
+                        }
+
+                        var reg2 = /^1[23456789]\d{9}$/;
+                        var Is2 = reg2.test(value);
+
+                        if (Is2 == false) {
+                            return '不能出现字母,汉字！';
+                        }
+
+                    } else if (value.length != 11 && value.length > 0) {
+                        return '电话号码长度为11位！';
+
+                    }
+                },
             });
 
             //修改数据

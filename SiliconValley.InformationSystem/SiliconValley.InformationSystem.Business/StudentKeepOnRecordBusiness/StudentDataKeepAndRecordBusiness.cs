@@ -554,8 +554,21 @@ namespace SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness
                     //} 
 
                     //fins.EmployeesInfo_Id = olds.EmployeesInfo_Id;
-                    if (fins.StuPhone == null)
+                    if (fins.StuPhone == null )
                     {
+                        //判断是否有相同的电话号码
+                        if (olds.StuPhone!=null)
+                        {
+                            ExportStudentBeanData findata = StudentOrrideData(olds.StuName, olds.StuPhone, null, null);
+                            if (findata != null)
+                            {
+                                a.Success = false;
+                                a.Msg = "已有相同学生，相同电话号码的数据，所以不能修改！！";
+
+                                return a;
+                            }
+                        }
+                         
                         fins.StuPhone = olds.StuPhone;
                     }
 
@@ -594,11 +607,35 @@ namespace SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness
 
                     if (fins.StuWeiXin == null)
                     {
+                        if (olds.StuWeiXin!=null)
+                        {
+                            ExportStudentBeanData findata = StudentOrrideData(olds.StuName, null, olds.StuWeiXin, null);
+                            if (findata != null)
+                            {
+                                a.Success = false;
+                                a.Msg = "已有相同学生，相同微信的数据，所以不能修改！！";
+
+                                return a;
+                            }
+                        }
+                         
                         fins.StuWeiXin = olds.StuWeiXin;
                     }
 
                     if (fins.StuQQ == null)
                     {
+                        if (olds.StuQQ!=null)
+                        {
+                            ExportStudentBeanData findata = StudentOrrideData(olds.StuName, null, null, olds.StuQQ);
+                            if (findata != null)
+                            {
+                                a.Success = false;
+                                a.Msg = "已有相同学生，相同QQ的数据，所以不能修改！！";
+
+                                return a;
+                            }
+                        }
+                         
                         fins.StuQQ = olds.StuQQ;
                     }
 
