@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SiliconValley.InformationSystem.Util;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -12,6 +13,15 @@ namespace SiliconValley.InformationSystem.Web.Controllers
         public ActionResult Index()
         {
             return View();
+        }
+
+        public ActionResult Text()
+        {
+            RedisCache redis = new RedisCache();
+            redis.SetCache("student", "唐敏");
+
+           string str= redis.GetCache("student").ToString();
+            return null;
         }
     }
 }

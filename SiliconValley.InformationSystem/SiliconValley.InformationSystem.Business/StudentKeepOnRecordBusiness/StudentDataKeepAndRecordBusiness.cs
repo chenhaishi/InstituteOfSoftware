@@ -23,6 +23,7 @@ using SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data;
 using SiliconValley.InformationSystem.Business.StudentmanagementBusinsess;
 using SiliconValley.InformationSystem.Business.Base_SysManage;
 using SiliconValley.InformationSystem.Business.FinaceBusines;
+using SiliconValley.InformationSystem.Business.TeachingDepBusiness;
 
 namespace SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness
 {
@@ -102,6 +103,11 @@ namespace SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness
         /// 获取指点日期的报名、预录费用
         /// </summary>
         public CostitemsBusiness Costitems = new CostitemsBusiness();
+
+        /// <summary>
+        /// 阶段业务类
+        /// </summary>
+        public GrandBusiness grand = new GrandBusiness();
         #endregion
 
 
@@ -303,7 +309,7 @@ namespace SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness
         /// <param name="stuName"></param>
         /// <param name="phone"></param>
         /// <returns></returns>
-        public ExportStudentBeanData StudentOrrideData(string stuName, string phone)
+        public ExportStudentBeanData StudentOrrideData(string stuName, string phone,string Weixi,string qq)
         {
             stuName = stuName.Trim();
             StringBuilder sb1 = new StringBuilder();
@@ -315,6 +321,17 @@ namespace SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness
                 sb1.Append(" and Stuphone='" + phone + "'");
                 sb2.Append(" and Phone='" + phone + "'");
             }
+            else if(Weixi != null && qq == null)
+            {
+                sb1.Append(" and StuWeiXin='" + Weixi + "'");
+                sb2.Append(" and QQ='" + qq + "'");
+            }else if (Weixi == null && qq != null)
+            {
+                sb1.Append(" and StuQQ='" + qq + "'");
+                sb2.Append(" and QQ='" + qq + "'");
+            }
+
+             
             List<ExportStudentBeanData> listall = this.GetListBySql<ExportStudentBeanData>(sb1.ToString());
             List<Sch_MarketView> listal2 = this.GetListBySql<Sch_MarketView>(sb2.ToString());
 
@@ -537,8 +554,21 @@ namespace SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness
                     //} 
 
                     //fins.EmployeesInfo_Id = olds.EmployeesInfo_Id;
-                    if (fins.StuPhone == null)
+                    if (fins.StuPhone == null )
                     {
+                        //判断是否有相同的电话号码
+                        if (olds.StuPhone!=null)
+                        {
+                            ExportStudentBeanData findata = StudentOrrideData(olds.StuName, olds.StuPhone, null, null);
+                            if (findata != null)
+                            {
+                                a.Success = false;
+                                a.Msg = "已有相同学生，相同电话号码的数据，所以不能修改！！";
+
+                                return a;
+                            }
+                        }
+                         
                         fins.StuPhone = olds.StuPhone;
                     }
 
@@ -577,11 +607,35 @@ namespace SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness
 
                     if (fins.StuWeiXin == null)
                     {
+                        if (olds.StuWeiXin!=null)
+                        {
+                            ExportStudentBeanData findata = StudentOrrideData(olds.StuName, null, olds.StuWeiXin, null);
+                            if (findata != null)
+                            {
+                                a.Success = false;
+                                a.Msg = "已有相同学生，相同微信的数据，所以不能修改！！";
+
+                                return a;
+                            }
+                        }
+                         
                         fins.StuWeiXin = olds.StuWeiXin;
                     }
 
                     if (fins.StuQQ == null)
                     {
+                        if (olds.StuQQ!=null)
+                        {
+                            ExportStudentBeanData findata = StudentOrrideData(olds.StuName, null, null, olds.StuQQ);
+                            if (findata != null)
+                            {
+                                a.Success = false;
+                                a.Msg = "已有相同学生，相同QQ的数据，所以不能修改！！";
+
+                                return a;
+                            }
+                        }
+                         
                         fins.StuQQ = olds.StuQQ;
                     }
 

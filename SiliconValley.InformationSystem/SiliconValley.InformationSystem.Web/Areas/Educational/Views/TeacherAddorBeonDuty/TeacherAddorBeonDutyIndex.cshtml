@@ -277,7 +277,7 @@
             , trigger: 'click' //采用click弹出
         });
         var emp = $("#emp").val();
-        console.log(emp);
+      
         if (emp == "是") {
             table.render({
                 elem: '#TeacherNight_table'
@@ -564,6 +564,7 @@
                         document.body.appendChild(link);
                         link.click();
                         document.body.removeChild(link);
+                    }
                 });
             }
 
@@ -581,7 +582,7 @@
                     url: '/Educational/TeacherAddorBeonDuty/GetDetEmp/' + data.value,
                     type: 'POST',
                     success: function (res) {
-                        console.log(res);
+                       // console.log(res);
                         if (res.length > 0) {
                             var selectteacher = $(' <select name="ser_jiaowu_teacher"><option value = "0" > --- 不限-- -</option></select >');
                             for (var i = 0; i < res.length; i++) {

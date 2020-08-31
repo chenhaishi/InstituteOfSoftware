@@ -313,7 +313,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
             try
             {
                 //判断是否有姓名相同的备案数据                
-                if (s_Entity.StudentOrrideData(news.StuName, news.StuPhone) == null)
+                if (s_Entity.StudentOrrideData(news.StuName, news.StuPhone,news.StuWeiXin,news.StuQQ) == null)
                 {
                     news.StuDateTime = DateTime.Now;
                     news.BeanDate = DateTime.Now;
@@ -365,7 +365,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
 
                         if (news.ConsultTeacher != null)
                         {
-                            ExportStudentBeanData find = s_Entity.StudentOrrideData(news.StuName, news.StuPhone);
+                            ExportStudentBeanData find = s_Entity.StudentOrrideData(news.StuName, news.StuPhone,null,null);
                             Consult new_c = new Consult();
                             new_c.TeacherName = EmployandCounTeacherCoom.getallCountTeacher(false).Where(s => s.empname == news.ConsultTeacher).FirstOrDefault().consultercherid; 
                             new_c.StuName = Convert.ToInt32(find.Id);
@@ -529,13 +529,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
             }
 
             //判断是否将其他来源改为网络，如果是将该信息添加到网咨跟踪表中
-            StudentPutOnRecord find= s_Entity.whereStudentId(olds.Id);           
+            StudentPutOnRecord find= s_Entity.whereStudentId(olds.Id);
             //StuInfomationType fins2 = s_Entity.StuInfomationType_Entity.GetEntity(find.StuInfomationType_Id);
             //if (!fins2.Name.Contains("网络"))
             //{
             //    if (fins.Name.Contains("网络"))
             //    {
-                     
+
             //            StudentPutOnRecord find_stu = s_Entity.StudentOrreideData_OnRecord(find.StuName, find.StuPhone, find.StuDateTime);
             //            bool s=  s_Entity.NetClient_Entity.IsExsitSprStu(find_stu.Id);
             //            if (!s)
@@ -544,8 +544,23 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
             //            }                                                                                 
             //    }
             //}
-            a = s_Entity.Update_data(olds);
 
+            //if (find.StuPhone==null)
+            //{
+            //    if (s_Entity.StudentOrrideData(olds.StuName, olds.StuPhone, olds.StuWeiXin, olds.StuQQ) == null)
+            //    {
+            //        
+            //    }
+            //    else
+            //    {
+            //        a.Success = false;
+            //        //a.Msg = "备案中已有重复的数据！";
+            //        //StudentbeanLog log = new StudentbeanLog() { insertDate = DateTime.Now, userId = UserName.EmpNumber, operationType = Entity.Base_SysManage.EnumType.LogType.编辑数据 + ":备案编号为" + olds.Id + "," + olds.StuName + "备案数据编辑时，已有重复的电话，或微信，或QQ！" };
+            //        //s_Entity.log_s.Add_data(log);
+            //    }
+
+            //}
+            a = s_Entity.Update_data(olds);
             if (a.Success==true)
             {
                 StudentbeanLog log = new StudentbeanLog() { insertDate = DateTime.Now, userId = UserName.EmpNumber, operationType = Entity.Base_SysManage.EnumType.LogType.编辑数据 + ":备案编号为"+olds.Id+"," + olds.StuName + "备案数据编辑成功！" };
@@ -766,7 +781,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
             List<MyExcelClass> list = new List<MyExcelClass>();
             foreach (MyExcelClass item1 in ex)
             {
-                ExportStudentBeanData find = s_Entity.StudentOrrideData(item1.StuName, item1.StuPhone);
+                ExportStudentBeanData find = s_Entity.StudentOrrideData(item1.StuName, item1.StuPhone,null,null);
                 if (find != null)
                 {
                     MyExcelClass m = new MyExcelClass();
@@ -856,7 +871,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
 
             foreach (MyExcelClass a2 in ExcelList)
             {
-                if (s_Entity.StudentOrrideData(a2.StuName, a2.StuPhone) != null)
+                if (s_Entity.StudentOrrideData(a2.StuName, a2.StuPhone,null,null) != null)
                 {
                     result.Add(a2);
                 }
@@ -1802,9 +1817,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
         #region 报名、预录
         public ActionResult Sign_up()
         {
-            List<SelectListItem> list  = s_Entity.StuInfomationType_Entity.GetList().Where(s => s.IsDelete == false).Select(s=>new SelectListItem() { Text=s.Name,Value=s.Id.ToString()}).ToList();
+            //List<SelectListItem> list  = s_Entity.StuInfomationType_Entity.GetList().Where(s => s.IsDelete == false).Select(s=>new SelectListItem() { Text=s.Name,Value=s.Id.ToString()}).ToList();
 
-            ViewBag.list = list;
+            //ViewBag.list = list;
+
+            //获取阶段
+            ViewBag.glist= s_Entity.grand.GetList().Where(g => g.IsDelete == false).Select(g => new SelectListItem() { Text=g.GrandName,Value=g.Id.ToString()});
             return View();
         }
         
@@ -1813,9 +1831,17 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
         {
             DateTime date =Convert.ToDateTime(Request.Form["date"]);//日期
             int type =Convert.ToInt32(Request.Form["type"]);//类型
-            int infomation =Convert.ToInt32( Request.Form["infomation"]);//信息来源
-            AjaxResult data= s_Entity.Costitems.TypeSelect(date, type);
-            return null;
+            //int infomation =Convert.ToInt32( Request.Form["infomation"]);//信息来源
+            int grand = Convert.ToInt32(Request.Form["grand"]);
+
+            //if (infomation!=0)
+            //{
+
+            //}
+            AjaxResult data= s_Entity.Costitems.TypeSelect(date, type,grand);
+
+
+            return Json(data,JsonRequestBehavior.AllowGet);
         }
 
         #endregion        
