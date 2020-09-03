@@ -258,7 +258,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 #endregion
 
             }).ToList();
-            var mylist = list.OrderBy(e => e.EmployeeId).Skip((page - 1) * limit).Take(limit).ToList();
+            var mylist = list.OrderByDescending(d=>d.deltime).Skip((page - 1) * limit).Take(limit).ToList();
 
             var newobj = new
             {
