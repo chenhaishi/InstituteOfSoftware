@@ -73,6 +73,7 @@
     <Compile Include="Base_SysManage\ViewEntity\Weixin_info.cs" />
     <Compile Include="Cloudstorage.cs" />
     <Compile Include="CostitemView.cs" />
+    <Compile Include="EnCh.cs" />
     <Compile Include="Entity\Accdationinformation.cs" />
     <Compile Include="Entity\AddCourse.cs" />
     <Compile Include="Entity\AdmissArrangement.cs" />
