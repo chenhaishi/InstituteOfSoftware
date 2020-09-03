@@ -147,17 +147,17 @@
         <button type="button" style="text-align:center;width:68%" class="layui-btn layui-btn layui-input-block" onclick="TiJiao()">提交</button>
     </form>
   </div>
+
         <!--行内工具按钮-->
         <script type="text/html" id="barDemo">
-            <a class="layui-btn layui-btn-xs" lay-event="detail">详情</a>
+            <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">详情</a>
             <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
             <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
         </script>
 
         <script type="text/html" id="InitHtm">
-
             <h4 style="text-align:center; margin-top:10px;">默认10个题 目</h4>
-            <hr />
+            <hr/>
             <form class="layui-form">
                 <div class="layui-inline">
                     <label class="layui-form-label"></label>
@@ -349,7 +349,7 @@
                 { type: 'checkbox' },
                 { field: 'ID', width: 80, title: 'ID', hide: true, sort: true }
                 , {
-                    field: 'Title', width: 300, title: '题目', templet: function (res) {
+                    field: 'Title', width: 400, title: '题目', templet: function (res) {
 
                         var result = escapeHTMLString(res.Title);
 
@@ -359,9 +359,9 @@
                 }
 
 
-                ,{ field: 'LevelName', width: 100, title: '难度指数', templet: '<div>{{d.Level.LevelName}}</div>' },
+                ,{ field: 'LevelName', width: 120, title: '难度指数', templet: '<div>{{d.Level.LevelName}}</div>' },
                 {
-                    field: 'ReferenceAnswer', width: 300, title: '参考答案', templet: function (res) {
+                    field: 'ReferenceAnswer', width: 330, title: '参考答案', templet: function (res) {
 
                         //var label = $("<div></div>");
 
@@ -375,9 +375,9 @@
 
                     }
                 },
-                { field: 'EmpName', width: 80, title: '命题人', templet: '<div>{{d.Proposition.EmpName}}</div>' },
+                { field: 'EmpName', width: 130, title: '命题人', templet: '<div>{{d.Proposition.EmpName}}</div>' },
                 {
-                    field: 'CourseName', width: 120, title: '所属课程', templet: function (res) {
+                    field: 'CourseName', width: 140, title: '所属课程', templet: function (res) {
 
 
                         if (res.Course == null) {
@@ -390,20 +390,20 @@
 
                     } },
                 {
-                    field: 'Course', width: 120, title: '启用/禁用', templet: function (data) {
+                    field: 'Course', width: 140, title: '启用/禁用', templet: function (data) {
 
 
 
                         if (data.IsUsing == true) {
-                            return "启用中";
+                            return "<a class='layui-btn layui-btn-xs'>启用中</a>";
                         }
                         else {
-                            return "禁用中";
+                            return "<a class='layui-btn layui-btn-danger layui-btn-xs'>禁用中</a>";
                         }
 
                     }
                 },
-                { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150 }
+                { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 170 }
 
             ]],
             page: true

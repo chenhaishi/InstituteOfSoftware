@@ -177,7 +177,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             try
             {
                 EmployeesInfoManage tempdb_emp = new EmployeesInfoManage();
-
+                //获取所以员工信息
                 var list = tempdb_emp.GetAll();
 
                 List<Cose_StatisticsItems> result = new List<Cose_StatisticsItems>();
