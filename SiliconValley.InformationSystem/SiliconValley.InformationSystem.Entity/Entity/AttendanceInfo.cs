@@ -40,5 +40,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         public string Remark { get; set; }//备注
         public Nullable<bool> IsDel { get; set; }
         public Nullable<bool> IsApproval { get; set; }
+
+        public string LeaveRecord { get; set; }//请假记录（事假）
     }
 }
