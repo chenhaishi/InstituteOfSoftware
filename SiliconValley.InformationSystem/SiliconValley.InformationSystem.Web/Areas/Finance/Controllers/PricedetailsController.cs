@@ -479,7 +479,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             var costlist= stuDataKeepAndRecordBusiness.GetSudentDataAll();
             if (!string.IsNullOrEmpty(Name))
             {
-                costlist = costlist.Where(a => a.StuName.Contains(Name)).ToList();
+                 costlist= stuDataKeepAndRecordBusiness.StudentOrride(Name);
+                //costlist = costlist.Where(a => a.StuName.Contains(Name)).ToList();
             }
             var dataList = costlist.OrderByDescending(a => a.Id).Skip((page - 1) * limit).Take(limit).ToList();
             //  var x = dbtext.GetList();
