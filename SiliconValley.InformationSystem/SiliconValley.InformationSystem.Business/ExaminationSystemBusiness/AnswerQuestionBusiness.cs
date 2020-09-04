@@ -175,6 +175,33 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
 
 
         }
+        public void PiLiangShanChu(List<string> answerquestionIds)
+        {
+            AjaxResult result = new AjaxResult();
+            if (answerquestionIds.Count > 0)
+            {
+                foreach (var item in answerquestionIds)
+                {
+
+                    var obj = this.AllAnswerQuestion().Where(d => d.ID == int.Parse(item)).FirstOrDefault();
+                    try
+                    {
+                        this.Delete(obj);
+
+                        result.ErrorCode = 200;
+                        result.Msg = "成功";
+                        result.Data = null;
+                    }
+                    catch (Exception ex)
+                    {
+
+                        result.ErrorCode = 500;
+                        result.Msg = "失败";
+                        result.Data = null;
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// 判断解答题是否已经被使用

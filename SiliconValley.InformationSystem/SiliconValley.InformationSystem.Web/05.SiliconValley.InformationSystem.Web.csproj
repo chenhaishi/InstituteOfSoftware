@@ -1906,6 +1906,7 @@
     <Content Include="Areas\ExaminationSystem\Views\QuestionsBank\DuplicateRemovalXZ.cshtml" />
     <Content Include="Areas\Educational\Views\Reconcile\AddReconcileView.cshtml" />
     <Content Include="Areas\Teachingquality\Views\Shared\errorClass.cshtml" />
+    <Content Include="Areas\ExaminationSystem\Views\StudentExamSys\MachineTest.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />

@@ -1,4 +1,4 @@
-﻿
+﻿@using SiliconValley.InformationSystem.Entity.MyEntity
 @{
     Layout = null;
 }
@@ -34,31 +34,30 @@
         }
 
         #answerquestionlist {
-            margin-top:50px;
+            margin-top: 50px;
         }
 
         #download {
-            cursor:pointer;
-            color:gray;
+            cursor: pointer;
+            color: gray;
         }
+
             #download:hover {
-                color:blue;
+                color: blue;
             }
 
         .refanswer {
-            display:none;
+            display: none;
         }
+
         #refanswerdiv {
-
-            height:300px;
-            width:100%;
-            background-color:gray;
-            position:fixed;
-
-            bottom:10px;
-            display:none;
-            text-align:center;
-            
+            height: 300px;
+            width: 100%;
+            background-color: gray;
+            position: fixed;
+            bottom: 10px;
+            display: none;
+            text-align: center;
         }
     </style>
 </head>
@@ -70,76 +69,76 @@
 
             <div style="margin-top:20px;">
 
-              
-                    <form class="layui-form">
 
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">姓名:</label>
-                            <div class="layui-input-inline" style="width:80px;">
-                                <input type="text" name="title" style="border:0px solid white;" readonly value="@ViewBag.student.Name" class="layui-input">
-                            </div>
+                <form class="layui-form">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">姓名:</label>
+                        <div class="layui-input-inline" style="width:80px;">
+                            <input type="text" name="title" style="border:0px solid white;" readonly value="@ViewBag.student.Name" class="layui-input">
+                        </div>
 
 
-                            <label class="layui-form-label">考试类型:</label>
+                        <label class="layui-form-label">考试类型:</label>
+                        <div class="layui-input-inline">
+                            <select class="formitem" lay-filter="examtype" name="examtype" id="examtype">
+                                @{
+                                    foreach (var item in ViewBag.examtypelist)
+                                    {
+                                        <option grandid="@item.GrandID.Id" typeid="@item.TypeName.ID" value="@item.ID">@item.TypeName.TypeName (@item.GrandID.GrandName)</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+
+                        <div class="layui-inline" id="courseDiv">
+                            <label class="layui-form-label">请选择课程</label>
                             <div class="layui-input-inline">
-                                <select class="formitem" lay-filter="examtype" name="examtype" id="examtype">
+                                <select class="formitem" name="course" id="course" disabled>
+                                    <option value="0" selected>--请选择--</option>
                                     @{
-                                        foreach (var item in ViewBag.examtypelist)
+                                        foreach (var item in ViewBag.Courselist)
                                         {
-                                            <option grandid="@item.GrandID.Id" typeid="@item.TypeName.ID" value="@item.ID">@item.TypeName.TypeName (@item.GrandID.GrandName)</option>
+                                            <option value="@item.CurriculumID">@item.CourseName</option>
                                         }
                                     }
                                 </select>
                             </div>
-
-
-                            <div class="layui-inline" id="courseDiv" >
-                                <label class="layui-form-label">请选择课程</label>
-                                <div class="layui-input-inline">
-                                    <select class="formitem" name="course" id="course" disabled>
-                                        <option value="0" selected>--请选择--</option>
-                                        @{
-                                            foreach (var item in ViewBag.Courselist)
-                                            {
-                                                <option value="@item.CurriculumID">@item.CourseName</option>
-                                            }
-                                        }
-                                    </select>
-                                </div>
-                            </div>
-
                         </div>
 
+                    </div>
 
 
-                        <div class="layui-form log-item">
 
-                            <label class="layui-form-label">级别:</label>
-                            <div class="layui-input-inline">
-                                <select class="formitem" name="level" id="level">
-                                    @{
-                                        foreach (var item in ViewBag.levellist)
-                                        {
-                                            <option value="@item.LevelID">@item.LevelName</option>
-                                        }
+                    <div class="layui-form log-item">
+
+                        <label class="layui-form-label">级别:</label>
+                        <div class="layui-input-inline">
+                            <select class="formitem" name="level" id="level">
+                                @{
+                                    foreach (var item in ViewBag.levellist)
+                                    {
+                                        <option value="@item.LevelID">@item.LevelName</option>
                                     }
-                                </select>
-                            </div>
-
-                            <div class="layui-input-inline" style="margin-left:30px;">
-                                <button type="button" id="begin" class="layui-btn layui-btn-primary formitem">开始模拟</button>
-                            </div>
-
-                            <div class="layui-input-inline" style="margin-left:30px;">
-                                <label id="download">下载机试题</label>
-                            </div>
-                            <div class="layui-input-inline" style="margin-left:30px;">
-                                <button type="button" id="ok" class="layui-btn layui-btn-primary">答题完成</button>
-                            </div>
+                                }
+                            </select>
                         </div>
-                    </form>
-               
-              
+
+                        <div class="layui-input-inline" style="margin-left:30px;">
+                            <button type="button" id="begin" class="layui-btn layui-btn-primary formitem">开始模拟</button>
+                        </div>
+
+                        <div class="layui-input-inline" style="margin-left:30px;">
+                            <label id="download">下载机试题</label>
+                        </div>
+                        <div class="layui-input-inline" style="margin-left:30px;">
+                            <button type="button" id="ok" class="layui-btn layui-btn-primary">答题完成</button>
+                        </div>
+                    </div>
+                </form>
+
+
             </div>
 
 
@@ -173,7 +172,7 @@
 
     <script type="text/template" id="chiosequestionTemplate">
         <div class="choiceItem">
-            <input type="hidden" class="answer" value="{{=answer}}"/>
+            <input type="hidden" class="answer" value="{{=answer}}" />
             <label class="choicetitle" style="font-size:16px; color: gray;">{{=title}}<span style="margin-left:10px;"></span></label>
 
             <div style="margin-left:20px;">
@@ -223,7 +222,7 @@
 
         var answerquestion = new Array();
 
-       
+
 
         function initTextarea() {
             $('.simple-editor').trumbowyg();
@@ -330,9 +329,9 @@
 
             });
 
-            function loadchoicequestiondata(examtype, level, kecheng="0") {
+            function loadchoicequestiondata(examtype, level, kecheng = "0") {
 
-                var index = layer.load(2); //又换了种风格，并且设定最长等待10秒 
+                var index = layer.load(2); //又换了种风格，并且设定最长等待10秒
 
                 $.post("/ExaminationSystem/StudentExamSys/MockChoiceqestiondata", { examType: examtype, kecheng: kecheng, level }, function (result) {
                     layer.close(index);
@@ -357,7 +356,7 @@
 
                             var html = _.template($("#chiosequestionTemplate").html());
 
-                            var htmldata = html({ answer: result.Data.data[i].Answer, title: document.HTMLDOMtoString(title[0]) , A: document.HTMLDOMtoString(a[0]), B: document.HTMLDOMtoString(b[0]), C: document.HTMLDOMtoString(c[0]), D: document.HTMLDOMtoString(d[0]) });
+                            var htmldata = html({ answer: result.Data.data[i].Answer, title: document.HTMLDOMtoString(title[0]), A: document.HTMLDOMtoString(a[0]), B: document.HTMLDOMtoString(b[0]), C: document.HTMLDOMtoString(c[0]), D: document.HTMLDOMtoString(d[0]) });
 
                             $("#choicequestionlist").append($(htmldata));
                         }
@@ -369,7 +368,7 @@
             }
 
             function loadanswerquestiondata(examtype, level, kecheng = "0") {
-                var index = layer.load(2); //又换了种风格，并且设定最长等待10秒 
+                var index = layer.load(2); //又换了种风格，并且设定最长等待10秒
                 $.post("/ExaminationSystem/StudentExamSys/MockAnswerquestiondata", { examType: examtype, kecheng: kecheng, level }, function (result) {
                     layer.close(index);
                     if (result.ErrorCode == 200) {
@@ -378,13 +377,13 @@
 
 
                             var ref = $("<label></label>");
-                            ref.text(result.Data.data[i].ReferenceAnswer); 
+                            ref.text(result.Data.data[i].ReferenceAnswer);
 
                             result.Data.data[i].ReferenceAnswer = document.HTMLDOMtoString(ref[0]);
 
                             answerquestion.push(result.Data.data[i]);
 
-                           
+
                             var title = $("<label></label>");
                             title.text(result.Data.data[i].Title);
 
@@ -409,7 +408,7 @@
             }
 
             function checkchoicequestion() {
-                
+
                 $("#choicequestionlist .choiceItem").each(function (index, elem) {
 
                     var item = this;
@@ -418,7 +417,7 @@
                     //获取学生选择的答案
                     var stuanswer = "";
                     $(this).find(".option input").each(function (i, op) {
-                       
+
                         if (op.checked) {
 
                             stuanswer += op.value + ',';
@@ -426,7 +425,7 @@
 
                     });
 
-                    
+
                     stuanswer = stuanswer.substring(0, stuanswer.length - 1);
                     //比较答案
                     if (stuanswer != curanswer) {
@@ -444,8 +443,8 @@
             }
             var type;
             form.on('select(examtype)', function (data) {
-           
-             
+
+
                 var grandid;
 
                 $(data.elem).children().each(function (index, elem) {
@@ -495,23 +494,23 @@
 
                 }
                 else {
-                    $("#course").attr("disabled","disabled");
+                    $("#course").attr("disabled", "disabled");
                     layui.form.render("select");
                 }
 
 
 
-            });      
+            });
 
             $("#begin").click(function () {
 
-               
+
                 $(".formitem").attr("disabled", "disabled");
                 layui.form.render();
 
                 var level = $("#level").val();
                 var kecheng = "0";
-                
+
                 if (type == "2") {
                     kecheng = $("#course").val();
                 }
@@ -536,7 +535,7 @@
                 }
 
                 var examtype = $("#examtype").val();
-                
+
                 downloadquestion(examtype, level, kecheng);
             });
 
@@ -558,12 +557,12 @@
 
                         //$("#refanswer").slideUp("slow");
 
-                            layer.open({
-                                type: 1,
-                                area:['40%', '40%;'],
-                                content: value.ReferenceAnswer //这里content是一个普通的String
-                            });
-                     
+                        layer.open({
+                            type: 1,
+                            area: ['40%', '40%;'],
+                            content: value.ReferenceAnswer //这里content是一个普通的String
+                        });
+
                     }
 
                 });

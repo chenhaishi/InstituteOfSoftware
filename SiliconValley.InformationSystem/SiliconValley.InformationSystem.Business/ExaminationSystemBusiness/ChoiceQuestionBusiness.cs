@@ -179,6 +179,35 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
 
 
         }
+        /// <summary>
+        /// 批量删除
+        /// </summary>
+        /// <param name="questionIds"></param>
+        public void PiLiangShanChu(List<string> questionIds)
+        {
+            AjaxResult result = new AjaxResult();
+            foreach (var item in questionIds)
+            {
+
+                var obj = this.AllChoiceQuestionData().Where(d => d.Id == int.Parse(item)).FirstOrDefault();
+                try
+                {
+                    this.Delete(obj);
+
+                    result.ErrorCode = 200;
+                    result.Msg = "成功";
+                    result.Data = null;
+                }
+                catch (Exception ex)
+                {
+
+                    result.ErrorCode = 500;
+                    result.Msg = "失败";
+                    result.Data = null;
+                }
+            }
+
+        }
 
 
         /// <summary>

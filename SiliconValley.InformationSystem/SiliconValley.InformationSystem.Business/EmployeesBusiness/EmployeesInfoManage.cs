@@ -23,7 +23,8 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
     using NPOI.XSSF.UserModel;
     using SiliconValley.InformationSystem.Entity.ViewEntity;
     using SiliconValley.InformationSystem.Business.EmpTransactionBusiness;
-
+    using SiliconValley.InformationSystem.Business.Base_SysManage;
+    using SiliconValley.InformationSystem.Entity;
     /// <summary>
     /// 员工业务类
     /// </summary>
@@ -329,14 +330,22 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
         }
         #endregion
 
+
         /// <summary>
         /// 将员工加入对相应的部门
         /// </summary>
-        /// <param name="emp"></param>
+        /// <param name="emp">员工对象</param>
         /// <returns></returns>
         public bool AddEmpToCorrespondingDept(EmployeesInfo emp)
         {
             bool result = true;
+            #region 给该员工创建用户账号
+            Base_UserBusiness db_user = new Base_UserBusiness();
+            EnCh ench = new EnCh();
+            var empname=ench.convertCh(emp.EmpName);
+            db_user.createAccount(empname,emp.EmployeeId);
+            #endregion
+
             var dname = this.GetDept(emp.PositionId).DeptName;//获取该员工所属部门名称
             var pname = this.GetPosition(emp.PositionId).PositionName;//获取该员工所属岗位名称
             if (dname.Equals("就业部"))
@@ -381,6 +390,8 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
             {
                 result = esemanage.AddEmpToEmpSalary(emp.EmployeeId);//往员工工资体系表添加员工
             }
+
+          
             return result;
         }
 

@@ -11,17 +11,46 @@
 
 </head>
 <body>
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">阶段</label>
+                <div class="layui-input-inline">
+                    <select name="GrandS" lay-filter="majorS">
+                        <option value="0">请选择</option>
+
+                        @{
+                            foreach (var item in ViewBag.Grand as List<Grand>)
+                            {
+                                <option value="@item.Id">@item.GrandName</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">课程</label>
+                <div class="layui-input-inline">
+                    <select lay-verify="required" name="courseS" id="courseS"></select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <button class="layui-btn layui-btn-primary" lay-submit="" lay-filter="search">查询</button>
+            </div>
+        </div>
+
+    </form>
     <table class="layui-hide" lay-filter="QuestionsBankS" id="QuestionsBankS"></table>
     <!--头部工具栏-->
     <script type="text/html" id="toolbarDemo">
         <div class="layui-btn-container">
-            <button type="button" class="layui-btn layui-btn-sm btn-info" lay-event="quchong">去重</button>
+            <button type="button" class="layui-btn layui-btn-sm btn-info" lay-event="quchong">删除</button>
         </div>
     </script>
     <!--行内工具按钮-->
-    <script type="text/html" id="barDemo">
-        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-    </script>
+    @*<script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="quchong">删除</a>
+    </script>*@
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/layui/layui.js"></script>
     <script src="~/Areas/Teaching/Scripts/Ajax.js"></script>
@@ -37,26 +66,58 @@
             var form = layui.form;
             var layer = layui.layer;
             var table = layui.table;
+            form.on('select(majorS)', function (data) {
+                var value = data.value;  //select选中的值
 
+                console.log("选中值" + value);
+                $.ajax({
+                    url: "/ExaminationSystem/QuestionsBank/CourseData",
+                    data: { grandid: value },
+                    dataType: "json",
+                    success: function (resultData) {
+                        if (resultData.length > 0) {
+                            //清空赋值
+                            $("#courseS").empty();
+                            console.log(resultData);
+                            $("#courseS").append(new Option("请选择项目", ""));
+                            $.each(resultData, function (index, item) {
+                                var grand_ = item.Grand == null ? "" : item.Grand.GrandName;
+                                var namaC = item.CourseName + '(' + grand_ + ')'
+                                //赋值
+                                $('#courseS')
+                                    .append(new Option(namaC, item.CurriculumID));
+                            });
+                        } else {
+                            $("#courseS").empty();
+                            $("#courseS").append(new Option("暂无数据", ""));
+                        }
+                        $("#courseS").append(new Option("升学题", "0"));
+                        layui.form.render("select");
+                    }
+                });
+            });
             $(".layui-layer-input").attr("type", "number")
-            ////查询
-            //form.on('submit(search)', function () {
-            //    table.reload('QuestionsBankS', {
+            form.on('submit(search)', function (data) {
+                var courseS = $("#courseS").val();
+                console.log(courseS);
 
-            //        url: '/ExaminationSystem/QuestionsBank/XianZeSelect'
-            //    });
+                table.reload('QuestionsBankS', {
+                    url: '/ExaminationSystem/QuestionsBank/XianZeSelect'
+                    , where: { courseS: courseS }
+                });
 
-            //    return false;
-            //});
+                return false;
+            });
             var bind = function () {
             //渲染表格
             table.render({
                 elem: '#QuestionsBankS'
                 , toolbar: '#toolbarDemo'
                 , id: "QuestionsBankS"
-                , url: '/ExaminationSystem/QuestionsBank/XianZeSelect'
+                , url: '/ExaminationSystem/QuestionsBank/XianZeXianShi'
                 , cellMinWidth: 80
                 , cols: [[
+                    { type: 'checkbox' },
                     { field: 'Id', width: 90, title: 'ID', hide: true, sort: true }
                     , {
                         field: 'Title', width: 250, title: '题目', templet: function (res) {
@@ -94,8 +155,7 @@
 
 
                         }
-                    },
-                    { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150 }
+                    }
 
                 ]],
                 page: true
@@ -108,27 +168,42 @@
                 var checkStatus = table.checkStatus(obj.config.id);
                 switch (obj.event) {
                     case 'quchong':
-                        layer.confirm('确认去重吗？', function (index) {
-                            Ajax('/ExaminationSystem/QuestionsBank/XianZeDelete', {}, 'post', function (data) {
+                        if (checkStatus.data.length > 0) {
+
+                            var ids = "";
+
+                            for (var i = 0; i < checkStatus.data.length; i++) {
 
 
-                            if (data.ErrorCode == 200) {
 
-                                layer.msg("去重成功");
+                                ids += checkStatus.data[i].Id + ',';
+
                             }
-                            else {
-                                layer.msg("服务器错误！");
-                            }
+                        layer.confirm('确认删除吗？', function (index) {
+                            Ajax('/ExaminationSystem/QuestionsBank/XianZeDelete', { ids: ids }, 'post', function (data) {
+
+
+                                if (data.ErrorCode == 200) {
+
+                                    layer.msg("去重成功");
+                                    table.reload('QuestionsBankS', {
+
+                                    });
+                                }
+                                else {
+                                    layer.msg("服务器错误！");
+                                }
 
 
 
-                        }, function (error) {
+                            }, function (error) {
 
-                            layer.msg("异常！");
+                                layer.msg("异常！");
 
-                                });
+                            });
                             layer.close(index);
-                        });
+                            });
+                        };
                         break;
 
                 };
