@@ -345,6 +345,6 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             }
             return ajaxresult;   
         }
-
+       
     }
 }
