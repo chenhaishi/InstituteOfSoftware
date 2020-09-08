@@ -132,6 +132,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
             string Count = Request.Form["Count"];//违纪类型与人数
 
+            string empstring = Request.Form["empstring"];//上课老师
+
             List<MyBreak> blist = new List<MyBreak>();
 
             AjaxResult a = new AjaxResult();
@@ -152,6 +154,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                         bre.BaseDataTime = BaseDataTime;
                         bre.IsDelete = false;
                         bre.Rmark = Rmark;
+                        bre.empstring = empstring;
 
                         blist.Add(bre);
                     }                                       

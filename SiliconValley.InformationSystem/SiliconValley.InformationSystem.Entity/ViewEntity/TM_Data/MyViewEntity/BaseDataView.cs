@@ -61,5 +61,8 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data.MyViewEntity
         /// 班级名称
         /// </summary>
         public string ClassNumber { get; set; }
+
+        public string empstring { get; set; }
     }
+     
 }

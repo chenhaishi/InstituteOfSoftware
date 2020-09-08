@@ -54,5 +54,10 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         /// 违纪人数
         /// </summary>
         public int Count { get; set; }
+
+        /// <summary>
+        /// 上课老师
+        /// </summary>
+        public string empstring { get; set; }
     }
 }
