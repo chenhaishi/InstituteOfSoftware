@@ -9,7 +9,7 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.SalaryView
     public class MyAtdDataFromExcelView
     {     
         /// <summary>
-        /// 年月份时间
+        /// 年月份时间 
         /// </summary>
         public Nullable<System.DateTime> YearAndMonth { get; set; }
 
@@ -37,6 +37,11 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.SalaryView
         /// 请假天数
         /// </summary>
         public Nullable<decimal> LeaveDays { get; set; }
+
+        /// <summary>
+        /// 请假记录 
+        /// </summary>
+        public string LeaveRecord { get; set; }
 
         /// <summary>
         /// 上班缺卡次数

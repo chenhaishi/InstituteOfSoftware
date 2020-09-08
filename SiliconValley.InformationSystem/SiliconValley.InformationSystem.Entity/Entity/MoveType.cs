@@ -15,7 +15,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         public int ID { get; set; }
 
         /// <summary>
-        /// 移动类型名称
+        /// 异动类型名称
         /// </summary>
         public string MoveTypeName { get; set; }
 
