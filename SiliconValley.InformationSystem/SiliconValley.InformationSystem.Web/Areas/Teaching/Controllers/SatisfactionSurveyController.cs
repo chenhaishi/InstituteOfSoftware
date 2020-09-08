@@ -1431,10 +1431,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
         /// <param name="surveyId">满意度单ID</param>
         /// <returns></returns>
         public ActionResult TeacherSatisfactionQuestionnaire(int surveyId)
-        {
-            
-                
-               var su = db_survey.satisficingConfigs().Where(d => d.ID == surveyId).FirstOrDefault();
+        {    
+            var su = db_survey.satisficingConfigs().Where(d => d.ID == surveyId).FirstOrDefault();
 
             var view = db_survey.ConvertToview(su);
             ViewBag.SurveyConfig = view;
@@ -1535,7 +1533,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
 
 
         [HttpPost]
-        public ActionResult CreateTeacherSurveyConfig(string classnumber, int Curriculum)
+        public ActionResult CreateTeacherSurveyConfig(int classnumber, int Curriculum)
         {
 
             AjaxResult result = new AjaxResult();
@@ -1545,11 +1543,18 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
             {
                 Base_UserModel user = Base_UserBusiness.GetCurrentUser();
 
+                BaseBusiness<ClassSchedule> classdb = new BaseBusiness<ClassSchedule>();
+                //查出评价班级
+                var classlisttemp = classdb.GetList().Where(d => d.IsDelete == false && d.id == classnumber).FirstOrDefault().ClassNumber;
+                //根据班级查出老师
+                BaseBusiness<Reconcile> reconcile = new BaseBusiness<Reconcile>();
+                var LaoShi = reconcile.GetList().Where(d=>d.ClassSchedule_Id == classnumber).FirstOrDefault().EmployeesInfo_Id;
                 //首先判断是否已经存在
 
-               var templist = db_survey.satisficingConfigs().Where(d => d.IsDel == false && d.EmployeeId == user.EmpNumber && d.ClassNumber == int.Parse(classnumber)).ToList();
+                var templist = db_survey.satisficingConfigs().Where(d => d.IsDel == false && d.EmployeeId == LaoShi && d.ClassNumber == classnumber).ToList();
 
-                if (templist.Count !=0)
+
+                 if (templist.Count !=0)
                 {
                     //已经存在
                     result.ErrorCode = 300;
@@ -1562,10 +1567,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
 
                 SatisficingConfig satisficingConfig = new SatisficingConfig();
 
-                satisficingConfig.ClassNumber = int.Parse(classnumber);
+                satisficingConfig.ClassNumber = classnumber;
                 satisficingConfig.CreateTime = DateTime.Now;
                 satisficingConfig.CurriculumID = Curriculum;
-                satisficingConfig.EmployeeId = user.EmpNumber;
+                satisficingConfig.EmployeeId = LaoShi;
                 satisficingConfig.IsDel = false;
                 satisficingConfig.IsPastDue = false;
 

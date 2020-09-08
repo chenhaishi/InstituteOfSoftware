@@ -80,4 +80,7 @@
   <exam id="2046">
     <course id="24" />
   </exam>
+  <exam id="2047">
+    <course id="27" />
+  </exam>
 </root>

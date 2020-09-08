@@ -185,7 +185,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 List<Staff_Cost_StatisticesDetailView> detaillist = new List<Staff_Cost_StatisticesDetailView>();
                 foreach (var item in list)
                 {
-                   
+                 
                     try
                     {
                         var data = db_staf_Cost.Staff_CostData(item.EmployeeId, DateTime.Parse(date), workingDays);

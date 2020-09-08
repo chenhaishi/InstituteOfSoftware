@@ -615,6 +615,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         /// 模拟选择题数据
         /// </summary>
         /// <returns></returns>
+        [ValidateInput(false)]
         public ActionResult MockChoiceqestiondata(string examType, string kecheng, string level)
         {
             AjaxResult result = new AjaxResult();
