@@ -140,7 +140,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             //获取这位员工
 
             var empObj = db_emp.GetInfoByEmpID(empid);
-
+            //获取这位员工的职位
             var dep = this.GetDeparmentByEmp(empObj.EmployeeId);
 
             Staff_Cost_StatisticesDetailView resultObj = new Staff_Cost_StatisticesDetailView(); //返回值

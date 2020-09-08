@@ -177,7 +177,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             try
             {
                 EmployeesInfoManage tempdb_emp = new EmployeesInfoManage();
-
+                //获取所以员工信息
                 var list = tempdb_emp.GetAll();
 
                 List<Cose_StatisticsItems> result = new List<Cose_StatisticsItems>();
@@ -185,7 +185,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 List<Staff_Cost_StatisticesDetailView> detaillist = new List<Staff_Cost_StatisticesDetailView>();
                 foreach (var item in list)
                 {
-                   
+                 
                     try
                     {
                         var data = db_staf_Cost.Staff_CostData(item.EmployeeId, DateTime.Parse(date), workingDays);

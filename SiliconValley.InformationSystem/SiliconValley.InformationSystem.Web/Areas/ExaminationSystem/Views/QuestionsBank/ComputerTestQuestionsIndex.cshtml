@@ -100,7 +100,7 @@
 
 <!--行内工具按钮-->
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="detail">详情</a>
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">详情</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 
@@ -170,17 +170,17 @@
                     , { field: 'Title', width: 300, title: '标题' }
                     
                     , {
-                        field: 'UsageCount', width: 300, title: '使用次数', templet: function (data) {
+                        field: 'UsageCount', width: 250, title: '使用次数', templet: function (data) {
 
                             return data.UsageCount + "次";
                         }
                     }
 
-                    , { field: 'LevelName', width: 100, title: '难度指数', templet: '<div>{{d.Level.LevelName}}</div>' },
-                    { field: 'SaveURL', width: 300, title: '保存地址' },
-                    { field: 'EmpName', width: 80, title: '命题人', templet: '<div>{{d.Proposition.EmpName}}</div>' },
+                    , { field: 'LevelName', width: 140, title: '难度指数', templet: '<div>{{d.Level.LevelName}}</div>' },
+                    { field: 'SaveURL', width: 330, title: '保存地址' },
+                    { field: 'EmpName', width: 90, title: '命题人', templet: '<div>{{d.Proposition.EmpName}}</div>' },
                     {
-                        field: 'CourseName', width: 120, title: '所属课程', templet: function (res) {
+                        field: 'CourseName', width: 130, title: '所属课程', templet: function (res) {
 
 
                             if (res.Course == null) {
@@ -195,13 +195,11 @@
                     {
                         field: 'Course', width: 120, title: '启用/禁用', templet: function (data) {
 
-
-
                             if (data.IsUsing == true) {
-                                return "启用中";
+                                return "<a class='layui-btn layui-btn-xs'>启用中</a>";
                             }
                             else {
-                                return "禁用中";
+                                return "<a class='layui-btn layui-btn-danger layui-btn-xs'>禁用中</a>";
                             }
 
                         }

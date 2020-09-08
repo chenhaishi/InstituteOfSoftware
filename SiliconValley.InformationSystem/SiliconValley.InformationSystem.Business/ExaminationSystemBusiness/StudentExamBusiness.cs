@@ -70,15 +70,14 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
         /// <summary>
         /// 随机获取选择题题目  //升学考试使用本函数抽题目
         /// </summary>
-        /// <param name="co unt">个数</param>
+        /// <param name="count">个数</param>
         /// <param name="kecheng">课程（当为阶段考试id时候传入该参数）</param>
         /// <returns></returns>
+
         public List<ChoiceQuestionTableView> ProductChoiceQuestion(Examination examination,int kecheng)
-        {
-            
+        {            
             TeacherClassBusiness dbteacheraclass = new TeacherClassBusiness();
       
-
             List<ChoiceQuestionTableView> questionlist = new List<ChoiceQuestionTableView>();
 
             //获取考试类型
@@ -124,7 +123,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
                //var course = db_Course.GetList().Where(d => d.IsDelete == false && d.CurriculumID == kecheng).FirstOrDefault();
 
                 list = list.Where(d => d.Course != 0 &&d.Course == kecheng).ToList();
-
+                                        
                 list.ForEach(d=>
                 {
                     var tempobj = db_choiceQuestion.ConvertToChoiceQuestionTableView(d, false);
@@ -219,7 +218,16 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
 
             //抽取题目
             var temp1list = questionlist.Where(d => d.Level.LevelID == 1).ToList();
-            resultlist.AddRange(this.extracChoicequestion(temp1list, (int)jiandan));
+            
+            try
+            {
+                resultlist.AddRange(this.extracChoicequestion(temp1list, (int)jiandan));
+            }
+            catch (Exception ex)
+            {
+
+                string str = ex.Message;
+            }
 
             var temp1list1 = questionlist.Where(d => d.Level.LevelID == 2).ToList();
             resultlist.AddRange(this.extracChoicequestion(temp1list1, (int)putong));
@@ -542,7 +550,12 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
         }
 
 
-
+        /// <summary>
+        /// 获取XX难度的选择题
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
         public List<ChoiceQuestionTableView> extracChoicequestion(List<ChoiceQuestionTableView> source, int count)
         {
             if (source == null || source.Count == 0)

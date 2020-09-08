@@ -143,7 +143,7 @@
 </div>
 <!--行内工具按钮-->
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="detail">详情</a>
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">详情</a>
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
@@ -330,7 +330,7 @@
                 { type: 'checkbox' },
                 { field: 'Id', width: 80, title: 'ID', hide: true, sort: true }
                 , {
-                    field: 'Title', width: 200, title: '题目', templet: function (res) {
+                    field: 'Title', width: 240, title: '题目', templet: function (res) {
 
                         var result = escapeHTMLString(res.Title);
 
@@ -383,8 +383,8 @@
                     }, width: 150
                 },
                 { field: 'LevelName', width: 100, title: '难度指数', templet: '<div>{{d.Level.LevelName}}</div>' },
-                { field: 'Answer', width: 80, title: '答案' },
-                { field: 'EmpName', width: 80, title: '命题人', templet: '<div>{{d.Proposition.EmpName}}</div>' },
+                { field: 'Answer', width: 90, title: '答案' },
+                { field: 'EmpName', width: 90, title: '命题人', templet: '<div>{{d.Proposition.EmpName}}</div>' },
                 {
                     field: 'CourseName', width: 120, title: '所属课程', templet: function (res) {
 
@@ -405,15 +405,15 @@
 
 
                         if (data.IsUsing == true) {
-                            return "启用中";
+                            return "<a class='layui-btn layui-btn-xs'>启用中</a>";
                         }
                         else {
-                            return "禁用中";
+                            return "<a class='layui-btn layui-btn-danger layui-btn-xs'>禁用中</a>";
                         }
 
                     }
                 },
-                { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150 }
+                { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 170 }
 
             ]],
             page: true

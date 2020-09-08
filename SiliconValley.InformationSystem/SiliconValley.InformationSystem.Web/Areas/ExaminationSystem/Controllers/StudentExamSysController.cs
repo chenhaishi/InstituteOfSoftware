@@ -487,16 +487,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
                 string direName = $"/ExaminationSystem/AnswerSheet/{studentNumber + examid}/";
 
-                //DirectoryInfo directoryInfo = new DirectoryInfo(Server.MapPath("/Areas/ExaminationSystem/Files/AnswerSheet/" + direName));
-                //directoryInfo.Create();
-
                 //写文件
                 string answerfilename = "AnswerSheet.txt";
-                //FileInfo fileinfo = new FileInfo(Server.MapPath("/Areas/ExaminationSystem/Files/AnswerSheet/" + direName + "/" + answerfilename));
-                //var stream1 = fileinfo.CreateText();
-                //stream1.Write(AnswerCommit);
-                //stream1.Flush();
-                //stream1.Close();
+
 
                 PutObjectResponse putObjectResponseFromString = client.PutObject("xinxihua",$"{direName}{answerfilename}", AnswerCommit);
 
@@ -577,9 +570,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             }
             return Json(result);
         }
-
-
-
         public ActionResult MockExaminationView()
         {
             //提供数据 当前登录的学员、阶段、考试类型 难度级别
@@ -625,6 +615,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         /// 模拟选择题数据
         /// </summary>
         /// <returns></returns>
+        [ValidateInput(false)]
         public ActionResult MockChoiceqestiondata(string examType, string kecheng, string level)
         {
             AjaxResult result = new AjaxResult();
