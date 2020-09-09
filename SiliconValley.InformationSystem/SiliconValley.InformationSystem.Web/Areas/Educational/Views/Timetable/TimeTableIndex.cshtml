@@ -20,19 +20,24 @@
         {
             z-index: 3;
         }
-        .item{
-        cursor:pointer;
+
+        .item
+        {
+            cursor: pointer;
         }
+
         .item2
         {
             cursor: pointer;
         }
+
         body .demo-class .layui-layer-title
         {
             background: #009688;
             color: #fff;
             border: none;
         }
+
         .iCss
         {
             cursor: pointer;
@@ -42,8 +47,34 @@
         {
             cursor: pointer;
         }
+
+        
+        .TitleCss1
+        {
+            letter-spacing:10px;
+            font-size: 25px;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            color: black;
+            font-weight:800;
+        }
+        .TitleCss2
+        {
+            letter-spacing: 130px;
+            font-size: 38px;
+            font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+            color: black;
+            font-weight: 700;           
+        }
+        .trCss3
+        {
+            font-size: 22px;
+            color: black;
+            font-weight: 600;
+        }
     </style>
 }
+
+<div></div>
 <div id="time_div" style="margin-bottom:20px;">
     <form id="reconcile_form" lay-filter="reconcile_form" class="layui-form">
         <div class="layui-row">
@@ -58,7 +89,7 @@
                     {
                         if (index == 0)
                         {
-                            <input name="campus" id="campus" type="radio" value="@i.Id" title="@i.Name" checked/>
+                            <input name="campus" id="campus" type="radio" value="@i.Id" title="@i.Name" checked />
                         }
                         else
                         {
@@ -86,7 +117,7 @@
     <script>
         var new_laydate;
         var dayname;
-         
+
         function TableFulsh() {
             GetKebiao();
         }
@@ -159,6 +190,7 @@
             };
             return week;
         }
+
         layui.use(['form', 'laydate'], function () {
             var form = layui.form;
             var laydate = layui.laydate;
@@ -171,22 +203,27 @@
                 }
             });
         });
+
         //获取课表
         function GetKebiao() {
             var layer = layui.layer;
-            var formdata = { "SelectTime": $("#SelectTime").val(), "campus": $(":checked").val() };       
+            var formdata = { "SelectTime": $("#SelectTime").val(), "campus": $(":checked").val() };
             if (formdata.SelectTime.length <= 0) {
                 layer.msg('请选择日期!!', { icon: 2, shade: 0.8 });
             } else {
-                var index= layer.load(1);
+                var index = layer.load(1);
                 $.ajax({
                     url: '/Educational/Timetable/GetReconcileData',
                     type: 'POST',
                     data: formdata,
                     success: function (sucdata) {
+                        var lenth = Number(sucdata.MymongingOne.length) + 2;
                         $('#table_div')[0].innerHTML = "";
                         var recon_table = $('<table id="reconclie_table"></table>');
-                        $('<thead>< tr style = "text-align:center" > <th colspan="10"><span>' + new_laydate + '</span></th> <th colspan="4"><span>' + dayname + '</span></th></tr ></thead >').appendTo(recon_table);
+                        $('<thead><tr style="text-align:center"> <th class="TitleCss2" style="border-bottom:0px;" colspan="' + lenth + '"><img src="/Images/Login/guigu.png" width="60" height="60"/><bold style="margin-left: 20px;">湖南硅谷软件学院</bold><label class="TitleCss1">课程表</label></th></tr></thead >').appendTo(recon_table);
+                                             
+ 
+                        $('<tr> <th style="border-top:0px;text-align:right" colspan="' + lenth + '"><span class="trCss3">' + new_laydate + '</span><span class="trCss3">' + dayname + '</span></th></tr >').appendTo(recon_table);
                         var tr1 = $('<tr></tr>');
                         $('<th >午别</th ><th>课时</th>').appendTo(tr1);
                         for (var i = 0; i < sucdata.tablethead.length; i++) {
@@ -212,7 +249,7 @@
                                 } else {
                                     $('<th><span>' + sucdata.MymongingOne[i].NeiRong + '</span><span>/</span><span>' + sucdata.MymongingOne[i].Teacher + '</span></th>').appendTo(tr3);
                                 }
-                                
+
                             } else {
                                 $('<th></th>').appendTo(tr3);
                             }
@@ -238,7 +275,7 @@
                                 } else {
                                     $('<th><span>' + sucdata.MymongingTwo[i].NeiRong + '</span><span>/</span><span>' + sucdata.MymongingTwo[i].Teacher + '</span></th>').appendTo(tr5);
                                 }
-                                 
+
                             } else {
                                 $('<th></th>').appendTo(tr5);
                             }
@@ -265,7 +302,7 @@
                                 } else {
                                     $('<th><span>' + sucdata.MyafternoonOne[i].NeiRong + '</span><span>/</span><span>' + sucdata.MyafternoonOne[i].Teacher + '</span></th>').appendTo(tr7);
                                 }
-                                 
+
                             } else {
                                 $('<th></th>').appendTo(tr7);
                             }
@@ -293,7 +330,7 @@
                                 } else {
                                     $('<th><span>' + sucdata.MyafternoonTwo[i].NeiRong + '</span><span>/</span><span>' + sucdata.MyafternoonTwo[i].Teacher + '</span></th>').appendTo(tr9);
                                 }
-                                
+
                             } else {
                                 $('<th></th>').appendTo(tr9);
                             }
@@ -308,11 +345,11 @@
                             if (sucdata.MyngintOne[i].ClassName != null) {
                                 if (sucdata.MyngintOne[i].Teacher == "无" || sucdata.MyngintOne[i].Teacher == null) {
                                     $('<th class="item2" data-rid= ' + sucdata.MyngintOne[i].R_Id + ' > <span>' + sucdata.MyngintOne[i].ClassName + '</span></th>').appendTo(tr10);
-                                   
+
                                 } else {
                                     $('<th class="item2" data-rid= ' + sucdata.MyngintOne[i].R_Id + ' > <span>' + sucdata.MyngintOne[i].ClassName + '</span><span>/' + sucdata.MyngintOne[i].Teacher + '</span></th>').appendTo(tr10);
                                 }
-                                
+
                             } else {
                                 $('<th><i class="layui-icon iCss2">&#xe624;</i></th>').appendTo(tr10);
                             }
@@ -331,7 +368,7 @@
                                 } else {
                                     $('<th class="item2" data-rid= ' + sucdata.MyngintTwo[i].R_Id + '  ><span>' + sucdata.MyngintTwo[i].ClassName + '</span><span>/' + sucdata.MyngintTwo[i].Teacher + '</span></th>').appendTo(tr11);
                                 }
-                                 
+
                             } else {
                                 $('<th><i class="layui-icon iCss2">&#xe624;</i></th>').appendTo(tr11);
                             }
@@ -349,10 +386,10 @@
                                 var rid = $(value).attr("data-rid");
                                 //询问是否要编辑排课数据
                                 layer.confirm('系统温馨提示！', {
-                                    btn: ['编辑数据', '删除数据']  
+                                    btn: ['编辑数据', '删除数据']
                                     , btn2: function (index, layero) {
                                         //删除
-                                       var delconfi=  layer.confirm('真的要删除吗？', function (mixdel) {
+                                        var delconfi = layer.confirm('真的要删除吗？', function (mixdel) {
                                             var moreindex = layer.load(1);
                                             $.ajax({
                                                 url: '/Educational/Reconcile/DeleteMore',
@@ -368,7 +405,7 @@
                                             });
 
                                         })
-                                        
+
                                     }
                                 }, function (index, layero) {
                                     //编辑
@@ -388,7 +425,7 @@
                                     }
                                     layer.close(index);
                                 });
-                                 
+
                             });
                         });
                         //编辑晚自习数据
@@ -397,9 +434,9 @@
                                 var rid = $(val).attr("data-rid");
                                 var leng = rid.indexOf(',');
                                 layer.confirm('系统温馨提示！', {
-                                    btn: ['编辑数据', '删除数据']  
+                                    btn: ['编辑数据', '删除数据']
                                     , btn2: function (index, layero) {
-                                       var delindex= layer.confirm('真的要删除吗？', function (mixdel) {
+                                        var delindex = layer.confirm('真的要删除吗？', function (mixdel) {
                                             var moreindex = layer.load(1);
 
                                             $.ajax({
@@ -415,7 +452,7 @@
                                                 }
                                             })
                                         });
-                                         
+
                                     }
                                 }, function (index, layero) {
                                     //编辑数据
@@ -463,7 +500,7 @@
                                 layer.open({
                                     type: 2,
                                     content: '/Educational/Reconcile/ManualReconcileView'//ManualReconcileViewTwo,ManualReconcileView
-                                    , area: ['900px', '700px']
+                                    , area: ['1000px', '700px']
                                     , title: '添加排课数据页面'
                                     , shade: 0.8
                                     , anim: 4
@@ -488,7 +525,7 @@
                     }
                 });
             }
-           
+
 
         }
 
@@ -519,7 +556,7 @@
                     , skin: 'demo-class'
                 });
             });
-             
+
         }
 
         function Myopen(str) {
@@ -549,7 +586,7 @@
                     , shade: 0.8
                     , anim: 4
                     , skin: 'demo-class'
-                });  
+                });
             });
         }
     </script>

@@ -161,7 +161,16 @@
                     <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
                         <label class="LableCss1">上课老师:</label>
                         <div class="layui-input-block">
-                            <input type="text" name="empstring" id="empstring" class="layui-input" value="@Model.empstring"/>
+                            <input type="text" name="empstring" id="empstring" class="layui-input" value="@Model.empstring" />
+                        </div>
+                    </div>
+
+                </div>
+                <div class="layui-row layui-form-item">
+                    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                        <label class="LableCss1">违纪日期:</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="RecodeDate" id="RecodeDate" class="layui-input" lay-verify="required" value="@Model.RecodeDate"/>
                         </div>
                     </div>
 
@@ -188,8 +197,14 @@
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/layui/layui.js"></script>
     <script>
-        layui.use('form', function () {
+        layui.use(['form','laydate'], function () {
             var form = layui.form;
+            var laydate = layui.laydate;
+
+            laydate.render({
+                elem: RecodeDate
+                , trigger: 'click'
+            });
             //获取班级
             form.on('select(grandselect_add)', function (data) {
                 $("#class_addDiv")[0].innerHTML = "";

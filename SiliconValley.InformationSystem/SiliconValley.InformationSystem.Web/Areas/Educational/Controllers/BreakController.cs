@@ -123,17 +123,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         public ActionResult AddorEditFunction()
         {
             Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
-
-            int ClassSchedule_Id=Convert.ToInt32(Request.Form["ClassSchedule_Id"]);
-
-            string BaseDataTime =  Request.Form["BaseDataTime"];//时间段
-
-            string Rmark=  Request.Form["Rmark"];
-
             string Count = Request.Form["Count"];//违纪类型与人数
 
-            string empstring = Request.Form["empstring"];//上课老师
-
+            
             List<MyBreak> blist = new List<MyBreak>();
 
             AjaxResult a = new AjaxResult();
@@ -144,13 +136,22 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 {
                     if (!string.IsNullOrEmpty(item))
                     {
+                        int ClassSchedule_Id = Convert.ToInt32(Request.Form["ClassSchedule_Id"]);
+
+                        string BaseDataTime = Request.Form["BaseDataTime"];//时间段
+
+                        string Rmark = Request.Form["Rmark"];
+                        string empstring = Request.Form["empstring"];//上课老师
+
+                        DateTime date = Convert.ToDateTime(Request.Form["RecodeDate"]);
+
                         string[] istr = item.Split(':');
                         MyBreak bre = new MyBreak();
                         bre.Count = Convert.ToInt32(istr[1]);
                         bre.Violationofdiscipline_Id = Convert.ToInt32(istr[0]);
                         bre.Emp_Id = UserName.EmpNumber;
                         bre.ClassSchedule_Id = ClassSchedule_Id;
-                        bre.RecodeDate = DateTime.Now;
+                        bre.RecodeDate = date;
                         bre.BaseDataTime = BaseDataTime;
                         bre.IsDelete = false;
                         bre.Rmark = Rmark;
@@ -219,6 +220,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             MyBreak find = MyEntity.Break_Entity.GetFindId(newdata.Id);
 
             find.ClassSchedule_Id = newdata.ClassSchedule_Id;
+            find.RecodeDate =Convert.ToDateTime( newdata.RecodeDate);
             find.Count = newdata.count;
             find.Rmark = newdata.Rmark;
 

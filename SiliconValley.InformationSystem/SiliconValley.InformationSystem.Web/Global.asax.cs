@@ -49,6 +49,7 @@ namespace SiliconValley.InformationSystem.Web
             Task.Run(() =>
             {
                 var db = DbFactory.GetRepository();
+                
                 db.GetIQueryable<Base_User>().ToList();
             });
         }

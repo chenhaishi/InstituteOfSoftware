@@ -171,7 +171,16 @@
                     <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
                         <label class="LableCss1">上课老师:</label>
                         <div class="layui-input-block">
-                             <input type="text" name="empstring" id="empstring" class="layui-input"/>
+                            <input type="text" name="empstring" id="empstring" class="layui-input" />
+                        </div>
+                    </div>
+
+                </div>
+                <div class="layui-row layui-form-item">
+                    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                        <label class="LableCss1">违纪日期:</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="RecodeDate" id="RecodeDate" class="layui-input"  lay-verify="required"/>
                         </div>
                     </div>
 
@@ -208,9 +217,14 @@
 
         $(function () {
 
-            layui.use(['form','layer'], function () {
+            layui.use(['form','layer','laydate'], function () {
                 var form = layui.form;
                 var layer = layui.layer;
+                var laydate = layui.laydate;
+                laydate.render({
+                    elem: RecodeDate
+                    , trigger: 'click'
+                });
                 form.on('submit(tijiao)', function (data) {
                    var one= $("input[name='Count']");
                     var str = "";
