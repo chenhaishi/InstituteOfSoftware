@@ -176,10 +176,12 @@
             <label class="choicetitle" style="font-size:16px; color: gray;">{{=title}}<span style="margin-left:10px;"></span></label>
 
             <div style="margin-left:20px;">
-                <div class="option"><label>A<input type="checkbox" value="A" /></label> <label style="margin-left:10px;">{{=A}}</label></div>
-                <div class="option"><label>B<input type="checkbox" value="B" /></label> <label style="margin-left:10px;">{{=B}}</label> </div>
-                <div class="option"><label>C<input type="checkbox" value="C" /></label> <label style="margin-left:10px;">{{=C}}</label>  </div>
-                <div class="option"><label>D<input type="checkbox" value="D" /></label> <label style="margin-left:10px;">{{=D}}</label> </div>
+                <div class="option"><label>A<input  type="checkbox" value="A" /></label> <label style="margin-left:10px;">{{=A}}</label></div>
+        <div class="option"><label>B<input   type="checkbox" value="B" /></label> <label style="margin-left:10px;">{{=B}}</label> </div>
+        <div class="option"><label>C<input   type="checkbox" value="C" /></label> <label style="margin-left:10px;">{{=C}}</label>  </div>
+        <div class="option"><label>D<input   type="checkbox" value="D" /></label> <label style="margin-left:10px;">{{=D}}</label> </div>
+
+                
             </div>
 
         </div>
@@ -339,28 +341,35 @@
 
                         for (var i = 0; i < result.Data.data.length; i++) {
 
+                                                                                                
+
                             var a = $("<label></label>");
                             a.text(result.Data.data[i].OptionA);
 
                             var b = $("<label></label>");
                             b.text(result.Data.data[i].OptionB);
+                      
 
                             var c = $("<label></label>");
                             c.text(result.Data.data[i].OptionC);
+ 
 
                             var d = $("<label></label>");
                             d.text(result.Data.data[i].OptionD);
+
+                            
 
                             var title = $("<label></label>");
                             title.text(result.Data.data[i].Title);
 
                             var html = _.template($("#chiosequestionTemplate").html());
-
+                        
+                       
                             var htmldata = html({ answer: result.Data.data[i].Answer, title: document.HTMLDOMtoString(title[0]), A: document.HTMLDOMtoString(a[0]), B: document.HTMLDOMtoString(b[0]), C: document.HTMLDOMtoString(c[0]), D: document.HTMLDOMtoString(d[0]) });
 
                             $("#choicequestionlist").append($(htmldata));
+                        
                         }
-
                     }
 
                 });
@@ -413,7 +422,7 @@
 
                     var item = this;
                     var curanswer = $(this).find(".answer").val();
-
+                    var quid = $(this).parents(".answerItem").attr("questionid");
                     //获取学生选择的答案
                     var stuanswer = "";
                     $(this).find(".option input").each(function (i, op) {
@@ -428,7 +437,7 @@
 
                     stuanswer = stuanswer.substring(0, stuanswer.length - 1);
                     //比较答案
-                    if (stuanswer != curanswer) {
+                    if (stuanswer != curanswer && quid == null || quid != null) {
 
                         $(item).find(".choicetitle").css("color", "red");
                         $(this).find(".option input").attr("disabled", "disabled");
