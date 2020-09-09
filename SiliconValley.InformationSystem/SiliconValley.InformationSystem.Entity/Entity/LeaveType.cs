@@ -14,6 +14,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "LeaveType")]
+    //请假类型表
     public partial class LeaveType
     {
 

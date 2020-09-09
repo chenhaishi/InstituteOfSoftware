@@ -14,6 +14,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "MonthlySalaryRecord")]
+    //月度工资表
     public partial class MonthlySalaryRecord
     { 
         [Key]

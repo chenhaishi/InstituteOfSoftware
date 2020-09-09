@@ -14,6 +14,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "JobTransferAppply")]
+    //  转岗申请表
     public partial class JobTransferAppply
     {
         [Key]

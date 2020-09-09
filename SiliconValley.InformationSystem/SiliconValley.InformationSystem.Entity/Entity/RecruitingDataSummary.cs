@@ -14,6 +14,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "RecruitingDataSummary")]
+    //月度招聘数据汇总表
     public partial class RecruitingDataSummary
     {
         [Key]  

@@ -13,7 +13,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-
+    //员工工资体系表
     [Table(name: "EmplSalaryEmbody")]
     public partial class EmplSalaryEmbody
     { 

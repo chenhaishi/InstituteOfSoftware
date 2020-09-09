@@ -20,7 +20,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         [Key]
         public int ID { get; set; }
         public Nullable<int> Key_name { get; set; }
-        public Nullable<System.DateTime> Reentry { get; set; }
+        public Nullable<System.DateTime> Reentry { get; set; }  
         public string Causesoffailure { get; set; }
         public string Remarks { get; set; }
         public Nullable<bool> Dateofregistration { get; set; }

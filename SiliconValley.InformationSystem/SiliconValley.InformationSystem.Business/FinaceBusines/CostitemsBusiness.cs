@@ -156,7 +156,6 @@ namespace SiliconValley.InformationSystem.Business.FinaceBusines
         {
             AjaxResult list = new AjaxResult();
             List<Entity.ViewEntity.XYK_Data.Student> obj = new List<Entity.ViewEntity.XYK_Data.Student>();
-
             try
             {
                 if (type == 1)
@@ -174,7 +173,7 @@ namespace SiliconValley.InformationSystem.Business.FinaceBusines
                             num = item.Amountofmoney,
                             StuName = SchList.Name
                         };
-                        obj.Add(stu);
+                        obj.Add(stu); 
                     }
                     list.Success = true;
                     list.Data = obj;
@@ -197,7 +196,6 @@ namespace SiliconValley.InformationSystem.Business.FinaceBusines
                         };
                         obj.Add(stu);
                     }
-
                     list.Success = true;
                     list.Data = obj;
                 }

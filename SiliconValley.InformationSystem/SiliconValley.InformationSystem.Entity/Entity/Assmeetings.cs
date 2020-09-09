@@ -14,16 +14,24 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table("Assmeetings")]
+    //班会记录
     public partial class Assmeetings
     {
         [Key]
         public int ID { get; set; }
+        //班级编号
         public int ClassNumber { get; set; }
+        //班会标题
         public string Title { get; set; }
+        //班会内容
         public string Content { get; set; }
+        //班会日期
         public Nullable<System.DateTime> Classmeetingdate { get; set; }
+        //备注
         public string Remarks { get; set; }
+        //是否删除
         public Nullable<bool> IsDelete { get; set; }
+        //添加时间
         public Nullable<System.DateTime> Addtime { get; set; }
 
     }

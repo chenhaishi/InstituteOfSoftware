@@ -14,6 +14,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "SalaryRaiseApply")]
+    //加薪申请表
     public partial class SalaryRaiseApply
     {
         [Key]

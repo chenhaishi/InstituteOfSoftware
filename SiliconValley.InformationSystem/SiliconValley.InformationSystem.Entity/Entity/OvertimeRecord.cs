@@ -14,6 +14,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "OvertimeRecord")]
+    //加班记录表
     public partial class OvertimeRecord
     {
         [Key]

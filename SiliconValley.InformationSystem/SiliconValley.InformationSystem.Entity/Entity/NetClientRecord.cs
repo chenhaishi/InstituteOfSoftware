@@ -14,6 +14,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "NetClientRecord")]
+    //网咨学生回访表
     public partial class NetClientRecord
     {
         [Key]

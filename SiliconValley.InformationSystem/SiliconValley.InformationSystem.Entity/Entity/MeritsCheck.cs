@@ -14,6 +14,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "MeritsCheck")]
+    //绩效考核表
     public partial class MeritsCheck
     {
         [Key]

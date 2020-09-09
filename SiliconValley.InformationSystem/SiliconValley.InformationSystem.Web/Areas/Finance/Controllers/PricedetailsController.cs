@@ -457,7 +457,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
         {
             return Json(dbtext.Tuitionentry(id, whether, OddNumbers, paymentmethod), JsonRequestBehavior.AllowGet);
         }
-
         StudentDataKeepAndRecordBusiness stuDataKeepAndRecordBusiness = new StudentDataKeepAndRecordBusiness();
         /// <summary>
         /// 缴纳预入费页面
