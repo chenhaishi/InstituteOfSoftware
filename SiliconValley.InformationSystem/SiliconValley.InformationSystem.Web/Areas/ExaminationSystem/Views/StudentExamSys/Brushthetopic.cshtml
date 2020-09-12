@@ -8,7 +8,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>MockExaminationView</title>
+    <title>Brushthetopic</title>
     <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
     <link href="~/Areas/ExaminationSystem/js/trumbowyg/design/css/trumbowyg.css" rel="stylesheet" />
     <style>
@@ -65,7 +65,7 @@
     <div id="warp" class="layui-container">
 
         <div id="titleMsg">
-            <h1 style="text-align:center; color:gray;">考试模拟</h1>
+            <h1 style="text-align:center; color:gray;">刷题</h1>
 
             <div style="margin-top:20px;">
 
@@ -108,34 +108,41 @@
                         </div>
 
                     </div>
-
+                    
 
 
                     <div class="layui-form log-item">
-
-                        <label class="layui-form-label">级别:</label>
-                        <div class="layui-input-inline">
-                            <select class="formitem" name="level" id="level">
-                                @{
-                                    foreach (var item in ViewBag.levellist)
-                                    {
-                                        <option value="@item.LevelID">@item.LevelName</option>
+                       
+                            <label class="layui-form-label">刷题类型</label>
+                            <div class="layui-input-inline">
+                                <select class="formitem" name="course" id="course" disabled>
+                                    <option value="0" selected>--请选择--</option>
+                                    @{
+                                        foreach (var item in ViewBag.Courselist)
+                                        {
+                                            <option value="@item.CurriculumID">@item.CourseName</option>
+                                        }
                                     }
-                                }
-                            </select>
+                                </select>
+                            </div>                       
+                        <div class="layui-inline">
+                            <label class="layui-form-label">级别:</label>
+                            <div class="layui-input-inline">
+                                <select class="formitem" name="level" id="level">
+                                    @{
+                                        foreach (var item in ViewBag.levellist)
+                                        {
+                                            <option value="@item.LevelID">@item.LevelName</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                         </div>
+                            <div class="layui-input-inline" style="margin-left:30px;">
+                                <button type="button" id="begin" class="layui-btn layui-btn-primary formitem">开始刷题</button>
+                            </div>
                         </div>
-
-                        <div class="layui-input-inline" style="margin-left:30px;">
-                            <button type="button" id="begin" class="layui-btn layui-btn-primary formitem">开始模拟</button>
-                        </div>
-                        <div class="layui-input-inline" style="margin-left:30px;">
-                            <button type="button" id="ok" class="layui-btn layui-btn-primary">答题完成</button>
-                        </div>
-                        <div class="layui-input-inline" style="margin-left:30px;">
-                            <button type="button" id="ShuaXin" class="layui-btn layui-btn-primary">下一套</button>
-                        </div>
-                    </div>
-                </form>
+                 </form>
 
 
             </div>
@@ -175,12 +182,12 @@
             <label class="choicetitle" style="font-size:16px; color: gray;">{{=title}}<span style="margin-left:10px;"></span></label>
 
             <div style="margin-left:20px;">
-                <div class="option"><label>A<input  type="checkbox" value="A" /></label> <label style="margin-left:10px;">{{=A}}</label></div>
-        <div class="option"><label>B<input   type="checkbox" value="B" /></label> <label style="margin-left:10px;">{{=B}}</label> </div>
-        <div class="option"><label>C<input   type="checkbox" value="C" /></label> <label style="margin-left:10px;">{{=C}}</label>  </div>
-        <div class="option"><label>D<input   type="checkbox" value="D" /></label> <label style="margin-left:10px;">{{=D}}</label> </div>
+                <div class="option"><label>A<input type="checkbox" value="A" /></label> <label style="margin-left:10px;">{{=A}}</label></div>
+                <div class="option"><label>B<input type="checkbox" value="B" /></label> <label style="margin-left:10px;">{{=B}}</label> </div>
+                <div class="option"><label>C<input type="checkbox" value="C" /></label> <label style="margin-left:10px;">{{=C}}</label>  </div>
+                <div class="option"><label>D<input type="checkbox" value="D" /></label> <label style="margin-left:10px;">{{=D}}</label> </div>
 
-                
+
             </div>
 
         </div>
@@ -198,7 +205,7 @@
         </div>
     </script>
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
-    <script src="~/Scripts/layui/layui.js"></script>   
+    <script src="~/Scripts/layui/layui.js"></script>
 
     <script src="~/Areas/ExaminationSystem/js/trumbowyg/trumbowyg.min.js"></script>
     <script src="~/Areas/ExaminationSystem/js/trumbowyg/langs/fr.js"></script>
@@ -341,34 +348,34 @@
 
                         for (var i = 0; i < result.Data.data.length; i++) {
 
-                                                                                                
+
 
                             var a = $("<label></label>");
                             a.text(result.Data.data[i].OptionA);
 
                             var b = $("<label></label>");
                             b.text(result.Data.data[i].OptionB);
-                      
+
 
                             var c = $("<label></label>");
                             c.text(result.Data.data[i].OptionC);
- 
+
 
                             var d = $("<label></label>");
                             d.text(result.Data.data[i].OptionD);
 
-                            
+
 
                             var title = $("<label></label>");
                             title.text(result.Data.data[i].Title);
 
                             var html = _.template($("#chiosequestionTemplate").html());
-                        
-                       
+
+
                             var htmldata = html({ answer: result.Data.data[i].Answer, title: document.HTMLDOMtoString(title[0]), A: document.HTMLDOMtoString(a[0]), B: document.HTMLDOMtoString(b[0]), C: document.HTMLDOMtoString(c[0]), D: document.HTMLDOMtoString(d[0]) });
 
                             $("#choicequestionlist").append($(htmldata));
-                        
+
                         }
                     }
 
@@ -437,7 +444,7 @@
 
                     stuanswer = stuanswer.substring(0, stuanswer.length - 1);
                     //比较答案
-                    if (stuanswer != curanswer || stuanswer == curanswer  && quid == null || quid != null) {
+                    if (stuanswer != curanswer || stuanswer == curanswer && quid == null || quid != null) {
 
                         $(item).find(".choicetitle").css("color", "red");
                         $(this).find(".option input").attr("disabled", "disabled");
@@ -552,25 +559,7 @@
 
                 checkchoicequestion();
             });
-            $("#ShuaXin").click(function () {
-                $(".formitem").attr("disabled", "disabled");
-                layui.form.render();
 
-                var level = $("#level").val();
-                var kecheng = "0";
-
-                if (type == "2") {
-                    kecheng = $("#course").val();
-                }
-
-                var examtype = $("#examtype").val();
-
-
-                $("#choicequestionlist").html("");
-                $("#answerquestionlist").html("");
-                loadchoicequestiondata(examtype, level, kecheng);
-                loadanswerquestiondata(examtype, level, kecheng);
-            })
             $(document).off("click", ".refanswer").on("click", ".refanswer", function () {
 
                 var quid = $(this).parents(".answerItem").attr("questionid");

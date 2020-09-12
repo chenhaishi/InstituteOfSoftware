@@ -83,12 +83,12 @@
 <body>
     <div id="mywarp">
 
-        <div id="topDiv">
-            @*<img src="~/Areas/ExaminationSystem/Images/商务科技.png" />*@
-        </div>
+        @*<div id="topDiv">
+            @*<img src="~/Areas/ExaminationSystem/Images/商务科技.png" />
+        </div>*@
 
         <div id="nav">
-            <hr />
+            @*<hr />*@
             <ul class="hList">
                 <li>
                     <a href="JavaScript:void(0)" class="menu IndexView">
@@ -103,17 +103,18 @@
                     </a>
                 </li>
                 <li>
+                    <a href="JavaScript:void(0)" class="menu ShuaTi">
+                        <h2 class="menu-title menu-title_4rd">刷题</h2>
+
+                    </a>
+                </li>
+                <li>
                     <a href="JavaScript:void(0)" class="menu Mockxamination">
                         <h2 class="menu-title menu-title_3rd">考试模拟</h2>
 
                     </a>
                 </li>
-                <li>
-                    <a href="JavaScript:void(0)" class="menu">
-                        <h2 class="menu-title menu-title_4th">返回</h2>
 
-                    </a>
-                </li>
             </ul>
         </div>
 
@@ -282,7 +283,7 @@
 
             $(".IndexView").click(function () {
 
-                window.location.href = '/ExaminationSystem/StudentExamSys/StuExamIndex';
+                window.location.href = '/student/index';
 
             });
 
@@ -290,6 +291,11 @@
 
                 window.location.href = "/ExaminationSystem/StudentExamSys/MockExaminationView"
             });
+            //点击刷题  进入刷题页
+            $(".ShuaTi").click(function () {
+                //layer.msg("尽情期待!");
+                window.location.href = "/ExaminationSystem/StudentExamSys/Brushthetopic"     
+            })
         });
     </script>
 </body>

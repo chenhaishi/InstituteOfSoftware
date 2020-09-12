@@ -1,50 +1,86 @@
-﻿
+﻿@using SiliconValley.InformationSystem.Entity.MyEntity
 @{
     ViewBag.Title = "Index";
     Layout = null;
 }
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
-    <title></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>硅谷信息化</title>
     <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
 </head>
-<body>
-    <div id="mywarp" style="text-align:center; margin-top:100px;">
-
-        <button style="width:150px; height:150px;" id="survey" class="layui-btn layui-btn-primary" type="button">满意度填写</button>
-        <button style="width:150px; height:150px;" id="exam" class="layui-btn layui-btn-primary" type="button">考试</button>
-
+<body class="layui-layout-body">
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+            <div class="layui-logo">硅谷信息化 学生</div>
+            <!-- 头部区域（可配合layui已有的水平导航） -->
+            <ul class="layui-nav layui-layout-left">
+                <li class="layui-nav-item"><a href="/Teaching/SatisfactionSurvey/StudentSurveyIndex">满意度</a></li>
+                <li class="layui-nav-item"><a href="/ExaminationSystem/StudentExamSys/StuExamIndex">考试</a></li>
+            </ul>
+            <ul class="layui-nav layui-layout-right">
+                <li class="layui-nav-item">
+                    <a href="javascript:;">
+                        <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                        <label>@ViewBag.student.Name</label>
+                    </a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="">基本资料</a></dd>
+                        <dd><a href="">安全设置</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item"><a href="/Login/SLogin">退了</a></li>
+            </ul>
+        </div>
+        <div class="layui-side layui-bg-black">
+            <div class="layui-side-scroll">
+                <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+                <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                    <li class="layui-nav-item layui-nav-itemed">
+                        <a href="javascript:;">满意度</a>
+                        <dl class="layui-nav-child">
+                            <dd><a class="tongyi" href="javascript:;">教员评价</a></dd>
+                            <dd><a class="tongyi" href="javascript:;">班主任评价</a></dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a href="javascript:;">考试</a>
+                        <dl class="layui-nav-child">
+                            <dd><a class="tongyi" href="javascript:;">考试模拟</a></dd>
+                            <dd><a class="tongyi" href="javascript:;">成绩查询</a></dd>
+                            <dd><a class="tongyi" href="javascript:;">刷题</a></dd>
+                        </dl>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="layui-body">
+            <!-- 内容主体区域 -->
+            <h2>(请点击上面)↑↑↑↑</h2>
+            <h2>更多功能,请尽情期待</h2>
+            @*<img src="~/Images/Login/shoye.jpg" style="width:1690px;height:850px;margin-left:-23px;margin-top:-23px;" />*@
+        </div>
+        <div class="layui-footer">
+            <!-- 底部固定区域 -->
+            <footer>
+                <p style="color:#000000;">版权所属公司：<a href="https://xin.baidu.com/company_detail_20452183185658?rq=ef&amp;pd=ee&amp;from=ps" title="湖南硅谷云教育科技有限公司">湖南硅谷云教育科技有限公司</a>  <a href="http://www.beian.miit.gov.cn/" target="_blank" title="湘ICP备17003047号-3">湘ICP备17003047号-3</a></p>
+            </footer>
+        </div>
+        
     </div>
-    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
-
     <script src="~/Scripts/layui/layui.js"></script>
     <script>
-
-
-        layui.use(['layer'], function () {
-
-            var layer = layui.layer;
-
-            $("#survey").click(function () {
-
-                window.location.href = '/Teaching/SatisfactionSurvey/StudentSurveyIndex'
-
-            });
-
-            $("#exam").click(function () {
-
-                window.location.href = '/ExaminationSystem/StudentExamSys/StuExamIndex'
-
-            });
-
+        //JavaScript代码区域
+        layui.use(['form', 'util', 'layer','element'],function () {
+            var element = layui.element;
         });
-
-
     </script>
 </body>
 </html>
 
 
 
-    
+
 

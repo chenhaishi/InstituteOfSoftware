@@ -37,7 +37,20 @@
                     }
                 }
                 , { field: 'TimeLimit', width: "11%", title: '时限', sort: true }
-                , { field: 'IsEnd', width: "11%", title: '状态' }
+                , {
+                    field: 'IsEnd', width: "11%", title: '状态',templet: function (data) {
+
+
+
+                        if (data.IsEnd == true) {
+                            return "<a class='layui-btn layui-btn-xs'>结束</a>";
+                        }
+                        else {
+                            return "<a class='layui-btn layui-btn-danger layui-btn-xs'>进行中</a>";
+                        }
+
+                    }
+                }
                 , { field: 'Remark', title: '备注', width: '30%', minWidth: 100 } //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增
                
             ]]
