@@ -175,22 +175,24 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     string workAbsentRecord = "";
                     //下班缺卡记录
                     string OffDutyAbsentRecord = "";
-                    //迟到扣款
-                    //string tardyWithhold ="";
+                    //加班记录
+                    string OvertTimeRecord = "";
+                    //调休记录
+                    string DaysoffRecord = "";
                     //这些付款都是在员工工资表
                     MonthlySalaryRecordManage msrmanage = new MonthlySalaryRecordManage();
             
                     int cells = 24;
                     while (true)
-                    {
+                    {//(循环拿到日期列数据)
                         var getcell = getrow.GetCell(cells);
                         if (getcell == null)
                         {                            
                             break;
                         }
-                        var titlerow= sheet.GetRow(2);//表头行
+                        var titlerow= sheet.GetRow(2);//表头行（日期）
                         var title = titlerow.GetCell(cells).StringCellValue;
-                        if (cells==0) {
+                        if (cells==24 && (title == "六" || title == "日")) {//当循环的第一列是周六或周日则将表头改为1（表示该月1号）
                             title = "1";
                         }
                         var pretitle = titlerow.GetCell(cells - 1).StringCellValue;
@@ -200,7 +202,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                         }
                         if (title == "日")
                         {
-                            title = pretitle + 2;
+                            title = (Convert.ToInt32(pretitle) + 2).ToString();
                         }
                         if (getcell.StringCellValue.Contains("迟到"))
                         {
@@ -218,9 +220,13 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                             OffDutyAbsentRecord += title + "号," + getcell.StringCellValue + ";";
                         }
                         else if (getcell.StringCellValue.Contains("事假")) {
-                            leaveRecord +=  getcell.StringCellValue + ";";
-                        }            
-
+                            leaveRecord += getcell.StringCellValue + ";";
+                        } else if (getcell.StringCellValue.Contains("加班")) {
+                            OvertTimeRecord += getcell.StringCellValue + ";";
+                        } else if (getcell.StringCellValue.Contains("调休")) {
+                            DaysoffRecord+= getcell.StringCellValue + ";";
+                        }        
+                        
                         //迟到扣款
                         // string tardyWithhold = "";
                         //早退扣款
@@ -234,7 +240,8 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     // string remark = getrow.GetCell(14) == null ? null : getrow.GetCell(14).StringCellValue;
        
                     matd.YearAndMonth = Convert.ToDateTime(time);
-                   //matd.DeserveToRegularDays =Convert.ToDecimal(DeserveToRegularDays);
+                 //  matd.DeserveToRegularDays =Convert.ToDecimal(DeserveToRegularDays);
+
                     matd.EmpName = name;
                     matd.EmpDDid = Convert.ToInt32(ddid);
                     matd.ToRegularDays = Convert.ToInt32(workeddays);
@@ -248,7 +255,9 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     matd.TardyRecord = tardyRecord;
                     matd.LeaveEarlyNum =Convert.ToInt32(leaveEarlyNum);
                     matd.LeaveEarlyRecord = leaveEarlyRecord;
-
+                    matd.OvertTimeRecord = OvertTimeRecord;
+                    matd.DaysoffRecord = DaysoffRecord;
+                    
                   
                     //matd.TardyWithhold =tardyWithhold==null?matd.TardyWithhold=null: Convert.ToInt32(tardyWithhold);
                    
@@ -269,7 +278,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
         }
 
         /// <summary>
-        /// 计算迟到扣款
+        /// 计算请假扣款
         /// </summary>
         /// <param name="tardyRecord"></param>
         /// <returns></returns>
@@ -285,11 +294,12 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             }
             return result;
         }
-
-        //public decimal LeaveWithhold(string tardyRecord) {
-        //    var result = 0;
-        //    return result;
-        //}
+        //迟到扣款
+        public decimal TardyWithhold(string tardyRecord)
+        {
+            var result = 0;
+            return result;
+        }
 
         /// <summary>
         /// 将excel数据类的数据存入到数据库的考勤表中
@@ -301,16 +311,20 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             var ajaxresult = new AjaxResult();
             try
             {
-
                 var mateviewlist = CreateExcelData(sheet);
+
+                //获取第一个人的出勤天数，将它设为默认的应出勤天数
+                var days = mateviewlist.FirstOrDefault().ToRegularDays;
                 foreach (var item in mateviewlist)
                 { 
                     AttendanceInfo atd = new AttendanceInfo();
                     var emp = empmanage.GetEmpInfoData().Where(s => s.DDAppId == item.EmpDDid).FirstOrDefault();
                     atd.EmployeeId = emp.EmployeeId;
                     atd.YearAndMonth = item.YearAndMonth;
-                    atd.DeserveToRegularDays = item.DeserveToRegularDays;
+                    atd.DeserveToRegularDays = days;
                     atd.ToRegularDays = item.ToRegularDays;
+
+                    atd.LeaveRecord = item.LeaveRecord;
                     atd.LeaveDays = item.LeaveDays;
                     atd.WorkAbsentNum = item.WorkAbsentNum;
                     atd.WorkAbsentRecord = item.WorkAbsentRecord;
@@ -345,6 +359,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             }
             return ajaxresult;   
         }
+        
        
     }
 }
