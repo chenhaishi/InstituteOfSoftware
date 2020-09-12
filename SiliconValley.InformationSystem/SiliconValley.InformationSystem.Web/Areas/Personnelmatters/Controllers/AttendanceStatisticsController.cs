@@ -104,6 +104,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                              e.YearAndMonth,
                              e.ToRegularDays,
                              e.LeaveDays,
+                             e.LeaveRecord,
                              e.WorkAbsentNum,
                              e.WorkAbsentRecord,
                              e.OffDutyAbsentNum,
@@ -118,7 +119,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                              e.IsApproval,
                              e.DeserveToRegularDays,
                              e.TardyWithhold,
-                             e.LeaveWithhold
+                             e.LeaveWithhold,
+                             e.OvertTimeDuration,
+                             e.OvertimeCharges,
+                             e.DaysoffDuration,
+                             e.AbsenteeismDays,
+                             e.AbsenteeismWithhold
                              #endregion
 
                          };
