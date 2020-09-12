@@ -47,6 +47,46 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
           
             return View();
         }
+        public ActionResult Brushthetopic()
+        {
+            //提供数据 当前登录的学员、阶段、考试类型 难度级别
+
+            StudentInformationBusiness studentInformationBusiness = new StudentInformationBusiness();
+
+            var studentNumber = SessionHelper.Session["studentnumber"].ToString();
+            var student = studentInformationBusiness.StudentList().Where(d => d.StudentNumber == studentNumber).FirstOrDefault();
+            ViewBag.student = student;
+
+
+            GrandBusiness grandBusiness = new GrandBusiness();
+            var grandlist = grandBusiness.AllGrand();
+            ViewBag.grandlist = grandlist;
+
+
+            List<ExamType> list = db_exam.allExamType();
+
+            List<ExamTypeView> viewlist = new List<ExamTypeView>();
+            //转换类型
+            foreach (var item in list)
+            {
+                var tempobj = db_exam.ConvertToExamTypeView(item);
+
+                if (tempobj != null)
+                    viewlist.Add(tempobj);
+            }
+
+            ViewBag.examtypelist = viewlist;
+
+            //提供课程数据
+            CourseBusiness db_course = new CourseBusiness();
+
+            ViewBag.Courselist = db_course.GetCurriculas();
+
+            var levellist = db_exam.AllQuestionLevel();
+            ViewBag.levellist = levellist;
+
+            return View();
+        }
         /// <summary>
         ///获取学员最近的一次考试
         /// </summary>
