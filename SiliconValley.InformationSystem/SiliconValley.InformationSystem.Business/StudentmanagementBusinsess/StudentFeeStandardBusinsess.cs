@@ -1041,7 +1041,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                     
                     var stage= i.Key;//获取阶段
                     var Grandid = Grand.GetList().Where(d => d.GrandName == stage).SingleOrDefault();//查询阶段费用
-                    StringBuilder sb = new StringBuilder("select SUM(c.Amountofmoney) as 'Summonry',c.Grand_id from Costitems  as c where Grand_id='" + Grandid.Id + "' group by c.Grand_id ");//查询阶段总金额（转换为字符串）
+                    StringBuilder sb = new StringBuilder("select SUM(c.Amountofmoney) as 'Summonry',c.Grand_id from Costitems  as c where Grand_id='" + Grandid.Id + "'and c.IsDelete=0 group by c.Grand_id ");//查询阶段总金额（转换为字符串）
                     var grand_sum = Costitems.GetListBySql<Grand_SUM>(sb.ToString());
                     decimal sum = 0;//学生每个阶段的总和
                     decimal count = 0;//欠费总和

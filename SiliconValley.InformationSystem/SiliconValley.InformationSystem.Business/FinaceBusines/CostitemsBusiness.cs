@@ -152,9 +152,10 @@ namespace SiliconValley.InformationSystem.Business.FinaceBusines
         /// <param name="date">按时间查询</param>
         /// <param name="type">按类型查询</param>
         /// <returns></returns>
-        public AjaxResult TypeSelect(DateTime date,int type)
+        public AjaxResult TypeSelect(DateTime date,int type,int grand)
         {
             AjaxResult list = new AjaxResult();
+       
             List<Entity.ViewEntity.XYK_Data.Student> obj = new List<Entity.ViewEntity.XYK_Data.Student>();
             try
             {
