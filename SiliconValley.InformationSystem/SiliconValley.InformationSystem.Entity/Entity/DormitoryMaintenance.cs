@@ -15,15 +15,22 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations.Schema;
 
     [Table(name: "DormitoryMaintenance")]
+    //宿舍维修记录
     public partial class DormitoryMaintenance
     {
         [Key]
         public int ID { get; set; }
+        //宿舍号
         public Nullable<int> Key_name { get; set; }
-        public Nullable<System.DateTime> Reentry { get; set; }
+        //报修时间
+        public Nullable<System.DateTime> Reentry { get; set; }  
+        //故障原因
         public string Causesoffailure { get; set; }
+        //备注
         public string Remarks { get; set; }
+        //是否删除
         public Nullable<bool> Dateofregistration { get; set; }
+        //添加时间
         public Nullable<System.DateTime> Addtime { get; set; }
     
     }

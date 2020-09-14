@@ -14,13 +14,17 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "MeritsCheck")]
+    //绩效考核表
     public partial class MeritsCheck
     {
         [Key]
         public int Id { get; set; }
+        //员工编号
         public string EmployeeId { get; set; }
+        //年月份
         public Nullable<System.DateTime> YearAndMonth { get; set; }
         public string RoutineWork { get; set; }//日常工作内容
+
         public Nullable<decimal> RoutineWorkPropotion { get; set; }//日常工作权重占比
         public Nullable<decimal> RoutineWorkFillRate { get; set; }//日常工作完成率
         public string OtherWork { get; set; }//其他或领导临时指派任务

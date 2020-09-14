@@ -14,13 +14,17 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "PurchaseType")]
+    //采购类型
     public partial class PurchaseType
     {
 
         [Key]
         public int Id { get; set; }
+        //类型名称
         public string TypeName { get; set; }
+        //备注
         public string Rmark { get; set; }
+        //是否删除
         public Nullable<bool> IsDelete { get; set; }
 
 

@@ -1393,7 +1393,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
             return null;
            
         }
-
         public ActionResult Text8()
         {
             BaseBusiness<DetailedStudentIn> a1 = new BaseBusiness<DetailedStudentIn>();

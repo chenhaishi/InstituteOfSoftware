@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 namespace SiliconValley.InformationSystem.Entity.MyEntity
 {
     [Table("MoveType")]
+    //异动类型表
     public class MoveType
     {
         [Key]

@@ -14,6 +14,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "RecruitPhoneTrace")]
+    //招聘追踪表
     public partial class RecruitPhoneTrace 
     {
         [Key]

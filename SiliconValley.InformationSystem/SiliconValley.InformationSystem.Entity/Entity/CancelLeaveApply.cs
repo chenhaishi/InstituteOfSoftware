@@ -14,13 +14,19 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table("CancelLeaveApply")]
+    //销假单
     public partial class CancelLeaveApply
     {
         [Key]
+        //销假编号
         public int Cid { get; set; }
+        //请假编号
         public Nullable<int> LeaveId { get; set; }
+        //销假理由
         public string CancelLeaveReason { get; set; }
+        //复原上班时间
         public Nullable<System.DateTime> BackToWorkTime { get; set; }
+        //是否删除
         public Nullable<bool> IsDel { get; set; }
     
     }

@@ -14,19 +14,30 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table("BiddingRecord")]
+    //竞价记录
     public partial class BiddingRecord
     {
         [Key]
         public int Id { get; set; }
+        //记录者
         public string Recorder { get; set; }
+        //竞价对手
         public string BiddingOpponent { get; set; }
+        //网址
         public string Url { get; set; }
+        //单元
         public string Unit { get; set; }
+        //关键词
         public string Keyword { get; set; }
+        //文案创意
         public string CopywritingOriginality { get; set; }
+        //首位价格
         public Nullable<decimal> TheFirstBid { get; set; }
+        //展出时间
         public Nullable<System.DateTime> ShowTime { get; set; }
+        //平均点击价格
         public Nullable<decimal> AverageClickPrice { get; set; }
+        //是否删除
         public Nullable<bool> IsDel { get; set; }
     }
 }

@@ -14,15 +14,22 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table("Awardwinningtrainees")]
+    //学员获奖记录
     public partial class Awardwinningtrainees
     {
        [Key]
         public int ID { get; set; }
+        //学员id
         public string StudentNO { get; set; }
+        //获奖名称
         public string AwardwinningName { get; set; }
+        //获奖类型
         public string AwardwinningType { get; set; }
+        //获奖时间
         public Nullable<System.DateTime> AwardwinningDate { get; set; }
+        //是否删除
         public Nullable<bool> IsDelete { get; set; }
+        //添加时间
         public Nullable<System.DateTime> Addtime { get; set; }
     
  

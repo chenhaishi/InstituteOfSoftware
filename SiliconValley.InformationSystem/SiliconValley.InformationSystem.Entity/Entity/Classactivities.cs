@@ -14,6 +14,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table("Classactivities")]
+    //班级活动
     public partial class Classactivities
     {
         [Key]

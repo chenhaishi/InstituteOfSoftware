@@ -14,15 +14,22 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table("ConversationRecord")]
+    //谈话记录
     public partial class ConversationRecord
     {
         [Key]
         public int ID { get; set; }
+        //员工编号
         public string EmployeeId { get; set; }
+        //主题
         public string Theme { get; set; }
+        //内容
         public string Content { get; set; }
+        //结果
         public string Result { get; set; }
+        //谈话时间
         public Nullable<System.DateTime> Time { get; set; }
+        //是否删除
         public Nullable<bool> IsDel { get; set; }
         public string StudenNumber { get; set; }
     }

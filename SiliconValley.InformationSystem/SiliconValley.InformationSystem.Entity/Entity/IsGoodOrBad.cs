@@ -14,16 +14,24 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "IsGoodOrBad")]
+    //报溢报损
     public partial class IsGoodOrBad
     {
         [Key]
         public int Id { get; set; }
+        //盘点id
         public Nullable<int> Check_Id { get; set; }
+        //物品id
         public Nullable<int> Goods_Id { get; set; }
+        //发现时间
         public Nullable<System.DateTime> FindDate { get; set; }
+        //报溢报损
         public Nullable<bool> IsOK { get; set; }
+        //原因
         public string Cause { get; set; }
+        //是否删除
         public Nullable<bool> IsHandle { get; set; }
+        //备注
         public string Note { get; set; }
     
         

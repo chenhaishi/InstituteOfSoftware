@@ -14,17 +14,26 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "PrintGoodsApply")]
+    //用印申请
     public partial class PrintGoodsApply
     {
         [Key]
         public int Id { get; set; }
+        //用印部门
         public Nullable<int> DeptId { get; set; }
+        //经办人
         public string Transactor { get; set; }
+        //申请日期
         public Nullable<System.DateTime> ApplyDate { get; set; }
+        //用印文件名称
         public string StampFileName { get; set; }
+        //文件份数
         public Nullable<int> FileNum { get; set; }
+        //文件类别
         public string FileType { get; set; }
+        //加盖何种印章
         public string StamperType { get; set; }
+        //备注
         public string Remark { get; set; }
     
        

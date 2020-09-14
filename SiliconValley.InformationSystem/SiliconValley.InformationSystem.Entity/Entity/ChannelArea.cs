@@ -15,7 +15,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations.Schema;
 
     /// <summary>
-    /// 渠道的区域
+    /// 市场渠道的区域
     /// </summary>
     [Table(name: "ChannelArea")]
     public partial class ChannelArea

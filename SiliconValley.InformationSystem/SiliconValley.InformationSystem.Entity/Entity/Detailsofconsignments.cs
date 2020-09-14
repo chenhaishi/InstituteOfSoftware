@@ -15,14 +15,20 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations.Schema;
 
     [Table(name: "Detailsofconsignments")]
+    //学员领用物资详情
     public partial class Detailsofconsignments
     {
         [Key]
         public int ID { get; set; }
+        //退学ID
         public Nullable<int> AppDro_ID { get; set; }
+        //学员物——ID
         public Nullable<int> Stu_Id { get; set; }
+        //备注
         public string Remarks { get; set; }
+        //是否禁用
         public Nullable<bool> IsDelete { get; set; }
+        //添加时间
         public Nullable<System.DateTime> Addtime { get; set; }
     
     }

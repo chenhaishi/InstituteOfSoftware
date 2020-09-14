@@ -14,13 +14,18 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "InstructorList")]
+    // 教导大队人员表
     public partial class InstructorList
     {
         [Key]
         public int ID { get; set; }
+        //员工编号
         public string EmployeeNumber { get; set; }
+        //是否删除
         public Nullable<bool> IsDel { get; set; }
+        //添加时间
         public Nullable<System.DateTime> AddTime { get; set; }
+        //备注
         public string Remarks { get; set; }
 
 

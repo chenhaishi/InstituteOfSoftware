@@ -14,12 +14,16 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table("ChooseAnswerSheet")]
+    //选择题答卷
     public partial class ChooseAnswerSheet
     {
         [Key]
         public int Id { get; set; }
+        //考生
         public string CandidateInfo { get; set; }
+        //题目
         public Nullable<int> Topic { get; set; }
+        //答案
         public string Answer { get; set; }
     
     }

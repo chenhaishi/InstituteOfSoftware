@@ -15,7 +15,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations.Schema;
 
     /// <summary>
-    /// 教学老师晚自习值班记录表
+    /// 班主任晚自习值班记录表
     /// </summary>
     [Table(name: "TeacherNight")]
     public partial class TeacherNight
@@ -45,7 +45,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
 
         public string Rmark { get; set; }
         /// <summary>
-        /// 是否审核
+        /// 是否审核（true-已审核，false--未审核，不能算费用）
         /// </summary>
         public bool IsDelete { get; set; }
     

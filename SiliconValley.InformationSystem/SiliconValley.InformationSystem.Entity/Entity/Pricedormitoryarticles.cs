@@ -14,14 +14,20 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "Pricedormitoryarticles")]
+    //宿舍物品价格表
     public partial class Pricedormitoryarticles
     {
         [Key]
         public int ID { get; set; }
+        //物品名称
         public string Nameofarticle { get; set; }
+        //单价
         public Nullable<decimal> Reentry { get; set; }
+        //备注
         public string Remarks { get; set; }
+        //是否删除
         public Nullable<bool> Dateofregistration { get; set; }
+        //添加时间
         public Nullable<System.DateTime> Addtime { get; set; }
 
 

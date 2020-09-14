@@ -15,17 +15,26 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations.Schema;
 
     [Table(name: "DisposalofDiscipline")]
+    //学员违纪处理
     public partial class DisposalofDiscipline
     {
         [Key]
         public int ID { get; set; }
+        //违纪内容
         public string DisciplinaryContents { get; set; }
+        //处理方式
         public string processingmethod { get; set; }
+        //处理人
         public Nullable<int> Handler { get; set; }
+        //处理日期
         public Nullable<System.DateTime> ProcessingDate { get; set; }
+        //添加时间
         public Nullable<System.DateTime> Add_time { get; set; }
+        //是否删除
         public Nullable<bool> Dateofregistration { get; set; }
+        //学员学号
         public string StudentID { get; set; }
+        //备注
         public string Remarks { get; set; }
     }
 }

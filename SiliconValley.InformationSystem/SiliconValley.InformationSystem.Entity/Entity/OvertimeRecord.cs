@@ -14,19 +14,30 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "OvertimeRecord")]
+    //加班记录表
     public partial class OvertimeRecord
     {
         [Key]
         public int Id { get; set; }
+        //员工编号
         public string EmployeeId { get; set; }
+        //开始时间
         public Nullable<System.DateTime> StartTime { get; set; }
+        //结束时间
         public Nullable<System.DateTime> EndTime { get; set; }
+        //加班时长
         public Nullable<decimal> Duration { get; set; }
+        //加班原因
         public string OvertimeReason { get; set; }
+        //是否不调休
         public Nullable<bool> IsNoDaysOff { get; set; }
+        //加班类型
         public int OvertimeTypeId { get; set; }
+        //是否过了年限
         public Nullable<bool> IsPassYear { get; set; }
+        //备注
         public string Remark { get; set; }
+        //是否禁用
         public Nullable<bool> IsPass { get; set; }
         public Nullable<bool> IsApproval { get; set; }
 
