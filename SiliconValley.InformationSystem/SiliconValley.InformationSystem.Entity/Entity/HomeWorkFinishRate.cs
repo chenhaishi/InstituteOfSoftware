@@ -14,16 +14,24 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "HomeWorkFinishRate")]
+    //学员作业提交情况
     public partial class HomeWorkFinishRate
     {
         [Key]
         public int ID { get; set; }
+        //上机作业
         public Nullable<bool> ClassroomHomeWork { get; set; }
+        //课后作业
         public Nullable<bool> AfterClassHomeWork { get; set; }
+        //批注
         public string Notes { get; set; }
+        //检查时间
         public Nullable<System.DateTime> CheckDate { get; set; }
+        //是否删除
         public Nullable<bool> IsDel { get; set; }
+        //作业检查人
         public Nullable<int> ChekTeacher { get; set; }
+        //学员
         public string StudentNumber { get; set; }
         public DateTime ReleaseDate { get; set; }//作业布置的时间
 

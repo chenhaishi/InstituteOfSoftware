@@ -20,6 +20,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         [Key]  
         public int Id { get; set; }
         public Nullable<int> Pid { get; set; }//岗位
+
         public Nullable<int> PlanRecruitNum { get; set; }//计划招聘人数
         public Nullable<int> ResumeSum { get; set; }//简历总数
         public Nullable<int> OutboundCallSum { get; set; }//联系的总数

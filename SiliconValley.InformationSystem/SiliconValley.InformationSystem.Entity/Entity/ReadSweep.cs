@@ -14,14 +14,20 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "ReadSweep")]
+    //阅卷安排记录
     public partial class ReadSweep
     {
         [Key]
         public int Id { get; set; }
+        //老师id
         public Nullable<int> Tear_Id { get; set; }
+        //考场id
         public Nullable<int> kaoc_id { get; set; }
+        //指定日期
         public Nullable<System.DateTime> NewDate { get; set; }
+        //备注
         public string Rmark { get; set; }
+        //是否删除
         public Nullable<bool> IsDelete { get; set; }
     
        

@@ -15,13 +15,18 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations.Schema;
 
     [Table(name: "DimissionApply")]
+    //离职申请表
     public partial class DimissionApply
     {
         [Key]
         public int Id { get; set; }
+        //员工编号
         public string EmployeeId { get; set; }
+        //离职申请日期
         public Nullable<System.DateTime> DimissionDate { get; set; }
+        //对学校的意见
         public string OpinionOrAdvice { get; set; }
+        //是否删除
         public Nullable<bool> IsPass { get; set; }
         public Nullable<bool> IsApproval { get; set; }
         public string DimissionReason { get; set; }

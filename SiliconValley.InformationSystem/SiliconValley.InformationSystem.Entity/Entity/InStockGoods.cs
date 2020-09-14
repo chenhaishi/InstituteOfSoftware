@@ -14,14 +14,20 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "InStockGoods")]
+    //入库物品
     public partial class InStockGoods
     {
         [Key]
         public int Id { get; set; }
+        //入库id
         public Nullable<int> InStock_Id { get; set; }
+        //物品id
         public Nullable<int> Goods_Id { get; set; }
+        //物品数量
         public Nullable<int> GoodsCount { get; set; }
+        //备注
         public string Rmark { get; set; }
+        //是否删除
         public Nullable<bool> IsDelete { get; set; }
     
     }

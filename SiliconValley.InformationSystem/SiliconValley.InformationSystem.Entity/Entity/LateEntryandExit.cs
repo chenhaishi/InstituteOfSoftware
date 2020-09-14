@@ -14,15 +14,22 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "LateEntryandExit")]
+    //晚出入人员
     public partial class LateEntryandExit
     {
         [Key]
         public int ID { get; set; }
+        //学员学号
         public string Student_Number { get; set; }
+        //出入时间
         public Nullable<System.DateTime> Entryandexittime { get; set; }
+        //宿舍地址
         public string Dormitoryaddress { get; set; }
+        //是否删除
         public Nullable<bool> Dateofregistration { get; set; }
+        //日期
         public Nullable<System.DateTime> Date { get; set; }
+        //备注
         public string Remarks { get; set; }
 
         public virtual StudentInformation StudentInformation { get; set; }

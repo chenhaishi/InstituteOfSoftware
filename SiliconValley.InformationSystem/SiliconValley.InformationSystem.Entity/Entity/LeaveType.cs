@@ -20,7 +20,9 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
 
         [Key]
         public int TypeId { get; set; }
+        //类型名称
         public string TypeName { get; set; }
+        //是否删除
         public Nullable<bool> IsDel { get; set; }
 
 

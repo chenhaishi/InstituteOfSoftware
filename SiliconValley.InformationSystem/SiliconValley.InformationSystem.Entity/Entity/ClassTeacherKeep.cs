@@ -14,7 +14,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     /// <summary>
-    /// 班主任值班记录表
+    /// 班主任值班记录表（作废）
     /// </summary>
     [Table("ClassTeacherKeep")]
     public partial class ClassTeacherKeep

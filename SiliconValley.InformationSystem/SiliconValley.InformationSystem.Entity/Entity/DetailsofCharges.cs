@@ -15,10 +15,12 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations.Schema;
 
     [Table(name: "DetailsofCharges")]
+    //本科费用明细（对不上）
     public partial class DetailsofCharges
     {
         [Key]
         public int ID { get; set; }
+        //
         public int Enrollmentid { get; set; }
         public int Costitemsid { get; set; }
       

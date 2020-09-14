@@ -842,7 +842,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
         {
             StudentFeeStandardBusinsess studentFeeStandardBusinsess = new StudentFeeStandardBusinsess();
             var ClassID = int.Parse(Request.QueryString["ClassID"]);
-            var list = studentFeeStandardBusinsess.TuitionFine(ClassID);
+            var list = studentFeeStandardBusinsess.TuitionFine_list(ClassID);
             if (!string.IsNullOrEmpty(Stidentid))
             {
                 list = list.Where(a => a.Stidentid == Stidentid).ToList();
