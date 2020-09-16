@@ -113,21 +113,28 @@
 
                     <div class="layui-row layui-form-item">
                         <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                            <label class="layui-form-label">现转正时间:</label>
+                            <div class="layui-input-block">
+                                @Html.TextBoxFor(a => a.BeforePositiveDate, new Dictionary<string, object>() { { "style", "border:0px" }, { "readonly", "true" }, { "class", "layui-input" } })
+                            </div>
+                        </div>
+                        <input type="hidden"  id="PreviousInternshipSalary" name="PreviousInternshipSalary" />
+                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                             <label class="layui-form-label">现工资标准:</label>
                             <div class="layui-input-block">
                                 @Html.TextBoxFor(a => a.PreviousSalary, new Dictionary<string, object>() { { "style", "border:0px" }, { "readonly", "true" }, { "class", "layui-input" } })
                             </div>
                         </div>
 
+                    </div>
+
+                    <div class="layui-row layui-form-item">
                         <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                             <label class="layui-form-label">拟转部门:</label>
                             <div class="layui-input-block">
                                 <select name="PresentDept" id="PresentDept" style="width:130px;" lay-filter="deptidfilter" lay-search=""></select>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="layui-row layui-form-item">
                         <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                             <label class="layui-form-label">拟转岗位:</label>
                             <div class="layui-input-block">
@@ -135,10 +142,27 @@
                             </div>
                         </div>
 
-                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                            <label class="layui-form-label">转岗后工资:</label>
+                    </div>
+
+                    <div class="layui-row layui-form-item">
+                        <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
+                            <label class="layui-form-label">拟转后转正时间:</label>
                             <div class="layui-input-block">
-                                @Html.TextBoxFor(a => a.PresentSalary, new Dictionary<string, object>() { { "class", "layui-input" } })
+                                @Html.TextBoxFor(a => a.AfterPositiveDate, new Dictionary<string, object>() { { "style", "border:0px" }, { "readonly", "true" }, { "class", "layui-input" } })
+                            </div>
+                        </div>
+
+                        <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
+                            <label class="layui-form-label">拟转后实习工资:</label>
+                            <div class="layui-input-block">
+                                @Html.TextBoxFor(a => a.PreviousSalary, new Dictionary<string, object>() { { "style", "border:0px" }, { "readonly", "true" }, { "class", "layui-input" } })
+                            </div>
+                        </div>
+
+                        <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
+                            <label class="layui-form-label">拟转后正式工资:</label>
+                            <div class="layui-input-block">
+                                @Html.TextBoxFor(a => a.PresentInternshipSalary, new Dictionary<string, object>() { { "class", "layui-input" } })
                             </div>
                         </div>
                     </div>
@@ -297,13 +321,13 @@
 
             //添加异动信息提交
             form.on('submit(demo1)', function (data) {
-                console.log("加薪前工资：" + data.field.salaryBefore);
+                var loadindex = layer.load(1);
                 if (data.field.Raiselimit != "") {
                     data.field.PresentSalary = parseFloat(data.field.salaryBefore) + parseFloat(data.field.Raiselimit);
                     console.log("加薪后工资：" + data.field.PresentSalary);
                 }
                 $.post("/Personnelmatters/EmpTransactionRecord/AddEtrInfo", data.field, function (data) {
-
+                    layer.close(loadindex);
                     if (data.Success) {
                         layer.alert("添加成功!", { icon: 1 }, function () {
                             var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
@@ -334,7 +358,10 @@
             $("#PreviousPosition").val(Itemnames.PositionId);
             $("#Depart").val(Itemnames.Depart);
             $("#Position").val(Itemnames.Position);
-            if (Itemnames.PositiveDate == null) {
+            $("#BeforePositiveDate").val(Itemnames.PositiveDate);
+            $("#PreviousInternshipSalary").val(Itemnames.ProbationSalary);
+            $("#")
+            if (Itemnames.PositiveDate == null) {           
                 $("#PreviousSalary").val(Itemnames.ProbationSalary);
                 $("#salaryBefore").val(Itemnames.ProbationSalary);
             } else {

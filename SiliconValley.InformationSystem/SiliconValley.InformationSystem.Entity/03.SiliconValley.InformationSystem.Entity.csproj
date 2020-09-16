@@ -344,6 +344,7 @@
     <Compile Include="ViewEntity\AddEnterpriseView.cs" />
     <Compile Include="ViewEntity\AmountTopView.cs" />
     <Compile Include="ViewEntity\AnPaiData.cs" />
+    <Compile Include="ViewEntity\AttendanceInfoErrorDataView.cs" />
     <Compile Include="ViewEntity\CapitalView\PublicBorrowListView.cs" />
     <Compile Include="ViewEntity\ChannelReportFormView.cs" />
     <Compile Include="ViewEntity\ChannelSortView.cs" />
