@@ -126,6 +126,24 @@
                     processData: false,
                     success: function (data) {
                         layer.close(loadindex);
+                        if (data.Success) {
+                            if (data.ErrorCode == 100) {//没有一条数据出错
+                                var msg = "录入成功!  录入数量：" + data.Msg;
+                            } else if (data.ErrorCode == 200) {
+                                var errdata = data.Data;//录入错误的数据
+                                var detailerrdata = "";
+                                for (var i = 0; i < errdata.length; i++) {
+                                    console.log("钉钉号:" + errdata[i].ddid);
+                                    detailerrdata += "序号为" + errdata[i].excelId + "的员工录入出错，" + errdata[i].errorExplain + "<br/>";
+
+                                    console.log("错误分析：" + detailerrdata);
+                                };
+                                console.log("失败数据详细：" + detailerrdata);
+                                var msg = "成功录入" + data.Msg + "条数据" + errdata.length +
+                                    "条数据录入失败。失败数据分析如下：</br>" + detailerrdata;
+                            }
+
+                        }
                         if (data.ErrorCode = 200) {
 
                             var msg = "录入成功!  录入数量：" + data.Data;

@@ -599,7 +599,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
         /// </summary>
         /// <returns></returns>
         public AjaxResult ExcelImportEmpSql(ISheet sheet)
-        {
+        { 
             var ajaxresult = new AjaxResult();
             List<EmpErrorDataView> emperrorlist = new List<EmpErrorDataView>();
             try
@@ -786,7 +786,6 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
 
             return result;
         }
-
 
         public AjaxResult SqlDataToExcel()
         {
@@ -1157,11 +1156,11 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
             var emp = this.GetEmpInfoData().Where(s => s.DDAppId == ddid).FirstOrDefault();
             if (emp != null)
             {
-                result = true;
+                result = true;//表示存在该钉钉号
             }
             else
             {
-                result = false;
+                result = false;//表示不存在该钉钉号
             }
             return result;
 
@@ -1210,5 +1209,16 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
             return etrviewlist;
         }
 
+        /// <summary>
+        /// 根据员工钉钉号返回员工对象
+        /// </summary>
+        /// <param name="ddid"></param>
+        /// <returns></returns>
+        public EmployeesInfo GetEmpByDDid(int ddid)
+        {
+            EmployeesInfoManage empmanage = new EmployeesInfoManage();
+            var emp = empmanage.GetList().Where(s => s.DDAppId == ddid).FirstOrDefault();
+            return emp;
+        }
     }
 }

@@ -45,11 +45,12 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
 
 
         public Nullable<decimal> OvertTimeDuration { get; set; }//加班时长
-        public Nullable<decimal> OvertTimeRecord { get; set; }//加班记录
+        public string OvertTimeRecord { get; set; }//加班记录
         public Nullable<decimal> OvertimeCharges { get; set; }//加班费用
         public Nullable<decimal> DaysoffDuration { get; set; }//调休时长
         public string DaysoffRecord { get; set; }//调休记录
         public Nullable<decimal> AbsenteeismDays { get; set; }//旷工天数
+        public string AbsenteeismRecord { get; set; }//旷工记录
         public Nullable<decimal> AbsenteeismWithhold { get; set; }//旷工扣费
     }
-}
+} 
