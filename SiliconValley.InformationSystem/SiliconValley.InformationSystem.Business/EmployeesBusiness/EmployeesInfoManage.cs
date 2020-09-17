@@ -385,6 +385,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
                 FinanceModelBusiness fmmanage = new FinanceModelBusiness();
                 result = fmmanage.AddFinancialstaff(emp.EmployeeId);
             }//给财务部员工表添加员工
+
             EmplSalaryEmbodyManage esemanage = new EmplSalaryEmbodyManage();
             if (!dname.Equals("教导大队"))
             {

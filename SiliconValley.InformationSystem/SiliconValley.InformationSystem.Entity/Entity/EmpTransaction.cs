@@ -106,8 +106,9 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         /// 原实习工资
         /// </summary>
         public Nullable<decimal> PreviousInternshipSalary { get; set; }
+
         /// <summary>
-        /// 原正式工资
+        /// 现实习工资
         /// </summary>
         public Nullable<decimal> PresentInternshipSalary { get; set; }
     }

@@ -140,7 +140,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 e.BeforeContractEndTime,
                 e.AfterContractStartTime,
                 e.AfterContractEndTime,
-                e.IsDel
+                e.IsDel,
+                e.BeforePositiveDate,
+                e.AfterPositiveDate,
+                e.PreviousInternshipSalary,
+                e.PresentInternshipSalary
                 #endregion
             };
 
@@ -178,25 +182,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                         if (ajaxresult.Success) {
                             //员工转正时间修改好之后将该员工的绩效工资及岗位工资修改一下
                                 EmplSalaryEmbodyManage esemanage = new EmplSalaryEmbodyManage();
-                                var ese = esemanage.GetEseByEmpid(emp.EmployeeId);
-                                //当该员工的岗位是主任或者是副主任绩效额度为1000，普通员工为500
-                                if (empmanage.GetPositionByEmpid(emp.EmployeeId).PositionName.Contains("主任"))
-                                {
-                                    ese.PerformancePay = 1000;
-                                }
-                                else if (empmanage.GetDeptByEmpid(emp.EmployeeId).DeptName == "校办")
-                                {
-                                    ese.PerformancePay = 3000;
-                                }
-                                else
-                                {
-                                    ese.PerformancePay = 500;
-                                }
-                                ese.PositionSalary = emp.Salary - ese.BaseSalary - ese.PerformancePay;
-
-                                esemanage.Update(ese);
-                            rc.RemoveCache("InRedisESEData");
-                            ajaxresult = esemanage.Success();
+                               
+                            ajaxresult = esemanage.EditEseByEmp(emp);
                                 //并将该员工绩效分默认改为100
                                 if (ajaxresult.Success)
                                 {
@@ -207,6 +194,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                            
                         }
                     }
+                    #region 注释              
                     //else if (ajaxresult.Success && e.TransactionType == mtype2)//当异动时间修改好之后且是离职异动的情况下将该员工的在职状态改为离职状态
                     //{
                     //    emp.IsDel = true;
@@ -215,37 +203,37 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
 
                     //}
                     //当异动时间修改好之后且是调岗异动的情况下将该员工的工资及岗位进行修改
-                    else if (ajaxresult.Success && e.TransactionType == mtype3)
-                    {
-                        emp.PositionId = (int)e.PresentPosition;
-                        if (string.IsNullOrEmpty(emp.PositiveDate.ToString()))
-                        {
-                            emp.ProbationSalary = e.PresentSalary;
-                        }
-                        else
-                        {
-                            emp.Salary = e.PresentSalary;
-                        }
-                        empmanage.Update(emp);
-                        ajaxresult = empmanage.Success();
-                    }
-                    else if (ajaxresult.Success && e.TransactionType == myype4)
-                    {
-                        if (ajaxresult.Success)
-                        {//异动修改成功后且是加薪异动的情况下将员工表中的员工工资也改变    
-                            if (string.IsNullOrEmpty(emp.PositiveDate.ToString()))
-                            {
-                                emp.ProbationSalary = et.PresentSalary;
-                            }
-                            else
-                            {
-                                emp.Salary = et.PresentSalary;
-                            }
-                            empmanage.Update(emp);
-                            ajaxresult = empmanage.Success();
-                        }
-                    }
-
+                    //else if (ajaxresult.Success && e.TransactionType == mtype3)
+                    //{
+                    //    emp.PositionId = (int)e.PresentPosition;
+                    //    if (string.IsNullOrEmpty(emp.PositiveDate.ToString()))
+                    //    {
+                    //        emp.ProbationSalary = e.PresentSalary;
+                    //    }
+                    //    else
+                    //    {
+                    //        emp.Salary = e.PresentSalary;
+                    //    }
+                    //    empmanage.Update(emp);
+                    //    ajaxresult = empmanage.Success();
+                    //}
+                    //else if (ajaxresult.Success && e.TransactionType == myype4)
+                    //{
+                    //    if (ajaxresult.Success)
+                    //    {//异动修改成功后且是加薪异动的情况下将员工表中的员工工资也改变    
+                    //        if (string.IsNullOrEmpty(emp.PositiveDate.ToString()))
+                    //        {
+                    //            emp.ProbationSalary = et.PresentSalary;
+                    //        }
+                    //        else
+                    //        {
+                    //            emp.Salary = et.PresentSalary;
+                    //        }
+                    //        empmanage.Update(emp);
+                    //        ajaxresult = empmanage.Success();
+                    //    }
+                    //}
+                    #endregion
                 }
                 catch (Exception ex)
                 {
@@ -285,6 +273,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             ViewBag.type = type;
             return View();
         }
+        //获取员工
         public ActionResult GetEmpData(int page, int limit,string type, string ename)
         {
             EmployeesInfoManage empinfo = new EmployeesInfoManage();
@@ -406,24 +395,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                         if (ajaxresult.Success)
                         {
                             EmplSalaryEmbodyManage esemanage = new EmplSalaryEmbodyManage();
-                            var ese = esemanage.GetEseByEmpid(emp.EmployeeId);
-                            //当该员工的岗位是主任或者是副主任绩效额度为1000，普通员工为500
-                            if (empmanage.GetPositionByEmpid(emp.EmployeeId).PositionName.Contains("主任"))
-                            {
-                                ese.PerformancePay = 1000;
-                            }
-                            else if (empmanage.GetDeptByEmpid(emp.EmployeeId).DeptName == "校办")
-                            {
-                                ese.PerformancePay = 3000;
-                            }
-                            else
-                            {
-                                ese.PerformancePay = 500;
-                            }
-                            ese.PositionSalary = emp.Salary - ese.BaseSalary - ese.PerformancePay;
-                            esemanage.Update(ese);
-                            rc.RemoveCache("InRedisESEData");
-                            ajaxresult = esemanage.Success();
+                            ajaxresult = esemanage.EditEseByEmp(emp);
                             //并将该员工绩效分默认改为100
                             //if (ajaxresult.Success)
                             //{
@@ -438,45 +410,20 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 {
                     if (ajaxresult.Success)
                     {
-                        if (string.IsNullOrEmpty(emp.PositiveDate.ToString()))
-                        {
-                            emp.ProbationSalary = etr.PresentSalary;
-                        }
-                        else
-                        {
+                        emp.PositionId = (int)etr.PresentPosition;
+                        emp.PositiveDate = etr.AfterPositiveDate;
+                        if (string.IsNullOrEmpty(etr.AfterPositiveDate.ToString())) {
+                            emp.ProbationSalary = etr.PresentInternshipSalary;
                             emp.Salary = etr.PresentSalary;
                         }
-                        emp.PositionId = (int)etr.PresentPosition;
                         empmanage.Update(emp);
                         rc.RemoveCache("InRedisEmpInfoData");
                         ajaxresult = empmanage.Success();
                         if (ajaxresult.Success)
                         {
                             EmplSalaryEmbodyManage esemanage = new EmplSalaryEmbodyManage();
-                            var ese = esemanage.GetEseByEmpid(emp.EmployeeId);
-                            if (empmanage.GetPositionByEmpid(emp.EmployeeId).PositionName.Contains("主任"))
-                            {
-                                ese.PerformancePay = 1000;
-                            }
-                            else if (empmanage.GetDeptByEmpid(emp.EmployeeId).DeptName == "校办")
-                            {
-                                ese.PerformancePay = 3000;
-                            }
-                            else
-                            {
-                                ese.PerformancePay = 500;
-                            }
-                            if (string.IsNullOrEmpty(emp.PositiveDate.ToString()))
-                            {
-                                ese.PositionSalary = emp.ProbationSalary - ese.BaseSalary - ese.PerformancePay;
-                            }
-                            else
-                            {
-                                ese.PositionSalary = emp.Salary - ese.BaseSalary - ese.PerformancePay;
-                            }
-                            esemanage.Update(ese);
-                            rc.RemoveCache("InRedisESEData");
-                            ajaxresult = esemanage.Success();
+                          
+                            ajaxresult = esemanage.EditEseByEmp(emp);
                             if (ajaxresult.Success) {
                                 var emp2 = empmanage.GetInfoByEmpID(etr.EmployeeId);//这是部门岗位改变之后的员工对象
                                 if (etr.PreviousDept!=etr.PresentDept) {
@@ -494,13 +441,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                         //异动添加成功后将员工表中的员工工资也改变
                         if (string.IsNullOrEmpty(emp.PositiveDate.ToString()))
                         {
-                            emp.ProbationSalary = etr.PresentSalary;
+                            emp.ProbationSalary = etr.PresentInternshipSalary;
                         }
                         else
                         {
                             emp.Salary = etr.PresentSalary;
                         }
-
                         empmanage.Update(emp);
                         rc.RemoveCache("InRedisEmpInfoData");
                         ajaxresult = empmanage.Success();
@@ -508,23 +454,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                         if (ajaxresult.Success)
                         {
                             EmplSalaryEmbodyManage esemanage = new EmplSalaryEmbodyManage();
-                            var ese = esemanage.GetEseByEmpid(emp.EmployeeId);
-                            if (string.IsNullOrEmpty(emp.PositiveDate.ToString()))
-                            {
-                                ese.PositionSalary = emp.ProbationSalary - ese.BaseSalary;
-                            }
-                            else
-                            {
-                                ese.PositionSalary = emp.Salary - ese.BaseSalary;
-                            }
-                            if (!string.IsNullOrEmpty(ese.PerformancePay.ToString()))
-                            {
-                                ese.PositionSalary = ese.PositionSalary - ese.PerformancePay;
-                            }
-
-                            esemanage.Update(ese);
-                            rc.RemoveCache("InRedisESEData");
-                            ajaxresult = esemanage.Success();
+                            ajaxresult = esemanage.EditEseByEmp(emp);
+                           
                         }
                     }
                 }

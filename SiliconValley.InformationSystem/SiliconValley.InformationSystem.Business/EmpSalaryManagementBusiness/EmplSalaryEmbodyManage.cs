@@ -50,41 +50,40 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     if (emp.Salary < 2000)
                     {
                         ese.BaseSalary = emp.Salary;
+                        ese.PositionSalary = 0;
                     }
                     else {
                         ese.BaseSalary = 2000;
+
+                        var positionname = empmanage.GetPositionByEmpid(empid).PositionName;//获取该员工岗位
+                        if (positionname.Contains("主任") && !positionname.Contains("班主任"))
+                        {
+                            ese.PerformancePay = 1000;
+                        }
+                        else if (empmanage.GetDeptByEmpid(empid).DeptName == "校办")
+                        {
+                            ese.PerformancePay = 3000;
+                        }
+                        else
+                        {
+                            ese.PerformancePay = 500;
+                        }
+                        ese.PositionSalary = emp.Salary - ese.BaseSalary - ese.PerformancePay;
                     }
+                  
                 }
                 else {
                     if ( emp.ProbationSalary<2000) {
                         ese.BaseSalary = emp.ProbationSalary;
+                        ese.PositionSalary = 0;
                     }
                     else
                     {
                         ese.BaseSalary = 2000;
+                        ese.PositionSalary = emp.ProbationSalary - ese.BaseSalary;
                     }
                 }
-              
-                if (emp.PositiveDate == emp.EntryTime)
-                {
-                    if (empmanage.GetPositionByEmpid(empid).PositionName.Contains("主任"))
-                    {
-                        ese.PerformancePay = 1000;
-                    }
-                    else if (empmanage.GetDeptByEmpid(empid).DeptName == "校办")
-                    {
-                        ese.PerformancePay = 3000;
-                    }
-                    else
-                    {
-                        ese.PerformancePay = 500;
-                    }
-                    ese.PositionSalary = emp.Salary - ese.BaseSalary - ese.PerformancePay;
-                }
-                else {
-                    ese.PositionSalary = emp.ProbationSalary - ese.BaseSalary;
-                }
-              
+             
                 ese.IsDel = false;
                 this.Insert(ese);
                 rc.RemoveCache("InRedisESEData");
@@ -134,6 +133,66 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
         public EmplSalaryEmbody GetEseByEmpid(string empid) {
            var ese= this.GetEmpESEData().Where(s => s.EmployeeId == empid).FirstOrDefault();
             return ese;
+        }
+
+
+        public AjaxResult EditEseByEmp(EmployeesInfo emp) {
+            var ajaxresult = new AjaxResult();
+
+            EmployeesInfoManage empmanage = new EmployeesInfoManage();
+            try
+            {
+                var ese = this.GetEseByEmpid(emp.EmployeeId);
+                var positionname = empmanage.GetPositionByEmpid(emp.EmployeeId).PositionName;
+                if (!string.IsNullOrEmpty(emp.PositiveDate.ToString()))
+                {
+                    if (emp.Salary < 2000)
+                    {
+                        ese.BaseSalary = emp.Salary;
+                        ese.PositionSalary = 0;
+                    }
+                    else
+                    {
+                        ese.BaseSalary = 2000;
+
+                        if (positionname.Contains("主任") && !positionname.Contains("班主任"))
+                        {
+                            ese.PerformancePay = 1000;
+                        }
+                        else if (empmanage.GetDeptByEmpid(emp.EmployeeId).DeptName == "校办")
+                        {
+                            ese.PerformancePay = 3000;
+                        }
+                        else
+                        {
+                            ese.PerformancePay = 500;
+                        }
+                        ese.PositionSalary = emp.Salary - ese.BaseSalary - ese.PerformancePay;
+                    }
+
+                }
+                else
+                {
+                    if (emp.ProbationSalary < 2000)
+                    {
+                        ese.BaseSalary = emp.ProbationSalary;
+                        ese.PositionSalary = 0;
+                    }
+                    else
+                    {
+                        ese.BaseSalary = 2000;
+                        ese.PositionSalary = emp.ProbationSalary - ese.BaseSalary;
+                    }
+                }
+                this.Update(ese);
+                rc.RemoveCache("InRedisESEData");
+                ajaxresult = this.Success();
+            }
+            catch (Exception ex)
+            {
+                ajaxresult = this.Error(ex.Message);
+            }
+            return ajaxresult;
         }
     }
 }
