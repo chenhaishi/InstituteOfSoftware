@@ -200,7 +200,7 @@
     @*右侧按钮*@
     <script type="text/html" id="barDemo">
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-    </script>jsstudentdata
+    </script> 
     <script src="~/Scripts/underscore.js"></script>
     <script src="~/Areas/Dormitory/Script/operationdormxml.js"></script>
     <script>
@@ -335,6 +335,7 @@
 
             // 绑定节点点击
             dtree.on("node('demoTree')", function (obj) {
+
                 //console.log(obj);
                 var dtreeobj = obj.param;
                 //console.log(dtreeobj);
@@ -378,7 +379,9 @@
                         loadtable02();
                         break;
                 }
-                getdormdata(jsstudentdata);
+ 
+
+                //getdormdata(jsstudentdata);
             });
             function sortBy(props) {
                 return function (a, b) {
@@ -625,17 +628,17 @@
             });
             //监听行单击事件
             table.on('row(table11)', function (obj) {
-                console.log(obj);
                 var mytr = obj.tr[0];
                 $("tr").css("background", "");
                 $(mytr).css("background", "pink");
-                jsstudentdata = obj.data;
-                //console.log(jsstudentdata);
+                jsstudentdata = obj.data;                
                 getdormdata(jsstudentdata);
+
             });
 
             //发请求获取未满的宿舍
             function getdormdata(jsdata) {
+                
                 var jsprosex = jsdata.Sex;
                 $.ajax({
                     url: '/Dormitory/StudentBedtime/ChoiceInfo',

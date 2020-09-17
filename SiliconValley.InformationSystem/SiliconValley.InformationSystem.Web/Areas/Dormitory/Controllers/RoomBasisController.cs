@@ -226,7 +226,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Dormitory.Controllers
         /// <param name="param0"></param>
         /// <returns></returns>
         public ActionResult HttpGetUpdRoom(int param0)
-        {
+        { 
             dbdorm = new DormInformationBusiness();
             dbroomtype = new RoomStayTypeBusiness();
             dbroomnumber = new RoomStayNumberBusiness();

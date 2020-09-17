@@ -22,6 +22,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         RedisCache Redis = new RedisCache();
         BeOnDutyManeger BeOnDuty_Entity;
         public EvningSelfStudyManeger EvningSelfStudent_Entity = new EvningSelfStudyManeger();
+        public EmployeesInfoManage Employee = new EmployeesInfoManage();
         ReconcileManeger reconcile_Entity = new ReconcileManeger();
 
 
@@ -54,29 +55,8 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             }
             return teacherNights;
         }
-         
-        /// <summary>
-        /// 判断上课老师是否冲突(大于0--有冲突，小于或等于0--没有冲突)
-        /// </summary>
-        /// <param name="time"></param>
-        /// <param name="emp"></param>
-        /// <param name="timename"></param>
-        /// <returns></returns>
-        //public int GetTimeTeacherNight(DateTime time, string emp, string timename)
-        //{
-        //    return GetAllTeacherNight().Where(t => t.OrwatchDate == time && t.Tearcher_Id == emp && t.timename == timename).ToList().Count;
-        //}
-        /// <summary>
-        /// 判断在这期间这个班级是否安排了晚自习老师值班
-        /// </summary>
-        /// <param name="starTime"></param>
-        /// <param name="endTime"></param>
-        /// <param name="class_id"></param>
-        /// <returns></returns>
-        //public int GetTimeClassNight(DateTime starTime, DateTime endTime, int class_id)
-        //{
-        //    return GetAllTeacherNight().Where(t => t.OrwatchDate >= starTime && t.OrwatchDate <= endTime && t.ClassSchedule_Id == class_id).ToList().Count;
-        //}
+  
+
         /// <summary>
         /// 添加数据
         /// </summary>
@@ -120,16 +100,16 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 foreach (TeacherNight new_data in new_t)
                 {
                     //判断是否有重复数据
-                    //int cout = this.GetList().Where(all => all.ClassSchedule_Id == new_data.ClassSchedule_Id && all.OrwatchDate == new_data.OrwatchDate).ToList().Count;
-                    //if (cout > 0)
-                    //{
-                    //    data_override++;
-                    //}
-                    //else
-                    //{
+                    int cout = this.GetList().Where(all => all.Tearcher_Id == new_data.Tearcher_Id&& all.OrwatchDate == new_data.OrwatchDate).ToList().Count;
+                    if (cout > 0)
+                    {
+                        data_override++;
+                    }
+                    else
+                    {
                         this.Insert(new_data);
-                    //    TeacherNightandEvningStudet.SetEvningStudentData(new_data.OrwatchDate, Convert.ToInt32(new_data.ClassSchedule_Id), new_data.Tearcher_Id);
-                    //}
+                        
+                    }
 
                 }
                 a.Success = true;

@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--存放值班核算的打卡规则-->
+<root>  
+  <endtime name="班主任">
+    <time name="周末值班">17:30</time>
+    <time name="晚自习值班">21:40</time>
+  </endtime>
+  <endtime name="教员">
+    <time name="晚自习值班">
+      <date name="晚一">19:50</date>
+      <date name="晚二">21:30</date>
+    </time>
+  </endtime>
+</root>

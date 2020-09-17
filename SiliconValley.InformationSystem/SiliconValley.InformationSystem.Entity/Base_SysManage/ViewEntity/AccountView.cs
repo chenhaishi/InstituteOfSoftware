@@ -49,5 +49,10 @@ namespace SiliconValley.InformationSystem.Entity.Base_SysManage.ViewEntity
         /// 员工
         /// </summary>
         public EmployeesInfo Emp { get; set; }
+
+        /// <summary>
+        /// 状态
+        /// </summary>
+        public int State { get; set; }
     }
 }

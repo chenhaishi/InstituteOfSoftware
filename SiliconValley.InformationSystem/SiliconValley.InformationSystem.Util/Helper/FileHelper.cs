@@ -32,6 +32,17 @@ namespace SiliconValley.InformationSystem.Util
             return AppDomain.CurrentDomain.BaseDirectory;
         }
 
+        /// <summary>
+        /// 获取这个文件夹的所有文件
+        /// </summary>
+        /// <param name="path"></param>
+        public static FileInfo[] GetFiles(string path)
+        {
+            DirectoryInfo directory = new DirectoryInfo(path);
+             return directory.GetFiles();
+        }
+
+       
         #endregion
 
         #region 写操作
@@ -150,6 +161,24 @@ namespace SiliconValley.InformationSystem.Util
             return match.Groups[1].ToString();
         }
 
+        #endregion
+
+        #region 删操作
+        public static bool Delete(string path)
+        {
+            bool s = true;
+            try
+            {
+                FileInfo file = new FileInfo(path);
+                file.Delete();
+            }
+            catch (Exception)
+            {
+                s = false;
+                
+            }
+            return s;
+        }
         #endregion
     }
 }

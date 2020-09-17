@@ -32,7 +32,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.BaseSysManage.Controllers
         }
 
 
-        // GET: BaseSysManage/Base_UserRole
+        // GET: /BaseSysManage/Base_UserRole/ChangeState
 
 
         /// <summary>
@@ -848,5 +848,17 @@ namespace SiliconValley.InformationSystem.Web.Areas.BaseSysManage.Controllers
         }
 
 
+        /// <summary>
+        /// 禁用该账号并修改密码
+        /// </summary>
+        /// <param name="id">用户代理主键</param>
+        /// <returns></returns>
+        public ActionResult ChangeState(string id)
+        {
+            AjaxResult a =  db_user.Change(id,true);
+                         
+            return Json(a,JsonRequestBehavior.AllowGet);
+        }       
+                
     }
 }

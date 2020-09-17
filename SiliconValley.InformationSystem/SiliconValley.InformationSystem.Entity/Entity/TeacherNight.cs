@@ -15,7 +15,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations.Schema;
 
     /// <summary>
-    /// 教学老师晚自习值班记录表
+    /// 班主任晚自习、周末值班记录表
     /// </summary>
     [Table(name: "TeacherNight")]
     public partial class TeacherNight
@@ -58,7 +58,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         /// </summary>
        //public System.Nullable<int> ClassRoom_id { get; set; }
         /// <summary>
-        /// 安排日期
+        /// 数据生成日期
         /// </summary>
         public DateTime AttendDate { get; set; }
     }

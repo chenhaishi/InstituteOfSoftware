@@ -57,5 +57,10 @@ namespace SiliconValley.InformationSystem.Entity.Base_SysManage
         /// 微信标识
         /// </summary>
         public string WX_Unionid { get; set; }
+
+        /// <summary>
+        /// 账号状态  （1--代表正常，0--代表禁用）
+        /// </summary>
+        public int State { get; set; }
     }
 }

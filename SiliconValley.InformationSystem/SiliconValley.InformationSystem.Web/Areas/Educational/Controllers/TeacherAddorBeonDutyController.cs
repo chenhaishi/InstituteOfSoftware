@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.IO;
 
 
 namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
@@ -15,11 +16,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
     using SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data.Print;
     using System.Text;
     using SiliconValley.InformationSystem.Business.NewExcel;
+    using System.Text.RegularExpressions;
+    using System.Xml.Linq;
 
     [CheckLogin]
     public class TeacherAddorBeonDutyController : Controller
     {
-        // GET: /Educational/TeacherAddorBeonDuty/GetDetEmp
+        // GET: /Educational/TeacherAddorBeonDuty/SysSheHe
         TeacherAddorBeonDutyManager Tb_Entity = new TeacherAddorBeonDutyManager();
 
         public ActionResult TeacherAddorBeonDutyIndex()
@@ -407,6 +410,218 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
             return Json(a, JsonRequestBehavior.AllowGet);
 
+        }
+
+        #region 导入考勤数据表
+
+        public ActionResult TableInsert()
+        {            
+            return View();
+        }
+
+        public ActionResult TableFuntion()
+        {
+            AjaxResult a = new AjaxResult();
+            HttpPostedFileBase files = Request.Files["file"];
+            try
+            {
+              
+                string fileName= "kaoqin.xlsx";
+
+                //在上传文件之前，将之间的文件全部删除
+                string path= Server.MapPath("~/uploadXLSXfile/ConsultUploadfile/Kaoqin");
+
+                FileInfo[] list= FileHelper.GetFiles(path);
+
+                
+                if (list.Count()>0)
+                {
+                    foreach (FileInfo item in list)
+                    {
+                        FileHelper.Delete(item.FullName);
+                    }
+                }
+                
+                files.SaveAs(Server.MapPath("~/uploadXLSXfile/ConsultUploadfile/Kaoqin/" + fileName));
+                
+                a.Success = true;
+                a.Msg = "上传成功！！";
+            }
+            catch (Exception ex)
+            {
+                a.Msg = "月份格式不对！";
+                a.Success = false;
+                return Json(a,JsonRequestBehavior.AllowGet);
+            }            
+
+            return Json(a,JsonRequestBehavior.AllowGet);
+        }
+        
+
+        #endregion
+
+        /// <summary>
+        /// 系统审核值班数据
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult SysSheHe()
+        {
+            AjaxResult a = new AjaxResult();
+            try
+            {
+                //读取值班打卡规则
+                string xmlpath = Server.MapPath("~/Xmlconfigure/Punch_the_clock.xml");
+
+                XElement element = XElement.Load(xmlpath);
+                var result = (from e in element.Elements("endtime")
+                              where e.Attribute("name").Value == "教员"
+                              from e2 in e.Elements("time")
+                              select new SelectListItem() { Value = e2.Value, Text = e2.Attribute("name").Value }).ToList();
+
+
+                
+
+                DateTime mon = Convert.ToDateTime(Request.QueryString["Month"]);//获取月份
+
+                Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
+                EmployeesInfo employees = Tb_Entity.EmployeesInfo_Entity.FindEmpData(UserName.EmpNumber, true);
+                List<TeacherAddorBeonDutyView> teachers = new List<TeacherAddorBeonDutyView>();
+                if (employees.PositionId == 4028)
+                {
+                    StringBuilder sb = new StringBuilder(@"select tea.Id,tea.OnByReak,tea.BeOnDuty_Id,tea.Anpaidate,tea.Tearcher_Id,tea.AttendDate,tea.evning_Id,tea.ClassroomName,tea.ClassNumber,tea.curd_name,tea.TypeName,tea.EmpName,tea.IsDels from TeacherAddorBeonDutyView as tea left join EmployeesInfo as emp on emp.EmployeeId=tea.Tearcher_Id where YEAR(tea.Anpaidate)='" + mon.Year + "' and MONTH(tea.Anpaidate)='"+ mon.Month + "' and (emp.PositionId=3 or emp.PositionId=4 or emp.PositionId=2011  or emp.PositionId=2012 or emp.PositionId=4025 or emp.PositionId=4026 or emp.PositionId=4027 or emp.PositionId=4028 or emp.PositionId=5038 or emp.PositionId=5039 or emp.PositionId=5044)");
+
+                    //s1/s2教务
+                    //获取S1/S2教质部门的老师值班数据
+                    teachers = Tb_Entity.GetListBySql<TeacherAddorBeonDutyView>(sb.ToString()).OrderBy(te => te.Anpaidate).ToList();
+                }
+                else
+                {
+                    //S3教务
+                    StringBuilder sb = new StringBuilder(@"select tea.Id,tea.OnByReak,tea.BeOnDuty_Id,tea.Anpaidate,tea.Tearcher_Id,tea.AttendDate,tea.evning_Id,tea.ClassroomName,tea.ClassNumber,tea.curd_name,tea.TypeName,tea.EmpName,tea.IsDels from TeacherAddorBeonDutyView as tea left join EmployeesInfo as emp on emp.EmployeeId=tea.Tearcher_Id where YEAR(tea.Anpaidate)='"+ mon.Year + "' and MONTH(tea.Anpaidate)='"+mon.Month+"' and (emp.PositionId=2013 or emp.PositionId=2014 or emp.PositionId=2015  or emp.PositionId=2016 or emp.PositionId=4040 or emp.PositionId=4041 or emp.PositionId=4042 or emp.PositionId=5040 or emp.PositionId=5041 or emp.PositionId=5042 or emp.PositionId=5043)");
+
+                    teachers = Tb_Entity.GetListBySql<TeacherAddorBeonDutyView>(sb.ToString()).OrderBy(te => te.Anpaidate).ToList();
+                }
+                //读取考勤记录表
+
+                System.Data.DataTable t = AsposeOfficeHelper.ReadExcel(Server.MapPath("~/uploadXLSXfile/ConsultUploadfile/Kaoqin/kaoqin.xlsx"), false);//从Excel文件拿值
+                List<TeacherAddorBeonDuty> shenList = new List<TeacherAddorBeonDuty>();//存放已经审核的数据
+                List<TeacherAddorBeonDutyView> NoShenList = new List<TeacherAddorBeonDutyView>();//存放未审核的数据
+
+
+                foreach (TeacherAddorBeonDutyView item in teachers)
+                {
+                    int day = item.Anpaidate.Day;
+                    for (int i = 3; i < (t.Rows.Count); i++)
+                    {
+
+                        if (t.Rows[i][0].ToString() == item.Tearcher_Id)
+                        {
+                            int num = 0;
+                            for (int j = 4; j < t.Columns.Count; j++)
+                            {
+                                Regex re = new Regex(@"^\d");
+                                var mm = t.Rows[2][j];
+                                if (!re.Match(t.Rows[2][j].ToString()).Success)
+                                {
+                                    if (t.Rows[2][j].ToString() == "六")
+                                    {
+                                        num = Convert.ToInt32(t.Rows[2][j - 1]) + 1;
+                                    }
+                                    else if (t.Rows[2][j].ToString() == "日")
+                                    {
+                                        num = Convert.ToInt32(t.Rows[2][j - 2]) + 2;
+                                    }
+                                }
+                                else
+                                {
+                                    num = Convert.ToInt32(t.Rows[2][j]);
+                                }
+
+                                if (day - num == 0)
+                                {
+                                    num = j;
+
+                                    string datestr = t.Rows[i][num].ToString();
+                                    string[] vae = datestr.Split('\n');
+                                    if (vae.Length >= 2)
+                                    {
+                                        SelectListItem select = null;
+                                        //判断类型
+                                        if (item.curd_name == "晚一") 
+                                        {
+                                            select = result.Where(r => r.Text.Contains("晚一")).FirstOrDefault();
+                                        }
+                                        else if (item.curd_name == "晚二")  
+                                        {
+                                            select = result.Where(r => r.Text.Contains("晚二")).FirstOrDefault();
+                                        }
+                                        DateTime tt1 = Convert.ToDateTime(vae[vae.Length - 1]);
+                                        DateTime tt2 = Convert.ToDateTime(select.Value);
+
+                                        if (tt1 >= tt2)
+                                        {
+                                            //算值班
+                                            TeacherAddorBeonDuty finda = Tb_Entity.GetEntity(item.Id);
+                                            finda.IsDels = true;
+                                            shenList.Add(finda);
+                                        }
+                                        else
+                                        {
+
+                                            if (datestr.IsNullOrEmpty())
+                                            {
+                                                item.OnByReak = "没有读取到打卡时间!";
+                                            }
+                                            else
+                                            {
+                                                var str = datestr.Replace("\n", "-");
+                                                item.OnByReak = "考勤表的下班打卡时间为:" + str + ";与正常下班打卡时间不匹配!";
+                                            }
+                                            NoShenList.Add(item);
+                                        }
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        var str = datestr.Replace("\n", "-");
+                                        item.OnByReak = "考勤表的打卡时间为:" + str + ";系统无法识别该打卡时间是上班时间还是下班时间!";
+                                        NoShenList.Add(item);
+                                        break;
+                                    }
+                                }
+                                if (j == t.Columns.Count - 1)
+                                {
+                                    item.OnByReak = "系统没有找到" + item.Tearcher_Id + "的" + day + "号考勤情况!";
+                                    NoShenList.Add(item);
+                                }
+                            }
+                        }
+
+                    }
+                }
+
+                Tb_Entity.Update(shenList);
+
+                if (NoShenList.Count > 0)
+                {
+                    a.Data = NoShenList;
+                    a.Msg = "数据已审核完毕,但是有系统无法识别的数据!";
+                    a.ErrorCode = 505;
+                }
+                else
+                {
+                    a.Msg = "数据已审核完毕,没有异常!";
+                    a.ErrorCode = 200;
+                }
+
+            }
+            catch (Exception)
+            {
+                a.Success = false;
+                a.ErrorCode = 405;
+                a.Msg = "操作异常!";
+            }
+            return Json(a, JsonRequestBehavior.AllowGet);
         }
     }
 }

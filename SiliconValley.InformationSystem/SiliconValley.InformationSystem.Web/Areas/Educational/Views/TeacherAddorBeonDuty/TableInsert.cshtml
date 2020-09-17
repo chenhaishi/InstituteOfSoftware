@@ -1,0 +1,115 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>TableInsert</title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+    <style>
+        .DivCss{
+         width:95%;
+         height:99%;
+         margin-top:20px;
+         margin-left:auto;
+         margin-right:auto;
+       }
+
+        .LableCss1
+        {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            float: left;
+            display: block;
+            padding: 9px 15px;
+            width: 80px;
+            font-weight: 400;
+            line-height: 20px;
+            text-align: right
+        }
+    </style>
+</head>
+<body>
+    <div class="DivCss">
+        <form class="layui-form" method="get" enctype="multipart/form-data">            
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                    <label class="LableCss1">选择文件:</label>
+                    <div class="layui-input-block" id="teachDiv">
+                        <button type="button" class="layui-btn" id="test3"><i class="layui-icon"></i>上传文件</button>
+                        <label id="fileName"></label>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row layui-form-item" style="text-align:center;margin-top:40px;">
+                <button class="layui-btn" id="mm" type="button">确定上传</button>
+            </div>
+        </form>
+    </div>
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/layui/layui.js"></script>
+    <script>
+        var Myfiels;
+        $(function () {
+            var form;
+            var laydate;
+            var layer;
+            var upload;
+            layui.use(['form', 'laydate', 'layer','upload'], function () {
+                form = layui.form;
+                laydate = layui.laydate;
+                layer = layui.layer;
+
+                //年月选择器
+                laydate.render({
+                    elem: '#Month'
+                    , type: 'month'
+                });
+
+                upload = layui.upload;
+                //指定允许上传的文件类型
+                upload.render({
+                    elem: '#test3'
+                    , exts: 'xls|xlsx'
+                    , url: '/Educational/TeacherAddorBeonDuty/TableFuntion' //改成您自己的上传接口
+                    , accept: 'file' //普通文件
+                    , auto: false //选择文件后不自动上传
+                    , bindAction: '#mm' //指向一个按钮触发上传
+                    , done: function (res) {
+                        if (res.Success) {
+                            layer.msg('操作成功', { icon: 1 }, function () {
+                               // window.parent.TableFulsh();
+                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                parent.layer.close(index); //再执行关闭   
+                            });
+                        } else {
+                            layer.msg(res.Msg, { icon: 2 });
+                        }
+
+                    }
+
+                    , choose: function (obj) {
+                        //将每次选择的文件追加到文件队列
+                        var files = obj.pushFile();
+                        Myfiels = files;
+                        //预读本地文件，如果是多文件，则会遍历。(不支持ie8/9)
+                        obj.preview(function (index, file, result) {
+                            $("#fileName")[0].innerHTML = file.name; //得到文件对象                             
+                        });
+                    }
+                });
+
+                
+            });
+
+             
+        });
+         
+    </script>
+</body>
+</html>

@@ -320,9 +320,9 @@
                 function loadAnswerQuestionData() {
                     var index = layer.load(2, { time: 10 * 1000 }); //又换了种风格，并且设定最长等待10秒
                     $.post('/ExaminationSystem/StudentExamSys/answerQuestionData', { examid: examid }, function (RESULT) {
-
-                        questionCount += RESULT.Data.length;
                         console.log(RESULT);
+                        questionCount += RESULT.Data.length;
+                        //console.log(RESULT);
                         if (RESULT.ErrorCode == 200) {
 
                             layer.close(index);

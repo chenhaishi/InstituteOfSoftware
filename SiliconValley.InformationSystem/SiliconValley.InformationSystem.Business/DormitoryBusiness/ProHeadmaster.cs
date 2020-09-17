@@ -49,7 +49,11 @@ namespace SiliconValley.InformationSystem.Business.DormitoryBusiness
         public EmployeesInfo GetEmployeesInfoByHeadID(int id) {
             dbemp = new EmployeesInfoManage();
             var obj0=this.GetHeadById(id);
-          return  dbemp.GetEntity(obj0.informatiees_Id);
+            if (obj0==null)
+            {
+                return null;
+            }
+          return  dbemp.FindEmpData(obj0.informatiees_Id,true);
         }
 
         /// <summary>

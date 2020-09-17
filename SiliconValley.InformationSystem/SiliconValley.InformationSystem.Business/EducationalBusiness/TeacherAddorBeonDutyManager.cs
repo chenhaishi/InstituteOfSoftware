@@ -10,12 +10,15 @@ using SiliconValley.InformationSystem.Entity.MyEntity;
 
 namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 {
+    using SiliconValley.InformationSystem.Business.Cloudstorage_Business;
     using SiliconValley.InformationSystem.Business.EmployeesBusiness;
    public class TeacherAddorBeonDutyManager:BaseBusiness<TeacherAddorBeonDuty>
     {
         public TeacherBusiness Teacher_Entity = new TeacherBusiness();
 
         public EmployeesInfoManage EmployeesInfo_Entity = new EmployeesInfoManage();
+
+      
         #region 查询
         /// <summary>
         /// 获取值班视图所有数据

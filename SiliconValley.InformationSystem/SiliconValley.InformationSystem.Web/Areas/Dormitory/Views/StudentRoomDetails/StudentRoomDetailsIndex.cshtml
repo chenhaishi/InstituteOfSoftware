@@ -197,9 +197,9 @@
                 content: "/Dormitory/StudentRoomDetails/StudentRoomdeWithPage?DorminfoID=" + clickroomid,
                 title: "房间详细",
                 area: ['1090px', '660px'],
-                end: function () {
-                    layer.msg("回来了。");
-                }
+                //end: function () {
+                //    layer.msg("回来了。");
+                //}
             });
         }
         layui.extend({
@@ -272,7 +272,7 @@
                 }
                 //点击的是栋
                 if (dtreeobj.level == "1") {
-
+                 
                     var arry = obj.childParams;
                     if (arry.length > 0) {
                         jstungid = dtreeobj.nodeId;
@@ -301,6 +301,7 @@
             }
             //加载房间
             function loadroom() {
+               var mindex= layer.load(1);
                 $.ajax({
                     url: '/Dormitory/DormitoryInfo/EstablishRoom',
                     type: 'GET',
@@ -308,11 +309,13 @@
                     data: { TungID: jstungid, FloorID: jsfloorid },
                     datatype: 'json',
                     success: function (successdata) {
+                        layer.close(mindex);
                         //console.log(successdata);
                     @*男寝：male 女寝：female  满人：danger 没满：primary 仓库：util 参观寝：group 员工寝室：user  禁用disabled *@
                         $("#leftroomlist").children().remove();
 
                         $("#rightroomlist").children().remove();
+
                         for (var i = 0; i < successdata.leftroom.length; i++) {
                             var leftroomobjhtml = loadmuban(successdata.leftroom[i]);
                             //console.log("410" + leftroomobjhtml);
@@ -323,6 +326,7 @@
                             var rightroomobjhtml = loadmuban(successdata.rightroom[i]);
                             $("#rightroomlist").append($(rightroomobjhtml));
                         }
+
                         disabledforOther();
 
                     },
@@ -404,8 +408,8 @@
             }
 
 
-            //按钮点击事件
-            $(document).off("click", '.rommbtn').on('click', '.rommbtn', function () {
+            //寝室按钮点击事件
+            $(document).off("click", '.rommbtn').on('click', '.rommbtn', function () {               
                 clickroomid = $(this).attr("roomid");
                 openroomdewith();
             });
