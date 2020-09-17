@@ -14,12 +14,16 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "ProjectGroupMember")]
+    //项目组成员表
     public partial class ProjectGroupMember
     {
         [Key]
         public int Id { get; set; }
+        //项目组
         public Nullable<int> ProjectID { get; set; }
+        //学员学号
         public string StudentID { get; set; }
+        //负责模块
         public string Task { get; set; }
         public bool IsAccomplish { get; set; }
 

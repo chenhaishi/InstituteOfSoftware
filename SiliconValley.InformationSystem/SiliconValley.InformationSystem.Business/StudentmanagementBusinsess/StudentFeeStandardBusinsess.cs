@@ -17,6 +17,7 @@ using SiliconValley.InformationSystem.Business.EnrollmentBusiness;
 using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 using SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness;
 using SiliconValley.InformationSystem.Entity;
+using SiliconValley.InformationSystem.Entity.ViewEntity.XYK_Data;
 
 namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
 {
@@ -1011,6 +1012,57 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                    
                 }
             }
+            return listdetailedcs;
+        }
+        public List<DetailedcostView> TuitionFine_list(int ClassID)
+        {
+            BaseBusiness<ScheduleForTrainees> ScheduleForTrainees = new BaseBusiness<ScheduleForTrainees>();//所有学生
+            BaseBusiness<StudentInformation> stuinfomation = new BaseBusiness<StudentInformation>();
+            BaseBusiness<StudentFeeRecordView> StudentFeeRecordView = new BaseBusiness<StudentFeeRecordView>();//学员缴费
+            BaseBusiness<CostitemsX> CostitemsX = new BaseBusiness<CostitemsX>();//商品类型
+            List<DetailedcostView> listdetailedcs = new List<DetailedcostView>();//欠费实体类
+            BaseBusiness<Grand> Grand = new BaseBusiness<Grand>();//阶段类型
+            BaseBusiness<Costitems> Costitems = new BaseBusiness<Costitems>();//阶段类型详情
+           
+            var Class_id = classschedu.GetList().Where(d => d.id == ClassID).SingleOrDefault();//查询班级
+            var student = ScheduleForTrainees.GetList().Where(d => d.ClassID == Class_id.ClassNumber).ToList();//查询班级里所有的学生
+            foreach (var item in student)
+            {
+                
+                var studentView = StudentFeeRecordView.GetList().Where(d => d.StudenID == item.StudentID).ToList();//所有学生的缴费情况
+                //分组
+                var list = from s in studentView//分组对象
+                           group s by s.StageName//按什么分组
+                           into mylist                         
+                           select mylist;//返回对象
+
+                foreach (var i in list)
+                {
+                    
+                    var stage= i.Key;//获取阶段
+                    var Grandid = Grand.GetList().Where(d => d.GrandName == stage).SingleOrDefault();//查询阶段费用
+                    StringBuilder sb = new StringBuilder("select SUM(c.Amountofmoney) as 'Summonry',c.Grand_id from Costitems  as c where Grand_id='" + Grandid.Id + "'and c.IsDelete=0 group by c.Grand_id ");//查询阶段总金额（转换为字符串）
+                    var grand_sum = Costitems.GetListBySql<Grand_SUM>(sb.ToString());
+                    decimal sum = 0;//学生每个阶段的总和
+                    decimal count = 0;//欠费总和
+                    foreach (var m in i)
+                    {
+                        sum += m.Amountofmoney;//阶段费用 
+                    }
+                    DetailedcostView deta_list = new DetailedcostView();
+                    count = grand_sum.SingleOrDefault().Summonry - sum;//计算欠费
+                    deta_list.Surplus = count;
+                    deta_list.Stidentid = item.StudentID;
+                    deta_list.Name = stuinfomation.GetEntity(item.StudentID).Name;
+                    deta_list.ClassName = item.ClassID;
+                    deta_list.CurrentStageID = stage;
+                    deta_list.Amountofmoney = sum;
+                    deta_list.ShouldJiao = grand_sum.SingleOrDefault().Summonry;
+                    listdetailedcs.Add(deta_list);
+                }
+               
+            }
+
             return listdetailedcs;
         }
         /// <summary>

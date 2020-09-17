@@ -245,7 +245,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         public ActionResult ReleaseExamination()
         {
             return View();
-            return View();
+           
         }
 
         /// <summary>
@@ -298,7 +298,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                     BeginDate = item.BeginDate,
                     TimeLimit = item.TimeLimit,
                     Remark = item.Remark,
-                    IsEnd = Isend == true ? "结束" : "未结束"
+                    IsEnd = Isend,
+                    //== true ? "结束" : "未结束"
 
 
 

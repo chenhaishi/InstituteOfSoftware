@@ -1550,7 +1550,6 @@
     <Content Include="uploadXLSXfile\SelfObtainRcoredImg\1908NA舒克.png" />
     <Content Include="uploadXLSXfile\SelfObtainRcoredImg\2002NA陈海石.png" />
     <Content Include="Xmlconfigure\HeadMasterNingth.xml" />
-    <Content Include="Xmlconfigure\Punch_the_clock.xml" />
     <Content Include="Xmlconfigure\Reconcile_XML.xml" />
     <Content Include="xmlfile\entxml.xml" />
     <Content Include="xmlfile\Pointsdeductionproject.xml" />
@@ -1908,8 +1907,7 @@
     <Content Include="Areas\Educational\Views\Reconcile\AddReconcileView.cshtml" />
     <Content Include="Areas\Teachingquality\Views\Shared\errorClass.cshtml" />
     <Content Include="Areas\ExaminationSystem\Views\StudentExamSys\MachineTest.cshtml" />
-    <Content Include="Areas\Educational\Views\TeacherAddorBeonDuty\TableInsert.cshtml" />
-    <Content Include="Areas\Educational\Views\TeacherNight\ExcelIntoView.cshtml" />
+    <Content Include="Areas\ExaminationSystem\Views\StudentExamSys\Brushthetopic.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
@@ -3515,6 +3513,7 @@
     <Content Include="uploadXLSXfile\Template\Excle模板.xls~HEAD" />
     <Content Include="uploadXLSXfile\Template\Excle模板.xls~zhonglunpan" />
     <Content Include="uploadXLSXfile\Sheet1.xlsx" />
+    <Content Include="uploadXLSXfile\湖南硅谷云教育科技有限公司_考勤报表_20191101-20191130%281%29.xlsx" />
     <Content Include="Views\Home\rtest.cshtml" />
     <Content Include="Views\Student\Index.cshtml" />
     <Content Include="Scripts\live2d\assets\flat-ui-icons-regular.eot" />
@@ -3602,9 +3601,6 @@
     <Content Include="uploadXLSXfile\ConsultUploadfile\ExportAll\20200606082337.xls" />
     <Content Include="Views\Home\IdCard.cshtml" />
     <Content Include="Views\Home\Scores.cshtml" />
-    <Content Include="uploadXLSXfile\Template\班主任值班模板.xlsx" />
-    <Content Include="uploadXLSXfile\Zhiban\班主任值班模板.xlsx" />
-    <Content Include="uploadXLSXfile\ConsultUploadfile\Kaoqin\kaoqin.xlsx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

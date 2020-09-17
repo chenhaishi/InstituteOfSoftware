@@ -14,11 +14,15 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table("CandidateInfo")]
+    //考生信息
     public partial class CandidateInfo
     {
         [Key]
+        //考号
         public string CandidateNumber { get; set; }
+        //报考学号
         public int Examination { get; set; }
+        //学员学号
         public string StudentID { get; set; }
         /// <summary>
         /// 是否为重考

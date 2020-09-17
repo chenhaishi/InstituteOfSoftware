@@ -11,6 +11,8 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.XYK_Data
     /// </summary>
   public   class Student
     {
+        public decimal? num;
+
         //学生名字
         public string StuName { get; set; }
         //学生备案id

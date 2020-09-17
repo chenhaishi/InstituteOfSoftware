@@ -18,7 +18,9 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     {
         [Key]
         public int ID { get; set; }
+        //机试题
         public Nullable<int> MachineTestQuestionID { get; set; }
+        //试卷
         public Nullable<int> ExaminationPaperID { get; set; }
     
         

@@ -14,12 +14,15 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "LeaveType")]
+    //请假类型表
     public partial class LeaveType
     {
 
         [Key]
         public int TypeId { get; set; }
+        //类型名称
         public string TypeName { get; set; }
+        //是否删除
         public Nullable<bool> IsDel { get; set; }
 
 

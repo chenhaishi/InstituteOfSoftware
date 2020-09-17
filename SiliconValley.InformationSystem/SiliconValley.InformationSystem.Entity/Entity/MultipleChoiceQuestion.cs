@@ -14,23 +14,37 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "MultipleChoiceQuestion")]
+    //选择题库
     public partial class MultipleChoiceQuestion
     {
 
         [Key]
         public int Id { get; set; }
+        //题目
         public string Title { get; set; }
+        //选项1
         public string OptionA { get; set; }
+        //选项2
         public string OptionB { get; set; }
+        //选项3
         public string OptionC { get; set; }
+        //选项4
         public string OptionD { get; set; }
+        //是否是单选
         public Nullable<bool> IsRadio { get; set; }
+        //难度级别
         public Nullable<int> Level { get; set; }
+        //答案
         public string Answer { get; set; }
+        //命题人
         public Nullable<int> Proposition { get; set; }
+        //创建时间
         public Nullable<System.DateTime> CreateTime { get; set; }
+        //是否启用
         public Nullable<bool> IsUsing { get; set; }
+        //备注
         public string Remark { get; set; }
+        //专属课程
         public Nullable<int> Course { get; set; }
         public int Grand { get; set; }
 

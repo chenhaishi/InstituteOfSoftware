@@ -14,17 +14,25 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "MachTestQuesBank")]
+    //机试题库
     public partial class MachTestQuesBank
     {
 
         [Key]
         public int ID { get; set; }
+        //标题
         public string Title { get; set; }
+        //存放地址
         public string SaveURL { get; set; }
+        //命题人
         public Nullable<int> Proposition { get; set; }
+        //难度级别
         public Nullable<int> Level { get; set; }
+        //是否启用
         public Nullable<bool> IsUsing { get; set; }
+        //创建时间
         public Nullable<System.DateTime> CreateDate { get; set; }
+        //所属课程
         public Nullable<int> Course { get; set; }
         public int Grand { get; set; }
 

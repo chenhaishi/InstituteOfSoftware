@@ -15,16 +15,24 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations.Schema;
 
     [Table(name: "Detailedmaintenance")]
+    //宿舍维修费用明细
     public partial class Detailedmaintenance
     {
         [Key]
         public int ID { get; set; }
+        //维修物品
         public Nullable<int> Maintenanceitems { get; set; }
+        //日期
         public Nullable<System.DateTime> Date { get; set; }
+        //维修来源
         public Nullable<int> Maintenancesource { get; set; }
+        //物品数量
         public Nullable<int> Quantityofarticles { get; set; }
+        //产生金额
         public Nullable<decimal> Amountofproduction { get; set; }
+        //备注
         public string Remarks { get; set; }
+        //是否删除
         public Nullable<bool> Dateofregistration { get; set; }
     }
 }

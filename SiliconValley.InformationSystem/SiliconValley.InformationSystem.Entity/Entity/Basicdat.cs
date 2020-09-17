@@ -14,13 +14,18 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table("Basicdat")]
+    //学员状态基础数据
     public partial class Basicdat
     {     
         [Key]
         public int ID { get; set; }
+        //名称
         public string Name { get; set; }
+        //备注
         public string Remarks { get; set; }
+        //是否删除
         public Nullable<bool> IsDetele { get; set; }
+        //添加时间
         public Nullable<System.DateTime> Addtime { get; set; }
     }
 }

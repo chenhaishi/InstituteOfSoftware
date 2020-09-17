@@ -325,7 +325,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 {
                     emp.Image = "guigu.jpg";
                 }
-                if (emp.ProbationSalary == null)
+                if (string.IsNullOrEmpty(emp.ProbationSalary.ToString()))
                 {
                     emp.PositiveDate = emp.EntryTime;//当该员工的试用期工资为空时（即没有试用期)，该员工的转正时间即等同于该员工入职时间
                 }

@@ -227,23 +227,41 @@
                             <input type="text" id="TransactionTime" name="TransactionTime" readonly class="layui-input" style="border:0px;" />
                         </div>
                     </div>
+
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                        <label class="layui-form-label">调岗前部门:</label>
+                        <label class="layui-form-label">调岗前转正时间:</label>
                         <div class="layui-input-block">
-                            <input type="text" id="predname" name="predname" readonly class="layui-input" style="border:0px;" />
+                            <input type="text" id="BeforePositiveDate" name="BeforePositiveDate" readonly class="layui-input" style="border:0px;" />
                         </div>
                     </div>
                 </div>
 
                 <div class="layui-row layui-form-item">
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                        <label class="layui-form-label">调岗前部门:</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="predname" name="predname" readonly class="layui-input" style="border:0px;" />
+                        </div>
+                    </div>
+
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label">调岗前岗位:</label>
                         <div class="layui-input-block">
                             <input type="text" id="prepname" name="prepname" readonly class="layui-input" style="border:0px;" />
                         </div>
                     </div>
+
+                </div>
+
+                <div class="layui-row layui-form-item">
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                        <label class="layui-form-label">调岗前工资:</label>
+                        <label class="layui-form-label">调岗前实习工资:</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="PreviousInternshipSalary" name="PreviousInternshipSalary" readonly class="layui-input" style="border:0px;" />
+                        </div>
+                    </div>
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                        <label class="layui-form-label">调岗前正式工资:</label>
                         <div class="layui-input-block">
                             <input type="text" id="PreviousSalary" name="PreviousSalary" readonly class="layui-input" style="border:0px;" />
                         </div>
@@ -251,6 +269,12 @@
                 </div>
 
                 <div class="layui-row layui-form-item">
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                        <label class="layui-form-label">调岗后转正时间:</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="AfterPositiveDate" name="AfterPositiveDate" readonly class="layui-input" style="border:0px;" />
+                        </div>
+                    </div>
 
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label">调岗后部门:</label>
@@ -258,22 +282,33 @@
                             <input type="text" id="nowdname" name="nowdname" readonly class="layui-input" style="border:0px;" />
                         </div>
                     </div>
+                   
+                </div>
+
+                <div class="layui-row layui-form-item">
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label">调岗后岗位:</label>
                         <div class="layui-input-block">
                             <input type="text" id="nowpname" name="nowpname" readonly class="layui-input" style="border:0px;" />
                         </div>
                     </div>
+
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                        <label class="layui-form-label">调岗后实习工资:</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="PresentInternshipSalary" name="PresentInternshipSalary" readonly class="layui-input" style="border:0px;" />
+                        </div>
+                    </div>
                 </div>
 
                 <div class="layui-row layui-form-item">
-
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                        <label class="layui-form-label">调岗后工资:</label>
+                        <label class="layui-form-label">调岗后正式工资:</label>
                         <div class="layui-input-block">
                             <input type="text" id="PresentSalary" name="PresentSalary" readonly class="layui-input" style="border:0px;" />
                         </div>
                     </div>
+                   
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label">调岗原因:</label>
                         <div class="layui-input-block">
@@ -301,54 +336,51 @@
             <div class="layui-container">
 
                 <div class="layui-row layui-form-item">
-
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label">姓名:</label>
                         <div class="layui-input-block">
                             <input type="text" id="empName" name="empName" readonly class="layui-input" style="border:0px;" />
                         </div>
                     </div>
+
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label">部门:</label>
                         <div class="layui-input-block">
                             <input type="text" id="dname" name="dname" readonly class="layui-input" style="border:0px;" />
                         </div>
                     </div>
-
                 </div>
 
                 <div class="layui-row layui-form-item">
-
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label">岗位:</label>
                         <div class="layui-input-block">
                             <input type="text" id="pname" name="pname" readonly class="layui-input" style="border:0px;" />
                         </div>
                     </div>
+
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label">入职时间:</label>
                         <div class="layui-input-block">
                             <input type="text" id="EntryTime" name="EntryTime" readonly class="layui-input" style="border:0px;" />
                         </div>
                     </div>
-
                 </div>
 
                 <div class="layui-row layui-form-item">
-
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label">异动类型:</label>
                         <div class="layui-input-block">
                             <input type="text" id="type" name="type" readonly class="layui-input" style="border:0px;" />
                         </div>
                     </div>
+
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label">确认加薪时间:</label>
                         <div class="layui-input-block">
                             <input type="text" id="TransactionTime" name="TransactionTime" readonly class="layui-input" style="border:0px;" />
                         </div>
                     </div>
-
                 </div>
 
                 <div class="layui-row layui-form-item">
@@ -358,13 +390,13 @@
                             <input type="text" id="education" name="education" readonly class="layui-input" style="border:0px;" />
                         </div>
                     </div>
+
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label">转正日期:</label>
                         <div class="layui-input-block">
                             <input type="text" id="positiveDate" name="positiveDate" readonly class="layui-input" style="border:0px;" />
                         </div>
                     </div>
-
                 </div>
 
                 <div class="layui-row layui-form-item">
@@ -386,20 +418,19 @@
 
 
                 <div class="layui-row layui-form-item">
-
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label">自我评价(加薪理由):</label>
                         <div class="layui-input-block">
                             <textarea id="Reason" name="Reason" class="layui-input" readonly style="border:0px;height:100px;"></textarea>
                         </div>
                     </div>
+
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label">备注:</label>
                         <div class="layui-input-block">
                             <textarea id="Remark" name="Remark" class="layui-input" readonly style="border:0px;height:100px;"></textarea>
                         </div>
                     </div>
-
                 </div>
 
             </div>
@@ -410,37 +441,35 @@
         <form class="layui-form" action="" lay-filter="ContractRenewal" id="ContractRenewal" hidden>
             <div class="layui-container">
                 <div class="layui-row layui-form-item">
-
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label">姓名:</label>
                         <div class="layui-input-block">
                             <input type="text" id="empName" name="empName" readonly class="layui-input" style="border:0px;" />
                         </div>
                     </div>
+
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label">部门:</label>
                         <div class="layui-input-block">
                             <input type="text" id="dname" name="dname" readonly class="layui-input" style="border:0px;" />
                         </div>
                     </div>
-
                 </div>
 
                 <div class="layui-row layui-form-item">
-
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label">岗位:</label>
                         <div class="layui-input-block">
                             <input type="text" id="pname" name="pname" readonly class="layui-input" style="border:0px;" />
                         </div>
                     </div>
+
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label">入职时间:</label>
                         <div class="layui-input-block">
                             <input type="text" id="EntryTime" name="EntryTime" readonly class="layui-input" style="border:0px;" />
                         </div>
                     </div>
-
                 </div>
 
                 <div class="layui-row layui-form-item">
@@ -492,8 +521,6 @@
                     </div>
                 </div>
 
-
-
                 <div class="layui-row layui-form-item">
 
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
@@ -543,7 +570,8 @@
                         $("#TransferPosition").show();
                         data.EntryTime = GetYMD(data.EntryTime);
                         data.TransactionTime = GetYMD(data.TransactionTime);
-                        console.log(data);
+                        data.BeforePositiveDate = GetYMD(data.BeforePositiveDate);
+                        data.AfterPositiveDate = GetYMD(data.AfterPositiveDate);
                         form.val("TransferPosition", data);
                     }
                     else if (data.type == "加薪") {
@@ -561,7 +589,6 @@
                         data.BeforeContractEndTime = GetYMD(data.BeforeContractEndTime);
                         data.AfterContractStartTime = GetYMD(data.AfterContractStartTime);
                         data.AfterContractEndTime = GetYMD(data.AfterContractEndTime);
-                        console.log(data.BeforeContractStartTime);
                         form.val("ContractRenewal", data);
                     }
                     

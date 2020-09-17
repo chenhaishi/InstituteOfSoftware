@@ -14,11 +14,14 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table("AnswerQuestionPaper")]
+    //问题试卷表
     public partial class AnswerQuestionPaper
     {
        [Key]
         public int Id { get; set; }
+        //问答题
         public Nullable<int> AnswerQuestionID { get; set; }
+        //试卷
         public Nullable<int> ExaminationPaperID { get; set; }
     
  

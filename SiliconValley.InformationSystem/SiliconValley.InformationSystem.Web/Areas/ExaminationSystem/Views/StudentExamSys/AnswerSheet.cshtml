@@ -75,8 +75,8 @@
     </style>
 </head>
 <body>
-    
-    <div id="mypaper">
+
+    <div id="mypaper" style="background:#ffffff">
         <input type="hidden" id="examid" value="@ViewBag.EXAMVIEW.ID" />
         <input type="hidden" id="BeginDate" value="@ViewBag.EXAMVIEW.BeginDate" />
         <input type="hidden" id="limit" value="@ViewBag.EXAMVIEW.TimeLimit" />
@@ -102,14 +102,14 @@
 
         <div id="choicequestion">
             <h3 style="text-align:center; font-size:18px;">选择题</h3>
-        </div> 
+        </div>
         <div id="AnswerQuestion">
             <h3 style="text-align:center; font-size:18px;">解答题</h3>
         </div>
         <div style="text-align:center">
             <button type="button" style="" class="layui-btn layui-btn-warm" id="COMMIT">提交笔试</button><text style="color:red">（提交完笔试之后进行机试）</text>
-        </div>            
-            @*<div id="ComputerQuestion">
+        </div>
+        @*<div id="ComputerQuestion">
                 <h3 style="text-align:center; font-size:18px;">机试题下载区</h3>
                 <br />
                 <br />
@@ -118,15 +118,39 @@
                 <button type="button" class="layui-btn layui-btn-warm" id="COMMIT">提交机试</button><text style="color:red">（请把项目打成压缩包提交）</text>
             </div>*@
 
-        </div>
-        <script type="text/template" id="choicequestionmoban">
-            <div questionid="{{=questionid}}" class="questionItem">
+    </div>
+  
+   
+    <script language="JavaScript">
+        
+        document.getElementById("btn").onclick = function () {
+            var elem = document.getElementById("mypaper");
+            requestFullScreen(elem);
+            layui.use(['layer'], function () {
+                var layer = layui.layer;
+                layer.closeAll();
+            });
+        };
+        function requestFullScreen(element) {
+            var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen;
+            if (requestMethod) {
+                requestMethod.call(element);
+            } else if (typeof window.ActiveXObject !== "undefined") {
+                var wscript = new ActiveXObject("WScript.Shell");
+                if (wscript !== null) {
+                    wscript.SendKeys("{F11}");
+                }
+            }
+        }
+    </script>
+    <script type="text/template" id="choicequestionmoban">
+        <div questionid="{{=questionid}}" class="questionItem">
 
-                <div class="title">
-                    <span class="questionIndex">{{=index}}</span> <code style="margin-left:5px;">{{=question}}</code>&nbsp;&nbsp;(<span class="listScores">{{=score}}</span>分)<input type="hidden" class="hidescore" value="{{=score}}" />
-                </div>
-                <div class="option">
-                    @*<form class="layui-form">
+            <div class="title">
+                <span class="questionIndex">{{=index}}</span> <code style="margin-left:5px;color:#000000">{{=question}}</code>&nbsp;&nbsp;(<span class="listScores">{{=score}}</span>分)<input type="hidden" class="hidescore" value="{{=score}}" />
+            </div>
+            <div class="option">
+                @*<form class="layui-form">
                         <div class="layui-form-item">
                             <label class="layui-form-label"></label>
                             <div class="layui-input-block">
@@ -134,583 +158,591 @@
                             </div>
                         </div>
                     </form>*@
-                    <form>
-                        @*<input type="checkbox" value="A" lay-filter="option" name="OptionA" title="{{=A}} (选项A)">*@
-                        <div class="optiond"><label>选项A：</label><input name="1" value="A" type="radio" /><code>{{=A}}</code></div>
-                        <br />
-                        <div class="optiond"><label>选项B：</label><input name="1" value="B" type="radio" /><code name="OptionA">{{=B}}</code></div>
-                        @*<input type="checkbox" value="B" lay-filter="option" name="OptionB" title="{{=B}} (选项B)">*@
-                        <br />
-                        <div class="optiond"><label>选项C：</label><input name="1" value="C" type="radio" /><code name="OptionA">{{=C}}</code></div>
-                        <br />
-                        @*<input type="checkbox" value="C" lay-filter="option" name="OptionC" title="{{=C}} (选项C)">*@
-                        <div class="optiond"><label>选项D：</label><input name="1" value="D" type="radio" /><code name="OptionA">{{=D}}</code></div>
-                        @*<input type="checkbox" value="D" lay-filter="option" name="OptionD" title="{{=D}} (选项D)">*@
-                    </form>
+                <form>
+                    @*<input type="checkbox" value="A" lay-filter="option" name="OptionA" title="{{=A}} (选项A)">*@
+                    <div class="optiond"><label>选项A：</label><input name="1" value="A" type="radio" /><code>{{=A}}</code></div>
+                    <br />
+                    <div class="optiond"><label>选项B：</label><input name="1" value="B" type="radio" /><code name="OptionA">{{=B}}</code></div>
+                    @*<input type="checkbox" value="B" lay-filter="option" name="OptionB" title="{{=B}} (选项B)">*@
+                    <br />
+                    <div class="optiond"><label>选项C：</label><input name="1" value="C" type="radio" /><code name="OptionA">{{=C}}</code></div>
+                    <br />
+                    @*<input type="checkbox" value="C" lay-filter="option" name="OptionC" title="{{=C}} (选项C)">*@
+                    <div class="optiond"><label>选项D：</label><input name="1" value="D" type="radio" /><code name="OptionA">{{=D}}</code></div>
+                    @*<input type="checkbox" value="D" lay-filter="option" name="OptionD" title="{{=D}} (选项D)">*@
+                </form>
 
-                </div>
             </div>
-        </script>
+        </div>
+    </script>
 
-        <script type="text/template" id="answerquestionmoban">
-            <div questionid="{{=questionid}}" class="questionItem">
-                <div>
-                    <span class="questionIndex">{{=index}}</span> <code style="margin-left:5px;">{{=question}}</code>&nbsp;&nbsp;(<span class="listScores">{{=score}}</span>分)<input type="hidden" value="{{=score}}" class="hidescore" />
-                </div>
-                <div class="simple-editor">
-
-                    <h2>答题区</h2>
-
-
-
-                </div>
+    <script type="text/template" id="answerquestionmoban">
+        <div questionid="{{=questionid}}" class="questionItem">
+            <div>
+                <span class="questionIndex">{{=index}}</span> <code style="margin-left:5px;color:#000000">{{=question}}</code>&nbsp;&nbsp;(<span class="listScores">{{=score}}</span>分)<input type="hidden" value="{{=score}}" class="hidescore" />
             </div>
-        </script>
-        <script src="~/Scripts/jquery-3.3.1.min.js"></script>
-        <script src="~/Scripts/layui/layui.js"></script>
-        <script src="~/Scripts/underscore.js"></script>
-        <script src="~/Areas/ExaminationSystem/js/trumbowyg/trumbowyg.min.js"></script>
-        <script src="~/Areas/ExaminationSystem/js/trumbowyg/langs/fr.js"></script>
-        <script src="~/Areas/ExaminationSystem/js/trumbowyg/plugins/upload/trumbowyg.upload.min.js"></script>
-        <script src="~/Areas/ExaminationSystem/js/trumbowyg/plugins/base64/trumbowyg.base64.min.js"></script>
-        <script src="~/Areas/ExaminationSystem/js/jiami.js"></script>
-        <script>
+            <div style="position:relative;right:109px;" class="layui-input-block">
+                <textarea style="height:250px" placeholder="请填写你的内容" class="layui-textarea desc"></textarea>
+            </div>
+            @*<div class="simple-editor"
+                <h2>答题区</h2>
+            </div>*@
+        </div>
+    </script>
 
-            if (!document.HTMLDOMtoString) {
-                document.HTMLDOMtoString = function (HTMLDOM) {
-                    const div = document.createElement("div")
-                    div.appendChild(HTMLDOM)
-                    return div.innerHTML
-                }
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/layui/layui.js"></script>
+    <script src="~/Scripts/underscore.js"></script>
+    <script src="~/Areas/ExaminationSystem/js/trumbowyg/trumbowyg.min.js"></script>
+    <script src="~/Areas/ExaminationSystem/js/trumbowyg/langs/fr.js"></script>
+    <script src="~/Areas/ExaminationSystem/js/trumbowyg/plugins/upload/trumbowyg.upload.min.js"></script>
+    <script src="~/Areas/ExaminationSystem/js/trumbowyg/plugins/base64/trumbowyg.base64.min.js"></script>
+    <script src="~/Areas/ExaminationSystem/js/jiami.js"></script>
+    <script>
+
+        if (!document.HTMLDOMtoString) {
+            document.HTMLDOMtoString = function (HTMLDOM) {
+                const div = document.createElement("div")
+                div.appendChild(HTMLDOM)
+                return div.innerHTML
             }
-            ////全屏模式
-            //var baping = function () {
-            //    var element = document.getElementById("mypaper");
-            //    var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen;
-            //    if (requestMethod) {
-            //        requestMethod.call(element);
-            //    } else if (typeof window.ActiveXObject !== "undefined") {
-            //        var wscript = new ActiveXObject("WScript.Shell");
-            //        if (wscript !== null) {
-            //            wscript.SendKeys("{F11}");
-            //        }
-            //    }
+        }
+        ////全屏模式
+        //var baping = function () {
+        //    var element = document.getElementById("mypaper");
+        //    var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen;
+        //    if (requestMethod) {
+        //        requestMethod.call(element);
+        //    } else if (typeof window.ActiveXObject !== "undefined") {
+        //        var wscript = new ActiveXObject("WScript.Shell");
+        //        if (wscript !== null) {
+        //            wscript.SendKeys("{F11}");
+        //        }
+        //    }
+        //}
+        //baping();
+        
+        var ExamEndDateUTC;
+
+        ///获取考试的结束时间
+        function getEndTime() {
+            var examid = $("#examid").val();
+            $.post("/ExaminationSystem/StudentExamSys/GetExamEndDate", { examid: examid }, function (data) {
+
+
+                if (data.ErrorCode == 200) {
+
+                    var utc = data.Data.substr(data.Data.indexOf('(') + 1, 13);
+
+                    ExamEndDateUTC = utc;
+
+                    console.log(ExamEndDateUTC);
+                }
+
+            });
+        }
+        getEndTime();
+        function escapeHTMLString(str) {
+            str = str.replace(/</g, '&lt;');
+            str = str.replace(/>/g, '&gt;');
+
+            return str;
+        }
+        var formData = new FormData();  //点击提交时将要提交的数据
+
+        ///清空表单数据   暂弃用
+        function clearformData(formData, arr_key) {
+            console.log(arr_key);
+
+            for (var i = 0; i < arr_key.length; i++) {
+                console.log(arr_key[i]);
+                formData.set(arr_key[i], "");
+                console.log(".............");
+            }
+        }
+        var TotalScores = 40;
+        var questionCount = 0;
+
+        //获取笔试题题目个数
+        $.post("/ExaminationSystem/StudentExamSys/GetQuestionCount", {}, function (result) {
+
+            questionCount = result;
+
+            //渲染分数
+            $("#choicesQuestionScoress").find(".totalScores").text(TotalScores);
+            $("#choicesQuestionScores").find(".itemScores").text((parseInt(TotalScores) / parseInt(questionCount)));
+
+
+        })
+
+        layui.use(['form', 'layer'], function () {
+
+            var form = layui.form;
+            var layer = layui.layer;
+            //var bind = function () {
+            //    layer.open({
+            //        type: 1,
+            //        area: ["700px", "500px"],
+            //        content: $('#DifficultyDiv'),
+            //    })
             //}
-            //baping();                      
-            var ExamEndDateUTC;
+            //bind();
+            var examid = $("#examid").val();
 
-            ///获取考试的结束时间
-            function getEndTime() {
-                var examid = $("#examid").val();
-                $.post("/ExaminationSystem/StudentExamSys/GetExamEndDate", { examid: examid }, function (data) {
+            formData.append("examid", examid);
 
+            function loadChoiceQuestionData() {
 
-                    if (data.ErrorCode == 200) {
+                var index = layer.load(2, { time: 10 * 1000 }); //又换了种风格，并且设定最长等待10秒
 
-                        var utc = data.Data.substr(data.Data.indexOf('(') + 1, 13);
+                $.post('/ExaminationSystem/StudentExamSys/ChoiceQuestionData', { examid: examid }, function (RESULT) {
 
-                        ExamEndDateUTC = utc;
+                    console.log(RESULT);
 
-                        console.log(ExamEndDateUTC);
+                    if (RESULT.ErrorCode == 200) {
+                        questionCount += RESULT.Data.data.length;
+                        for (var i = 0; i < RESULT.Data.data.length; i++) {
+
+                            var html = _.template($("#choicequestionmoban").html());
+
+                            //获取分数
+                            var itemscores = 0;
+                            for (var j = 0; j < RESULT.Data.scores.length; j++) {
+
+                                if (RESULT.Data.scores[j].level == RESULT.Data.data[i].Level.LevelID) {
+                                    itemscores = RESULT.Data.scores[j].scores;
+                                }
+                            }
+
+                            var a = $("<label></label>");
+                            a.text(RESULT.Data.data[i].OptionA);
+
+                            var b = $("<label></label>");
+                            b.text(RESULT.Data.data[i].OptionB);
+
+                            var c = $("<label></label>");
+                            c.text(RESULT.Data.data[i].OptionC);
+
+                            var d = $("<label></label>");
+                            d.text(RESULT.Data.data[i].OptionD);
+
+                            var title = $("<label></label>");
+                            title.text(RESULT.Data.data[i].Title);
+
+                            console.log(document.HTMLDOMtoString(title[0]));
+                            console.log(document.HTMLDOMtoString(a[0]));
+                            console.log(document.HTMLDOMtoString(b[0]));
+                            console.log(document.HTMLDOMtoString(c[0])); console.log(document.HTMLDOMtoString(d[0]));
+                            var htmldate = html({ questionid: RESULT.Data.data[i].Id, index: i + 1, question: document.HTMLDOMtoString(title[0]), A: document.HTMLDOMtoString(a[0]), B: document.HTMLDOMtoString(b[0]), C: document.HTMLDOMtoString(c[0]), D: document.HTMLDOMtoString(d[0]), score: itemscores });
+                            $("#choicequestion").append(htmldate);
+
+                        }
+                        form.render();
+
+                        //渲染分数
+                        layer.close(index);
                     }
-
+                    else {
+                        layer.msg('服务器错误。。', { icon: 2 }, function () {
+                            layer.close(index);
+                        });
+                    }
                 });
             }
-            getEndTime();
-            function escapeHTMLString(str) {
-                str = str.replace(/</g, '&lt;');
-                str = str.replace(/>/g, '&gt;');
+            function loadAnswerQuestionData() {
+                var index = layer.load(2, { time: 10 * 1000 }); //又换了种风格，并且设定最长等待10秒
+                $.post('/ExaminationSystem/StudentExamSys/answerQuestionData', { examid: examid }, function (RESULT) {
 
-                return str;
-            }
-            var formData = new FormData();  //点击提交时将要提交的数据
+                    questionCount += RESULT.Data.length;
+                    console.log(RESULT);
+                    if (RESULT.ErrorCode == 200) {
 
-            ///清空表单数据   暂弃用
-            function clearformData(formData, arr_key) {
-                console.log(arr_key);
+                        layer.close(index);
+                        for (var i = 0; i < RESULT.Data.data.length; i++) {
 
-                for (var i = 0; i < arr_key.length; i++) {
-                    console.log(arr_key[i]);
-                    formData.set(arr_key[i], "");
-                    console.log(".............");
-                }
-            }
-            var TotalScores = 40;
-            var questionCount = 0;
-
-            //获取笔试题题目个数
-            $.post("/ExaminationSystem/StudentExamSys/GetQuestionCount", {}, function (result) {
-
-                questionCount = result;
-
-                //渲染分数
-                $("#choicesQuestionScoress").find(".totalScores").text(TotalScores);
-                $("#choicesQuestionScores").find(".itemScores").text((parseInt(TotalScores) / parseInt(questionCount)));
+                            //获取分数
+                            var itemscores = 0;
+                            for (var j = 0; j < RESULT.Data.scores.length; j++) {
 
 
-            })
-
-            layui.use(['form', 'layer'], function () {
-
-                var form = layui.form;
-                var layer = layui.layer;
-
-                var examid = $("#examid").val();
-
-                formData.append("examid", examid);
-
-                function loadChoiceQuestionData() {
-
-                    var index = layer.load(2, { time: 10 * 1000 }); //又换了种风格，并且设定最长等待10秒
-
-                    $.post('/ExaminationSystem/StudentExamSys/ChoiceQuestionData', { examid: examid }, function (RESULT) {
-
-                        console.log(RESULT);
-
-                        if (RESULT.ErrorCode == 200) {
-                            questionCount += RESULT.Data.data.length;
-                            for (var i = 0; i < RESULT.Data.data.length; i++) {
-
-                                var html = _.template($("#choicequestionmoban").html());
-
-                                //获取分数
-                                var itemscores = 0;
-                                for (var j = 0; j < RESULT.Data.scores.length; j++) {
-
-                                    if (RESULT.Data.scores[j].level == RESULT.Data.data[i].Level.LevelID) {
-                                        itemscores = RESULT.Data.scores[j].scores;
-                                    }
+                                if (RESULT.Data.scores[j].level == RESULT.Data.data[i].Level.LevelID) {
+                                    itemscores = RESULT.Data.scores[j].scores;
                                 }
+                            }
 
-                                var a = $("<label></label>");
-                                a.text(RESULT.Data.data[i].OptionA);
+                            console.log(".....");
+                            var html = _.template($("#answerquestionmoban").html());
+                            var htmldate = html({ questionid: RESULT.Data.data[i].ID, index: i + 1, question: RESULT.Data.data[i].Title, score: itemscores });
 
-                                var b = $("<label></label>");
-                                b.text(RESULT.Data.data[i].OptionB);
+                            $("#AnswerQuestion").append(htmldate);
 
-                                var c = $("<label></label>");
-                                c.text(RESULT.Data.data[i].OptionC);
+                        }
+                        //$('.layui-input-block').trumbowyg();
+                        //$.trumbowyg.btnsGrps.test = ['bold', 'link'];
+                        $.extend(true, $.trumbowyg.langs, {
 
-                                var d = $("<label></label>");
-                                d.text(RESULT.Data.data[i].OptionD);
+                            fr: {
 
-                                var title = $("<label></label>");
-                                title.text(RESULT.Data.data[i].Title);
+                                align: 'Alignement',
 
-                                console.log(document.HTMLDOMtoString(title[0]));
-                                console.log(document.HTMLDOMtoString(a[0]));
-                                console.log(document.HTMLDOMtoString(b[0]));
-                                console.log(document.HTMLDOMtoString(c[0])); console.log(document.HTMLDOMtoString(d[0]));
-                                var htmldate = html({ questionid: RESULT.Data.data[i].Id, index: i + 1, question: document.HTMLDOMtoString(title[0]), A: document.HTMLDOMtoString(a[0]), B: document.HTMLDOMtoString(b[0]), C: document.HTMLDOMtoString(c[0]), D: document.HTMLDOMtoString(d[0]), score: itemscores });
-                                $("#choicequestion").append(htmldate);
+                                image: 'Image'
 
                             }
-                            form.render();
 
-                            //渲染分数
-                            layer.close(index);
-                        }
-                        else {
-                            layer.msg('服务器错误。。', { icon: 2 }, function () {
-                                layer.close(index);
-                            });
-                        }
-                    });
-                }
-                function loadAnswerQuestionData() {
-                    var index = layer.load(2, { time: 10 * 1000 }); //又换了种风格，并且设定最长等待10秒
-                    $.post('/ExaminationSystem/StudentExamSys/answerQuestionData', { examid: examid }, function (RESULT) {
-                        console.log(RESULT);
-                        questionCount += RESULT.Data.length;
-                        //console.log(RESULT);
-                        if (RESULT.ErrorCode == 200) {
+                        });
+                        $('#customized-buttonpane').trumbowyg({
 
-                            layer.close(index);
-                            for (var i = 0; i < RESULT.Data.data.length; i++) {
+                            lang: 'fr',
 
-                                //获取分数
-                                var itemscores = 0;
-                                for (var j = 0; j < RESULT.Data.scores.length; j++) {
+                            closable: true,
 
+                            fixedBtnPane: true,
 
-                                    if (RESULT.Data.scores[j].level == RESULT.Data.data[i].Level.LevelID) {
-                                        itemscores = RESULT.Data.scores[j].scores;
-                                    }
-                                }
+                            btnsDef: {
 
-                                console.log(".....");
-                                var html = _.template($("#answerquestionmoban").html());
-                                var htmldate = html({ questionid: RESULT.Data.data[i].ID, index: i + 1, question: RESULT.Data.data[i].Title, score: itemscores });
+                                // Customizables dropdowns
 
-                                $("#AnswerQuestion").append(htmldate);
+                                align: {
 
-                            }
-                            $('.simple-editor').trumbowyg();
-                            $.trumbowyg.btnsGrps.test = ['bold', 'link'];
-                            $.extend(true, $.trumbowyg.langs, {
+                                    dropdown: ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
 
-                                fr: {
-
-                                    align: 'Alignement',
-
-                                    image: 'Image'
-
-                                }
-
-                            });
-                            $('#customized-buttonpane').trumbowyg({
-
-                                lang: 'fr',
-
-                                closable: true,
-
-                                fixedBtnPane: true,
-
-                                btnsDef: {
-
-                                    // Customizables dropdowns
-
-                                    align: {
-
-                                        dropdown: ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
-
-                                        ico: 'justifyLeft'
-
-                                    },
-
-                                    image: {
-
-                                        dropdown: ['insertImage', 'upload', 'base64'],
-
-                                        ico: 'insertImage'
-
-                                    }
+                                    ico: 'justifyLeft'
 
                                 },
 
-                                btns: ['viewHTML',
+                                image: {
 
-                                    '|', 'formatting',
+                                    dropdown: ['insertImage', 'upload', 'base64'],
 
-                                    '|', 'btnGrp-test',
+                                    ico: 'insertImage'
 
-                                    '|', 'align',
+                                }
 
-                                    '|', 'btnGrp-lists',
+                            },
 
-                                    '|', 'image']
+                            btns: ['viewHTML',
 
-                            });
-                            $('#form-content').trumbowyg({
+                                '|', 'formatting',
+
+                                '|', 'btnGrp-test',
+
+                                '|', 'align',
+
+                                '|', 'btnGrp-lists',
+
+                                '|', 'image']
+
+                        });
+                        $('#form-content').trumbowyg({
+
+                            lang: 'fr',
+
+                            closable: true,
+
+                            mobile: true,
+
+                            fixedBtnPane: true,
+
+                            fixedFullWidth: true,
+
+                            semantic: true,
+
+                            resetCss: true,
+
+                            autoAjustHeight: true,
+
+                            autogrow: true
+
+                        });
+                        $('.editor').on('dblclick', function (e) {
+
+                            $(this).trumbowyg({
 
                                 lang: 'fr',
 
                                 closable: true,
 
-                                mobile: true,
-
-                                fixedBtnPane: true,
-
-                                fixedFullWidth: true,
-
-                                semantic: true,
-
-                                resetCss: true,
-
-                                autoAjustHeight: true,
-
-                                autogrow: true
+                                fixedBtnPane: true
 
                             });
-                            $('.editor').on('dblclick', function (e) {
 
-                                $(this).trumbowyg({
+                        });
 
-                                    lang: 'fr',
+                    }
+                    else {
 
-                                    closable: true,
 
-                                    fixedBtnPane: true
+                        layer.msg('服务器错误。。', { icon: 2 }, function () {
+                            layer.close(index);
+                        });
+
+
+                    }
+
+                });
+            }
+            loadChoiceQuestionData();
+            loadAnswerQuestionData();
+
+            var AnswerCommitarray = new Array();
+            //获取解答题结果  表单数据
+            function getAnswerCommit() {
+
+                $("#AnswerQuestion .questionItem").each(function (index, elem) {
+
+                    ///获取问题ID
+                    var questionid = $(elem).attr("questionid");
+
+                    //获取答案
+                    var answer = $(elem).find(".desc").val();
+                    console.log(answer);
+                    //获取题目分数
+                    var questionScores = $(elem).find(".hidescore").val();
+
+                    var obj = {
+
+                        questionid: questionid,
+                        answer: answer,
+                        questionScores: questionScores
+                    };
+                    AnswerCommitarray.push(obj);
+
+                });
+
+
+                var str = JSON.stringify(AnswerCommitarray);
+
+
+                //放入表单数据
+                formData.append("AnswerCommit", str);
+
+            }
+            //点击提交
+            $("#COMMIT").click(function () {
+
+                Commit(false);
+            });
+
+            function CommitAnswerSheet() {
+                //需要先清空AnswerCommit 表单数据
+                //clearformData(formData, ["AnswerCommit"]);
+                var loadindex = layer.load(1, {
+                    shade: [0.1, '#fff'] //0.1透明度的白色背景
+                });
+                var trueQuestionscores = 0; //获得选择题分数
+                var ids = "";
+                //提交前计算选择题分数
+                $("#choicequestion .questionItem").each(function (index, elem) {
+
+                    ids += $(elem).attr("questionid") + ',';
+
+                });
+                $.post('/ExaminationSystem/StudentExamSys/ChoiceQuestionAnswer', { questions: ids }, function (result) {
+
+                    for (var i = 0; i < result.Data.length; i++) {
+
+                        $("#choicequestion .questionItem").each(function (index, elem) {
+                            var questionitem = $(elem);
+
+                            var questionid = $(this).attr("questionid");
+
+                            if (questionid == result.Data[i].questionid) {
+
+                                //比较答案是否正确
+                                //首先截取出答案
+                                var arry_answer = result.Data[i].answer.split(',');
+
+                                // arry_answer.pop();
+                                //获取学员选择的答案
+                                var arry_stuanswer = new Array();
+                                $(this).find("input").each(function (index, elem) {
+
+                                    if (elem.checked == true) {
+                                        arry_stuanswer.push($(elem).val());
+
+                                    }
+
 
                                 });
 
-                            });
+                                console.log(arry_stuanswer);
 
-                        }
-                        else {
+                                ///判断答案是否一致
+                                var isTrue = arry_answer.toString() == arry_stuanswer.toString();
+                                questionitem.find(".title").find(".panduan").remove();
 
+                                if (isTrue) {
 
-                            layer.msg('服务器错误。。', { icon: 2 }, function () {
-                                layer.close(index);
-                            });
+                                    //如果一致
+                                    var score = $(questionitem).find(".hidescore").val();
 
-
-                        }
-
-                    });
-                }
-                loadChoiceQuestionData();
-                loadAnswerQuestionData();
-
-                var AnswerCommitarray = new Array();
-                //获取解答题结果  表单数据
-                function getAnswerCommit() {
-
-                    $("#AnswerQuestion .questionItem").each(function (index, elem) {
-
-                        ///获取问题ID
-                        var questionid = $(elem).attr("questionid");
-
-                        //获取答案
-                        var answer = $(elem).find(".simple-editor").text();
-                        //获取题目分数
-
-                        var questionScores = $(elem).find(".hidescore").val();
-
-                        var obj = {
-
-                            questionid: questionid,
-                            answer: answer,
-                            questionScores: questionScores
-                        };
-                        AnswerCommitarray.push(obj);
-
-                    });
-
-
-                    var str = JSON.stringify(AnswerCommitarray);
-
-
-                    //放入表单数据
-                    formData.append("AnswerCommit", str);
-
-                }
-                //点击提交
-                $("#COMMIT").click(function () {
-
-                    Commit(false);
-                });
-
-                function CommitAnswerSheet() {
-                    //需要先清空AnswerCommit 表单数据
-                    //clearformData(formData, ["AnswerCommit"]);
-                    var loadindex = layer.load(1, {
-                        shade: [0.1, '#fff'] //0.1透明度的白色背景
-                    });
-                    var trueQuestionscores = 0; //获得选择题分数
-                    var ids = "";
-                    //提交前计算选择题分数
-                    $("#choicequestion .questionItem").each(function (index, elem) {
-
-                        ids += $(elem).attr("questionid") + ',';
-
-                    });
-                    $.post('/ExaminationSystem/StudentExamSys/ChoiceQuestionAnswer', { questions: ids }, function (result) {
-
-                        for (var i = 0; i < result.Data.length; i++) {
-
-                            $("#choicequestion .questionItem").each(function (index, elem) {
-                                var questionitem = $(elem);
-
-                                var questionid = $(this).attr("questionid");
-
-                                if (questionid == result.Data[i].questionid) {
-
-                                    //比较答案是否正确
-                                    //首先截取出答案
-                                    var arry_answer = result.Data[i].answer.split(',');
-
-                                    // arry_answer.pop();
-                                    //获取学员选择的答案
-                                    var arry_stuanswer = new Array();
-                                    $(this).find("input").each(function (index, elem) {
-
-                                        if (elem.checked == true) {
-                                            arry_stuanswer.push($(elem).val());
-
-                                        }
-
-
-                                    });
-
-                                    console.log(arry_stuanswer);
-
-                                    ///判断答案是否一致
-                                    var isTrue = arry_answer.toString() == arry_stuanswer.toString();
-                                    questionitem.find(".title").find(".panduan").remove();
-
-                                    if (isTrue) {
-
-                                        //如果一致
-                                        var score = $(questionitem).find(".hidescore").val();
-
-                                        trueQuestionscores += parseFloat(score);
-                                        var span = $('<span class="panduan"><i style="font-size:25px; color:green;" class="layui-icon layui-icon-ok"></i></span>');
-                                        questionitem.find(".title").append(span);
-
-                                    }
-                                    else {
-                                        var span = $('<span class="panduan"><i style="font-size:25px; color:red;" class="layui-icon layui-icon-close"></i></span>');
-                                        questionitem.find(".title").append(span);
-                                    }
+                                    trueQuestionscores += parseFloat(score);
+                                    var span = $('<span class="panduan"><i style="font-size:25px; color:green;" class="layui-icon layui-icon-ok"></i></span>');
+                                    questionitem.find(".title").append(span);
 
                                 }
-                            });
-
-                        }
-
-                        //渲染选择题获得分数:
-                        $(".choiceQuestionScoreshuode").text(trueQuestionscores);
-
-                        //更新表单数据 选择题分数
-                        formData.append("ChoiceScores", trueQuestionscores);
-
-                        //更新表单数据
-                        getAnswerCommit();
-                        console.log(formData.get("AnswerCommit"));
-                        var examid = $("#examid").val();
-                        var choiceQuestionScoreshuode = $(".choiceQuestionScoreshuode").val();
-                        //提交
-                        $.ajax({
-                            url: '/ExaminationSystem/StudentExamSys/AnswerSheetCommit',
-                            type: "post",
-                            contentType: false,
-                            processData: false,
-                            dataType: "json",//返回的数据格式
-                            data: formData,
-                            success: function (result) {
-
-                                layer.close(loadindex);
-
-                                if (result.ErrorCode == 200) {
-
-                                    layer.msg('成功。。', { icon: 1 }, function () {
-
-                                        window.location.href = '/ExaminationSystem/StudentExamSys/MachineTest?examid=' + examid + '&choiceQuestionScoreshuode=' + choiceQuestionScoreshuode;
-                                    });
-                                    layui.form.render();
+                                else {
+                                    var span = $('<span class="panduan"><i style="font-size:25px; color:red;" class="layui-icon layui-icon-close"></i></span>');
+                                    questionitem.find(".title").append(span);
                                 }
-                            },
-                            error: function () {
-                                layer.msg('异常。。', { icon: 2 });
 
                             }
-
-
                         });
 
-                        layer.close(loadindex);
+                    }
+
+                    //渲染选择题获得分数:
+                    $(".choiceQuestionScoreshuode").text(trueQuestionscores);
+
+                    //更新表单数据 选择题分数
+                    formData.append("ChoiceScores", trueQuestionscores);
+
+                    //更新表单数据
+                    getAnswerCommit();
+                    console.log(formData.get("AnswerCommit"));
+                    var examid = $("#examid").val();
+                    var choiceQuestionScoreshuode = $(".choiceQuestionScoreshuode").val();
+                    //提交
+                    $.ajax({
+                        url: '/ExaminationSystem/StudentExamSys/AnswerSheetCommit',
+                        type: "post",
+                        contentType: false,
+                        processData: false,
+                        dataType: "json",//返回的数据格式
+                        data: formData,
+                        success: function (result) {
+
+                            layer.close(loadindex);
+
+                            if (result.ErrorCode == 200) {
+
+                                layer.msg('成功。。', { icon: 1 }, function () {
+
+                                    window.location.href = '/ExaminationSystem/StudentExamSys/MachineTest?examid=' + examid + '&choiceQuestionScoreshuode=' + choiceQuestionScoreshuode;
+                                });
+                                layui.form.render();
+                            }
+                        },
+                        error: function () {
+                            layer.msg('异常。。', { icon: 2 });
+
+                        }
+
 
                     });
 
-                }
-
-                function Commit(IsAutoCommit) {
-
-                    if (IsAutoCommit == true) {
-
-                        layer.msg("考试时间已到，正在自动提交！");
-
-                        CommitAnswerSheet();
-
-                    }
-                    else {
-                        var msg = "是否提交确认,提交后将无法再次作答?";
-
-                        //if (formData.get("rarfile") == undefined) {
-                        //    msg = "机试题未上传， 是否继续提交答卷";
-                        //}
-
-                        layer.confirm(msg, function (index) {
-                            CommitAnswerSheet();
-                        });
-                    }
-
-                }
-
-                //监听选择文件  表单数据
-                $("#Upload").change(function () {
-
-                    var fileElem = document.getElementsByName("computerQuestion")[0];
-
-                    //获取上传的文件
-                    var file = fileElem.files[0];
-
-                    console.log(file);
-
-                    //上传条件 1.文件必须是压缩包(rar)
-                    var index = file.name.lastIndexOf(".");
-                    var suffix = file.name.substr(index + 1); //文件拓展名
-
-                    if (suffix == "rar" || suffix == "zip") {
-
-                        formData.append("rarfile", file);
-                    } else {
-
-                        layer.msg("请将文件压缩后再上产 (rar,zip)");
-                    }
+                    layer.close(loadindex);
 
                 });
 
-                $(document).off("click", ".optiond").on("click", ".optiond", function () {
+            }
 
-                    $(this).find("input").click();
-                });
+            function Commit(IsAutoCommit) {
 
-                //创建一个定时器 检查是否已经到了考试结束时间
-                setInterval(function () {
+                if (IsAutoCommit == true) {
 
-                    if (ExamEndDateUTC == undefined) {
-                        getEndTime();
-                    }
+                    layer.msg("考试时间已到，正在自动提交！");
 
-                    var currentDate = new Date();
+                    CommitAnswerSheet();
 
-                    var EndDate = new Date(parseInt(ExamEndDateUTC));
-
-
-                    if (currentDate > EndDate) {
-
-                        //自动点击提交
-                        Commit(true);
-                    }
-                    else {
-                        console.log("考试中......");
-                    }
-
-                }, 60000);
-                
-
-                //屏蔽右键菜单，！验证
-                document.oncontextmenu = function (event) {
-                    if (window.event) {
-                        event = window.event;
-                    }
-                    try {
-                        var the = event.srcElement;
-                        if (!((the.tagName == "INPUT" && the.type.toLowerCase() == "text") || the.tagName == "TEXTAREA")) {
-                            return false;
-                        }
-                        return true;
-                    } catch (e) {
-                        return false;
-                    }
-                };
-                var allowNum = 3; // 允许两次切屏，超过则提交
-                window.onblur = function () {
-                    if (allowNum < 1) {
-                        submitTest()
-                    }
-                    allowNum--;
-                    alert("您已切屏,剩余" + allowNum + "次自动提交试卷");
-                    if (allowNum == 0) {
-                        alert("您切屏超过3次,自动交卷！");
-                        CommitAnswerSheet();
-                    }
                 }
+                else {
+                    var msg = "是否提交确认,提交后将无法再次作答?";
+
+                    //if (formData.get("rarfile") == undefined) {
+                    //    msg = "机试题未上传， 是否继续提交答卷";
+                    //}
+
+                    layer.confirm(msg, function (index) {
+                        CommitAnswerSheet();
+                    });
+                }
+
+            }
+
+            //监听选择文件  表单数据
+            $("#Upload").change(function () {
+
+                var fileElem = document.getElementsByName("computerQuestion")[0];
+
+                //获取上传的文件
+                var file = fileElem.files[0];
+
+                console.log(file);
+
+                //上传条件 1.文件必须是压缩包(rar)
+                var index = file.name.lastIndexOf(".");
+                var suffix = file.name.substr(index + 1); //文件拓展名
+
+                if (suffix == "rar" || suffix == "zip") {
+
+                    formData.append("rarfile", file);
+                } else {
+
+                    layer.msg("请将文件压缩后再上产 (rar,zip)");
+                }
+
             });
-            
 
-        </script>
+            $(document).off("click", ".optiond").on("click", ".optiond", function () {
+
+                $(this).find("input").click();
+            });
+
+            //创建一个定时器 检查是否已经到了考试结束时间
+            setInterval(function () {
+
+                if (ExamEndDateUTC == undefined) {
+                    getEndTime();
+                }
+
+                var currentDate = new Date();
+
+                var EndDate = new Date(parseInt(ExamEndDateUTC));
+
+
+                if (currentDate > EndDate) {
+
+                    //自动点击提交
+                    Commit(true);
+                }
+                else {
+                    console.log("考试中......");
+                }
+
+            }, 60000);
+
+
+            //屏蔽右键菜单，！验证
+            //document.oncontextmenu = function (event) {
+            //    if (window.event) {
+            //        event = window.event;
+            //    }
+            //    try {
+            //        var the = event.srcElement;
+            //        if (!((the.tagName == "INPUT" && the.type.toLowerCase() == "text") || the.tagName == "TEXTAREA")) {
+            //            return false;
+            //        }
+            //        return true;
+            //    } catch (e) {
+            //        return false;
+            //    }
+            //};
+            //var allowNum = 3; // 允许两次切屏，超过则提交
+            //window.onblur = function () {
+            //    if (allowNum < 1) {
+            //        submitTest()
+            //    }
+            //    allowNum--;
+            //    alert("您已切屏,剩余" + allowNum + "次自动提交试卷");
+            //    if (allowNum == 0) {
+            //        alert("您切屏超过3次,自动交卷！");
+            //        CommitAnswerSheet();
+            //    }
+            //}
+        });
+
+
+    </script>
 </body>
 </html>

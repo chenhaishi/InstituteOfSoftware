@@ -344,6 +344,7 @@
     <Compile Include="ViewEntity\AddEnterpriseView.cs" />
     <Compile Include="ViewEntity\AmountTopView.cs" />
     <Compile Include="ViewEntity\AnPaiData.cs" />
+    <Compile Include="ViewEntity\AttendanceInfoErrorDataView.cs" />
     <Compile Include="ViewEntity\CapitalView\PublicBorrowListView.cs" />
     <Compile Include="ViewEntity\ChannelReportFormView.cs" />
     <Compile Include="ViewEntity\ChannelSortView.cs" />
@@ -521,6 +522,7 @@
     <Compile Include="ViewEntity\T_ConsultTeacherData.cs" />
     <Compile Include="ViewEntity\UninhabitedList.cs" />
     <Compile Include="ViewEntity\vierprice.cs" />
+    <Compile Include="ViewEntity\XYK_Data\Grand_SUM.cs" />
     <Compile Include="ViewEntity\XYK_Data\Student .cs" />
     <Compile Include="ViewEntity\ZhuanghuanluData.cs" />
     <Compile Include="ZhuceShowData.cs" />

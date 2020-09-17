@@ -14,15 +14,22 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table("ClassMeeting")]
+    //班级会议
     public partial class ClassMeeting
     {
         [Key]
         public int ID { get; set; }
+        //TeacherID
         public Nullable<int> TeacherID { get; set; }
+        //主题
         public string Theme { get; set; }
+        //地点
         public string Place { get; set; }
+        //内容
         public string Content { get; set; }
+        //结果
         public string Result { get; set; }
+        //是否删除
         public Nullable<bool> IsDel { get; set; }
     
     }

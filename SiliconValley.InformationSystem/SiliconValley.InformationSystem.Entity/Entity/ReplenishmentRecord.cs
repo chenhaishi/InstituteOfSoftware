@@ -14,13 +14,18 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "ReplenishmentRecord")]
+    //不卡记录
     public partial class ReplenishmentRecord
     {
         [Key]
         public int ID { get; set; }
+        //学号
         public string StudentID { get; set; }
+        //日期
         public string Departmentname { get; set; }
+        //是否删除
         public Nullable<bool> Dateofregistration { get; set; }
+        //备注
         public string Remarks { get; set; }
     
        

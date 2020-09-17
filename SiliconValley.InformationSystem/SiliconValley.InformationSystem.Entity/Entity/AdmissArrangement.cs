@@ -16,13 +16,21 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     [Table("AdmissArrangement")]
     public partial class AdmissArrangement
     {
+        //升学安排表
         [Key]
+       //id
         public int ID { get; set; }
+        //班级编号
         public string ClassNumber { get; set; }
+        //升学时间
         public Nullable<System.DateTime> Entrancetime { get; set; }
+       //升学阶段
         public Nullable<int> EntranceStage { get; set; }
+        //是否删除
         public Nullable<bool> IsDelete { get; set; }
+        //添加时间
         public Nullable<System.DateTime> Addtime { get; set; }
+        //备注
         public string Remarks { get; set; }
     
     }

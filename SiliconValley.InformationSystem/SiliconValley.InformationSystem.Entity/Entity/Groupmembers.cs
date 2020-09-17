@@ -14,13 +14,18 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "Groupmembers")]
+    //小组成员
     public partial class Groupmembers
     {
         [Key]
         public int ID { get; set; }
+        //组长
         public Nullable<int> Groupleader { get; set; }
+        //组员
         public string Teammembers { get; set; }
+        //是否删除
         public Nullable<bool> IsDelete { get; set; }
+        //添加时间
         public Nullable<System.DateTime> Addtime { get; set; }
     
        

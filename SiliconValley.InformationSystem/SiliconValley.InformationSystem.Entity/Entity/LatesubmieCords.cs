@@ -14,16 +14,24 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "LatesubmieCords")]
+    //迟交记录
     public partial class LatesubmieCords
     {
         [Key]
         public int ID { get; set; }
+        //学员学号
         public string Student_number { get; set; }
+        //担保人
         public Nullable<int> Guarantee { get; set; }
+        //迟交原因
         public Nullable<decimal> Reason { get; set; }
+        //剩余费用
         public Nullable<int> Residual_costs { get; set; }
+        //最迟缴费日期
         public string LatestPaymentDate { get; set; }
+        //是否删除
         public Nullable<bool> IsDelete { get; set; }
+        //添加时间
         public Nullable<System.DateTime> Addtime { get; set; }
     }
 }
