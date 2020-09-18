@@ -552,7 +552,9 @@
     <Content Include="Areas\Teaching\Scripts\Tdrag.js" />
     <Content Include="ClientRequestInfo.txt" />
     <Content Include="Config\Cost.xml" />
-    <Content Include="Config\ExamCourseconfig.xml" />
+    <Content Include="Config\ExamCourseconfig.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Config\questionLevelConfig.xml" />
     <Content Include="Content\Login\style.css" />
     <Content Include="Content\Login\weixincode.css" />
@@ -1918,6 +1920,9 @@
     <Content Include="Scripts\dtree2.5.4\layui_ext\dtree\font\dtreefont.ttf" />
     <Content Include="Scripts\dtree2.5.4\layui_ext\dtree\font\dtreefont.woff" />
     <Content Include="Scripts\dtree2.5.4\layui_ext\dtree\font\icons.json" />
+    <None Include="Properties\PublishProfiles\FolderProfile2.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile3.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile4.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\business\requestbusiness.js" />
     <Content Include="Scripts\config.js" />
