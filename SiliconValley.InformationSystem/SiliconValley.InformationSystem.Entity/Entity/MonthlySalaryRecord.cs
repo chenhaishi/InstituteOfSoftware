@@ -21,26 +21,26 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         public int Id { get; set; }
         public string EmployeeId { get; set; }
         public Nullable<System.DateTime> YearAndMonth { get; set; }//年月份
-        //public Nullable<decimal> AttendanceDay { get; set; }
-        //public Nullable<decimal> BaseSalary { get; set; }
-        //public Nullable<decimal> PositionSalary { get; set; }
-        //public Nullable<int> PerformanceScore { get; set; }
-      //  public Nullable<decimal> PerformanceSalary { get; set; }//绩效工资
-        //public string NetbookSubsidy { get; set; }
+       
         public Nullable<decimal> OvertimeCharges { get; set; }//加班费用
         public Nullable<decimal> Bonus { get; set; }  //奖金/元
         public Nullable<decimal> LeaveDeductions { get; set; }//（请假）扣款
         public Nullable<decimal> NoClockWithhold { get; set; }//缺卡
         public Nullable<decimal> OtherDeductions { get; set; }//其他扣款
-        //public Nullable<decimal> PersonalSocialSecurity { get; set; }//个人社保
-        //public string SocialSecuritySubsidy { get; set; }
-        //public Nullable<decimal> PersonalIncomeTax { get; set; }
+
         public Nullable<decimal> Total { get; set; }//合计
         public Nullable<decimal> PayCardSalary { get; set; }//工资卡工资
         public Nullable<decimal> CashSalary { get; set; }//现金工资
         public Nullable<bool> IsDel { get; set; }
         public Nullable<bool> IsApproval { get; set; }//是否已审批
 
-
+        public Nullable<decimal> BaseSalary { get; set; }//基本工资
+        public Nullable<decimal> PositionSalary { get; set; }//岗位工资
+        public Nullable<decimal> PerformancePay { get; set; }//绩效额度（绩效工资）
+        public Nullable<decimal> PersonalSocialSecurity { get; set; }//个人社保
+        public Nullable<decimal> SocialSecuritySubsidy { get; set; }//社保补贴
+        public Nullable<decimal> NetbookSubsidy { get; set; }//笔记本补助
+        public Nullable<int> ContributionBase { get; set; }//社保缴费基数
+        public Nullable<decimal> PersonalIncomeTax { get; set; }//个税
     }
 }
