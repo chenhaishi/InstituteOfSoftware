@@ -318,10 +318,18 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     atd.TardyRecord = item.TardyRecord;
                     atd.LeaveEarlyNum = item.LeaveEarlyNum;
                     atd.LeaveEarlyRecord = item.LeaveEarlyRecord;
-                    atd.TardyWithhold = item.TardyWithhold;
-                    atd.LeaveWithhold = item.LeaveWithhold;
+
+                    atd.OvertTimeRecord = item.OvertTimeRecord;
+                    atd.OvertTimeDuration = item.OvertTimeDuration;
+                    atd.DaysoffRecord = item.DaysoffRecord;
+                    atd.DaysoffDuration = item.DaysoffDuration;
+                    atd.AbsenteeismRecord = item.AbsenteeismRecord;
+                    atd.AbsenteeismDays = item.AbsenteeismDays;
+
+                    //atd.TardyWithhold = item.TardyWithhold;
+                    //atd.LeaveWithhold = item.LeaveWithhold;
                     //统计总缺卡次(计算缺卡扣款,>3次则扣半天工资,见月度工资表）
-                    var AbsentNum = atd.WorkAbsentNum + atd.OffDutyAbsentNum;
+                    //var AbsentNum = atd.WorkAbsentNum + atd.OffDutyAbsentNum;
                     atd.Remark = item.Remark;
                     atd.IsDel = false;
                     atd.IsApproval = false;
