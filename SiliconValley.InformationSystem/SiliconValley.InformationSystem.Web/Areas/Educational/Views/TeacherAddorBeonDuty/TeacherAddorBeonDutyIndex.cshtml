@@ -207,11 +207,11 @@
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 
-<div class="DisplayCss" id="SysDiv">
+<div class="DivCss2" id="SysDiv">
     <form class="layui-form" lay-filter="SysForm" style="margin-top:40px;">
         <div class="layui-row layui-form-item">
             <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                <label class="LableCss1">值班日期:</label>
+                <label class="LableCss1">审核月份:</label>
                 <div class="layui-input-block">
                     <input type="text" id="Month" name="Month" class="layui-input" lay-verify="required" />
                 </div>
@@ -374,7 +374,7 @@
                 case 'getCheckData_addNight':
                     layer.open({
                         type: 2,
-                        content: '/Educational/TeacherNight/AddDataView'
+                        content: '/Educational/TeacherAddorBeonDuty/AddDataView'
                         , area: ['800px', '500px'],
                         title: '添加值班数据页面'
                         , shade: 0.8

@@ -1,0 +1,49 @@
+﻿
+@{
+    ViewBag.Title = "ReportIndex";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .divCss1{
+      width:97%;
+      margin:0px auto;
+      height:auto;
+    }
+</style>
+<div class="divCss1">
+    <h1>报名量</h1>
+    
+        <div id="top">
+            <div id="div_top" style="width:90%;height:400px;margin-top:30px;">
+            </div>
+        </div>
+     
+</div>
+<script src="~/Scripts/ECharts4.2.1/incubator-echarts-master/dist/echarts.js"></script>
+<script>
+    $(function () {
+        var myChart = echarts.init(document.getElementById('div_top'));
+        myChart.title = '折柱混合';
+
+        option = {
+            xAxis: {
+                type: 'category',
+                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [{
+                data: [120, 200, 150, 80, 70, 110, 130],
+                type: 'bar',
+                showBackground: true,
+                backgroundStyle: {
+                    color: 'rgba(220, 220, 220, 0.8)'
+                }
+            }]
+        };
+
+        myChart.setOption(option);
+    });
+</script>
+

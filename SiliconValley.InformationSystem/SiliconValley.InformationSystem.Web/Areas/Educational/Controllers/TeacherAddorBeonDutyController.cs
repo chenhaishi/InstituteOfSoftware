@@ -22,7 +22,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
     [CheckLogin]
     public class TeacherAddorBeonDutyController : Controller
     {
-        // GET: /Educational/TeacherAddorBeonDuty/SysSheHe
+        // GET: /Educational/TeacherAddorBeonDuty/AddDataView
         TeacherAddorBeonDutyManager Tb_Entity = new TeacherAddorBeonDutyManager();
 
         public ActionResult TeacherAddorBeonDutyIndex()
@@ -42,6 +42,26 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             teacherlist = teacherlist.OrderBy(t => t.Value).ToList();
             ViewBag.teacher = teacherlist;
             return View();
+        }
+
+        [HttpPost]
+        public ActionResult GetClassData()
+        {
+            int classid=Convert.ToInt32(Request.Form["classid"]);
+            DateTime time = Convert.ToDateTime(Request.Form["date"]);
+            AjaxResult a = new AjaxResult();
+            var list = Tb_Entity.EvningSelf_Entity.GetSQLDat("select * from EvningSelfStudy where ClassSchedule_id=" + classid+ " and Anpaidate='"+time+"'");
+            if (list.Count>0)
+            {
+                a.Success = true;
+                a.Data = list;
+            }
+            else
+            {
+                a.Success = false;
+            }
+            
+            return Json(a,JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -622,6 +642,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 a.Msg = "操作异常!";
             }
             return Json(a, JsonRequestBehavior.AllowGet);
+        }
+
+
+        public ActionResult AddDataView()
+        {
+            List<SelectListItem> sle_grand = Reconcile_Com.GetGrand_Id().Select(cl => new SelectListItem() { Text = cl.GrandName, Value = cl.Id.ToString(), Selected = false }).ToList();  //获取阶段
+            sle_grand.Add(new SelectListItem() { Text = "--请选择--", Value = "0", Selected = true });
+            ViewBag.myclass = sle_grand;
+
+            return View();
         }
     }
 }

@@ -18,6 +18,8 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
         public EmployeesInfoManage EmployeesInfo_Entity = new EmployeesInfoManage();
 
+        public EvningSelfStudyManeger EvningSelf_Entity = new EvningSelfStudyManeger();
+
       
         #region 查询
         /// <summary>

@@ -314,6 +314,8 @@
     <Compile Include="Areas\Personnelmatters\Controllers\PerformanceAssessController.cs" />
     <Compile Include="Areas\Personnelmatters\Controllers\RecruitingDataSummaryController.cs" />
     <Compile Include="Areas\Personnelmatters\PersonnelmattersAreaRegistration.cs" />
+    <Compile Include="Areas\ReportForm\Controllers\ReportController.cs" />
+    <Compile Include="Areas\ReportForm\ReportFormAreaRegistration.cs" />
     <Compile Include="Areas\Studenteducation\Controllers\EducationController.cs" />
     <Compile Include="Areas\Studenteducation\StudenteducationAreaRegistration.cs" />
     <Compile Include="Areas\Teachingquality\Controllers\ClassScheduleController.cs" />
@@ -1910,6 +1912,9 @@
     <Content Include="Areas\Teachingquality\Views\Shared\errorClass.cshtml" />
     <Content Include="Areas\ExaminationSystem\Views\StudentExamSys\MachineTest.cshtml" />
     <Content Include="Areas\ExaminationSystem\Views\StudentExamSys\Brushthetopic.cshtml" />
+    <Content Include="Areas\ReportForm\Views\web.config" />
+    <Content Include="Areas\ReportForm\Views\Report\ReportIndex.cshtml" />
+    <Content Include="Areas\Educational\Views\TeacherAddorBeonDuty\AddDataView.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
@@ -3518,7 +3523,6 @@
     <Content Include="uploadXLSXfile\Template\Excle模板.xls~HEAD" />
     <Content Include="uploadXLSXfile\Template\Excle模板.xls~zhonglunpan" />
     <Content Include="uploadXLSXfile\Sheet1.xlsx" />
-    <Content Include="uploadXLSXfile\湖南硅谷云教育科技有限公司_考勤报表_20191101-20191130%281%29.xlsx" />
     <Content Include="Views\Home\rtest.cshtml" />
     <Content Include="Views\Student\Index.cshtml" />
     <Content Include="Scripts\live2d\assets\flat-ui-icons-regular.eot" />
@@ -3645,6 +3649,8 @@
     <Folder Include="Areas\OrThert\Views\TMorther\" />
     <Folder Include="Areas\Personnelmatters\Models\" />
     <Folder Include="Areas\Personnelmatters\Views\Shared\" />
+    <Folder Include="Areas\ReportForm\Models\" />
+    <Folder Include="Areas\ReportForm\Views\Shared\" />
     <Folder Include="Areas\Studenteducation\Models\" />
     <Folder Include="Areas\Studenteducation\Views\Education\" />
     <Folder Include="Areas\Studenteducation\Views\Shared\" />
