@@ -1917,6 +1917,8 @@
     <Content Include="Areas\ReportForm\Views\Report\ReportIndex.cshtml" />
     <Content Include="Areas\Educational\Views\TeacherAddorBeonDuty\AddDataView.cshtml" />
     <Content Include="Areas\Market\Views\StudentDataKeep\Conflict.cshtml" />
+    <Content Include="Areas\Educational\Views\TeacherAddorBeonDuty\TableInsert.cshtml" />
+    <Content Include="Areas\Educational\Views\TeacherNight\ExcelIntoView.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
