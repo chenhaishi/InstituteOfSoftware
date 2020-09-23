@@ -48,7 +48,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
     [CheckLogin]
     public class StudentDataKeepController : BaseMvcController
     {
-        // GET: /Market/StudentDataKeep/GetPayView
+        // GET: /Market/StudentDataKeep/Conflict
 
         #region 创建实体
 
@@ -311,29 +311,31 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
        
             AjaxResult a;
             try
-            {
+            { 
+                //判断是否是网咨，如果是网咨则不需要发短信
+                StuInfomationType find_type = s_Entity.StuInfomationType_Entity.SerchSingleData("网络", false);
+                news.StuDateTime = DateTime.Now;
+                news.BeanDate = DateTime.Now;
+                news.IsDelete = 0;
+                news.StuEntering = s_Entity.Enplo_Entity.GetEntity(UserName.EmpNumber).EmpName;
+                news.StuStatus_Id = 1013;
+                news.StuSex = news.StuSex == "0" ? null : news.StuSex;
+                news.StuEducational = news.StuEducational == "0" ? null : news.StuEducational;
+                if (news.ConsultTeacher == "0")
+                {
+                    news.ConsultTeacher = null;
+                }
                 //判断是否有姓名相同的备案数据                
                 if (s_Entity.StudentOrrideData(news.StuName, news.StuPhone,news.StuWeiXin,news.StuQQ) == null)
                 {
-                    news.StuDateTime = DateTime.Now;
-                    news.BeanDate = DateTime.Now;
-                    news.IsDelete = false;
-                    news.StuEntering = s_Entity.Enplo_Entity.GetEntity(UserName.EmpNumber).EmpName;
-                    news.StuStatus_Id = 1013;
-                    news.StuSex = news.StuSex == "0" ? null : news.StuSex;
-                    news.StuEducational = news.StuEducational == "0" ? null : news.StuEducational;
-                    if (news.ConsultTeacher == "0")
-                    {
-                        news.ConsultTeacher = null;
-                    }
+                     
                     a = s_Entity.Add_data(news);
                     if (a.Success == true)
                     {
                         StudentbeanLog log = new StudentbeanLog() { insertDate = DateTime.Now, userId = UserName.EmpNumber, operationType = Entity.Base_SysManage.EnumType.LogType.添加数据 + ":" + news.StuName + "备案成功！" };
                         s_Entity.log_s.Add_data(log);
 
-                        //判断是否是网咨，如果是网咨则不需要发短信
-                        StuInfomationType find_type = s_Entity.StuInfomationType_Entity.SerchSingleData("网络", false);
+                       
                         if (news.StuInfomationType_Id != find_type.Id)
                         {
                             //通知备案人备案成功
@@ -349,7 +351,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
                         else
                         {
                             //如果是网咨，则添加到王咨回访表中
-                            StudentPutOnRecord find_stu = s_Entity.StudentOrreideData_OnRecord(news.StuName, news.StuPhone,news.StuDateTime);
+                            StudentPutOnRecord find_stu = s_Entity.StudentOrreideData_OnRecord(news.StuName, news.StuPhone,news.StuDateTime,0);
                             bool sm = s_Entity.NetClient_Entity.AddNCRData(find_stu.Id);
 
                             string phoen = Request.Form["ShorPhone"];
@@ -373,16 +375,30 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
                             new_c.ComDate = DateTime.Now;
                             a.Success = EmployandCounTeacherCoom.AddConsult(new_c);
                         }
-
-                         
+                        
                     }
                 }
                 else
                 {
                     a = new AjaxResult();
+                    news.IsDelete = 2;
+                    var list = s_Entity.GetListBySql<ExportStudentBeanData>("select * from  StudentBeanView where StuName='" + news.StuName + "' and Stuphone='" + news.StuPhone + "' and IsDelete=2");
+                    if (list.Count<=0)
+                    {
+                        a = s_Entity.Add_data(news);
+                         
+                    }
+                    a.Msg = "该学生在此之前已有备案信息,需要将该数据成为正常备案数据，请联系杨校或阳亮！";             
                     a.Success = false;
-                    a.Msg = "该学生已备案";
-                    StudentbeanLog log = new StudentbeanLog() { insertDate = DateTime.Now , userId = UserName.EmpNumber , operationType = Entity.Base_SysManage.EnumType.LogType.添加数据error + ":"+ news.StuName+ "备案数据重复！" };
+                    
+                    if (news.StuInfomationType_Id == find_type.Id)
+                    {
+                        //如果是网咨，则添加到王咨回访表中
+                        StudentPutOnRecord find_stu = s_Entity.StudentOrreideData_OnRecord(news.StuName, news.StuPhone, news.StuDateTime,2);
+                        bool sm = s_Entity.NetClient_Entity.AddNCRData(find_stu.Id);
+                    }
+                     
+                    StudentbeanLog log = new StudentbeanLog() { insertDate = DateTime.Now , userId = UserName.EmpNumber , operationType = Entity.Base_SysManage.EnumType.LogType.添加数据 + ":"+ news.StuName+ "备案数据冲突！" };
                     s_Entity.log_s.Add_data(log);
                 }
                 return Json(a);
@@ -911,7 +927,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
                         s.StuName = item1.StuName;
                         s.StuSex = item1.StuSex;
                         s.EmployeesInfo_Id = s_Entity.Enplo_Entity.FindEmpData(item1.EmployeesInfo_Id, false) == null ? null : s_Entity.Enplo_Entity.FindEmpData(item1.EmployeesInfo_Id, false).EmployeeId;
-                        s.IsDelete = false;
+                        s.IsDelete = 0;
                         s.Reak = item1.Reak;
                         Region find_region = s_Entity.region_Entity.SerchRegionName(item1.Region_id, false);
                         if (find_region != null) { s.Region_id = find_region.ID; } else { s.Reak = s.Reak + ",所在区域:" + item1.Region_id; }
@@ -953,7 +969,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
                         {
                             Consult c = new Consult();
                             c.TeacherName = find_t.Id;
-                            c.StuName = s_Entity.StudentOrreideData_OnRecord(item.StuName, item.StuPhone, item.BeanDate).Id;
+                            c.StuName = s_Entity.StudentOrreideData_OnRecord(item.StuName, item.StuPhone, item.BeanDate,0).Id;
                             c.IsDelete = false;
                             c.ComDate = DateTime.Now;
                             c_list.Add(c);
@@ -975,7 +991,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
                     listnew= listnew.Where(l => l.StuInfomationType_Id == find.Id).ToList();
                     foreach (StudentPutOnRecord item in listnew)
                     {
-                        StudentPutOnRecord m= s_Entity.StudentOrreideData_OnRecord(item.StuName, item.StuPhone,item.BeanDate);
+                        StudentPutOnRecord m= s_Entity.StudentOrreideData_OnRecord(item.StuName, item.StuPhone,item.BeanDate,0);
                         if (m!=null)
                         {
                             list_W.Add(m);
@@ -2189,6 +2205,73 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
                 a.Msg = "数据异常！请刷新重试！";
             }
             return Json(a,JsonRequestBehavior.AllowGet);
+        }
+        
+        /// <summary>
+        /// 冲突数据处理页面
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Conflict()
+        {
+            ViewBag.Ishava = 1;
+            Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
+            if (UserName.EmpNumber== "202005300074" || UserName.EmpNumber== "202005300003")
+            {
+                ViewBag.Ishava = 2;
+            }
+             
+            return View();
+        }
+
+
+        public ActionResult ConfilictData(int limit,int page)
+        {
+            List<ExportStudentBeanData> list= s_Entity.GetListBySql<ExportStudentBeanData>(" select * from  StudentBeanView where IsDelete=2");
+            var data = list.OrderByDescending(a => a.BeanDate).Skip((page - 1) * limit).Take(limit);
+
+            var jsondata = new {data=data,code=0,count=list.Count,msg="" };
+
+            return Json(jsondata,JsonRequestBehavior.AllowGet); ; 
+        }
+       
+        /// <summary>
+        /// 将冲突数据改为正常数据
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ChuliConfilict(int id)
+        {
+            AjaxResult result = new AjaxResult() { Success=false,Msg="操作有误！请重试"};
+
+            Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
+            try
+            {
+                StudentPutOnRecord finda = s_Entity.GetEntity(id);
+                string str = "select * from  StudentBeanView where StuName='" + finda.StuName + "' and Stuphone='" + finda.StuPhone + "' and IsDelete=0";
+                var list= s_Entity.GetListBySql<ExportStudentBeanData>(str);
+
+                var list2= s_Entity.s_entity.GetListBySql<Sch_MarketView>("select * from Sch_MarketView where StudentName='"+ finda.StuName + "' and Phone ='"+ finda.StuPhone + "' and IsDel=0");
+
+                if ((list.Count+list2.Count)<=0)
+                {
+                    finda.IsDelete = 0;
+                    s_Entity.Update(finda);
+                    result.Msg = "操作成功！";
+                    result.Success = true;
+                    StudentbeanLog log = new StudentbeanLog() { insertDate = DateTime.Now, userId = UserName.EmpNumber, operationType = Entity.Base_SysManage.EnumType.LogType.编辑数据 + ":"  + "将一条编号为："+finda.Id+"，学生姓名为:"+finda.StuName+ "的冲突数据成功修改为正常数据！" };
+                    s_Entity.log_s.Add_data(log);
+                }
+                else
+                {
+                    result.Msg = "有相同的数据，不能修改！";
+                    result.Success = false;
+                }                 
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
         #endregion
     }

@@ -1554,6 +1554,7 @@
     <Content Include="uploadXLSXfile\SelfObtainRcoredImg\1908NA舒克.png" />
     <Content Include="uploadXLSXfile\SelfObtainRcoredImg\2002NA陈海石.png" />
     <Content Include="Xmlconfigure\HeadMasterNingth.xml" />
+    <Content Include="Xmlconfigure\Punch_the_clock.xml" />
     <Content Include="Xmlconfigure\Reconcile_XML.xml" />
     <Content Include="xmlfile\entxml.xml" />
     <Content Include="xmlfile\Pointsdeductionproject.xml" />
@@ -1915,6 +1916,7 @@
     <Content Include="Areas\ReportForm\Views\web.config" />
     <Content Include="Areas\ReportForm\Views\Report\ReportIndex.cshtml" />
     <Content Include="Areas\Educational\Views\TeacherAddorBeonDuty\AddDataView.cshtml" />
+    <Content Include="Areas\Market\Views\StudentDataKeep\Conflict.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
@@ -3610,6 +3612,9 @@
     <Content Include="uploadXLSXfile\ConsultUploadfile\ExportAll\20200606082337.xls" />
     <Content Include="Views\Home\IdCard.cshtml" />
     <Content Include="Views\Home\Scores.cshtml" />
+    <Content Include="uploadXLSXfile\ConsultUploadfile\Kaoqin\kaoqin.xlsx" />
+    <Content Include="uploadXLSXfile\Zhiban\学生作弊名单.xlsx" />
+    <Content Include="uploadXLSXfile\Zhiban\班主任值班模板.xlsx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

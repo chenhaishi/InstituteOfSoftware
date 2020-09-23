@@ -345,16 +345,21 @@ namespace SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness
         /// <param name="stuName"></param>
         /// <param name="phone"></param>
         /// <returns></returns>
-        public StudentPutOnRecord StudentOrreideData_OnRecord(string stuName, string phone, DateTime date)
+        public StudentPutOnRecord StudentOrreideData_OnRecord(string stuName, string phone, DateTime date,int? state)
         {
             StringBuilder sb = new StringBuilder();
             string yy = date.Year + "-" + date.Month + "-" + date.Day;
-            sb.Append("select top 1 * from studentPutOnRecord where StuName='" + stuName + "' and BeanDate='" + yy + "'  and IsDelete=0");
+            sb.Append("select top 1 * from studentPutOnRecord where StuName='" + stuName + "' and BeanDate='" + yy + "' ");
 
 
             if (phone != null)
             {
                 sb.Append(" and StuPhone='" + phone + "'");
+            }
+
+            if (state!=null)
+            {
+                sb.Append(" and IsDelete=" + state);
             }
             sb.Append(" order by  Id desc");
 
@@ -1027,7 +1032,7 @@ namespace SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness
                 one.BeanDate = Convert.ToDateTime(date);
 
                 one.StuPhone = item.Phone;
-                one.IsDelete = false;
+                one.IsDelete = 0;
                 one.StuQQ = item.QQ;
                 one.StuSchoolName = item.School;
                 one.StuEducational = item.Education;
@@ -1278,7 +1283,7 @@ namespace SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness
             if (id>=54118)
             {
                 StudentPutOnRecord entity= this.GetEntity(id);
-                entity.IsDelete = true;
+                entity.IsDelete = 1;
                 try
                 {
                     this.Update(entity);

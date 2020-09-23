@@ -1,0 +1,98 @@
+﻿
+@{
+    ViewBag.Title = "Conflict";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<table id="ConflictForm" lay-filter="ConflictForm"></table>
+ 
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">修改为有效数据</a>
+</script>
+<script src="~/Scripts/Tangmin_CssAndJs/com_js/MyOrther_tangmin.js"></script>
+
+<script>
+    $(function () {
+        var table;
+        var layer;
+        layui.use(['table','layer'], function () {
+            table = layui.table;
+            layer = layui.layer;
+            var ishava= @ViewBag.Ishava;
+            if (ishava == "2") {
+                table.render({
+                    elem: '#ConflictForm'
+                    , url: '/Market/StudentDataKeep/ConfilictData'
+                    , cols: [[
+                        { type: 'checkbox', fixed: 'left' }
+                        , { field: 'StuName', title: '学生姓名', width: 80, fixed: 'left' }
+                        , { field: 'StuSex', title: '性别' }
+                        , { field: 'Stuphone', title: '联系电话' }
+                        , { field: 'StuSchoolName', title: '毕业学校' }
+                        , { field: 'StuEducational', title: '学历' }
+                        , { field: 'StuWeiXin', title: '微信号' }
+                        , { field: 'StuQQ', title: 'QQ号' }
+                        , { field: 'stuinfomation', title: '信息来源' }
+                        , { field: 'RegionName', title: '所在区域' }
+                        , { field: 'Party', title: '关系人' }
+                        , { field: 'empName', title: '备案人' }
+                        , { field: 'StuDateTime', title: '备案日期', width: 180, templet: function (res) { return TimeChange(res.StuDateTime); } }
+                        , { field: 'StuEntering', title: '录入人员' }
+                        , { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150 }
+                    ]]
+                    , page: true
+                });
+            } else {
+                table.render({
+                    elem: '#ConflictForm'
+                    , url: '/Market/StudentDataKeep/ConfilictData'
+                    , cols: [[
+                        { type: 'checkbox', fixed: 'left' }
+                        , { field: 'StuName', title: '学生姓名', width: 80, fixed: 'left' }
+                        , { field: 'StuSex', title: '性别' }
+                        , { field: 'Stuphone', title: '联系电话' }
+                        , { field: 'StuSchoolName', title: '毕业学校' }
+                        , { field: 'StuEducational', title: '学历' }
+                        , { field: 'StuWeiXin', title: '微信号' }
+                        , { field: 'StuQQ', title: 'QQ号' }
+                        , { field: 'stuinfomation', title: '信息来源' }
+                        , { field: 'RegionName', title: '所在区域' }
+                        , { field: 'Party', title: '关系人' }
+                        , { field: 'empName', title: '备案人' }
+                        , { field: 'StuDateTime', title: '备案日期', width: 180, templet: function (res) { return TimeChange(res.StuDateTime); } }
+                        , { field: 'StuEntering', title: '录入人员' }
+                    ]]
+                    , page: true
+                });
+            }
+            
+
+            //监听行工具事件
+            table.on('tool(ConflictForm)', function (obj) {
+                var data = obj.data;
+                if (obj.event === 'edit') {
+
+                    layer.confirm('确定修改吗？', function (index) {
+                        $.ajax({
+                            url: '/Market/StudentDataKeep/ChuliConfilict/' + data.Id,
+                            success: function (res) {
+                                if (res.Success) {
+                                    layer.msg(res.Msg, { icon: 1, shade: 0.8 }, function () {
+                                        table.reload('ConflictForm');
+                                    })
+                                } else {
+                                    layer.msg(res.Msg, { icon: 2, shade: 0.8 });
+                                }
+                            }
+                        });
+                        layer.close(index);
+                    });
+
+                     
+                }
+            });
+        });
+    });
+</script>
+

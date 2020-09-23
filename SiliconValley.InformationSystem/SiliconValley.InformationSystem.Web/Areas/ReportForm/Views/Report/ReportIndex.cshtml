@@ -11,11 +11,9 @@
     }
 </style>
 <div class="divCss1">
-    <h1>报名量</h1>
     
         <div id="top">
-            <div id="div_top" style="width:90%;height:400px;margin-top:30px;">
-            </div>
+            <div id="div_top" style="width:700px;height:400px;margin-top:30px;"> </div>
         </div>
      
 </div>
@@ -23,9 +21,13 @@
 <script>
     $(function () {
         var myChart = echarts.init(document.getElementById('div_top'));
-        myChart.title = '折柱混合';
+      //  myChart.title = '折柱混合';
 
         option = {
+            title: {
+                text:'这是一首简单的小情歌'
+            },
+
             xAxis: {
                 type: 'category',
                 data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']

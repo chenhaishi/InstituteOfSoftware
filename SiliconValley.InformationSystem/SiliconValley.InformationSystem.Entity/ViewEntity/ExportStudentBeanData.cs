@@ -130,5 +130,10 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity
         /// 详细备案时间
         /// </summary>
         public DateTime StuDateTime { get; set; }
+
+        /// <summary>
+        /// 数据状态（0--正常，1--作废，2--冲突数据）
+        /// </summary>
+        public int IsDelete { get; set; }
     }
 }
