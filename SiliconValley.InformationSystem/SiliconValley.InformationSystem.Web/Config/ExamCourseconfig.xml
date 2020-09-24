@@ -1,6 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <exam id="9024">
-    <course id="123" />
+  <exam id="3030">
+    <course id="17" />
+  </exam>
+  <exam id="8025">
+    <course id="17" />
+  </exam>
+  <exam id="4023">
+    <course id="17" />
+  </exam>
+  <exam id="4025">
+    <course id="127" />
+  </exam>
+  <exam id="4026">
+    <course id="17" />
+  </exam>
+  <exam id="9026">
+    <course id="14" />
+  </exam>
+  <exam id="11024">
+    <course id="15" />
+  </exam>
+  <exam id="11027">
+    <course id="16" />
   </exam>
 </root>

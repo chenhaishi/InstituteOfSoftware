@@ -113,6 +113,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
         {
             return db_questionlevel.GetList();
         }
+        
         /// <summary>
         /// 生成考试编号
         /// </summary>
@@ -219,7 +220,15 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
             BaseBusiness<ExaminationRoom> exroom = new BaseBusiness<ExaminationRoom>();
             return exroom.GetList();
         }
-
+        /// <summary>
+        /// 删除历史考试数据
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        //public ActionResult DeleteKaoShi(int id)
+        //{
+        //    AjaxResult result = new AjaxResult();
+        //}
         public List<Examination> AllNoEndExamination()
         {
             List<Examination> result = new List<Examination>();
@@ -477,7 +486,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
 
         /// <summary>
         /// 获取监考员
-        /// </summary>
+        /// </summary>      
         /// <param name="examid"></param>
         /// <param name="examroomid"></param>
         /// <returns></returns>
@@ -665,7 +674,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
             var examElemet = xmlDocument.CreateElement("exam");
             examElemet.SetAttribute("id", examid.ToString());
 
-            var courseElemt = xmlDocument.CreateElement("course");
+            var courseElemt = xmlDocument.CreateElement("course");  
             courseElemt.SetAttribute("id", courseid.ToString());
 
             examElemet.AppendChild(courseElemt);
@@ -737,7 +746,6 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
         /// <param name="exam">考试ID</param>
         /// <returns></returns>
         public List<object> GenerateSeatTable(int exam)
-
         {
             TeacherClassBusiness teacherClass = new TeacherClassBusiness();
 
@@ -762,16 +770,16 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
                 var classroom = db_classRoom.GetList().Where(d => d.Id == item.Classroom_Id).FirstOrDefault();
 
 
-                //班级能容纳的人数
-                var classroomcount = (int)classroom.Count;
+                ////班级能容纳的人数
+                //var classroomcount = (int)classroom.Count;
 
 
-                var stulist = candidateinfolist.Take(classroomcount).ToList();
+                //var stulist = candidateinfolist.Take(classroomcount).ToList();
 
 
                 //将这些考生分配到教室
 
-                foreach (var item2 in stulist)
+                foreach (var item2 in candidateinfolist)
                 {
                     var tempbuted = this.AllExamroomDistributed(exam).Where(d => d.CandidateNumber == item2.CandidateNumber).FirstOrDefault();
 
@@ -795,19 +803,17 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
                 //创建随机数
                 Random r = new Random();
 
-
-                for (int i = 0; i < stulist.Count; i++)
+                var stulist = candidateinfolist.ToList();
+                for (int i = 0; i < stulist.Count; i++) 
                 {
                     //生成随机数
                     int randomNum = r.Next(1, stulist.Count + 1);
-
 
                     string Snum = seatlist.Where(d => d == randomNum.ToString()).FirstOrDefault();
 
                     if (Snum == null)
                     {
                         seatlist.Add(randomNum.ToString());
-
                         //
                     }
                     else
@@ -826,6 +832,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
                     BaseBusiness<StudentInformation> db_student = new BaseBusiness<StudentInformation>();
 
                     var stu = db_student.GetList().Where(d => d.StudentNumber == stulist[i].StudentID).FirstOrDefault();
+
                     var stuView = teacherClass.GetStudetentDetailView(stu);
 
                     if (stu != null)
@@ -834,7 +841,6 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
                         {
                             student = stuView,
                             seat = seatlist[i]
-
 
                         };
 
