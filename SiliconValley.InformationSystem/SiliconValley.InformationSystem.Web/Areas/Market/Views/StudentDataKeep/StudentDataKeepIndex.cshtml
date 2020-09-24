@@ -154,6 +154,10 @@
                         <input name="S_QQ" id="S_QQ" class="inputCss1" />
                     </div>
                     <div class="layui-col-sm2">
+                        <label class="spanCss2">是否上门:</label>
+                        <input type="radio" value="1" title="是" id="Isgo" name="Isgo"/>  <input type="radio" value="0" title="否" checked id="Isgo" name="Isgo"/>
+                    </div>
+                    <div class="layui-col-sm2">
                         <label class="spanCss2">学生学历:</label>
                         <div class="divCss1">
                             <select class="layui-select" id="eduttion" name="eduttion">
@@ -176,10 +180,10 @@
                         <input name="S_Reack" id="S_Reack" class="inputCss1" />
                     </div>
 
-                    <div class="layui-col-sm4">
+                    <div class="layui-col-sm2">
                         <div style="text-align:right">
-                            <button id="searchBtn" type="button" class="layui-btn" style="margin-right:45px;width:108px"><i class="layui-icon">&#xe615;</i> 查询</button>
-                            <button type="button" class="layui-btn" style="margin-right:45px;width:108px" onclick="LoadTable()"><i class="layui-icon">&#xe666;</i> 重新加载</button>
+                            <button id="searchBtn" type="button" class="layui-btn"><i class="layui-icon">&#xe615;</i> 查询</button>
+                            <button type="button" class="layui-btn" onclick="LoadTable()"><i class="layui-icon">&#xe666;</i> 重新加载</button>
                         </div>
 
                     </div>
@@ -276,12 +280,13 @@
             var eduttion = $("#eduttion").val();
             var S_Reack = $("#S_Reack").val();
             var S_School = $("#S_School").val();
-            if (findNamevalue.length <= 0 && findPhonevalue.length <= 0 && findInformationvalue == "0" && findStartvalue.length <= 0 && findEndvalue.length <= 0 && findAreavalue == "0" && findBeanManvalue.length <= 0 && S_consultTeacher == "0" && S_status == "0" && S_intosysMan.length <= 0 && S_party.length <= 0 && S_QQ.length <= 0 && eduttion.length != "0" && S_Reack.length <= 0 && S_School.length <= 0) {
+            var Isgo = $("input[name='Isgo']:checked").val();
+            if (findNamevalue.length <= 0 && findPhonevalue.length <= 0 && findInformationvalue == "0" && findStartvalue.length <= 0 && findEndvalue.length <= 0 && findAreavalue == "0" && findBeanManvalue.length <= 0 && S_consultTeacher == "0" && S_status == "0" && S_intosysMan.length <= 0 && S_party.length <= 0 && S_QQ.length <= 0 && eduttion.length != "0" && S_Reack.length <= 0 && S_School.length <= 0 && Isgo==0) {
                 table.reload('tabletest1', { url: '/Market/StudentDataKeep/TableData' });
             } else {
                 table.reload('tabletest1', {
                     url: '/Market/StudentDataKeep/GetTableData'
-                    , where: { 'findNamevalue': findNamevalue, 'findPhonevalue': findPhonevalue, 'findInformationvalue': findInformationvalue, 'findStartvalue': findStartvalue, 'findEndvalue': findEndvalue, 'findAreavalue': findAreavalue, 'findBeanManvalue': findBeanManvalue, "S_consultTeacher": S_consultTeacher, "S_status": S_status, "S_party": S_party, "S_intosysMan": S_intosysMan, "S_QQ": S_QQ, "eduttion": eduttion, "S_Reack": S_Reack, "S_School": S_School } //设定异步数据接口的额外参数
+                    , where: { 'findNamevalue': findNamevalue, 'findPhonevalue': findPhonevalue, 'findInformationvalue': findInformationvalue, 'findStartvalue': findStartvalue, 'findEndvalue': findEndvalue, 'findAreavalue': findAreavalue, 'findBeanManvalue': findBeanManvalue, "S_consultTeacher": S_consultTeacher, "S_status": S_status, "S_party": S_party, "S_intosysMan": S_intosysMan, "S_QQ": S_QQ, "eduttion": eduttion, "S_Reack": S_Reack, "S_School": S_School, "Isgo": Isgo} //设定异步数据接口的额外参数
                 });
             }
 
@@ -461,6 +466,11 @@
                     , { field: 'StatusName', title: '学生状态', width: 80 }
                     , { field: 'MarketType', title: '市场类型', width: 60 }
                     , { field: 'StuEntering', title: '录入人员', width: 100 }
+                    , {
+                        field: 'StuVisit', title: '上门日期', width: 100, templet: function (res) {
+                            if (res.StuVisit != null) { return TimeChange(res.StuVisit); } else { return '没有上门' }
+                        }
+                    }
                     , { field: 'StuDateTime', title: '备案日期', width: 180, templet: function (res) { return formatDate(res.StuDateTime); } }
                     , {
                         fixed: 'right', title: '操作', width: 250, templet: function (res) {

@@ -373,10 +373,15 @@ namespace SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness
         /// </summary>
         /// <param name="str1"></param>
         /// <param name="str2"></param>
+        /// <param name="Iszhixing">第二条sql语句是否执行 true--执行，false--不执行</param>
         /// <returns></returns>
-        public List<ExportStudentBeanData> Serch(string str1, string str2)
+        public List<ExportStudentBeanData> Serch(string str1, string str2,bool Iszhixing)
         {
             List<ExportStudentBeanData> listall = this.GetListBySql<ExportStudentBeanData>(str1);
+            if (!Iszhixing)
+            {
+                return listall;
+            }
             List<Sch_MarketView> old = this.GetListBySql<Sch_MarketView>(str2);
             listall.AddRange(this.LongrageDataToViewmodel(old));
             return listall;
