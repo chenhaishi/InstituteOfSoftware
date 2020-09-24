@@ -702,7 +702,61 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             return View();
         }
+        /// <summary>
+        /// 导出excel
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult DaoChuShuJu()
+        {
+            return null;
+        }
+        /// <summary>
+        /// 计算考试合格率
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult ExamPassRate(string Exam, string FenShu)
+        {
+            AjaxResult result = new AjaxResult();
+            string[] ary1 = FenShu.Split(',');
 
+
+            var list = ary1.ToList();
+
+            list.RemoveAt(ary1.Length - 1);
+            try
+            {
+                //获取参加这场考试的重修人员
+                var student = db_student.GetIQueryable().Where(d=>d.State == 2).FirstOrDefault().StudentNumber;
+                //List<StudentExamScoreView> scorelist = new List<StudentExamScoreView>();
+                var list1 = new List<TestScore>();
+                //查出这场考试的所有考生的分数
+                list1 = db_examScores.GetIQueryable().ToList().Where(d => d.Examination == int.Parse(Exam)).ToList();
+                var RenShu = 0;
+                for (int i = 0; i < list.Count; i++)
+                {
+                    if (Convert.ToInt32(Convert.ToDouble(list[i])) >= 60)
+                    {
+                        RenShu++;
+                    }
+                }
+                 var HeGe = ((decimal)RenShu / (decimal)list.Count() * 100).ToString();
+                //var HeGes = Math.Round(HeGe, 2);
+                var HeGes = HeGe.Substring(0, 4).ToString() + "%";
+               // var HeGe = 22.00 / 31.00;
+                result.ErrorCode = 200;
+                result.Msg = "成功";
+                result.Data = HeGes;
+            }
+            catch (Exception ex)
+            {
+                result.ErrorCode = 500;
+                result.Msg = "失败";
+                result.Data = null;
+            }
+            
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
         /// <summary>
         /// 成绩数据
         /// </summary>
@@ -736,7 +790,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 }
             }
 
-            var skiplist = list1.Skip((page - 1) * limit).Take(limit).ToList();
+            var skiplist = list1.ToList();
 
             foreach (var item in skiplist)
             {

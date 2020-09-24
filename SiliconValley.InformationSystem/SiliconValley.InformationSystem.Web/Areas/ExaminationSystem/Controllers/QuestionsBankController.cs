@@ -654,7 +654,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
                 resultlist.Add(tempobj);
             }
-
+ 
             var obj = new {
 
                 code = 0,
