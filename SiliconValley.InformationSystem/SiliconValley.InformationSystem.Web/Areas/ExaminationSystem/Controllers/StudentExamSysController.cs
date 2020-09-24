@@ -57,11 +57,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             var student = studentInformationBusiness.StudentList().Where(d => d.StudentNumber == studentNumber).FirstOrDefault();
             ViewBag.student = student;
 
-
             GrandBusiness grandBusiness = new GrandBusiness();
             var grandlist = grandBusiness.AllGrand();
             ViewBag.grandlist = grandlist;
-
 
             List<ExamType> list = db_exam.allExamType();
 
@@ -84,6 +82,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             var levellist = db_exam.AllQuestionLevel();
             ViewBag.levellist = levellist;
+            //提供刷题类型,选择题/机试题
 
             return View();
         }
@@ -650,7 +649,72 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             return View();
         }
+        /// <summary>
+        /// 刷题数据
+        /// </summary>
+        /// <param name="examType">阶段</param>
+        /// <param name="kecheng">课程</param>
+        /// <param name="ShuaTiLeiXing">选择题解答题类型</param>
+        /// <param name="level">难度等级</param>
+        /// <returns></returns>
+        public ActionResult BrushAlltheQuestions(string examType, string kecheng,int ShuaTiLeiXing, string level)
+        {
+            AjaxResult result = new AjaxResult();
+            Examination examination = new Examination();
 
+            examination.ExamType = int.Parse(examType);
+            examination.ID = 0;
+            examination.PaperLevel = int.Parse(level);
+            try
+            {
+                if (ShuaTiLeiXing == 1)
+                {
+                    var questiondata = db_stuExam.ProductChoiceQuestion(examination, int.Parse(kecheng));
+
+
+                    var scores = db_stuExam.distributionScores(questiondata);
+
+                    var res = new
+                    {
+
+                        data = questiondata,
+                        scores = scores
+
+                    };
+
+
+                    result.ErrorCode = 200;
+                    result.Msg = "成功";
+                    result.Data = res;
+
+                }
+                else if (ShuaTiLeiXing == 2)
+                {
+                    var questiondata = db_stuExam.productAnswerQuestion(examination, int.Parse(kecheng));
+
+                    var scores = db_stuExam.distributionScores(questiondata);
+
+                    var res = new
+                    {
+
+                        data = questiondata,
+                        scores = scores
+
+                    };
+                    result.Data = res;
+                    result.Msg = "成功";
+                    result.ErrorCode = 200;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                result.ErrorCode = 500;
+                result.Msg = "失败";
+                result.Data = null;
+            }            
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
         /// <summary>
         /// 模拟选择题数据
         /// </summary>
@@ -696,7 +760,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             return Json(result, JsonRequestBehavior.AllowGet);
         }
-
+        //模拟解答题数据
         public ActionResult MockAnswerquestiondata(string examType, string kecheng, string level)
         {
             AjaxResult result = new AjaxResult();
