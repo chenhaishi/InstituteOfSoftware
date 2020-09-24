@@ -14,14 +14,20 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "RoomPerformance")]
+    //课堂表现
     public partial class RoomPerformance
     {
         [Key]
         public int Id { get; set; }
+        //教室id
         public Nullable<int> Classroom_Id { get; set; }
+        //班级编号
         public string ClassNumber { get; set; }
+        //教室id
         public Nullable<int> Cla_Id { get; set; }
+        //是否删除
         public Nullable<bool> IsDelete { get; set; }
+        //添加时间
         public Nullable<System.DateTime> Addtime { get; set; }
     
        

@@ -49,6 +49,10 @@
             height: 15px;
             line-height: 15px;
         } 
+
+        .DisplayCss{
+        display:none;
+        }
     </style>
 }
 
@@ -152,13 +156,15 @@
             if (@ViewBag.isjiaowu == 1)
             {
                 <button class="layui-btn layui-btn-sm" lay-event="getCheckData_changeIsdelete"> <i class="layui-icon">&#xe624;</i>批量审核</button>
+                <button class="layui-btn layui-btn-sm" lay-event="Sys_ShenHe"> <i class="layui-icon">&#xe624;</i>系统审核</button>
             }
             else
             {
                 <div class="layui-btn-container">
-                    <button class="layui-btn layui-btn-sm" lay-event="getCheckData_week"> <i class="layui-icon">&#xe624;</i>安排值班</button>
+                    <button class="layui-btn layui-btn-sm" lay-event="getCheckData_week"> <i class="layui-icon">&#xe624;</i>手动安排值班</button>
+                    <button class="layui-btn layui-btn-sm" lay-event="ExcelInfo"> <i class="layui-icon">&#xe624;</i>Excel导入值班数据</button>
                     @*<button class="layui-btn layui-btn-sm" lay-event="getCheckData_time"> <i class="layui-icon">&#xe642;</i>修改值班日期</button>
-                    <button class="layui-btn layui-btn-sm" lay-event="getCheckChange_time"> <i class="layui-icon">&#xe642;</i>延迟、提前值班日期</button>*@
+                      <button class="layui-btn layui-btn-sm" lay-event="getCheckChange_time"> <i class="layui-icon">&#xe642;</i>延迟、提前值班日期</button>*@
                 </div>
             }
         }
@@ -171,7 +177,23 @@
     </script>
 
 
+    <div class="DisplayCss" id="SysDiv">
+        <form class="layui-form" lay-filter="SysForm" style="margin-top:40px;">
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                    <label class="LableCss1">值班日期:</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="Month" name="Month" class="layui-input" lay-verify="required"/>
+                    </div>
+                </div>
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md6" style="text-align:center">
+                    <button class="layui-btn" lay-submit lay-filter="SysYes">提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
 
+    <script src="~/Scripts/Tangmin_CssAndJs/com_js/MyOrther_tangmin.js"></script>
     <script>
         ///班主任模糊查询数据
         function Sercher() {
@@ -208,6 +230,7 @@
         }
         var ids = "";
         var IsAll = false;
+        var Sysindex = 0;
         function EditDateFunction(date) {
             var new_data = { "time": date, "ids": ids, "IsAll": IsAll };
             if (IsAll == true) {
@@ -247,7 +270,8 @@
                 }
             });
         }
-        layui.use(['table', 'element', 'laydate','form'], function () {
+
+        layui.use(['table', 'element', 'laydate', 'form'], function () {
             var table = layui.table;
             var layer = layui.layer;
             var element = layui.element;
@@ -256,6 +280,12 @@
             laydate.render({
                 elem: '#starTime'
                 , trigger: 'click' //采用click弹出
+            });
+
+            laydate.render({
+                elem: '#Month',
+                type: 'month',
+                trigger:'click'
             });
 
             //自定义事件
@@ -290,7 +320,7 @@
                     , limit: 20
                 });
             } else {
-                table.render({
+                 table.render({
                     elem: '#headmaster_table'
                     , url: '/Educational/TeacherNight/GetClassMasterFunction'
                     , toolbar: '#toolbarDemo_Night' //开启头部工具栏，并为其绑定左侧模板
@@ -413,7 +443,28 @@
                         }
 
                         break;
-
+                    case 'ExcelInfo':
+                        layer.open({
+                            type: 2,
+                            content: '/Educational/TeacherNight/ExcelIntoView'
+                            , area: ['800px', '500px'],
+                            title: 'Excel值班数据导入页面'
+                            , shade: 0.8
+                            , anim: 4
+                            , skin: 'demo-class'
+                        });
+                        break;
+                    case 'Sys_ShenHe':
+                  Sysindex= layer.open({
+                            type: 1,
+                            area: ['500px', '300px'],
+                            title: '系统审核数据',
+                            shade: 0.8,
+                            anim: 4, 
+                            skin: 'demo-class',
+                            content: $('#SysDiv')
+                        });
+                        break;
                 };
             });
 
@@ -478,6 +529,56 @@
                         }
                     });
                 }
+            });
+
+            form.on('submit(SysYes)', function (data) {
+                var myindexs = layer.load(1);
+                $.ajax({
+                    url: '/Educational/TeacherNight/SysSheHe',
+                    data: { "Month": $("#Month").val() },
+                    success: function (res) {
+                        layer.close(myindexs);
+                        if (res.ErrorCode == 405) {
+                            //异常
+                            layer.msg(res.Msg, { icon: 2 });
+                        } else if (res.ErrorCode == 200) {
+                            //全部审核完毕
+                            layer.msg(res.Msg, { icon: 1 });
+                        } else if (res.ErrorCode == 505) {
+                            //有未审核的数据
+                            layer.confirm("有系统无法识别的值班数据,需要下载查看吗?", function (index) {
+                                //下载
+                                let str = "系统未识别的值班数据" + `\n`;
+
+                                //增加\t为了不让表格显示科学计数法或者其他格式
+                                for (let i = -1; i < res.Data.length; i++) {
+                                    if (i == -1) {
+                                        str += `姓名\t,值班类型\t,值班日期\t,未审核原因\t`;
+                                    } else {
+                                        str += '' + res.Data[i].Tearcher_Id + '\t,' + res.Data[i].Rmark + '\t,' + TimeChange(res.Data[i].OrwatchDate) + '\t,' + res.Data[i].OnByReak + '\t';
+                                    }
+
+                                    str += '\n';
+                                }
+
+                                //encodeURIComponent解决中文乱码
+                                let uri = 'data:text/csv;charset=utf-8,\ufeff' + encodeURIComponent(str);
+                                //通过创建a标签实现
+                                var link = document.createElement("a");
+                                link.href = uri;
+                                //对下载的文件命名
+                                link.download = "值班未通过数据.xls";
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+                                layer.close(Sysindex);
+                                layer.close(index);
+                                
+                            });       
+                        }
+                    }
+                });
+                return false;  
             });
         });
     </script>

@@ -14,14 +14,20 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table("CheckGoods")]
+    //盘点物品
     public partial class CheckGoods
     {
         [Key]
         public int Id { get; set; }
+        //盘点id
         public Nullable<int> Check_Id { get; set; }
+        //物品id
         public Nullable<int> Goods_Id { get; set; }
+        //物品个数
         public Nullable<int> GoodsCount { get; set; }
+        //备注
         public string Rmark { get; set; }
+        //是否删除
         public Nullable<bool> IsDelete { get; set; }
     }
 }

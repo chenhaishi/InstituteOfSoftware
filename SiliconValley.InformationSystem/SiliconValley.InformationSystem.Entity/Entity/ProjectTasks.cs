@@ -14,17 +14,25 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "ProjectTasks")]
+    //学员项目任务
     public partial class ProjectTasks
     {
 
         [Key]
         public int ProjectID { get; set; }
+        //指导老师
         public Nullable<int> Tutor { get; set; }
+        //项目名称
         public string ProjectName { get; set; }
+        //时间
         public Nullable<System.DateTime> BeginDate { get; set; }
+        //是否删除
         public Nullable<bool> IsDel { get; set; }
+        //备注
         public string Remark { get; set; }
+        //项目类型
         public Nullable<int> ProjectType { get; set; }
+        //组长
         public string StudentNO { get; set; }
 
         public bool IsStop { get; set; }  //项目是已经终止开发

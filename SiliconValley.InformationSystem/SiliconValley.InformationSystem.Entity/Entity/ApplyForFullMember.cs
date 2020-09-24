@@ -14,15 +14,23 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table("ApplyForFullMember")]
+    //转正申请
     public partial class ApplyForFullMember
     {
+       
         [Key]
         public int Id { get; set; }
+        //员工编号
         public string EmployeeId { get; set; }
+        //是否购买社保
         public Nullable<bool> IsBuySS { get; set; }
+        //试用期结束时
         public Nullable<System.DateTime> ProbationEndDate { get; set; }
+        //试用期个人总结
         public string ProbationPersonalSummary { get; set; }
+        //申请时间
         public Nullable<System.DateTime> ApplicationDate { get; set; }
+        //是否删除
         public Nullable<bool> IsPass { get; set; }
         public Nullable<bool> IsApproval { get; set; }
     }

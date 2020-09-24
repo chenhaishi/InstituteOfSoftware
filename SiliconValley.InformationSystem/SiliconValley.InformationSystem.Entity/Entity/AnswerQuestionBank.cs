@@ -14,16 +14,25 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table("AnswerQuestionBank")]
+    //解答题题库表
     public partial class AnswerQuestionBank
     {
        [Key]
+
         public int ID { get; set; }
+        //题目
         public string Title { get; set; }
+        //参考答案
         public string ReferenceAnswer { get; set; }
+        //所属课程
         public Nullable<int> Course { get; set; }
+        //命题者
         public Nullable<int> Proposition { get; set; }
+        //题目难度
         public Nullable<int> Level { get; set; }
+        //是否启用
         public Nullable<bool> IsUsing { get; set; }
+        //备注
         public string Remark { get; set; }
         public Nullable<DateTime> PropositionDate { get; set; }
 

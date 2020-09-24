@@ -57,7 +57,7 @@
 
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label">异动类型:</label>
-                        <div class="layui-input-block">
+                        <div class="layui-input-block"  style="width:200px;">
                             <select id="TransactionType" name="TransactionType" lay-filter="myform">
                                 <option value="-1">请选择类型</option>
                                 @foreach (var item in ViewBag.etrType as List<MoveType>)
@@ -72,21 +72,21 @@
                 <div class="layui-row layui-form-item">
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label">异动时间:</label>
-                        <div class="layui-input-block">
+                        <div class="layui-input-block"  style="width:200px;">
                             @Html.TextBoxFor(a => a.TransactionTime, new Dictionary<string, object>() { { "class", "layui-input" }, { "lay-verify", "required" } })
                         </div>
                     </div>
 
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                        <label class="layui-form-label">原因:</label>
-                        <div class="layui-input-block">
+                        <label class="layui-form-label">原&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;因:</label>
+                        <div class="layui-input-block"  style="width:200px;">
                             @Html.TextBoxFor(a => a.Reason, new Dictionary<string, object>() { { "class", "layui-input" } })
                         </div>
                     </div>
                 </div>
 
                 <div class="layui-row layui-form-item">
-                    <label class="layui-form-label">备注:</label>
+                    <label class="layui-form-label">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注:</label>
                     <div class="layui-input-block">
                         @Html.TextAreaFor(a => a.Remark, new Dictionary<string, object>() { { "class", "layui-input linu" } })
                     </div>
@@ -97,14 +97,14 @@
                     <input type="hidden" id="PreviousDept" name="PreviousDept" class="layui-input" />
                     <div class="layui-row layui-form-item">
                         <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                            <label class="layui-form-label">现部门:</label>
+                            <label class="layui-form-label">现&nbsp;&nbsp;&nbsp;部&nbsp;&nbsp;&nbsp;门:</label>
                             <div class="layui-input-block">
                                 <input type="text" id="Depart" name="Depart" class="layui-input" style="border:0px" readonly />
                             </div>
                         </div>
 
                         <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                            <label class="layui-form-label">现岗位:</label>
+                            <label class="layui-form-label">现&nbsp;&nbsp;&nbsp;岗&nbsp;&nbsp;&nbsp;位:</label>
                             <div class="layui-input-block">
                                 <input type="text" id="Position" name="Position" class="layui-input" style="border:0px" readonly />
                             </div>
@@ -113,32 +113,66 @@
 
                     <div class="layui-row layui-form-item">
                         <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                            <label class="layui-form-label">现工资标准:</label>
+                            <label class="layui-form-label">现转正时间:</label>
+                            <div class="layui-input-block">
+                                @Html.TextBoxFor(a => a.BeforePositiveDate, new Dictionary<string, object>() { { "style", "border:0px" }, { "readonly", "true" }, { "class", "layui-input" } })
+                            </div>
+                        </div>
+                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                            <label class="layui-form-label">现实习工资:</label>
+                            <div class="layui-input-block">
+                                @Html.TextBoxFor(a => a.PreviousInternshipSalary, new Dictionary<string, object>() { { "style", "border:0px" }, { "readonly", "true" }, { "class", "layui-input" } })
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="layui-row layui-form-item">
+                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                            <label class="layui-form-label">现正式工资:</label>
                             <div class="layui-input-block">
                                 @Html.TextBoxFor(a => a.PreviousSalary, new Dictionary<string, object>() { { "style", "border:0px" }, { "readonly", "true" }, { "class", "layui-input" } })
                             </div>
                         </div>
 
                         <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                            <label class="layui-form-label">拟转部门:</label>
-                            <div class="layui-input-block">
+                            <label class="layui-form-label">拟&nbsp;转&nbsp;部&nbsp;门:</label>
+                            <div class="layui-input-block"   style="width:200px;">
                                 <select name="PresentDept" id="PresentDept" style="width:130px;" lay-filter="deptidfilter" lay-search=""></select>
                             </div>
                         </div>
+
                     </div>
 
                     <div class="layui-row layui-form-item">
                         <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                            <label class="layui-form-label">拟转岗位:</label>
-                            <div class="layui-input-block">
+                            <label class="layui-form-label">拟&nbsp;转&nbsp;岗&nbsp;位:</label>
+                            <div class="layui-input-block"  style="width:200px;">
                                 <select name="PresentPosition" id="PresentPosition" lay-search=""></select>
                             </div>
                         </div>
 
                         <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                            <label class="layui-form-label">转岗后工资:</label>
-                            <div class="layui-input-block">
-                                @Html.TextBoxFor(a => a.PresentSalary, new Dictionary<string, object>() { { "class", "layui-input" } })
+                            <label class="layui-form-label" style="width:200px;margin-left:-120px;">拟转后转正时间:</label>
+                            <div class="layui-input-block"  style="width:200px;">
+                                @Html.TextBoxFor(a => a.AfterPositiveDate, new Dictionary<string, object>() { { "class", "layui-input" } })
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="layui-row layui-form-item">
+                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                            <label class="layui-form-label" style="width:200px;margin-left:-120px;">拟转后实习工资:</label>
+                            <div class="layui-input-block"  style="width:200px;">
+                                @Html.TextBoxFor(a => a.PresentInternshipSalary, new Dictionary<string, object>() { { "class", "layui-input" } })
+                            </div>
+                        </div>
+
+                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                            <label class="layui-form-label" style="width:200px;margin-left:-120px;">拟转后正式工资:</label>
+                            <div class="layui-input-block"  style="width:200px;">
+                                @Html.TextBoxFor(a => a.PresentSalary, new Dictionary<string, object>() { { "class", "layui-input" }, { "lay-verify", "required" } })
                             </div>
                         </div>
                     </div>
@@ -183,7 +217,7 @@
                     <div class="layui-row layui-form-item">
                         <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                             <label class="layui-form-label" style="margin-left:-40px;width:120px">续签后起始日期:</label>
-                            <div class="layui-input-block">
+                            <div class="layui-input-block" style="width:300px"> 
                                 @Html.TextBoxFor(a => a.AfterContractStartTime, new Dictionary<string, object>() { { "class", "layui-input" } })
                             </div>
                         </div>
@@ -245,7 +279,9 @@
                     }
                 }
             });//合同终止时间
-
+            laydate.render({
+                elem: '#AfterPositiveDate',
+            });//拟转后转正时间
 
             $("#iconbtn").click(function () {
                 var type = $("#TransactionType").val();
@@ -297,13 +333,15 @@
 
             //添加异动信息提交
             form.on('submit(demo1)', function (data) {
-                console.log("加薪前工资：" + data.field.salaryBefore);
-                if (data.field.Raiselimit != "") {
-                    data.field.PresentSalary = parseFloat(data.field.salaryBefore) + parseFloat(data.field.Raiselimit);
-                    console.log("加薪后工资：" + data.field.PresentSalary);
+                var loadindex = layer.load(1);
+                var newsalary = parseFloat(data.field.salaryBefore) + parseFloat(data.field.Raiselimit);
+                if (data.field.BeforePositiveDate != "") {
+                    data.field.PresentSalary = newsalary ;
+                } else {
+                    data.field.PresentInternshipSalary = newsalary ;
                 }
                 $.post("/Personnelmatters/EmpTransactionRecord/AddEtrInfo", data.field, function (data) {
-
+                    layer.close(loadindex);
                     if (data.Success) {
                         layer.alert("添加成功!", { icon: 1 }, function () {
                             var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
@@ -334,18 +372,19 @@
             $("#PreviousPosition").val(Itemnames.PositionId);
             $("#Depart").val(Itemnames.Depart);
             $("#Position").val(Itemnames.Position);
-            if (Itemnames.PositiveDate == null) {
-                $("#PreviousSalary").val(Itemnames.ProbationSalary);
+            $("#BeforePositiveDate").val(GetYMD(Itemnames.PositiveDate));
+            $("#PreviousInternshipSalary").val(Itemnames.ProbationSalary);
+            $("#PreviousSalary").val(Itemnames.Salary);
+            if (Itemnames.PositiveDate == null) {           
                 $("#salaryBefore").val(Itemnames.ProbationSalary);
             } else {
-                $("#PreviousSalary").val(Itemnames.Salary);
                 $("#salaryBefore").val(Itemnames.Salary);
             }
             $("#BeforeContractStartTime").val(GetYMD(Itemnames.ContractStartTime));
             $("#BeforeContractEndTime").val(GetYMD(Itemnames.ContractEndTime));
 
-            console.log("现工资：" + $("#PreviousSalary").val());
-            console.log("现工资2：" + $("#salaryBefore").val());
+            //console.log("现工资：" + $("#PreviousSalary").val());
+            //console.log("现工资2：" + $("#salaryBefore").val());
         }
 
     </script>

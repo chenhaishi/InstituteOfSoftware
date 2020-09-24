@@ -14,16 +14,23 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "InStock")]
+    //入库
     public partial class InStock
     {
 
         [Key]
         public int Id { get; set; }
+        //盘点id
         public Nullable<int> Check_ID { get; set; }
+        //操作人id
         public string Eyee_Id { get; set; }
+        //入库时间
         public Nullable<System.DateTime> InTime { get; set; }
+        //入库状态
         public string InStockState { get; set; }
+        //备注
         public string Rmark { get; set; }
+        //是否删除
         public Nullable<bool> IsDelete { get; set; }
 
 

@@ -116,7 +116,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
         //获取学员信息
         public ActionResult GetDate(int page, int limit, string Name, string Sex, string StudentNumber, string identitydocument)
         {
-            return Json(dbtext.GetDate(page, limit, Name, Sex, StudentNumber, identitydocument),JsonRequestBehavior.AllowGet);
+             return Json(dbtext.GetDate(page, limit, Name, Sex, StudentNumber, identitydocument),JsonRequestBehavior.AllowGet);
         }
        
         //学员学费数据加载
@@ -457,7 +457,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
         {
             return Json(dbtext.Tuitionentry(id, whether, OddNumbers, paymentmethod), JsonRequestBehavior.AllowGet);
         }
-
         StudentDataKeepAndRecordBusiness stuDataKeepAndRecordBusiness = new StudentDataKeepAndRecordBusiness();
         /// <summary>
         /// 缴纳预入费页面

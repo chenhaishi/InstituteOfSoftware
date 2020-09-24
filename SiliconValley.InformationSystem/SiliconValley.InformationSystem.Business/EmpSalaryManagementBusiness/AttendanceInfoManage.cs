@@ -15,6 +15,8 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
     using NPOI.XSSF.UserModel;
     using SiliconValley.InformationSystem.Entity.ViewEntity.SalaryView;
     using SiliconValley.InformationSystem.Business.EmployeesBusiness;
+    using SiliconValley.InformationSystem.Entity.ViewEntity;
+
     public class AttendanceInfoManage : BaseBusiness<AttendanceInfo>
     {
         RedisCache rc = new RedisCache();
@@ -145,63 +147,57 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     if (getrow == null)
                     {
                         break;
-                    } 
+                    }
                     //姓名[0]
                     string name = getrow.GetCell(0).StringCellValue;
                     //工号(钉钉号)[1]
-                    string ddid = getrow.GetCell(1).StringCellValue;
+                    string ddid = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(1))) ? null : getrow.GetCell(1).ToString();
                     //到勤天数[2]
                     string workeddays = getrow.GetCell(2).NumericCellValue.ToString();
-                  
+
                     //迟到次数[5]
-                    string tardyNum = getrow.GetCell(5) == null ? null : getrow.GetCell(5).NumericCellValue.ToString();
+                    string tardyNum = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(5))) ? null : getrow.GetCell(5).ToString();
                     //早退次数[10]
-                    string leaveEarlyNum = getrow.GetCell(10) == null ? null : getrow.GetCell(10).NumericCellValue.ToString();
+                    string leaveEarlyNum = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(10))) ? null : getrow.GetCell(10).ToString();
                     //上班缺卡次数[12]
-                    string workAbsentNum = getrow.GetCell(12) == null ? null : getrow.GetCell(12).NumericCellValue.ToString();
+                    string workAbsentNum = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(12))) ? null : getrow.GetCell(12).ToString();
                     //下班缺卡次数[13]
-                    string offDutyAbsentNum = getrow.GetCell(13) == null ? null : getrow.GetCell(13).NumericCellValue.ToString();
+                    string offDutyAbsentNum = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(13))) ? null : getrow.GetCell(13).ToString();
 
                     //请假天数
-                    string leaveddays = getrow.GetCell(18) == null ? null : getrow.GetCell(18).NumericCellValue.ToString();
+                    string leaveddays = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(18))) ? null : getrow.GetCell(18).ToString();
                     //请假记录
                     string leaveRecord = "";
 
                     //迟到记录[5]
-                    string tardyRecord="" /*= getrow.GetCell(9) == null ? null : getrow.GetCell(9).StringCellValue*/;
+                    string tardyRecord = "" /*= getrow.GetCell(9) == null ? null : getrow.GetCell(9).StringCellValue*/;
                     //早退记录
                     string leaveEarlyRecord = "";
                     //上班缺卡记录
                     string workAbsentRecord = "";
                     //下班缺卡记录
                     string OffDutyAbsentRecord = "";
-                    //迟到扣款
-                    //string tardyWithhold ="";
+                    //加班记录
+                    string OvertTimeRecord = "";
+                    //调休记录
+                    string DaysoffRecord = "";
+                    //旷工记录
+                    string AbsenteeismRecord = "";
+
                     //这些付款都是在员工工资表
                     MonthlySalaryRecordManage msrmanage = new MonthlySalaryRecordManage();
             
                     int cells = 24;
                     while (true)
-                    {
+                    {//(循环拿到日期列数据)
                         var getcell = getrow.GetCell(cells);
                         if (getcell == null)
                         {                            
                             break;
                         }
-                        var titlerow= sheet.GetRow(2);//表头行
-                        var title = titlerow.GetCell(cells).StringCellValue;
-                        if (cells==0) {
-                            title = "1";
-                        }
-                        var pretitle = titlerow.GetCell(cells - 1).StringCellValue;
-                        if (title == "六")
-                        {
-                            title =(Convert.ToInt32(pretitle) + 1).ToString();
-                        }
-                        if (title == "日")
-                        {
-                            title = pretitle + 2;
-                        }
+                        var titlerow= sheet.GetRow(2);//表头行（日期）
+                        var title = cells-23;
+                      
                         if (getcell.StringCellValue.Contains("迟到"))
                         {
                             tardyRecord += title + "号," + getcell.StringCellValue + ";";
@@ -218,9 +214,15 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                             OffDutyAbsentRecord += title + "号," + getcell.StringCellValue + ";";
                         }
                         else if (getcell.StringCellValue.Contains("事假")) {
-                            leaveRecord +=  getcell.StringCellValue + ";";
-                        }            
-
+                            leaveRecord += getcell.StringCellValue + ";";
+                        } else if (getcell.StringCellValue.Contains("加班")) {
+                            OvertTimeRecord += getcell.StringCellValue + ";";
+                        } else if (getcell.StringCellValue.Contains("调休")) {
+                            DaysoffRecord += getcell.StringCellValue + ";";
+                        } else if (getcell.StringCellValue.Contains("旷工")) {
+                            AbsenteeismRecord += title + "号,"+ getcell.StringCellValue +";";
+                        }       
+                        
                         //迟到扣款
                         // string tardyWithhold = "";
                         //早退扣款
@@ -234,11 +236,12 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     // string remark = getrow.GetCell(14) == null ? null : getrow.GetCell(14).StringCellValue;
        
                     matd.YearAndMonth = Convert.ToDateTime(time);
-                   //matd.DeserveToRegularDays =Convert.ToDecimal(DeserveToRegularDays);
+                 //  matd.DeserveToRegularDays =Convert.ToDecimal(DeserveToRegularDays);
+
                     matd.EmpName = name;
                     matd.EmpDDid = Convert.ToInt32(ddid);
                     matd.ToRegularDays = Convert.ToInt32(workeddays);
-                    matd.LeaveDays = Convert.ToInt32(leaveddays);
+                    matd.LeaveDays = Convert.ToDecimal(leaveddays);
                     matd.LeaveRecord = leaveRecord; 
                     matd.WorkAbsentNum =Convert.ToInt32(workAbsentNum);
                     matd.WorkAbsentRecord = workAbsentRecord;
@@ -248,10 +251,12 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     matd.TardyRecord = tardyRecord;
                     matd.LeaveEarlyNum =Convert.ToInt32(leaveEarlyNum);
                     matd.LeaveEarlyRecord = leaveEarlyRecord;
+                    matd.OvertTimeRecord = OvertTimeRecord;
+                    matd.DaysoffRecord = DaysoffRecord;
+                    matd.AbsenteeismRecord = AbsenteeismRecord;
 
-                  
                     //matd.TardyWithhold =tardyWithhold==null?matd.TardyWithhold=null: Convert.ToInt32(tardyWithhold);
-                   
+
                     //matd.LeaveWithhold =leaveWithhold==null?matd.LeaveWithhold=null: Convert.ToInt32(leaveWithhold);
                     //matd.Remark = remark;
 
@@ -267,29 +272,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             return result;
 
         }
-
-        /// <summary>
-        /// 计算迟到扣款
-        /// </summary>
-        /// <param name="tardyRecord"></param>
-        /// <returns></returns>
-        public decimal GetTardyCount(string tardyRecord)
-        {
-            var str = tardyRecord.Split(';');
-            var result = 0;
-            int num = 0;
-            foreach (var item in str)
-            {
-                var tardy = item[num];
-             
-            }
-            return result;
-        }
-
-        //public decimal LeaveWithhold(string tardyRecord) {
-        //    var result = 0;
-        //    return result;
-        //}
+           
 
         /// <summary>
         /// 将excel数据类的数据存入到数据库的考勤表中
@@ -299,18 +282,33 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
         {
             EmployeesInfoManage empmanage = new EmployeesInfoManage();
             var ajaxresult = new AjaxResult();
+            List<AttendanceInfoErrorDataView> attdatalist = new List<AttendanceInfoErrorDataView>();
             try
             {
-
                 var mateviewlist = CreateExcelData(sheet);
+
+                //获取第一个人的出勤天数，将它设为默认的应出勤天数
+                var days = mateviewlist.FirstOrDefault().ToRegularDays;
                 foreach (var item in mateviewlist)
                 { 
                     AttendanceInfo atd = new AttendanceInfo();
-                    var emp = empmanage.GetEmpInfoData().Where(s => s.DDAppId == item.EmpDDid).FirstOrDefault();
+                    AttendanceInfoErrorDataView attview = new AttendanceInfoErrorDataView();
+                    if (!empmanage.DDidIsExist(item.EmpDDid))
+                    {//判断员工钉钉号是否为空
+                        attview.empname = item.EmpName;
+                        attview.errorExplain = "姓名是" + attview.empname + "的员工工号为空！";
+                        attdatalist.Add(attview);
+                    }
+                    else {
+
+                    var emp = empmanage.GetEmpByDDid(item.EmpDDid);
+                  
                     atd.EmployeeId = emp.EmployeeId;
                     atd.YearAndMonth = item.YearAndMonth;
-                    atd.DeserveToRegularDays = item.DeserveToRegularDays;
+                    atd.DeserveToRegularDays = days;
                     atd.ToRegularDays = item.ToRegularDays;
+
+                    atd.LeaveRecord = item.LeaveRecord;
                     atd.LeaveDays = item.LeaveDays;
                     atd.WorkAbsentNum = item.WorkAbsentNum;
                     atd.WorkAbsentRecord = item.WorkAbsentRecord;
@@ -320,10 +318,18 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     atd.TardyRecord = item.TardyRecord;
                     atd.LeaveEarlyNum = item.LeaveEarlyNum;
                     atd.LeaveEarlyRecord = item.LeaveEarlyRecord;
-                    atd.TardyWithhold = item.TardyWithhold;
-                    atd.LeaveWithhold = item.LeaveWithhold;
+
+                    atd.OvertTimeRecord = item.OvertTimeRecord;
+                    atd.OvertTimeDuration = item.OvertTimeDuration;
+                    atd.DaysoffRecord = item.DaysoffRecord;
+                    atd.DaysoffDuration = item.DaysoffDuration;
+                    atd.AbsenteeismRecord = item.AbsenteeismRecord;
+                    atd.AbsenteeismDays = item.AbsenteeismDays;
+
+                    //atd.TardyWithhold = item.TardyWithhold;
+                    //atd.LeaveWithhold = item.LeaveWithhold;
                     //统计总缺卡次(计算缺卡扣款,>3次则扣半天工资,见月度工资表）
-                    var AbsentNum = atd.WorkAbsentNum + atd.OffDutyAbsentNum;
+                    //var AbsentNum = atd.WorkAbsentNum + atd.OffDutyAbsentNum;
                     atd.Remark = item.Remark;
                     atd.IsDel = false;
                     atd.IsApproval = false;
@@ -333,7 +339,22 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                    ajaxresult.ErrorCode = 200;
                    ajaxresult.Msg = atd.YearAndMonth.ToString()+","+atd.DeserveToRegularDays;
                    ajaxresult.Data = mateviewlist.Count();
-                  
+
+                    }
+                }
+                if (mateviewlist.Count() - attdatalist.Count() == mateviewlist.Count())
+                {//说明没有出错数据，导入的数据全部添加成功
+                    ajaxresult.Success = true;
+                    ajaxresult.ErrorCode = 100;
+                    ajaxresult.Msg = mateviewlist.Count().ToString();
+                    ajaxresult.Data = attdatalist;
+                }
+                else
+                {//说明有出错数据，导入的数据条数就是导入的数据总数-错误数据总数
+                    ajaxresult.Success = true;
+                    ajaxresult.ErrorCode = 200;
+                    ajaxresult.Msg = (mateviewlist.Count() - attdatalist.Count()).ToString();
+                    ajaxresult.Data = attdatalist;
                 }
             }
             catch (Exception ex)
@@ -345,6 +366,31 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             }
             return ajaxresult;   
         }
-       
+
+        //public decimal GetAbsent
+
+        /// <summary>
+        /// 计算请假扣款
+        /// </summary>
+        /// <param name="tardyRecord"></param>
+        /// <returns></returns>
+        public decimal GetTardyCount(string tardyRecord)
+        {
+            var str = tardyRecord.Split(';');
+            var result = 0;
+            int num = 0;
+            foreach (var item in str)
+            {
+                var tardy = item[num];
+
+            }
+            return result;
+        }
+        //迟到扣款
+        public decimal TardyWithhold(string tardyRecord)
+        {
+            var result = 0;
+            return result;
+        }
     }
 }

@@ -1,0 +1,280 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>AddDataView</title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+
+    <style>
+        .hideCss
+        {
+            display: none;
+        }
+
+        .layui-textarea
+        {
+            width: 100%;
+            height: 38px;
+            border-radius: 5px;
+            min-height: 30px;
+        }
+
+        .LableCss1
+        {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            float: left;
+            display: block;
+            padding: 9px 15px;
+            width: 80px;
+            font-weight: 400;
+            line-height: 20px;
+            text-align: right
+        }
+        /*.layui-unselect
+        {
+            width: 100%;
+            border-radius: 5px;
+        }*/
+        .lin
+        {
+            width: 100%;
+        }
+
+        .iconCss
+        {
+            position: absolute;
+            right: 10px;
+            font-size: 30px;
+            top: 2px;
+            color: #009688;
+            cursor: pointer
+        }
+    </style>
+</head>
+<body>
+    <div style="width:95%;margin-top:40px;margin-left:auto;margin-right:auto">
+        <div id="hand_Div">
+            <form id="system_form" class="layui-form" lay-filter="hand_addview">
+                <div class="layui-row layui-form-item">
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                        <label class="LableCss1">值班类型:</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="type" title="值班" value="1" lay-filter="types" checked="checked" />
+                        </div>
+                    </div>
+
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                        <label class="LableCss1">日 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 期:</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="mytime" name="mytime" class="layui-input lin" />
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-row layui-form-item">
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                        <label class="LableCss1">阶 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 段:</label>
+                        <div class="layui-input-block">
+                            @Html.DropDownList("sle_grand", ViewBag.myclass as IEnumerable<SelectListItem>, new Dictionary<string, object>() { { "class", "layui-select" }, { "lay-filter", "sle_grand" } })
+                        </div>
+                    </div>
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                        <label class="LableCss1">班 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 级:</label>
+                        <div class="layui-input-block" id="myclass">
+                            <select class="layui-select"><option>--请选择阶段--</option></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-row layui-form-item">
+                    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                        <label class="LableCss1">时&nbsp;间&nbsp;段:</label>
+                        <div class="layui-input-block" id="TimenameDiv">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-row layui-form-item">
+                    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                        <label class="LableCss1">模糊查找:</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="Teache_Ser" name="Teache_Ser" class="layui-input" /><icon id="iconMy" class="layui-icon iconCss">&#xe615;</icon>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-row layui-form-item">
+                    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                        <label class="LableCss1">值班老师:</label>
+                        <div class="layui-input-block" id="teachDiv">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-row layui-form-item">
+                    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                        <label class="LableCss1">说 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 明:</label>
+                        <div class="layui-input-block">
+                            <textarea name="ramke" id="ramke" class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-row layui-form-item">
+                    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12" style="text-align:center;margin-top:30px;">
+                        <button type="submit" class="layui-btn" lay-submit="" lay-filter="handBtn">点击安排</button>
+                        <button id="btn1" type="button" class="layui-btn">取消关闭</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/layui/layui.js"></script>
+    <script>
+        $(function () {
+            var form;
+            var tree;
+            var layer;
+            layui.use(['form', 'laydate', 'tree'], function () {
+                 form= layui.form;
+                 laydate = layui.laydate;
+                 tree = layui.tree;
+                 layer = layui.layer;
+                laydate.render({
+                    elem: '#mytime'
+                    , trigger: 'click'
+
+                });
+
+                form.render();
+
+
+                //监听（手动安排)提交
+                form.on('submit(handBtn)', function (data) {
+                    var cur = "";
+                    $('input[name="curd_name"]:checked').each(function (num, ele) {
+                        cur += $(ele).val() + ",";
+                    });
+                    if (data.field.mytime.length == 0) {
+                        layer.msg('日期必填', { icon: 2 });
+                    } else if (data.field.Teacherid == undefined || data.field.Teacherid == null) {
+                        layer.msg('请选择值班老师', { icon: 2 });
+                    } else if (data.field.classShdule_sele == "0") {
+                        layer.msg('请选择班级', { icon: 2 });
+                    } else if (cur.length<=0) {
+                        layer.msg('请选择时间段', { icon: 2 });
+                    }
+                    else {
+                        var index = layer.load(1);
+                        data.field.evnings = cur;
+                        $.ajax({
+                            url: '/Educational/TeacherAddorBeonDuty/HandAnpaiFunction',
+                            data: data.field,
+                            type: 'POST',
+                            success: function (sudata) {
+                                layer.close(index);
+                                if (sudata.Success == false) {
+                                    layer.msg(sudata.Msg, { icon: 2 });
+                                } else {
+                                    layer.msg('操作成功', { icon: 1, shade: 0.8 }, function () {
+                                        window.parent.TableFulsh();
+                                        Myclose();
+                                    });
+                                }
+                            }
+                        });
+                    }
+                    return false;
+                });
+
+                //监听班级点击事件
+                form.on('select(classselect)', function (data) {
+                    var time = $("#mytime").val();
+                    if (time.length <= 0) {
+                        layer.msg("请选择值班日期!!", { icon: 2 });
+                    } else {
+                        var ind = layer.load(1);
+                        $.ajax({
+                            url: '/Educational/TeacherAddorBeonDuty/GetClassData',
+                            type: 'POST',
+                            data: { "classid": data.value, "date": time },
+                            success: function (suc) {
+                                layer.close(ind);
+                                if (suc.Success == false) {
+                                    layer.msg(suc.Msg, { icon: 2 });
+                                } else {
+                                    $("#TimenameDiv")[0].innerHTML = "";
+                                    for (var i = 0; i < suc.Data.length; i++) {
+                                        $('<input type="checkbox" name="curd_name" value="' + suc.Data[i].id + '" title="' + suc.Data[i].curd_name + '">').appendTo($("#TimenameDiv"))
+                                    }
+                                    form.render();
+                                }
+
+                            }
+                        });
+                    }
+
+                });
+
+                //获取班级
+                form.on('select(sle_grand)', function (data) {
+                    $("#myclass")[0].innerHTML = "";//清空班级DIV
+                    if (data.value != "0") {
+                        $.ajax({
+                            url: '/Educational/Reconcile/GetClassScheduleSelect/' + data.value,
+                            success: function (sudata) {
+                                //获取班级slect
+                                var classselect = $('<select id="class_select" name="class_select" class="layui-select" lay-filter="classselect"><option value="0" selected>--请选择--</select>');
+                                for (var i = 0; i < sudata.length; i++) {
+                                    $('<option value=' + sudata[i].id + '>' + sudata[i].ClassNumber + '<option>').appendTo(classselect);
+                                }
+                                $("#myclass").append(classselect);
+                                form.render(); //更新全部
+                            }
+                        });
+                    } else {
+                        var classselect = $('<select id="class_select" name="class_select" class="layui-select" lay-filter="classselect"><option value="0" selected>--请阶段--</select>');
+                    }
+                });
+            })
+            //关闭弹出层
+            $("#btn1").click(function () {
+                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                parent.layer.close(index); //再执行关闭
+            });
+             //获取教员
+            $("#iconMy").click(function () {
+                var Teache_Ser = $("#Teache_Ser").val();
+                if (Teache_Ser.length <= 0) {
+                    layer.msg('请输入教员姓名！');
+                } else {
+                   var ddinde= layer.load(1);
+                    $.ajax({
+                        url: '/Educational/TeacherNight/TeacherSerch',
+                        data: { "teachername": Teache_Ser },
+                        type: 'POST',
+                        success: function (sucdata) {
+                            $("#teachDiv")[0].innerHTML = "";
+                            for (var i = 0; i < sucdata.Data.length; i++) {
+                                $('<input type="radio" name="Teacherid" value="' + sucdata.Data[i].Value + '" title="' + sucdata.Data[i].Text + '">').appendTo($("#teachDiv"));
+                            }
+                            layer.close(ddinde);
+                            form.render();
+                        }
+                    });
+                }
+            });
+        });
+
+
+
+    </script>
+</body>
+</html>

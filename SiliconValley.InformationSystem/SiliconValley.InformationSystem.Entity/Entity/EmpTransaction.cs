@@ -62,11 +62,11 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         /// </summary>
         public Nullable<bool> IsDel { get; set; }
         /// <summary>
-        /// 原来工资
+        /// 原正式工资
         /// </summary>
         public Nullable<decimal> PreviousSalary { get; set; }
         /// <summary>
-        /// 现在工资
+        /// 现正式工资
         /// </summary>
         public Nullable<decimal> PresentSalary { get; set; }
         /// <summary>
@@ -91,5 +91,25 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         /// 续签后合同终止时间
         /// </summary>
         public Nullable<System.DateTime> AfterContractEndTime { get; set; }
+       
+        
+        /// <summary>
+        /// 原转正时间
+        /// </summary>
+        public Nullable<System.DateTime> BeforePositiveDate { get; set; }
+      
+        /// <summary>
+        /// 异动后转正时间
+        /// </summary>
+        public Nullable<System.DateTime> AfterPositiveDate { get; set; }
+        /// <summary>
+        /// 原实习工资
+        /// </summary>
+        public Nullable<decimal> PreviousInternshipSalary { get; set; }
+
+        /// <summary>
+        /// 现实习工资
+        /// </summary>
+        public Nullable<decimal> PresentInternshipSalary { get; set; }
     }
 }

@@ -235,6 +235,28 @@ namespace SiliconValley.InformationSystem.Business.Cloudstorage_Business
 
         }
 
+        ///// <summary>
+        ///// 删除某个文件夹的所有文件
+        ///// </summary>
+        ///// <param name="FileName">文件</param>
+        ///// <returns></returns>
+        //public bool DeleteObject(string FileName)
+        //{
+        //    bool s = true;
+        //    try
+        //    {
+              
+        //         var client = this.BosClient();
+        //        client.DeleteBucket(FileName);
+        //    }
+        //    catch (Exception)
+        //    {
+        //        s = false;
+                
+        //    }
+
+        //    return s;
+        //}
         public string text(string bucketName,string objectName)
         {
             var client = this.BosClient();

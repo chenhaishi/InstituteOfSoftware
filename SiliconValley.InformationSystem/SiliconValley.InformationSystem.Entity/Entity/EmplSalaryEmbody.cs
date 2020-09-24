@@ -13,11 +13,10 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-
+    //员工工资体系表
     [Table(name: "EmplSalaryEmbody")]
     public partial class EmplSalaryEmbody
-    { 
-        [Key]
+    {  [Key] 
         public int Id { get; set; }
         public string EmployeeId { get; set; }
         public Nullable<decimal> BaseSalary { get; set; }//基本工资

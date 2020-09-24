@@ -14,15 +14,21 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "MaterialPriceList")]
+    //物质价格单
     public partial class MaterialPriceList
     {
 
         [Key]
         public int ID { get; set; }
+        //物资名字
         public string NameofMaterial { get; set; }
+        //单价
         public Nullable<decimal> UnitPrice { get; set; }
+        //备注
         public string Remarks { get; set; }
+        //是否禁用
         public Nullable<bool> IsDelete { get; set; }
+        //添加时间
         public Nullable<System.DateTime> Addtime { get; set; }
 
 

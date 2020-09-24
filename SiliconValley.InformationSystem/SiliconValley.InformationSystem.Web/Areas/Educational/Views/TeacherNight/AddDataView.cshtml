@@ -1,10 +1,8 @@
 ﻿
 @{
-                /**/
-
-                /**/
-
-                Layout = null;
+        /**/
+        /**/
+        Layout = null;
 }
 
 <!DOCTYPE html>
@@ -203,7 +201,7 @@
                     } else {
                         var ind = layer.load(1);
                         $.ajax({
-                            url: '/Educational/TeacherNight/GetClassData',
+                            url: '/Educational/TeacherAddorBeonDuty/GetClassData',
                             type: 'POST',
                             data: { "classid": data.value, "date": time },
                             success: function (suc) {

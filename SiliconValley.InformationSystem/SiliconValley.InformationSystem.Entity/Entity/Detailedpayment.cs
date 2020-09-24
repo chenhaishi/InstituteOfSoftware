@@ -15,13 +15,18 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations.Schema;
 
     [Table(name: "Detailedpayment")]
+    //缴费明细
     public partial class Detailedpayment
     {
         [Key]
         public int ID { get; set; }
+        //学员缴费id
         public Nullable<int> PayID { get; set; }
+        //费用价格id
         public Nullable<int> CostpriceID { get; set; }
+        //是否删除
         public Nullable<bool> Dateofregistration { get; set; }
+        //添加时间
         public Nullable<System.DateTime> Addtime { get; set; }
     
     }

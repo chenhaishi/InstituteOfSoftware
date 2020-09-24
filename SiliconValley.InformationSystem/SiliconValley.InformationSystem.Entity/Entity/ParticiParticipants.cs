@@ -14,13 +14,18 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "ParticiParticipants")]
+    //打架情况参加学员
     public partial class ParticiParticipants
     {
         [Key]
         public int ID { get; set; }
+        //学生学号
         public string StudentID { get; set; }
+        //名称
         public string Name { get; set; }
+        //原因
         public Nullable<int> Reason { get; set; }
+        //是否删除
         public Nullable<bool> Dateofregistration { get; set; }
         public string Remarks { get; set; }
     

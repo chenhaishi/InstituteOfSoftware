@@ -264,9 +264,13 @@
                             arry.splice(i,1);
                         }
                     }
-                    arry.sort(sortBy('nodeId'));
-                   jsfloorid = arry[0].nodeId;
-                   loadroom(jstungid, jsfloorid);
+                    if (arry.length > 0) {
+                        arry.sort(sortBy('nodeId'));
+                        jsfloorid = arry[0].nodeId;
+                    }
+                    
+                    
+                   //loadroom(jstungid, jsfloorid);
                 }
             })
             function sortBy(props) {
@@ -376,6 +380,7 @@
                 data: { TungID: tungid, FloorID: floorid },
                 datatype: 'json',
                 success: function (successdata) {
+                    console.log(successdata);
                     $("#rightroomlist").children().remove();
                      $("#leftroomlist").children().remove();
                     if (successdata.leftroom.length!=0) {
@@ -409,7 +414,7 @@
         }
 
         $(document).off("click", '.rommbtn').on('click', '.rommbtn', function () {
-
+            
             $("#caozuodiv").show();
             var roomid = $(this).attr("roomid");
             var roomtype = $(this).attr("roomtype");

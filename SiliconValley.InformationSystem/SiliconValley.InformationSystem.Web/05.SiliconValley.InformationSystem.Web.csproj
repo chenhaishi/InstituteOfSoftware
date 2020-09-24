@@ -314,6 +314,8 @@
     <Compile Include="Areas\Personnelmatters\Controllers\PerformanceAssessController.cs" />
     <Compile Include="Areas\Personnelmatters\Controllers\RecruitingDataSummaryController.cs" />
     <Compile Include="Areas\Personnelmatters\PersonnelmattersAreaRegistration.cs" />
+    <Compile Include="Areas\ReportForm\Controllers\ReportController.cs" />
+    <Compile Include="Areas\ReportForm\ReportFormAreaRegistration.cs" />
     <Compile Include="Areas\Studenteducation\Controllers\EducationController.cs" />
     <Compile Include="Areas\Studenteducation\StudenteducationAreaRegistration.cs" />
     <Compile Include="Areas\Teachingquality\Controllers\ClassScheduleController.cs" />
@@ -552,7 +554,9 @@
     <Content Include="Areas\Teaching\Scripts\Tdrag.js" />
     <Content Include="ClientRequestInfo.txt" />
     <Content Include="Config\Cost.xml" />
-    <Content Include="Config\ExamCourseconfig.xml" />
+    <Content Include="Config\ExamCourseconfig.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Config\questionLevelConfig.xml" />
     <Content Include="Content\Login\style.css" />
     <Content Include="Content\Login\weixincode.css" />
@@ -1550,6 +1554,7 @@
     <Content Include="uploadXLSXfile\SelfObtainRcoredImg\1908NA舒克.png" />
     <Content Include="uploadXLSXfile\SelfObtainRcoredImg\2002NA陈海石.png" />
     <Content Include="Xmlconfigure\HeadMasterNingth.xml" />
+    <Content Include="Xmlconfigure\Punch_the_clock.xml" />
     <Content Include="Xmlconfigure\Reconcile_XML.xml" />
     <Content Include="xmlfile\entxml.xml" />
     <Content Include="xmlfile\Pointsdeductionproject.xml" />
@@ -1908,6 +1913,12 @@
     <Content Include="Areas\Teachingquality\Views\Shared\errorClass.cshtml" />
     <Content Include="Areas\ExaminationSystem\Views\StudentExamSys\MachineTest.cshtml" />
     <Content Include="Areas\ExaminationSystem\Views\StudentExamSys\Brushthetopic.cshtml" />
+    <Content Include="Areas\ReportForm\Views\web.config" />
+    <Content Include="Areas\ReportForm\Views\Report\ReportIndex.cshtml" />
+    <Content Include="Areas\Educational\Views\TeacherAddorBeonDuty\AddDataView.cshtml" />
+    <Content Include="Areas\Market\Views\StudentDataKeep\Conflict.cshtml" />
+    <Content Include="Areas\Educational\Views\TeacherAddorBeonDuty\TableInsert.cshtml" />
+    <Content Include="Areas\Educational\Views\TeacherNight\ExcelIntoView.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
@@ -1918,6 +1929,9 @@
     <Content Include="Scripts\dtree2.5.4\layui_ext\dtree\font\dtreefont.ttf" />
     <Content Include="Scripts\dtree2.5.4\layui_ext\dtree\font\dtreefont.woff" />
     <Content Include="Scripts\dtree2.5.4\layui_ext\dtree\font\icons.json" />
+    <None Include="Properties\PublishProfiles\FolderProfile2.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile3.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile4.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\business\requestbusiness.js" />
     <Content Include="Scripts\config.js" />
@@ -3513,7 +3527,6 @@
     <Content Include="uploadXLSXfile\Template\Excle模板.xls~HEAD" />
     <Content Include="uploadXLSXfile\Template\Excle模板.xls~zhonglunpan" />
     <Content Include="uploadXLSXfile\Sheet1.xlsx" />
-    <Content Include="uploadXLSXfile\湖南硅谷云教育科技有限公司_考勤报表_20191101-20191130%281%29.xlsx" />
     <Content Include="Views\Home\rtest.cshtml" />
     <Content Include="Views\Student\Index.cshtml" />
     <Content Include="Scripts\live2d\assets\flat-ui-icons-regular.eot" />
@@ -3601,6 +3614,9 @@
     <Content Include="uploadXLSXfile\ConsultUploadfile\ExportAll\20200606082337.xls" />
     <Content Include="Views\Home\IdCard.cshtml" />
     <Content Include="Views\Home\Scores.cshtml" />
+    <Content Include="uploadXLSXfile\ConsultUploadfile\Kaoqin\kaoqin.xlsx" />
+    <Content Include="uploadXLSXfile\Zhiban\学生作弊名单.xlsx" />
+    <Content Include="uploadXLSXfile\Zhiban\班主任值班模板.xlsx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -3640,6 +3656,8 @@
     <Folder Include="Areas\OrThert\Views\TMorther\" />
     <Folder Include="Areas\Personnelmatters\Models\" />
     <Folder Include="Areas\Personnelmatters\Views\Shared\" />
+    <Folder Include="Areas\ReportForm\Models\" />
+    <Folder Include="Areas\ReportForm\Views\Shared\" />
     <Folder Include="Areas\Studenteducation\Models\" />
     <Folder Include="Areas\Studenteducation\Views\Education\" />
     <Folder Include="Areas\Studenteducation\Views\Shared\" />

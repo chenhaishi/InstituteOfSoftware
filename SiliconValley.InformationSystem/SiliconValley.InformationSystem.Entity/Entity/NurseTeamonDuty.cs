@@ -14,19 +14,30 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "NurseTeamonDuty")]
+    //护卫队执勤
     public partial class NurseTeamonDuty
     {
         [Key]
         public int ID { get; set; }
+        //日期
         public string Daste { get; set; }
+        //早开门
         public string Openthedoorearly { get; set; }
+        //晚开门
         public string Openlate { get; set; }
+        //上午执勤
         public string Morningduty { get; set; }
+        //中午执勤
         public string Ondutyatnoon { get; set; }
+        //下午执勤
         public string Theafternoon { get; set; }
+        //晚大门职守
         public string Nightgateguard { get; set; }
+        //是否删除
         public Nullable<bool> Dateofregistration { get; set; }
+        //添加时间
         public Nullable<System.DateTime> Addtime { get; set; }
+        //备注
         public string Remarks { get; set; }
     }
 }

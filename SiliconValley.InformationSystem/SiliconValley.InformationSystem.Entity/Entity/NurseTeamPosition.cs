@@ -14,14 +14,20 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "NurseTeamPosition")]
+    //护校队职位
     public partial class NurseTeamPosition
     {
         [Key]
         public int Id { get; set; }
+        //职位
         public Nullable<int> Position { get; set; }
+        //是否删除
         public Nullable<bool> Dateofregistration { get; set; }
+        //添加时间
         public Nullable<System.DateTime> Addtime { get; set; }
+        //备注
         public string Remarks { get; set; }
+        //职位名称
         public Nullable<int> Name { get; set; }
 
 

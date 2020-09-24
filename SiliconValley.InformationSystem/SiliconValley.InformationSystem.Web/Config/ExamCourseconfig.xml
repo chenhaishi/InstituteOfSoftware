@@ -1,4 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-
+  <exam id="9024">
+    <course id="123" />
+  </exam>
 </root>

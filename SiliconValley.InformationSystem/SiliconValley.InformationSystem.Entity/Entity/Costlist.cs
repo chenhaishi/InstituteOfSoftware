@@ -14,14 +14,20 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table("Costlist")]
+    //费用价格单
     public partial class Costlist
     {
          [Key]  
         public int ID { get; set; }
+        //名称
         public string 名称 { get; set; }
+        //单价
         public Nullable<decimal> 单价 { get; set; }
+        //备注
         public string Remarks { get; set; }
+        //是否禁用
         public Nullable<bool> IsDelete { get; set; }
+        //添加时间
         public Nullable<System.DateTime> AddTime { get; set; }     
     }
 }

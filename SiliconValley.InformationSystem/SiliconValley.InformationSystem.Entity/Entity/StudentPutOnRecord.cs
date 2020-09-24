@@ -96,9 +96,9 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         /// </summary>
         public string Reak { get; set; }
         /// <summary>
-        ///  是否作废---true--是，false--否
+        ///  状态---1--已作废，0--正常使用，2--冲突待处理数据
         /// </summary>
-        public bool IsDelete { get; set; }
+        public int IsDelete { get; set; }
         /// <summary>
         /// 学生所在区域
         /// </summary>

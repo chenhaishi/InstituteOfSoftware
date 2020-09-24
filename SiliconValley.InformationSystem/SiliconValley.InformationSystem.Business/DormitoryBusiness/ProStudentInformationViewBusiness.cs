@@ -115,7 +115,15 @@ namespace SiliconValley.InformationSystem.Business.DormitoryBusiness
                     if (obj12 != null)
                     {
                         var obj13 = dbproHeadmaster.GetEmployeesInfoByHeadID(obj12.LeaderID);
-                        proBedtimeStudentsView.EmpName = obj13.EmpName;
+                        if (obj13!=null)
+                        {
+                            proBedtimeStudentsView.EmpName = obj13.EmpName;
+                        }
+                        else
+                        {
+                            proBedtimeStudentsView.EmpName = "无";
+                        }
+                         
                     }
                     else
                         proBedtimeStudentsView.EmpName = string.Empty;

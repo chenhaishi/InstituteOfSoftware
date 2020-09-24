@@ -104,6 +104,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                              e.YearAndMonth,
                              e.ToRegularDays,
                              e.LeaveDays,
+                             e.LeaveRecord,
                              e.WorkAbsentNum,
                              e.WorkAbsentRecord,
                              e.OffDutyAbsentNum,
@@ -118,7 +119,14 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                              e.IsApproval,
                              e.DeserveToRegularDays,
                              e.TardyWithhold,
-                             e.LeaveWithhold
+                             e.LeaveWithhold,
+                             e.OvertTimeDuration,
+                             e.OvertimeCharges,
+                             e.DaysoffDuration,
+                             e.AbsenteeismDays,
+                             e.AbsenteeismWithhold,
+                             e.OvertTimeRecord,
+                             e.DaysoffRecord
                              #endregion
 
                          };
@@ -246,7 +254,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         /// 批量录入(excel导入)
         /// </summary>
         /// <param name="excelfile"></param>
-        /// <param name="course"></param>
         /// <returns></returns>
         [HttpPost]
         public ActionResult BatchImport(HttpPostedFileBase excelfile)
@@ -255,16 +262,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
 
             var result = atdmanage.ImportDataFormExcel(filestream, excelfile.ContentType);
 
-            // Base_UserModel user = Base_UserBusiness.GetCurrentUser();
-            if (result.Success) {
-                var timeandday = result.Msg;
-                string []str = timeandday.Split(',');
-                var time = str[0];
-                var day = str[1];
-                    var mytime = DateTime.Parse(time.ToString()).Year + "-" + DateTime.Parse(time.ToString()).Month;
-                FirstTime =mytime;
-                Firstshouldday = day;
-            }
+           
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 

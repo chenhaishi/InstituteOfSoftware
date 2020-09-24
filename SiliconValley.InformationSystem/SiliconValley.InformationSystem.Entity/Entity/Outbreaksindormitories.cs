@@ -14,14 +14,19 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "Outbreaksindormitories")]
+    //宿舍打架斗殴情况登记表
     public partial class Outbreaksindormitories
     {
        
         [Key]
         public int ID { get; set; }
+        //原因
         public string Name { get; set; }
+        //是否删除
         public Nullable<bool> Dateofregistration { get; set; }
+        //时间
         public Nullable<System.DateTime> Date { get; set; }
+        //备注
         public string Remarks { get; set; }
     
        

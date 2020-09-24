@@ -14,12 +14,15 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     [Table(name: "Region")]
+    //区域
     public partial class Region
     {
 
         [Key]
         public int ID { get; set; }
+        //区域名字
         public string RegionName { get; set; }
+        //是否删除
         public Nullable<bool> IsDel { get; set; }
 
         public Nullable<System.DateTime> RegionDate { get; set; }

@@ -234,7 +234,7 @@ namespace SiliconValley.InformationSystem.Business.Base_SysManage
             view.Sex = user.Sex;
             view.UserId = user.UserId;
             view.UserName = user.UserName;
-
+            view.State = user.State;
 
             return view;
         }
@@ -329,6 +329,42 @@ namespace SiliconValley.InformationSystem.Business.Base_SysManage
             EmployeesInfoManage empmanage = new EmployeesInfoManage();
             return empmanage.GetInfoByEmpID(user.EmpNumber);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="emp"></param>
+        /// <param name="IsKey">是否根据账号主键修改</param>
+        /// <returns></returns>
+        public AjaxResult Change(string Value,bool IsKey)
+        {
+            AjaxResult a = new AjaxResult() { Msg="操作成功",Success=true};
+
+            Base_User find = null;
+            try
+            {
+                if (IsKey)
+                {
+                    find = this.GetEntity(Value);
+                }
+                else
+                {
+                  
+                    find = this.GetList().Where(u => u.EmpNumber == Value).FirstOrDefault();
+                }
+                find.WX_Unionid = null;
+                find.State = 0;
+                find.Password = Extention.ToMD5String("tangdan2020");
+                this.Update(find);
+            }
+            catch (Exception)
+            {
+                a.Msg = "操作失败！";
+                a.Success = false;
+            }
+
+            return a;
+        }
     }
 
     public class Base_UserModel : Base_User
@@ -358,5 +394,6 @@ namespace SiliconValley.InformationSystem.Business.Base_SysManage
     }
 
    
+    
 
 }

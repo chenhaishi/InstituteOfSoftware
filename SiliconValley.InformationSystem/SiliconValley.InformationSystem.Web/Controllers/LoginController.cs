@@ -47,24 +47,27 @@ namespace SiliconValley.InformationSystem.Web.Controllers
                     string pwd = Util.Extention.ToMD5String(u.Password);
                     Base_User findu = userinfo.GetList().Where(find => find.UserName == u.UserName && find.Password == pwd).FirstOrDefault();
 
-                    if (findu != null)
+                    if (findu != null && findu.State!=0)
                     {
                         SessionHelper sessionHelper = new SessionHelper();
+                        //判断该员工是否离职
+                        var emp= empmanage.FindEmpData(findu.EmpNumber,true);
+                         
+                            SessionHelper.Session["UserId"] = findu.UserId;
+                            err.Success = true;
+                            err.Msg = "登陆成功!";
+                            err.Data = "/Base_SysManage/Base_SysMenu/Index";
 
-                        SessionHelper.Session["UserId"] = findu.UserId;
-                        err.Success = true;
-                        err.Msg = "登陆成功!";
-                        err.Data = "/Base_SysManage/Base_SysMenu/Index";
+                            //获取权限
 
-                        //获取权限
+                            var permisslist = PermissionManage.GetOperatorPermissionValues();
 
-                        var permisslist = PermissionManage.GetOperatorPermissionValues();
-
-                        SessionHelper.Session["OperatorPermission"] = permisslist;
-                        return Json(err, JsonRequestBehavior.AllowGet);
+                            SessionHelper.Session["OperatorPermission"] = permisslist;
+                            return Json(err, JsonRequestBehavior.AllowGet);
+                         
                     }
                     else
-                    {
+                    {                        
                         err.Msg = "用户名或密码错误";
                     }
 
@@ -73,33 +76,38 @@ namespace SiliconValley.InformationSystem.Web.Controllers
                 //手机短信验证码登录
                 if (loginType == "phone")
                 {
-
-
                     EmployeesInfo emp = empmanage.GetList().Where(e => e.Phone == mobile).FirstOrDefault();
+                    if (emp.IsDel!=true)
+                    {
+                        if (emp != null && SessionHelper.Session["code"].ToString() == smsCaptcha)
+                        {
 
-                    if (emp != null && SessionHelper.Session["code"].ToString() == smsCaptcha)
-                    {                      
+                            Base_User myuser = userinfo.GetList().Where(user => user.EmpNumber == emp.EmployeeId).FirstOrDefault();
 
-                        Base_User myuser = userinfo.GetList().Where(user => user.EmpNumber == emp.EmployeeId).FirstOrDefault();
+                            SessionHelper.Session["UserId"] = myuser.UserId;
+                            err.Success = true;
+                            err.Msg = "登陆成功!";
+                            err.Data = "/Base_SysManage/Base_SysMenu/Index";
 
-                        SessionHelper.Session["UserId"] = myuser.UserId;
-                        err.Success = true;
-                        err.Msg = "登陆成功!";
-                        err.Data = "/Base_SysManage/Base_SysMenu/Index";
+                            //获取权限
 
-                        //获取权限
+                            var permisslist = PermissionManage.GetOperatorPermissionValues();
 
-                        var permisslist = PermissionManage.GetOperatorPermissionValues();
-
-                        SessionHelper.Session["OperatorPermission"] = permisslist;
+                            SessionHelper.Session["OperatorPermission"] = permisslist;
 
 
-                        return Json(err, JsonRequestBehavior.AllowGet);
+                            return Json(err, JsonRequestBehavior.AllowGet);
+                        }
+                        else
+                        {
+                            err.Msg = "用户名或密码错误";
+                        }
                     }
                     else
                     {
-                        err.Msg = "用户名或密码错误";
+                        err.Msg = "员工已离职，账号不可用！";
                     }
+                     
                 }
             }
             catch (Exception ex)

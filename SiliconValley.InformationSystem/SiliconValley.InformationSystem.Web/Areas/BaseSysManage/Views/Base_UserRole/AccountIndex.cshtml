@@ -97,6 +97,8 @@
 
 </script>
 
+ 
+
 
 @section script{
 
@@ -151,11 +153,26 @@
                 , cols: [[
                     { type: 'checkbox', fixed: 'left' }
                     , { field: 'UserId', title: '标识', width: 80, fixed: 'left', unresize: true, sort: true }
-                    , { field: 'UserName', title: '用户名', width: "30%"}
+                    , { field: 'UserName', title: '用户名', width: "20%" }                       
+                    , {field: 'EmpName', title: '所属员工', width: "20%", templet: '<div>{{d.Emp.EmpName}}</div>' }
+                    , { field: 'EmployeeId', title: '员工编号', width: "20%", templet: '<div>{{d.Emp.EmployeeId}}</div>' }
                     , {
-                        field: 'EmpName', title: '所属员工', width: "30%", templet: '<div>{{d.Emp.EmpName}}</div>' }
-                    , { field: 'EmployeeId', title: '员工编号', width: "30%", templet: '<div>{{d.Emp.EmployeeId}}</div>' }
-
+                        field: 'State', title: '状态', templet: function (res) {
+                            if (res.State==1) {
+                                return '正常';
+                            } else {
+                                return '禁用';
+                            }
+                        }
+                    }, {
+                        fixed: 'right', title: '操作', templet: function (res) {
+                            if (res.State == 1) {
+                                return ' <a class="layui-btn layui-btn-xs" lay-event="edit">禁用</a>';
+                            } else {
+                                return '<a class="layui-btn layui-btn-xs" lay-event="edit">启用</a>';
+                            }
+                        }
+                    }    
 
                 ]]
                 , page: true
@@ -191,6 +208,24 @@
             form.on('submit(search)', function (data) {
                 SearchTable();
                 return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+            });
+
+            table.on('tool(accaountTable)', function (obj) {
+                var data = obj.data;
+                if (obj.event === 'edit') {
+                    $.ajax({
+                        url: '/BaseSysManage/Base_UserRole/ChangeState/' + data.Id,
+                        success: function (res) {
+                            if (res.Success) {
+                                layer.msg(res.Msg, { icon: 1 }, function () {
+                                    table.reload('accaountTable');
+                                });
+                            } else {
+                                layer.msg(res.Msg, { icon: 2 });
+                            }
+                        }
+                    });
+                }
             });
 
 
