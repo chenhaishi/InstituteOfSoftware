@@ -27,7 +27,7 @@ namespace SiliconValley.InformationSystem.Entity.Entity
         /// <summary>
         /// 金额
         /// </summary>
-        public decimal Amountofmoney { get; set; }
+        public decimal? Amountofmoney { get; set; }
         /// <summary>
         /// 班级(如初中班级，高中班级)
         /// </summary>

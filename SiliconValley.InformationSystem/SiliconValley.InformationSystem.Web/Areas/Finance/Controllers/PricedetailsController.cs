@@ -324,12 +324,21 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             var YuLv = Preentryfee.GetList().Where(d => d.identitydocument == xs.identitydocument).SingleOrDefault();
             var XueFei = StudentFeeRecord.GetList().Where(d => d.StudenID == student).ToList();
             decimal xuefeiSUM = 0;
+            decimal ZongJin = 0;
             foreach (var item in XueFei)
             {
                 xuefeiSUM = xuefeiSUM + Convert.ToDecimal(item.Amountofmoney);
             }
-            decimal ZongJin = xuefeiSUM+YuLv.Amountofmoney;
-            ZongJin = Math.Round(ZongJin, 2);
+            if (YuLv == null)
+            {
+                ZongJin = xuefeiSUM;
+                ZongJin = Math.Round(ZongJin, 2);
+            }
+            else
+            {
+                ZongJin = xuefeiSUM + Convert.ToDecimal(YuLv.Amountofmoney);
+                ZongJin = Math.Round(ZongJin, 2);
+            }
             ViewBag.zongjin = ZongJin;
             return View();
         }
