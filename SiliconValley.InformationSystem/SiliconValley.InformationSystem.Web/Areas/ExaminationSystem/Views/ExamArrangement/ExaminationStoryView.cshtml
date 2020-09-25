@@ -2,7 +2,9 @@
 <div id="ExamToryTable">
     <table class="layui-hide" lay-filter="ExamTory" id="ExamTory"></table>
 </div>
-
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
 <script>
     layui.use(['table'], function () {
 
@@ -51,12 +53,35 @@
 
                     }
                 }
-                , { field: 'Remark', title: '备注', width: '30%', minWidth: 100 } //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增
-               
+                , { field: 'Remark', title: '备注', width: '15%', minWidth: 100 } //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增
+                , { fixed: 'right', title: '操作', toolbar: '#barDemo' ,width: '15%', minWidth: 100 }
             ]]
             , page: true
         });
+        table.on('tool(ExamTory)', function (obj) {
+            var data = obj.data;
+            console.log(data.ID);
+            var id = data.ID
+            //console.log(obj)
+            if (obj.event === 'del') {
+                layer.confirm('请谨慎删除考试数据，是否真的删除？', function (index) {
+                    $.post("/ExamArrangement/DeleteExaminationStoryData", { id: id }, function (result) {
+                        if (result.ErrorCode == 200) {
+                            layer.msg("删除成功！！！");
+                            table.reload('ExamTory', {
 
+                            });
+                        } else if (result.ErrorCode == 500) {
+                            layer.msg("删除失败！！！");
+                        } else if (result.ErrorCode == 300) {
+                            layer.msg("不能删除已结束的考试！");
+                        } else if (result.ErrorCode == 400) {
+                            layer.msg("不能删除已安排监考员的考试!");
+                        }
+                    });
+                    layer.close(index);
+                });
+            } 
+        });
     });
 </script>
-

@@ -135,8 +135,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                     {
                         view.LeaveDeductions = null;
                     }
-                    view.TardyWithhold = attendobj.TardyWithhold;//迟到扣款
-                    view.LeaveWithhold = attendobj.LeaveWithhold;//早退扣款
+                    view.TardyAndLeaveWithhold = attendobj.TardyAndLeaveWithhold;//迟到扣款
+                  //  view.LeaveWithhold = attendobj.LeaveWithhold;//早退扣款
                     var NoClocknum = attendobj.WorkAbsentNum + attendobj.OffDutyAbsentNum;
                     if (NoClocknum > 3)
                     {
@@ -154,7 +154,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 view.OtherDeductions = item.OtherDeductions;//其他扣款
 
                 #region 应发工资2赋值
-                view.SalaryTwo = msrmanage.GetSalarytwo(view.SalaryOne, view.OvertimeCharges, view.Bonus, view.LeaveDeductions, view.TardyWithhold, view.LeaveWithhold, view.NoClockWithhold, view.OtherDeductions);
+                view.SalaryTwo = msrmanage.GetSalarytwo(view.SalaryOne, view.OvertimeCharges, view.Bonus, view.LeaveDeductions, view.TardyAndLeaveWithhold/*, view.LeaveWithhold*/, view.NoClockWithhold, view.OtherDeductions);
                 #endregion
                 view.PersonalSocialSecurity = eseobj.PersonalSocialSecurity;//个人社保
                 view.PersonalIncomeTax = eseobj.PersonalIncomeTax;//个税

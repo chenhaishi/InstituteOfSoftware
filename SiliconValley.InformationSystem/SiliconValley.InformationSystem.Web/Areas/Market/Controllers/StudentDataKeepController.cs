@@ -44,7 +44,7 @@ using SiliconValley.InformationSystem.Business.StudentmanagementBusinsess;
 
 namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
 {
-    //zheshi
+    
     [CheckLogin]
     public class StudentDataKeepController : BaseMvcController
     {
@@ -138,6 +138,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
             sb2.Append("select * from Sch_MarketView where IsDel=0");
             string findName = Request.QueryString["findName"];
             string findPhone = Request.QueryString["findPhone"];
+
+            string Isgo = Request.QueryString["Isgo"];//是否上门
+
             if (!string.IsNullOrEmpty(findName) || !string.IsNullOrEmpty(findPhone))
             {
                 if (findName.Length > 0)
@@ -174,6 +177,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
                 string edution = Request.QueryString["eduttion"];//学历
                 string reack = Request.QueryString["S_Reack"];//其他说明
                 string S_School = Request.QueryString["S_School"];//学校
+
+                
+                if (Isgo!="0")
+                {
+                    sb1.Append(" and StuisGoto = '" + Isgo + "'");
+                }                 
                 if (!string.IsNullOrEmpty(findNamevalue))
                 {
                     sb1.Append("and  StuName like  '%" + findNamevalue + "%'");
@@ -262,10 +271,20 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
                     sb1.Append(" and StuSchoolName like '%" + S_School + "%'");
                     sb2.Append(" and School like '%" + S_School + "%'");
                 }
+
+                
                 #endregion               
 
             }
-            list = s_Entity.Serch(sb1.ToString(), sb2.ToString()).OrderByDescending(s => s.StuDateTime).ToList();
+            if (Isgo != "0")
+            {
+                list = s_Entity.Serch(sb1.ToString(), sb2.ToString(),false).OrderByDescending(s => s.StuDateTime).ToList();
+            }
+            else
+            {
+                list = s_Entity.Serch(sb1.ToString(), sb2.ToString(),true).OrderByDescending(s => s.StuDateTime).ToList();
+            }
+            
 
             var data = list.Skip((page - 1) * limit).Take(limit).ToList();
 
@@ -2030,7 +2049,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
                     }
                     #endregion
                 
-                list = s_Entity.Serch(sb1.ToString(), sb2.ToString()).OrderByDescending(s => s.StuDateTime).ToList();
+                list = s_Entity.Serch(sb1.ToString(), sb2.ToString(),true).OrderByDescending(s => s.StuDateTime).ToList();
 
                 var data = list.Skip((page - 1) * limit).Take(limit).ToList();
 
@@ -2058,7 +2077,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
                 sb1.Append("select * from StudentBeanView  where 1=1 and  empName='" + indata.EmpName + "'");
                 sb2.Append("select * from Sch_MarketView where 1=1 and SalePerson='" + indata.EmpName + "' or RelatedPerson='" + indata.EmpName + "'");
                 
-                list = s_Entity.Serch(sb1.ToString(), sb2.ToString()).OrderByDescending(s => s.StuDateTime).ToList();
+                list = s_Entity.Serch(sb1.ToString(), sb2.ToString(),true).OrderByDescending(s => s.StuDateTime).ToList();
 
                 var data = list.Skip((page - 1) * limit).Take(limit).ToList();
 

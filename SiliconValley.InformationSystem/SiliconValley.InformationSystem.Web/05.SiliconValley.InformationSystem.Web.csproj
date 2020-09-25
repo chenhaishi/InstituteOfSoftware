@@ -3616,7 +3616,6 @@
     <Content Include="Views\Home\IdCard.cshtml" />
     <Content Include="Views\Home\Scores.cshtml" />
     <Content Include="uploadXLSXfile\ConsultUploadfile\Kaoqin\kaoqin.xlsx" />
-    <Content Include="uploadXLSXfile\Zhiban\学生作弊名单.xlsx" />
     <Content Include="uploadXLSXfile\Zhiban\班主任值班模板.xlsx" />
   </ItemGroup>
   <ItemGroup>

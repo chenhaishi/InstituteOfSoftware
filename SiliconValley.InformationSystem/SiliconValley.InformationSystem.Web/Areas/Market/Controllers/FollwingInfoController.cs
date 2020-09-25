@@ -344,7 +344,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
 
             string sql1 = @"select * from StudentBeanView where ConsultTeacher= '" + teacher + "'";
             string sql2 = @"select * from Sch_MarketView  where Inquiry = '" + teacher + "'";
-            List<ExportStudentBeanData> list = EmployandCounTeacherCoom.Studentrecond.Serch(sql1, sql2);//装载属于该咨询师的学生备案数据
+            List<ExportStudentBeanData> list = EmployandCounTeacherCoom.Studentrecond.Serch(sql1, sql2,true);//装载属于该咨询师的学生备案数据
 
             string Name = Request.QueryString["findNamevalue"].Trim();
             string Phone = Request.QueryString["findPhonevalue"].Trim();
