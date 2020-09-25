@@ -105,11 +105,11 @@
                     , { field: 'socialSecuritySubsidy', title: '社保补贴', width: 105, rowspan: 2 }
                     , { field: 'SalaryOne', title: '应发工资1', width: 115, rowspan: 2 }
                     , { field: 'OvertimeCharges', title: '加班费用', width: 105, rowspan: 2 }
-                    , { field: 'Bonus', title: '奖金/元', width: 105, rowspan: 2 }
+                    , { field: 'Bonus', title: '奖金(元)', width: 105, rowspan: 2 }
 
                     , { align: 'center', title: '考勤扣款', colspan: 5 }
 
-                    , { field: 'OtherDeductions', title: '其他扣款', width: 105, rowspan: 2 }
+                    , { field: 'OtherDeductions', title: '其他扣款(元)', width: 105, rowspan: 2 }
                     , { field: 'SalaryTwo', title: '应发工资2', width: 115, rowspan: 2 }
                     , { field: 'PersonalSocialSecurity', title: '个人社保', sort: true, width: 110, rowspan: 2 }
                     , { field: 'PersonalIncomeTax', title: '个税', sort: true, width: 105, rowspan: 2 }
@@ -120,10 +120,10 @@
                     , { title: '操作', toolbar: '#barDemo', width: 100, fixed: 'right', rowspan: 2 }
                 ], [
                     { field: 'leavedays', title: '请假天数', width: 110 }
-                    , { field: 'LeaveDeductions', title: '请假扣款/元', width: 115 }
-                    , { field: 'NoClockWithhold', title: '缺卡扣款/元', width: 115 }
-                    , { field: 'TardyWithhold', title: '迟到扣款/元', width: 115 }
-                    , { field: 'LeaveWithhold', title: '早退扣款/元', width: 115 }
+                    , { field: 'LeaveDeductions', title: '请假扣款(元)', width: 115 }
+                    , { field: 'NoClockWithhold', title: '缺卡扣款(元)', width: 115 }
+                        , { field: 'TardyAndLeaveWithhold', title: '迟到/早退扣款(元)', width: 115 }
+                    //, { field: 'LeaveWithhold', title: '早退扣款/元', width: 115 }
                 ]]
                 , page: true
             });
@@ -191,7 +191,7 @@
                 var data = obj.data;
                 if (obj.event === 'edit') {
                     var id = data.Id;
-                    console.log("公子编号：" + id);
+                    console.log("工资编号：" + id);
                     $.post('/Personnelmatters/EmpSalaryManagement/JudgeIsApproval', { 'id': id }, function (da) {
                         if (da.ErrorCode == 200) {
                             if (da.Success) {
@@ -199,10 +199,10 @@
                                     icon: 1,
                                     time: 5000 //2秒关闭（如果不配置，默认是3秒）
                                 }, function () {
-                                 var index = parent.layer.getFrameIndex(window.name);
-                                 parent.layui.table.reload('mySalaryStatistics');
-                                 parent.layer.close(index);
-                               });
+                                    var index = parent.layer.getFrameIndex(window.name);
+                                    parent.layui.table.reload('mySalaryStatistics');
+                                    parent.layer.close(index);
+                                });
                             }
                             else {
                                 layer.open({
@@ -218,8 +218,8 @@
                         } else {
                             layer.alert("系统出错，请多次尝试后");
                         }
-                        
-                    })
+
+                    });
                    
                 }
 

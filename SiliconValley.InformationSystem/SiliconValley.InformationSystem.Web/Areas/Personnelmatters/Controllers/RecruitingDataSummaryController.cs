@@ -455,84 +455,93 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             var AjaxResultxx = new AjaxResult();
             RecruitPhoneTraceManage rpt = new RecruitPhoneTraceManage();
             RecruitingDataSummaryManage rdsmanage = new RecruitingDataSummaryManage();
+            List<RecruitingDataSummary> rlist = new List<RecruitingDataSummary>();
+
+            var rptlist = rpt.GetList();
             try
             {
-                var list = from r in rpt.GetList()
+                var list = from r in rptlist
                            group r by new
-                           { r.Pid, month = Condition((DateTime)r.TraceTime, "month") } into g
-                           select new
-                           {
-                               month = g.Key.month,//月份
-                               position = g.Key.Pid,//岗位
-                               resumenum = g.Count(s => s.IsDel == false),//简历总数(排除这些应聘者的面试记录)
-                               PhoneCommunicatenum=g.Count(s => s.IsDel == false && !string.IsNullOrEmpty(Convert.ToString(s.TraceTime))),//联系的总数(有联系时间的才算联系过)
-                               invitednum=g.Count(t=>t.IsDel==false && t.ForwardDate != null),//当月邀约总数
-                               Facednum=g.Count(t=>t.IsDel==true),//当月到面总数
-                               Refacednum = GetRefacednum(g.Where(s=>s.IsDel==true).ToList()),//当月复试总数
-                               Refacepassednum= GetRefacednum(g.Where(s => s.IsDel == true && s.PhoneCommunicateResult == true).ToList()),//当月复试通过总数
-                               Entrynum=g.Count(t=>t.IsDel==false && t.IsEntry==true)//当月入职人数
-                           };
-                List<RecruitingDataSummary> rlist = new List<RecruitingDataSummary>();
-                foreach (var s in list)
+                           { r.Pid, month = Condition((DateTime)r.TraceTime, "month") } 
+                           into g
+                           select g;
+                foreach (var item in list)
                 {
+                    var month = item.Key.month;//月份
+                    var position = item.Key.Pid;//岗位
+                    var resumenum = item.Count(s => s.IsDel == false);//简历总数(排除这些应聘者的面试记录)
+                    var PhoneCommunicatenum = item.Count(s => s.IsDel == false && !string.IsNullOrEmpty(Convert.ToString(s.TraceTime)));//联系的总数(有联系时间的才算联系过)
+                    var invitednum = item.Count(t => t.IsDel == false && t.ForwardDate != null);//当月邀约总数
+                    var Facednum = item.Count(t => t.IsDel == true);//当月到面总数
+                    var Refacednum = GetRefacednum(item.Where(s => s.IsDel == true).ToList());//当月复试总数
+                    var Refacepassednum = GetRefacednum(item.Where(s => s.IsDel == true && s.PhoneCommunicateResult == true).ToList());//当月复试通过总数
+                    var Entrynum = item.Count(t => t.IsDel == false && t.IsEntry == true);//当月入职人数
                     #region 给对象赋值
-                    RecruitingDataSummary item = new RecruitingDataSummary();
-                    item.YearAndMonth = DateTime.Parse(s.month);
-                    item.Pid = s.position;
-                    item.ResumeSum = s.resumenum;
-                    item.OutboundCallSum = s.PhoneCommunicatenum;
-                    item.InstantInviteSum = s.invitednum;
-                    item.InstantToFacesSum = s.Facednum;
-                    item.InstantRetestSum = s.Refacednum;
-                    item.InstantRetestPassSum = s.Refacepassednum;
-                    item.InstantEntryNum = s.Entrynum;
-                    if (s.invitednum != 0)
+                    RecruitingDataSummary rdsdate = new RecruitingDataSummary();
+                    rdsdate.YearAndMonth = DateTime.Parse(month);
+                    rdsdate.Pid = position;
+                    rdsdate.ResumeSum = resumenum;
+                    rdsdate.OutboundCallSum = PhoneCommunicatenum;
+                    rdsdate.InstantInviteSum = invitednum;
+                    rdsdate.InstantToFacesSum = Facednum;
+                    rdsdate.InstantRetestSum = Refacednum;
+                    rdsdate.InstantRetestPassSum = Refacepassednum;
+                    rdsdate.InstantEntryNum = Entrynum;
+                    if (invitednum != 0)
                     {
-                        item.InstantToFacesRate = Convert.ToDecimal(s.Facednum) / Convert.ToDecimal(s.invitednum);
+                        rdsdate.InstantToFacesRate = Convert.ToDecimal(Facednum) / Convert.ToDecimal(invitednum);
                     }
-                    if (s.PhoneCommunicatenum != 0)
+                    if (PhoneCommunicatenum != 0)
                     {
-                        item.InstantInviteRate = Convert.ToDecimal(s.invitednum) / Convert.ToDecimal(s.PhoneCommunicatenum);
+                        rdsdate.InstantInviteRate = Convert.ToDecimal(invitednum) / Convert.ToDecimal(PhoneCommunicatenum);
                     }
-                    if (s.Refacednum != 0)
+                    if (Refacednum != 0)
                     {
-                        item.InstantRetestPassrate = Convert.ToDecimal(s.Refacepassednum) / Convert.ToDecimal(s.Refacednum);
+                        rdsdate.InstantRetestPassrate = Convert.ToDecimal(Refacepassednum) / Convert.ToDecimal(Refacednum);
                     }
-                    if (s.Refacepassednum != 0)
+                    if (Refacepassednum != 0)
                     {
-                        item.EntryRate = Convert.ToDecimal(s.Entrynum) / Convert.ToDecimal(s.Refacepassednum);
+                        rdsdate.EntryRate = Convert.ToDecimal(Entrynum) / Convert.ToDecimal(Refacepassednum);
                     }
-                    var rds = rdsmanage.GetList().Where(a => a.Pid == item.Pid && Condition((DateTime)a.YearAndMonth, "month") == Condition((DateTime)item.YearAndMonth, "month")).FirstOrDefault();
+                    var rds = rdsmanage.GetList().Where(a => a.Pid == rdsdate.Pid && Condition((DateTime)a.YearAndMonth, "month") == Condition((DateTime)rdsdate.YearAndMonth, "month")).FirstOrDefault();
                     if (rds != null)
                     {
-                        rds.YearAndMonth = item.YearAndMonth;
-                        rds.Pid = item.Pid;
-                        rds.ResumeSum = item.ResumeSum;
-                        rds.OutboundCallSum = item.OutboundCallSum;
-                        rds.InstantInviteSum = item.InstantInviteSum;
-                        rds.InstantToFacesSum = item.InstantToFacesSum;
-                        rds.InstantRetestSum = item.InstantRetestSum;
-                        rds.InstantRetestPassSum = item.InstantRetestPassSum;
-                        rds.InstantEntryNum = item.InstantEntryNum;
-                        rds.InstantToFacesRate = item.InstantToFacesRate;
-                        rds.InstantInviteRate = item.InstantInviteRate;
-                        rds.InstantRetestPassrate = item.InstantRetestPassrate;
-                        rds.EntryRate = item.EntryRate;
-                        rds.RecruitPercentage = Convert.ToDecimal(rds.InstantEntryNum) / Convert.ToDecimal(rds.PlanRecruitNum);
+                        rds.YearAndMonth = rdsdate.YearAndMonth;
+                        rds.Pid = rdsdate.Pid;
+                        rds.ResumeSum = rdsdate.ResumeSum;
+                        rds.OutboundCallSum = rdsdate.OutboundCallSum;
+                        rds.InstantInviteSum = rdsdate.InstantInviteSum;
+                        rds.InstantToFacesSum = rdsdate.InstantToFacesSum;
+                        rds.InstantRetestSum = rdsdate.InstantRetestSum;
+                        rds.InstantRetestPassSum = rdsdate.InstantRetestPassSum;
+                        rds.InstantEntryNum = rdsdate.InstantEntryNum;
+                        rds.InstantToFacesRate = rdsdate.InstantToFacesRate;
+                        rds.InstantInviteRate = rdsdate.InstantInviteRate;
+                        rds.InstantRetestPassrate = rdsdate.InstantRetestPassrate;
+                        rds.EntryRate = rdsdate.EntryRate;
+                        if (!string.IsNullOrEmpty(rds.PlanRecruitNum.ToString()))
+                        {
+                            rds.RecruitPercentage = Convert.ToDecimal(rds.InstantEntryNum) / Convert.ToDecimal(rds.PlanRecruitNum);
+                        }
+                        else {
+                            rds.RecruitPercentage = 0;
+                        }
                         rdsmanage.Update(rds);
                     }
                     else if (rdsmanage.GetList().Count() == 0)
                     {
-                        rdsmanage.Insert(item);
+                        rdsmanage.Insert(rdsdate);
                     }
                     else
                     {
-                        rdsmanage.Insert(item);
+                        rdsmanage.Insert(rdsdate);
                     }
                     #endregion
                 }
+
+             
                 AjaxResultxx = rdsmanage.Success();
-                        
+
             }
             catch (Exception ex)
             {
@@ -556,7 +565,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 {
                     case "PlanRecruitNum":
                         rds.PlanRecruitNum = int.Parse(endvalue);
-                        rds.RecruitPercentage = (decimal)rds.InstantEntryNum / (decimal)rds.PlanRecruitNum;
+                        if (!string.IsNullOrEmpty(rds.PlanRecruitNum.ToString()))
+                        {
+                            rds.RecruitPercentage = (decimal)rds.InstantEntryNum / (decimal)rds.PlanRecruitNum;
+                        }
+                        else { rds.RecruitPercentage = 0; }
                         rdsmanage.Update(rds);
                         break;
                     case "Remark":

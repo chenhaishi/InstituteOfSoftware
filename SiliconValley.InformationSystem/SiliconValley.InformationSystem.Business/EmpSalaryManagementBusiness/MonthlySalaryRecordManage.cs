@@ -70,7 +70,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
         /// <returns></returns>
         public bool EditEmpMS(int id)
         {
-            var ems = this.GetEmpMsrData().Where(s => s.Id == id).FirstOrDefault();
+            var ems = this.GetEntity(id);
             bool result = false;
             try
             {
@@ -133,14 +133,16 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             try
             {
                 var msrlist = this.GetEmpMsrData().Where(s => s.IsDel == false).ToList();
-                EmployeesInfoManage empmanage = new EmployeesInfoManage();
-                var emplist = empmanage.GetEmpInfoData();
+               // EmployeesInfoManage empmanage = new EmployeesInfoManage();
+                EmplSalaryEmbodyManage esemanage = new EmplSalaryEmbodyManage();
+                var emplist = esemanage.GetEmpESEData().Where(s=>s.IsDel==false).ToList();
+            //    var emplist = empmanage.GetEmpInfoData();
                 var nowtime = DateTime.Parse(time);
 
                 //匹配是否有该月（选择的年月即传过来的参数）的月度工资数据
                 var matchlist = msrlist.Where(m => DateTime.Parse(m.YearAndMonth.ToString()).Year == nowtime.Year && DateTime.Parse(m.YearAndMonth.ToString()).Month == nowtime.Month).ToList();
 
-                if (matchlist.Count() <= 0)
+                if (matchlist.Count() <= 0)//表示月度工资表中无该月的数据
                 {
                     //找到已禁用的或者该月份的员工集合
                     var forbiddenlist = this.GetEmpMsrData().Where(s => s.IsDel == true || (DateTime.Parse(s.YearAndMonth.ToString()).Year == nowtime.Year && DateTime.Parse(s.YearAndMonth.ToString()).Month == nowtime.Month)).ToList();
@@ -328,12 +330,12 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
         /// <param name="OvertimeCharges">加班费用</param>
         /// <param name="Bonus">奖金/元</param>
         /// <param name="LeaveDeductions">请假扣款</param>
-        /// <param name="TardyWithhold">迟到扣款</param>
-        /// <param name="LeaveWithhold">早退扣款</param>
+        /// <param name="TardyAndLeaveWithhold">迟到扣款</param>
+        ///// <param name="LeaveWithhold">早退扣款</param>
         ///  /// <param name="NoClockWithhold">缺卡扣款</param>
         /// <param name="OtherDeductions">其他扣款</param>
         /// <returns></returns>
-        public decimal? GetSalarytwo(decimal? salaryone, decimal? OvertimeCharges, decimal? Bonus, decimal? LeaveDeductions, decimal? TardyWithhold, decimal? LeaveWithhold, decimal? NoClockWithhold, decimal? OtherDeductions)
+        public decimal? GetSalarytwo(decimal? salaryone, decimal? OvertimeCharges, decimal? Bonus, decimal? LeaveDeductions, decimal? TardyAndLeaveWithhold/*, decimal? LeaveWithhold*/, decimal? NoClockWithhold, decimal? OtherDeductions)
         {
             decimal? SalaryTwo = salaryone;
             if (!string.IsNullOrEmpty(OvertimeCharges.ToString()))
@@ -348,14 +350,14 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             {
                 SalaryTwo = SalaryTwo - LeaveDeductions;
             }
-            if (!string.IsNullOrEmpty(TardyWithhold.ToString()))
+            if (!string.IsNullOrEmpty(TardyAndLeaveWithhold.ToString()))
             {
-                SalaryTwo = SalaryTwo - TardyWithhold;
+                SalaryTwo = SalaryTwo - TardyAndLeaveWithhold;
             }
-            if (!string.IsNullOrEmpty(LeaveWithhold.ToString()))
-            {
-                SalaryTwo = SalaryTwo - LeaveWithhold;
-            }
+            //if (!string.IsNullOrEmpty(LeaveWithhold.ToString()))
+            //{
+            //    SalaryTwo = SalaryTwo - LeaveWithhold;
+            //}
             if (!string.IsNullOrEmpty(NoClockWithhold.ToString()))
             {
                 SalaryTwo = SalaryTwo - NoClockWithhold;

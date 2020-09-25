@@ -1910,6 +1910,7 @@
     <Content Include="Areas\Teachingquality\Views\Shared\errorClass.cshtml" />
     <Content Include="Areas\ExaminationSystem\Views\StudentExamSys\MachineTest.cshtml" />
     <Content Include="Areas\ExaminationSystem\Views\StudentExamSys\Brushthetopic.cshtml" />
+    <Content Include="Areas\Educational\Views\TeacherAddorBeonDuty\TableInsert.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
@@ -3628,6 +3629,15 @@
     <Folder Include="Areas\Courseware\首页\word文档\S4NET\" />
     <Folder Include="Areas\Courseware\首页\word文档\Y1\" />
     <Folder Include="Areas\Educational\Models\" />
+    <Folder Include="Areas\Educational\Views\CheckGoods\" />
+    <Folder Include="Areas\Educational\Views\Check\" />
+    <Folder Include="Areas\Educational\Views\GoodsType\" />
+    <Folder Include="Areas\Educational\Views\InStockGoods\" />
+    <Folder Include="Areas\Educational\Views\InStock\" />
+    <Folder Include="Areas\Educational\Views\IsGoodOrBad\" />
+    <Folder Include="Areas\Educational\Views\PurchaseType\" />
+    <Folder Include="Areas\Educational\Views\Shared\" />
+    <Folder Include="Areas\Educational\Views\ShppingDetail\" />
     <Folder Include="Areas\Finance\Models\" />
     <Folder Include="Areas\flow\Controllers\" />
     <Folder Include="Areas\Logistics\Controllers\" />
