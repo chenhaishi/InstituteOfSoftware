@@ -444,7 +444,35 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
             return result;
         }
 
+        /// <summary>
+        /// 员工离职
+        /// </summary>
+        /// <param name="emp"></param>
+        /// <returns></returns>
+        public AjaxResult DelEmp(EmployeesInfo emp) {
+            var ajaxresult = new AjaxResult();
+            try
+            {
+                emp.IsDel = true;
+                this.Update(emp);
+                rc.RemoveCache("InRedisEmpInfoData");
+                ajaxresult = this.Success();
+            }
+            catch (Exception ex)
+            {
+                ajaxresult = this.Error(ex.Message);
+            }
 
+            if (ajaxresult.Success)
+            {
+                ajaxresult.Success = this.DelEmpToCorrespondingDept(emp);//将对应的部门员工表状态也改变
+            }
+            if (ajaxresult.Success) {
+                Base_UserBusiness user = new Base_UserBusiness();
+                ajaxresult = user.Change(emp.EmployeeId,false);//将该员工的账号禁用且密码改为后台设置的默认密码
+            }
+            return ajaxresult;
+        }
 
         /// <summary>
         /// 将导过来的excel数据赋给员工视图类中
@@ -682,7 +710,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
                                                         emperror.errorExplain = "原因是该员工入职时间为空！";
                                                         emperrorlist.Add(emperror);
                                                     }
-                                                    else
+                                                    else 
                                                     {
                                                         #region 没有任何错误的数据就加入员工信息表
                                                         emp.EmployeeId = EmpId();

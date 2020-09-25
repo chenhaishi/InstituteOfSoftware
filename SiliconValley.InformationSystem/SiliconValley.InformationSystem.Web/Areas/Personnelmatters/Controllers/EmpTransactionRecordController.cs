@@ -369,17 +369,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 var emp = empmanage.GetEntity(etr.EmployeeId);//这是未改变部门岗位之前的员工对象
                 if (mtname.Equals("离职")) {
                     #region 员工表（及相关子表）修改（离职）
-                    emp.IsDel = true;
-                    empmanage.Update(emp);
-                    rc.RemoveCache("InRedisEmpInfoData");
-                    ajaxresult = empmanage.Success();
-
-                    if (ajaxresult.Success)
-                    {
-                        bool result = empmanage.DelEmpToCorrespondingDept(emp);//将对应的部门员工表状态也改变                                                                                         
-                        ajaxresult.Success = result;
-                    }
-
+                    ajaxresult = empmanage.DelEmp(emp);
                 }
                 #endregion
                 else if (mtname.Equals("转正"))

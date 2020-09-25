@@ -172,7 +172,7 @@
                         <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                             <label class="layui-form-label" style="width:200px;margin-left:-120px;">拟转后正式工资:</label>
                             <div class="layui-input-block"  style="width:200px;">
-                                @Html.TextBoxFor(a => a.PresentSalary, new Dictionary<string, object>() { { "class", "layui-input" }, { "lay-verify", "required" } })
+                                @Html.TextBoxFor(a => a.PresentSalary, new Dictionary<string, object>() { { "class", "layui-input" }@*, { "lay-verify", "required" }*@ })
                             </div>
                         </div>
                     </div>
