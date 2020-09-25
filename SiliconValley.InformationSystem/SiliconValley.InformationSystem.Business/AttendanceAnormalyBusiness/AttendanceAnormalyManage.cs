@@ -15,7 +15,7 @@ namespace SiliconValley.InformationSystem.Business.AttendanceAnormalyBusiness
     using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 
     public class AttendanceAnormalyManage : BaseBusiness<AttendanceAnormaly>
-    {
+    {  
         /// <summary>
         /// 添加考勤异常表数据
         /// </summary>

@@ -43,8 +43,8 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 EmplSalaryEmbody ese = new EmplSalaryEmbody();               
                 ese.EmployeeId = empid;
 
-                //EmployeesInfoManage empmanage = new EmployeesInfoManage();
-                //var emp=empmanage.GetEntity(empid);
+                EmployeesInfoManage empmanage = new EmployeesInfoManage();
+                var emp=empmanage.GetEntity(empid);
                 //if (!string.IsNullOrEmpty(emp.PositiveDate.ToString()))
                 //{//员工转正或无试用期的员工，工资计算按正式工资来算
                 //    if (emp.Salary < 2000)
@@ -71,7 +71,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 //        //}
                 //        //ese.PositionSalary = emp.Salary - ese.BaseSalary - ese.PerformancePay;
                 //    }
-                  
+
                 //}
                 //else {//有试用期的员工，工资计算按试用期工资来算
                 //    if ( emp.ProbationSalary<2000) {
@@ -83,7 +83,36 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 //        ese.PositionSalary = emp.ProbationSalary - ese.BaseSalary;
                 //    }
                 //}
-             
+                var deptname = empmanage.GetDeptByEmpid(empid).DeptName;
+                var positionname = empmanage.GetPositionByEmpid(emp.EmployeeId).PositionName;
+                //员工转正或无试用期的员工，工资计算按正式工资来算
+                if (!string.IsNullOrEmpty(emp.PositiveDate.ToString()))
+                {
+                    ese.PerformancePay = GetPerformancePay(deptname, positionname);
+                    var surplusalary = emp.Salary - ese.PerformancePay;
+                    if (surplusalary <= 2000)
+                    {
+                        ese.BaseSalary = surplusalary;
+                    }
+                    else
+                    {
+                        ese.BaseSalary = 2000;
+                        ese.PositionSalary = emp.Salary - ese.BaseSalary - ese.PerformancePay;
+                    }
+                }
+                //有试用期的员工，工资计算按试用期工资来算
+                else
+                {
+                    if (emp.ProbationSalary <= 2000)
+                    {
+                        ese.BaseSalary = emp.ProbationSalary;
+                    }
+                    else
+                    {
+                        ese.BaseSalary = 2000;
+                        ese.PositionSalary = emp.ProbationSalary - ese.BaseSalary;
+                    }
+                }
                 ese.IsDel = false;
                 this.Insert(ese);
                 rc.RemoveCache("InRedisESEData");
