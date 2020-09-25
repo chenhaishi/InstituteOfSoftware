@@ -310,12 +310,27 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             return View();
         }
         //查看缴费记录
+
+        BaseBusiness< Preentryfee> Preentryfee = new BaseBusiness<Preentryfee>();
+        BaseBusiness<StudentInformation> StudentInformation = new BaseBusiness<StudentInformation>();
+        BaseBusiness<StudentFeeRecord> StudentFeeRecord = new BaseBusiness<StudentFeeRecord>();
         public ActionResult Printrecord()
         {
             string student = Request.QueryString["student"];
             ViewBag.vier = dbtext.FienPrice(student);//查询缴费记录
             ViewBag.Tuitionrefund = dbtext.FienTuitionrefund(dbtext.FienPrice(student));
             ViewBag.StudentPrentryfeeDate = dbtext.StudentPrentryfeeDate(student);
+            var xs = StudentInformation.GetList().Where(d => d.StudentNumber == student).SingleOrDefault();
+            var YuLv = Preentryfee.GetList().Where(d => d.identitydocument == xs.identitydocument).SingleOrDefault();
+            var XueFei = StudentFeeRecord.GetList().Where(d => d.StudenID == student).ToList();
+            decimal xuefeiSUM = 0;
+            foreach (var item in XueFei)
+            {
+                xuefeiSUM = xuefeiSUM + Convert.ToDecimal(item.Amountofmoney);
+            }
+            decimal ZongJin = xuefeiSUM+YuLv.Amountofmoney;
+            ZongJin = Math.Round(ZongJin, 2);
+            ViewBag.zongjin = ZongJin;
             return View();
         }
         [HttpGet]
