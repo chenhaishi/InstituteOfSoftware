@@ -1428,7 +1428,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                     empName=Keep.empName,
                     StuEntering=  Keep.StuEntering,
                     Refundornot= item.Refundornot,
-                    Amountofmoney= item.Amountofmoney,
+                    Amountofmoney = Convert.ToDecimal(item.Amountofmoney),
                     identitydocument= item.identitydocument,
                     ClassNumber= item.ClassID,
                     OddNumbers=item.OddNumbers==null?"请补录": item.OddNumbers,
@@ -1488,7 +1488,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                     {
                         vierprice vierprice1 = new vierprice();
                         vierprice1.CostitemName = "预入费";
-                        vierprice1.Amountofmoney = item1.Amountofmoney;
+                        vierprice1.Amountofmoney = Convert.ToDecimal(item1.Amountofmoney);
                         vierprice1.GrandName = item1.ClassID;
                         vierprice1.Rategory = item1.Refundornot.ToString();
                         vierprice.Chicked.Add(vierprice1);
@@ -1826,7 +1826,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
             foreach (var item in x)
             {
 
-                studentRefunditems.Amountofmoney = studentRefunditems.Amountofmoney + item.Amountofmoney;
+                studentRefunditems.Amountofmoney = studentRefunditems.Amountofmoney + Convert.ToDecimal(item.Amountofmoney);
             }
             return studentRefunditems.Amountofmoney;
 
