@@ -1044,7 +1044,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                     var Grandid = Grand.GetList().Where(d => d.GrandName == stage).SingleOrDefault();//查询阶段费用
                     if (Grandid==null)
                     {
-                      sb.Append("select SUM(c.Amountofmoney) as 'Summonry' from Costitems  as c where c.IsDelete=0");//查询阶段总金额（转换为字符串）
+                      sb.Append("select SUM(c.Amountofmoney) as 'Summonry' from Costitems  as c where c.IsDelete=0");//查询自考本科及其他费用（转换为字符串）
                     }
                     else
                     {
