@@ -36,7 +36,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         public string LeaveEarlyRecord { get; set; }//早退记录
      
         public Nullable<decimal> TardyAndLeaveWithhold { get; set; }//迟到/早退扣费
-        public Nullable<decimal> LeaveWithhold { get; set; }//请假扣费
+   //     public Nullable<decimal> LeaveWithhold { get; set; }//请假扣费
         public string Remark { get; set; }//备注
         public Nullable<bool> IsDel { get; set; }
         public Nullable<bool> IsApproval { get; set; }
