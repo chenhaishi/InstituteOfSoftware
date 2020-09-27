@@ -36,34 +36,6 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             atdinfolist = rc.GetCache<List<AttendanceInfo>>("InRedisATDData");
             return atdinfolist;
         }
-        /// <summary>
-        /// 员工入职时往员工考勤表加入该员工
-        /// </summary>
-        /// <param name="empid"></param>
-        /// <returns></returns>
-        //public bool AddEmpToAttendanceInfo(string empid)
-        //{
-        //    bool result = false;
-        //    try
-        //    {
-        //        AttendanceInfo ese = new AttendanceInfo();
-        //        ese.EmployeeId = empid;
-        //        ese.IsDel = false;
-        //        ese.YearAndMonth = DateTime.Now;
-        //        this.Insert(ese);
-        //        rc.RemoveCache("InRedisATDData");
-        //        result = true;
-        //        BusHelper.WriteSysLog("考勤表添加员工成功", Entity.Base_SysManage.EnumType.LogType.添加数据);
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        result = false;
-        //        BusHelper.WriteSysLog(ex.Message, Entity.Base_SysManage.EnumType.LogType.添加数据);
-        //    }
-        //    return result;
-
-        //}
 
         /// <summary>
         /// 编辑考勤表禁用员工
@@ -93,7 +65,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
 
         }
 
-      
+        #region 从excel导入考勤信息到系统
         public AjaxResult ImportDataFormExcel(Stream stream, string contentType)
         {
 
@@ -270,7 +242,6 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             return result;
 
         }
-           
 
         /// <summary>
         /// 将excel数据类的数据存入到数据库的考勤表中
@@ -358,6 +329,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             }
             return ajaxresult;   
         }
+        #endregion
 
         /// <summary>
         /// 计算应出勤天数
@@ -413,25 +385,8 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             return result; 
         }
 
-        //public decimal GetAbsent
-
-        /// <summary>
-        /// 计算请假扣款
-        /// </summary>
-        /// <param name="tardyRecord"></param>
-        /// <returns></returns>
-        public decimal GetTardyCount(string tardyRecord)
-        {
-            var str = tardyRecord.Split(';');
-            var result = 0;
-            int num = 0;
-            foreach (var item in str)
-            {
-                var tardy = item[num];
-
-            }
-            return result;
-        }
+      
+       
         //迟到扣款
         public decimal TardyWithhold(string tardyRecord)
         {

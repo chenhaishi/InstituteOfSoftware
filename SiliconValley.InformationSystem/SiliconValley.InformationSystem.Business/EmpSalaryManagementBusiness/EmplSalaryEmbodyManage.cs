@@ -45,44 +45,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
 
                 EmployeesInfoManage empmanage = new EmployeesInfoManage();
                 var emp=empmanage.GetEntity(empid);
-                //if (!string.IsNullOrEmpty(emp.PositiveDate.ToString()))
-                //{//员工转正或无试用期的员工，工资计算按正式工资来算
-                //    if (emp.Salary < 2000)
-                //    {
-                //        ese.BaseSalary = emp.Salary;
-                //    }
-                //    else {
-                //        ese.BaseSalary = 2000;
-
-                //        var deptname = empmanage.GetDeptByEmpid(empid).DeptName;//获取该员工部门
-                //        var positionname = empmanage.GetPositionByEmpid(empid).PositionName;//获取该员工岗位
-
-                //        if ( positionname.Contains("主任") && !positionname.Contains("班主任"))
-                //        {
-                //            ese.PerformancePay = 1000;
-                //        }
-                //        //else if (empmanage.GetDeptByEmpid(empid).DeptName == "校办")
-                //        //{
-                //        //    ese.PerformancePay = 3000;
-                //        //}
-                //        //else
-                //        //{
-                //        //    ese.PerformancePay = 500;
-                //        //}
-                //        //ese.PositionSalary = emp.Salary - ese.BaseSalary - ese.PerformancePay;
-                //    }
-
-                //}
-                //else {//有试用期的员工，工资计算按试用期工资来算
-                //    if ( emp.ProbationSalary<2000) {
-                //        ese.BaseSalary = emp.ProbationSalary;
-                //    }
-                //    else
-                //    {
-                //        ese.BaseSalary = 2000;
-                //        ese.PositionSalary = emp.ProbationSalary - ese.BaseSalary;
-                //    }
-                //}
+               
                 var deptname = empmanage.GetDeptByEmpid(empid).DeptName;
                 var positionname = empmanage.GetPositionByEmpid(emp.EmployeeId).PositionName;
                 //员工转正或无试用期的员工，工资计算按正式工资来算

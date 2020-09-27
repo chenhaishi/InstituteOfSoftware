@@ -35,28 +35,14 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             }
             return mytime;
         }
-        //第一次进入页面加载的应到勤天数
-        //static string GetFirstDeserveToRegularDays()
-        //{
-        //    AttendanceInfoManage atdmanage = new AttendanceInfoManage();//员工月度工资
-        //    string myDeserveToRegularDays = "";
-        //    if (atdmanage.GetADInfoData().Where(s => s.IsDel == false).Count() > 0)
-        //    {
-        //        myDeserveToRegularDays = atdmanage.GetADInfoData().Where(s => s.IsDel == false).LastOrDefault().DeserveToRegularDays.ToString();
-        //    }
-        //    return myDeserveToRegularDays;
-        //}
-        //static string Firstshouldday = GetFirstDeserveToRegularDays();
 
-        static string FirstTime = GetFirstTime();
-        
+        static string FirstTime = GetFirstTime(); 
 
         //考勤统计
         // GET: Personnelmatters/AttendanceStatistics
         public ActionResult AttendanceStatisticsIndex()
         {
             ViewBag.yearandmonth = FirstTime;
-           // ViewBag.DeserveToRegularDays = Firstshouldday;
             return View();
         }
         //获取考勤数据
@@ -121,7 +107,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                              e.IsApproval,
                              e.DeserveToRegularDays,
                              e.TardyAndLeaveWithhold,
-                             e.LeaveWithhold,
+                            // e.LeaveWithhold,
                              e.OvertTimeDuration,
                              e.OvertimeCharges,
                              e.DaysoffDuration,
@@ -168,7 +154,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 if (attlist.Count > 0)
                 {
                     FirstTime = CurrentTime;
-                    //Firstshouldday = attlist[0].DeserveToRegularDays.ToString();
                 }
                 AjaxResultxx.Success = true;
                 AjaxResultxx.Data = attlist.Count();
