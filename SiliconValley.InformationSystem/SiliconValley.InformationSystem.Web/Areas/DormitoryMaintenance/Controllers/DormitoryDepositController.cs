@@ -150,6 +150,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
                 //个人承担
 
             }
+
+            return null;
         }
     }
 }
