@@ -385,8 +385,50 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             return result; 
         }
 
-      
-       
+
+        public decimal GetAbsenteeismWithhold(string empid,double absenteeismDays) {
+            EmployeesInfoManage empmanage = new EmployeesInfoManage();
+            var result = 0;
+            var emprank = empmanage.IsGeneralStarffOrSuperior(empid);//true为普通员工
+            if (absenteeismDays == 0.5)
+            {
+                if (emprank)
+                {
+                    result = 50;
+                }
+                else
+                {
+                    result = 100;
+                }
+            }
+            else if (absenteeismDays == 1)
+            {
+                if (emprank)
+                {
+                    result = 100;
+                }
+                else
+                {
+                    result = 200;
+                }
+            }
+            else if (absenteeismDays > 1 && absenteeismDays < 3)
+            {
+                if (emprank)
+                {
+                    result = 300;
+                }
+                else
+                {
+                    result = 600;
+                }
+            }
+            else {
+                result = 1000;
+            }
+            return result;
+        }
+
         //迟到扣款
         public decimal TardyWithhold(string tardyRecord)
         {
