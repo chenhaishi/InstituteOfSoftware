@@ -15,10 +15,13 @@ namespace SiliconValley.InformationSystem.Entity.Entity
     {
         [Key]
         public int Id { get; set; }
-        public string EmployeeId { get; set; }//员工编号
-        public Nullable<int> AnormalyTypeId { get; set; }//考勤异常类型
-        public Nullable<System.DateTime> YearAndMonth { get; set; }//年月份
+        //   public string EmployeeId { get; set; }//员工编号
 
-     
+        public string AnormalyTypeName { get; set; }//异常类型名称
+      
+        public Nullable<bool> IsDel { get; set; }
+        //   public Nullable<System.DateTime> YearAndMonth { get; set; }//年月份
+
+
     }
 }
