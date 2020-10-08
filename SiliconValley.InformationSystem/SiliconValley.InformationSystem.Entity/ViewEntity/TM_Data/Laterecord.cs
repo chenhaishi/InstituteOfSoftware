@@ -51,7 +51,7 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data
         public DateTime Createdate { get; set; }
 
         /// <summary>
-        /// 创建人
+        /// 创建人(员工编号)
         /// </summary>
         public string CreateUser { get; set; }
     }

@@ -10,25 +10,37 @@
 namespace SiliconValley.InformationSystem.Entity.MyEntity
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    /// <summary>
+    ///  宿舍物品价格表
+    /// </summary>
     [Table(name: "Pricedormitoryarticles")]
-    //宿舍物品价格表
     public partial class Pricedormitoryarticles
     {
         [Key]
         public int ID { get; set; }
-        //物品名称
+        /// <summary>
+        ///   //物品名称
+        /// </summary>
         public string Nameofarticle { get; set; }
-        //单价
-        public Nullable<decimal> Reentry { get; set; }
-        //备注
+        /// <summary>
+        ///  //单价
+        /// </summary>
+        public decimal Reentry { get; set; }
+        /// <summary>
+        ///  //备注
+        /// </summary>
         public string Remarks { get; set; }
-        //是否删除
-        public Nullable<bool> Dateofregistration { get; set; }
-        //添加时间
-        public Nullable<System.DateTime> Addtime { get; set; }
+
+        /// <summary>
+        ///  是否可用正常使用  true--正常使用，false--禁用
+        /// </summary>
+        public bool Dateofregistration { get; set; }
+        /// <summary>
+        ///       //添加时间
+        /// </summary>
+        public DateTime Addtime { get; set; }
 
 
     }

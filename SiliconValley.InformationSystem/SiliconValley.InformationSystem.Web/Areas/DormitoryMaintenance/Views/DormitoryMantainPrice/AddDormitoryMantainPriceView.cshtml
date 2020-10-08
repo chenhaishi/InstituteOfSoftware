@@ -1,0 +1,117 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>AddDormitoryMantainPriceView</title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+    <style>
+        .DivCss1{
+        margin:0px auto;
+        margin-top:20px;
+        width:98%;
+        }
+        .LableCss1
+        {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            float: left;
+            display: block;
+            padding: 9px 15px;
+            width: 80px;
+            font-weight: 400;
+            line-height: 20px;
+            text-align: right
+        }
+    </style>
+</head>
+<body>
+    <div class="DivCss1">
+        <form id="adddataform" class="layui-form" lay-filter="adddataform">
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                    <label class="LableCss1">物品名称:</label>
+                    <div class="layui-input-block">
+                        <input type="text" class="layui-input" name="Nameofarticle" id="Nameofarticle" title="物品名称" lay-verify="required"/>
+                    </div>
+                </div>                
+            </div>
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                    <label class="LableCss1">物品价格:</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="Reentry" name="Reentry" class="layui-input" lay-verify="required|Mynumber" />
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                    <label class="LableCss1">说 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 明:</label>
+                    <div class="layui-input-block">
+                        <textarea name="Remarks" id="Remarks" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12" style="text-align:center;margin-top:30px;">
+                    <button type="submit" class="layui-btn" lay-submit="" lay-filter="addbtn">确定添加</button>
+                    <button id="btn1" type="button" class="layui-btn">取消关闭</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/layui/layui.js"></script>
+    <script>
+        $(function () {
+            var form;
+            var layer;
+            layui.use(['form','layer'], function () {
+                form = layui.form;
+                layer = layui.layer;
+                //自定义验证规则
+                form.verify({
+                    Mynumber: function (value) {
+                        var number = Number(value);
+                        if (number <= 0) {
+                            return '必须大于0';
+                        }  
+                    }
+                     
+                });
+
+                form.on('submit(addbtn)', function (data) {                                       
+                    $.ajax({
+                        url: '/DormitoryMaintenance/DormitoryMantainPrice/AddFunction',
+                        type: 'POST',
+                        data: data.field,
+                        success: function (res) {
+                            if (res.Success) {
+                                layer.msg(res.Msg, { icon: 1, shade: 0.8 }, function () {
+                                    window.parent.tablefulsh();
+                                     
+                                });
+                            } else {
+                                layer.msg(res.Msg, { icon: 2, shade: 0.8 });
+                            }
+                        }
+                    });
+                    return false;  
+                });
+
+            });
+
+            $("#btn1").click(function () {
+                var index = parent.layer.getFrameIndex(window.name);
+                parent.layer.close(index); 
+            });
+        });
+    </script>
+</body>
+</html>

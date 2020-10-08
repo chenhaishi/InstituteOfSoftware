@@ -187,7 +187,7 @@
                 <button class="layui-btn layui-btn-sm" lay-event="getCheckData_outNight"><i class="layui-icon">&#x1006;</i>Excel导出</button>
                 <button class="layui-btn layui-btn-sm" lay-event="getCheckData_changIsdele"><i class="layui-icon">&#x1006;</i>批量审批</button>
                 <button class="layui-btn layui-btn-sm" lay-event="SysIsture"><i class="layui-icon">&#x1006;</i>系统审批</button>
-                @*<button class="layui-btn layui-btn-sm" lay-event="sysIsture"><i class="layui-icon">&#x1006;</i>上传文件</button>*@
+                <button class="layui-btn layui-btn-sm" lay-event="sysIstureM"><i class="layui-icon">&#x1006;</i>上传文件</button>
             }
             else
             {
@@ -436,17 +436,17 @@
                 //        , skin: 'demo-class'
                 //    });
                 //    break;
-                //case 'sysIsture':
-                //    layer.open({
-                //        type: 2,
-                //        content: '/Educational/TeacherAddorBeonDuty/TableInsert'
-                //        , area: ['600px', '400px'],
-                //        title: '考勤导入'
-                //        , shade: 0.8
-                //        , anim: 4
-                //        , skin: 'demo-class'
-                //    })
-                //    break;
+                case 'sysIstureM':
+                    layer.open({
+                        type: 2,
+                        content: '/Educational/TeacherAddorBeonDuty/TableInsert'
+                        , area: ['600px', '400px'],
+                        title: '考勤导入'
+                        , shade: 0.8
+                        , anim: 4
+                        , skin: 'demo-class'
+                    })
+                    break;
                 case 'SysIsture':
                     myindex= layer.open({
                         type: 1,

@@ -128,7 +128,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
 
             return Json(josndata, JsonRequestBehavior.AllowGet);
         }
-        
+        /// <summary>
+        /// 模糊查询方法
+        /// </summary>
+        /// <param name="limit"></param>
+        /// <param name="page"></param>
+        /// <returns></returns>
         public ActionResult GetTableData(int limit, int page)
         {
             List<ExportStudentBeanData> list = new List<ExportStudentBeanData>();
@@ -223,12 +228,39 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
                     sb1.Append(" and StuEntering = '" + findCreateMan + "'");
                     sb2.Append(" and CreateUserName = '" + findCreateMan + "'");
                 }
-
-                if (!string.IsNullOrEmpty(findStartvalue))
+                //当查询的上门数据时
+                if (Isgo!="0")
                 {
-                    sb1.Append(" and BeanDate >= '" + findStartvalue + "'");
-                    sb2.Append(" and CreateDate >= '" + findStartvalue + "'");
+                    //匹配上门日期
+                    if (!string.IsNullOrEmpty(findStartvalue))
+                    {
+                        sb1.Append(" and StuVisit >= '" + findStartvalue + "'");
+                    }
+
+                    if (!string.IsNullOrEmpty(findEndvalue))
+                    {
+                        sb1.Append(" and StuVisit <= '" + findEndvalue + "'");
+                    }
+                    
                 }
+                else
+                {
+                    //匹配备案日期
+
+                    if (!string.IsNullOrEmpty(findStartvalue))
+                    {
+                        sb1.Append(" and BeanDate >= '" + findStartvalue + "'");
+                        sb2.Append(" and CreateDate >= '" + findStartvalue + "'");
+                    }
+
+                    if (!string.IsNullOrEmpty(findEndvalue))
+                    {
+                        sb1.Append(" and BeanDate <= '" + findEndvalue + "'");
+                        sb2.Append(" and CreateDate <= '" + findEndvalue + "'");
+                    }
+                }
+
+                 
 
                 if (!string.IsNullOrEmpty(findTeacher) && findTeacher != "0")
                 {
@@ -236,11 +268,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
                     sb2.Append(" and Inquiry = '" + findTeacher + "'");
                 }
 
-                if (!string.IsNullOrEmpty(findEndvalue))
-                {
-                    sb1.Append(" and BeanDate <= '" + findEndvalue + "'");
-                    sb2.Append(" and CreateDate <= '" + findEndvalue + "'");
-                }
+                
 
                 if (markety != "0" && !string.IsNullOrEmpty(markety))
                 {

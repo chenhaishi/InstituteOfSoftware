@@ -161,6 +161,8 @@
     <Compile Include="DormitoryBusiness\StaffAccdationBusiness.cs" />
     <Compile Include="DormitoryBusiness\TungBusiness.cs" />
     <Compile Include="DormitoryBusiness\TungFloorBusiness.cs" />
+    <Compile Include="DormitoryMantainBusiness\DormitoryDepositManeger.cs" />
+    <Compile Include="DormitoryMantainBusiness\PricedormitoryarticlesManeger.cs" />
     <Compile Include="EducationalBusiness\AddCourseManeger.cs" />
     <Compile Include="EducationalBusiness\BaseDataEnumManeger.cs" />
     <Compile Include="EducationalBusiness\BeOnDutyManeger.cs" />
