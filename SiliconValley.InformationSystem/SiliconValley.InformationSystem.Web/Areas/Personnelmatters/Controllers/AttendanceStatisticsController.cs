@@ -90,6 +90,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                              empPosition = empmanage.GetPositionByEmpid(e.EmployeeId).PositionName,
                              empIsDel = empmanage.GetInfoByEmpID(e.EmployeeId).IsDel,
                              e.YearAndMonth,
+                             e.DeserveToRegularDays,
                              e.ToRegularDays,
                              e.LeaveDays,
                              e.LeaveRecord,
@@ -105,18 +106,17 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                              e.Remark,
                              e.IsDel,
                              e.IsApproval,
-                             e.DeserveToRegularDays,
                              e.TardyAndLeaveWithhold,
                             // e.LeaveWithhold,
                              e.OvertTimeDuration,
+                             e.OvertTimeRecord,
                              e.OvertimeCharges,
                              e.DaysoffDuration,
+                             e.DaysoffRecord,
                              e.AbsenteeismDays,
-                             e.AbsenteeismWithhold,
-                             e.OvertTimeRecord,
-                             e.DaysoffRecord
+                             e.AbsenteeismRecord,
+                             e.AbsenteeismWithhold
                              #endregion
-
                          };
                  
             var newobj = new
@@ -253,7 +253,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
               var mytime = DateTime.Parse(year_month.ToString()).Year + "-" + DateTime.Parse(year_month.ToString()).Month;
                 FirstTime = mytime;
             }
-           
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
@@ -398,5 +397,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             }
             return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
         }
+
+
     }
 }

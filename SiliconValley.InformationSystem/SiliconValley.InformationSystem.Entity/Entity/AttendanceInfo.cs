@@ -16,7 +16,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     [Table("AttendanceInfo")]//考勤表
     public partial class AttendanceInfo
     { 
-        [Key]
+        [Key] 
         public int AttendanceId { get; set; }
         public string EmployeeId { get; set; }
         public Nullable<System.DateTime> YearAndMonth { get; set; }//年月份

@@ -109,7 +109,7 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.SalaryView
         public Nullable<decimal> DaysoffDuration { get; set; }//调休时长
         public string DaysoffRecord { get; set; }//调休记录
         public Nullable<decimal> AbsenteeismDays { get; set; }//旷工天数
-        // public Nullable<decimal> AbsenteeismWithhold { get; set; }//旷工扣费
+         public Nullable<decimal> AbsenteeismWithhold { get; set; }//旷工扣费
         public string AbsenteeismRecord { get; set; }//旷工记录
     }
 }

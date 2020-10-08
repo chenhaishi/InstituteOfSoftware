@@ -136,9 +136,12 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     string workAbsentNum = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(15))) ? null : getrow.GetCell(15).ToString();
                     //下班缺卡次数[16]
                     string offDutyAbsentNum = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(16))) ? null : getrow.GetCell(16).ToString();
+                    //旷工天数[17]
+                    string AbsenteeismDays = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(17))) ? null : getrow.GetCell(17).ToString();
 
                     //请假天数[20](事假)
                     string leaveddays = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(20))) ? null : getrow.GetCell(20).ToString();
+                 
                     //请假记录
                     string leaveRecord = "";
                     //迟到记录
@@ -156,8 +159,6 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     //旷工记录
                     string AbsenteeismRecord = "";
                     #endregion
-                    //这些付款都是在员工工资表
-                    MonthlySalaryRecordManage msrmanage = new MonthlySalaryRecordManage();
             
                     int cells = 25;
                     while (true)
@@ -224,7 +225,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     matd.OvertTimeRecord = OvertTimeRecord;
                     matd.DaysoffRecord = DaysoffRecord;
                     matd.AbsenteeismRecord = AbsenteeismRecord;
-
+                    matd.AbsenteeismDays = Convert.ToDecimal(AbsenteeismDays);
                     //matd.TardyWithhold =tardyWithhold==null?matd.TardyWithhold=null: Convert.ToInt32(tardyWithhold);
 
                     //matd.LeaveWithhold =leaveWithhold==null?matd.LeaveWithhold=null: Convert.ToInt32(leaveWithhold);
@@ -385,7 +386,12 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             return result; 
         }
 
-
+        /// <summary>
+        /// 计算旷工扣费
+        /// </summary>
+        /// <param name="empid">员工编号</param>
+        /// <param name="absenteeismDays">旷工天数</param>
+        /// <returns></returns>
         public decimal GetAbsenteeismWithhold(string empid,double absenteeismDays) {
             EmployeesInfoManage empmanage = new EmployeesInfoManage();
             var result = 0;
@@ -435,5 +441,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             var result = 0;
             return result;
         }
+
+
     }
 }
