@@ -229,6 +229,9 @@
     <Compile Include="Areas\CourseSyllabus\CourseSyllabusAreaRegistration.cs" />
     <Compile Include="Areas\Courseware\Controllers\CoursewaremakingController.cs" />
     <Compile Include="Areas\Courseware\CoursewareAreaRegistration.cs" />
+    <Compile Include="Areas\DormitoryMaintenance\Controllers\DormitoryDepositController.cs" />
+    <Compile Include="Areas\DormitoryMaintenance\Controllers\DormitoryMantainPriceController.cs" />
+    <Compile Include="Areas\DormitoryMaintenance\DormitoryMaintenanceAreaRegistration.cs" />
     <Compile Include="Areas\Dormitory\Controllers\BasicsController.cs" />
     <Compile Include="Areas\Dormitory\Controllers\DormitoryInfoController.cs" />
     <Compile Include="Areas\Dormitory\Controllers\EmployeeCheckInController.cs" />
@@ -245,7 +248,6 @@
     <Compile Include="Areas\Educational\Controllers\BaseDataEnumController.cs" />
     <Compile Include="Areas\Educational\Controllers\BeOnDutyController.cs" />
     <Compile Include="Areas\Educational\Controllers\BreakController.cs" />
-    <Compile Include="Areas\Educational\Controllers\CheckController.cs" />
     <Compile Include="Areas\Educational\Controllers\ClassroomController.cs" />
     <Compile Include="Areas\Educational\Controllers\ClassTeacherKeepController.cs" />
     <Compile Include="Areas\Educational\Controllers\EvningSelfStudyController.cs" />
@@ -1919,6 +1921,11 @@
     <Content Include="Areas\Market\Views\StudentDataKeep\Conflict.cshtml" />
     <Content Include="Areas\Educational\Views\TeacherAddorBeonDuty\TableInsert.cshtml" />
     <Content Include="Areas\Educational\Views\TeacherNight\ExcelIntoView.cshtml" />
+    <Content Include="Areas\DormitoryMaintenance\Views\web.config" />
+    <Content Include="Areas\DormitoryMaintenance\Views\DormitoryMantainPrice\DormitoryMantainPriceIndex.cshtml" />
+    <Content Include="Areas\DormitoryMaintenance\Views\DormitoryMantainPrice\AddDormitoryMantainPriceView.cshtml" />
+    <Content Include="Areas\DormitoryMaintenance\Views\DormitoryDeposit\DormitoryDepositIndex.cshtml" />
+    <Content Include="Areas\DormitoryMaintenance\Views\DormitoryDeposit\AddView.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
@@ -1932,6 +1939,8 @@
     <None Include="Properties\PublishProfiles\FolderProfile2.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile3.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile4.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile5.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile6.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\business\requestbusiness.js" />
     <Content Include="Scripts\config.js" />
@@ -3637,6 +3646,8 @@
     <Folder Include="Areas\Courseware\首页\word文档\S3NET\" />
     <Folder Include="Areas\Courseware\首页\word文档\S4NET\" />
     <Folder Include="Areas\Courseware\首页\word文档\Y1\" />
+    <Folder Include="Areas\DormitoryMaintenance\Models\" />
+    <Folder Include="Areas\DormitoryMaintenance\Views\Shared\" />
     <Folder Include="Areas\Educational\Models\" />
     <Folder Include="Areas\Finance\Models\" />
     <Folder Include="Areas\flow\Controllers\" />

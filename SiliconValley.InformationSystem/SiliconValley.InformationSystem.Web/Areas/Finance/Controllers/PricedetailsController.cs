@@ -20,6 +20,7 @@ using SiliconValley.InformationSystem.Business.ClassSchedule_Business;
 using SiliconValley.InformationSystem.Business.ClassesBusiness;
 using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 using SiliconValley.InformationSystem.Business.Base_SysManage;
+using System.Text;
 
 namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
 {
@@ -310,12 +311,36 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             return View();
         }
         //查看缴费记录
+
+        BaseBusiness< Preentryfee> Preentryfee = new BaseBusiness<Preentryfee>();
+        BaseBusiness<StudentInformation> StudentInformation = new BaseBusiness<StudentInformation>();
+        BaseBusiness<StudentFeeRecord> StudentFeeRecord = new BaseBusiness<StudentFeeRecord>();
         public ActionResult Printrecord()
         {
             string student = Request.QueryString["student"];
             ViewBag.vier = dbtext.FienPrice(student);//查询缴费记录
             ViewBag.Tuitionrefund = dbtext.FienTuitionrefund(dbtext.FienPrice(student));
             ViewBag.StudentPrentryfeeDate = dbtext.StudentPrentryfeeDate(student);
+            var xs = StudentInformation.GetList().Where(d => d.StudentNumber == student).SingleOrDefault();
+            var YuLv = Preentryfee.GetList().Where(d => d.identitydocument == xs.identitydocument).SingleOrDefault();
+            var XueFei = StudentFeeRecord.GetList().Where(d => d.StudenID == student).ToList();
+            decimal xuefeiSUM = 0;
+            decimal ZongJin = 0;
+            foreach (var item in XueFei)
+            {
+                xuefeiSUM = xuefeiSUM + Convert.ToDecimal(item.Amountofmoney);
+            }
+            if (YuLv == null)
+            {
+                ZongJin = xuefeiSUM;
+                ZongJin = Math.Round(ZongJin, 2);
+            }
+            else
+            {
+                ZongJin = xuefeiSUM + Convert.ToDecimal(YuLv.Amountofmoney);
+                ZongJin = Math.Round(ZongJin, 2);
+            }
+            ViewBag.zongjin = ZongJin;
             return View();
         }
         [HttpGet]
@@ -440,6 +465,27 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             ViewBag.OddNumbers = Request.QueryString["OddNumbers"];
             ViewBag.Passornot = Request.QueryString["Passornot"];
             ViewBag.paymentmethod= Request.QueryString["paymentmethod"];
+            List<StudentFeeRecord> stulist = StudentFeeRecord.GetList().Where(d => d.StudenID == studentid).ToList();
+
+            StringBuilder sb = new StringBuilder();
+
+            for (int i = 0; i < stulist.Count(); i++)
+            {
+                if (i != 0)
+                {
+                    if (stulist[i].Remarks != stulist[i - 1].Remarks)
+                    {
+                        sb.Append(stulist[i].Remarks);
+                    }
+                }
+                else
+                {
+                    sb.Append(stulist[i].Remarks);
+                }
+
+            }
+
+            ViewBag.StudentFeeRecord = sb.ToString();
             //岗位数据
             var positon = employeesInfoManage.GetPositionByEmpid(user.EmpNumber);
            ViewBag.postName=   positon.PositionName.Contains("会计") == true ? 1 : 0;
@@ -1054,7 +1100,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             return null;
         }
         //订单重审
-  
+  /// <summary>
+  /// 
+  /// </summary>
+  /// <param name="check_id"></param>
+  /// <param name="studentid"></param>
+  /// <returns></returns>
         public ActionResult reviewOpen(string check_id,string studentid)
         {
             //当前登陆人
@@ -1062,6 +1113,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             EmployeesInfoManage employeesInfoManage = new EmployeesInfoManage();
             //学员信息
             StudentInformationBusiness studentInformationBusiness = new StudentInformationBusiness();
+            BaseBusiness<StudentFeeRecord> StudentFeeRecord = new BaseBusiness<StudentFeeRecord>();
             ViewBag.student = studentInformationBusiness.GetEntity(studentid);
             ViewBag.id = check_id;
             ViewBag.vier = dbtext.FienPricesa(int.Parse(check_id));
@@ -1069,6 +1121,28 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             ViewBag.Passornot = Request.QueryString["Passornot"];
             ViewBag.paymentmethod = Request.QueryString["paymentmethod"];
             ViewBag.reviewList = pay.GetList().Where(d => d.id == int.Parse(check_id)).ToList();
+            //ViewBag.StudentFeeRecord 
+            List<StudentFeeRecord> stulist= StudentFeeRecord.GetList().Where(d => d.StudenID == studentid).ToList();
+
+            StringBuilder sb = new StringBuilder();
+
+            for (int i = 0; i < stulist.Count(); i++)
+            {
+                if (i!=0)
+                {
+                    if (stulist[i].Remarks != stulist[i - 1].Remarks)
+                    {
+                        sb.Append(stulist[i].Remarks);
+                    }
+                }
+                else
+                {
+                    sb.Append(stulist[i].Remarks);
+                }
+                 
+            }
+
+            ViewBag.StudentFeeRecord = sb.ToString();
             //岗位数据
             var positon = employeesInfoManage.GetPositionByEmpid(user.EmpNumber);
             ViewBag.postName = positon.PositionName.Contains("会计") == true ? 1 : 0;

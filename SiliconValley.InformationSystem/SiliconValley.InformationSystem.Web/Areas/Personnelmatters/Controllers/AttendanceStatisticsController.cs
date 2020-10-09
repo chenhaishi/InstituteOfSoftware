@@ -35,26 +35,14 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             }
             return mytime;
         }
-        //第一次进入页面加载的应到勤天数
-        static string GetFirstDeserveToRegularDays()
-        {
-            AttendanceInfoManage atdmanage = new AttendanceInfoManage();//员工月度工资
-            string myDeserveToRegularDays = "";
-            if (atdmanage.GetADInfoData().Where(s => s.IsDel == false).Count() > 0)
-            {
-                myDeserveToRegularDays = atdmanage.GetADInfoData().Where(s => s.IsDel == false).LastOrDefault().DeserveToRegularDays.ToString();
-            }
-            return myDeserveToRegularDays;
-        }
-        static string FirstTime = GetFirstTime();
-        static string Firstshouldday = GetFirstDeserveToRegularDays();
+
+        static string FirstTime = GetFirstTime(); 
 
         //考勤统计
         // GET: Personnelmatters/AttendanceStatistics
         public ActionResult AttendanceStatisticsIndex()
         {
             ViewBag.yearandmonth = FirstTime;
-            ViewBag.DeserveToRegularDays = Firstshouldday;
             return View();
         }
         //获取考勤数据
@@ -102,6 +90,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                              empPosition = empmanage.GetPositionByEmpid(e.EmployeeId).PositionName,
                              empIsDel = empmanage.GetInfoByEmpID(e.EmployeeId).IsDel,
                              e.YearAndMonth,
+                             e.DeserveToRegularDays,
                              e.ToRegularDays,
                              e.LeaveDays,
                              e.LeaveRecord,
@@ -117,18 +106,17 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                              e.Remark,
                              e.IsDel,
                              e.IsApproval,
-                             e.DeserveToRegularDays,
-                             e.TardyWithhold,
-                             e.LeaveWithhold,
+                             e.TardyAndLeaveWithhold,
+                            // e.LeaveWithhold,
                              e.OvertTimeDuration,
+                             e.OvertTimeRecord,
                              e.OvertimeCharges,
                              e.DaysoffDuration,
+                             e.DaysoffRecord,
                              e.AbsenteeismDays,
-                             e.AbsenteeismWithhold,
-                             e.OvertTimeRecord,
-                             e.DaysoffRecord
+                             e.AbsenteeismRecord,
+                             e.AbsenteeismWithhold
                              #endregion
-
                          };
                  
             var newobj = new
@@ -166,7 +154,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 if (attlist.Count > 0)
                 {
                     FirstTime = CurrentTime;
-                    Firstshouldday = attlist[0].DeserveToRegularDays.ToString();
                 }
                 AjaxResultxx.Success = true;
                 AjaxResultxx.Data = attlist.Count();
@@ -259,14 +246,17 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         public ActionResult BatchImport(HttpPostedFileBase excelfile)
         {
             Stream filestream = excelfile.InputStream;
-
+            AttendanceInfoManage atdmanage = new AttendanceInfoManage();
             var result = atdmanage.ImportDataFormExcel(filestream, excelfile.ContentType);
-
-           
+            if (result.Success) {
+                DateTime year_month = (DateTime)atdmanage.GetList().FirstOrDefault().YearAndMonth;
+              var mytime = DateTime.Parse(year_month.ToString()).Year + "-" + DateTime.Parse(year_month.ToString()).Month;
+                FirstTime = mytime;
+            }
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
-        /// <summary>
+        /// <summary> 
         /// 批量添加
         /// </summary>
         /// <returns></returns>
@@ -302,7 +292,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
               AjaxResultxx=atdmanage.Error(ex.Message);
             }
             FirstTime = time;
-            Firstshouldday = days;
+            //Firstshouldday = days;
             return Json(AjaxResultxx,JsonRequestBehavior.AllowGet);
         }
 
@@ -375,6 +365,39 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             }
             return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
         }
+
+        /// <summary>
+        /// 判断是否审批
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult JudgeIsApproval(int id)
+        {
+            AttendanceInfoManage atdmanage = new AttendanceInfoManage();
+            var AjaxResultxx = new AjaxResult();
+            try
+            {
+                var msr = atdmanage.GetEntity(id);
+                if (msr.IsApproval == true)
+                {
+                    AjaxResultxx.Success = true;
+
+                }
+                else
+                {
+                    AjaxResultxx.Success = false;
+                }
+                AjaxResultxx.ErrorCode = 200;
+            }
+            catch (Exception ex)
+            {
+                AjaxResultxx.ErrorCode = 500;
+                AjaxResultxx = atdmanage.Error(ex.Message);
+            }
+            return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
+        }
+
 
     }
 }

@@ -111,14 +111,14 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.SalaryView
         public Nullable<decimal> CashSalary { get; set; }
 
         /// <summary>
-        /// 迟到扣款
+        /// 迟到/早退扣款
         /// </summary>
-        public Nullable<decimal> TardyWithhold { get; set; }
+        public Nullable<decimal> TardyAndLeaveWithhold { get; set; }
 
         /// <summary>
-        /// 早退扣款
+        /// (早退)请假扣款
         /// </summary>
-        public Nullable<decimal> LeaveWithhold { get; set; }
+      //  public Nullable<decimal> LeaveWithhold { get; set; }
         /// <summary>
         /// 缺卡扣款
         /// </summary>

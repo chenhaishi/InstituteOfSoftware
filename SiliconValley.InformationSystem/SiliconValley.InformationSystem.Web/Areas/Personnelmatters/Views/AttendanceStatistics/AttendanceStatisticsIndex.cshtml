@@ -7,7 +7,7 @@
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
         <button class="layui-btn layui-btn-sm" lay-event="BatchImport"><i class="layui-icon layui-icon-upload-drag"></i>excel批量导入</button>
-        <button class="layui-btn layui-btn-sm" lay-event="BatchAdd"><i class="layui-icon layui-icon-addition"></i>批量添加</button>
+        @*<button class="layui-btn layui-btn-sm" lay-event="BatchAdd"><i class="layui-icon layui-icon-addition"></i>批量添加</button>*@
         <button class="layui-btn layui-btn-sm" lay-event="timeanddaysChange"><i class="layui-icon layui-icon-search"></i>查看记录</button>
         <button class="layui-btn layui-btn-sm" lay-event="Approved"><i class="layui-icon layui-icon-edit"></i>确认审批</button>
     </div>
@@ -96,15 +96,16 @@
                 , toolbar: '#toolbarDemo'
                 , limits: [5, 10, 15, 20, 25, 30]
                 , limit: 10
-                , cols: [[{ title: "应到勤天数：" + "@ViewBag.DeserveToRegularDays" + "天", colspan: 20 }],
+                , cols: [@*[{ title: "应到勤天数：" + "@ViewBag.DeserveToRegularDays" + "天", colspan: 20 }],*@
                     [
-                      { field: 'empName', title: '姓名', width: 100, sort: true }
+                    { type: 'checkbox', width: 28, rowspan: 2}
+                    , { field: 'empName', title: '姓名', width: 100, sort: true }
                     , { field: 'empDept', title: '所属部门', width: 120, sort: true }
                     , { field: 'empPosition', title: '所属岗位', width: 110, sort: true }
+                    , { field: 'DeserveToRegularDays', title: '应到勤天数', width: 100 }
                     , { field: 'ToRegularDays', title: '到勤天数',  width: 100 }
-                        , { field: 'LeaveDays', title: '请假时长', width: 100 }
-                        , { field: 'LeaveRecord', title: '请假记录', width: 100 }
-
+                    , { field: 'LeaveDays', title: '请假时长', width: 100 }
+                    , { field: 'LeaveRecord', title: '请假记录', width: 100 }
                     , { field: 'NoClockTotalNum', title: '总缺卡次数', width: 135 }
                     , { field: 'WorkAbsentNum', title: '上班缺卡次数',width: 135}
                     , { field: 'WorkAbsentRecord', title: '上班缺卡记录',  width: 135 }
@@ -112,10 +113,16 @@
                     , { field: 'OffDutyAbsentRecord', title: '下班缺卡记录', width: 135 }
                     , { field: 'TardyNum', title: '迟到次数', width: 100 }
                     , { field: 'TardyRecord', title: '迟到记录', width: 100 }
-                    , { field: 'TardyWithhold', title: '迟到扣款/元', width: 115 }
+                    , { field: 'TardyAndLeaveWithhold', title: '迟到/早退扣款(元)', width: 115 }
                     , { field: 'LeaveEarlyNum', title: '早退次数',  width: 100 }
                     , { field: 'LeaveEarlyRecord', title: '早退记录', width: 100 }
-                    , { field: 'LeaveWithhold', title: '早退扣款/元', width: 115 }
+                    //, { field: 'LeaveWithhold', title: '请假扣款(元)', width: 115 }
+                    , { field: 'OvertTimeRecord', title: '加班记录', width: 115 }
+                    , { field: 'OvertTimeDuration', title: '加班时长', width: 115 }
+                    , { field: 'DaysoffRecord', title: '调休记录', width: 115 }
+                    , { field: 'DaysoffDuration', title: '调休时长', width: 115 }
+                    , { field: 'AbsenteeismRecord', title: '旷工记录', width: 115 }
+                    , { field: 'AbsenteeismDays', title: '旷工天数', width: 115 }
                     , { field: 'Remark', title: '备注', width: 140 }
                     , { field: 'empIsDel', title: '员工状态', sort: true, width: 110, templet: '#empstate' }
                     , { title: '操作', toolbar: '#barDemo', width: 100, fixed: 'right' }
@@ -138,17 +145,19 @@
                         TimeandDaysChange();
                         break;
                     case 'Approved':
-                          var time = '@ViewBag.yearandmonth';
-                        if (JSON.stringify(time) == "{}") {
+                        var time = '@ViewBag.yearandmonth';
+                        console.log("我的时间：" + JSON.stringify(time) );
+                        if (JSON.stringify(time) != "{}") {
                             $.ajax({
                                 type: "post",
                                 dataType: "json",
+                                async: false,
                                 url: "/Personnelmatters/AttendanceStatistics/IsConfirmApproval",
-                                data: time,
+                                data: { time:time } ,
                                 //报错请加入以下三行，则ajax提交无问题
-                                cache: false,
-                                processData: false,
-                                contentType: false,
+                                //cache: false,
+                                //processData: false,
+                                //contentType: false,
                                 success: function (data) {
                                     if (data.ErrorCode == 200) {
                                         if (data.Success) {
@@ -175,17 +184,40 @@
             //监听行工具事件
             table.on('tool(CheckingIntab)', function (obj) {
                 var data = obj.data;
-                console.log("考勤编号:" + data.AttendanceId);
+                var id = data.AttendanceId;
                 if (obj.event === 'edit') {
-                    layer.open({
-                        type: 2,
-                        content: '/Personnelmatters/AttendanceStatistics/EditAttendanceInfo/?id=' + data.AttendanceId
-                        , area: ["1000px", "600px"]
-                        , title: '编辑员工考勤信息'
-                        , shade: 0.8
-                        , anim: 4
-                        , skin: 'demo-class'
+                    $.post('/Personnelmatters/AttendanceStatistics/JudgeIsApproval', { 'id': id }, function (da) {
+                        if (da.ErrorCode == 200) {
+                            if (da.Success) {
+                                layer.msg("该员工本月考勤已确认审批了，不可编辑！", {
+                                    icon: 1,
+                                    time: 5000 //2秒关闭（如果不配置，默认是3秒）
+                                }, function () {
+                                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                    window.parent.location.reload();
+                                    parent.layer.close(index);
+                                    //var index = parent.layer.getFrameIndex(window.name);
+                                    //parent.layui.table.reload('mySalaryStatistics');
+                                    //parent.layer.close(index);
+                                });
+                            }
+                            else {
+                                layer.open({
+                                    type: 2,
+                                    content: '/Personnelmatters/AttendanceStatistics/EditAttendanceInfo/?id=' + data.AttendanceId
+                                    , area: ["1000px", "600px"]
+                                    , title: '编辑员工考勤信息'
+                                    , shade: 0.8
+                                    , anim: 4
+                                    , skin: 'demo-class'
+                                });
+                            }
+                        } else {
+                            layer.alert("系统出错，请多次尝试后");
+                        }
+
                     });
+             
                 }
 
             });
@@ -235,7 +267,7 @@
                 var layer = layui.layer;      //layui对象
                 layer.open({
                     type: 2
-                    , area: ["600px", "600px"]
+                    , area: ["700px", "600px"]
                     , title: "批量导入"
                     , content: '/Personnelmatters/AttendanceStatistics/BatchImport'
                     , anim: 2
@@ -262,7 +294,7 @@
 
         //"确认审批"按钮事件
         function ConfirmApproval(time) {
-            layer.confirm('确认都已审批了吗？', function (index) {
+            layer.confirm('确认已完成线下审批，且开始进行线上确认审批？<br/><span style="color:red;">注：一经确认将不可进行任何修改！</span>', function (index) {
                 $.post('/Personnelmatters/AttendanceStatistics/ConfirmApproval', { 'time': time }, function (da) {
                     if (da) {
                         layer.alert("操作成功!", { icon: 1 }, function (index) {

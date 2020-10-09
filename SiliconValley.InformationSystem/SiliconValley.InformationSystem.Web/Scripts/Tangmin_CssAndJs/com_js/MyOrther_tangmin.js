@@ -6,7 +6,7 @@ function TimeChange(newtime) {
     var date = new Date(parseInt(newtime.slice(6)));
     var year = date.getFullYear();
     var month = parseInt(date.getMonth()) + 1;
-    if (month < 10) {
+    if (parseInt(month) < 10) {
         month = "0" + month;
     }
     var days = date.getDate();

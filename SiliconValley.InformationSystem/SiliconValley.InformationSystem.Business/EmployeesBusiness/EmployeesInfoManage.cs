@@ -49,6 +49,8 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
             return emplist;
         }
 
+        #region 获取部门或岗位的方法
+
         /// <summary>
         ///  获取所属岗位对象
         /// </summary>
@@ -60,7 +62,6 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
             var str = pmanage.GetEntity(pid);
             return str;
         }
-
 
         /// <summary>
         /// 根据员工编号获取所属岗位对象
@@ -99,18 +100,19 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
             var str = deptmanage.GetEntity(GetPosition(pid).DeptId);
             return str;
         }
+
         /// <summary>
         /// 根据部门编号获取部门对象
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-
         public Department GetDeptById(int id)
         {
             DepartmentManage deptmanage = new DepartmentManage();
             var dept = deptmanage.GetEntity(id);
             return dept;
         }
+
         /// <summary>
         /// 根据岗位编号获取岗位对象
         /// </summary>
@@ -136,7 +138,6 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
             return emplist;
         }
 
-
         /// <summary>
         /// 通过岗位编号获取该岗位所属部门
         /// </summary>
@@ -150,15 +151,32 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
         }
 
         /// <summary>
-        /// 根据类型编号获取员工异动类型对象
+        /// 根据部门的名称获取部门对象
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="dname"></param>
         /// <returns></returns>
-        public MoveType GetETById(int id)
+        public Department GetDeptByDname(string dname)
         {
-            MoveTypeManage mtmanage = new MoveTypeManage();
-            return mtmanage.GetEntity(id);
+            DepartmentManage dmanage = new DepartmentManage();
+            var dept = dmanage.GetDepartmentByName(dname);
+            return dept;
         }
+
+        /// <summary>
+        /// 获取指定部门某岗位对象
+        /// </summary>
+        /// <param name="deptid"></param>
+        /// <param name="pname"></param>
+        /// <returns></returns>
+        public Position GetPositionByDeptidPname(int deptid, string pname)
+        {
+            PositionManage pmanage = new PositionManage();
+            var plist = pmanage.GetPositionByDepeID(deptid);
+            var position = plist.Where(s => s.PositionName == pname).FirstOrDefault();
+            return position;
+        }
+
+        #endregion      
 
         /// <summary>
         /// 根据部门编号获取该部门下的所有员工
@@ -444,8 +462,37 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
             return result;
         }
 
+        /// <summary>
+        /// 员工离职
+        /// </summary>
+        /// <param name="emp"></param>
+        /// <returns></returns>
+        public AjaxResult DelEmp(EmployeesInfo emp) {
+            var ajaxresult = new AjaxResult();
+            try
+            {
+                emp.IsDel = true;
+                this.Update(emp);
+                rc.RemoveCache("InRedisEmpInfoData");
+                ajaxresult = this.Success();
+            }
+            catch (Exception ex)
+            {
+                ajaxresult = this.Error(ex.Message);
+            }
 
+            if (ajaxresult.Success)
+            {
+                ajaxresult.Success = this.DelEmpToCorrespondingDept(emp);//将对应的部门员工表状态也改变
+            }
+            if (ajaxresult.Success) {
+                Base_UserBusiness user = new Base_UserBusiness();
+                ajaxresult = user.Change(emp.EmployeeId,false);//将该员工的账号禁用且密码改为后台设置的默认密码
+            }
+            return ajaxresult;
+        }
 
+        #region 员工数据批量导入和导出
         /// <summary>
         /// 将导过来的excel数据赋给员工视图类中
         /// </summary>
@@ -682,7 +729,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
                                                         emperror.errorExplain = "原因是该员工入职时间为空！";
                                                         emperrorlist.Add(emperror);
                                                     }
-                                                    else
+                                                    else 
                                                     {
                                                         #region 没有任何错误的数据就加入员工信息表
                                                         emp.EmployeeId = EmpId();
@@ -787,14 +834,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
 
             return result;
         }
-
-        public AjaxResult SqlDataToExcel()
-        {
-            var ajaxresult = new AjaxResult();
-            return ajaxresult;
-        }
-
-
+        
         //保存员工数据
         public AjaxResult EmpDataToExcel(List<EmployeesInfo> data, string filename)
         {//SaveStaff_CostData
@@ -976,37 +1016,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
             }
 
         }
-
-
-
-
-
-        /// <summary>
-        /// 根据部门的名称获取部门对象
-        /// </summary>
-        /// <param name="dname"></param>
-        /// <returns></returns>
-        public Department GetDeptByDname(string dname)
-        {
-            DepartmentManage dmanage = new DepartmentManage();
-            var dept = dmanage.GetDepartmentByName(dname);
-            return dept;
-        }
-        /// <summary>
-        /// 获取指定部门某岗位对象
-        /// </summary>
-        /// <param name="deptid"></param>
-        /// <param name="pname"></param>
-        /// <returns></returns>
-        public Position GetPositionByDeptidPname(int deptid, string pname)
-        {
-            PositionManage pmanage = new PositionManage();
-            var plist = pmanage.GetPositionByDepeID(deptid);
-            var position = plist.Where(s => s.PositionName == pname).FirstOrDefault();
-            return position;
-
-
-        }
+        #endregion
 
         /// <summary>
         ///计算员工年龄
@@ -1167,6 +1177,18 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
 
         }
 
+
+        /// <summary>
+        /// 根据类型编号获取员工异动类型对象
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public MoveType GetETById(int id)
+        {
+            MoveTypeManage mtmanage = new MoveTypeManage();
+            return mtmanage.GetEntity(id);
+        }
+
         /// <summary>
         /// 获取某员工的异动详情
         /// </summary>
@@ -1220,6 +1242,29 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
             EmployeesInfoManage empmanage = new EmployeesInfoManage();
             var emp = empmanage.GetList().Where(s => s.DDAppId == ddid).FirstOrDefault();
             return emp;
+        }
+
+        /// <summary>
+        /// 判断该员工是普通员工还是主任及以上的级别领导
+        /// //返回的是true表示该员工是普通员工，否则为主任以上员工
+        /// </summary>
+        /// <param name="empid"></param>
+        /// <returns></returns>
+        public bool IsGeneralStarffOrSuperior(string empid) {
+            bool result = false;
+            var emp = this.GetInfoByEmpID(empid);
+            var dname = this.GetDeptByEmpid(empid).DeptName;
+            var pname = this.GetPositionByEmpid(empid).PositionName;
+            if (dname == "校办" || (pname.Contains("主任") && !pname.Contains("班主任")) || pname == "人事总监" || (dname == "后勤部" && (pname != "后勤主任" || pname != "后勤专员" || pname != "水电工")))
+            {
+                result = false;
+            }
+            else
+            {
+                result = true;
+            }
+
+            return result; 
         }
     }
 }

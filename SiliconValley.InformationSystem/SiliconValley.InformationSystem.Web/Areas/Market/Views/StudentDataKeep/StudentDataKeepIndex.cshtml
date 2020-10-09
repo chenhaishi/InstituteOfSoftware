@@ -217,6 +217,24 @@
 <script>
     var date = "";
     //转换时间的方法
+    function MyTimeChange(newtime) {
+        if (newtime == null)
+            return "";
+
+        var date = new Date(parseInt(newtime.slice(6)));
+        var year = date.getFullYear();
+        var month = parseInt(date.getMonth()) + 1;
+        if (parseInt(month) < 10) {
+            month = "0" + month;
+        }
+        var days = date.getDate();
+        if (days < 10) {
+            days = "0" + days;
+        }
+        var result = year + '-' + month + '-' + days;
+        return result;
+    }
+ 
     //转换时间的方法包含时分秒
     function formatTen(num) {
         return num > 9 ? (num + "") : ("0" + num);
@@ -468,7 +486,7 @@
                     , { field: 'StuEntering', title: '录入人员', width: 100 }
                     , {
                         field: 'StuVisit', title: '上门日期', width: 100, templet: function (res) {
-                            if (res.StuVisit != null) { return TimeChange(res.StuVisit); } else { return '没有上门' }
+                            if (res.StuVisit != null) { return MyTimeChange(res.StuVisit); } else { return '没有上门' }
                         }
                     }
                     , { field: 'StuDateTime', title: '备案日期', width: 180, templet: function (res) { return formatDate(res.StuDateTime); } }

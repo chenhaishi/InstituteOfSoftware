@@ -157,10 +157,12 @@
             //添加提交
             form.on('submit(demo1)', function (data) {
                 data.field.TraceTime = $("#TraceTime1").val();
-                console.log(data.field.PhoneCommunicateResult1 );
+                console.log(data.field.PhoneCommunicateResult1);
+                var loadindex = layer.load(1);
                 data.field.PhoneCommunicateResult = data.field.PhoneCommunicateResult1 ;
                 data.field.Remark = $("#Remark1").val();
                 $.post("/Personnelmatters/RecruitingDataSummary/AddTrack", data.field, function (data) {
+                    layer.close(loadindex);
                     if (data.Success) {
                         layer.alert("添加成功!", { icon: 1 }, function () {
                             var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引

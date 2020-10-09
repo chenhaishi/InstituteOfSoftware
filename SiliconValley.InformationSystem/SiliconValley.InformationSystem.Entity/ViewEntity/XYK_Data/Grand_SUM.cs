@@ -9,6 +9,6 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.XYK_Data
    public class Grand_SUM
     {
         public decimal Summonry { get; set; }
-        public int Grand_id { get; set; }
+        public int? Grand_id { get; set; }
     }
 }

@@ -116,6 +116,7 @@
                         $("#UndergraduatecourseID").append(x);
 
                     });
+              
                 } else {
                     $("#UndergraduatecourseID").append($("<div style='margin-top:10px;color:red;'>该阶段暂无可退费项目</div>"));
                 }
@@ -185,17 +186,18 @@
         });
 
         //监听提交
-        form.on('submit(demo1)', function (data) {
+        form.on('submit(demo1)', function (index, layero) {
             if (list.length > 0) {
                 var datas = {
                     Tuitionrefunds: JSON.stringify(list)
                 }
                 $.post("/Finance/Pricedetails/TuitionreHomes", datas, function (da) {
-                    console.log(da);
+                    layer.load(1, { time: 2 * 1000 });
+                    layer.msg("退费成功");
+                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                    parent.layer.close(index); //再执行关闭   
                 })
             }
-
-
         });
     });
 

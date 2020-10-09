@@ -24,16 +24,7 @@
                     <div class="layui-input-block">
                         <input type="text" id="CurrentTime" name="CurrentTime" class="layui-input"  value="@ViewBag.time"/>
                     </div>
-
                 </div>
-
-                @*<div class="layui-form-item">
-                    <label class="layui-form-label">应到勤天数:</label>
-                    <div class="layui-input-block">
-                        <input type="text" id="ShouldComeDays" name="ShouldComeDays" class="layui-input" value="@ViewBag.days" lay-verify="myday" />
-                    </div>
-
-                </div>*@
 
             </div>
 
@@ -75,7 +66,6 @@
                     }
                 }//验证哪天
             });
-
 
             //提交
             form.on('submit(demo1)', function (data) {

@@ -1023,6 +1023,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
             List<DetailedcostView> listdetailedcs = new List<DetailedcostView>();//欠费实体类
             BaseBusiness<Grand> Grand = new BaseBusiness<Grand>();//阶段类型
             BaseBusiness<Costitems> Costitems = new BaseBusiness<Costitems>();//阶段类型详情
+          
            
             var Class_id = classschedu.GetList().Where(d => d.id == ClassID).SingleOrDefault();//查询班级
             var student = ScheduleForTrainees.GetList().Where(d => d.ClassID == Class_id.ClassNumber).ToList();//查询班级里所有的学生
@@ -1038,10 +1039,18 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
 
                 foreach (var i in list)
                 {
-                    
+                    StringBuilder sb = new StringBuilder();
                     var stage= i.Key;//获取阶段
-                    var Grandid = Grand.GetList().Where(d => d.GrandName == stage).SingleOrDefault();//查询阶段费用
-                    StringBuilder sb = new StringBuilder("select SUM(c.Amountofmoney) as 'Summonry',c.Grand_id from Costitems  as c where Grand_id='" + Grandid.Id + "'and c.IsDelete=0 group by c.Grand_id ");//查询阶段总金额（转换为字符串）
+                    var Grandid = Grand.GetList().Where(d => d.GrandName == stage).SingleOrDefault(); //查询阶段费用
+                    if (Grandid==null)
+                    {
+                      sb.Append("select SUM(c.Amountofmoney) as 'Summonry' from Costitems  as c where c.IsDelete=0");//查询自考本科及其他费用（转换为字符串）
+                    }
+                    else
+                    {
+                        sb.Append("select SUM(c.Amountofmoney) as 'Summonry',c.Grand_id from Costitems  as c where Grand_id='" + Grandid.Id + "'and c.IsDelete=0 group by c.Grand_id ");//查询阶段总金额（转换为字符串）
+                    }
+
                     var grand_sum = Costitems.GetListBySql<Grand_SUM>(sb.ToString());
                     decimal sum = 0;//学生每个阶段的总和
                     decimal count = 0;//欠费总和
@@ -1419,7 +1428,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                     empName=Keep.empName,
                     StuEntering=  Keep.StuEntering,
                     Refundornot= item.Refundornot,
-                    Amountofmoney= item.Amountofmoney,
+                    Amountofmoney = Convert.ToDecimal(item.Amountofmoney),
                     identitydocument= item.identitydocument,
                     ClassNumber= item.ClassID,
                     OddNumbers=item.OddNumbers==null?"请补录": item.OddNumbers,
@@ -1479,7 +1488,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                     {
                         vierprice vierprice1 = new vierprice();
                         vierprice1.CostitemName = "预入费";
-                        vierprice1.Amountofmoney = item1.Amountofmoney;
+                        vierprice1.Amountofmoney = Convert.ToDecimal(item1.Amountofmoney);
                         vierprice1.GrandName = item1.ClassID;
                         vierprice1.Rategory = item1.Refundornot.ToString();
                         vierprice.Chicked.Add(vierprice1);
@@ -1817,7 +1826,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
             foreach (var item in x)
             {
 
-                studentRefunditems.Amountofmoney = studentRefunditems.Amountofmoney + item.Amountofmoney;
+                studentRefunditems.Amountofmoney = studentRefunditems.Amountofmoney + Convert.ToDecimal(item.Amountofmoney);
             }
             return studentRefunditems.Amountofmoney;
 

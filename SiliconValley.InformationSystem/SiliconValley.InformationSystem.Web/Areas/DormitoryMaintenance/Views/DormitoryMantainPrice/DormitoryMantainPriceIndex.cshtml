@@ -1,0 +1,93 @@
+﻿
+@{
+    ViewBag.Title = "DormitoryMantainPriceIndex";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<table id="PriceGoodform" lay-filter="PriceGoodform"></table>
+
+
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="adddata">添加物品</button>
+    </div>
+</script>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<script>
+    var tablefulsh;//table数据刷新
+    $(function () {
+        var table;
+        var layer;
+        layui.use(['table'], function () {
+            table = layui.table;
+            layer = layui.layer;
+
+            table.render({
+                elem: '#PriceGoodform'
+                , url: '/DormitoryMaintenance/DormitoryMantainPrice/Tabledata'
+                , toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
+                , cols: [[
+                    { type: 'checkbox', fixed: 'left' }
+                    , { field: 'Nameofarticle', title: '物品名称',  fixed: 'left'  }
+                    , { field: 'Reentry', title: '价格' }
+                    , { field: 'Remarks', title: '其他说明' }
+                    , {
+                        field: 'Dateofregistration', title: '状态', templet: function (res) {
+                            if (res.Dateofregistration) { return '正常' } else { return '已禁用' }
+                        }
+                    }                    
+                    , { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150 }
+                ]]
+                , page: true
+            });
+
+            //头工具栏事件
+            table.on('toolbar(PriceGoodform)', function (obj) {
+                var checkStatus = table.checkStatus(obj.config.id);
+                switch (obj.event) {
+                    case 'adddata':
+                        layer.open({
+                            type: 2,
+                            content: '/DormitoryMaintenance/DormitoryMantainPrice/AddDormitoryMantainPriceView',
+                            area: ['700px', '400px'],
+                        });
+                        break;                    
+                };
+            });
+
+            //监听行工具事件
+            table.on('tool(PriceGoodform)', function (obj) {
+                var data = obj.data;
+                //console.log(obj)
+                if (obj.event === 'del') {
+                    layer.confirm('真的删除行么', function (index) {
+                        obj.del();
+                        layer.close(index);
+                    });
+                } else if (obj.event === 'edit') {
+                    layer.prompt({
+                        formType: 2
+                        , value: data.email
+                    }, function (value, index) {
+                        obj.update({
+                            email: value
+                        });
+                        layer.close(index);
+                    });
+                }
+            });
+
+        });
+
+        tablefulsh = function () {
+            table.reload('PriceGoodform');
+        }
+    });
+</script>
+
+

@@ -94,6 +94,7 @@
     <Compile Include="Entity\BiddingRecord.cs" />
     <Compile Include="Entity\BookInformation.cs" />
     <Compile Include="Entity\Delte_StudentPutinfo.cs" />
+    <Compile Include="Entity\DormitoryDeposit.cs" />
     <Compile Include="Entity\MyBreak.cs" />
     <Compile Include="Entity\CancelLeaveApply.cs" />
     <Compile Include="Entity\Cancelreceipt.cs" />
@@ -502,6 +503,7 @@
     <Compile Include="ViewEntity\TM_Data\EmtyClassroom.cs" />
     <Compile Include="ViewEntity\TM_Data\Laterecord.cs" />
     <Compile Include="ViewEntity\TM_Data\Laterecord_StudentAttendance.cs" />
+    <Compile Include="ViewEntity\TM_Data\MyViewEntity\AccdationinformationView.cs" />
     <Compile Include="ViewEntity\TM_Data\MyViewEntity\BaseDataView.cs" />
     <Compile Include="ViewEntity\TM_Data\MyViewEntity\EvningSelfStudyView.cs" />
     <Compile Include="ViewEntity\TM_Data\MyViewEntity\LaterecordView.cs" />
