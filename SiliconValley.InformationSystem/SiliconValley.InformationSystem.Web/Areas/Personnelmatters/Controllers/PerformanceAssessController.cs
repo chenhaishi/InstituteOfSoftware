@@ -318,5 +318,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             }
             return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
         }
+
+
+        public ActionResult PermissionManage() {
+            return View();
+        }
     }
 }

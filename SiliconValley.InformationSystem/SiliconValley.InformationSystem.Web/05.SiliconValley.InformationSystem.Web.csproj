@@ -1919,6 +1919,7 @@
     <Content Include="Areas\Market\Views\StudentDataKeep\Conflict.cshtml" />
     <Content Include="Areas\Educational\Views\TeacherAddorBeonDuty\TableInsert.cshtml" />
     <Content Include="Areas\Educational\Views\TeacherNight\ExcelIntoView.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\PerformanceAssess\PermissionManage.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
