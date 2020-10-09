@@ -1,0 +1,27 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>PermissionManage</title>
+</head>
+<body>
+    <div>
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <label class="layui-form-label">考核评分人员:</label>
+            <div class="layui-input-block" style="width:200px;">
+                <input type="text" id="EmpName" name="EmpName" class="layui-input" readonly lay-verify="required" />
+                <i class="layui-icon layui-icon-search" id="iconbtn" style="font-size: 25px; color:lightseagreen;float:left;margin:-28px 210px;"></i>
+            </div>
+            <table id="PerAsstab" lay-filter="PerAsstab"></table>
+           
+        </div>
+
+    </div>
+</body>
+</html>
