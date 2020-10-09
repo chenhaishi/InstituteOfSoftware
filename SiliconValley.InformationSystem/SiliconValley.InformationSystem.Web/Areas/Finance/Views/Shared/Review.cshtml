@@ -3,6 +3,7 @@
 @using SiliconValley.InformationSystem.Entity.MyEntity
 @{ 
     var list = ViewBag.reviewList as List<SiliconValley.InformationSystem.Entity.Entity.Paymentverification>;
+    var rlist = ViewBag.StudentFeeRecord as List<SiliconValley.InformationSystem.Entity.MyEntity.StudentFeeRecord>;
 }
 <!DOCTYPE html>
 
@@ -147,10 +148,15 @@
                     @{
                         foreach (var item in list)
                         {
-                            <td> <input type="text" id="paymentmethod" lay-verify="required"value="@item.Paymentmethod" placeholder="收款方式" class="layui-input" /></td>
+                            <td> <input type="text" id="paymentmethod" lay-verify="required" value="@item.Paymentmethod" placeholder="收款方式" class="layui-input" /></td>
                         }
                     }
-                   
+                  
+
+                </tr>
+                <tr>
+                    <td>备注:</td>
+                    <td>@ViewBag.StudentFeeRecord</td>
                 </tr>
 
             </table>
