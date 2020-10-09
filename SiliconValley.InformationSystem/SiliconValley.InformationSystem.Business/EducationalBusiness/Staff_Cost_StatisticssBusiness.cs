@@ -100,7 +100,6 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             var po = db_emp.GetPositionByEmpid(empid);
 
             //获取部门对象
-
             return db_emp.GetDeptByPid(po.Pid);
 
         }

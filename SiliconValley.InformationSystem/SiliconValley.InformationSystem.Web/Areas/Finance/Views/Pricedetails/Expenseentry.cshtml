@@ -1,4 +1,4 @@
-﻿
+﻿    
 @{
     ViewBag.Title = "Expenseentry";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -171,6 +171,7 @@
         table.on('toolbar(test)', function (obj) {
             var checkStatus = table.checkStatus(obj.config.id);
             var checkID = checkStatus.data;
+            console.log(checkID[0].studentid);
             switch (obj.event) {
                 case 'getRemove':
                     if (checkStatus.data.length > 0) {

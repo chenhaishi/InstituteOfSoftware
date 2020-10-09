@@ -139,8 +139,8 @@
         //前后若干天可选，这里以7天为例
         laydate.render({
             elem: '#AddDate'
-            , min: -7
-            , max: 7
+            , min: -30
+            , max: 15
         })
     });
     var studen = JSON.parse('@Html.Raw(ViewBag.student)');

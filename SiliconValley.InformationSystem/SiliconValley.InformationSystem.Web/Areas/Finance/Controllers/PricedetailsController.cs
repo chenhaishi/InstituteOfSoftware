@@ -20,6 +20,7 @@ using SiliconValley.InformationSystem.Business.ClassSchedule_Business;
 using SiliconValley.InformationSystem.Business.ClassesBusiness;
 using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 using SiliconValley.InformationSystem.Business.Base_SysManage;
+using System.Text;
 
 namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
 {
@@ -464,6 +465,27 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             ViewBag.OddNumbers = Request.QueryString["OddNumbers"];
             ViewBag.Passornot = Request.QueryString["Passornot"];
             ViewBag.paymentmethod= Request.QueryString["paymentmethod"];
+            List<StudentFeeRecord> stulist = StudentFeeRecord.GetList().Where(d => d.StudenID == studentid).ToList();
+
+            StringBuilder sb = new StringBuilder();
+
+            for (int i = 0; i < stulist.Count(); i++)
+            {
+                if (i != 0)
+                {
+                    if (stulist[i].Remarks != stulist[i - 1].Remarks)
+                    {
+                        sb.Append(stulist[i].Remarks);
+                    }
+                }
+                else
+                {
+                    sb.Append(stulist[i].Remarks);
+                }
+
+            }
+
+            ViewBag.StudentFeeRecord = sb.ToString();
             //岗位数据
             var positon = employeesInfoManage.GetPositionByEmpid(user.EmpNumber);
            ViewBag.postName=   positon.PositionName.Contains("会计") == true ? 1 : 0;
@@ -1078,7 +1100,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             return null;
         }
         //订单重审
-  
+  /// <summary>
+  /// 
+  /// </summary>
+  /// <param name="check_id"></param>
+  /// <param name="studentid"></param>
+  /// <returns></returns>
         public ActionResult reviewOpen(string check_id,string studentid)
         {
             //当前登陆人
@@ -1086,6 +1113,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             EmployeesInfoManage employeesInfoManage = new EmployeesInfoManage();
             //学员信息
             StudentInformationBusiness studentInformationBusiness = new StudentInformationBusiness();
+            BaseBusiness<StudentFeeRecord> StudentFeeRecord = new BaseBusiness<StudentFeeRecord>();
             ViewBag.student = studentInformationBusiness.GetEntity(studentid);
             ViewBag.id = check_id;
             ViewBag.vier = dbtext.FienPricesa(int.Parse(check_id));
@@ -1093,6 +1121,28 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             ViewBag.Passornot = Request.QueryString["Passornot"];
             ViewBag.paymentmethod = Request.QueryString["paymentmethod"];
             ViewBag.reviewList = pay.GetList().Where(d => d.id == int.Parse(check_id)).ToList();
+            //ViewBag.StudentFeeRecord 
+            List<StudentFeeRecord> stulist= StudentFeeRecord.GetList().Where(d => d.StudenID == studentid).ToList();
+
+            StringBuilder sb = new StringBuilder();
+
+            for (int i = 0; i < stulist.Count(); i++)
+            {
+                if (i!=0)
+                {
+                    if (stulist[i].Remarks != stulist[i - 1].Remarks)
+                    {
+                        sb.Append(stulist[i].Remarks);
+                    }
+                }
+                else
+                {
+                    sb.Append(stulist[i].Remarks);
+                }
+                 
+            }
+
+            ViewBag.StudentFeeRecord = sb.ToString();
             //岗位数据
             var positon = employeesInfoManage.GetPositionByEmpid(user.EmpNumber);
             ViewBag.postName = positon.PositionName.Contains("会计") == true ? 1 : 0;
