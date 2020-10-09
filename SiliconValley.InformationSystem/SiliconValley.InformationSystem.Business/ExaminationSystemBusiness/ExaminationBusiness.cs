@@ -94,9 +94,6 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
         public ExaminationView ConvertToExaminationView(Examination examination)
         {
             ExaminationView view = new ExaminationView();
-
-
-
             view.ID = examination.ID;
             view.BeginDate = examination.BeginDate;
             view.ExamNo = examination.ExamNo;
