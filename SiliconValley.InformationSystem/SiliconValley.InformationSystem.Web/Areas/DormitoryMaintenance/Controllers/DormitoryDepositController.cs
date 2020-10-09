@@ -11,13 +11,44 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
     using SiliconValley.InformationSystem.Business.Base_SysManage;
     using SiliconValley.InformationSystem.Entity.Entity;
     using SiliconValley.InformationSystem.Util;
+    using SiliconValley.InformationSystem.Business.EmployeesBusiness;
     public class DormitoryDepositController : Controller
     {
         DormitoryDepositManeger Dormitory_Entity = new DormitoryDepositManeger();
-        // GET: /DormitoryMaintenance/DormitoryDeposit/GetDormitory
+        // GET: /DormitoryMaintenance/DormitoryDeposit/AddView
+
+            
         public ActionResult DormitoryDepositIndex()
         {
             return View();
+        }
+
+
+        /// <summary>
+        /// 第一次数据加载
+        /// </summary>
+        /// <param name="limit"></param>
+        /// <param name="page"></param>
+        /// <returns></returns>
+        public ActionResult GetData(int limit,int page)
+        {
+            string sql = "select * from DormitoryDeposit";
+
+            List<DormitoryDeposit> listall= Dormitory_Entity.GetListBySql<DormitoryDeposit>(sql);
+            var data= listall.OrderByDescending(l => l.CreaDate).Skip((page - 1) * limit).Take(limit).Select(l=> new{
+                ID=l.ID,
+                Maintain = l.Maintain,//维修日期
+                DorName= Dormitory_Entity.DormInformation_Entity.GetEntity(l.DormId).DormInfoName,//房间编号
+                EmpName=Dormitory_Entity.EmployeesInfo_Entity.GetEntity(l.EntryPersonnel).EmpName,//录入人员
+                GoodPrice=l.GoodPrice,
+                Nameofarticle=Dormitory_Entity.DormitoryMaintenance_Entity.GetEntity(l.MaintainGood).Nameofarticle,//物品名称
+                MaintainState=l.MaintainState,
+                stuName= Dormitory_Entity.StudentInformation_Entity.GetEntity(l.StuNumber).Name,               
+            }).ToList();
+
+            var jsondata = new {count= listall.Count,code=0,data=data };
+
+            return Json(jsondata,JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult AddView()
@@ -102,6 +133,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
         [HttpPost]
         public ActionResult AddFunction()
         {
+
+            AjaxResult result = new AjaxResult() {Success=true,Msg="登记成功！" };
+
+
             Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
 
             DateTime mantinDate=Convert.ToDateTime(Request.Form["mantinDate"]);//维修的日期
@@ -114,9 +149,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
 
             Pricedormitoryarticles goods= Dormitory_Entity.Pricedormitoryarticles_Entity.GetEntity(weixiugood);//查询维修物品的信息
 
-            List<DormitoryDeposit> Dormlist = new List<DormitoryDeposit>();
+            List<DormitoryDeposit> Dormlist = new List<DormitoryDeposit>();//存放学生维修费用
 
-            int sturadi = Convert.ToInt32(Request.Form["sturadi"]);//学生编号
+            string sturadi =  Request.Form["sturadi"];//学生编号
 
             if (JieType==1)
             {
@@ -132,26 +167,73 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
                     if (student != null)
                     {                        
                         studentlist.Add(student);
+
                     }
                 });
 
-                DormitoryDeposit dormitory = new DormitoryDeposit();
+                if (studentlist.Count>0)
+                {
+                    foreach (var stu in studentlist)
+                    {
+                        DormitoryDeposit dormitory = new DormitoryDeposit();
+                        dormitory.ID = Guid.NewGuid().ToSequentialGuid();
+                        dormitory.CreaDate = DateTime.Now;
+                        dormitory.DormId = dorname;
+                        dormitory.EntryPersonnel = UserName.EmpNumber;
+                        dormitory.GoodPrice = (goods.Reentry / studentlist.Count);
+                        dormitory.Maintain = mantinDate;
+                        dormitory.MaintainGood = weixiugood;
+                        dormitory.MaintainState = 1;
+                        dormitory.StuNumber = stu.StudentNumber;
 
-                dormitory.CreaDate = DateTime.Now;
-                dormitory.DormId = dorname;
-                dormitory.EntryPersonnel = UserName.EmpNumber;
-                dormitory.GoodPrice = (goods.Reentry / studentlist.Count);
-                dormitory.Maintain = mantinDate;
-                dormitory.MaintainGood = weixiugood;
-                //dormitory.MaintainState=
+                        Dormlist.Add(dormitory);
+                    }
+
+                    bool s = Dormitory_Entity.AddData(Dormlist);
+
+                    if (s == false)
+                    {
+                        result.Msg = "网络异常，请刷新重试！";
+                        result.Success = false;
+                    }
+                }
+                else
+                {
+                    result.Msg = "该寝室没有学生入住！";
+                    result.Success = false;
+                }
+
+               
+                 
+
+
+               
             }
             else if (JieType == 2)
             {
                 //个人承担
+                DormitoryDeposit dormitory = new DormitoryDeposit();
+                dormitory.ID = Guid.NewGuid().ToSequentialGuid();
+                dormitory.CreaDate = DateTime.Now;
+                dormitory.DormId = dorname;
+                dormitory.EntryPersonnel = UserName.EmpNumber;
+                dormitory.GoodPrice = goods.Reentry;
+                dormitory.Maintain = mantinDate;
+                dormitory.MaintainGood = weixiugood;
+                dormitory.MaintainState = 1;
+                dormitory.StuNumber = sturadi;
 
+
+               bool s= Dormitory_Entity.AddData(dormitory);
+
+                if (s == false)
+                {
+                    result.Msg = "网络异常，请刷新重试！";
+                    result.Success = false;
+                }
             }
 
-            return null;
+            return Json(result,JsonRequestBehavior.AllowGet);
         }
     }
 }

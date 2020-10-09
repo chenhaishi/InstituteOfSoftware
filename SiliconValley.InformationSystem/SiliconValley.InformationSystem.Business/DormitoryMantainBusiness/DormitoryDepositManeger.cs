@@ -49,10 +49,16 @@ namespace SiliconValley.InformationSystem.Business.DormitoryMantainBusiness
         public BaseBusiness<Pricedormitoryarticles> Pricedormitoryarticles_Entity = new BaseBusiness<Pricedormitoryarticles>();
 
         /// <summary>
+        /// 员工信息业务类
+        /// </summary>
+        public BaseBusiness<EmployeesInfo> EmployeesInfo_Entity = new BaseBusiness<EmployeesInfo>();
+
+
+        /// <summary>
         ///  获取XX期间XX寝室的所有学生
         /// </summary>
-        /// <param name="date"></param>
-        /// <param name="Number"></param>
+        /// <param name="date">日期</param>
+        /// <param name="Number">宿舍编号</param>
         /// <returns></returns>
         public List<Accdationinformation> GetStudentSushe(DateTime date,int Number)
         {
@@ -63,5 +69,47 @@ namespace SiliconValley.InformationSystem.Business.DormitoryMantainBusiness
 
             return list;
         }
+
+        /// <summary>
+        /// 添加数据
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public bool AddData(List<DormitoryDeposit> data)
+        {
+            bool result = true;
+            try
+            {
+                this.Insert(data);
+            }
+            catch (Exception ex)
+            {
+
+                result = false;
+            }
+
+            return result;
+
+        }
+
+
+        public bool AddData(DormitoryDeposit data)
+        {
+            bool result = true;
+            try
+            {
+                this.Insert(data);
+            }
+            catch (Exception)
+            {
+
+                result = false;
+            }
+
+            return result;
+        }
+
+        
+
     }
 }

@@ -4,5 +4,106 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>DormitoryDepositIndex</h2>
+<table id="DormitoryDeposit_table" lay-filter="DormitoryDeposit_table"></table>
+
+<script type="text/html" id="DormitoryDeposit_toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="add">添加数据</button>
+    </div>
+</script>
+
+@*<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>*@
+
+<script>
+    function TimeChange(newtime) {
+        if (newtime == null)
+            return "";
+        var date = new Date(parseInt(newtime.slice(6)));
+        var year = date.getFullYear();
+        var month = parseInt(date.getMonth()) + 1;
+        if (parseInt(month) < 10) {
+            month = "0" + month;
+        }
+        var days = date.getDate();
+        if (days < 10) {
+            days = "0" + days;
+        }
+        var result = year + '-' + month + '-' + days;
+        return result;
+    }
+
+    function TableFlush() {
+        layui.use('table', function () {
+            var table = layui.table;
+            table.reload('DormitoryDeposit_table');
+        });
+    }
+
+    $(function () {
+        var table;
+        var layer;
+        layui.use(['table','layer'], function () {
+            table = layui.table;
+            layer = layui.layer;
+
+            table.render({
+                elem: '#DormitoryDeposit_table'
+                , url: '/DormitoryMaintenance/DormitoryDeposit/GetData'
+                , toolbar: '#DormitoryDeposit_toolbarDemo'  
+                , cols: [[
+                    { type: 'checkbox', fixed: 'left' }
+                    , { field: 'stuName', title: '学生姓名',fixed: 'left'}
+                    , { field: 'DorName', title: '寝室编号'}
+                    , {
+                        field: 'Maintain', title: '维修日期', templet: function (res) {
+                            return TimeChange(res.Maintain);
+                        }
+                    }
+                    , { field: 'Nameofarticle', title: '维修物品' }
+                    , {
+                        field: 'GoodPrice', title: '应付价格', templet: function (res) {
+                            return res.GoodPrice+"元"
+                        }
+                    }
+                    , {
+                        field: 'MaintainState', title: '状态',templet: function (res) {
+                            if (res.MaintainState == 1) {
+                                return '<span style="color:red">未支付</span>'
+                            } else if (res.MaintainState == 2) {
+                                return '已付清'
+                            }
+                        }
+                    }
+                    
+                    //, { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150 }
+                ]]
+                , page: true
+                , limits: [20, 40, 50, 90, 100]
+                ,limit:20
+            });
+
+            //头工具栏事件
+            table.on('toolbar(DormitoryDeposit_table)', function (obj) {
+                var checkStatus = table.checkStatus(obj.config.id);
+                switch (obj.event) {
+                    case 'add':
+                        var data = checkStatus.data;
+                        layer.open({
+                            type: 2,
+                            content: '/DormitoryMaintenance/DormitoryDeposit/AddView',
+                            area: ['1000px', '600px']
+                        });
+                        break;
+
+                };
+            });
+
+        });
+
+        
+    });
+</script>
 
