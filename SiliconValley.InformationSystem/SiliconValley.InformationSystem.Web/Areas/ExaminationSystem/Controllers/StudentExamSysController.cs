@@ -667,7 +667,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             examination.ExamType = int.Parse(examType);
             examination.ID = 0;
-            List<MultipleChoiceQuestion> multipleChoicelist = db_choiceQuestion.AllChoiceQuestionData().OrderByDescending(d=>d.Course==int.Parse(kecheng)).ToList();
+            List<MultipleChoiceQuestion> multipleChoicelist = db_choiceQuestion.AllChoiceQuestionData().Where(d=>d.Course==int.Parse(kecheng)).ToList();
  
             try
             {
@@ -708,7 +708,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             examination.ExamType = int.Parse(examType);
             examination.ID = 0;
-            List<AnswerQuestionBank> list = db_answerQuestion.AllAnswerQuestion().OrderByDescending(d => d.Course==int.Parse(kecheng)).ToList();
+            List<AnswerQuestionBank> list = db_answerQuestion.AllAnswerQuestion().Where(d => d.Course==int.Parse(kecheng)).ToList();
             try
             {
                 var res = new
