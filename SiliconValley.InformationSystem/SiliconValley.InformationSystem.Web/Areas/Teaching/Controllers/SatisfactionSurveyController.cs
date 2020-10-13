@@ -131,7 +131,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
             }
             catch (Exception ex)
             {
-
                 Base_UserBusiness.WriteSysLog("查询数据出错了 位置 ：满意度调查GetSurveyData ", EnumType.LogType.加载数据);
             }
 
@@ -144,11 +143,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 count = count,
                 data = resultlist.Skip((page - 1) * limit).Take(limit).ToList()
 
-
             };
 
             return Json(obj, JsonRequestBehavior.AllowGet);
-
 
         }
 
