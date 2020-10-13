@@ -41,7 +41,7 @@
             <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
                 <label class="LableCss1">维修日期:</label>
                 <div class="layui-input-block">
-                    <input id="mantinDate" name="mantinDate" type="tel" class="layui-input"/>
+                    <input id="mantinDate" name="mantinDate" type="tel" class="layui-input" lay-verify="required"/>
                 </div>
             </div>
             <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
@@ -217,7 +217,39 @@
                 });      
 
                 form.on('submit(addbtn)', function (data) { 
-                    console.log(data.field);  
+                    
+                    //console.log(data.field);
+                    if (data.field.weixiugood == undefined) {
+                        layer.msg('请选择维修物品！', { icon: 2, shade: 0.8 });
+                    } else if (data.field.Suaddress == undefined) {
+                        layer.msg('请选择宿舍地址！', { icon: 2, shade: 0.8 });
+                    } else if (data.field.dorname == undefined) {
+                        layer.msg('请选择宿舍！', { icon: 2, shade: 0.8 });
+                    } else if (data.field.JieType == "2" && data.field.sturadi == undefined) {
+                        layer.msg('请选择学生！', { icon: 2, shade: 0.8 });
+                    } else {
+                        $.ajax({
+                            url: '/DormitoryMaintenance/DormitoryDeposit/AddFunction',
+                            data: data.field,
+                            type: 'POST',
+                            success: function (res) {
+                                if (res.Success) {
+                                    layer.msg(res.Msg, { icon: 1, shade: 0.8 }, function () {
+
+                                        window.parent.TableFlush();
+
+                                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                        parent.layer.close(index); //再执行关闭   
+
+                                    });
+                                } else {
+                                    layer.msg(res.Msg, { icon: 2, shade: 0.8 });
+                                }
+                            }
+                        });
+                    }
+
+                   
                     return false;  
                 });
 

@@ -47,7 +47,7 @@ namespace SiliconValley.InformationSystem.Entity.Entity
         public string Picture { get; set; }
         /// <summary>
         /// 异动操作，需要在线生则为null
-        /// </summary>
+        /// </summary>13
         public Nullable<int> State { get; set; }
         /// <summary>
         /// 爱好

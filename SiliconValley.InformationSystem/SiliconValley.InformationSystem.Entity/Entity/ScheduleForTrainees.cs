@@ -30,7 +30,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         /// </summary>
         public string StudentID { get; set; }
         /// <summary>
-        /// 是否为当前班级
+        /// 是否为当前班级 true--是 false--不是
         /// </summary>
         public Nullable<bool> CurrentClass { get; set; }  
         /// <summary>

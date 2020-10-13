@@ -56,7 +56,8 @@
 @*头部工具栏*@
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-sm" lay-event="MCadd"><i class="layui-icon layui-icon-addition"></i>考核人员添加</button>
+        @*<button class="layui-btn layui-btn-sm" lay-event="MCadd"><i class="layui-icon layui-icon-addition"></i>考核人员添加</button>*@
+        <button class="layui-btn layui-btn-sm" lay-event="PutPermission"><i class="layui-icon layui-icon-addition"></i>权限赋予</button>
         <button class="layui-btn layui-btn-sm" lay-event="timeChange"><i class="layui-icon layui-icon-edit"></i>年月份改变</button>
         <button class="layui-btn layui-btn-sm" lay-event="Approved"><i class="layui-icon layui-icon-edit"></i>确认审批</button>
     </div>
@@ -121,6 +122,9 @@
                         break;
                     case 'MCadd':
                         MCEmpAdd();
+                        break;
+                    case 'PutPermission':
+                        PutPermissionManage();
                         break;
                     case 'Approved':
                           var time = '@ViewBag.yearandmonth';
@@ -205,6 +209,21 @@
                     , area: ["400px", "300px"]
                     , title: ""
                     , content: '/Personnelmatters/PerformanceAssess/AddMCEmps'
+                    , anim: 2
+                });
+
+            })
+
+        }
+
+        function PutPermissionManage() {
+            layui.use(['layer'], function (args) {
+                var layer = layui.layer;      //layui对象
+                layer.open({
+                    type: 2
+                    , area: ["400px", "300px"]
+                    , title: ""
+                    , content: '/Personnelmatters/PerformanceAssess/PermissionManage'
                     , anim: 2
                 });
 
