@@ -93,20 +93,20 @@
                 </div>
                 <div class="layui-row layui-form-item">
                     <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
-                        <label class="LableCss1">时&nbsp;间&nbsp;段:</label>
+                        <label class="LableCss1">时 &nbsp; 间&nbsp; 段:</label>
                         <div class="layui-input-block" id="TimenameDiv">
 
                         </div>
                     </div>
                 </div>
-                <div class="layui-row layui-form-item">
+                @*<div class="layui-row layui-form-item">
                     <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
                         <label class="LableCss1">模糊查找:</label>
                         <div class="layui-input-block">
                             <input type="text" id="Teache_Ser" name="Teache_Ser" class="layui-input" /><icon id="iconMy" class="layui-icon iconCss">&#xe615;</icon>
                         </div>
                     </div>
-                </div>
+                </div>*@
                 <div class="layui-row layui-form-item">
                     <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
                         <label class="LableCss1">值班老师:</label>
@@ -149,8 +149,7 @@
                  layer = layui.layer;
                 laydate.render({
                     elem: '#mytime'
-                    , trigger: 'click'
-
+                    , trigger: 'click'                    
                 });
 
                 form.render();
@@ -196,11 +195,15 @@
 
                 //监听班级点击事件
                 form.on('select(classselect)', function (data) {
+                    var myindex= layer.load(1);
+                    $("#teachDiv")[0].innerHTML = "";
                     var time = $("#mytime").val();
+                 
                     if (time.length <= 0) {
                         layer.msg("请选择值班日期!!", { icon: 2 });
                     } else {
                         var ind = layer.load(1);
+                        //获取晚自习安排
                         $.ajax({
                             url: '/Educational/TeacherAddorBeonDuty/GetClassData',
                             type: 'POST',
@@ -219,8 +222,23 @@
 
                             }
                         });
+
+                        //获取教员
+                        $.ajax({
+                            url: '/Educational/TeacherAddorBeonDuty/GetTeacher',
+                            data: { "date": $("#mytime").val(), "classid": data.value },
+                            type:'POST',
+                            success: function (res) {
+                               
+                                for (var i = 0; i < res.length; i++) {
+                                    $('<input type="radio" name="Teacherid" value="' + res[i].Value + '" title="' + res[i].Text + '">').appendTo($("#teachDiv"));
+                                }
+                                form.render();
+                            }
+                        });
                     }
 
+                    layer.close(myindex);
                 });
 
                 //获取班级
@@ -272,8 +290,6 @@
                 }
             });
         });
-
-
 
     </script>
 </body>

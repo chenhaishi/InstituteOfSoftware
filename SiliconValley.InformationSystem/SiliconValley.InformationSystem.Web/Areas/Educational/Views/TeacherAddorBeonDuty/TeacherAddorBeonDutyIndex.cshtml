@@ -62,7 +62,7 @@
         <h2 class="layui-colla-title">简单查询</h2>
         <div class="layui-colla-content">
             @{
-                if (ViewBag.emp)
+                if (ViewBag.emp == 1)
                 {
                     <form class="layui-form" lay-filter="sercherjiaowu">
                         <div class="layui-row layui-form-item">
@@ -104,7 +104,7 @@
                     </form>
 
                 }
-                else
+                else if (ViewBag.emp == 2)
                 {
                     <form class="layui-form" lay-filter="TeacherSercher">
                         <div class="layui-row layui-form-item">
@@ -134,6 +134,30 @@
                         </div>
                     </form>
                 }
+                else if (ViewBag.emp == 3)
+                {
+                    <form class="layui-form" lay-filter="TeacherSercher">
+                        <div class="layui-row layui-form-item">                            
+                            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                                <label class="LableCss1">开始时间:</label>
+                                <div class="layui-input-block">
+                                    <input type="text" placeholder="开始时间" class="layui-input" name="starTime" id="starTime" />
+                                </div>
+                            </div>
+                            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                                <label class="LableCss1">结束时间:</label>
+                                <div id="ClssTime" class="layui-input-block">
+                                    <input type="text" placeholder="结束时间" class="layui-input" name="endTime" id="endTime" />
+                                </div>
+                            </div>
+                            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2" style="text-align:center">
+                                <button type="button" class="layui-btn" onclick="Sercher()">查询</button>
+
+
+                            </div>
+                        </div>
+                    </form>
+                }
             }
 
         </div>
@@ -141,11 +165,11 @@
 </div>
 <table id="TeacherNight_table" lay-filter="TeacherNight_table"></table>
 @{
-    if (ViewBag.emp)
+    if (ViewBag.emp ==1)
     {
         <input name="emp" id="emp" type="hidden" value="是" />
     }
-    else
+    else if(ViewBag.emp ==0 || ViewBag.emp==3 || ViewBag.emp == 2)
     {
         <input name="emp" id="emp" type="hidden" value="否" />
     }
@@ -178,27 +202,28 @@
         </div>
     </form>
 </div>
-<script src="~/Scripts/Tangmin_CssAndJs/com_js/MyOrther_tangmin.js"></script>
+ 
 <script type="text/html" id="toolbarDemo_Night">
     <div class="layui-btn-container">
         @{
-            if (ViewBag.emp)
+            if (ViewBag.emp == 1)
             {
                 <button class="layui-btn layui-btn-sm" lay-event="getCheckData_outNight"><i class="layui-icon">&#x1006;</i>Excel导出</button>
-                <button class="layui-btn layui-btn-sm" lay-event="getCheckData_changIsdele"><i class="layui-icon">&#x1006;</i>批量审批</button>
-                <button class="layui-btn layui-btn-sm" lay-event="SysIsture"><i class="layui-icon">&#x1006;</i>系统审批</button>
-                <button class="layui-btn layui-btn-sm" lay-event="sysIstureM"><i class="layui-icon">&#x1006;</i>上传文件</button>
+                <button class="layui-btn layui-btn-sm" lay-event="getCheckData_changIsdele"><i class="layui-icon">&#x1005;</i>批量审批</button>
+                <button class="layui-btn layui-btn-sm" lay-event="SysIsture"><i class="layui-icon">&#x1005;</i>系统审批</button>
+
+                @*<button class="layui-btn layui-btn-sm" lay-event="sysIstureM"><i class="layui-icon">&#x1006;</i>上传文件</button>*@
             }
-            else
+            else if (ViewBag.emp == 2)
             {
-                <button class="layui-btn layui-btn-sm" lay-event="getCheckData_addNight"><i class="layui-icon">&#xe624;</i>添加值班数据</button>
+                @*<button class="layui-btn layui-btn-sm" lay-event="getCheckData_addNight"><i class="layui-icon">&#xe624;</i>添加值班数据</button>*@
                 <button class="layui-btn layui-btn-sm" lay-event="getCheckData_delNight"><i class="layui-icon">&#x1006;</i>批量删除数据</button>
+                <button class="layui-btn layui-btn-sm" lay-event="getCheckData_addNight"><i class="layui-icon">&#xe624;</i>添加值班数据</button>
             }
         }
 
-
         @*<button class="layui-btn layui-btn-sm" lay-event="getCheckData_timeChange"> <i class="layui-icon">&#xe642;</i>日期更改</button>
-            <button class="layui-btn layui-btn-sm" lay-event="getCheckData_time"> <i class="layui-icon">&#xe642;</i>上课延迟或提前</button>*@
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckData_time"> <i class="layui-icon">&#xe642;</i>上课延迟或提前</button>*@
     </div>
 </script>
 
@@ -206,6 +231,7 @@
     @*<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>*@
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
+
 
 <div class="DivCss2" id="SysDiv">
     <form class="layui-form" lay-filter="SysForm" style="margin-top:40px;">
@@ -227,14 +253,15 @@
 <script>
     var dateindex;
 
-    function TimeChange(newtime) {
+    //转换时间的方法
+    function MyTimeChange(newtime) {
         if (newtime == null)
             return "";
 
         var date = new Date(parseInt(newtime.slice(6)));
         var year = date.getFullYear();
         var month = parseInt(date.getMonth()) + 1;
-        if (month < 10) {
+        if (parseInt(month) < 10) {
             month = "0" + month;
         }
         var days = date.getDate();
@@ -311,7 +338,7 @@
                     { type: 'checkbox' }
                     , {
                         field: 'Anpaidate', title: '值班日期', templet: function (res) {
-                            return TimeChange(res.Anpaidate);
+                            return MyTimeChange(res.Anpaidate);
                         }
                     }
                     , { field: 'EmpName', title: '值班老师' }
@@ -342,7 +369,7 @@
                     { type: 'checkbox' }
                     , {
                         field: 'Anpaidate', title: '值班日期', templet: function (res) {
-                            return TimeChange(res.Anpaidate);
+                            return MyTimeChange(res.Anpaidate);
                         }
                     }
                     , { field: 'EmpName', title: '值班老师' }
@@ -717,5 +744,6 @@
             }
         });
     }
+
 </script>
 

@@ -4,6 +4,51 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<style>
+    .LableCss1
+    {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        float: left;
+        display: block;
+        padding: 9px 15px;
+        width: 80px;
+        font-weight: 400;
+        line-height: 20px;
+        text-align: right
+    }
+</style>
+
+<div>
+    <form class="layui-form" lay-filter="sercherform">
+        <div class="layui-row layui-form-item">
+            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                <label class="LableCss1">学生姓名:</label>
+                <div class="layui-input-block">
+                    <input type="text" placeholder="学生姓名" class="layui-input" name="stuName" id="stuName" />
+                </div>
+            </div>
+            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                <label class="LableCss1">开始时间:</label>
+                <div class="layui-input-block">
+                    <input type="text" placeholder="开始时间" class="layui-input" name="starTime" id="starTime" />
+                </div>
+            </div>
+            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                <label class="LableCss1">结束时间:</label>
+                <div id="ClssTime" class="layui-input-block">
+                    <input type="text" placeholder="结束时间" class="layui-input" name="endTime" id="endTime" />
+                </div>
+            </div>
+            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2" style="text-align:center">
+                <button type="button" class="layui-btn" onclick="SercherFuntion()">查询</button>
+
+
+            </div>
+        </div>
+    </form>
+</div>
+
 <table id="DormitoryDeposit_table" lay-filter="DormitoryDeposit_table"></table>
 
 <script type="text/html" id="DormitoryDeposit_toolbarDemo">
@@ -41,13 +86,29 @@
             table.reload('DormitoryDeposit_table');
         });
     }
+    
+
+    var table;
+    var layer;
+    var laydate;
+    var form;
 
     $(function () {
-        var table;
-        var layer;
-        layui.use(['table','layer'], function () {
+        layui.use(['table','layer','laydate','form'], function () {
             table = layui.table;
             layer = layui.layer;
+            laydate = layui.laydate;
+            form = layui.form;
+
+            laydate.render({
+                elem: '#starTime'
+                , trigger: 'click'
+            });
+
+            laydate.render({
+                elem: '#endTime'
+                , trigger: 'click'
+            });
 
             table.render({
                 elem: '#DormitoryDeposit_table'
@@ -101,9 +162,23 @@
                 };
             });
 
-        });
-
-        
+        });       
     });
+
+
+    //模糊查询
+    function SercherFuntion() {
+        var data1 = form.val("sercherform");
+
+        if (data1.stuName == null && data1.starTime == null && data1.endTime == null) {
+            table.reload('DormitoryDeposit_table');
+             
+        } else {
+            table.reload('DormitoryDeposit_table', {
+                url: '/DormitoryMaintenance/DormitoryDeposit/DoubleGetData'
+                , where: data1 
+            });
+        }
+    }
 </script>
 

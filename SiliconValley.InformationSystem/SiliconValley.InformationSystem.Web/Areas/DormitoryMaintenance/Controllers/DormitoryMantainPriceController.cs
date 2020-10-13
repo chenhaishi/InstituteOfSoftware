@@ -57,5 +57,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
 
             return Json(result,JsonRequestBehavior.AllowGet);
         }
+
+
     }
 }

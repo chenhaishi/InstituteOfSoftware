@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using System.IO;
 
 
 namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 {
     using SiliconValley.InformationSystem.Business.Base_SysManage;
     using SiliconValley.InformationSystem.Business.EducationalBusiness;
-    using SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data;
-    using SiliconValley.InformationSystem.Util;
     using SiliconValley.InformationSystem.Entity.MyEntity;
+    using SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data;
+    using SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data.MyViewEntity;
     using SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data.Print;
+    using SiliconValley.InformationSystem.Util;
     using System.Text;
-    using SiliconValley.InformationSystem.Business.NewExcel;
     using System.Text.RegularExpressions;
     using System.Xml.Linq;
 
@@ -29,7 +29,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         {
             //判断登录的是否是教务
             Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
-            ViewBag.emp= Tb_Entity.Isjiaowu(UserName.EmpNumber);
+            ViewBag.emp = Tb_Entity.Isjiaowu(UserName.EmpNumber);
             ////获取
             EmployeesInfo employees = Tb_Entity.EmployeesInfo_Entity.FindEmpData(UserName.EmpNumber, true);
 
@@ -44,24 +44,30 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             return View();
         }
 
+        /// <summary>
+        /// 获取选中的班级某个日期的晚自习情况
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult GetClassData()
         {
-            int classid=Convert.ToInt32(Request.Form["classid"]);
+            int classid = Convert.ToInt32(Request.Form["classid"]);
             DateTime time = Convert.ToDateTime(Request.Form["date"]);
             AjaxResult a = new AjaxResult();
-            var list = Tb_Entity.EvningSelf_Entity.GetSQLDat("select * from EvningSelfStudy where ClassSchedule_id=" + classid+ " and Anpaidate='"+time+"'");
-            if (list.Count>0)
+            var list = Tb_Entity.EvningSelf_Entity.GetSQLDat("select * from EvningSelfStudy where ClassSchedule_id=" + classid + " and Anpaidate='" + time + "'");
+            if (list.Count > 0)
             {
                 a.Success = true;
                 a.Data = list;
+                a.Msg = "数据查询成功！";
             }
             else
             {
                 a.Success = false;
+                a.Msg = "没有安排晚自习请联系教务！";
             }
-            
-            return Json(a,JsonRequestBehavior.AllowGet);
+
+            return Json(a, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -72,16 +78,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         /// <returns></returns>
         public ActionResult Tabledata(int limit, int page)
         {
-            
+
             Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
-            if (!Tb_Entity.Isjiaowu(UserName.EmpNumber))
+            if (Tb_Entity.Isjiaowu(UserName.EmpNumber) == 2)
             {
                 //加载属于这个部门的值班数据
-                 EmployeesInfo employees= Tb_Entity.EmployeesInfo_Entity.FindEmpData(UserName.EmpNumber, true);
+                EmployeesInfo employees = Tb_Entity.EmployeesInfo_Entity.FindEmpData(UserName.EmpNumber, true);
 
-                Position position= Tb_Entity.EmployeesInfo_Entity.GetPosition(employees.PositionId);
+                Position position = Tb_Entity.EmployeesInfo_Entity.GetPosition(employees.PositionId);
 
-                List<EmployeesInfo> listemp= Tb_Entity.EmployeesInfo_Entity.GetEmpsByDeptid(position.DeptId);
+                List<EmployeesInfo> listemp = Tb_Entity.EmployeesInfo_Entity.GetEmpsByDeptid(position.DeptId);
 
                 List<TeacherAddorBeonDutyView> list = Tb_Entity.DepData(listemp).OrderBy(l => l.Anpaidate).ToList();
 
@@ -89,13 +95,25 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
                 return Json(jsondata, JsonRequestBehavior.AllowGet);
             }
+            else if (Tb_Entity.Isjiaowu(UserName.EmpNumber) == 3)
+            {
+                //普通员工查看的数据自己个人值班数据
+                List<EmployeesInfo> list_emp = new List<EmployeesInfo>();
+                EmployeesInfo employees = Tb_Entity.EmployeesInfo_Entity.FindEmpData(UserName.EmpNumber, true);
+                list_emp.Add(employees);
+                List<TeacherAddorBeonDutyView> list = Tb_Entity.DepData(list_emp).OrderBy(l => l.Anpaidate).ToList();
+
+                var jsondata = new { code = 0, Msg = "", count = list.Count, data = list.Skip((page - 1) * limit).Take(limit).ToList() };
+                return Json(jsondata, JsonRequestBehavior.AllowGet);
+            }
             else
             {
+                //教务查看的数据
                 List<TeacherAddorBeonDutyView> list = Tb_Entity.GetViewAll().OrderBy(l => l.Anpaidate).ToList();
                 var jsondata = new { code = 0, Msg = "", count = list.Count, data = list.Skip((page - 1) * limit).Take(limit).ToList() };
                 return Json(jsondata, JsonRequestBehavior.AllowGet);
             }
-           
+
         }
 
         /// <summary>
@@ -111,6 +129,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             string endtime = Request.QueryString["newdate"];
 
             StringBuilder sb = new StringBuilder("select * from TeacherAddorBeonDutyView where 1=1 ");
+            Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
+            if (Tb_Entity.Isjiaowu(UserName.EmpNumber) == 3)
+            {
+                sb.Append(" and Tearcher_Id='" + UserName.EmpNumber + "'");
+            }
 
             if (!string.IsNullOrEmpty(tid) && tid != "0")
             {
@@ -131,7 +154,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
 
 
-            List<TeacherAddorBeonDutyView> list = Tb_Entity.AttendSqlGetData(sb.ToString()).OrderBy(l=>l.Anpaidate).ToList();
+            List<TeacherAddorBeonDutyView> list = Tb_Entity.AttendSqlGetData(sb.ToString()).OrderBy(l => l.Anpaidate).ToList();
             var jsondata = new { code = 0, Msg = "", count = list.Count, data = list.Skip((page - 1) * limit).Take(limit).ToList() };
             return Json(jsondata, JsonRequestBehavior.AllowGet);
         }
@@ -140,9 +163,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         /// 属于教务的模糊查询
         /// </summary>
         /// <returns></returns>
-        public ActionResult J_serchData(int limit,int page)
+        public ActionResult J_serchData(int limit, int page)
         {
-            int dept =Convert.ToInt32(Request.QueryString["ser_jiaowu_depet"]);
+            int dept = Convert.ToInt32(Request.QueryString["ser_jiaowu_depet"]);
 
             string emp = Request.QueryString["ser_jiaowu_teacher"];
 
@@ -153,47 +176,47 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             StringBuilder sb = new StringBuilder("select * from TeacherAddorBeonDutyView where 1=1");
             if (!string.IsNullOrEmpty(starTime))
             {
-                sb.Append(" and Anpaidate>='"+ starTime + "'");
+                sb.Append(" and Anpaidate>='" + starTime + "'");
             }
 
             if (!string.IsNullOrEmpty(endTime))
             {
-                sb.Append(" and Anpaidate<='"+ endTime + "'");
+                sb.Append(" and Anpaidate<='" + endTime + "'");
             }
 
             List<TeacherAddorBeonDutyView> list = Tb_Entity.GetListBySql<TeacherAddorBeonDutyView>(sb.ToString());
 
-            if (emp!="0")
+            if (emp != "0")
             {
                 //获取属于这个老师的值班数据
                 list = list.Where(l => l.Tearcher_Id == emp).ToList();
                 var ee = list.OrderBy(l => l.Anpaidate).Skip((page - 1) * limit).Take(limit).ToList();
 
-                var data = new { code=0,msg="",count=list.Count,data= ee };
+                var data = new { code = 0, msg = "", count = list.Count, data = ee };
 
-                return Json(data,JsonRequestBehavior.AllowGet);
+                return Json(data, JsonRequestBehavior.AllowGet);
             }
-            else if(dept!=0)
+            else if (dept != 0)
             {
                 //获取属于部门的值班数据
                 List<EmployeesInfo> listemp = Tb_Entity.EmployeesInfo_Entity.GetEmpsByDeptid(dept);
                 List<TeacherAddorBeonDutyView> list2 = new List<TeacherAddorBeonDutyView>();
                 foreach (EmployeesInfo item in listemp)
                 {
-                    list2.AddRange( list.Where(l => l.Tearcher_Id == item.EmployeeId).ToList());
+                    list2.AddRange(list.Where(l => l.Tearcher_Id == item.EmployeeId).ToList());
                 }
                 var data = list2.OrderBy(l => l.Anpaidate).Skip((page - 1) * limit).Take(limit).ToList();
-                var datajson = new { code = 0,msg="" ,count=list2.Count,data= data };
-                return Json(datajson,JsonRequestBehavior.AllowGet);
+                var datajson = new { code = 0, msg = "", count = list2.Count, data = data };
+                return Json(datajson, JsonRequestBehavior.AllowGet);
             }
             else
             {
-                var data= list.OrderBy(l => l.Anpaidate).Skip((page - 1) * limit).Take(limit).ToList();
+                var data = list.OrderBy(l => l.Anpaidate).Skip((page - 1) * limit).Take(limit).ToList();
                 var datajson = new { code = 0, msg = "", count = list.Count, data = data };
                 return Json(datajson, JsonRequestBehavior.AllowGet);
             }
 
-           
+
         }
         /// <summary>
         /// 手动安排教员值班
@@ -218,7 +241,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                         OnByReak = Request.Form["ramke"],
                         AttendDate = DateTime.Now,
                         evning_Id = id,
-                        IsDels=false
+                        IsDels = false
                     };
 
                     bool hava = Tb_Entity.Exits(new_t.evning_Id, time, new_t.Tearcher_Id);
@@ -253,7 +276,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 {
                     int id = Convert.ToInt32(item);
                     TeacherAddorBeonDuty find = Tb_Entity.Findid(id);
-                    if (find != null && find.IsDels==false)
+                    if (find != null && find.IsDels == false)
                     {
                         list.Add(find);
                     }
@@ -279,7 +302,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         //    return View(find);
         //}
         #endregion
-      
+
         /// <summary>
         /// 教学老师模糊选择视图
         /// </summary>
@@ -300,10 +323,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
             find.IsDels = true;
 
-            AjaxResult a=  Tb_Entity.Upd_data(find);
+            AjaxResult a = Tb_Entity.Upd_data(find);
 
             return Json(a, JsonRequestBehavior.AllowGet);
-            
+
         }
 
         /// <summary>
@@ -312,43 +335,44 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         /// <returns></returns>
         public ActionResult OutData()
         {
-            string[] date =  Request.Form["date_Anpaidate"].Split('-');
+            string[] date = Request.Form["date_Anpaidate"].Split('-');
 
-            int dep =Convert.ToInt32( Request.Form["dep"]);
+            int dep = Convert.ToInt32(Request.Form["dep"]);
 
- 
+
             //获取属于这个部门的员工
 
-            List<EmployeesInfo> emplist= Tb_Entity.EmployeesInfo_Entity.GetEmpsByDeptid(dep);
+            List<EmployeesInfo> emplist = Tb_Entity.EmployeesInfo_Entity.GetEmpsByDeptid(dep);
 
             List<TeacherAddorBeonDutyView> beonduty_list = new List<TeacherAddorBeonDutyView>();
 
             foreach (EmployeesInfo item in emplist)
             {
-               var find= Tb_Entity.AttendSqlGetData(" select * from TeacherAddorBeonDutyView where YEAR(Anpaidate)='" + date[0] + "' and MONTH(Anpaidate)='" + date[1] + "' and  Tearcher_Id='"+item.EmployeeId+ "'  and IsDels=1");
+                var find = Tb_Entity.AttendSqlGetData(" select * from TeacherAddorBeonDutyView where YEAR(Anpaidate)='" + date[0] + "' and MONTH(Anpaidate)='" + date[1] + "' and  Tearcher_Id='" + item.EmployeeId + "'  and IsDels=1");
 
                 beonduty_list.AddRange(find);
             }
-           var a = beonduty_list.GroupBy(b => b.Anpaidate);
+            var a = beonduty_list.GroupBy(b => b.Anpaidate);
             List<Onbety_Print> data = new List<Onbety_Print>();
             List<string> list = new List<string>();
-            a.ForEach(b=> {                                 
-                    var y= b.Key;
-                    list.Add(y.ToString());                                      
+            a.ForEach(b =>
+            {
+                var y = b.Key;
+                list.Add(y.ToString());
             });
-     
+
             foreach (string item in list)
             {
                 Onbety_Print one = new Onbety_Print();
-                one.time =Convert.ToDateTime(item);
-                List<TeacherAddorBeonDutyView> find= beonduty_list.Where(b => b.Anpaidate.ToString() == item).ToList();
+                one.time = Convert.ToDateTime(item);
+                List<TeacherAddorBeonDutyView> find = beonduty_list.Where(b => b.Anpaidate.ToString() == item).ToList();
                 StringBuilder sb = new StringBuilder();
                 int i = 0;
                 foreach (TeacherAddorBeonDutyView orher in find)
                 {
                     i++;
                     sb.Append($"{orher.EmpName}({orher.ClassNumber} / {orher.curd_name})");
-                    if (i!=find.Count)
+                    if (i != find.Count)
                     {
                         sb.Append(",");
                     }
@@ -385,8 +409,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             #endregion
             string title = date[0] + "年" + date[1] + "月值班表";
 
-            var jsondata = new { titile =title,data= data.OrderBy(t=>t.time).ToList() };            
-            return Json(jsondata,JsonRequestBehavior.AllowGet);
+            var jsondata = new { titile = title, data = data.OrderBy(t => t.time).ToList() };
+            return Json(jsondata, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -396,18 +420,18 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         /// <returns></returns>
         public ActionResult GetDetEmp(int id)
         {
-            List<SelectListItem> listemp = Tb_Entity.EmployeesInfo_Entity.GetEmpsByDeptid(id).Select(l=>new SelectListItem() { Text=l.EmpName,Value=l.EmployeeId}).ToList();
+            List<SelectListItem> listemp = Tb_Entity.EmployeesInfo_Entity.GetEmpsByDeptid(id).Select(l => new SelectListItem() { Text = l.EmpName, Value = l.EmployeeId }).ToList();
 
-            return Json(listemp,JsonRequestBehavior.AllowGet);
+            return Json(listemp, JsonRequestBehavior.AllowGet);
         }
-       
+
         /// <summary>
         /// 教务批量数据审核
         /// </summary>
         /// <returns></returns>
         public ActionResult ShenheData()
         {
-            string[] strs= Request.Form["str"].Split(',');
+            string[] strs = Request.Form["str"].Split(',');
             List<TeacherAddorBeonDuty> list = new List<TeacherAddorBeonDuty>();
             foreach (string item in strs)
             {
@@ -416,13 +440,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                     int id = Convert.ToInt32(item);
                     TeacherAddorBeonDuty find = Tb_Entity.Findid(id);
 
-                    if (find!=null)
+                    if (find != null)
                     {
                         find.IsDels = true;
 
                         list.Add(find);
                     }
-                     
+
                 }
             }
 
@@ -435,7 +459,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         #region 导入考勤数据表
 
         public ActionResult TableInsert()
-        {            
+        {
             return View();
         }
 
@@ -445,25 +469,25 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             HttpPostedFileBase files = Request.Files["file"];
             try
             {
-              
-                string fileName= "kaoqin.xlsx";
+
+                string fileName = "kaoqin.xlsx";
 
                 //在上传文件之前，将之间的文件全部删除
-                string path= Server.MapPath("~/uploadXLSXfile/ConsultUploadfile/Kaoqin");
+                string path = Server.MapPath("~/uploadXLSXfile/ConsultUploadfile/Kaoqin");
 
-                FileInfo[] list= FileHelper.GetFiles(path);
+                FileInfo[] list = FileHelper.GetFiles(path);
 
-                
-                if (list.Count()>0)
+
+                if (list.Count() > 0)
                 {
                     foreach (FileInfo item in list)
                     {
                         FileHelper.Delete(item.FullName);
                     }
                 }
-                
+
                 files.SaveAs(Server.MapPath("~/uploadXLSXfile/ConsultUploadfile/Kaoqin/" + fileName));
-                
+
                 a.Success = true;
                 a.Msg = "上传成功！！";
             }
@@ -471,12 +495,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             {
                 a.Msg = "月份格式不对！";
                 a.Success = false;
-                return Json(a,JsonRequestBehavior.AllowGet);
-            }            
+                return Json(a, JsonRequestBehavior.AllowGet);
+            }
 
-            return Json(a,JsonRequestBehavior.AllowGet);
+            return Json(a, JsonRequestBehavior.AllowGet);
         }
-        
+
 
         #endregion
 
@@ -499,7 +523,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                               select new SelectListItem() { Value = e2.Value, Text = e2.Attribute("name").Value }).ToList();
 
 
-                
+
 
                 DateTime mon = Convert.ToDateTime(Request.QueryString["Month"]);//获取月份
 
@@ -508,7 +532,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 List<TeacherAddorBeonDutyView> teachers = new List<TeacherAddorBeonDutyView>();
                 if (employees.PositionId == 4028)
                 {
-                    StringBuilder sb = new StringBuilder(@"select tea.Id,tea.OnByReak,tea.BeOnDuty_Id,tea.Anpaidate,tea.Tearcher_Id,tea.AttendDate,tea.evning_Id,tea.ClassroomName,tea.ClassNumber,tea.curd_name,tea.TypeName,tea.EmpName,tea.IsDels from TeacherAddorBeonDutyView as tea left join EmployeesInfo as emp on emp.EmployeeId=tea.Tearcher_Id where YEAR(tea.Anpaidate)='" + mon.Year + "' and MONTH(tea.Anpaidate)='"+ mon.Month + "' and (emp.PositionId=3 or emp.PositionId=4 or emp.PositionId=2011  or emp.PositionId=2012 or emp.PositionId=4025 or emp.PositionId=4026 or emp.PositionId=4027 or emp.PositionId=4028 or emp.PositionId=5038 or emp.PositionId=5039 or emp.PositionId=5044)");
+                    StringBuilder sb = new StringBuilder(@"select tea.Id,tea.OnByReak,tea.BeOnDuty_Id,tea.Anpaidate,tea.Tearcher_Id,tea.AttendDate,tea.evning_Id,tea.ClassroomName,tea.ClassNumber,tea.curd_name,tea.TypeName,tea.EmpName,tea.IsDels from TeacherAddorBeonDutyView as tea left join EmployeesInfo as emp on emp.EmployeeId=tea.Tearcher_Id where YEAR(tea.Anpaidate)='" + mon.Year + "' and MONTH(tea.Anpaidate)='" + mon.Month + "' and (emp.PositionId=3 or emp.PositionId=4 or emp.PositionId=2011  or emp.PositionId=2012 or emp.PositionId=4025 or emp.PositionId=4026 or emp.PositionId=4027 or emp.PositionId=4028 or emp.PositionId=5038 or emp.PositionId=5039 or emp.PositionId=5044)");
 
                     //s1/s2教务
                     //获取S1/S2教质部门的老师值班数据
@@ -517,7 +541,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 else
                 {
                     //S3教务
-                    StringBuilder sb = new StringBuilder(@"select tea.Id,tea.OnByReak,tea.BeOnDuty_Id,tea.Anpaidate,tea.Tearcher_Id,tea.AttendDate,tea.evning_Id,tea.ClassroomName,tea.ClassNumber,tea.curd_name,tea.TypeName,tea.EmpName,tea.IsDels from TeacherAddorBeonDutyView as tea left join EmployeesInfo as emp on emp.EmployeeId=tea.Tearcher_Id where YEAR(tea.Anpaidate)='"+ mon.Year + "' and MONTH(tea.Anpaidate)='"+mon.Month+"' and (emp.PositionId=2013 or emp.PositionId=2014 or emp.PositionId=2015  or emp.PositionId=2016 or emp.PositionId=4040 or emp.PositionId=4041 or emp.PositionId=4042 or emp.PositionId=5040 or emp.PositionId=5041 or emp.PositionId=5042 or emp.PositionId=5043)");
+                    StringBuilder sb = new StringBuilder(@"select tea.Id,tea.OnByReak,tea.BeOnDuty_Id,tea.Anpaidate,tea.Tearcher_Id,tea.AttendDate,tea.evning_Id,tea.ClassroomName,tea.ClassNumber,tea.curd_name,tea.TypeName,tea.EmpName,tea.IsDels from TeacherAddorBeonDutyView as tea left join EmployeesInfo as emp on emp.EmployeeId=tea.Tearcher_Id where YEAR(tea.Anpaidate)='" + mon.Year + "' and MONTH(tea.Anpaidate)='" + mon.Month + "' and (emp.PositionId=2013 or emp.PositionId=2014 or emp.PositionId=2015  or emp.PositionId=2016 or emp.PositionId=4040 or emp.PositionId=4041 or emp.PositionId=4042 or emp.PositionId=5040 or emp.PositionId=5041 or emp.PositionId=5042 or emp.PositionId=5043)");
 
                     teachers = Tb_Entity.GetListBySql<TeacherAddorBeonDutyView>(sb.ToString()).OrderBy(te => te.Anpaidate).ToList();
                 }
@@ -567,11 +591,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                                     {
                                         SelectListItem select = null;
                                         //判断类型
-                                        if (item.curd_name == "晚一") 
+                                        if (item.curd_name == "晚一")
                                         {
                                             select = result.Where(r => r.Text.Contains("晚一")).FirstOrDefault();
                                         }
-                                        else if (item.curd_name == "晚二")  
+                                        else if (item.curd_name == "晚二")
                                         {
                                             select = result.Where(r => r.Text.Contains("晚二")).FirstOrDefault();
                                         }
@@ -653,5 +677,72 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
             return View();
         }
+
+        /// <summary>
+        /// 获取教员
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult GetTeacher()
+        {
+            int classid = Convert.ToInt32(Request.Form["classid"]);
+
+            DateTime date = Convert.ToDateTime(Request.Form["date"]);
+
+            //获取XX日期上XX班的老师
+
+            string sqlstr = " select * from ReconcileView where AnPaiDate='" + date + "' and ClassSchedule_Id= " + classid;
+
+            List<ReconcileView> rlist = Tb_Entity.GetListBySql<ReconcileView>(sqlstr);
+            List<SelectListItem> select = new List<SelectListItem>();
+
+            List<SelectListItem> select2 = new List<SelectListItem>();
+            //判断如果时Y1就将英语，数学，语文老师显示
+            List<ClassSchedule> clist = Tb_Entity.GetListBySql<ClassSchedule>("select * from ClassSchedule where id=" + classid).ToList();
+
+            if (rlist.Count > 0)
+            {
+                select = rlist.Select(r => new SelectListItem() { Text = r.EmpName, Value = r.EmployeesInfo_Id }).ToList();
+            }
+
+            if (clist.Count > 0)
+            {
+                ClassSchedule findataclass = clist[0];
+
+                if (findataclass.grade_Id == 1002)
+                {
+                    //是y1的班级
+                    List<SelectListItem> emp1 = Tb_Entity.EmployeesInfo_Entity.GetEmpByPid(4025).Select(e=>new SelectListItem() { Text=e.EmpName,Value=e.EmployeeId}).ToList();//英语老师
+                    List<SelectListItem> emp2 = Tb_Entity.EmployeesInfo_Entity.GetEmpByPid(4027).Select(e => new SelectListItem() { Text = e.EmpName, Value = e.EmployeeId }).ToList();//语文老师
+                    List<SelectListItem> emp3 = Tb_Entity.EmployeesInfo_Entity.GetEmpByPid(4026).Select(e => new SelectListItem() { Text = e.EmpName, Value = e.EmployeeId }).ToList();//数学老师
+
+                    select.AddRange(emp1);
+                    select.AddRange(emp2);
+                    select.AddRange(emp3);
+
+                }
+            }
+
+            //筛选教学部的人员
+
+            select.ForEach(s=> {
+
+                EmployeesInfo pid = Tb_Entity.EmployeesInfo_Entity.GetEntity(s.Value);
+
+                if (pid!=null)
+                {
+                    int did = Tb_Entity.EmployeesInfo_Entity.GetDeptByPid(pid.PositionId).DeptId;
+                    if (did == 5 || did == 1009 || did == 1010)
+                    {
+                        select2.Add(s);
+                    }
+                }
+
+                 
+            });
+
+            return Json(select2,JsonRequestBehavior.AllowGet);
+        }
+
     }
 }

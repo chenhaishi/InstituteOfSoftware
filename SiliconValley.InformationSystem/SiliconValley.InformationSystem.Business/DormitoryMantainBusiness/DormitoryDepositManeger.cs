@@ -1,4 +1,5 @@
-﻿using SiliconValley.InformationSystem.Entity.Entity;
+﻿using SiliconValley.InformationSystem.Business.ClassSchedule_Business;
+using SiliconValley.InformationSystem.Entity.Entity;
 using SiliconValley.InformationSystem.Entity.MyEntity;
 using System;
 using System.Collections.Generic;
@@ -52,6 +53,11 @@ namespace SiliconValley.InformationSystem.Business.DormitoryMantainBusiness
         /// 员工信息业务类
         /// </summary>
         public BaseBusiness<EmployeesInfo> EmployeesInfo_Entity = new BaseBusiness<EmployeesInfo>();
+
+        /// <summary>
+        /// 班级业务类
+        /// </summary>
+        public ClassScheduleBusiness ClassSchedule_Entity = new ClassScheduleBusiness();
 
 
         /// <summary>
@@ -110,6 +116,5 @@ namespace SiliconValley.InformationSystem.Business.DormitoryMantainBusiness
         }
 
         
-
     }
 }

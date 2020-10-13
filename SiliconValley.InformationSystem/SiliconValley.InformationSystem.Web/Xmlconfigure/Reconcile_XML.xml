@@ -20,4 +20,8 @@
     <startmonth>6</startmonth>
     <endmonth>9</endmonth>
   </Year>
+  <Year name="2024">
+    <startmonth>6</startmonth>
+    <endmonth>9</endmonth>
+  </Year>
 </GetYear>
