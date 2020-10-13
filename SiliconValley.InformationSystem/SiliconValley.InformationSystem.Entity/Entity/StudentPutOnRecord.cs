@@ -59,6 +59,12 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         /// 学生微信
         /// </summary>
         public string StuWeiXin { get; set; }
+        
+        /// <summary>
+        /// 身份证
+        /// </summary>
+        public string IdCard { get; set; }
+
         /// <summary>
         /// 学生QQ
         /// </summary>
@@ -139,6 +145,6 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
             return 0;
         }
 
-        
+       
     }
 }

@@ -28,6 +28,16 @@ namespace SiliconValley.InformationSystem.Entity.Entity
         /// 学号
         /// </summary>
         public string StuNumber { get; set; }
+
+        /// <summary>
+        /// 班级编号
+        /// </summary>
+        public int Classid { get; set; }
+
+        /// <summary>
+        /// 阶段编号
+        /// </summary>
+        public int Grandid { get; set; }
         /// <summary>
         ///  维修的物品
         /// </summary>
@@ -54,9 +64,6 @@ namespace SiliconValley.InformationSystem.Entity.Entity
         /// </summary>
         public string SettlementStaff { get; set; }
 
-        /// <summary>
-        /// 处理人员
-        /// </summary>
-        public string ProcessingPersonnel { get; set; }
+ 
     }
 }

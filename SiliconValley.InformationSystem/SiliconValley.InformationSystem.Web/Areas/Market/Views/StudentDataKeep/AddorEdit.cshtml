@@ -49,7 +49,7 @@
     .TextAreCss1
     {
         height: 48px;
-        width: 91%;
+        width: 93%;
     }
 
     .butCss2
@@ -86,6 +86,11 @@
     .needTextColor
     {
         color: red
+    }
+
+    .With
+    {
+        width: 93%;
     }
 </style>
 <div style="width:74%;margin:20px auto;">
@@ -225,6 +230,16 @@
                 </div>
             </div>
         </div>
+
+        <div class="layui-row layui-form-item">
+            <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                <label class="layui-form-label">身 &nbsp;&nbsp;&nbsp;份&nbsp;&nbsp; 证:</label>
+                <div class="layui-input-block">
+                    @Html.TextBoxFor(s => s.IdCard, new Dictionary<string, object>() { { "placeholder", "身份证" }, { "class", "layui-input With" } ,{ "lay-verify", "idcards" } })
+                </div>
+            </div>
+        </div>
+
         <div class="layui-row layui-form-item">
 
             <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
@@ -427,12 +442,18 @@
                 }
 
             }
-            
+            ,idcards: function (value) {
+                var reg = /^[1-8][1-7]\d{4}(?:19|20)\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])\d{3}[\dX]$/;
+                var is = reg.test(value);
+                if (value.length>0 && is == false) {
+                    return "身份证无效！";
+                }
+                
+            }
         });
 
         //提交数据
-        form.on('submit(tijiao)', function (data) {
-            
+        form.on('submit(tijiao)', function (data) {            
             if (data.field.StuPhone == "" && data.field.StuWeiXin == "" && data.field.StuQQ == "") {
                 layer.msg("电话、微信、QQ至少要填一个！", { icon: 2, shade: 0.8 });
             } else if (data.field.StuAddress == "" && data.field.StuSchoolName == "") {

@@ -223,18 +223,24 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         #endregion
 
         /// <summary>
-        /// 判断是否是教务
+        /// 判断是否是教务(0--是Admin(),1--是教务，2--部门主任,3--普通员工)
         /// </summary>
         /// <param name="emp"></param>
         /// <returns></returns>
-        public bool Isjiaowu(string emp)
+        public int Isjiaowu(string emp)
         {
-            bool s = true;
+            int s = 0;
             Position position= EmployeesInfo_Entity.GetPositionByEmpid(emp);
-            if (!position.PositionName.Contains("教务"))
+            if (position.PositionName.Contains("教务"))
             {
-                s = false;
-            }
+                s = 1;
+            }else if (position.PositionName.Contains("教学主任") || position.PositionName.Contains("教学副主任"))
+            {
+                s = 2;
+            }else if (position.DeptId!= 1007)
+            {
+                s = 3;
+            } 
 
             return s;
         }

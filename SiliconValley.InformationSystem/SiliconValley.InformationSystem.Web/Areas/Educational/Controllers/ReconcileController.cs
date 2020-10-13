@@ -1528,8 +1528,14 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
             return Json(a,JsonRequestBehavior.AllowGet) ;
         }
-        
+
         #endregion
 
+        #region 教员页面
+        public ActionResult TeacherReconfile()
+        {
+            return View();
+        }
+        #endregion
     }
 }

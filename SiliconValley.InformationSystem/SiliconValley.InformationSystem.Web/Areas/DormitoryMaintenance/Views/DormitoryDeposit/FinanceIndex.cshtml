@@ -1,0 +1,89 @@
+﻿
+@{
+    ViewBag.Title = "FinanceIndex";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .LableCss1
+    {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        float: left;
+        display: block;
+        padding: 9px 15px;
+        width: 80px;
+        font-weight: 400;
+        line-height: 20px;
+        text-align: right
+    }
+</style>
+@*<table id="Financetable" lay-filter="Financetable"></table>*@
+
+<div>
+    <form class="layui-form" lay-filter="sercherform">
+        <div class="layui-row layui-form-item">
+            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                <label class="LableCss1">学生姓名:</label>
+                <div class="layui-input-block">
+                    <input type="text" placeholder="学生姓名" class="layui-input" id="inputname"/>
+                    <input type="hidden" name="stuName" id="stuName" />
+                </div>
+            </div>
+            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                <label class="LableCss1">开始时间:</label>
+                <div class="layui-input-block">
+                    <input type="text" placeholder="开始时间" class="layui-input" name="starTime" id="starTime" />
+                </div>
+            </div>
+            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                <label class="LableCss1">结束时间:</label>
+                <div id="ClssTime" class="layui-input-block">
+                    <input type="text" placeholder="结束时间" class="layui-input" name="endTime" id="endTime" />
+                </div>
+            </div>
+            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2" style="text-align:center">
+                <button type="button" class="layui-btn" onclick="SercherFuntion()">查询</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    var table;
+    var laydate;
+    var layer;
+    var form;
+    $(function () {
+        layui.use(['table', 'laydate', 'layer', 'form'], function () {
+            table = layui.table;
+            laydate = layui.laydate;
+            layer = layui.layer;
+            form = layui.form;
+
+            laydate.render({
+                elem: '#starTime'
+                , trigger: 'click'
+            });
+
+            laydate.render({
+                elem: '#endTime'
+                , trigger: 'click'
+            });
+        });
+    });
+
+
+    function SercherFuntion() {
+        var data1 = form.val("sercherform");
+
+
+    }
+
+    $("#inputname").keydown(function (event) {
+         　　　if (event.keyCode == 13) {
+            　　　　//　alert('你按下了Enter');      
+                
+              }         
+    });
+</script>
+
