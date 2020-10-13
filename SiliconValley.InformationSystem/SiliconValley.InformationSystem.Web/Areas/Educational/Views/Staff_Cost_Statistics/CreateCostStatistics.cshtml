@@ -2,7 +2,7 @@
 @{
     Layout = null;
 }
-
+@using SiliconValley.InformationSystem.Entity.MyEntity
 <!DOCTYPE html>
 
 <html>
@@ -19,31 +19,25 @@
         }
 
         .btns button {
-            width:150px;
+            width: 150px;
         }
 
         #pross {
-            
             position: fixed;
-
-            margin-top:20px;
-            display:none;
-
-            width:100%;
-
-            z-index:100;
-
-            vertical-align:middle;
+            margin-top: 20px;
+            display: none;
+            width: 100%;
+            z-index: 100;
+            vertical-align: middle;
         }
-        #flush :hover{
-        
-            color:red;
+
+        #flush :hover {
+            color: red;
         }
 
         #flush {
-            cursor:pointer;
+            cursor: pointer;
         }
-       
     </style>
 </head>
 <body>
@@ -65,8 +59,27 @@
         <hr />
 
         <div style="height:40px; line-height:40px; text-align:center;">
+
             <form class="layui-form">
+
                 <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">部门：</label>
+                        <div class="layui-input-inline">
+                            <select name="dep" lay-filter="dep_select" lay-search="">
+
+                                <option value="0">所有</option>
+
+                                @{
+                                    foreach (var item in ViewBag.deps as List<Department>)
+                                    {
+                                        <option value="@item.DeptId">@item.DeptName</option>
+                                    }
+                                }
+
+                            </select>
+                        </div>
+                    </div>
                     <div class="layui-inline" style=" width:400px;">
                         <label style="width:150px;" class="layui-form-label">确认工作日天数</label>
                         <div class="layui-input-inline">
@@ -77,15 +90,15 @@
                     <div class="layui-inline" style=" width:40px;">
                         <label style="width:50px; color:blue;" id="flush" class="layui-form-label">刷新</label>
                         <div class="layui-input-inline">
-                            
+
                         </div>
                     </div>
                 </div>
 
-               
+
             </form>
 
-            
+
         </div>
 
         <hr />
@@ -127,7 +140,7 @@
 
         //获取工作日天数
         function WorkingDay(date, callback) {
-            
+
             $.post("/Educational/Staff_Cost_Statistics/WorkingDays", { date: date }, function (result) {
 
                 callback(result);
@@ -145,7 +158,7 @@
 
 
         var date = $("#date-input").val();
-     
+
         layui.use(['layer', 'table', 'element'], function () {
 
             var layer = layui.layer;

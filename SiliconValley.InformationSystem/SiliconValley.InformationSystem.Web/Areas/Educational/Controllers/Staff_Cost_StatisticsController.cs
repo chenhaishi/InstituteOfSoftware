@@ -161,6 +161,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         /// <returns></returns>
         public ActionResult CreateCostStatistics()
         {
+            var deps = db_staf_Cost.GetDepartments();
+
+            ViewBag.Deps = deps;
             return View();
         }
 
