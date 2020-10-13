@@ -2504,10 +2504,31 @@ namespace SiliconValley.InformationSystem.Business.ClassSchedule_Business
 
             return Headyees;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="studentID">学号</param>
+        /// <param name="date">时间</param>
+        /// <param name="">a=1是班级编号 a=2是阶段编号</param>
+        /// <returns></returns>
+        public int GetStudentDate(string studentID, DateTime date,int a)
+        {
+            BaseBusiness<ScheduleForTrainees> ScheduleForTrainees = new BaseBusiness<ScheduleForTrainees>();
+            BaseBusiness<ClassSchedule> ClassSchedule = new BaseBusiness<ClassSchedule>();
+            int i = 0;
+            if (a == 1)
+            {
+                var classID = ScheduleForTrainees.GetList().Where(d => d.StudentID == studentID && d.AddDate.Year == date.Year && d.AddDate.Month == date.Month && d.AddDate.Day == date.Day).SingleOrDefault();
+                i = classID.ID_ClassName;
+                
+            }
+            else if(a==2){
+                var GreadID = ScheduleForTrainees.GetList().Where(d => d.StudentID == studentID && d.AddDate.Year == date.Year && d.AddDate.Month == date.Month && d.AddDate.Day == date.Day).SingleOrDefault();
+                var grandID = ClassSchedule.GetList().Where(d => d.id == GreadID.ID_ClassName).SingleOrDefault();
+                i = grandID.grade_Id;
+            }
+            return i;
+        }
 
-        //public bool kohtualluvus()
-        //{
-
-        //}
     }
 }

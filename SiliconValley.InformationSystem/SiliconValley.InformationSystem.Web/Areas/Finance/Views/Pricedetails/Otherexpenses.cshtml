@@ -113,7 +113,7 @@
                     if (/(^\_)|(\__)|(\_+$)/.test(value)) {
                         return '名称首尾不能出现下划线\'_\'';
                     }
-                    if (!/^[a-zA-Z\u4e00-\u9fa5]+$/.test(value)) {
+                    if (!/^[a-zA-Z\u4e00-\u9fa5\d]+$/.test(value)) {
                         return '名称只能由中文或字母组成';
                     }
 
