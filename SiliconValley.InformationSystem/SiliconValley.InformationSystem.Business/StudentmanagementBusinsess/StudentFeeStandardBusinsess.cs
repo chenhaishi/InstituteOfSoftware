@@ -1026,16 +1026,16 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
           
            
             var Class_id = classschedu.GetList().Where(d => d.id == ClassID).SingleOrDefault();//查询班级
-            var student = ScheduleForTrainees.GetList().Where(d => d.ClassID == Class_id.ClassNumber).ToList();//查询班级里所有的学生
+            var student = ScheduleForTrainees.GetList().Where(d => d.ClassID == Class_id.ClassNumber&&d.CurrentClass==true).ToList();//查询班级里所有的学生
             foreach (var item in student)
             {
                 
                 var studentView = StudentFeeRecordView.GetList().Where(d => d.StudenID == item.StudentID).ToList();//所有学生的缴费情况
                 //分组
-                var list = from s in studentView//分组对象
+                var list = (from s in studentView//分组对象
                            group s by s.StageName//按什么分组
                            into mylist                         
-                           select mylist;//返回对象
+                           select mylist).ToList();//返回对象
 
                 foreach (var i in list)
                 {
@@ -1059,14 +1059,30 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                         sum += m.Amountofmoney;//阶段费用 
                     }
                     DetailedcostView deta_list = new DetailedcostView();
-                    count = grand_sum.SingleOrDefault().Summonry - sum;//计算欠费
-                    deta_list.Surplus = count;
-                    deta_list.Stidentid = item.StudentID;
-                    deta_list.Name = stuinfomation.GetEntity(item.StudentID).Name;
-                    deta_list.ClassName = item.ClassID;
-                    deta_list.CurrentStageID = stage;
-                    deta_list.Amountofmoney = sum;
-                    deta_list.ShouldJiao = grand_sum.SingleOrDefault().Summonry;
+                    if (Grandid == null)
+                    {
+                        count = grand_sum.SingleOrDefault().Summonry - sum;//计算欠费
+                        deta_list.Surplus = count;
+                        deta_list.Stidentid = item.StudentID;
+                        deta_list.Name = stuinfomation.GetEntity(item.StudentID).Name;
+                        deta_list.ClassName = item.ClassID;
+                        deta_list.CurrentStageID = stage;
+                        deta_list.Amountofmoney = sum;
+                        deta_list.ShouldJiao = grand_sum.SingleOrDefault().Summonry;
+                    }
+                    else
+                    {
+                        deta_list.StagesID = Grandid.Id;
+                        count = grand_sum.SingleOrDefault().Summonry - sum;//计算欠费
+                        deta_list.Surplus = count;
+                        deta_list.Stidentid = item.StudentID;
+                        deta_list.Name = stuinfomation.GetEntity(item.StudentID).Name;
+                        deta_list.ClassName = item.ClassID;
+                        deta_list.CurrentStageID = stage;
+                        deta_list.Amountofmoney = sum;
+                        deta_list.ShouldJiao = grand_sum.SingleOrDefault().Summonry;
+
+                    }
                     listdetailedcs.Add(deta_list);
                 }
                

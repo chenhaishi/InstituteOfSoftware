@@ -5,71 +5,74 @@
 }
 @using SiliconValley.InformationSystem.Entity.MyEntity
 @section style{
-  
+
     <style>
         #mydiv {
-            width:100%;
+            width: 100%;
         }
     </style>
-    
-  }
 
-    <div id="mydiv">
+}
 
-        <div id="toor">
-            <form class="layui-form">
+<div id="mydiv">
 
-                <div class="layui-form-item">
+    <div id="toor">
+        <form class="layui-form">
 
-                    <div class="layui-inline">
-                        <label class="layui-form-label">考试</label>
-                        <div class="layui-input-inline">
-                            <select name="Exam" lay-verify="required" lay-filter="Exam" lay-search="">
-                                @{
-                                    foreach (var item in ViewBag.Examlist as List<Examination>)
-                                    {
-                                        <option value="@item.ID">@item.Title</option>
-                                    }
+            <div class="layui-form-item">
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">考试</label>
+                    <div class="layui-input-inline">
+                        <select name="Exam" lay-verify="required" lay-filter="Exam" lay-search="">
+                            @{
+                                foreach (var item in ViewBag.Examlist as List<Examination>)
+                                {
+                                    <option value="@item.ID">@item.Title</option>
                                 }
+                            }
 
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="layui-inline">
-                        <label class="layui-form-label">班级</label>
-                        <div class="layui-input-inline">
-                            <select name="classNumber" id="classnumber" lay-search=""></select>
-                        </div>
-                    </div>
-
-                    <div class="layui-inline">
-
-                        <div class="layui-inline">
-                            <label class="layui-form-label"></label>
-                            <button type="button" class="layui-btn layui-btn-primary" lay-submit="" lay-filter="search" id="search">查询</button>
-                        </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label"></label>
-                            <button type="button" class="layui-btn layui-btn-primary" lay-submit="" lay-filter="PassRate" id="PassRate">计算班级合格率</button>
-                        </div>
+                        </select>
                     </div>
                 </div>
 
-            </form>
+                <div class="layui-inline">
+                    <label class="layui-form-label">班级</label>
+                    <div class="layui-input-inline">
+                        <select name="classNumber" id="classnumber" lay-search=""></select>
+                    </div>
+                </div>
 
-        </div>
-        <table class="layui-hide" lay-filter="ExamScores" id="ExamScores"></table>
-        <div id="PassRateDiv" style="display:none">
-            <form class="layui-form" lay-filter="NanDuid">
-                <input id="HeGeLu"style="font-size:110px;color:red;content:contents" type="text" disabled="disabled"/>
-                @*<button type="button" style="text-align:center;width:68%;" class="layui-btn layui-btn layui-input-block" onclick="TongJi()">统计</button>*@
-            </form>
-        </div>
+                <div class="layui-inline">
+
+                    <div class="layui-inline">
+                        <label class="layui-form-label"></label>
+                        <button type="button" class="layui-btn layui-btn-primary" lay-submit="" lay-filter="search" id="search">查询</button>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label"></label>
+                        <button type="button" class="layui-btn layui-btn-primary" lay-submit="" lay-filter="PassRate" id="PassRate">计算班级合格率</button>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
     </div>
+    <table class="layui-hide" lay-filter="ExamScores" id="ExamScores"></table>
+    <div id="PassRateDiv" style="display:none">
+        <form class="layui-form" lay-filter="NanDuid">
+            <input id="HeGeLu" style="font-size:110px;color:red;content:contents" type="text" disabled="disabled" />
+            @*<button type="button" style="text-align:center;width:68%;" class="layui-btn layui-btn layui-input-block" onclick="TongJi()">统计</button>*@
+        </form>
+    </div>
+</div>
 
 @section script{
-    
+
+    <script type="text/html" id="xuhao">
+        {{d.LAY_TABLE_INDEX+1}}
+    </script>
 
     <script>
         var FenShu = "";
@@ -91,11 +94,11 @@
                 , title: '用户数据表'
                 , cols: [[
                       { type: 'checkbox', fixed: 'left' }
-                    , { field: 'id', title: 'ID', width: 80, fixed: 'left', unresize: true, sort: true }
+                    , { field: 'id', title: '序号', width: 80, fixed: 'left', unresize: true, sort: true, templet: '#xuhao' }
                     , { field: 'ExamTitle', title: '考试名称', width: "13%" }
                     , {
                         field: 'StudentName', title: '学员名称', width: "13%"}
-                    
+
                     , { field: 'StudentClass', title: '当时班级', width: "13%", sort: true }
                     , { field: 'ChooseScore', title: '选择题分数', width: "13%", templet: '<div>{{d.Score.ChooseScore}}</div>'  }
                     , { field: 'TextQuestionScore', width: "13%", title: '解答题分数', templet: '<div>{{d.Score.TextQuestionScore}}</div>' }
@@ -108,7 +111,7 @@
                             return zongfen;
                         }
                     }
-                    
+
                 ]]
                 , page: false
             });
@@ -145,7 +148,7 @@
             layui.form.render("select");
 
             form.on('submit(search)', function (data) {
-                
+
                 console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
                 console.log(data.field.Exam)
                 if (!data.field.classNumber) {
@@ -175,14 +178,14 @@
                 layer.open({
                     type: 1,
                     title: "合格率统计",
-                    area: ["300px", "240px"], 
+                    area: ["300px", "240px"],
                     content: $('#PassRateDiv'),
                     success: function () {
                         $.post("/ExaminationSystem/ExamScores/ExamPassRate", { Exam: Exam,FenShu: FenShu }, function (result) {
                             if (result.ErrorCode == 200) {
                                 layer.msg("统计成功！");
                                 console.log(result.Data);
-                           
+
                                 $("#HeGeLu").val(result.Data);
                             } else {
                                 layer.msg("统计失败！");
@@ -190,11 +193,11 @@
                         })
                     }
                 })
-                
+
                 return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
             });
         });
     </script>
-    
+
 }
 

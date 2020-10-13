@@ -29,8 +29,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         private readonly StudentExamBusiness db_stuExam;
 
         private readonly ChoiceQuestionBusiness db_choiceQuestion;
-        private readonly ExamScoresBusiness db_examScores; 
-
+        private readonly ExamScoresBusiness db_examScores;
+        private readonly AnswerQuestionBusiness db_answerQuestion;
 
         public StudentExamSysController()
         {
@@ -38,6 +38,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             db_stuExam = new StudentExamBusiness();
             db_choiceQuestion = new ChoiceQuestionBusiness();
             db_examScores = new ExamScoresBusiness();
+            db_answerQuestion = new AnswerQuestionBusiness();
         }
         // GET: ExaminationSystem/StudentExamSys
         public ActionResult StuExamIndex()
@@ -574,6 +575,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 db_exam.UpdateCandidateInfo(Candidateinfo);
 
                 //4.记录选择题分数
+                 
 
                 //获取考生
 
@@ -650,61 +652,36 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             return View();
         }
         /// <summary>
-        /// 刷题数据
+        /// 刷题选择题数据
         /// </summary>
         /// <param name="examType">阶段</param>
         /// <param name="kecheng">课程</param>
-        /// <param name="ShuaTiLeiXing">选择题解答题类型</param>
         /// <param name="level">难度等级</param>
         /// <returns></returns>
-        public ActionResult BrushAlltheQuestions(string examType, string kecheng,int ShuaTiLeiXing, string level)
+        public ActionResult BrushAlltheQestion(string examType, string kecheng)
         {
             AjaxResult result = new AjaxResult();
+
             Examination examination = new Examination();
+
 
             examination.ExamType = int.Parse(examType);
             examination.ID = 0;
-            examination.PaperLevel = int.Parse(level);
+            List<MultipleChoiceQuestion> multipleChoicelist = db_choiceQuestion.AllChoiceQuestionData().OrderByDescending(d=>d.Course==int.Parse(kecheng)).ToList();
+ 
             try
             {
-                if (ShuaTiLeiXing == 1)
+                var res = new
                 {
-                    var questiondata = db_stuExam.ProductChoiceQuestion(examination, int.Parse(kecheng));
+
+                    data = multipleChoicelist,
+
+                };
 
 
-                    var scores = db_stuExam.distributionScores(questiondata);
-
-                    var res = new
-                    {
-
-                        data = questiondata,
-                        scores = scores
-
-                    };
-
-
-                    result.ErrorCode = 200;
-                    result.Msg = "成功";
-                    result.Data = res;
-
-                }
-                else if (ShuaTiLeiXing == 2)
-                {
-                    var questiondata = db_stuExam.productAnswerQuestion(examination, int.Parse(kecheng));
-
-                    var scores = db_stuExam.distributionScores(questiondata);
-
-                    var res = new
-                    {
-
-                        data = questiondata,
-                        scores = scores
-
-                    };
-                    result.Data = res;
-                    result.Msg = "成功";
-                    result.ErrorCode = 200;
-                }
+                result.ErrorCode = 200;
+                result.Msg = "成功";
+                result.Data = res;
             }
             catch (Exception ex)
             {
@@ -712,7 +689,44 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 result.ErrorCode = 500;
                 result.Msg = "失败";
                 result.Data = null;
-            }            
+            }
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
+        /// 刷题解答题数据
+        /// </summary>
+        /// <param name="examType">阶段</param>
+        /// <param name="kecheng">课程</param>
+        /// <param name="level">难度等级</param>
+        /// <returns></returns>
+        public ActionResult BrushAlltheQuestion(string examType, string kecheng)
+        {
+            AjaxResult result = new AjaxResult();
+
+            Examination examination = new Examination();
+
+            examination.ExamType = int.Parse(examType);
+            examination.ID = 0;
+            List<AnswerQuestionBank> list = db_answerQuestion.AllAnswerQuestion().OrderByDescending(d => d.Course==int.Parse(kecheng)).ToList();
+            try
+            {
+                var res = new
+                {
+
+                    data = list,
+
+                };
+                result.Data = res;
+                result.Msg = "成功";
+                result.ErrorCode = 200;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
             return Json(result, JsonRequestBehavior.AllowGet);
         }
         /// <summary>

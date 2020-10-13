@@ -109,8 +109,6 @@
 
                     </div>
                     
-
-
                     <div class="layui-form log-item">
                        
                             <label class="layui-form-label">刷题类型</label>
@@ -121,19 +119,6 @@
                                     <option value="2">解答题</option>
                                 </select>
                             </div>                       
-                        <div class="layui-inline">
-                            <label class="layui-form-label">难度级别:</label>
-                            <div class="layui-input-inline">
-                                <select class="formitem" name="level" id="level">
-                                    @{
-                                        foreach (var item in ViewBag.levellist)
-                                        {
-                                            <option value="@item.LevelID">@item.LevelName</option>
-                                        }
-                                    }
-                                </select>
-                            </div>
-                         </div>
                             <div class="layui-input-inline" style="margin-left:30px;">
                                 <button type="button" id="begin" class="layui-btn layui-btn-primary formitem">开始刷题</button>
                             </div>
@@ -160,51 +145,35 @@
             </div>
         </div>
 
-        <div id="refanswerdiv"> 
-
-            <div id="contentref" style="color:blue;">
-
-            </div>
-
-            <button style="margin-top:10px;" id="closeref" class="layui-btn layui-btn-primary">关闭</button>
-        </div>
-
-
     </div>
 
     <script type="text/template" id="chiosequestionTemplate">
         <div class="choiceItem">
-            <input type="hidden" class="answer" value="{{=answer}}" />
-            <label class="choicetitle" style="font-size:16px; color: gray;">{{=title}}<span style="margin-left:10px;"></span></label>
+            @*<input type="hidden" class="answer" value="{{=answer}}" />*@
+            <label class="choicetitle" style="font-size:16px; color:gray;">{{=title}}<span style="margin-left:10px;"></span></label><label style="margin-left:10px;color:red">{{=answer}}</label>
+            <div style="margin-left:20px;">
+                <div class="option"><label>A:</label> <label style="margin-left:10px;">{{=A}}</label></div>
+                <div class="option"><label>B:</label> <label style="margin-left:10px;">{{=B}}</label> </div>
+                <div class="option"><label>C:</label> <label style="margin-left:10px;">{{=C}}</label>  </div>
+                <div class="option"><label>D:</label> <label style="margin-left:10px;">{{=D}}</label> </div>
 
-            <div>
-                <div class="option"><label>答案:</label><label style="margin-left:10px;">{{=A}}</label></div>
-                <hr class="layui-bg-black">
-                <div class="option"><label>答案:</label><label style="margin-left:10px;">{{=B}}</label></div>
-                <hr class="layui-bg-black">
-                <div class="option"><label>答案:</label><label style="margin-left:10px;">{{=C}}</label></div>
-                <hr class="layui-bg-black">
-                <div class="option"><label>答案:</label><label style="margin-left:10px;">{{=D}}</label></div>
-                <hr class="layui-bg-black">
+
             </div>
-
         </div>
+
     </script>
 
-    <script type="text/template" id="answerquestionTemplate">
-        <div class="answerItem" questionid="{{=questionid}}">
-            <label style="font-size:16px; color: gray;">{{=title}}<span style="color:blue; display:none; margin-left:10px; cursor:pointer;" class="refanswer">参考答案</span> </label>
-
-            <div class="simple-editor" style="margin-left:20px;">
-
-                <span style="font-size:14px; color:gray;">写下你的答案吧</span>
-
-            </div>
-        </div>
+   <script type="text/template" id="answerquestionTemplate">
+       <div class="answerItem">
+           <label class="choicetitle" style="font-size:16px; color:gray;">{{=title}}</label>
+           <div style="margin-left:20px;">
+               <div class="option"><label style="color:red;margin-left:10px;">{{=ref}}</label></div>
+           </div>
+           
+       </div>
     </script>
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/layui/layui.js"></script>
-
     <script src="~/Areas/ExaminationSystem/js/trumbowyg/trumbowyg.min.js"></script>
     <script src="~/Areas/ExaminationSystem/js/trumbowyg/langs/fr.js"></script>
     <script src="~/Areas/ExaminationSystem/js/trumbowyg/plugins/upload/trumbowyg.upload.min.js"></script>
@@ -333,21 +302,17 @@
             $(document).off("click", ".option").on("click", ".option", function () {
 
                 $(this).find("input").click();
-
+                
             });
-            var leixing = $(".ShuaTiLeiXing").val();
-            if (leixing == 1) {
-                function loadchoicequestiondata(examtype, level, kecheng = "0", ShuaTiLeiXing) {
+                function loadchoicequestiondata(examtype,kecheng = "0") {
 
                     var index = layer.load(2); //又换了种风格，并且设定最长等待10秒
-
-                    $.post("/ExaminationSystem/StudentExamSys/BrushAlltheQuestions", { examType: examtype, kecheng: kecheng, ShuaTiLeiXing: ShuaTiLeiXing, level }, function (result) {
+                    //判断如果类型是选择题就请求BrushAlltheQestion
+                    $.post("/ExaminationSystem/StudentExamSys/BrushAlltheQestion", { examType: examtype, kecheng: kecheng }, function (result) {
                         layer.close(index);
                         if (result.ErrorCode == 200) {
 
                             for (var i = 0; i < result.Data.data.length; i++) {
-
-
 
                                 var a = $("<label></label>");
                                 a.text(result.Data.data[i].OptionA);
@@ -363,15 +328,14 @@
                                 var d = $("<label></label>");
                                 d.text(result.Data.data[i].OptionD);
 
-
+                                var zheng = $("<label><label>");
+                                zheng.text(result.Data.data[i].Answer);
 
                                 var title = $("<label></label>");
                                 title.text(result.Data.data[i].Title);
 
                                 var html = _.template($("#chiosequestionTemplate").html());
-
-
-                                var htmldata = html({ answer: result.Data.data[i].Answer, title: document.HTMLDOMtoString(title[0]), A: document.HTMLDOMtoString(a[0]), B: document.HTMLDOMtoString(b[0]), C: document.HTMLDOMtoString(c[0]), D: document.HTMLDOMtoString(d[0]) });
+                                var htmldata = html({ title: document.HTMLDOMtoString(title[0]), answer: document.HTMLDOMtoString(zheng[0]), A: document.HTMLDOMtoString(a[0]), B: document.HTMLDOMtoString(b[0]), C: document.HTMLDOMtoString(c[0]), D: document.HTMLDOMtoString(d[0]) });
 
                                 $("#choicequestionlist").append($(htmldata));
 
@@ -381,11 +345,11 @@
                     });
 
                 }
-            } else if (leixing == 2)
-            {
-                function loadanswerquestiondata(examtype, level, kecheng = "0", ShuaTiLeiXing) {
+             
+                function loadanswerquestiondata(examtype, kecheng = "0") {
                     var index = layer.load(2); //又换了种风格，并且设定最长等待10秒
-                    $.post("/ExaminationSystem/StudentExamSys/BrushAlltheQuestions", { examType: examtype, kecheng: kecheng, ShuaTiLeiXing: ShuaTiLeiXing, level }, function (result) {
+                    //判断如果类型是解答题就请求BrushAlltheQuestion
+                    $.post("/ExaminationSystem/StudentExamSys/BrushAlltheQuestion", { examType: examtype, kecheng: kecheng }, function (result) {
                         layer.close(index);
                         if (result.ErrorCode == 200) {
 
@@ -393,35 +357,29 @@
 
 
                                 var ref = $("<label></label>");
+
                                 ref.text(result.Data.data[i].ReferenceAnswer);
 
-                                result.Data.data[i].ReferenceAnswer = document.HTMLDOMtoString(ref[0]);
+                                //result.Data.data[i].ReferenceAnswer = document.HTMLDOMtoString(ref[0]);
 
-                                answerquestion.push(result.Data.data[i]);
+                                //answerquestion.push(result.Data.data[i]);
 
 
                                 var title = $("<label></label>");
-                                title.text(result.Data.data[i].Title);
-
+                                title.text(result.Data.data[i].Title);                                
                                 var html = _.template($("#answerquestionTemplate").html());
-                                var htmldata = html({ title: document.HTMLDOMtoString(title[0]), questionid: result.Data.data[i].ID });
+                                var htmldata = html({ title: document.HTMLDOMtoString(title[0]), ref: document.HTMLDOMtoString(ref[0]) });
 
                                 $("#answerquestionlist").append($(htmldata));
                             }
-                            //渲染富文本框
-                            initTextarea();
-
                         }
 
                     });
 
                 }
-            }
-            function downloadquestion(examtype, level, kecheng = "0", ShuaTiLeiXing) {
 
-                window.open("/ExaminationSystem/StudentExamSys/MockComputerquestion?examType=" + examtype + "&kecheng=" + kecheng + "&level=" + level + "&ShuaTiLeiXing" + ShuaTiLeiXing);
+            
 
-            }
             var type;
             form.on('select(examtype)', function (data) {
 
@@ -434,16 +392,11 @@
 
                     if (value == data.value) {
                         type = $(elem).attr("typeid");
-                        type = $(elem).attr("typeid");
                         grandid = $(elem).attr("grandid")
                     }
 
                 });
-
-
                 if (type == "2") {
-
-
                     $.ajax({
                         url: "/ExaminationSystem/ExamArrangement/GetCourseByGrand",
                         data: { grandid: grandid },
@@ -484,66 +437,31 @@
             });
 
             $("#begin").click(function () {
-
-
+                //把class属性的标签都禁止输入
                 //$(".formitem").attr("disabled", "disabled");
                 layui.form.render();
-
-                var level = $("#level").val();
                 var kecheng = "0";
-
+                var ShuaTiLeiXing = $("#ShuaTiLeiXing").val();
                 if (type == "2") {
                     kecheng = $("#course").val();
                 }
-
+                if (ShuaTiLeiXing == "0") {
+                    layer.msg("请选择刷题类型!");
+                }
                 var examtype = $("#examtype").val();
-                var ShuaTiLeiXing = $("#ShuaTiLeiXing").val();
+                console.log(examtype);
+                console.log(kecheng);
                 console.log(ShuaTiLeiXing);
                 $("#choicequestionlist").html("");
                 $("#answerquestionlist").html("");
-                loadchoicequestiondata(examtype, level, kecheng, ShuaTiLeiXing);
-                loadanswerquestiondata(examtype, level, kecheng, ShuaTiLeiXing);
-            });
-
-
-            $("#download").click(function () {
-
-                var level = $("#level").val();
-                var kecheng = "0";
-
-                if (type == "2") {
-                    kecheng = $("#course").val();
+                if (ShuaTiLeiXing == "1") {
+                    loadchoicequestiondata(examtype, kecheng);
+                } else if (ShuaTiLeiXing == "2") {
+                    loadanswerquestiondata(examtype, kecheng);
                 }
-
-                var examtype = $("#examtype").val();
-                var ShuaTiLeiXing = $("#ShuaTiLeiXing").val();
-                downloadquestion(examtype, level, kecheng, ShuaTiLeiXing);
+               
             });
 
-            $(document).off("click", ".refanswer").on("click", ".refanswer", function () {
-
-                var quid = $(this).parents(".answerItem").attr("questionid");
-
-                answerquestion.forEach(function (value, index) {
-
-                    if (quid == value.ID) {
-
-                        //获取答案
-                        $("#contentref").text(value.ReferenceAnswer);
-
-                        //$("#refanswer").slideUp("slow");
-
-                        layer.open({
-                            type: 1,
-                            area: ['40%', '40%;'],
-                            content: value.ReferenceAnswer //这里content是一个普通的String
-                        });
-
-                    }
-
-                });
-
-            });
 
         });
     </script>
