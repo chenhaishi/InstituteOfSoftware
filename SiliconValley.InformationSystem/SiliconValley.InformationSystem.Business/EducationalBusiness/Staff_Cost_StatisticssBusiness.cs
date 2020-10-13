@@ -145,12 +145,12 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             Staff_Cost_StatisticesDetailView resultObj = new Staff_Cost_StatisticesDetailView(); //返回值
 
             resultObj.emp = empObj;
-            
-            
-            resultObj.teachingitems = teachingitems(empObj, date);
-            
-            //职业素养课，语数外 体育 课时
-            resultObj.otherTeaccher_count = teachingitems(empObj, date, "other");
+
+         
+           resultObj.teachingitems = teachingitems(empObj, date);
+          
+                //职业素养课，语数外 体育 课时
+           resultObj.otherTeaccher_count = teachingitems(empObj, date, "other");
             
     
             //内训课时
@@ -1202,7 +1202,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 Curriculum course = tempdb_course.GetCurriculas().Where(d => d.CurriculumID == item.Course).FirstOrDefault();
                 // 获取到对应的课时费
 
-                //计算
+                //ji算
                 result += item.NodeNumber * ((float)course.PeriodMoney - 5);
 
             }
