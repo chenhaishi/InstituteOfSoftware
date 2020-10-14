@@ -419,8 +419,6 @@ namespace SiliconValley.InformationSystem.Business.ClassSchedule_Business
         {
 
             AjaxResult retus = null;
-
-
             try
             {
                 retus = new SuccessResult();
