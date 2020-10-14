@@ -98,7 +98,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                              e.WorkAbsentRecord,
                              e.OffDutyAbsentNum,
                              e.OffDutyAbsentRecord,
-                             NoClockTotalNum = e.WorkAbsentNum + e.OffDutyAbsentNum,
+                             NoClockTotalNum = e.WorkAbsentNum + e.OffDutyAbsentNum+e.NoonAbsentNum,
                              e.TardyNum,
                              e.TardyRecord,
                              e.LeaveEarlyNum,
@@ -247,7 +247,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         {
             Stream filestream = excelfile.InputStream;
             AttendanceInfoManage atdmanage = new AttendanceInfoManage();
-            var result = atdmanage.ImportDataFormExcel(filestream, excelfile.ContentType);
+            // var result = atdmanage.ImportDataFormExcel(filestream, excelfile.ContentType);
+            var result =  atdmanage.ImportDataFormExcel(filestream, excelfile.ContentType);
             if (result.Success) {
                 DateTime year_month = (DateTime)atdmanage.GetList().FirstOrDefault().YearAndMonth;
               var mytime = DateTime.Parse(year_month.ToString()).Year + "-" + DateTime.Parse(year_month.ToString()).Month;

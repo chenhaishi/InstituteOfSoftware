@@ -434,5 +434,36 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             }
             return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
         }
+
+        public decimal GetPerformancePay(DateTime year_month, string dname, string pname) {
+            var resultsalary = 0;
+            EmplSalaryEmbodyManage esemanage = new EmplSalaryEmbodyManage();
+            var month = year_month.Month;
+            if (month % 3 == 0)
+            {
+                if (dname == "校办")
+                {
+                    if (pname == "校长")
+                    {//指杨校和黄主任
+                        resultsalary = 24000;//他俩的月度绩效额度为3000
+                    }
+                    else if (pname == "教学副校长")
+                    {
+                        resultsalary = 20000;
+                    }
+                    else if (pname == "新校区副校长")
+                    {
+                        resultsalary = 15000;
+                    }
+                }
+
+            }
+            else {
+                esemanage.GetPerformancePay(dname,pname);
+            }
+            return resultsalary;
+        }
+
+
     }
 }

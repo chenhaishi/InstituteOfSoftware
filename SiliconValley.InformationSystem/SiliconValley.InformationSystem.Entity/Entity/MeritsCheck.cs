@@ -37,5 +37,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         public Nullable<bool> IsDel { get; set; }
         public Nullable<bool> IsApproval { get; set; }
 
+        public Nullable<bool> IsManager { get; set; }//是否为管理者（即评分人，true为评分人；评分人才能有进入绩效考核页面的权限）
+        public string Superior { get; set; }//上级（即给该员工评分的领导）
     }
 }
