@@ -356,6 +356,7 @@
     <Compile Include="ViewEntity\ClassSchedltData.cs" />
     <Compile Include="ViewEntity\ClassStudentView.cs" />
     <Compile Include="ViewEntity\ClassTableView.cs" />
+    <Compile Include="ViewEntity\ClockInTime.cs" />
     <Compile Include="ViewEntity\ConsultAndStedent.cs" />
     <Compile Include="ViewEntity\ConsultShowData.cs" />
     <Compile Include="ViewEntity\ConsultZhuzImageData.cs" />
