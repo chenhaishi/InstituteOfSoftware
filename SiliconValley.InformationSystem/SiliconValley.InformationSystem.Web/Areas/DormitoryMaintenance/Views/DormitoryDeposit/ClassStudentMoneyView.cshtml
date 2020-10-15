@@ -1,0 +1,174 @@
+﻿
+@{
+    ViewBag.Title = "ClassStudentMoneyView";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .LableCss1
+    {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        float: left;
+        display: block;
+        padding: 9px 15px;
+        width: 80px;
+        font-weight: 400;
+        line-height: 20px;
+        text-align: right
+    }
+    .Centext{
+    text-align:center
+    }
+</style>
+<form class="layui-form" lay-filter="sercherform">
+    <div class="layui-row layui-form-item">
+        @{
+            if (ViewBag.number == 2)
+            {
+                <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                    <label class="LableCss1">班级:</label>
+                    <div class="layui-input-block">
+                        @Html.DropDownList("classNumber", ViewBag.classlist as IEnumerable<SelectListItem>,new Dictionary<string, object>() { { "class","layui-select"} })
+                    </div>
+                </div>
+            }
+            else if (ViewBag.number == 1 || ViewBag.number == 2)
+            {
+                <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                    <label class="LableCss1">阶段:</label>
+                    <div class="layui-input-block">
+                        @Html.DropDownList("classGrand", ViewBag.grandlist as IEnumerable<SelectListItem>, new Dictionary<string, object>() { { "class", "layui-select" } ,{ "lay-filter", "Grandselect"} })
+                    </div>
+                </div>
+                <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                    <label class="LableCss1">班级:</label>
+                    <div class="layui-input-block" id="classdiv">
+
+                    </div>
+                </div>
+            }
+        }
+
+        <div class="layui-col-xs2 layui-col-sm2 layui-col-md2 Centext">
+            <input type="button" class="layui-btn" value="查询" onclick="serinfomation()" />
+        </div>
+    </div>
+</form>
+<table  id="classstudentmoneyTable" lay-filter="classstudentmoneyTable"></table>
+
+<script type="text/html" id="classstudentbarDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">维修详情</a>  
+</script>
+
+<script>
+    var table;
+    var layer;
+    var form;
+    $(function () {
+        layui.use(['table', 'layer', 'form'], function () {
+            table = layui.table;
+            layer = layui.layer;
+            form = layui.form;
+
+            table.render({
+                elem: '#classstudentmoneyTable'
+                , url: '/DormitoryMaintenance/DormitoryDeposit/OneData'
+                //, toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
+                , cols: [[
+                    { type: 'checkbox', fixed: 'left' }
+                    , { field: 'StuName', title: '学生姓名'}
+                    , { field: 'PayMoney', title: '宿舍押金'}
+                    //, {
+                    //    field: 'email', title: '邮箱', width: 150, edit: 'text', templet: function (res) {
+                    //        return '<em>' + res.email + '</em>'
+                    //    }
+                    //}
+                    , { field: 'MantainMoney', title: '维修费用' }
+                    , {
+                        field: 'SumMoney', title: '应退费用', templet: function (res) {
+                            
+                            return res.SumMoney+"元";
+                        }
+                    }                    
+                     
+                    , { fixed: 'right', title: '操作', toolbar: '#classstudentbarDemo', width: 150 }
+                ]]
+            });
+
+
+            //监听行工具事件
+            table.on('tool(classstudentmoneyTable)', function (obj) {
+                var data = obj.data;
+                //console.log(obj)
+                if (obj.event === 'del') {
+                    layer.confirm('真的删除行么', function (index) {
+                        obj.del();
+                        layer.close(index);
+                    });
+                } else if (obj.event === 'edit') {
+                    layer.prompt({
+                        formType: 2
+                        , value: data.email
+                    }, function (value, index) {
+                        obj.update({
+                            email: value
+                        });
+                        layer.close(index);
+                    });
+                }
+            });
+
+
+            form.on('select(Grandselect)', function (data) {                 
+                //console.log(data.value); //得到被选中的值
+
+                $("#classdiv")[0].innerHTML = "";
+
+                if (data.value != "0") {
+                    $.ajax({
+                        url: '/Educational/Reconcile/GetClassScheduleSelect/' + data.value,
+                        success: function (sudata) {
+                            //获取班级slect
+                            var classselect = $('<select  id="classNumber" name="classNumber" lay-filter="classNumber"></select>');
+                            for (var i = 0; i < sudata.length; i++) {
+                                $('<option value=' + sudata[i].id + '>' + sudata[i].ClassNumber + '<option>').appendTo(classselect);
+                            }
+                            $("#ortherclass").append(classselect);
+
+                            classselect.appendTo("#classdiv");
+                            form.render(); //更新全部
+                        }
+                    });
+                }
+            });    
+
+
+        });
+
+
+    });
+
+    function serinfomation() {
+        var data1 = form.val("sercherform");
+
+        if (data1.classNumber == "0" || data1.classNumber == undefined) {
+            layer.msg("请选择班级！", { icon: 2, shade: 0.8 });
+        } else {
+            table.reload('classstudentmoneyTable', {
+                url: '/DormitoryMaintenance/DormitoryDeposit/ClassMoneyFuntion'
+                , where: { "classid": data1.classNumber}  
+                
+            });
+            //$.ajax({
+            //    url: '/DormitoryMaintenance/DormitoryDeposit/ClassMoneyFuntion',
+            //    type: 'GET',
+            //    data: { "classid": data1.classNumber},
+            //    success: function (res) {
+                    
+            //    }
+            //});
+        }
+
+    }
+</script>
+

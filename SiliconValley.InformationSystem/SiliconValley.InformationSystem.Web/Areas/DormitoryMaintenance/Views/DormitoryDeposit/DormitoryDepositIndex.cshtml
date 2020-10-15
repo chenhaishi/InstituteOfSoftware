@@ -132,9 +132,9 @@
                     , {
                         field: 'MaintainState', title: '状态',templet: function (res) {
                             if (res.MaintainState == 1) {
-                                return '<span style="color:red">未支付</span>'
+                                return '<span style="color:red">未处理</span>'
                             } else if (res.MaintainState == 2) {
-                                return '已付清'
+                                return '已扣除'
                             }
                         }
                     }

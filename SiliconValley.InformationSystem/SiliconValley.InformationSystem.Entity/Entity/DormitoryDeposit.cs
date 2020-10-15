@@ -30,15 +30,6 @@ namespace SiliconValley.InformationSystem.Entity.Entity
         public string StuNumber { get; set; }
 
         /// <summary>
-        /// 班级编号
-        /// </summary>
-        public int Classid { get; set; }
-
-        /// <summary>
-        /// 阶段编号
-        /// </summary>
-        public int Grandid { get; set; }
-        /// <summary>
         ///  维修的物品
         /// </summary>
         public int MaintainGood { get; set; }

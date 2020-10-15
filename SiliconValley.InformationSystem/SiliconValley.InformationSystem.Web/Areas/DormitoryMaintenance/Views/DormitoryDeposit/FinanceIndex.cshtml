@@ -16,18 +16,26 @@
         line-height: 20px;
         text-align: right
     }
+
+    .Divdis
+    {
+        display: none
+    }
 </style>
-@*<table id="Financetable" lay-filter="Financetable"></table>*@
+
 
 <div>
     <form class="layui-form" lay-filter="sercherform">
         <div class="layui-row layui-form-item">
             <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
-                <label class="LableCss1">学生姓名:</label>
+                <label class="LableCss1">选择学生:</label>
                 <div class="layui-input-block">
-                    <input type="text" placeholder="学生姓名" class="layui-input" id="inputname"/>
-                    <input type="hidden" name="stuName" id="stuName" />
+                    <input type="button" class="layui-btn"  value="点击选择学生" onclick="OpenView()"/>                    
                 </div>
+            </div>
+            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                <input type="text" class="layui-input" id="inputname" readonly="readonly" />
+                <input type="hidden" name="stuName" id="stuName" />
             </div>
             <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
                 <label class="LableCss1">开始时间:</label>
@@ -47,6 +55,8 @@
         </div>
     </form>
 </div>
+
+
 
 <script>
     var table;
@@ -72,18 +82,18 @@
         });
     });
 
-
-    function SercherFuntion() {
-        var data1 = form.val("sercherform");
-
-
+     
+    function OpenView() {
+        layer.open({
+            type: 2,
+            content: '/DormitoryMaintenance/DormitoryDeposit/StudentinfomatuonView',
+            area: ['600px', '400px']
+        });
     }
 
-    $("#inputname").keydown(function (event) {
-         　　　if (event.keyCode == 13) {
-            　　　　//　alert('你按下了Enter');      
-                
-              }         
-    });
+    function SetVlaue(value1,value2) {
+        $("#stuName").val(value1);
+        $("#inputname").val(value2);
+    }
 </script>
 

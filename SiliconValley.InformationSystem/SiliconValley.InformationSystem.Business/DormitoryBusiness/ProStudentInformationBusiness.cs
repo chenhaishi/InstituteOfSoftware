@@ -52,7 +52,15 @@ namespace SiliconValley.InformationSystem.Business.DormitoryBusiness
             var obj1 = dbproHeadClass.GetClassByClassid(obj0.ID_ClassName);
             if (obj1!=null)
             {
-                return dbheadmaster.GetEmployeesInfoByHeadID(obj1.LeaderID);
+                if (dbheadmaster.GetEmployeesInfoByHeadID(obj1.LeaderID)==null){
+                    EmployeesInfo emppp = new EmployeesInfo();
+                    emppp.EmpName = "该班级暂未有班主任";
+
+                    return emppp;
+                }
+                 
+                    return dbheadmaster.GetEmployeesInfoByHeadID(obj1.LeaderID);
+                
 
             }
             else

@@ -508,9 +508,12 @@
     <Compile Include="ViewEntity\TM_Data\MyViewEntity\EvningSelfStudyView.cs" />
     <Compile Include="ViewEntity\TM_Data\MyViewEntity\LaterecordView.cs" />
     <Compile Include="ViewEntity\TM_Data\MyViewEntity\ReconcileView.cs" />
+    <Compile Include="ViewEntity\TM_Data\MyViewEntity\SqlData.cs" />
+    <Compile Include="ViewEntity\TM_Data\MyViewEntity\StudentDorMoney.cs" />
     <Compile Include="ViewEntity\TM_Data\MyViewEntity\TeacherNightView.cs" />
     <Compile Include="ViewEntity\TM_Data\Print\Onbety_Print.cs" />
     <Compile Include="ViewEntity\TM_Data\StudentbeanLog.cs" />
+    <Compile Include="ViewEntity\TM_Data\StudentInfoData.cs" />
     <Compile Include="ViewEntity\TM_Data\TeacherAddorBeonDuty.cs" />
     <Compile Include="ViewEntity\TM_Data\TM_ConsultView.cs" />
     <Compile Include="ViewEntity\TotalcostView.cs" />

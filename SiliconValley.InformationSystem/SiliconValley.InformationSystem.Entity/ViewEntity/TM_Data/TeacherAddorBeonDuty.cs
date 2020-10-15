@@ -37,7 +37,7 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data
         /// </summary>
         public int evning_Id { get; set; } 
         /// <summary>
-        /// 是否已审核
+        /// 是否已审核（ture--已审核，false--未审核）
         /// </summary>
         public bool IsDels { get; set; }
     }

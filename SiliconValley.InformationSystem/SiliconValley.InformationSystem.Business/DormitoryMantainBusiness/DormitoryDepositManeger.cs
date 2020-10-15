@@ -1,6 +1,8 @@
-﻿using SiliconValley.InformationSystem.Business.ClassSchedule_Business;
+﻿using SiliconValley.InformationSystem.Business.ClassesBusiness;
+using SiliconValley.InformationSystem.Business.ClassSchedule_Business;
 using SiliconValley.InformationSystem.Entity.Entity;
 using SiliconValley.InformationSystem.Entity.MyEntity;
+using SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data.MyViewEntity;
 using System;
 using System.Collections.Generic;
 
@@ -59,6 +61,16 @@ namespace SiliconValley.InformationSystem.Business.DormitoryMantainBusiness
         /// </summary>
         public ClassScheduleBusiness ClassSchedule_Entity = new ClassScheduleBusiness();
 
+        /// <summary>
+        /// 班主任带班业务类
+        /// </summary>
+        public HeadmasterBusiness Headmaster_Entity = new HeadmasterBusiness();
+
+        /// <summary>
+        /// 阶段业务类
+        /// </summary>
+        public BaseBusiness<Grand> Grand_Entity = new BaseBusiness<Grand>();
+
 
         /// <summary>
         ///  获取XX期间XX寝室的所有学生
@@ -115,6 +127,105 @@ namespace SiliconValley.InformationSystem.Business.DormitoryMantainBusiness
             return result;
         }
 
-        
+        /// <summary>
+        /// 获取目前带班班主任
+        /// </summary>
+        /// <param name="classid"></param>
+        /// <returns></returns>
+        public string ClassTeacherName(int classid)
+        {
+            string sqlstr = @"select emp.EmpName as 'Result' from HeadClass as hc 
+							  inner join Headmaster as hd on hc.LeaderID =hd.ID
+							  inner join ClassSchedule as cs on hc.ClassID=cs.id
+							  inner join EmployeesInfo as emp on emp.EmployeeId=hd.informatiees_Id
+							  where hc.EndingTime is null  and cs.id=" + classid;
+
+           List<SqlData> list= this.GetListBySql<SqlData>(sqlstr);
+
+            if (list.Count>0)
+            {
+                return list[0].Result.ToString();
+            }
+            else
+            {
+                return "无";
+            }
+        }
+
+        /// <summary>
+        /// 判断的登录岗位 1--Admin,2--教质，3---财务
+        /// </summary>
+        /// <param name="empid"></param>
+        /// <returns></returns>
+        public int Number(string empid)
+        {
+            int result = 1;
+            string sqlstr = @"select dp.DeptName as 'Result' from EmployeesInfo as emp 
+							  inner join Position as pt on pt.Pid=emp.PositionId
+							  inner join Department as dp on dp.DeptId=pt.DeptId where emp.EmployeeId='"+empid+"'";
+            List<SqlData> list = this.GetListBySql<SqlData>(sqlstr);
+
+            if (list.Count>0)
+            {
+                if (list[0].Result.ToString().Contains("教质"))
+                {
+                      result = 2;
+
+                }
+                else if (list[0].Result.ToString().Contains("财务"))
+                {
+                    result = 3;
+                } 
+            }
+
+            return result;
+        }
+
+
+        /// <summary>
+        /// 获取XX学生缴的押金
+        /// </summary>
+        /// <param name="stunumber"></param>
+        /// <returns></returns>
+        public decimal GetStudentMoney(string stunumber)
+        {
+            decimal money = 0;
+            string sql = @"select sr.Amountofmoney as 'Data' from StudentFeeRecord as sr inner join Costitems as cm on sr.Costitemsid=cm.id where cm.Name like '%宿舍押金%'  and StudenID='" + stunumber + "'";
+
+           List<SqlData> list= this.GetListBySql<SqlData>(sql);
+
+            if (list.Count>0)
+            {
+                if(list[0].Data!=null)
+                {
+                    money = (decimal)list[0].Data;
+                }
+            }
+
+            return money;
+        }
+
+        /// <summary>
+        /// 获取学生维修未结算的总费用
+        /// </summary>
+        /// <param name="stunumber"></param>
+        /// <returns></returns>
+        public decimal GetMantainMoney(string stunumber)
+        {
+            decimal money = 0;
+            string sqlstr = @" select SUM(GoodPrice) as 'Data' from DormitoryDeposit where StuNumber='" + stunumber + "' and MaintainState='1'";
+            List<SqlData> list= this.GetListBySql<SqlData>(sqlstr);
+
+            if (list.Count>0)
+            {
+                if (list[0].Data !=null)
+                {
+                    money = (decimal)list[0].Data;
+                }
+                
+            }
+
+            return money;
+        }
     }
 }

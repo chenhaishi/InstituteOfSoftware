@@ -2518,12 +2518,12 @@ namespace SiliconValley.InformationSystem.Business.ClassSchedule_Business
             int i = 0;
             if (a == 1)
             {
-                var classID = ScheduleForTrainees.GetList().Where(d => d.StudentID == studentID && d.AddDate.Year == date.Year && d.AddDate.Month == date.Month && d.AddDate.Day == date.Day).SingleOrDefault();
+                var classID = ScheduleForTrainees.GetList().Where(d => d.StudentID == studentID && d.AddDate == date).SingleOrDefault();
                 i = classID.ID_ClassName;
                 
             }
             else if(a==2){
-                var GreadID = ScheduleForTrainees.GetList().Where(d => d.StudentID == studentID && d.AddDate.Year == date.Year && d.AddDate.Month == date.Month && d.AddDate.Day == date.Day).SingleOrDefault();
+                var GreadID = ScheduleForTrainees.GetList().Where(d => d.StudentID == studentID && d.AddDate == date).SingleOrDefault();
                 var grandID = ClassSchedule.GetList().Where(d => d.id == GreadID.ID_ClassName).SingleOrDefault();
                 i = grandID.grade_Id;
             }
