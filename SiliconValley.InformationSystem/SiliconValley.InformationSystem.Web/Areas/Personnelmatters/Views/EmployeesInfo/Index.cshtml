@@ -8,6 +8,7 @@
         <li class="layui-this">在职员工信息</li>
         <li>离职员工信息</li>
     </ul>
+  
     <div class="layui-tab-content">
         <div class="layui-tab-item layui-show">
             @*模糊查询*@
@@ -69,7 +70,7 @@
                                 </select>
                             </div>
                         </div>
-                       
+
                         <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
                             <label class="layui-form-label" style="width:100px;">政治面貌:</label>
                             <div class="layui-input-inline">
@@ -85,7 +86,7 @@
 
                         <div class="layui-inline">
                             <label class="layui-form-label" style="width:120px;margin-left:-10px;">入职时间：</label>
-                            <div class="layui-inline" >
+                            <div class="layui-inline">
                                 <label class="layui-form-label" style="margin-left:-20px;">从：</label>
                                 <div class="layui-input-inline">
                                     <input type="text" id="start_time" name="start_time" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
@@ -100,29 +101,44 @@
                             </div>
                             <button class="layui-btn " type="button" id="Conditionselect" style="margin-left:20px;"><i class="layui-icon layui-icon-search"></i>查询</button>
                         </div>
-                       
+
 
                     </div>
 
                 </form>
             </fieldset>
+            @*<input type="hidden" id="ISHR" name="ISHR" value="@ViewBag.IsHR" />*@
             @*头部工具栏*@
             <script type="text/html" id="toolbarDemo">
-                <div class="layui-btn-container">
-                    <button class="layui-btn layui-btn-sm" lay-event="AddEmps"><i class="layui-icon layui-icon-addition"></i>添加员工</button>
-                    <button class="layui-btn layui-btn-sm" lay-event="BatchImport"><i class="layui-icon layui-icon-upload-drag"></i>excel批量导入</button>
-                    <button class="layui-btn layui-btn-sm" lay-event="BatchExport"><i class="layui-icon layui-icon-upload-drag"></i>excel批量导出</button>
-                    <button class="layui-btn layui-btn-sm" lay-event="DeptAndPositionOperation"><i class="layui-icon layui-icon-app"></i>部门及岗位管理</button>
+                <div class="layui-btn-container ">
+                    @{
+                        var ishr = ViewBag.IsHR;
+                        if (ishr == 1)
+                        {
+                            <button class="layui-btn layui-btn-sm headbtn" lay-event="AddEmps"><i class="layui-icon layui-icon-addition"></i>添加员工</button>
+                            <button class="layui-btn layui-btn-sm headbtn" lay-event="BatchImport"><i class="layui-icon layui-icon-upload-drag"></i>excel批量导入</button>
+                            <button class="layui-btn layui-btn-sm headbtn" lay-event="BatchExport"><i class="layui-icon layui-icon-upload-drag"></i>excel批量导出</button>
+                            <button class="layui-btn layui-btn-sm headbtn" lay-event="DeptAndPositionOperation"><i class="layui-icon layui-icon-app"></i>部门及岗位管理</button>
+
+                        }
+                    }
 
                 </div>
             </script>
             @*操作栏*@
             <script type="text/html" id="barDemo">
-                <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+                @{
+                    var hr = ViewBag.IsHR;
+                    if (hr == 1)
+                    {
+                    <a class="layui-btn layui-btn-xs myedit" lay-event="edit">编辑</a>
+                        }
+                    }
+
                 <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="detail">详情查看</a>
                 <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="ETRdetail">异动详情</a>
             </script>
-            <button class="layui-btn layui-btn-warm" style="display:none;" id="contractEndbtn" >合同到期人员</button>
+            <button class="layui-btn layui-btn-warm" style="display:none;" id="contractEndbtn">合同到期人员</button>
 
             <table id="emptab" lay-filter="emptab"></table>
         </div>
@@ -167,12 +183,12 @@
 
              var contractend =@ViewBag.contractEnd;
              if (contractend != 0) {
-                 //console.log("到期人数：" + contractend);
                  document.getElementById('contractEndbtn').style.display= "block";
              } else {
                  document.getElementById('contractEndbtn').style.display = "none";
              }
-            // console.log($("#contractEndbtn").css("display"));
+            
+
         });
       
       //在职员工加载
