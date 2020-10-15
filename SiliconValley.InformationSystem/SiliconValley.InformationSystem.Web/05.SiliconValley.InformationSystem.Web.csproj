@@ -3576,7 +3576,6 @@
     <Content Include="Views\WeiXin\BindingWX.cshtml" />
     <Content Include="Views\WeiXin\WXLoginError.cshtml" />
     <Content Include="uploadXLSXfile\Template\EmpInfoTemplate.xls" />
-    <Content Include="uploadXLSXfile\Template\AttendanceInfoTemp.xlsx" />
     <Content Include="uploadXLSXfile\CostStatis.xls" />
     <Content Include="uploadXLSXfile\ter.xls" />
     <Content Include="uploadXLSXfile\ComputerTestQuestionsWord\1578394647.rar" />
@@ -3626,6 +3625,7 @@
     <Content Include="Views\Home\Scores.cshtml" />
     <Content Include="uploadXLSXfile\ConsultUploadfile\Kaoqin\kaoqin.xlsx" />
     <Content Include="uploadXLSXfile\Zhiban\班主任值班模板.xlsx" />
+    <Content Include="uploadXLSXfile\Template\AttendenceTemplate.xlsx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

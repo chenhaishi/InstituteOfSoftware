@@ -379,31 +379,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
 
             return result;
         }
-
-        /// <summary>
-        /// 将导过来的excel数据存入excel视图类（单元一的考勤数据）
-        /// </summary>
-        /// <param name="sheet"></param>
-        /// <returns></returns>
-        public List<MyAtdDataFromExcelView> CreateExcelData(ISheet sheet)
-        {
-            List<MyAtdDataFromExcelView> result = new List<MyAtdDataFromExcelView>();
-           
-            AjaxResult ajaxresult = new AjaxResult();
-            try
-            {
-                
-
-            }
-            catch (Exception ex)
-            {
-
-                result = null;
-            }
-            return result;
-
-        }
-
+ 
         /// <summary>
         /// 将excel数据类的数据存入到数据库的考勤表中
         /// </summary>
@@ -412,15 +388,10 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
         {
             EmployeesInfoManage empmanage = new EmployeesInfoManage();
             var ajaxresult = new AjaxResult();
-            int num = 3;
+            int num = 2;
             List<AttendanceInfoErrorDataView> attdatalist = new List<AttendanceInfoErrorDataView>();
             try
             {
-                var mateviewlist = CreateExcelData(sheet);
-
-                //获取第一个人的出勤天数，将它设为默认的应出勤天数
-                //  var days = mateviewlist.FirstOrDefault().ToRegularDays;
-             
                     //获取第二行数据（年月份）
                     string time1 = sheet.GetRow(1).Cells[0].StringCellValue;
                     string[] str = time1.Split('-');
@@ -513,63 +484,83 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     }
                     else
                     {
+                        if (string.IsNullOrEmpty(deserveToRegularDays))
+                        {
+                            attview.empname = name;
+                            attview.errorExplain = "应出勤天数为空！";
+                            attdatalist.Add(attview);
+                        }
+                        else
+                        {
+                             if (string.IsNullOrEmpty(workeddays))
+                            {
+                                attview.empname = name;
+                                attview.errorExplain = "实际出勤天数为空！";
+                                attdatalist.Add(attview);
+                            }
+                            else
+                            {
 
-                        var emp = empmanage.GetEmpByDDid(Convert.ToInt32(ddid));
+                                var emp = empmanage.GetEmpByDDid(Convert.ToInt32(ddid));
 
-                        atd.EmployeeId = emp.EmployeeId;
-                        atd.YearAndMonth =Convert.ToDateTime(year_month);
-                        atd.DeserveToRegularDays =Convert.ToDecimal(deserveToRegularDays);
-                        atd.ToRegularDays = Convert.ToDecimal(workeddays);
+                                atd.EmployeeId = emp.EmployeeId;
+                                atd.YearAndMonth = Convert.ToDateTime(year_month);
+                                atd.DeserveToRegularDays = Convert.ToDecimal(deserveToRegularDays);
+                                atd.ToRegularDays = Convert.ToDecimal(workeddays);
 
-                        atd.LeaveDays = Convert.ToDecimal(leaveddays);
-                        atd.LeaveRecord =leaveRecord;
+                                atd.LeaveDays = Convert.ToDecimal(leaveddays);
+                                atd.LeaveRecord = leaveRecord;
+
+                                atd.WorkAbsentNum = Convert.ToInt32(workAbsentNum);
+                                atd.WorkAbsentRecord = workAbsentRecord;
+                                atd.NoonAbsentNum = Convert.ToInt32(noonAbsentNum);
+                                atd.NoonAbsentRecord = noonAbsentRecord;
+                                atd.OffDutyAbsentNum = Convert.ToInt32(offDutyAbsentNum);
+                                atd.OffDutyAbsentRecord = OffDutyAbsentRecord;
+
+                                atd.TardyNum = Convert.ToInt32(tardyNum);
+                                atd.TardyRecord = tardyRecord;
+                                atd.LeaveEarlyNum = Convert.ToInt32(leaveEarlyNum);
+                                atd.LeaveEarlyRecord = leaveEarlyRecord;
+
+                                atd.OvertTimeDuration = Convert.ToDecimal(OvertTimeDuration);
+                                atd.OvertTimeRecord = OvertTimeRecord;
+                                atd.DaysoffDuration = Convert.ToDecimal(DaysoffDuration);
+                                atd.DaysoffRecord = DaysoffRecord;
+                                atd.AbsenteeismDays = Convert.ToDecimal(absenteeismDays);
+                                atd.AbsenteeismRecord = absenteeismRecord;
+                                atd.GoOutNum = Convert.ToInt32(GoOutNum);
+                                atd.GoOutRecord = GoOutRecord;
+                                atd.EvectionNum = Convert.ToDecimal(EvectionNum);
+                                atd.EvectionRecord = EvectionRecord;
+
+                                //atd.TardyWithhold = item.TardyWithhold;
+                                //atd.LeaveWithhold = item.LeaveWithhold;
+                                atd.AbsenteeismWithhold = GetAbsenteeismWithhold(emp.EmployeeId, Convert.ToDouble(atd.WorkAbsentNum + atd.NoonAbsentNum + atd.OffDutyAbsentNum));
+
+                                atd.Remark = Remark;
+                                atd.IsDel = false;
+                                atd.IsApproval = false;
+                                this.Insert(atd);
+                                rc.RemoveCache("InRedisATDData");
+                            }
+                        }
                        
-                        atd.WorkAbsentNum = Convert.ToInt32(workAbsentNum);
-                        atd.WorkAbsentRecord = workAbsentRecord;
-                        atd.NoonAbsentNum = Convert.ToInt32(noonAbsentNum);
-                        atd.NoonAbsentRecord = noonAbsentRecord;
-                        atd.OffDutyAbsentNum = Convert.ToInt32(offDutyAbsentNum);
-                        atd.OffDutyAbsentRecord = OffDutyAbsentRecord;
-
-                        atd.TardyNum = Convert.ToInt32(tardyNum);
-                        atd.TardyRecord = tardyRecord;
-                        atd.LeaveEarlyNum = Convert.ToInt32(leaveEarlyNum);
-                        atd.LeaveEarlyRecord =leaveEarlyRecord;
-
-                        atd.OvertTimeDuration = Convert.ToDecimal(OvertTimeDuration);
-                        atd.OvertTimeRecord = OvertTimeRecord;
-                        atd.DaysoffDuration = Convert.ToDecimal(DaysoffDuration);
-                        atd.DaysoffRecord = DaysoffRecord;
-                        atd.AbsenteeismDays = Convert.ToDecimal(absenteeismDays);
-                        atd.AbsenteeismRecord = absenteeismRecord;
-                        atd.GoOutNum =Convert.ToInt32(GoOutNum);
-                        atd.GoOutRecord = GoOutRecord;
-                        atd.EvectionNum= Convert.ToDecimal(EvectionNum);
-                        atd.EvectionRecord = EvectionRecord;
-
-                        //atd.TardyWithhold = item.TardyWithhold;
-                        //atd.LeaveWithhold = item.LeaveWithhold;
-                        atd.AbsenteeismWithhold = GetAbsenteeismWithhold(emp.EmployeeId,Convert.ToDouble(atd.WorkAbsentNum+atd.NoonAbsentNum+atd.OffDutyAbsentNum));
-                       
-                        atd.Remark = Remark;
-                        atd.IsDel = false;
-                        atd.IsApproval = false;
-                        this.Insert(atd);
-                        rc.RemoveCache("InRedisATDData");
                     }
                 }
-                if (mateviewlist.Count() - attdatalist.Count() == mateviewlist.Count())
+                int exceldatasum = num - 3;
+                if (exceldatasum - attdatalist.Count() == exceldatasum)
                 {//说明没有出错数据，导入的数据全部添加成功
                     ajaxresult.Success = true;
                     ajaxresult.ErrorCode = 100;
-                    ajaxresult.Msg = mateviewlist.Count().ToString();
+                    ajaxresult.Msg = exceldatasum.ToString();
                     ajaxresult.Data = attdatalist;
                 }
                 else
                 {//说明有出错数据，导入的数据条数就是导入的数据总数-错误数据总数
                     ajaxresult.Success = true;
                     ajaxresult.ErrorCode = 200;
-                    ajaxresult.Msg = (mateviewlist.Count() - attdatalist.Count()).ToString();
+                    ajaxresult.Msg = (exceldatasum - attdatalist.Count()).ToString();
                     ajaxresult.Data = attdatalist;
                 }
             }
