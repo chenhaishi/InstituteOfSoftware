@@ -52,5 +52,12 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         public Nullable<decimal> AbsenteeismDays { get; set; }//旷工天数
         public string AbsenteeismRecord { get; set; }//旷工记录
         public Nullable<decimal> AbsenteeismWithhold { get; set; }//旷工扣费
+
+        public Nullable<int> NoonAbsentNum { get; set; }//中午缺卡次数
+        public string NoonAbsentRecord { get; set; }//中午缺卡记录
+        public Nullable<int> GoOutNum { get; set; }//外出次数
+        public string GoOutRecord { get; set; }//外出记录
+        public Nullable<decimal> EvectionNum { get; set; }//出差天数
+        public string EvectionRecord { get; set; }//出差记录
     }
 } 

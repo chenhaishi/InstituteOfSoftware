@@ -42,7 +42,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 RecruitPhoneTraceView rptview = rptmanage.GetRptView(item.Id);
                 rptviewlist.Add(rptview);
             }
-            var myrdslist = rptviewlist.OrderBy(r => r.Id).Skip((page - 1) * limit).Take(limit).ToList();
+            var myrdslist = rptviewlist.OrderByDescending(r => r.Id).Skip((page - 1) * limit).Take(limit).ToList();
             var newobj = new
             {
                 code = 0,
@@ -143,6 +143,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 rpt.SonId = rpt.Id;
                 rmanage.Update(rpt);
                 AjaxResultxx = rmanage.Success();
+            }
+            if (AjaxResultxx.Success) {
+                AddRecruitData();
             }
             return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
         }

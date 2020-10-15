@@ -1926,7 +1926,7 @@
     <Content Include="Areas\DormitoryMaintenance\Views\DormitoryMantainPrice\AddDormitoryMantainPriceView.cshtml" />
     <Content Include="Areas\DormitoryMaintenance\Views\DormitoryDeposit\DormitoryDepositIndex.cshtml" />
     <Content Include="Areas\DormitoryMaintenance\Views\DormitoryDeposit\AddView.cshtml" />
-    <Content Include="Areas\Educational\Views\Reconcile\TeacherReconfile.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\PerformanceAssess\PermissionManage.cshtml" />
     <Content Include="Areas\DormitoryMaintenance\Views\DormitoryDeposit\FinanceIndex.cshtml" />
     <Content Include="Areas\DormitoryMaintenance\Views\DormitoryDeposit\StudentinfomatuonView.cshtml" />
     <Content Include="Areas\DormitoryMaintenance\Views\DormitoryDeposit\ClassStudentMoneyView.cshtml" />
@@ -3579,7 +3579,6 @@
     <Content Include="Views\WeiXin\BindingWX.cshtml" />
     <Content Include="Views\WeiXin\WXLoginError.cshtml" />
     <Content Include="uploadXLSXfile\Template\EmpInfoTemplate.xls" />
-    <Content Include="uploadXLSXfile\Template\AttendanceInfoTemp.xlsx" />
     <Content Include="uploadXLSXfile\CostStatis.xls" />
     <Content Include="uploadXLSXfile\ter.xls" />
     <Content Include="uploadXLSXfile\ComputerTestQuestionsWord\1578394647.rar" />
@@ -3629,6 +3628,8 @@
     <Content Include="Views\Home\Scores.cshtml" />
     <Content Include="uploadXLSXfile\ConsultUploadfile\Kaoqin\kaoqin.xlsx" />
     <Content Include="uploadXLSXfile\Zhiban\班主任值班模板.xlsx" />
+    <Content Include="uploadXLSXfile\Template\AttendenceTemplate.xlsx" />
+    <Content Include="uploadXLSXfile\Template\班主任值班模板.xlsx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -3653,6 +3654,15 @@
     <Folder Include="Areas\DormitoryMaintenance\Models\" />
     <Folder Include="Areas\DormitoryMaintenance\Views\Shared\" />
     <Folder Include="Areas\Educational\Models\" />
+    <Folder Include="Areas\Educational\Views\CheckGoods\" />
+    <Folder Include="Areas\Educational\Views\Check\" />
+    <Folder Include="Areas\Educational\Views\GoodsType\" />
+    <Folder Include="Areas\Educational\Views\InStockGoods\" />
+    <Folder Include="Areas\Educational\Views\InStock\" />
+    <Folder Include="Areas\Educational\Views\IsGoodOrBad\" />
+    <Folder Include="Areas\Educational\Views\PurchaseType\" />
+    <Folder Include="Areas\Educational\Views\Shared\" />
+    <Folder Include="Areas\Educational\Views\ShppingDetail\" />
     <Folder Include="Areas\Finance\Models\" />
     <Folder Include="Areas\flow\Controllers\" />
     <Folder Include="Areas\Logistics\Controllers\" />

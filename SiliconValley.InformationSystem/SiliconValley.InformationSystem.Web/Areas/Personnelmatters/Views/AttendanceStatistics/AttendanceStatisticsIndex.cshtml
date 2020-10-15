@@ -6,10 +6,12 @@
 @*头部工具栏*@
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-sm" lay-event="BatchImport"><i class="layui-icon layui-icon-upload-drag"></i>excel批量导入</button>
+        <button class="layui-btn layui-btn-sm" lay-event="InportTime"><i class="layui-icon layui-icon-upload-drag"></i>打卡时间导入</button>
+        <button class="layui-btn layui-btn-sm" lay-event="BatchImport"><i class="layui-icon layui-icon-upload-drag"></i>excel考勤导入</button>
         @*<button class="layui-btn layui-btn-sm" lay-event="BatchAdd"><i class="layui-icon layui-icon-addition"></i>批量添加</button>*@
         <button class="layui-btn layui-btn-sm" lay-event="timeanddaysChange"><i class="layui-icon layui-icon-search"></i>查看记录</button>
         <button class="layui-btn layui-btn-sm" lay-event="Approved"><i class="layui-icon layui-icon-edit"></i>确认审批</button>
+
     </div>
 </script>
 @*操作栏*@
@@ -98,13 +100,13 @@
                 , limit: 10
                 , cols: [@*[{ title: "应到勤天数：" + "@ViewBag.DeserveToRegularDays" + "天", colspan: 20 }],*@
                     [
-                    { type: 'checkbox', width: 28, rowspan: 2}
+                      { type: 'checkbox', width: 28, rowspan: 2}
                     , { field: 'empName', title: '姓名', width: 100, sort: true }
                     , { field: 'empDept', title: '所属部门', width: 120, sort: true }
                     , { field: 'empPosition', title: '所属岗位', width: 110, sort: true }
                     , { field: 'DeserveToRegularDays', title: '应到勤天数', width: 100 }
                     , { field: 'ToRegularDays', title: '到勤天数',  width: 100 }
-                    , { field: 'LeaveDays', title: '请假时长', width: 100 }
+                    , { field: 'LeaveDays', title: '请假时长(天数)', width: 100 }
                     , { field: 'LeaveRecord', title: '请假记录', width: 100 }
                     , { field: 'NoClockTotalNum', title: '总缺卡次数', width: 135 }
                     , { field: 'WorkAbsentNum', title: '上班缺卡次数',width: 135}
@@ -135,6 +137,9 @@
             table.on('toolbar(CheckingIntab)', function (obj) {
                 var checkStatus = table.checkStatus(obj.config.id);
                 switch (obj.event) {
+                    case 'InportTime':
+                        InportTime();
+                        break;
                     case 'BatchImport':
                         BatchImport();
                         break;
@@ -245,6 +250,21 @@
             });
 
         }); 
+
+        //打卡时间导入
+        function InportTime() {
+            layui.use(['layer'], function (args) {
+                var layer = layui.layer;      //layui对象
+                layer.open({
+                    type: 2
+                    , area: ["400px", "400px"]
+                    , title: "打卡时间导入"
+                    , content: '/Educational/TeacherAddorBeonDuty/TableInsert'
+                    , anim: 2
+                });
+            })
+
+        }
 
         //批量（导入excel数据）添加考勤信息
         function BatchAdd() {

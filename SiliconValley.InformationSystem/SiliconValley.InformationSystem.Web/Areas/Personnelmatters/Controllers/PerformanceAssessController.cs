@@ -16,7 +16,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         RedisCache rc = new RedisCache();
         MeritsCheckManage mcmanage = new MeritsCheckManage();
 
-        //第一次进入月度工资表页面时加载的年月份的方法
+        //第一次进入绩效考核页面时加载的年月份的方法
         static string GetFirstTime()
         {
             MeritsCheckManage msrmanage = new MeritsCheckManage();

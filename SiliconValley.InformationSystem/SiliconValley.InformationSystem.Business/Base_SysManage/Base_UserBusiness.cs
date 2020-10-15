@@ -267,7 +267,7 @@ namespace SiliconValley.InformationSystem.Business.Base_SysManage
             user.UserId = Guid.NewGuid().ToString();
             user.Id = Guid.NewGuid().ToString();
             user.WX_Unionid = null;
-
+            user.State = 1;//Ä¬ÈÏ·Ç½ûÓÃ
             this.AddData(user);
 
 

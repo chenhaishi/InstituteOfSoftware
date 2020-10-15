@@ -98,7 +98,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                              e.WorkAbsentRecord,
                              e.OffDutyAbsentNum,
                              e.OffDutyAbsentRecord,
-                             NoClockTotalNum = e.WorkAbsentNum + e.OffDutyAbsentNum,
+                             NoClockTotalNum = e.WorkAbsentNum + e.OffDutyAbsentNum+e.NoonAbsentNum,
                              e.TardyNum,
                              e.TardyRecord,
                              e.LeaveEarlyNum,
@@ -232,7 +232,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
         }
 
-
+        #region 批量导入导出
+      
         public ActionResult BatchImport()
         {
             return View();
@@ -247,7 +248,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         {
             Stream filestream = excelfile.InputStream;
             AttendanceInfoManage atdmanage = new AttendanceInfoManage();
-            var result = atdmanage.ImportDataFormExcel(filestream, excelfile.ContentType);
+            var result =  atdmanage.ImportDataFormExcel(filestream, excelfile.ContentType);
             if (result.Success) {
                 DateTime year_month = (DateTime)atdmanage.GetList().FirstOrDefault().YearAndMonth;
               var mytime = DateTime.Parse(year_month.ToString()).Year + "-" + DateTime.Parse(year_month.ToString()).Month;
@@ -255,6 +256,18 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             }
             return Json(result, JsonRequestBehavior.AllowGet);
         }
+
+        /// <summary>
+        /// 模板下载 
+        /// </summary>
+        /// <returns></returns>        
+        public FileStreamResult DownFile()
+        {
+            string rr = Server.MapPath("/uploadXLSXfile/Template/AttendenceTemplate.xlsx");  //获取下载文件的路径         
+            FileStream stream = new FileStream(rr, FileMode.Open);
+            return File(stream, "application/octet-stream", Server.UrlEncode("ExcleTemplate.xls"));
+        }
+
 
         /// <summary> 
         /// 批量添加
@@ -296,17 +309,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             return Json(AjaxResultxx,JsonRequestBehavior.AllowGet);
         }
 
-        /// <summary>
-        /// 模板下载 
-        /// </summary>
-        /// <returns></returns>        
-        public FileStreamResult DownFile()
-        {
-            string rr = Server.MapPath("/uploadXLSXfile/Template/AttendanceInfoTemp.xlsx");  //获取下载文件的路径         
-            FileStream stream = new FileStream(rr, FileMode.Open);
-            return File(stream, "application/octet-stream", Server.UrlEncode("ExcleTemplate.xls"));
-        }
-
+        #endregion
 
         /// <summary>
         /// 判断某月份员工工资是否已确认审批

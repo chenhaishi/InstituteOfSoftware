@@ -348,6 +348,24 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
         }
         #endregion
 
+        /// <summary>
+        /// 判断某员工是否属于人事部的
+        /// </summary>
+        /// <param name="empid"></param>
+        /// <returns></returns>
+        public bool JudgeIsHR(string empid) {
+            var result = false;
+            var emp = this.GetInfoByEmpID(empid);
+            if (this.GetDeptByEmpid(empid).DeptName == "人事部")
+            {
+                result = true;
+            }
+            else {
+                result = false;
+            }
+            return result;
+        }
+
 
         /// <summary>
         /// 将员工加入对相应的部门
