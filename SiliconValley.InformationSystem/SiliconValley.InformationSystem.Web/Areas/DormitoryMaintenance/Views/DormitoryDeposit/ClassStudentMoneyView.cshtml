@@ -57,7 +57,7 @@
 <table  id="classstudentmoneyTable" lay-filter="classstudentmoneyTable"></table>
 
 <script type="text/html" id="classstudentbarDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="edit">维修详情</a>  
+    <a class="layui-btn layui-btn-xs" lay-event="mantainDefault">维修详情</a>  
 </script>
 
 <script>
@@ -100,20 +100,18 @@
             table.on('tool(classstudentmoneyTable)', function (obj) {
                 var data = obj.data;
                 //console.log(obj)
-                if (obj.event === 'del') {
-                    layer.confirm('真的删除行么', function (index) {
-                        obj.del();
-                        layer.close(index);
-                    });
-                } else if (obj.event === 'edit') {
-                    layer.prompt({
-                        formType: 2
-                        , value: data.email
-                    }, function (value, index) {
-                        obj.update({
-                            email: value
-                        });
-                        layer.close(index);
+                //if (obj.event === 'del') {
+                //    layer.confirm('真的删除行么', function (index) {
+                //        obj.del();
+                //        layer.close(index);
+                //    });
+                //} else 
+                if (obj.event === 'mantainDefault') {
+                    layer.open({
+                        type: 2,
+                        title:'维修详情',
+                        content: '/DormitoryMaintenance/DormitoryDeposit/MantainDefileView',
+                        area: ['1000px', '600px']
                     });
                 }
             });

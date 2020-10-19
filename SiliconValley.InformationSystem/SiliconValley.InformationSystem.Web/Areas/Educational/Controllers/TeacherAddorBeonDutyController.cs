@@ -89,7 +89,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
                 List<EmployeesInfo> listemp = Tb_Entity.EmployeesInfo_Entity.GetEmpsByDeptid(position.DeptId);
 
-                List<TeacherAddorBeonDutyView> list = Tb_Entity.DepData(listemp).OrderBy(l => l.Anpaidate).ToList();
+                List<TeacherAddorBeonDutyView> list = Tb_Entity.DepData(listemp).OrderByDescending(l => l.Anpaidate).ToList();
 
                 var jsondata = new { code = 0, Msg = "", count = list.Count, data = list.Skip((page - 1) * limit).Take(limit).ToList() };
 
@@ -190,7 +190,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             {
                 //获取属于这个老师的值班数据
                 list = list.Where(l => l.Tearcher_Id == emp).ToList();
-                var ee = list.OrderBy(l => l.Anpaidate).Skip((page - 1) * limit).Take(limit).ToList();
+                var ee = list.OrderByDescending(l => l.Anpaidate).Skip((page - 1) * limit).Take(limit).ToList();
 
                 var data = new { code = 0, msg = "", count = list.Count, data = ee };
 

@@ -311,6 +311,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
                 List<SelectListItem> grandlist= Dormitory_Entity.Grand_Entity.GetList().Where(g => g.IsDelete == false).Select(g => new SelectListItem() { Text = g.GrandName, Value = g.Id.ToString() }).ToList();
 
                 grandlist.Add(new SelectListItem() {Text="--请选择--",Value="0" ,Selected=true});
+
                 ViewBag.grandlist = grandlist;
             }
 
@@ -359,7 +360,41 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
             return Json(jsondata,JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 维修数据详情视图
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult MantainDefileView(string id)
+        {
+            //去查询这个学生的没有支付的维修费用
+             var liststu= Dormitory_Entity.StudentDormitoryDepsitData(id).Select(s=>new StuSusheData()
+             {
+                 DeaID = s.ID,
+                 DeaMaintain = s.Maintain,//维修日期
+                 DeaDorName = Dormitory_Entity.DormInformation_Entity.GetEntity(s.DormId).DormInfoName,//房间编号
+                 DeaGoodPrice = s.GoodPrice,//维修金额
+                 DeaNameofarticle = Dormitory_Entity.DormitoryMaintenance_Entity.GetEntity(s.MaintainGood).Nameofarticle,//物品名称
+                 DeastuName = Dormitory_Entity.StudentInformation_Entity.GetEntity(s.StuNumber).Name
+             }).ToList();
 
+            decimal SumMantanMoney = 0;//维修总金额
+
+            liststu.ForEach(s =>
+            {
+                SumMantanMoney += s.DeaGoodPrice;
+            });
+
+            //获取这个学生所缴宿舍押金
+            decimal GetStuMoney = Dormitory_Entity.GetStudentMoney(id);
+           
+            //获取应退费用
+            decimal GetTuiMoney = GetStuMoney - SumMantanMoney;
+
+            ListStusheData datas = new ListStusheData() { listdata = liststu , SumMantanMoney = SumMantanMoney , GetTuiMoney = GetTuiMoney };
+
+            ViewBag.listdata = datas;
+            return View();
+        }
         #endregion
 
 
