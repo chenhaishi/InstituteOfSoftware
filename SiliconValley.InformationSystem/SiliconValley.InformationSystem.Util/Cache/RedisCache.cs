@@ -47,7 +47,7 @@ namespace SiliconValley.InformationSystem.Util
             var redisValue = _db.StringGet(key);
             if (!redisValue.HasValue)
                 return null;
-            ValueInfoEntry valueEntry = redisValue.ToString().ToObject<ValueInfoEntry>();
+            ValueInfoEntry valueEntry = redisValue.ToString().ToObject<ValueInfoEntry>();  
             if (valueEntry.TypeName == typeof(string).AssemblyQualifiedName)
                 value = valueEntry.Value;
             else

@@ -289,8 +289,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
             catch (Exception ex)
             {
                 BusHelper.WriteSysLog(ex.Message, Entity.Base_SysManage.EnumType.LogType.加载数据);
-
-
             }
             var dataList = list.OrderBy(a => a.StudentNumber).Skip((page - 1) * limit).Take(limit).ToList();
             //  var x = dbtext.GetList();
