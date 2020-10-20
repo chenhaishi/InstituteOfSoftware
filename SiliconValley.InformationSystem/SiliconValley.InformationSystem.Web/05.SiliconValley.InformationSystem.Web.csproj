@@ -560,6 +560,8 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Config\questionLevelConfig.xml" />
+    <Content Include="Content\iconfont.css" />
+    <Content Include="Content\iconfont.js" />
     <Content Include="Content\Login\style.css" />
     <Content Include="Content\Login\weixincode.css" />
     <Content Include="dleiicon\font_xhlb4bpyaza\demo.css" />

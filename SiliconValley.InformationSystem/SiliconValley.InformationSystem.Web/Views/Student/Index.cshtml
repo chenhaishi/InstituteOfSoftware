@@ -10,15 +10,104 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>硅谷信息化</title>
     <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/iconfont.css" rel="stylesheet" />
+    <script src="~/Content/iconfont.js"></script>
+    <link href="~/Areas/ExaminationSystem/css/reset.min.css" rel="stylesheet" />
+    <link href="~/Areas/ExaminationSystem/css/style.css" rel="stylesheet" />
+    <style>
+        #mywarp {
+            width: 100%;
+            background-color: white;
+        }
+
+        #topDiv {
+            width: 100%;
+            height: 200px;
+            margin-top: 0px;
+            background-color: #80d15d;
+        }
+
+        #mycontent {
+            width: 100%;
+        }
+
+        .my-col {
+            width: 14.27%;
+            float: left;
+            height: 120px;
+            padding: 0px 0px;
+            text-align: center;
+        }
+
+        .box {
+            width: 100%;
+            height: 120px;
+        }
+
+            .box:hover {
+                background-color: #e8eef2;
+            }
+
+
+        .icon {
+            width: 1em;
+            height: 1em;
+            vertical-align: -0.15em;
+            fill: currentColor;
+            overflow: hidden;
+        }
+
+        .col-md-12 {
+            width: 100%;
+        }
+
+        #indicator {
+            text-align: center;
+            line-height: 100px;
+            color: white;
+            font-size: 25px;
+            cursor: pointer;
+        }
+
+        #iconlenft {
+            position: absolute;
+            width: 100px;
+            background-color: #4e96b3;
+            height: 70px;
+            left: 15%;
+            color: white;
+            line-height: 70px;
+            font-size: 30px;
+        }
+
+        #iconright {
+            position: absolute;
+            width: 100px;
+            background-color: #4e96b3;
+            height: 70px;
+            left: 43%;
+            color: white;
+            line-height: 70px;
+            font-size: 30px;
+        }
+
+        #daojishi {
+            position: absolute;
+            width: 500px;
+            left: -186px;
+            top: 120px;
+        }
+    </style>
 </head>
 <body class="layui-layout-body">
     <div class="layui-layout layui-layout-admin">
         <div class="layui-header">
-            <div class="layui-logo">硅谷信息化 学生</div>
+            <div class="layui-logo">硅谷信息化 学生系统</div>
             <!-- 头部区域（可配合layui已有的水平导航） -->
-            <ul class="layui-nav layui-layout-left">
-                <li class="layui-nav-item"><a href="/Teaching/SatisfactionSurvey/StudentSurveyIndex">满意度</a></li>
-                <li class="layui-nav-item"><a href="/ExaminationSystem/StudentExamSys/StuExamIndex">考试</a></li>
+            <ul class="layui-nav layui-layout-left ">
+                @*<li class="layui-nav-item"><a href="/Teaching/SatisfactionSurvey/StudentSurveyIndex">满意度</a></li>
+                <li class="layui-nav-item"><a href="/ExaminationSystem/StudentExamSys/StuExamIndex">考试</a></li>*@
             </ul>
             <ul class="layui-nav layui-layout-right">
                 <li class="layui-nav-item">
@@ -59,19 +148,234 @@
         </div>
         <div class="layui-body">
             <!-- 内容主体区域 -->
-            <h2 style="color:red">(请点击上面)↑↑↑↑</h2>
-            <h1 style="text-align:center">《考试操作及规则》</h1>
-            @*<div style="text-align:center">
-                <h3>1:线上考试使用工具</h3><br />
-                <text>①使用谷歌浏览器或火狐浏览器打开线上考试</text><br />
-                <text>②电脑上要带有压缩工具,不限用于任何压缩工具</text><br />
-                <h3>2:线上考试使用以及操作</h3>
-                <text>考试模块:(刷题-考试模拟-考试)</text><br />
-                <text>①刷题:待开发</text><br />
-                <text>②考试模拟:选择自己阶段--阶段课程--难度级别--开始模拟</text><br />
-                <text>③考试:时间一到进入考试--</text><br />
-            </div>*@
-            @*<img src="~/Images/Login/shoye.jpg" style="width:1690px;height:850px;margin-left:-23px;margin-top:-23px;" />*@
+            <div class="row" style=" border: 1px solid #dcdcdc;    display: block;box-sizing: border-box;">
+                <div style="background-color: #f3f7fd; padding: 10px 10px 10px 15px; border-bottom: 1px solid #ebeef5; display: block; font-size: 20px; margin-left: 10px">6大专业</div>
+                <div class="col-xs-1 my-col">
+
+                    <div class="box" style=" display: block;text-align: center;">
+                        <div style="position: relative;font-size: 26px;color: #ec661a;line-height: 50px;"></div>
+                        <div style="font-size: 16px;line-height: 30px;text-align: center;margin-top:12px">
+                           Java
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-xs-1 my-col">
+
+                    <div class="box" style=" display: block;text-align: center;">
+                        <div style="position: relative;font-size: 26px;color: #ec661a;line-height: 50px;"></div>
+                        <div style="font-size: 16px;line-height: 30px;text-align: center;margin-top:12px">
+                            .NET
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-xs-1 my-col">
+
+                    <div class="box" style=" display: block;text-align: center;">
+                        <div style="position: relative;font-size: 26px;color: #ec661a;line-height: 50px;"></div>
+                        <div style="font-size: 16px;line-height: 30px;text-align: center;margin-top:12px">
+                            APP
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-xs-1 my-col">
+
+                    <div class="box" style=" display: block;text-align: center;">
+                        <div style="position: relative;font-size: 26px;color: #ec661a;line-height: 50px;"></div>
+                        <div style="font-size: 16px;line-height: 30px;text-align: center;margin-top:12px">
+                            测试
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-xs-1 my-col">
+
+                    <div class="box" style=" display: block;text-align: center;">
+                        <div style="position: relative; font-size: 26px; color: #ec661a; line-height: 50px;"></div>
+                        <div style="font-size: 16px;line-height: 30px;text-align: center;margin-top:12px">
+                            UI
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-xs-1 my-col">
+
+                    <div class="box" style=" display: block;text-align: center;">
+                        <div style="position: relative;font-size: 26px;color: #ec661a;line-height: 50px;"></div>
+                        <div style="  font-size: 16px; line-height: 30px;  text-align: center;   margin-top:12px">
+                            实施
+
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div style="margin-top: 10px;box-sizing: border-box;">
+                <table style="box-sizing: border-box;">
+                    <tr style="box-sizing: border-box;">
+                        <td style="width: 240px;height: 300px;">
+                            <div style="    border: 1px solid gainsboro;width: 240px;">
+                                <div style="line-height: 40px;font-size: 18px;text-align: center;background-color: #f3f7fd;border-bottom: 1px solid #dcdcdc;">Logo</div>
+                                <div style="padding: 8px 10px;"><div style="height: 220px;">   <img style="width:220px" src="~/Images/Login/guigu.png" /></div></div>
+                            </div>
+                        </td>
+                        <td style="height: 300px;width: 400px;">
+                            <div style="    border: 1px solid gainsboro;  height: 100%;   margin: 0px 10px;  width: 400px;">
+                                <div style="line-height: 40px;font-size: 18px;text-align: center;background-color: #f3f7fd;border-bottom: 1px solid #dcdcdc;">快速入口</div>
+                                <div style="margin-top: 30px;">
+                                    <div style=" box-sizing: border-box;">
+                                        <div style="width: 33.33333%;float: left;box-sizing: border-box;">
+                                            <a href="#" id="Teacher">
+                                                <div style="text-align: center;margin: 10px;padding: 10px;">
+                                                    <div style="font-size: 16px;line-height: 30px;">
+                                                        <svg class="icon" aria-hidden="true" style="font-size:34px">
+                                                            <use xlink:href="#icon-kaoshi"></use>
+                                                        </svg>
+                                                    </div>
+                                                    <div style=" font-size: 16px;line-height: 30px;">教员评价</div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <div style="width: 33.33333%;float: left;box-sizing: border-box;">
+                                            <a href="#" id="Headmaster">
+                                                <div style="text-align: center;margin: 10px;padding: 10px;">
+                                                    <div style="font-size: 16px;line-height: 30px;">
+                                                        <svg class="icon" aria-hidden="true" style="font-size:34px">
+                                                            <use xlink:href="#icon-kaoshi4"></use>
+                                                        </svg>
+                                                    </div>
+                                                    <div style=" font-size: 16px;line-height: 30px;">班主任评价</div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <div style="width: 33.33333%;float: left;box-sizing: border-box;">
+                                            <a href="#" id="examScoreSearch">
+                                                <div style="text-align: center;margin: 10px;padding: 10px;">
+                                                    <div style="font-size: 16px;line-height: 30px;">
+                                                        <svg class="icon" aria-hidden="true" style="font-size:34px">
+                                                            <use xlink:href="#icon-kaoshi5"></use>
+                                                        </svg>
+                                                    </div>
+                                                    <div style=" font-size: 16px;line-height: 30px;">成绩查询</div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <div style="width: 33.33333%;float: left;box-sizing: border-box;">
+                                            <a href="#" id="Mockxamination">
+                                                <div style="text-align: center;margin: 10px;padding: 10px;">
+                                                    <div style="font-size: 16px;line-height: 30px;">
+                                                        <svg class="icon" aria-hidden="true" style="font-size:34px">
+                                                            <use xlink:href="#icon-kaoshi3"></use>
+                                                        </svg>
+                                                    </div>
+                                                    <div style=" font-size: 16px;line-height: 30px;">考试模拟</div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <div style="width: 33.33333%;float: left;box-sizing: border-box;">
+                                            <a href="#" id="ShuaTi">
+                                                <div style="text-align: center;margin: 10px;padding: 10px;">
+                                                    <div style="font-size: 16px;line-height: 30px;">
+                                                        <svg class="icon" aria-hidden="true" style="font-size:34px">
+                                                            <use xlink:href="#icon-kaoshi1"></use>
+                                                        </svg>
+                                                    </div>
+                                                    <div style=" font-size: 16px;line-height: 30px;">刷题</div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <div style="width: 33.33333%;float: left;box-sizing: border-box;">
+                                            <a href="#" id="KaoShi">
+                                                <div style="text-align: center;margin: 10px;padding: 10px;">
+                                                    <div style="font-size: 16px;line-height: 30px;">
+                                                        <svg class="icon" aria-hidden="true" style="font-size:34px">
+                                                            <use xlink:href="#icon-kaoshi3"></use>
+                                                        </svg>
+                                                    </div>
+                                                    <div style=" font-size: 16px;line-height: 30px;">进入考试</div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </td>
+                        <td style="height:300px;width: 100%;">
+                            <div style="border: 1px solid gainsboro;height: 100%;width: 100%;">
+                                <div style="line-height: 40px;font-size: 18px;text-align: center;background-color: #f3f7fd;border-bottom: 1px solid #dcdcdc;">
+                                    系统消息
+                                    <span style="float: right;font-size: 14px;display: block;padding-right: 10px;cursor: pointer;color: #409eff;">更多</span>
+                                </div>
+                                <div>
+                                    <div style="border-bottom: 1px solid #dcdcdc;">
+                                        <div style="width: 73%;    display: inline-block;  padding-left: 10px;  line-height: 50px;   overflow: hidden;  text-overflow: ellipsis; white-space: nowrap;">①考试使用工具:谷歌浏览器或火狐浏览器,及压缩工具</div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="border-bottom: 1px solid #dcdcdc;">
+                                        <div style="width: 73%;    display: inline-block;  padding-left: 10px;  line-height: 50px;   overflow: hidden;  text-overflow: ellipsis; white-space: nowrap;">②考试提交机试:创建属于自己名字的文件夹,将写好的项目放入,并将文件夹打成压缩包</div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="border-bottom: 1px solid #dcdcdc;">
+                                        <div style="width: 73%;    display: inline-block;  padding-left: 10px;  line-height: 50px;   overflow: hidden;  text-overflow: ellipsis; white-space: nowrap;">③考试规则:不得打开考试复习文档进行操作或在浏览器中进行查询,不得交头接耳</div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="border-bottom: 1px solid #dcdcdc;">
+                                        <div style="width: 73%;    display: inline-block;  padding-left: 10px;  line-height: 50px;   overflow: hidden;  text-overflow: ellipsis; white-space: nowrap;">④考试时出现问题:请及时与监考老师进行汇报</div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style="border-bottom: 1px solid #dcdcdc;">
+                                        <div style="width: 73%;    display: inline-block;  padding-left: 10px;  line-height: 50px;   overflow: hidden;  text-overflow: ellipsis; white-space: nowrap;">⑤发现系统有问题请及时跟班主任或技术老师老师进行汇报</div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+
+            <div style="clear: both;"></div>
+            <div style="margin-top: 10px;border: 1px solid #dcdcdc; ">
+                <div style=" font-size: 20px;padding: 10px 10px 10px 15px;background-color: #f3f7fd;border-bottom: 1px solid #808080;">考试统计</div>
+
+                <div class=" col-md-12 col-sm-12 " style="  background-color: #ffffff;box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.05);border-radius: 10px;margin: 22px 0 0 0;">
+                    <div class="row" style="">
+                        <div style="font-size: 20px;font-weight: normal;color: #333333;font-weight: bold;margin-top: 20px;margin-left: 15px;">
+                            正在进行的考试
+                        </div>
+
+                        <div style="float: right !important;margin: 23px 14px 0 17px !important;">
+                        </div>
+                    </div>
+                    <table class="table table-hover border-0" id="demo" lay-filter="test" style="background-color: #ffffff;"></table>
+
+                </div>
+            </div>
         </div>
         <div class="layui-footer">
             <!-- 底部固定区域 -->
@@ -79,13 +383,117 @@
                 <p style="color:#000000;">版权所属公司：<a href="https://xin.baidu.com/company_detail_20452183185658?rq=ef&amp;pd=ee&amp;from=ps" title="湖南硅谷云教育科技有限公司">湖南硅谷云教育科技有限公司</a>  <a href="http://www.beian.miit.gov.cn/" target="_blank" title="湘ICP备17003047号-3">湘ICP备17003047号-3</a></p>
             </footer>
         </div>
-        
+
     </div>
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/layui/layui.js"></script>
+
     <script>
+        var Countdown;
         //JavaScript代码区域
-        layui.use(['form', 'util', 'layer','element'],function () {
+        layui.use(['form', 'util', 'layer', 'element'], function () {
+            var util = layui.util;
+            var laydate = layui.laydate;
             var element = layui.element;
+            var layer = layui.layer;
+            //班主任点击事件
+            $("#Headmaster").click(function () {
+
+
+                $.post("/Teaching/SatisfactionSurvey/IsHaveSatisfaction", { type: "jiaozhi" }, function (data) {
+
+
+                    if (data.ErrorCode == 200) {
+
+                        if (data.Data.length > 0) {
+
+
+                            layer.open({
+
+                                type: 2,
+                                area: ['1000px', '900px'],
+                                content: "/Teaching/SatisfactionSurvey/HeadMasterSatisfactionQuestionnaire?surveyId=" + data.Data[0].ID
+
+
+                            });
+                        }
+
+                        else {
+
+                            layer.msg('当前没有课填写的满意度调查单', { icon: 2 });
+
+                        }
+                    }
+                    else {
+                        layer.msg('数据加载异常。。', { icon: 2 });
+                    }
+
+                });
+            });
+            //教员点击事件
+            $("#Teacher").click(function () {
+
+                //首先判断
+
+                $.post("/Teaching/SatisfactionSurvey/IsHaveSatisfaction", { type: "teacher" }, function (data) {
+
+
+                    if (data.ErrorCode == 200) {
+
+                        if (data.Data.length > 0) {
+                            layer.open({
+                                title: "调查问卷",
+                                type: 2,
+                                area: ['1000px', '900px'],
+                                content: "/Teaching/SatisfactionSurvey/TeacherSatisfactionQuestionnaire?surveyId=" + data.Data[0].ID
+
+
+                            });
+                        }
+
+                        else {
+
+                            layer.msg('当前没有课填写的满意度调查单', { icon: 2 });
+
+                        }
+                    }
+                    else {
+                        layer.msg('数据加载异常。。', { icon: 2 });
+                    }
+
+                });
+
+
+
+
+            });
+            //成绩查询按钮
+            $("#examScoreSearch").click(function () {
+
+                layer.open({
+                    title: "成绩查询",
+                    area: ["1200px", "300px"],
+                    type: 2,
+                    content: "/ExaminationSystem/ExamScores/StuPersonalScores"
+
+                });
+
+            });
+            //点击考试模拟 进入考试模拟页
+            $("#Mockxamination").click(function () {
+
+                window.location.href = "/ExaminationSystem/StudentExamSys/MockExaminationView"
+            });
+            //点击刷题  进入刷题页
+            $("#ShuaTi").click(function () {
+                //layer.msg("尽情期待!");
+                window.location.href = "/ExaminationSystem/StudentExamSys/Brushthetopic"
+            })
+            //点击考试 进入考试页
+            $("#KaoShi").click(function () {
+                window.location.href = "/ExaminationSystem/StudentExamSys/StuExamIndex"
+                
+            })
         });
     </script>
 </body>

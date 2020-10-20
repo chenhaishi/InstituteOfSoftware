@@ -63,7 +63,7 @@
 </head>
 <body>
     <div id="warp" class="layui-container">
-
+        <button type="button" id="FanHui" class="layui-btn layui-btn-normal">首页</button>
         <div id="titleMsg">
             <h1 style="text-align:center; color:gray;">考试模拟</h1>
 
@@ -592,7 +592,11 @@
                 });
 
             });
+            //返回
+            $("#FanHui").click(function () {
 
+                window.location.href = "/student/index";
+            })
         });
     </script>
 </body>
