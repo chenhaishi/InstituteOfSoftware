@@ -21,6 +21,30 @@
     {
         display: none
     }
+
+    .ColorText
+    {
+        color: red;
+    }
+
+    .TextCen
+    {
+        text-align: center
+    }
+
+    tr td
+    {
+        width: 180px;
+        font-size: 24px;
+        font-family: FangSong;
+        border: 1px solid black;
+    }
+
+    tr
+    {
+        margin-top: 20px;
+        border: 1px solid black;
+    }
 </style>
 
 
@@ -54,11 +78,31 @@
             </div>
         </div>
     </form>
+
+    <table id="MantainTable"> </table>
+    <div id="FarDiv"></div>
 </div>
 
 
 
 <script>
+
+    function ShenyeDate(newtime) {
+        if (newtime == null)
+            return "";
+        var date = new Date(parseInt(newtime.slice(6)));
+        var year = date.getFullYear();
+        var month = parseInt(date.getMonth()) + 1;
+        if (month < 10) {
+            month = "0" + month;
+        }
+        var days = date.getDate();
+        if (days < 10) {
+            days = "0" + days;
+        }
+        var result = year + '-' + month + '-' + days;
+        return result;
+    }
     var table;
     var laydate;
     var layer;
@@ -95,5 +139,31 @@
         $("#stuName").val(value1);
         $("#inputname").val(value2);
     }
+
+    function SercherFuntion() {
+        var data1 = form.val('sercherform');
+        $("#MantainTable")[0].innerHTML = "";
+        $("#FarDiv")[0].innerHTML = "";
+        //获取某个学生的维修详情
+        $.ajax({
+            url: '/DormitoryMaintenance/DormitoryDeposit/StudentDorManinData',
+            data: { "stunumber": data1.stuName, "star": data1.starTime, "end": data1.endTime},
+            type: 'POST',
+            success: function (res) {
+                if (res.listdata.length > 0) {
+                    
+                    $("<tr> <td rowspan='" + res.listdata.length + 1 + "'>维修详细</td><td colspan='2' class='TextCen'>日期</td>  <td colspan='2'>寝室号</td> <td colspan='2'>维修物品</td> <td colspan='1'>维修金额</td> ").appendTo($("#MantainTable"));
+                    for (var i = 0; i < res.listdata.length; i++) {
+                        $('<tr> <td colspan="2" class="TextCen"><span>' + ShenyeDate(res.listdata[i].DeaMaintain) + '</span></td> <td colspan="2">' + res.listdata[i].DeaDorName + '</td>  <td colspan="2">' + res.listdata[i].DeaNameofarticle + '</td> <td colspan="2">' + res.listdata[i].DeaGoodPrice + '</td>  </tr>').appendTo($("#MantainTable"));
+                    }
+
+                    $('<tr><td colspan="4"><span>维修总金额:</span><span class="ColorText">' + res.SumMantanMoney + '</span><span>元</span></td>  <td colspan="4"><span>应退总金额:</span><span class="ColorText">' + res.GetTuiMoney + '</span><span>元</span></td>  </tr>').appendTo($("#MantainTable"));
+                } else {
+                    $('<h2 style="font-family: FangSong">未产生维修费用</h2>').appendTo($("#FarDiv"));
+                }
+            }
+        });
+    }
+
 </script>
 

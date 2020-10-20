@@ -238,5 +238,27 @@ namespace SiliconValley.InformationSystem.Business.DormitoryMantainBusiness
 
             return this.GetListBySql<DormitoryDeposit>(sqlstr);
         }
+
+        /// <summary>
+        /// 获取某个校区的某个月份的总维修费用
+        /// </summary>
+        /// <param name="XiaoquAddress">校区编号</param>
+        /// <param name="Year">年份</param>
+        /// <param name="Month">月份</param>
+        /// <returns></returns>
+        public decimal MonMantainMoney(int XiaoquAddress,int Year,int Month)
+        {
+            decimal SumMoney = 0;
+            //获取属于这个校区的所有宿舍
+            string sqlstr = @"select SUM(GoodPrice) as 'Data' from DormitoryDeposit where DormId in(
+                              select Id from  DormInformation where TungFloorId in( select Id from TungFloor where TungId in (select id from Tung where Id="+ XiaoquAddress + " )))  and YEAR(Maintain)='"+ Year + "' and  MONTH(Maintain)='"+ Month + "'  and MaintainState='1'";
+            List<SqlData> list= this.GetListBySql<SqlData>(sqlstr);
+
+            if (list.Count>0)
+            {
+                SumMoney =(decimal) list[0].Data;
+            }
+            return SumMoney;
+        }
     }
 }

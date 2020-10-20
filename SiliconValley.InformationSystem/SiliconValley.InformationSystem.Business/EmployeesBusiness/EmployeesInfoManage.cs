@@ -127,14 +127,9 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
         //根据岗位编号获取该岗位的员工
         public List<EmployeesInfo> GetEmpByPid(int pid)
         {
-            List<EmployeesInfo> emplist = new List<EmployeesInfo>();
-            foreach (var item in this.GetEmpInfoData())
-            {
-                if (item.PositionId == pid)
-                {
-                    emplist.Add(item);
-                }
-            }
+          
+              List<EmployeesInfo> emplist=  this.GetEmpInfoData().Where(s => s.PositionId == pid && s.IsDel == false).ToList();
+             
             return emplist;
         }
 

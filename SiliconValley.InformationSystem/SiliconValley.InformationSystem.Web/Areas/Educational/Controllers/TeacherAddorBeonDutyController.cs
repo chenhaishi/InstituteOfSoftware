@@ -712,15 +712,38 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 if (findataclass.grade_Id == 1002)
                 {
                     //是y1的班级
-                    List<SelectListItem> emp1 = Tb_Entity.EmployeesInfo_Entity.GetEmpByPid(4025).Select(e=>new SelectListItem() { Text=e.EmpName,Value=e.EmployeeId}).ToList();//英语老师
+                    List<SelectListItem> emp1 = Tb_Entity.EmployeesInfo_Entity.GetEmpByPid(5044).Select(e=>new SelectListItem() { Text=e.EmpName,Value=e.EmployeeId}).ToList();//英语老师
                     List<SelectListItem> emp2 = Tb_Entity.EmployeesInfo_Entity.GetEmpByPid(4027).Select(e => new SelectListItem() { Text = e.EmpName, Value = e.EmployeeId }).ToList();//语文老师
                     List<SelectListItem> emp3 = Tb_Entity.EmployeesInfo_Entity.GetEmpByPid(4026).Select(e => new SelectListItem() { Text = e.EmpName, Value = e.EmployeeId }).ToList();//数学老师
 
-                    select.AddRange(emp1);
-                    select.AddRange(emp2);
-                    select.AddRange(emp3);
+                    foreach (SelectListItem item in emp1)
+                    {
+                       int count= select.Where(s => s.Text == item.Text).Count();
+                        if (count<=0)
+                        {
+                            select.Add(item);
+                        }
+                    }
+                    foreach (SelectListItem item in emp2)
+                    {
+                        int count = select.Where(s => s.Text == item.Text).Count();
+                        if (count <= 0)
+                        {
+                            select.Add(item);
+                        }
+                    }
+                    foreach (SelectListItem item in emp3)
+                    {
+                        int count = select.Where(s => s.Text == item.Text).Count();
+                        if (count <= 0)
+                        {
+                            select.Add(item);
+                        }
+                    }                     
 
                 }
+
+                
             }
 
             //筛选教学部的人员

@@ -63,13 +63,13 @@
 </script>*@
 
 <script>
-    function TimeChange(newtime) {
+    function ShenyeDate(newtime) {
         if (newtime == null)
             return "";
         var date = new Date(parseInt(newtime.slice(6)));
         var year = date.getFullYear();
         var month = parseInt(date.getMonth()) + 1;
-        if (parseInt(month) < 10) {
+        if (month < 10) {
             month = "0" + month;
         }
         var days = date.getDate();
@@ -120,7 +120,7 @@
                     , { field: 'DorName', title: '寝室编号'}
                     , {
                         field: 'Maintain', title: '维修日期', templet: function (res) {
-                            return TimeChange(res.Maintain);
+                            return ShenyeDate(res.Maintain);
                         }
                     }
                     , { field: 'Nameofarticle', title: '维修物品' }

@@ -17,7 +17,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
     public class DormitoryDepositController : Controller
     {
         DormitoryDepositManeger Dormitory_Entity = new DormitoryDepositManeger();
-        // GET: /DormitoryMaintenance/DormitoryDeposit/ClassMoneyFuntion
+        // GET: /DormitoryMaintenance/DormitoryDeposit/StudentDorManinData
 
         #region 登记人操作
 
@@ -411,20 +411,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
             return View();
         }
 
-
-        public ActionResult SercherData()
-        {
-            string strnumber= Request.Form["stuName"];
-
-            string stardate = Request.Form["starTime"];
-
-            string endTime = Request.Form["endTime"];
-
-             
-
-            return null;
-        }
-
+ 
 
         [HttpGet]
         public ActionResult GetStudentData() {
@@ -463,6 +450,60 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
            
         }
 
+        /// <summary>
+        /// 学生寝室维修数据
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult StudentDorManinData( )
+        {
+            string id = Request.Form["stunumber"];
+            string startime =Request.Form["star"];
+            string endtime = Request.Form["end"];
+
+
+            //去查询这个学生的没有支付的维修费用
+            var liststu = Dormitory_Entity.StudentDormitoryDepsitData(id).Select(s => new StuSusheData()
+            {
+                DeaID = s.ID,
+                DeaMaintain = s.Maintain,//维修日期
+                DeaDorName = Dormitory_Entity.DormInformation_Entity.GetEntity(s.DormId).DormInfoName,//房间编号
+                DeaGoodPrice = s.GoodPrice,//维修金额
+                DeaNameofarticle = Dormitory_Entity.DormitoryMaintenance_Entity.GetEntity(s.MaintainGood).Nameofarticle,//物品名称
+                DeastuName = Dormitory_Entity.StudentInformation_Entity.GetEntity(s.StuNumber).Name
+            }).ToList();
+
+            if (!string.IsNullOrEmpty(startime))
+            {
+                DateTime d1 = Convert.ToDateTime(startime);
+                liststu = liststu.Where(l => l.DeaMaintain >= d1).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(endtime))
+            {
+                DateTime d2 = Convert.ToDateTime(endtime);
+                liststu = liststu.Where(l => l.DeaMaintain <= d2).ToList();
+            }
+            decimal SumMantanMoney = 0;//维修总金额
+
+            
+
+            liststu.ForEach(s =>
+            {
+                SumMantanMoney += s.DeaGoodPrice;
+            });
+
+            //获取这个学生所缴宿舍押金
+            decimal GetStuMoney = Dormitory_Entity.GetStudentMoney(id);
+
+            //获取应退费用
+            decimal GetTuiMoney = GetStuMoney - SumMantanMoney;
+
+            ListStusheData datas = new ListStusheData() { listdata = liststu, SumMantanMoney = SumMantanMoney, GetTuiMoney = GetTuiMoney };
+
+            return Json(datas,JsonRequestBehavior.AllowGet);
+        }
+        
+        
         #endregion
 
     }

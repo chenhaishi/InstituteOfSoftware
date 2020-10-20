@@ -13,6 +13,6 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data.MyViewEntity
         /// </summary>
         public string Result { get; set; }
 
-        public object Data { get; set; }
+        public decimal? Data { get; set; }
     }
 }
