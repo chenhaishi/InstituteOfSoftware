@@ -353,14 +353,16 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
         /// </summary>
         /// <param name="empid"></param>
         /// <returns></returns>
-        public bool JudgeIsHR(string empid) {
+        public bool JudgeIsHR(string empid)
+        {
             var result = false;
             var emp = this.GetInfoByEmpID(empid);
             if (this.GetDeptByEmpid(empid).DeptName == "人事部")
             {
                 result = true;
             }
-            else {
+            else
+            {
                 result = false;
             }
             return result;
@@ -378,8 +380,8 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
             #region 给该员工创建用户账号
             Base_UserBusiness db_user = new Base_UserBusiness();
             EnCh ench = new EnCh();
-            var empname=ench.convertCh(emp.EmpName);
-            db_user.createAccount(empname,emp.EmployeeId);
+            var empname = ench.convertCh(emp.EmpName);
+            db_user.createAccount(empname, emp.EmployeeId);
             #endregion
 
             var dname = this.GetDept(emp.PositionId).DeptName;//获取该员工所属部门名称
@@ -428,7 +430,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
                 result = esemanage.AddEmpToEmpSalary(emp.EmployeeId);//往员工工资体系表添加员工
             }
 
-          
+
             return result;
         }
 
@@ -437,7 +439,8 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
         /// </summary>
         /// <param name="emp"></param>
         /// <returns></returns>
-        public bool DelEmpToCorrespondingDept(EmployeesInfo emp) {
+        public bool DelEmpToCorrespondingDept(EmployeesInfo emp)
+        {
             bool result = true;
             EmployeesInfoManage empmanage = new EmployeesInfoManage();
             var dname = empmanage.GetDept(emp.PositionId).DeptName;
@@ -485,7 +488,8 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
         /// </summary>
         /// <param name="emp"></param>
         /// <returns></returns>
-        public AjaxResult DelEmp(EmployeesInfo emp) {
+        public AjaxResult DelEmp(EmployeesInfo emp)
+        {
             var ajaxresult = new AjaxResult();
             try
             {
@@ -503,9 +507,10 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
             {
                 ajaxresult.Success = this.DelEmpToCorrespondingDept(emp);//将对应的部门员工表状态也改变
             }
-            if (ajaxresult.Success) {
+            if (ajaxresult.Success)
+            {
                 Base_UserBusiness user = new Base_UserBusiness();
-                ajaxresult = user.Change(emp.EmployeeId,false);//将该员工的账号禁用且密码改为后台设置的默认密码
+                ajaxresult = user.Change(emp.EmployeeId, false);//将该员工的账号禁用且密码改为后台设置的默认密码
             }
             return ajaxresult;
         }
@@ -665,7 +670,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
         /// </summary>
         /// <returns></returns>
         public AjaxResult ExcelImportEmpSql(ISheet sheet)
-        { 
+        {
             var ajaxresult = new AjaxResult();
             List<EmpErrorDataView> emperrorlist = new List<EmpErrorDataView>();
             try
@@ -747,7 +752,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
                                                         emperror.errorExplain = "原因是该员工入职时间为空！";
                                                         emperrorlist.Add(emperror);
                                                     }
-                                                    else 
+                                                    else
                                                     {
                                                         #region 没有任何错误的数据就加入员工信息表
                                                         emp.EmployeeId = EmpId();
@@ -852,12 +857,12 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
 
             return result;
         }
-        
+
         //保存员工数据
         public AjaxResult EmpDataToExcel(List<EmployeesInfo> data, string filename)
         {//SaveStaff_CostData
             var ajaxresult = new AjaxResult();
-           
+
             var workbook = new HSSFWorkbook();
 
             //创建工作区
@@ -885,20 +890,20 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
 
             int num = 1;
 
-          //  CourseBusiness dbcourse = new CourseBusiness();
+            //  CourseBusiness dbcourse = new CourseBusiness();
 
             GrandBusiness dbgrand = new GrandBusiness();
-            
+
             data.ForEach(d =>
             {
                 var row = (HSSFRow)sheet.CreateRow(num);
 
                 CreateCell(row, ContentcellStyle, 0, d.EmployeeId);//员工编号
-                CreateCell(row, ContentcellStyle, 1,d.DDAppId.ToString());//钉钉号
+                CreateCell(row, ContentcellStyle, 1, d.DDAppId.ToString());//钉钉号
 
-                CreateCell(row, ContentcellStyle, 2,d.EmpName );//员工名称
+                CreateCell(row, ContentcellStyle, 2, d.EmpName);//员工名称
                 CreateCell(row, ContentcellStyle, 3, d.Sex);//性别
-                CreateCell(row, ContentcellStyle, 4,this.GetDeptByPid(d.PositionId).DeptName );//部门名称
+                CreateCell(row, ContentcellStyle, 4, this.GetDeptByPid(d.PositionId).DeptName);//部门名称
                 CreateCell(row, ContentcellStyle, 5, this.GetPobjById(d.PositionId).PositionName);//岗位名称
 
                 CreateCell(row, ContentcellStyle, 6, d.Age.ToString());//年龄
@@ -907,7 +912,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
                 CreateCell(row, ContentcellStyle, 9, d.IdCardNum);//身份证号
                 CreateCell(row, ContentcellStyle, 10, d.EntryTime.ToString());//入职时间
                 CreateCell(row, ContentcellStyle, 11, d.PositiveDate.ToString());//转正时间
-          
+
                 CreateCell(row, ContentcellStyle, 12, d.ContractStartTime.ToString());//合同起始时间
                 CreateCell(row, ContentcellStyle, 13, d.ContractEndTime.ToString());//合同终止时间
                 CreateCell(row, ContentcellStyle, 14, d.Birthdate.ToString());//出生日期
@@ -916,7 +921,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
                 CreateCell(row, ContentcellStyle, 17, d.DomicileAddress);//户籍地址
                 CreateCell(row, ContentcellStyle, 18, d.Address);//现居地址
                 CreateCell(row, ContentcellStyle, 19, d.Education);//学历
-                CreateCell(row, ContentcellStyle, 20, d.MaritalStatus==true?"已婚":"未婚");//婚姻状态
+                CreateCell(row, ContentcellStyle, 20, d.MaritalStatus == true ? "已婚" : "未婚");//婚姻状态
                 CreateCell(row, ContentcellStyle, 21, d.IdCardIndate.ToString());//身份证有效期
                 CreateCell(row, ContentcellStyle, 22, d.PoliticsStatus);//政治面貌
                 CreateCell(row, ContentcellStyle, 23, d.InvitedSource);//招聘来源
@@ -926,7 +931,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
                 CreateCell(row, ContentcellStyle, 27, d.BCNum);//银行卡号
                 CreateCell(row, ContentcellStyle, 28, d.Material);//材料
                 CreateCell(row, ContentcellStyle, 29, d.Remark);//备注
-                CreateCell(row, ContentcellStyle, 30, d.IsDel==false?"在职":"离职");//员工状态
+                CreateCell(row, ContentcellStyle, 30, d.IsDel == false ? "在职" : "离职");//员工状态
 
                 num++;
 
@@ -954,12 +959,12 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
                 ajaxresult.ErrorCode = 200;
                 ajaxresult.Msg = "导入成功！文件地址：" + saveFileName;
                 // ajaxresult.Data = list;
-               
+
             }
             catch (Exception ex)
             {
                 ajaxresult.ErrorCode = 100;
-                ajaxresult.Msg = "导入失败，"+ex.Message;
+                ajaxresult.Msg = "导入失败，" + ex.Message;
 
             }
             return ajaxresult;
@@ -1212,7 +1217,8 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
         /// </summary>
         /// <param name="empid"></param>
         /// <returns></returns>
-        public List<EmpTransactionView> GetEmpEtrdetails(string empid) {
+        public List<EmpTransactionView> GetEmpEtrdetails(string empid)
+        {
             EmpTransactionManage etrmanage = new EmpTransactionManage();
             var etrlist = etrmanage.GetList().Where(s => s.EmployeeId == empid && s.IsDel == false).ToList();
             MoveTypeManage mtmanage = new MoveTypeManage();
@@ -1263,26 +1269,34 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
         }
 
         /// <summary>
-        /// 判断该员工是普通员工还是主任及以上的级别领导
-        /// //返回的是true表示该员工是普通员工，否则为主任以上员工
+        /// 判断某员工的类型（1代表校长；2代表副校长（含黄主任，不含王院长）；3代表主任；4代表参与考勤的普通员工）
         /// </summary>
         /// <param name="empid"></param>
         /// <returns></returns>
-        public bool IsGeneralStarffOrSuperior(string empid) {
-            bool result = false;
+        public int JudgeEmpType(string empid)
+        {
+            int result = 1;
             var emp = this.GetInfoByEmpID(empid);
             var dname = this.GetDeptByEmpid(empid).DeptName;
             var pname = this.GetPositionByEmpid(empid).PositionName;
-            if (dname == "校办" || (pname.Contains("主任") && !pname.Contains("班主任")) || pname == "人事总监" || (dname == "后勤部" && (pname != "后勤主任" || pname != "后勤专员" || pname != "水电工")))
+            if (dname == "校办" && pname == "校长")
             {
-                result = false;
+                result = 1;
+            }
+            else if (dname == "校办" && (pname != "校长" || pname != "荣誉院长"))
+            {
+                result = 2;
+            }
+            else if ((pname.Contains("主任") && !pname.Contains("班主任")) || pname == "人事总监")
+            {
+                result = 3;
             }
             else
             {
-                result = true;
+                result = 4;
             }
-
-            return result; 
+            return result;
         }
+
     }
 }

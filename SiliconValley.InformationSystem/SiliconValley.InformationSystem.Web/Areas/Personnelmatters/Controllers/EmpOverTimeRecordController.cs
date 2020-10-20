@@ -33,7 +33,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             OvertimeRecordManage otrmanage = new OvertimeRecordManage();
             BeOnDutyManeger bodmanage = new BeOnDutyManeger();
             EmployeesInfoManage emanage = new EmployeesInfoManage();
-            var list = otrmanage.GetList().Where(s => s.IsApproval == false).ToList();
+            var list = otrmanage.GetList()/*.Where(s => s.IsApproval == false)*/.ToList();
 
             var newlist = list.OrderByDescending(s => s.Id).Skip((page - 1) * limit).Take(limit).ToList();
             var etlist = from e in newlist
@@ -50,8 +50,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                              typename = bodmanage.GetSingleBeOnButy(e.OvertimeTypeId.ToString(), true).TypeName,
                              e.Remark,
                              e.IsNoDaysOff,
-                             e.IsPassYear,
-                             e.IsApproval,
+                           //  e.IsPassYear,
+                            // e.IsApproval,
                              e.IsPass
                              #endregion
                          };
@@ -75,7 +75,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             OvertimeRecordManage otrmanage = new OvertimeRecordManage();
             BeOnDutyManeger bodmanage = new BeOnDutyManeger();
             EmployeesInfoManage emanage = new EmployeesInfoManage();
-            var list = otrmanage.GetList().Where(s => s.IsApproval == true && s.IsPassYear == false).ToList();
+            var list = otrmanage.GetList()/*.Where(s => s.IsApproval == true && s.IsPassYear == false)*/.ToList();
             if (!string.IsNullOrEmpty(AppCondition))
             {
                 string[] str = AppCondition.Split(',');
@@ -114,8 +114,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                              typename = bodmanage.GetSingleBeOnButy(e.OvertimeTypeId.ToString(), true).TypeName,
                              e.Remark,
                              e.IsNoDaysOff,
-                             e.IsPassYear,
-                             e.IsApproval,
+                          //   e.IsPassYear,
+                           //  e.IsApproval,
                              e.IsPass
                              #endregion
                          };
@@ -137,7 +137,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             try
             {
                 var otr = otrmanage.GetEntity(id);
-                otr.IsApproval = true;
+                //otr.IsApproval = true;
                 otr.IsPass = state;
                 otrmanage.Update(otr);
                 ajaxresult = otrmanage.Success();
@@ -168,8 +168,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 otobj.OvertimeTypeId,
                 otobj.Remark,
                 otobj.IsNoDaysOff,
-                otobj.IsPassYear,
-                otobj.IsApproval,
+               // otobj.IsPassYear,
+               // otobj.IsApproval,
                 otobj.IsPass
                 #endregion
             };
@@ -193,8 +193,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             {
                 var myotr = otrmanage.GetEntity(otr.Id);
                 otr.IsPass = myotr.IsPass;
-                otr.IsApproval = myotr.IsApproval;
-                otr.IsPassYear = myotr.IsPassYear;
+              //  otr.IsApproval = myotr.IsApproval;
+              //  otr.IsPassYear = myotr.IsPassYear;
                 otrmanage.Update(otr);
                 ajaxresult = otrmanage.Success();
             }
@@ -218,7 +218,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 {
                     int id = int.Parse(arr[i]);
                     var otr = otrmanage.GetEntity(id);
-                    otr.IsPassYear = true;
+                   // otr.IsPassYear = true;
                     otrmanage.Update(otr);
                     ajaxresult = otrmanage.Success();
 
@@ -484,7 +484,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             EmployeesInfoManage emanage = new EmployeesInfoManage();
             List<MyStaticsData> Statisticslist = new List<MyStaticsData>();
             //获取可调休的总时长（已审批通过的作为调休的加班总时间）
-            var otrlist = otrmanage.GetList().Where(s => s.IsNoDaysOff == false && s.IsPassYear == false && s.IsPass == true).ToList();
+            var otrlist = otrmanage.GetList().Where(s => s.IsNoDaysOff == false && /*s.IsPassYear == false &&*/ s.IsPass == true).ToList();
             var dflist = dfmanage.GetList().Where(s => s.IsPassYear == false && s.IsPass == true).ToList();
             foreach (var item in otrlist)
             {
