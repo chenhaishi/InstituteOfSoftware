@@ -140,19 +140,18 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
             var empObj = db_emp.GetInfoByEmpID(empid);
             //获取这位员工的职位
+
             var dep = this.GetDeparmentByEmp(empObj.EmployeeId);
 
             Staff_Cost_StatisticesDetailView resultObj = new Staff_Cost_StatisticesDetailView(); //返回值
 
             resultObj.emp = empObj;
-
          
-           resultObj.teachingitems = teachingitems(empObj, date);
-          
-                //职业素养课，语数外 体育 课时
-           resultObj.otherTeaccher_count = teachingitems(empObj, date, "other");
+            resultObj.teachingitems = teachingitems(empObj, date);
             
-    
+            //职业素养课，语数外 体育 课时
+            resultObj.otherTeaccher_count = teachingitems(empObj, date, "other");
+                
             //内训课时
             resultObj.InternalTraining_Count = InternalTraining_Count(empObj);
 
@@ -169,7 +168,6 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             resultObj.Invigilate_Count = InvigilateNumber();
 
             //获取值班次数
-
             resultObj.Duty_Count = Duty_Count(empObj.EmployeeId, date);
 
             ///研发教材章数
@@ -289,7 +287,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
             }
 
-            #endregion
+            #endregion             
 
             #region 获取职业素养课，语数外 体育 课时
             int otherTeaccher_count()
@@ -1359,7 +1357,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
             BeOnDutyManeger tempdb_duty = new BeOnDutyManeger();
 
-            var dytytypelist = tempdb_duty.GetList().Where(d => d.IsDelete == false).ToList();
+            var dytytypelist = tempdb_duty.GetList().Where(d => d.IsDelete == true).ToList();
 
             foreach (var item in dytytypelist)
             {
@@ -1789,7 +1787,11 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                         //if(d.)
                     }
                 });
+            return null;
+        }
 
+        public List<HeadClass> SuperClass(List<HeadClass> datas)
+        {
             return null;
         }
 

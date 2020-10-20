@@ -86,38 +86,7 @@
         @*<div id="topDiv">
             @*<img src="~/Areas/ExaminationSystem/Images/商务科技.png" />
         </div>*@
-
-        <div id="nav">
-            @*<hr />*@
-            <ul class="hList">
-                <li>
-                    <a href="JavaScript:void(0)" class="menu IndexView">
-                        <h2 class="menu-title"><i class="layui-icon layui-icon-home"></i>首页</h2>
-
-                    </a>
-                </li>
-                <li>
-                    <a href="JavaScript:void(0)" class="menu examScoreSearch">
-                        <h2 class="menu-title menu-title_2nd">成绩查询</h2>
-
-                    </a>
-                </li>
-                <li>
-                    <a href="JavaScript:void(0)" class="menu ShuaTi">
-                        <h2 class="menu-title menu-title_4rd">刷题</h2>
-
-                    </a>
-                </li>
-                <li>
-                    <a href="JavaScript:void(0)" class="menu Mockxamination">
-                        <h2 class="menu-title menu-title_3rd">考试模拟</h2>
-
-                    </a>
-                </li>
-
-            </ul>
-        </div>
-
+        <button type="button" id="FanHui" class="layui-btn layui-btn-normal">首页</button>
         <div id="mycontent">
 
             <div id="icon" class="icon">
@@ -154,13 +123,13 @@
 
 
                         @*<div id="iconlenft">
-                                <i class="layui-icon layui-icon-left"></i>
-                            </div>
+                            <i class="layui-icon layui-icon-left"></i>
+                        </div>
 
-                            <div id="iconright">
+                        <div id="iconright">
 
-                                <i style="margin-left:84%;" class="layui-icon layui-icon-right"></i>
-                            </div>*@
+                            <i style="margin-left:84%;" class="layui-icon layui-icon-right"></i>
+                        </div>*@
                     </div>
                 </div>
 
@@ -198,8 +167,7 @@
 
             //初始化
             $.post('/ExaminationSystem/StudentExamSys/GetStuSooExam', {}, function (result) {
-
-                if (result.ErrorCode == 200) {
+                    if (result.ErrorCode == 200) {
 
                     $(".sooexamName").text(result.Data.Title);
                     //BeginDate
@@ -215,7 +183,6 @@
 
                 }
                 else {
-
                     $(".sooexamName").parent().text("您暂无考试！");
                     $("#indicator").attr("examid", "0");
 
@@ -237,9 +204,8 @@
             });
             $("#indicator").click(function () {
 
-
                 var examid = $(this).attr("examid");
-
+                console.log(examid);
 
 
                 if (examid == "0") {
@@ -247,54 +213,34 @@
                     layer.msg("您暂时没有考试");
                     return;
                 }
-
-
+                
+ 
                 var day = Countdown[0];
                 var hours = Countdown[1];
                 var minuts = Countdown[2];
                 var secnds = Countdown[3];
 
                 //判断是否已到考试时间
-
                 if (day != 0 || hours != 0 || minuts != 0 || secnds != 0) {
                     layer.msg("未到考试时间");
 
                     return;
 
                 }
+                //$.post("/ExaminationSystem/StudentExamSys/ContinueThExam", { examid: examid}, function (result) {
+                //    if (result.ErrorCode == 400) {
+                //        window.location.href = '/ExaminationSystem/StudentExamSys/MachineTest?examid=' + examid;
+                //    } else {
+                //        window.location.href = '/ExaminationSystem/StudentExamSys/AnswerSheet?examid=' + examid;
+                //    }
+                //})
                 window.location.href = '/ExaminationSystem/StudentExamSys/AnswerSheet?examid=' + examid;
 
             });
-            //成绩查询按钮
+            //返回
+            $("#FanHui").click(function () {
 
-            $(".examScoreSearch").click(function () {
-
-                layer.open({
-                    title: "成绩查询",
-                    area: ["1200px", "300px"],
-                    type: 2,
-                    content: "/ExaminationSystem/ExamScores/StuPersonalScores"
-
-                });
-
-            });
-
-            //点击首页 进入首页
-
-            $(".IndexView").click(function () {
-
-                window.location.href = '/student/index';
-
-            });
-
-            $(".Mockxamination").click(function () {
-
-                window.location.href = "/ExaminationSystem/StudentExamSys/MockExaminationView"
-            });
-            //点击刷题  进入刷题页
-            $(".ShuaTi").click(function () {
-                //layer.msg("尽情期待!");
-                window.location.href = "/ExaminationSystem/StudentExamSys/Brushthetopic"     
+                window.location.href = "/student/index";
             })
         });
     </script>

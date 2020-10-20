@@ -188,6 +188,14 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
         /// </summary>
         private ChannelStaffBusiness dbchannel;
         /// <summary>
+        /// 获取教学教致及信息部的员工
+        /// </summary>
+        /// <returns></returns>
+        public List<EmployeesInfo> Getguigu()
+        {
+            return this.GetAll().Where(a => this.GetDeptByPid(a.PositionId).DeptId == 5 || this.GetDeptByPid(a.PositionId).DeptId == 6 || this.GetDeptByPid(a.PositionId).DeptId == 7 || this.GetDeptByPid(a.PositionId).DeptId == 1008 || this.GetDeptByPid(a.PositionId).DeptId == 1009).ToList();
+        }
+        /// <summary>
         /// 获取所有没有离职的员工
         /// </summary>
         /// <returns></returns>
