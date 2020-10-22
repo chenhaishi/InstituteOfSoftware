@@ -67,7 +67,7 @@
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework6.Npgsql">
-      <HintPath>..\packages\EntityFramework6.Npgsql.3.2.0\lib\net45\EntityFramework6.Npgsql.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework6.Npgsql.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
@@ -1930,6 +1930,7 @@
     <Content Include="Areas\DormitoryMaintenance\Views\DormitoryDeposit\FinanceIndex.cshtml" />
     <Content Include="Areas\DormitoryMaintenance\Views\DormitoryDeposit\StudentinfomatuonView.cshtml" />
     <Content Include="Areas\DormitoryMaintenance\Views\DormitoryDeposit\ClassStudentMoneyView.cshtml" />
+    <Content Include="Areas\DormitoryMaintenance\Views\DormitoryMantainPrice\EditDormitoryMantainPriceView.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />

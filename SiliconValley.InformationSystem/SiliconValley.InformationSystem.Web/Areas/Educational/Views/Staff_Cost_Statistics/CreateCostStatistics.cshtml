@@ -225,18 +225,16 @@
                         clearInterval(test);
                     }
 
-                    num += 0.5;
+                    num += 1;
 
                     element.progress('demo', num + '%');
 
-                }, 2000);
+                }, 1000);
 
                 $("#tipMSg").text("统计中.......");
 
                 $.post('/Educational/Staff_Cost_Statistics/CostStatistics', { date: date, workingDays: days }, function (result) {
-
-
-
+                    
                     if (result.ErrorCode == 200) {
                         clearInterval(test);
                         element.progress('demo', '100%');
@@ -254,8 +252,7 @@
                     }
 
                 });
-
-
+                
             });
 
             $("#download").click(function () {
