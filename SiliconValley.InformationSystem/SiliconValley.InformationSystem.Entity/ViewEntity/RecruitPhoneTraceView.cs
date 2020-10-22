@@ -23,5 +23,9 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity
         public string Pname { get; set; }//应聘岗位
         public string Dname { get; set; }//应聘部门
         public Nullable<System.DateTime> ForwardDate { get; set; }//预面试时间
+        public Nullable<int> SonId { get; set; }//子级
+        public Nullable<System.DateTime> forwardDate { get; set; }//（用于显示的最新）预面试时间
+        public Nullable<bool> result { get; set; }//用于显示的最新）联系结果
+
     }
 }

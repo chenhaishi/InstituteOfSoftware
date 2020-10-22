@@ -106,7 +106,7 @@ namespace SiliconValley.InformationSystem.Business.StuInfomationType_Maneger
         }
         /// <summary>
         /// 修改错误班级
-        /// </summary>
+        /// </summary> 
         /// <param name="keepID">备案id</param>
         /// <param name="classID">班级名</param>
         /// <param name="ClassName">班级id</param>
