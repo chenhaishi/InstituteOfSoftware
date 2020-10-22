@@ -137,9 +137,7 @@
                     , {
                         field: 'PositionId', title: '所属岗位', width: 300, templet: function (res) {
                             var result = "";
-
-
-
+                            
                             $.ajax({
                                 url: '/Educational/Staff_Cost_Statistics/empPosition',
                                 data: { EmployeeId: res.EmployeeId },
@@ -171,12 +169,9 @@
             ///部门筛选员工
 
             form.on('select(dep_select)', function (data) {
-
                 var depid = data.value;
-
-
+                
                 table.reload('emplist', {
-
                     url: '/Educational/Staff_Cost_Statistics/EmpData',
                     where: {
                         empName:null,
@@ -216,16 +211,12 @@
                 });
 
             });
-
             
             //监听行工具事件
             table.on('tool(emplist_filter)', function (obj) {
                
                 var data = obj.data;
                 if (obj.event == 'cost_history') {
-
-                    console.log(data);
-
                     layer.open({
                         type: 2,
                         area: ['1000px', '500px'],
@@ -237,8 +228,6 @@
             });
 
             $("#HistoryCost").click(function () {
-
-
                 layer.open({
                     type: 2,
                     area: ['1000px', '600px'],

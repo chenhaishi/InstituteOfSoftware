@@ -87,18 +87,30 @@
                 });
 
                 form.on('submit(addbtn)', function (data) {                                       
+                    
                     $.ajax({
-                        url: '/DormitoryMaintenance/DormitoryMantainPrice/AddFunction',
-                        type: 'POST',
-                        data: data.field,
+                        url: "/DormitoryMaintenance/DormitoryMantainPrice/CheckName",
+                        type: "post",
+                        data: { "name": data.field.Nameofarticle },
                         success: function (res) {
-                            if (res.Success) {
-                                layer.msg(res.Msg, { icon: 1, shade: 0.8 }, function () {
-                                    window.parent.tablefulsh();
-                                     
-                                });
+                            if (res) {
+                                layer.msg("此物品已存在");
                             } else {
-                                layer.msg(res.Msg, { icon: 2, shade: 0.8 });
+                                $.ajax({
+                                    url: '/DormitoryMaintenance/DormitoryMantainPrice/AddFunction',
+                                    type: 'POST',
+                                    data: data.field,
+                                    success: function (res) {
+                                        if (res.Success) {
+                                            layer.msg(res.Msg, { icon: 1, shade: 0.8 }, function () {
+                                                window.parent.tablefulsh();
+
+                                            });
+                                        } else {
+                                            layer.msg(res.Msg, { icon: 2, shade: 0.8 });
+                                        }
+                                    }
+                                }); 
                             }
                         }
                     });

@@ -45,7 +45,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             {
                 string Name = Request.QueryString["s_class"];
                 List<BaseDataView> break_list = MyEntity.Break_Entity.ALL_DATA().Where(b => b.IsDelete == false).OrderByDescending(b => b.Id).ToList();
-                if (Name != null)
+                if (Name != null && Name!="0")
                 {
                     int classid = Convert.ToInt32(Name);
                    break_list = break_list.Where(b => b.ClassSchedule_Id == classid).ToList();
