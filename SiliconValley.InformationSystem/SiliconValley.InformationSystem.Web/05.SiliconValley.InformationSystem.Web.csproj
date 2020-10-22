@@ -1931,6 +1931,7 @@
     <Content Include="Areas\DormitoryMaintenance\Views\DormitoryDeposit\StudentinfomatuonView.cshtml" />
     <Content Include="Areas\DormitoryMaintenance\Views\DormitoryDeposit\ClassStudentMoneyView.cshtml" />
     <Content Include="Areas\DormitoryMaintenance\Views\DormitoryDeposit\MantainDefileView.cshtml" />
+    <Content Include="Areas\DormitoryMaintenance\Views\DormitoryDeposit\AddSafeView.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />

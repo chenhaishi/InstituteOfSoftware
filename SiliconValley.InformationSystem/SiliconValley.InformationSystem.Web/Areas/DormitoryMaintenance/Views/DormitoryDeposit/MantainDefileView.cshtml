@@ -11,12 +11,16 @@
     <title>MantainDefileView</title>
     <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
     <style>
-       .ColorText{
-       color:red;
-       }
-       .TextCen{
-         text-align:center
-       }
+        .ColorText
+        {
+            color: red;
+        }
+
+        .TextCen
+        {
+            text-align: center
+        }
+
         tr td
         {
             width: 180px;
@@ -24,43 +28,49 @@
             font-family: FangSong;
             border: 1px solid black;
         }
-       tr{
-       margin-top:20px;
-       border:1px solid black;
-       }
-       .DivCss2{     
-       margin-top:15px;
-       text-align:center
-       }
+
+        tr
+        {
+            margin-top: 20px;
+            border: 1px solid black;
+        }
+
+        .DivCss2
+        {
+            margin-top: 15px;
+            text-align: center
+        }
     </style>
 </head>
 <body>
-     
+
     <table>
-        <thead>
-            <tr>
-                <td colspan="4">
-                <span>学生姓名:</span>
-                </td>
-                <td colspan="4">
-                    <span class="ColorText">唐敏</span>
-                </td>
-            </tr>
-        </thead>
+
 
         @{
             var list = ViewBag.listdata;
+            int lent = list.listdata.Count + 1;
             if (list.listdata.Count > 0)
             {
+                <thead>
+                    <tr>
+                        <td colspan="4">
+                            <span>学生姓名:</span>
+                        </td>
+                        <td colspan="4">
+                            <span class="ColorText">@list.listdata[0].DeastuName</span>
+                        </td>
+                    </tr>
+                </thead>
                 <tr>
-                    <td rowspan="@list.Count()">维修详细:</td>
+                    <td rowspan="@lent">维修详细:</td>
                     <td colspan="2" class="TextCen">日期</td>
                     <td colspan="2">寝室号</td>
                     <td colspan="2">维修物品</td>
                     <td colspan="2">维修金额</td>
                 </tr>
 
-                foreach (StuSusheData item in list)
+                foreach (StuSusheData item in list.listdata)
                 {
                     <tr>
                         <td colspan="2" class="TextCen"><span>@item.DeaMaintain</span></td>
@@ -78,13 +88,13 @@
                 </tr>
             }
             else
-            {         
+            {
                 <tr>
                     <td colspan="8" class="TextCen"><span>无维修情况</span></td>
                 </tr>
                 <tr>
                     <td colspan="4"><span>总计:</span></td>
-                   
+
                     <td colspan="4"><span>应退总金额:</span><span class="ColorText">@list.GetTuiMoney</span><span>元</span></td>
                 </tr>
             }
@@ -97,25 +107,25 @@
     <div class="DivCss2">
         <button type="button" class="layui-btn" onclick="Close()">确定关闭</button>
     </div>
-     
+
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/layui/layui.js"></script>
     <script>
         var table;
         var layer;
         $(function () {
-           
-            layui.use(['table','layer'], function () {
+
+            layui.use(['table', 'layer'], function () {
                 table = layui.table;
                 layer = layui.layer;
             });
 
-             
+
         });
 
         function Close() {
-            var index = parent.layer.getFrameIndex(window.name);  
-            parent.layer.close(index);  
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
         }
     </script>
 </body>
