@@ -8,9 +8,30 @@ using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 namespace SiliconValley.InformationSystem.Business.RecruitPhoneTraceBusiness
 {
     using SiliconValley.InformationSystem.Entity.MyEntity;
-   public  class RecruitPhoneTraceManage:BaseBusiness<RecruitPhoneTrace>
+    using SiliconValley.InformationSystem.Util;
+
+    public  class RecruitPhoneTraceManage:BaseBusiness<RecruitPhoneTrace>
     {
-        public RecruitPhoneTraceView GetRptView(int id) {
+        RedisCache rc;
+        public List<RecruitPhoneTrace> GetRPTData() {
+            rc = new RedisCache();
+            rc.RemoveCache("RedisRPTData");
+            List<RecruitPhoneTrace> rptlist = new List<RecruitPhoneTrace>();
+            if(rptlist==null || rptlist.Count()==0) {
+                rptlist = this.GetIQueryable().ToList();
+                rc.SetCache("RedisRPTData", rptlist);
+
+            }
+            rptlist = rc.GetCache<List<RecruitPhoneTrace>>("RedisRPTData");
+            return rptlist;
+        }
+
+        public List<RecruitPhoneTrace> GetRptFromSql() {
+            List<RecruitPhoneTrace> rptlist = this.GetListBySql<RecruitPhoneTrace>("select * from RecruitPhoneTrace where IsDel='false'");
+            return rptlist;
+        }
+
+        public RecruitPhoneTraceView GetRptView(int id) { 
             EmployeesInfoManage empmanage = new EmployeesInfoManage();
             RecruitPhoneTraceView rptview = new RecruitPhoneTraceView();
             var item = this.GetEntity(id);
@@ -48,6 +69,30 @@ namespace SiliconValley.InformationSystem.Business.RecruitPhoneTraceBusiness
                 rptviewlist.Add(rptlist);
             }
             return rptviewlist;
+        }
+
+        /// <summary>
+        /// 获取最新的预面试时间
+        /// </summary>
+        /// <param name="sonid"></param>
+        /// <returns></returns>
+        public DateTime? GetNewestForwardDate(int sonid) {
+       
+            var rptlist = this.GetListBySql<RecruitPhoneTrace>("select * from RecruitPhoneTrace where SonId="+sonid);
+            DateTime? time = rptlist.LastOrDefault().ForwardDate;
+            return time;
+        }
+
+        /// <summary>
+        /// 获取最新面试结果
+        /// </summary>
+        /// <param name="sonid"></param>
+        /// <returns></returns>
+        public bool GetPhoneCommunicateResult(int sonid)
+        {
+            var rptlist = this.GetListBySql<RecruitPhoneTrace>("select * from RecruitPhoneTrace where SonId="+sonid);
+            bool result = (bool)rptlist.LastOrDefault().PhoneCommunicateResult;
+            return result;
         }
     }
 }
