@@ -207,20 +207,7 @@
                 return div.innerHTML
             }
         }
-        ////全屏模式
-        //var baping = function () {
-        //    var element = document.getElementById("mypaper");
-        //    var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen;
-        //    if (requestMethod) {
-        //        requestMethod.call(element);
-        //    } else if (typeof window.ActiveXObject !== "undefined") {
-        //        var wscript = new ActiveXObject("WScript.Shell");
-        //        if (wscript !== null) {
-        //            wscript.SendKeys("{F11}");
-        //        }
-        //    }
-        //}
-        //baping();
+
         
         var ExamEndDateUTC;
 
@@ -348,6 +335,7 @@
                         });
                     }
                 });
+                loadAnswerQuestionData();
             }
             function loadAnswerQuestionData() {
                 var index = layer.load(2, { time: 10 * 1000 }); //又换了种风格，并且设定最长等待10秒
@@ -482,7 +470,6 @@
                 });
             }
             loadChoiceQuestionData();
-            loadAnswerQuestionData();
 
             var AnswerCommitarray = new Array();
             //获取解答题结果  表单数据
@@ -711,35 +698,18 @@
                 }
 
             }, 60000);
-
-
-            //屏蔽右键菜单，！验证
-            //document.oncontextmenu = function (event) {
-            //    if (window.event) {
-            //        event = window.event;
-            //    }
-            //    try {
-            //        var the = event.srcElement;
-            //        if (!((the.tagName == "INPUT" && the.type.toLowerCase() == "text") || the.tagName == "TEXTAREA")) {
-            //            return false;
-            //        }
-            //        return true;
-            //    } catch (e) {
-            //        return false;
-            //    }
-            //};
-            //var allowNum = 3; // 允许两次切屏，超过则提交
-            //window.onblur = function () {
-            //    if (allowNum < 1) {
-            //        submitTest()
-            //    }
-            //    allowNum--;
-            //    alert("您已切屏,剩余" + allowNum + "次自动提交试卷");
-            //    if (allowNum == 0) {
-            //        alert("您切屏超过3次,自动交卷！");
-            //        CommitAnswerSheet();
-            //    }
-            //}
+            var allowNum = 3; // 允许两次切屏，超过则提交
+            window.onblur = function () {
+                if (allowNum < 1) {
+                    submitTest()
+                }
+                allowNum--;
+                alert("您已切屏,剩余" + allowNum + "次自动提交试卷");
+                if (allowNum == 0) {
+                    alert("您切屏超过3次,自动交卷！");
+                    CommitAnswerSheet();
+                }
+            }
         });
 
 

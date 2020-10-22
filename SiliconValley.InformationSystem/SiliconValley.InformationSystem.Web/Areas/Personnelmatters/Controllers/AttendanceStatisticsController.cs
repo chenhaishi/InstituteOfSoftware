@@ -108,8 +108,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                              e.IsApproval,
                              e.TardyAndLeaveWithhold,
                             // e.LeaveWithhold,
-                             e.OvertTimeDuration,
-                             e.OvertTimeRecord,
+                            // e.OvertTimeDuration,
+                            // e.OvertTimeRecord,
                              e.OvertimeCharges,
                              e.DaysoffDuration,
                              e.DaysoffRecord,
@@ -400,6 +400,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             }
             return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
         }
+
 
 
     }

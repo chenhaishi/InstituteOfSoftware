@@ -1,0 +1,95 @@
+﻿
+@{
+    Layout = null;
+}
+@model SiliconValley.InformationSystem.Entity.MyEntity.Pricedormitoryarticles
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>EditDormitoryMantainPriceView</title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/layui/layui.js"></script>
+</head>
+<body>
+    <form id="adddataform" class="layui-form" lay-filter="adddataform">
+        <input hidden="hidden" name="ID" value="@Model.ID" />
+        <div class="layui-form-item">
+            <label class="layui-form-label">物品名称:</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" name="Nameofarticle" value="@Model.Nameofarticle" id="Nameofarticle" title="物品名称" lay-verify="required" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">物品价格:</label>
+            <div class="layui-input-block">
+                <input type="number" id="Reentry" name="Reentry" value="@Model.Reentry" class="layui-input" lay-verify="required|Mynumber" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">说 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 明:</label>
+            <div class="layui-input-block">
+                <textarea name="Remarks" id="Remarks" class="layui-textarea">@Model.Remarks</textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="Editbtn">保存</button>
+                <button id="btn1" type="button" class="layui-btn">取消关闭</button>
+            </div>
+        </div>
+    </form>
+
+
+</body>
+</html>
+
+<script>
+    $(function () {
+        var form;
+        var layer;
+        layui.use(['form', 'layer'], function () {
+            form = layui.form;
+            layer = layui.layer;
+
+            form.verify({
+                Mynumber: function (value) {
+                    var number = Number(value);
+                    if (number <= 0) {
+                        return '必须大于0';
+                    }
+                }
+
+            });
+
+            form.on('submit(Editbtn)', function (data) {
+
+                $.ajax({
+                    url: '/DormitoryMaintenance/DormitoryMantainPrice/EditFunction',
+                    type: 'POST',
+                    data: data.field,
+                    success: function (res) {
+                        if (res.Success) {
+                            layer.msg(res.Msg, { icon: 1, shade: 0.8 }, function () {
+                                window.parent.tablefulsh();
+
+                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                parent.layer.close(index); //再执行关闭
+                            });
+                        } else {
+                            layer.msg(res.Msg, { icon: 2, shade: 0.8 });
+                        }
+                    }
+                });
+
+                return false;
+            });
+        });
+        $("#btn1").click(function () {
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+        });
+    });
+</script>

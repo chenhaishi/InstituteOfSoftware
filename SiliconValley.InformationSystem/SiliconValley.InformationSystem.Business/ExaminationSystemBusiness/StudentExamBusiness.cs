@@ -556,7 +556,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
         /// <returns></returns>
         public List<ChoiceQuestionTableView> extracChoicequestion(List<ChoiceQuestionTableView> source, int count)
         {
-            count = 5;
+            //count = 5;
             if (source == null || source.Count == 0)
             {
                 return new List<ChoiceQuestionTableView>();

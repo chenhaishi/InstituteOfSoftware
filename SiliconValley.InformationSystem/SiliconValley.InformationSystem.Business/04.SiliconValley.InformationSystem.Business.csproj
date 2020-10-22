@@ -215,6 +215,7 @@
     <Compile Include="EnroExamination_Business\EnroExaminationBusiness.cs" />
     <Compile Include="EnrollmentBusiness\EnrollmentBusinesse.cs" />
     <Compile Include="ExaminationSystemBusiness\AnswerQuestionBusiness.cs" />
+    <Compile Include="ExaminationSystemBusiness\CandidateInfoBusiness.cs" />
     <Compile Include="ExaminationSystemBusiness\ChoiceQuestionBusiness.cs" />
     <Compile Include="ExaminationSystemBusiness\ComputerTestQuestionsBusiness.cs" />
     <Compile Include="ExaminationSystemBusiness\ExaminationBusiness.cs" />

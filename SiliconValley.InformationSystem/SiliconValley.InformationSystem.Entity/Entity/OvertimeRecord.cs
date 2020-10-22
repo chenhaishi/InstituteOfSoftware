@@ -33,13 +33,13 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         public Nullable<bool> IsNoDaysOff { get; set; }
         //加班类型
         public int OvertimeTypeId { get; set; }
-        //是否过了年限
-        public Nullable<bool> IsPassYear { get; set; }
+        ////是否过了年限
+        //public Nullable<bool> IsPassYear { get; set; }
         //备注
         public string Remark { get; set; }
-        //是否禁用
+        ////是否禁用
         public Nullable<bool> IsPass { get; set; }
-        public Nullable<bool> IsApproval { get; set; }
+        //public Nullable<bool> IsApproval { get; set; }
 
 
     }

@@ -31,6 +31,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         private readonly ChoiceQuestionBusiness db_choiceQuestion;
         private readonly ExamScoresBusiness db_examScores;
         private readonly AnswerQuestionBusiness db_answerQuestion;
+        private readonly CandidateInfoBusiness db_candidateinfo;
 
         public StudentExamSysController()
         {
@@ -39,6 +40,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             db_choiceQuestion = new ChoiceQuestionBusiness();
             db_examScores = new ExamScoresBusiness();
             db_answerQuestion = new AnswerQuestionBusiness();
+            db_candidateinfo =new CandidateInfoBusiness();
         }
         // GET: ExaminationSystem/StudentExamSys
         public ActionResult StuExamIndex()
@@ -86,6 +88,26 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             //提供刷题类型,选择题/机试题
 
             return View();
+        }
+        /// <summary>
+        /// 如果中途关闭了机试页,再次进入考场直接跳转到机试页
+        /// </summary>
+        /// <param name="examid"></param>
+        /// <returns></returns>
+        public ActionResult ContinueThExam(int examid)
+        {
+            AjaxResult result = new AjaxResult();
+            //获取当前登录学员
+            var studentNumber = SessionHelper.Session["studentnumber"].ToString();
+
+            var candidateinfo = db_candidateinfo.CandidateInfoList().Where(d => d.Examination == examid && d.StudentID == studentNumber).SingleOrDefault();
+            if (candidateinfo.ComputerPaper == null)
+            {
+                result.Data = "0";
+                result.Msg = "成功";
+                result.ErrorCode = 400;
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
         ///获取学员最近的一次考试
@@ -520,34 +542,34 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 var client = Bos.BosClient();
 
                 var studentNumber = SessionHelper.Session["studentnumber"].ToString();
-                // 1.将解答题答案存入文件  2 将机试题文件放入AnswerSheet文件夹 3.修改数据库值（选择题分数，解答题答案路径，机试题路径）4.记录选择题分数
+                //1.将解答题答案存入文件
+                //2 将机试题文件放入AnswerSheet文件夹
+                //3.修改数据库值（选择题分数,解答题答案路径,机试题路径）
+                //4.记录选择题分数
 
-                //1 将解答题答案存入文件 首先新建学生答卷文件夹
-                //名称规则 学号加上考试ID
+                //1 将解答题答案存入文件 首先新建学生答卷文件夹 名称规则 学号加上考试ID
 
                 string direName = $"/ExaminationSystem/AnswerSheet/{studentNumber + examid}/";
-
                 //写文件
-                string answerfilename = "AnswerSheet.txt";
-
+                 string answerfilename = "AnswerSheet.txt";
 
                 PutObjectResponse putObjectResponseFromString = client.PutObject("xinxihua",$"{direName}{answerfilename}", AnswerCommit);
 
                 //2 将机试题保存到文件夹 
-                string computerfielnaem = "computerfielnaem";
-                var computerfile = Request.Files["rarfile"];
+                //string computerfielnaem = "computerfielnaem";
+                //var computerfile = Request.Files["rarfile"];
 
                 //保存的机试题路径
                 string computerUrl = "";
-                if (computerfile != null)
-                {
-                    //获取文件拓展名称 
-                    var exait = Path.GetExtension(computerfile.FileName);
-                    //computerUrl = Server.MapPath("/Areas/ExaminationSystem/Files/AnswerSheet/" + direName + "/" + computerfielnaem + exait);
-                    computerUrl = $"{direName}{computerfielnaem + exait}";
-                    //computerfile.SaveAs(computerUrl);
-                    Bos.Savefile("xinxihua", direName, computerfielnaem + exait, computerfile.InputStream);
-                }
+                //if (computerfile != null)
+                //{
+                //获取文件拓展名称 
+                //var exait = Path.GetExtension(computerfile.FileName);
+                //computerUrl = Server.MapPath("/Areas/ExaminationSystem/Files/AnswerSheet/" + direName + "/" + computerfielnaem + exait);
+                //computerUrl = $"{direName}{computerfielnaem + exait}";
+                //computerfile.SaveAs(computerUrl);
+                //Bos.Savefile("xinxihua", direName, computerfielnaem + exait, computerfile.InputStream);
+                //}
 
                 //3.修改数据库值（选择题分数，解答题答案路径，机试题路径）
                 db_exam.AllExamination().Where(d => d.ID == examid).FirstOrDefault();
@@ -571,15 +593,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                         Candidateinfo.ComputerPaper = Candidateinfo.ComputerPaper.Replace(old, computerUrl);
                     }
                 }
-               
+
                 db_exam.UpdateCandidateInfo(Candidateinfo);
 
                 //4.记录选择题分数
-                 
-
                 //获取考生
-
-               var stuScores = db_examScores.StuExamScores(examid, studentNumber);
+                var stuScores = db_examScores.StuExamScores(examid, studentNumber);
 
                 if (stuScores == null)
                 {
