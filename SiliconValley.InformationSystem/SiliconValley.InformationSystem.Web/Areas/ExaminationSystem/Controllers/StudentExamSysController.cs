@@ -90,6 +90,26 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             return View();
         }
         /// <summary>
+        /// 判断如果机试提交提交并且确认提交，提交压缩包为空那么就也默认考试完毕
+        /// </summary>
+        /// <param name="examid"></param>
+        /// <returns></returns>
+        //public ActionResult MachineTestisEmpty(int examid)
+        //{
+        //    AjaxResult result = new AjaxResult();
+        //    //获取当前登录学员
+        //    var studentNumber = SessionHelper.Session["studentnumber"].ToString();
+
+        //    var candidateinfo = db_candidateinfo.CandidateInfoList().Where(d => d.Examination == examid && d.StudentID == studentNumber).SingleOrDefault();
+        //    if (candidateinfo.ComputerPaper == "")
+        //    {
+        //        result.Data = "0";
+        //        result.Msg = "成功";
+        //        result.ErrorCode = 400;
+        //    }
+        //    return Json(result, JsonRequestBehavior.AllowGet);
+        //}
+        /// <summary>
         /// 如果中途关闭了机试页,再次进入考场直接跳转到机试页
         /// </summary>
         /// <param name="examid"></param>
@@ -101,7 +121,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             var studentNumber = SessionHelper.Session["studentnumber"].ToString();
 
             var candidateinfo = db_candidateinfo.CandidateInfoList().Where(d => d.Examination == examid && d.StudentID == studentNumber).SingleOrDefault();
-            if (candidateinfo.ComputerPaper == null)
+            if (candidateinfo.ComputerPaper == "1")
             {
                 result.Data = "0";
                 result.Msg = "成功";
@@ -122,31 +142,33 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 var studentNumber = SessionHelper.Session["studentnumber"].ToString();
                 var exam = db_stuExam.StudetnSoonExam(studentNumber.ToString()).OrderByDescending(d => d.BeginDate).FirstOrDefault();
                 var examview = db_exam.ConvertToExaminationView(exam);
-
+                var candidateinfo = db_candidateinfo.CandidateInfoList().Where(d => d.Examination == exam.ID && d.StudentID == studentNumber).SingleOrDefault();
                 //在判断是否考完了
 
-                if (examview != null)
+                if (examview != null )
                 {
                     var scores = db_examScores.StuExamScores(examview.ID, studentNumber);
-
-                    if (scores.ChooseScore != null)
+                    //判断如果选择题的分数不等于空，那么就默认他考试结束
+                    if (candidateinfo.ComputerPaper == "1")
                     {
-                        result.Data = "0";
-                        result.Msg = "成功";
-                        result.ErrorCode = 400;
+                        result.Data = examview;
+                        result.Msg = "考试继续";
+                        result.ErrorCode = 200;
                     }
                     else
                     {
-                        result.Data = examview;
-                        result.Msg = "成功";
-                        result.ErrorCode = 200;
+                        result.Msg = "考试结束";
+                        result.Data = "0";
+                        result.ErrorCode = 400;                        
                     }
+                    
                 }
                 else
                 {
                     result.Data = "0";
-                    result.Msg = "成功";
+                    result.Msg = "没有考试";
                     result.ErrorCode = 400;
+
                 }
 
 
@@ -560,7 +582,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 //var computerfile = Request.Files["rarfile"];
 
                 //保存的机试题路径
-                string computerUrl = "";
+                //string computerUrl = "";
                 //if (computerfile != null)
                 //{
                 //获取文件拓展名称 
@@ -576,23 +598,23 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 var Candidateinfo = db_exam.AllCandidateInfo(examid).Where(d => d.Examination == examid && d.StudentID == studentNumber).FirstOrDefault();
                 //Candidateinfo.Paper = Server.MapPath("/Areas/ExaminationSystem/Files/AnswerSheet/" + direName + "/" + answerfilename);
                 Candidateinfo.Paper = $"{direName}{answerfilename}";
-
+                Candidateinfo.ComputerPaper = "1";
                 //获取需要替换的字符串路径
 
-                if (Candidateinfo.ComputerPaper != null)
-                {
-                    var old = Candidateinfo.ComputerPaper.Substring(Candidateinfo.ComputerPaper.IndexOf(',') + 1);
+                //if (Candidateinfo.ComputerPaper != null)
+                //{
+                //    var old = Candidateinfo.ComputerPaper.Substring(Candidateinfo.ComputerPaper.IndexOf(',') + 1);
 
-                    if (old.Length == 0)
-                    {
-                        Candidateinfo.ComputerPaper = Candidateinfo.ComputerPaper + computerUrl;
-                    }
-                    else
+                //    if (old.Length == 0)
+                //    {
+                //        Candidateinfo.ComputerPaper = Candidateinfo.ComputerPaper + computerUrl;
+                //    }
+                //    else
 
-                    {
-                        Candidateinfo.ComputerPaper = Candidateinfo.ComputerPaper.Replace(old, computerUrl);
-                    }
-                }
+                //    {
+                //        Candidateinfo.ComputerPaper = Candidateinfo.ComputerPaper.Replace(old, computerUrl);
+                //    }
+                //}
 
                 db_exam.UpdateCandidateInfo(Candidateinfo);
 
