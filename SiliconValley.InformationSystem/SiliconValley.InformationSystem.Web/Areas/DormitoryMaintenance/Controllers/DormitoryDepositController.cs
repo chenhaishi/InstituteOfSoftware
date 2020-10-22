@@ -14,10 +14,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
     using SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data.MyViewEntity;
     using SiliconValley.InformationSystem.Util;
     using System.Text;
+    [CheckLogin]
     public class DormitoryDepositController : Controller
     {
         DormitoryDepositManeger Dormitory_Entity = new DormitoryDepositManeger();
-        // GET: /DormitoryMaintenance/DormitoryDeposit/StudentDorManinData
+        // GET: /DormitoryMaintenance/DormitoryDeposit/ClassJiesuan
 
         #region 登记人操作
 
@@ -285,6 +286,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
+        
+        #endregion
+
+        #region 班主任操作
         /// <summary>
         /// 班级费用查看页面
         /// </summary>
@@ -310,7 +315,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
                 //获取所有阶段
                 List<SelectListItem> grandlist= Dormitory_Entity.Grand_Entity.GetList().Where(g => g.IsDelete == false).Select(g => new SelectListItem() { Text = g.GrandName, Value = g.Id.ToString() }).ToList();
 
-                grandlist.Add(new SelectListItem() {Text="--请选择--",Value="0" ,Selected=true});
 
                 ViewBag.grandlist = grandlist;
             }
@@ -395,13 +399,108 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
             ViewBag.listdata = datas;
             return View();
         }
+
+        /// <summary>
+        /// 保险柜费用数据添加方法
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult AddSafeFuntion()
+        {
+
+            int classid = Convert.ToInt32(Request.Form["classid"]);//班级
+            int goodsid = Convert.ToInt32(Request.Form["weixiugood"]);//物品编号
+            DateTime dateTime = Convert.ToDateTime(Request.Form["mantinDate"]);//获取日期
+
+            AjaxResult result = new AjaxResult();
+            //获取这个班的所有学生
+            string sqlstr = "select * from ScheduleForTrainees where  CurrentClass=1 and ID_ClassName='" + classid + "'";
+            List<ScheduleForTrainees> stulist = Dormitory_Entity.GetListBySql<ScheduleForTrainees>(sqlstr);
+
+            Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
+
+            List<DormitoryDeposit> Dorlist = new List<DormitoryDeposit>();
+            StringBuilder sb = new StringBuilder();
+            foreach (ScheduleForTrainees s in stulist)
+            {
+                //判断这个学生在哪个宿舍
+                string sqlstr2 = @"select * from DormInformation where Id= (select DormId from Accdationinformation where Studentnumber='" + s.StudentID + "' and StayDate <= '" + dateTime + "' and (EndDate is null or EndDate>='" + dateTime + "'))";
+                List<DormInformation> list2 = Dormitory_Entity.GetListBySql<DormInformation>(sqlstr2);
+                if (list2.Count > 0)
+                {
+                    DormitoryDeposit dormitory = new DormitoryDeposit()
+                    {
+                        ID= Guid.NewGuid().ToSequentialGuid(),
+                        Maintain = dateTime,
+                        DormId = list2[0].ID,
+                        StuNumber = s.StudentID,
+                        MaintainGood = goodsid,
+                        GoodPrice = Dormitory_Entity.Pricedormitoryarticles_Entity.GetEntity(goodsid).Reentry,
+                        MaintainState = 1,
+                        CreaDate = DateTime.Now,
+                        EntryPersonnel = UserName.EmpNumber
+                    };
+
+                    //去数据库查看是否这个月的宿舍保险柜数据已经录入成功了
+                    string sqlstr3 = @"select * from DormitoryDeposit where StuNumber='"+s.StudentID+"' and YEAR(Maintain)='"+dateTime.Year+"' and MONTH(Maintain)='"+ dateTime.Month + "' and MaintainGood='"+ goodsid + "'";
+                    int count= Dormitory_Entity.GetListBySql<DormitoryDeposit>(sqlstr3).Count;
+                    if (count<=0)
+                    {
+                        Dorlist.Add(dormitory);
+                    }                    
+                    
+                }
+                else
+                {
+                    string stuname = Dormitory_Entity.StudentInformation_Entity.GetEntity(s.StudentID).Name;
+                    sb.Append(stuname + "、");
+                }
+            }
+             
+
+            if (Dorlist.Count== stulist.Count)
+            {
+                result.Success = Dormitory_Entity.AddData(Dorlist);
+                result.Msg = result.Success == false ? "操作失败" : "操作成功";
+            }
+            else if(Dorlist.Count>0 && Dorlist.Count!=0)
+            {
+                result.Success = false;
+                result.Msg = sb.ToString() + "没有宿舍信息！,请核对学生数据在进行数据录入！";
+            }
+            else if(Dorlist.Count==0)
+            {
+                result.Success = false;
+                result.Msg = "这个班的这个月的保险费已录入了，请操作其他班级的！";
+            }
+
+            
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+
+        public ActionResult AddSafeView()
+        {
+            Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
+
+            string empname = Dormitory_Entity.EmployeesInfo_Entity.GetEntity(UserName.EmpNumber).EmpName;
+
+            List<SelectListItem> classlist = Dormitory_Entity.Headmaster_Entity.ListTeamleaderdistributionView().Where(h => h.HeadmasterName == empname).Select(h => new SelectListItem() { Text = h.ClassName, Value = h.ClassID.ToString() }).ToList();  //获取班主任所带的班级
+
+            //获取所带班级
+            ViewBag.tung = classlist;
+            //获取维修物品 
+            ViewBag.goodname = Dormitory_Entity.DormitoryMaintenance_Entity.GetList().Select(s => new SelectListItem() { Value = s.ID.ToString(), Text = s.Nameofarticle }).ToList();
+            return View();
+        }
         #endregion
-
-
 
         #region 财务操作
         public ActionResult FinanceIndex()
         {
+            //获取两边校区的地址
+            ViewBag.Addree= Dormitory_Entity.Tung_Entity.GetList().Where(s => s.IsDel == false).Select(s => new SelectListItem() { Text = s.TungName, Value = s.Id.ToString() }).ToList();
             return View();
         }
 
@@ -503,8 +602,64 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
             return Json(datas,JsonRequestBehavior.AllowGet);
         }
         
+        [HttpPost]
+        public ActionResult addressMoney()
+        {
+            int addressid =Convert.ToInt32(Request.Form["address"]);//宿舍地址编号
+
+            DateTime date =Convert.ToDateTime( Request.Form["date"]);//月份
+
+            decimal Money= Dormitory_Entity.MonMantainMoney(addressid, date.Year, date.Month);
+
+            return Json(Money,JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 班级结算
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult ClassJiesuan()
+        {
+            Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
+
+            AjaxResult result = new AjaxResult();
+
+            int classid=Convert.ToInt32( Request.Form["classid"]);
+
+            string sqlstr = @"select * from DormitoryDeposit where StuNumber in(
+                              select StudentID from ScheduleForTrainees where ID_ClassName="+classid+" and CurrentClass =1) and MaintainState=1";
+
+            //获取属于这个班的所有学生的维修数据
+            List<DormitoryDeposit> list=  Dormitory_Entity.GetListBySql<DormitoryDeposit>(sqlstr);
+
+            List<DormitoryDeposit> updatelist = new List<DormitoryDeposit>();
+
+            if (list.Count>0)
+            {
+                for (int i = 0; i < list.Count; i++)
+                {
+                    list[i].MaintainState = 2;
+                    list[i].SettlementStaff = UserName.EmpNumber;
+
+                    updatelist.Add(list[i]);
+                }
+
+                result.Success = Dormitory_Entity.UpdateData(updatelist);
+                result.Msg = result.Success == false ? "操作失误！" : "操作成功！";
+            }
+            else
+            {
+                result.Success = false;
+                result.Msg = "这个班级没有维修数据!";
+            }
+                     
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
         
         #endregion
+
 
     }
 }

@@ -16,8 +16,15 @@
         line-height: 20px;
         text-align: right
     }
-    .Centext{
-    text-align:center
+
+    .Centext
+    {
+        text-align: center
+    }
+
+    .DivCss2
+    {
+        margin-top: 50px;
     }
 </style>
 <form class="layui-form" lay-filter="sercherform">
@@ -28,16 +35,23 @@
                 <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
                     <label class="LableCss1">班级:</label>
                     <div class="layui-input-block">
-                        @Html.DropDownList("classNumber", ViewBag.classlist as IEnumerable<SelectListItem>,new Dictionary<string, object>() { { "class","layui-select"} })
+                        @Html.DropDownList("classNumber", ViewBag.classlist as IEnumerable<SelectListItem>, new Dictionary<string, object>())
                     </div>
                 </div>
             }
-            else if (ViewBag.number == 1 || ViewBag.number == 2)
+            else if (ViewBag.number == 1 || ViewBag.number == 3)
             {
-                <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                     <label class="LableCss1">阶段:</label>
                     <div class="layui-input-block">
-                        @Html.DropDownList("classGrand", ViewBag.grandlist as IEnumerable<SelectListItem>, new Dictionary<string, object>() { { "class", "layui-select" } ,{ "lay-filter", "Grandselect"} })
+                        @{ 
+                            var data = ViewBag.grandlist as IEnumerable<SelectListItem>;
+                            foreach (var item in data)
+                            {
+                                <input name="classGrand" id="classGrand" type="radio" lay-filter="Grandselect" value="@item.Value" title="@item.Text"/>
+                            }
+                        }
+                        
                     </div>
                 </div>
                 <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
@@ -54,10 +68,31 @@
         </div>
     </div>
 </form>
-<table  id="classstudentmoneyTable" lay-filter="classstudentmoneyTable"></table>
+<div>
+    <table id="classstudentmoneyTable" lay-filter="classstudentmoneyTable"></table>
+</div>
+
 
 <script type="text/html" id="classstudentbarDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="mantainDefault">维修详情</a>  
+    <a class="layui-btn layui-btn-xs" lay-event="mantainDefault">维修详情</a>
+</script>
+
+<script type="text/html" id="ClasstoolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="LoadExcel">Excel班级维修金额下载</button>
+        @{
+            if (ViewBag.number == 3)
+            {
+                <button class="layui-btn layui-btn-sm" lay-event="ClassJieSuanBTN">班级押金结算</button>
+            }
+            else if (ViewBag.number == 2)
+            {
+
+                <button class="layui-btn layui-btn-sm" lay-event="AddSafe">保险柜费用录入</button>
+            }
+        }
+
+    </div>
 </script>
 
 <script>
@@ -73,24 +108,18 @@
             table.render({
                 elem: '#classstudentmoneyTable'
                 , url: '/DormitoryMaintenance/DormitoryDeposit/OneData'
-                //, toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
+                , toolbar: '#ClasstoolbarDemo' //开启头部工具栏，并为其绑定左侧模板
                 , cols: [[
                     { type: 'checkbox', fixed: 'left' }
-                    , { field: 'StuName', title: '学生姓名'}
-                    , { field: 'PayMoney', title: '宿舍押金'}
-                    //, {
-                    //    field: 'email', title: '邮箱', width: 150, edit: 'text', templet: function (res) {
-                    //        return '<em>' + res.email + '</em>'
-                    //    }
-                    //}
+                    , { field: 'StuName', title: '学生姓名' }
+                    , { field: 'PayMoney', title: '宿舍押金' }
                     , { field: 'MantainMoney', title: '维修费用' }
                     , {
                         field: 'SumMoney', title: '应退费用', templet: function (res) {
-                            
-                            return res.SumMoney+"元";
+
+                            return res.SumMoney + "元";
                         }
-                    }                    
-                     
+                    }
                     , { fixed: 'right', title: '操作', toolbar: '#classstudentbarDemo', width: 150 }
                 ]]
             });
@@ -105,19 +134,19 @@
                 //        obj.del();
                 //        layer.close(index);
                 //    });
-                //} else 
+                //} else
                 if (obj.event === 'mantainDefault') {
                     layer.open({
                         type: 2,
-                        title:'维修详情',
-                        content: '/DormitoryMaintenance/DormitoryDeposit/MantainDefileView',
+                        title: '维修详情',
+                        content: '/DormitoryMaintenance/DormitoryDeposit/MantainDefileView/' + data.StuNumber,
                         area: ['1000px', '600px']
                     });
                 }
             });
 
 
-            form.on('select(Grandselect)', function (data) {                 
+            form.on('radio(Grandselect)', function (data) {
                 //console.log(data.value); //得到被选中的值
 
                 $("#classdiv")[0].innerHTML = "";
@@ -138,9 +167,93 @@
                         }
                     });
                 }
-            });    
+            });
 
+            //头工具栏事件
+            table.on('toolbar(classstudentmoneyTable)', function (obj) {
+                var checkStatus = table.checkStatus(obj.config.id);
+                switch (obj.event) {
+                    //Excel生成，下载
+                    case 'LoadExcel':
+                        var data1 = form.val("sercherform");
+                        if (data1.classNumber == "0" || data1.classNumber == undefined) {
+                            layer.msg("请选择班级！", { icon: 2, shade: 0.8 });
+                        } else {
+                            //Excel文件下载
+                            var myindex = layer.load(1);
+                            $.ajax({
+                                url: '/DormitoryMaintenance/DormitoryDeposit/ClassMoneyFuntion',
+                                data: { "classid": data1.classNumber },
+                                success: function (res) {
+                                    var mantainsum = 0;
+                                    var tuihuaisum = 0;
+                                    //列标题，逗号隔开，每一个逗号就是隔开一个单元格
+                                    let str = "押金列表" + `\n`;
+                                    str += `学生姓名\t,宿舍押金\t,维修总金额\t,应退还总金额\n`;
+                                    //增加\t为了不让表格显示科学计数法或者其他格式
+                                    for (let i = 0; i < res.data.length; i++) {
+                                        mantainsum += Number(res.data[i].MantainMoney);
+                                        tuihuaisum += Number(res.data[i].SumMoney);
+                                
+                                        str += res.data[i].StuName + '\t,' + res.data[i].PayMoney + '\t,' + res.data[i].MantainMoney + '\t,' + res.data[i].SumMoney + '\t'
+                                         
+                                        str += '\n';
+                                    }
+                                    str += '维修总金额：' + mantainsum + '元，总退还金额：' + tuihuaisum + '元';
+                                    //encodeURIComponent解决中文乱码
+                                    let uri = 'data:text/csv;charset=utf-8,\ufeff' + encodeURIComponent(str);
+                                    //通过创建a标签实现
+                                    var link = document.createElement("a");
+                                    link.href = uri;
+                                    layer.close(myindex);
+                                    //对下载的文件命名
+                                    link.download = "班级宿舍押金结算表.xls";
+                                    document.body.appendChild(link);
+                                    link.click(myindex);
+                                    document.body.removeChild(link);
+                                }
+                            });
+                        }
 
+                        break;
+                    //班级结算押金
+                    case 'ClassJieSuanBTN':
+                        layer.confirm('确定要结算吗？一旦结算就不可撤回了！', { icon: 3, title: '提示' }, function (index) {
+                            var data1 = form.val("sercherform");
+                            if (data1.classNumber == "0" || data1.classNumber == undefined) {
+                                layer.msg("请选择班级！", { icon: 2, shade: 0.8 });
+                            } else {
+                                var myindex= layer.load(1);
+                                $.ajax({
+                                    url: '/DormitoryMaintenance/DormitoryDeposit/ClassJiesuan',
+                                    data: { "classid": data1.classNumber},
+                                    type: 'POST',
+                                    success: function (res) {
+                                        layer.close(myindex);
+                                        if (res.Success == true) {
+                                            layer.msg(res.Msg, { icon: 1, shade: 0.8 });
+                                        } else {
+                                            layer.msg(res.Msg, { icon: 2, shade: 0.8 });
+                                        }
+                                    }
+                                });
+                            }
+                             
+                            layer.close(index);
+                        });
+                        break;
+
+                    //保险柜费用录入
+                    case 'AddSafe':
+                        layer.open({
+                            type: 2,
+                            title: '添加保险柜费用',
+                            content: '/DormitoryMaintenance/DormitoryDeposit/AddSafeView',
+                            area: ['800px', '500px']
+                        });
+                        break;
+                };
+            });
         });
 
 
@@ -154,17 +267,10 @@
         } else {
             table.reload('classstudentmoneyTable', {
                 url: '/DormitoryMaintenance/DormitoryDeposit/ClassMoneyFuntion'
-                , where: { "classid": data1.classNumber}  
-                
+                , where: { "classid": data1.classNumber }
+
             });
-            //$.ajax({
-            //    url: '/DormitoryMaintenance/DormitoryDeposit/ClassMoneyFuntion',
-            //    type: 'GET',
-            //    data: { "classid": data1.classNumber},
-            //    success: function (res) {
-                    
-            //    }
-            //});
+
         }
 
     }

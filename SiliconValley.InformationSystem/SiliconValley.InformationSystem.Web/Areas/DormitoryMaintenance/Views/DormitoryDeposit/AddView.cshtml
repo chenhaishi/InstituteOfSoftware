@@ -143,8 +143,14 @@
 
                 ///加载宿舍楼层
                 form.on('radio(Addree)', function (data) {
-                    $("#foordiv")[0].innerHTML = "";
-                    $("#dordiv")[0].innerHTML = "";
+                    $("#foordiv")[0].innerHTML = "";//清空楼层
+                    $("#dordiv")[0].innerHTML = "";//清空寝室
+                    $("#Studiv")[0].innerHTML = "";//清空宿舍人员
+
+                    form.val("adddataform", {  
+                        "JieType": "1"   
+                    });//类型初始化
+
                     $.ajax({
                         url: '/DormitoryMaintenance/DormitoryDeposit/GetAllFoor/' + data.value,
                         success: function (res) {
@@ -162,6 +168,10 @@
                 ///获取宿舍号
                 form.on('radio(foorrido)', function (data) {                    
                     $("#dordiv")[0].innerHTML = "";
+                    $("#Studiv")[0].innerHTML = "";//清空宿舍人员
+                    form.val("adddataform", {
+                        "JieType": "1"
+                    });//类型初始化
                     $.ajax({
                         url: '/DormitoryMaintenance/DormitoryDeposit/GetDormitory/' + data.value,
                         success: function (res) {
@@ -178,6 +188,10 @@
                 //获取选中的宿舍
                 form.on('radio(dorrido)', function (data) {
                     sushennumber = data.value;
+                    $("#Studiv")[0].innerHTML = "";//清空宿舍人员
+                    form.val("adddataform", {
+                        "JieType": "1"
+                    });//类型初始化
                 });
 
                 //获取寝室人员
@@ -253,6 +267,12 @@
                     return false;  
                 });
 
+            });
+
+            $("#btn1").click(function () {
+
+                var index = parent.layer.getFrameIndex(window.name);
+                parent.layer.close(index);
             });
         });
     </script>

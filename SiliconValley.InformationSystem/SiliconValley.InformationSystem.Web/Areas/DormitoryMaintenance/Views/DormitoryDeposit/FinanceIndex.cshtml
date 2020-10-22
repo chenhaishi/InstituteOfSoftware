@@ -34,7 +34,7 @@
 
     tr td
     {
-        width: 180px;
+        width: 230px;
         font-size: 24px;
         font-family: FangSong;
         border: 1px solid black;
@@ -49,16 +49,42 @@
 
 
 <div>
+    <form class="layui-form" lay-filter="sercherform2">
+        <div class="layui-row layui-form-item">
+            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                <label class="LableCss1">选择年月:</label>
+                <div class="layui-input-block">
+                    <input type="text" placeholder="开始时间" class="layui-input" name="yearMone" id="yearMone" />
+                </div>
+            </div>
+            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                <label class="LableCss1">选择地址:</label>
+                <div class="layui-input-block">
+                   @Html.DropDownList("Address", ViewBag.Addree as IEnumerable<SelectListItem>,new Dictionary<string, object>() { { "class","layui-select"} })
+                </div>
+            </div>
+            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                <label class="LableCss1">总金额:</label>
+                <div id="ClssTime" class="layui-input-block">
+                    <input type="text" placeholder="某个月的维修总金额" class="layui-input" id="MonMoney" readonly="readonly" />
+                </div>
+            </div>
+            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2" style="text-align:center">
+                <button type="button" class="layui-btn" onclick="SercherFuntion2()">查询</button>
+            </div>
+        </div>
+    </form>
+
     <form class="layui-form" lay-filter="sercherform">
         <div class="layui-row layui-form-item">
             <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
                 <label class="LableCss1">选择学生:</label>
                 <div class="layui-input-block">
-                    <input type="button" class="layui-btn"  value="点击选择学生" onclick="OpenView()"/>                    
+                    <input type="button" class="layui-btn" value="点击选择学生" onclick="OpenView()" />
                 </div>
             </div>
             <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
-                <input type="text" class="layui-input" id="inputname" readonly="readonly" />
+                <input type="text" class="layui-input" id="inputname" readonly="readonly" placeholder="不能输入姓名！" />
                 <input type="hidden" name="stuName" id="stuName" />
             </div>
             <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
@@ -76,8 +102,13 @@
             <div class="layui-col-xs2 layui-col-sm2 layui-col-md2" style="text-align:center">
                 <button type="button" class="layui-btn" onclick="SercherFuntion()">查询</button>
             </div>
+            <div class="layui-col-xs1 layui-col-sm1 layui-col-md1" style="text-align:center">
+                <button type="button" ></button>
+                <a href="/DormitoryMaintenance/DormitoryDeposit/ClassStudentMoneyView" class="layui-btn">班级押金结算</a>
+            </div>
         </div>
     </form>
+
 
     <table id="MantainTable"> </table>
     <div id="FarDiv"></div>
@@ -123,6 +154,14 @@
                 elem: '#endTime'
                 , trigger: 'click'
             });
+
+            laydate.render({
+                elem: '#yearMone'
+                , trigger: 'click'
+                , type: 'month'
+            });
+
+
         });
     });
 
@@ -140,6 +179,7 @@
         $("#inputname").val(value2);
     }
 
+    //获取学生维修详情
     function SercherFuntion() {
         var data1 = form.val('sercherform');
         $("#MantainTable")[0].innerHTML = "";
@@ -161,6 +201,20 @@
                 } else {
                     $('<h2 style="font-family: FangSong">未产生维修费用</h2>').appendTo($("#FarDiv"));
                 }
+            }
+        });
+    }
+
+    //获取某个月份的总维修金额
+    function SercherFuntion2() {
+        var data1 = form.val("sercherform2");
+        $.ajax({
+            url: '/DormitoryMaintenance/DormitoryDeposit/addressMoney',
+            data: { "date": data1.yearMone, "address": data1.Address },
+            type:'POST',
+            success: function (res) {
+                var moeny = res + "元";
+                $("#MonMoney").val(moeny);
             }
         });
     }
