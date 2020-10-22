@@ -691,24 +691,15 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         /// <returns></returns>
         public ActionResult ExamScoreSearch()
         {
-
-
-
             //获取所有考试
             var allExam = db_exam.AllExamination();
 
             ViewBag.Examlist = allExam;
 
+            //获取这堂考试的阶段
+
 
             return View();
-        }
-        /// <summary>
-        /// 导出excel
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult DaoChuShuJu()
-        {
-            return null;
         }
         /// <summary>
         /// 计算考试合格率
@@ -817,7 +808,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
 
         /// <summary>
-        /// 获取参加考试的班级
+        /// 获取参加考试的班级,string riqi
         /// </summary>
         /// <returns></returns>
         public ActionResult ExamJoinClass(int examid)
@@ -827,7 +818,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             try
             {
                var classlist = db_examScores.GetExamJoinClass(examid);
+                //foreach (var item in classlist)
+                //{
+                //    if () {
 
+                //    }
+                //}
                 result.ErrorCode = 200;
                 result.Data = classlist;
                 result.Msg = "";
