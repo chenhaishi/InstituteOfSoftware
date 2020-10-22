@@ -117,6 +117,7 @@
     <Compile Include="Entity\ClassStudyGroup.cs" />
     <Compile Include="Entity\ClassTeacher.cs" />
     <Compile Include="Entity\ClassTeacherKeep.cs" />
+    <Compile Include="Entity\Preferential.cs" />
     <Compile Include="Entity\ReqClient.cs" />
     <Compile Include="Entity\Consult.cs" />
     <Compile Include="Entity\ConsultTeacher.cs" />

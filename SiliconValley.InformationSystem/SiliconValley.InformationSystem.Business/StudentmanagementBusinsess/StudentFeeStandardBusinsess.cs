@@ -122,7 +122,6 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                 data = dataList
             };
             return data;
-
         }
         /// <summary>
         /// 下拉框获取价格
@@ -142,7 +141,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
         //学员费用
         BaseBusiness<StudentFeeRecord> studentfee = new BaseBusiness<StudentFeeRecord>();
         //财务人员
-        BaseBusiness<FinanceModel> finacemo = new BaseBusiness<FinanceModel>();
+        BaseBusiness<FinanceModel> finacemo = new BaseBusiness<FinanceModel>(); 
         /// <summary>
         /// 添加学员费用
         /// </summary>
@@ -420,7 +419,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
         /// </summary>
         /// <param name="studentFeeRecords">集合数据</param>
         /// <returns></returns>
-        public AjaxResult StudentPrices(List<StudentFeeRecord> studentFeeRecords, string Remarks)
+        public AjaxResult StudentPrices(List<StudentFeeRecord> studentFeeRecords, string Remarks,string Help)
         {
             string studentid = "";
             int Costitemsid = 0;
@@ -450,7 +449,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                     studentFeeRecord.Costitemsid = item.Costitemsid;
                     studentFeeRecord.Amountofmoney = item.Amountofmoney;
                     studentFeeRecord.StudenID = item.StudenID;
-                    studentFeeRecord.Remarks = Remarks;
+                    studentFeeRecord.Remarks = Remarks+Help;
                     listFeeRecord.Add(studentFeeRecord);
                 }
                 try
