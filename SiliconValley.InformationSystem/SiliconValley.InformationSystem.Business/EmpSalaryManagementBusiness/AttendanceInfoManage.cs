@@ -523,8 +523,8 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                                 atd.LeaveEarlyNum = Convert.ToInt32(leaveEarlyNum);
                                 atd.LeaveEarlyRecord = leaveEarlyRecord;
 
-                                atd.OvertTimeDuration = Convert.ToDecimal(OvertTimeDuration);
-                                atd.OvertTimeRecord = OvertTimeRecord;
+                                //atd.OvertTimeDuration = Convert.ToDecimal(OvertTimeDuration);
+                                //atd.OvertTimeRecord = OvertTimeRecord;
                                 atd.DaysoffDuration = Convert.ToDecimal(DaysoffDuration);
                                 atd.DaysoffRecord = DaysoffRecord;
                                 atd.AbsenteeismDays = Convert.ToDecimal(absenteeismDays);

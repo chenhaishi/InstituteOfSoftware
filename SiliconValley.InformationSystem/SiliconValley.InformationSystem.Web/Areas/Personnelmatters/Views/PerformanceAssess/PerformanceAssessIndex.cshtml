@@ -60,6 +60,7 @@
         <button class="layui-btn layui-btn-sm" lay-event="PutPermission"><i class="layui-icon layui-icon-addition"></i>权限赋予</button>
         <button class="layui-btn layui-btn-sm" lay-event="timeChange"><i class="layui-icon layui-icon-edit"></i>年月份改变</button>
         <button class="layui-btn layui-btn-sm" lay-event="Approved"><i class="layui-icon layui-icon-edit"></i>确认审批</button>
+        <button class="layui-btn layui-btn-sm" lay-event="Upload"><i class="layui-icon layui-icon-upload"></i>导入Excel文档</button>
     </div>
 </script>
 
@@ -157,6 +158,14 @@
                         } else {
                             layer.msg("没有数据可审批!");
                         }                       
+                        break;
+                    case 'Upload':
+                        layer.open({
+                            type: 2,
+                            title: "上传Excel文档",
+                            area: ["330px", "230px"],
+                            content: "/Personnelmatters/PerformanceAssess/AssessmentUpload"
+                        })
                         break;
                 };
             });
