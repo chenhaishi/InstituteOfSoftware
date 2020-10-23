@@ -526,6 +526,7 @@
     <Compile Include="ViewEntity\TM_Data\Print\Onbety_Print.cs" />
     <Compile Include="ViewEntity\TM_Data\StudentbeanLog.cs" />
     <Compile Include="ViewEntity\TM_Data\StudentInfoData.cs" />
+    <Compile Include="ViewEntity\TM_Data\StuSusheData.cs" />
     <Compile Include="ViewEntity\TM_Data\TeacherAddorBeonDuty.cs" />
     <Compile Include="ViewEntity\TM_Data\TM_ConsultView.cs" />
     <Compile Include="ViewEntity\TotalcostView.cs" />

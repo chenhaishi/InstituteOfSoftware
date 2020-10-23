@@ -137,7 +137,7 @@
                 else if (ViewBag.emp == 3)
                 {
                     <form class="layui-form" lay-filter="TeacherSercher">
-                        <div class="layui-row layui-form-item">                            
+                        <div class="layui-row layui-form-item">
                             <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
                                 <label class="LableCss1">开始时间:</label>
                                 <div class="layui-input-block">
@@ -165,13 +165,17 @@
 </div>
 <table id="TeacherNight_table" lay-filter="TeacherNight_table"></table>
 @{
-    if (ViewBag.emp ==1)
+    if (ViewBag.emp == 1)
     {
         <input name="emp" id="emp" type="hidden" value="是" />
     }
-    else if(ViewBag.emp ==0 || ViewBag.emp==3 || ViewBag.emp == 2)
+    else if (ViewBag.emp == 2)
     {
         <input name="emp" id="emp" type="hidden" value="否" />
+    }
+    else if (ViewBag.emp == 0 || ViewBag.emp == 3)
+    {
+        <input name="emp" id="emp" type="hidden" value="否否" />
     }
 }
 <div id="selectDate" class="DivCss2">
@@ -202,7 +206,7 @@
         </div>
     </form>
 </div>
- 
+
 <script type="text/html" id="toolbarDemo_Night">
     <div class="layui-btn-container">
         @{
@@ -223,7 +227,7 @@
         }
 
         @*<button class="layui-btn layui-btn-sm" lay-event="getCheckData_timeChange"> <i class="layui-icon">&#xe642;</i>日期更改</button>
-        <button class="layui-btn layui-btn-sm" lay-event="getCheckData_time"> <i class="layui-icon">&#xe642;</i>上课延迟或提前</button>*@
+            <button class="layui-btn layui-btn-sm" lay-event="getCheckData_time"> <i class="layui-icon">&#xe642;</i>上课延迟或提前</button>*@
     </div>
 </script>
 
@@ -330,6 +334,7 @@
         var emp = $("#emp").val();
 
         if (emp == "是") {
+            //给教务看的
             table.render({
                 elem: '#TeacherNight_table'
                 , url: '/Educational/TeacherAddorBeonDuty/Tabledata'
@@ -360,7 +365,8 @@
                 , limits: [20, 30, 40, 50, 60, 70, 80, 90]
                 , limit: 20
             });
-        } else {
+        } else if (emp == "否") {
+            //给主任看的
             table.render({
                 elem: '#TeacherNight_table'
                 , url: '/Educational/TeacherAddorBeonDuty/Tabledata'
@@ -386,6 +392,30 @@
                             }
                         }
                     }
+                ]]
+                , page: true
+                , limits: [20, 30, 40, 50, 60, 70, 80, 90]
+                , limit: 20
+            });
+        } else if (emp == "否否") {
+            //给普通员工看的
+            table.render({
+                elem: '#TeacherNight_table'
+                , url: '/Educational/TeacherAddorBeonDuty/Tabledata'
+                , toolbar: '#toolbarDemo_Night'
+                , cols: [[
+                    { type: 'checkbox' }
+                    , {
+                        field: 'Anpaidate', title: '值班日期', templet: function (res) {
+                            return MyTimeChange(res.Anpaidate);
+                        }
+                    }
+                    , { field: 'EmpName', title: '值班老师' }
+                    , { field: 'TypeName', title: '值班类型' }
+                    , { field: 'ClassNumber', title: '班级' }
+                    , { field: 'ClassroomName', title: '教室' }
+                    , { field: 'curd_name', title: '值班时间段' }
+                     
                 ]]
                 , page: true
                 , limits: [20, 30, 40, 50, 60, 70, 80, 90]
@@ -475,7 +505,7 @@
                     })
                     break;
                 case 'SysIsture':
-                    myindex= layer.open({
+                    myindex = layer.open({
                         type: 1,
                         area: ['500px', '300px'],
                         title: '系统审核数据',
