@@ -475,7 +475,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             string AuthorizationCode = "";
             //string AuthorizationCode = "zheshixiaohao0";
 
-            string msg = "";
+            string msg = ""; 
             foreach (var i in salary)
             {
                 string name = manage.GetEntity(i.EmployeeId).EmpName;
