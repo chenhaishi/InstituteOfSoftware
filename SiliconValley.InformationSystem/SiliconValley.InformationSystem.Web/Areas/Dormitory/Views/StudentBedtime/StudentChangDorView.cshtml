@@ -1,0 +1,118 @@
+﻿
+@{
+    ViewBag.Title = "StudentChangDorView";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .LableCss1
+    {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        float: left;
+        display: block;
+        padding: 9px 15px;
+        width: 80px;
+        font-weight: 400;
+        line-height: 20px;
+        text-align: right
+    }
+</style>
+<div>
+    <form class="layui-form" lay-filter="sercherform">
+        <div class="layui-row layui-form-item">
+            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                <label class="LableCss1">学生姓名:</label>
+                <div class="layui-input-block">
+                    <input type="text" placeholder="学生姓名" class="layui-input" name="stuName" id="stuName" />
+                </div>
+            </div>
+            
+            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2" style="text-align:center">
+                <button type="button" class="layui-btn" onclick="SercherFuntion()">查询</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<table id="StudentTable" lay-filter="StudentTable"></table>
+
+<script type="text/html" id="StudentbarDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="changdor">调寝</a>
+    @*<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>*@
+</script>
+
+<script>
+    var form;
+    var table;
+    var layer;
+    $(function () {
+        layui.use(['layer', 'table', 'form'], function () {
+            form = layui.form;
+            table = layui.table;
+            layer = layui.layer;
+
+
+            table.render({
+                elem: '#StudentTable'                 
+                , cols: [[
+                    { type: 'checkbox', fixed: 'left' }
+                    , { field: 'StuNumber', title: '学号', fixed: 'left' }
+                    , { field: 'StuName', title: '学生姓名'}
+                    , { field: 'ClassName', title: '班级名称' }
+                    , { field: 'TeacherName', title: '班主任' }
+                    , { field: 'DorName', title: '寝室名称' }
+                    , {
+                        field: 'ChuangNumber', title: '床位号', templet: function (res) {
+                            if (res.ChuangNumber == "-1") {
+                                return "无";
+                            } else {
+                                return res.ChuangNumber;
+                            }
+                        }
+                    }
+                     
+                    , { fixed: 'right', title: '操作', toolbar: '#StudentbarDemo', width: 150 }
+                ]]
+ 
+            });
+
+            //行事件
+            table.on('tool(StudentTable)', function (obj) {
+                var data = obj.data;
+                //console.log(obj)
+                if (obj.event === 'changdor') {
+                    layer.open({
+                        type: 2,
+                        content: ' /Dormitory/StudentBedtime/ChangDorView/' + data.StuNumber,
+                        area: ['1000px', '600px']
+                    });
+                }  
+            });
+
+        });
+
+        
+    });
+
+    function SercherFuntion() {
+        if ($("#stuName").val().length > 0) {
+            table.reload('StudentTable', {
+                url: '/Dormitory/StudentBedtime/StudentChangDorData'
+                , where: { "stuname": $("#stuName").val() }
+            });
+            //$.ajax({
+            //    url: '/Dormitory/StudentBedtime/StudentChangDorData',
+            //    data: { "stuname": $("#stuName").val() },
+            //    success: function (res) {
+
+            //    }
+            //});
+        } else {
+            layer.msg("请输入学生姓名!", { icon: 2, shade: 0.8 });
+        }
+
+    }
+
+</script>
+

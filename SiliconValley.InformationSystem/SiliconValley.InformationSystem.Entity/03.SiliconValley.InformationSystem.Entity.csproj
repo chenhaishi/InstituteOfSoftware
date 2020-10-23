@@ -501,6 +501,8 @@
     <Compile Include="ViewEntity\TeachingItem.cs" />
     <Compile Include="ViewEntity\TeamleaderdistributionView.cs" />
     <Compile Include="ViewEntity\ThearStuCommentView.cs" />
+    <Compile Include="ViewEntity\TM_Data\DorChangeStudentData.cs" />
+    <Compile Include="ViewEntity\TM_Data\DorChuang.cs" />
     <Compile Include="ViewEntity\TM_Data\EmtyClassroom.cs" />
     <Compile Include="ViewEntity\TM_Data\Laterecord.cs" />
     <Compile Include="ViewEntity\TM_Data\Laterecord_StudentAttendance.cs" />

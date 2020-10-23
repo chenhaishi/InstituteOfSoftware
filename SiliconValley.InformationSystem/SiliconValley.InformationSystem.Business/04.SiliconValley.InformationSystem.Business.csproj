@@ -131,6 +131,7 @@
     <Compile Include="DepartmentBusiness\DepartmentManage.cs" />
     <Compile Include="DormitoryBusiness\AccdationinformationBusiness.cs" />
     <Compile Include="DormitoryBusiness\BenNumberBusiness.cs" />
+    <Compile Include="DormitoryBusiness\ChangeDorStudent.cs" />
     <Compile Include="DormitoryBusiness\ConversionToViewBusiness.cs" />
     <Compile Include="DormitoryBusiness\dbacc-dbben-dbroomnumber-dbdorm.cs" />
     <Compile Include="DormitoryBusiness\dbacc-dbroomnumber.cs" />
