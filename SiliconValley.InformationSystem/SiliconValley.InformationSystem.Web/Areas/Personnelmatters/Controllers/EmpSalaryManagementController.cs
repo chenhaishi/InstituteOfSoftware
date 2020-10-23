@@ -8,6 +8,7 @@ using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 using SiliconValley.InformationSystem.Entity.ViewEntity.SalaryView;
 using SiliconValley.InformationSystem.Util;
 using SiliconValley.InformationSystem.Entity.MyEntity;
+using System.IO;
 
 namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
 {
@@ -31,7 +32,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             return mytime;
         }
         static string FirstTime = GetFirstTime();
-
         //员工工资管理页面
         // GET: Personnelmatters/EmpSalaryManagement
         public ActionResult SalaryManageIndex()
@@ -48,7 +48,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             List<MonthlySalaryRecord> eselist = new List<MonthlySalaryRecord>();
             List<MySalaryObjView> result = new List<MySalaryObjView>();
             EmployeesInfoManage empmanage = new EmployeesInfoManage();//员工信息表
-
             eselist = msrmanage.GetEmpMsrData().Where(s => s.IsDel == false).ToList();
             if (!string.IsNullOrEmpty(ymtime))
             {
@@ -136,7 +135,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                         view.LeaveDeductions = null;
                     }
                     view.TardyAndLeaveWithhold = attendobj.TardyAndLeaveWithhold;//迟到扣款
-                  //  view.LeaveWithhold = attendobj.LeaveWithhold;//早退扣款
+                                                                                 //  view.LeaveWithhold = attendobj.LeaveWithhold;//早退扣款
                     var NoClocknum = attendobj.WorkAbsentNum + attendobj.OffDutyAbsentNum;
                     if (NoClocknum > 3)
                     {
@@ -217,7 +216,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             catch (Exception ex)
             {
                 AjaxResultxx.ErrorCode = 500;
-                AjaxResultxx=msrmanage.Error(ex.Message);
+                AjaxResultxx = msrmanage.Error(ex.Message);
             }
             return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
         }
@@ -459,11 +458,39 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
 
             }
             else {
-                esemanage.GetPerformancePay(dname,pname);
+                esemanage.GetPerformancePay(dname, pname);
             }
             return resultsalary;
         }
 
+        public ActionResult PaySlipExcel()
+        {
+            AjaxResult result = new AjaxResult();
+            MonthlySalaryRecordManage monthly = new MonthlySalaryRecordManage();
+            EmployeesInfoManage manage = new EmployeesInfoManage();
+            List<MonthlySalaryRecord> salary = monthly.GetEmpMsrData();
 
-    }
+            string ToMail = "";
+            string FromMail = "";
+            string AuthorizationCode = "";
+            //string AuthorizationCode = "zheshixiaohao0";
+
+            string msg = ""; 
+            foreach (var i in salary)
+            {
+                string name = manage.GetEntity(i.EmployeeId).EmpName;
+
+               msg= monthly.ExcelToImg(i).Msg;
+
+                result = monthly.WagesDataToEmail(FromMail, ToMail, name, i.EmployeeId, AuthorizationCode);
+            }
+            result.Msg = msg;
+                return Json(result, JsonRequestBehavior.AllowGet);
+            
+        }
+            public ActionResult EmailMail()
+            {
+                return View();
+            }
+        } 
 }

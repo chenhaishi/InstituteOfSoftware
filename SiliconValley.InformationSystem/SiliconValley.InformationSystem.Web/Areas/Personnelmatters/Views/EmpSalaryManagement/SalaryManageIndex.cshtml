@@ -11,6 +11,7 @@
         <button class="layui-btn layui-btn-sm" lay-event="timeUpdate"><i class="layui-icon layui-icon-edit"></i>年月份改变</button>
         <button class="layui-btn layui-btn-sm" lay-event="Approved"><i class="layui-icon layui-icon-edit"></i>确认审批</button>
         <button class="layui-btn layui-btn-sm" lay-event="forbiddenEmp"><i class="layui-icon layui-icon-fonts-del"></i>禁用</button>
+        <button type="button" class="layui-btn layui-btn-sm" lay-event="Email"><i class="layui-icon layui-icon-release"></i>发送工资条</button>
     </div>
 </script>
 
@@ -62,22 +63,32 @@
     </form>
 </fieldset>
 <table id="salarytab" lay-filter="salarytab"></table>
+<div class="layui-hide">
+    <div class="layui-row layui-form-item">
+        <div>
+            <label class="layui-form-label">请输入邮箱授权码：</label>
+            <div class="layui-input-inline">
+                <input type="text" id="AuthorizationCode"  class="layui-input">
+            </div>
+        </div>
+        </div>
+    </div>
+    @*操作栏*@
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn  layui-btn-xs " lay-event="edit">编辑</a>
 
-@*操作栏*@
-<script type="text/html" id="barDemo">
-    <a class="layui-btn  layui-btn-xs " lay-event="edit">编辑</a>
-</script>
-@*员工在职状态*@
-<script type="text/html" id="empstate">
-    {{# if(d.EmpState==false){ }}
-    {{ d.EmpState="在职" }}
-    {{# }else{ }}
-    {{ d.EmpState="离职" }}
-    {{# } }}
-</script>
+    </script>
+    @*员工在职状态*@
+    <script type="text/html" id="empstate">
+        {{# if(d.EmpState==false){ }}
+        {{ d.EmpState="在职" }}
+        {{# }else{ }}
+        {{ d.EmpState="离职" }}
+        {{# } }}
+    </script>
 
-@section script{
-    <script>
+    @section script{
+        <script>
 
         layui.use(['table', 'layer', 'form', 'laydate', 'element'], function () {
             var table = layui.table;
@@ -165,7 +176,7 @@
                             });
                         } else {
                             layer.msg("没有数据可审批!");
-                        } 
+                        }
                         break;
                     case 'forbiddenEmp':
                         var data = checkStatus.data;
@@ -182,6 +193,33 @@
                                 delSalaryEmpinfo(data);
                             });
                         }
+                        break;
+                    case 'Email': 
+                        layer.confirm('是否要向所有员工发送工资条', { icon: 3, title: '提示' }, function (index) {
+                            layer.close(index);
+                            var index = layer.msg("正在发送邮件");
+                            //layer.open({
+                            //    title: '提示',
+                            //    content: '邮件发送成功!' + data.Msg
+                            //}); 
+                            $.ajax({
+                                url: "/Personnelmatters/EmpSalaryManagement/PaySlipExcel",
+                                type: "post",
+                                data: null,
+                                dataType: "json",
+                                contentType: "Application/json",
+                                success: function (data) {
+                                    if (data.Success) {
+                                        layer.close(index)
+                                        layer.open({
+                                            title: '提示',
+                                            content: '邮件发送成功!'
+                                        }); 
+                                    }
+                                }
+                            })
+                        });
+                    
                         break;
                 };
             });
@@ -220,7 +258,7 @@
                         }
 
                     });
-                   
+
                 }
 
             });
@@ -246,6 +284,7 @@
 
 
             });
+
 
         });
         //年月份改变
@@ -310,65 +349,65 @@
 
         }
 
-    </script>
+        </script>
 
-    @*部门与岗位的下拉框动态赋值及下拉框二级联动*@
-    <script>
-        layui.use(['form', 'upload', 'layer'], function () {
+        @*部门与岗位的下拉框动态赋值及下拉框二级联动*@
+        <script>
+            layui.use(['form', 'upload', 'layer'], function () {
 
-            var form = layui.form;
-            $.ajax({
-                url: '/Personnelmatters/EmployeesInfo/BindDeptSelect',
-                data: {},
-                dataType: "json",
-                success: function (resultData) {
-                    $("#deptid").empty();
-                    if (resultData.code == 0) {
-
-                        $("#deptid").append(new Option("请选择部门", ""));
-                        $.each(resultData.data, function (index, item) {
-                            $('#deptid').append(new Option(item.DeptName, item.DeptId));
-                        });
-                    } else {
-                        $("#deptid").append(new Option("暂无数据", ""));
-                    }
-
-                    layui.form.render("select");
-                }
-            });
-
-            //级联子项目
-            //select 监听
-            form.on('select(deptidfilter)', function (data) {
-                var value = data.value;  //select选中的值
-                console.log("选中值" + value);
+                var form = layui.form;
                 $.ajax({
-                    url: "/Personnelmatters/EmployeesInfo/BindPositionSelect",
-                    data: { deptid: value },
+                    url: '/Personnelmatters/EmployeesInfo/BindDeptSelect',
+                    data: {},
                     dataType: "json",
                     success: function (resultData) {
+                        $("#deptid").empty();
                         if (resultData.code == 0) {
-                            //清空赋值
-                            $("#PositionId").empty();
-                            console.log(resultData.data);
-                            $("#PositionId").append(new Option("请选择岗位", ""));
+
+                            $("#deptid").append(new Option("请选择部门", ""));
                             $.each(resultData.data, function (index, item) {
-                                //赋值
-                                $('#PositionId')
-                                    .append(new Option(item.PositionName, item.Pid));
+                                $('#deptid').append(new Option(item.DeptName, item.DeptId));
                             });
                         } else {
-                            $("#PositionId").append(new Option("暂无数据", ""));
+                            $("#deptid").append(new Option("暂无数据", ""));
                         }
+
                         layui.form.render("select");
                     }
                 });
-            })
-            layui.form.render("select");
 
-        });
-    </script>
+                //级联子项目
+                //select 监听
+                form.on('select(deptidfilter)', function (data) {
+                    var value = data.value;  //select选中的值
+                    console.log("选中值" + value);
+                    $.ajax({
+                        url: "/Personnelmatters/EmployeesInfo/BindPositionSelect",
+                        data: { deptid: value },
+                        dataType: "json",
+                        success: function (resultData) {
+                            if (resultData.code == 0) {
+                                //清空赋值
+                                $("#PositionId").empty();
+                                console.log(resultData.data);
+                                $("#PositionId").append(new Option("请选择岗位", ""));
+                                $.each(resultData.data, function (index, item) {
+                                    //赋值
+                                    $('#PositionId')
+                                        .append(new Option(item.PositionName, item.Pid));
+                                });
+                            } else {
+                                $("#PositionId").append(new Option("暂无数据", ""));
+                            }
+                            layui.form.render("select");
+                        }
+                    });
+                })
+                layui.form.render("select");
+
+            });
+        </script>
 
 
 
-}
+    }

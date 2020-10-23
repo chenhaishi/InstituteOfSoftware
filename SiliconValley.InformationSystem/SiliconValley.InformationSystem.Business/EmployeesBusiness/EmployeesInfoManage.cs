@@ -869,7 +869,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
             var workbook = new HSSFWorkbook();
 
             //创建工作区
-            var sheet = workbook.CreateSheet("员工信息");
+            var sheet = workbook.CreateSheet();
 
             #region 表头样式
 
@@ -1202,7 +1202,6 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
             return result;
 
         }
-
 
         /// <summary>
         /// 根据类型编号获取员工异动类型对象
