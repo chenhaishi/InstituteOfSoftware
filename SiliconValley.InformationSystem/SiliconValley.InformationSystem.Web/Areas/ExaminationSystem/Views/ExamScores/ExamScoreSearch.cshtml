@@ -20,7 +20,12 @@
         <form class="layui-form">
 
             <div class="layui-form-item">
-
+                <div class="layui-inline">
+                    <label class="layui-form-label">日期</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="date" id="date" lay-verify="date" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input"> 
+                    </div>
+                </div>
                 <div class="layui-inline">
                     <label class="layui-form-label">考试</label>
                     <div class="layui-input-inline">
@@ -35,14 +40,6 @@
                         </select>
                     </div>
                 </div>
-
-                <div class="layui-inline">
-                    <label class="layui-form-label">班级</label>
-                    <div class="layui-input-inline">
-                        <select name="classNumber" id="classnumber" lay-search=""></select>
-                    </div>
-                </div>
-
                 <div class="layui-inline">
 
                     <div class="layui-inline">
@@ -76,11 +73,18 @@
 
     <script>
         var FenShu = "";
+        layui.use(['laydate'], function () {
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#date'
+            });
+        });
         layui.use(['table', 'layer', 'form'], function () {
             var form = layui.form;
             var table = layui.table;
             var layer = layui.layer;
-
+            
+            
             table.render({
                 elem: '#ExamScores'
                 , url: '/ExaminationSystem/ExamScores/ExamScoreData'
@@ -91,7 +95,7 @@
                     , icon: 'layui-icon-tips'
                 }]
                 , id:"ExamScores"
-                , title: '用户数据表'
+                , title: '学生考试成绩表'
                 , cols: [[
                       { type: 'checkbox', fixed: 'left' }
                     , { field: 'id', title: '序号', width: 80, fixed: 'left', unresize: true, sort: true, templet: '#xuhao' }
@@ -117,8 +121,9 @@
             });
 
             form.on('select(Exam)', function (data) {
-                var value = data.value;  //select选中的值
+                var value = data.value;  //select选中的值, riqi: data.field.date
                 console.log("选中值" + value);
+                console.log(data.field.date)
                 $.ajax({
                     url: "/ExaminationSystem/ExamScores/ExamJoinClass",
                     data: { examid: value },
@@ -151,7 +156,8 @@
 
                 console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
                 console.log(data.field.Exam)
-                if (!data.field.classNumber) {
+                console.log(data.field.date)
+                   if (!data.field.classNumber) {
                     data.field.classNumber = "0";
                 }
 

@@ -698,18 +698,18 @@
                 }
 
             }, 60000);
-            var allowNum = 3; // 允许两次切屏，超过则提交
-            window.onblur = function () {
-                if (allowNum < 1) {
-                    submitTest()
-                }
-                allowNum--;
-                alert("您已切屏,剩余" + allowNum + "次自动提交试卷");
-                if (allowNum == 0) {
-                    alert("您切屏超过3次,自动交卷！");
-                    CommitAnswerSheet();
-                }
-            }
+            //var allowNum = 3; // 允许两次切屏，超过则提交
+            //window.onblur = function () {
+            //    if (allowNum < 1) {
+            //        submitTest()
+            //    }
+            //    allowNum--;
+            //    alert("您已切屏,剩余" + allowNum + "次自动提交试卷");
+            //    if (allowNum == 0) {
+            //        alert("您切屏超过3次,自动交卷！");
+            //        CommitAnswerSheet();
+            //    }
+            //}
         });
 
 

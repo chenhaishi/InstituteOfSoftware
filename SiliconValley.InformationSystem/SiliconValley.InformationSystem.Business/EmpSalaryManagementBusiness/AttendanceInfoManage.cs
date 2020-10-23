@@ -823,44 +823,48 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             return result;
         }
 
-        /// <summary>
-        /// 上/下班缺卡的异常添加
-        /// </summary>
-        /// <param name="AbsentRecord">上/下班缺卡记录</param>
-        /// <param name="empid ">员工编号</param>
-        /// <param name="year_month">年月份</param>
-        /// <returns></returns>
-        public bool AddAbsentAnormaly(string AbsentRecord, string empid, DateTime year_month)
-        {
-            bool result = false;
-            AttendanceAnormalyManage aamanage = new AttendanceAnormalyManage();
-            AttendanceAnormalyDetailsManage aadetailmanage = new AttendanceAnormalyDetailsManage();
-            try
-            {
-                if (!string.IsNullOrEmpty(AbsentRecord))
-                {
-                    string[] str = AbsentRecord.Split(';');
-                    foreach (var item in str)
-                    {
-                        string[] newstr = item.Split(',');
-                        AttendanceAnormalyDetails aadetail = new AttendanceAnormalyDetails();
-                        aadetail.AnormalyDay = newstr[0];//异常具体日期
-                        aadetail.AnormalyTypeId = aamanage.GetaaidByaaname(newstr[1]);//异常类型
-                        aadetail.EmployeeId = empid;
-                        aadetail.YearAndMonth = year_month;
-                        aadetail.IsDel = false;
-                        aadetailmanage.Insert(aadetail);
-                        result = true;
-                    }
-                }
+        //public decimal AbsentWithhold(string empid,int ) {
 
-            }
-            catch (Exception)
-            {
-                result = false;
-            }
-            return result;
-        }
+        //}
+
+        ///// <summary>
+        ///// 上/下班缺卡的异常添加
+        ///// </summary>
+        ///// <param name="AbsentRecord">上/下班缺卡记录</param>
+        ///// <param name="empid ">员工编号</param>
+        ///// <param name="year_month">年月份</param>
+        ///// <returns></returns>
+        //public bool AddAbsentAnormaly(string AbsentRecord, string empid, DateTime year_month)
+        //{
+        //    bool result = false;
+        //    AttendanceAnormalyManage aamanage = new AttendanceAnormalyManage();
+        //    AttendanceAnormalyDetailsManage aadetailmanage = new AttendanceAnormalyDetailsManage();
+        //    try
+        //    {
+        //        if (!string.IsNullOrEmpty(AbsentRecord))
+        //        {
+        //            string[] str = AbsentRecord.Split(';');
+        //            foreach (var item in str)
+        //            {
+        //                string[] newstr = item.Split(',');
+        //                AttendanceAnormalyDetails aadetail = new AttendanceAnormalyDetails();
+        //                aadetail.AnormalyDay = newstr[0];//异常具体日期
+        //                aadetail.AnormalyTypeId = aamanage.GetaaidByaaname(newstr[1]);//异常类型
+        //                aadetail.EmployeeId = empid;
+        //                aadetail.YearAndMonth = year_month;
+        //                aadetail.IsDel = false;
+        //                aadetailmanage.Insert(aadetail);
+        //                result = true;
+        //            }
+        //        }
+
+        //    }
+        //    catch (Exception)
+        //    {
+        //        result = false;
+        //    }
+        //    return result;
+        //}
 
         /// <summary>
         /// 用于考勤异常表中将'是否属实'属性改为无效时把该员工考勤的缺卡次数也进行改变

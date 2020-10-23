@@ -181,11 +181,11 @@
                     var serverTime = new Date().getTime()
                     timeinit(date, serverTime);
 
-                }
-                else {
-                    $(".sooexamName").parent().text("您暂无考试！");
-                    $("#indicator").attr("examid", "0");
+                   }
+                    else {
 
+                    $(".sooexamName").parent().text("您暂无考试！");
+                    $("#indicator").attr("examid", "0");           
                     var date = new Date();
                     timeinit(date, date);
                     //setCountdown(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds());
@@ -227,14 +227,14 @@
                     return;
 
                 }
-                //$.post("/ExaminationSystem/StudentExamSys/ContinueThExam", { examid: examid}, function (result) {
-                //    if (result.ErrorCode == 400) {
-                //        window.location.href = '/ExaminationSystem/StudentExamSys/MachineTest?examid=' + examid;
-                //    } else {
-                //        window.location.href = '/ExaminationSystem/StudentExamSys/AnswerSheet?examid=' + examid;
-                //    }
-                //})
-                window.location.href = '/ExaminationSystem/StudentExamSys/AnswerSheet?examid=' + examid;
+                $.post("/ExaminationSystem/StudentExamSys/ContinueThExam", { examid: examid}, function (result) {
+                    if (result.ErrorCode == 400) {
+                        window.location.href = '/ExaminationSystem/StudentExamSys/MachineTest?examid=' + examid;
+                    } else {
+                        window.location.href = '/ExaminationSystem/StudentExamSys/AnswerSheet?examid=' + examid;
+                    }
+                })
+                //window.location.href = '/ExaminationSystem/StudentExamSys/AnswerSheet?examid=' + examid;
 
             });
             //返回
