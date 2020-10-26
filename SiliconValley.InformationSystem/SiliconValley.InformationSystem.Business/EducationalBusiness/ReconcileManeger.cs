@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Data.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -2729,7 +2730,28 @@ Curriculum_Id like '职素' or Curriculum_Id like '班会' or Curriculum_Id like
 
             return number;
         }
-        
+
+        /// <summary>
+        /// 获取xx教员XX年XX月带班个数
+        /// </summary>
+        /// <param name="year">年</param>
+        /// <param name="month">月</param>
+        /// <param name="empname">教员</param>
+        /// <returns></returns>
+        public int GetDaiClassNumber(int year, int month, string empname)
+        {
+            string sqlstr = @"select * from Reconcile WHERE EmployeesInfo_Id='"+empname+"' and YEAR(AnPaiDate)='" + year + "' and MONTH(AnPaiDate)='"+ month + "'";
+
+            List<Reconcile> listrecon= this.GetListBySql<Reconcile>(sqlstr);
+
+            var result =( from l in listrecon
+                         group l by l.ClassSchedule_Id
+                         into data
+                         select data).ToList();
+
+            
+            return result.Count;
+        }
         #endregion
 
         #region 给教质提供的数据查询
@@ -2749,6 +2771,9 @@ Curriculum_Id like '职素' or Curriculum_Id like '班会' or Curriculum_Id like
             return count > 0 ? true : false;
         }
 
+
+
+         
         #endregion
 
 

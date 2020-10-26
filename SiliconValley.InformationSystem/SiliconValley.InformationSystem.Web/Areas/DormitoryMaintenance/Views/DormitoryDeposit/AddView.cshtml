@@ -136,7 +136,14 @@
                     elem: '#mantinDate'
                     , trigger: 'click'
                     , done: function (value, date, endDate) {
-                        mydate=value;                         
+                        mydate = value; 
+                        $("#dordiv")[0].innerHTML = "";//清空寝室
+                        $("#Studiv")[0].innerHTML = "";//清空宿舍人员
+
+                        form.val("adddataform", {
+                            "JieType": "1"
+                        });//类型初始化
+
                     }
                 });
 
