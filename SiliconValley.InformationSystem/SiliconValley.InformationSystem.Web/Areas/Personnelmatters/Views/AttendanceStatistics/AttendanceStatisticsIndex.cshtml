@@ -8,6 +8,7 @@
     <div class="layui-btn-container">
         <button class="layui-btn layui-btn-sm" lay-event="InportTime"><i class="layui-icon layui-icon-upload-drag"></i>打卡时间导入</button>
         <button class="layui-btn layui-btn-sm" lay-event="BatchImport"><i class="layui-icon layui-icon-upload-drag"></i>excel考勤导入</button>
+        <button class="layui-btn layui-btn-sm" lay-event="OvertimeRecordImport"><i class="layui-icon layui-icon-upload-drag"></i>excel加班记录导入</button>
         @*<button class="layui-btn layui-btn-sm" lay-event="BatchAdd"><i class="layui-icon layui-icon-addition"></i>批量添加</button>*@
         <button class="layui-btn layui-btn-sm" lay-event="timeanddaysChange"><i class="layui-icon layui-icon-search"></i>查看记录</button>
         <button class="layui-btn layui-btn-sm" lay-event="Approved"><i class="layui-icon layui-icon-edit"></i>确认审批</button>
@@ -143,6 +144,8 @@
                     case 'BatchImport':
                         BatchImport();
                         break;
+                    case 'OvertimeRecordImport':
+                        OvertimeRecordImport();
                     case 'BatchAdd':
                         BatchAdd();
                         break;
@@ -290,6 +293,20 @@
                     , area: ["700px", "600px"]
                     , title: "批量导入"
                     , content: '/Personnelmatters/AttendanceStatistics/BatchImport'
+                    , anim: 2
+                });
+            })
+
+        }
+
+        function OvertimeRecordImport() {
+            layui.use(['layer'], function (args) {
+                var layer = layui.layer;      //layui对象
+                layer.open({
+                    type: 2
+                    , area: ["700px", "600px"]
+                    , title: "加班记录导入"
+                    , content: '/Personnelmatters/AttendanceStatistics/OvertimeRecordImport'
                     , anim: 2
                 });
             })
