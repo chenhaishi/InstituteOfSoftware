@@ -538,6 +538,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                                 //atd.LeaveWithhold = item.LeaveWithhold;
                                 atd.AbsenteeismWithhold = GetAbsenteeismWithhold(emp.EmployeeId, Convert.ToDouble(atd.WorkAbsentNum + atd.NoonAbsentNum + atd.OffDutyAbsentNum));
                                 atd.TardyAndLeaveWithhold = TardyWithhold(emp.EmployeeId,Convert.ToInt32(atd.TardyNum+atd.LeaveEarlyNum),atd.TardyRecord,atd.LeaveEarlyRecord);
+                                atd.AbsentNumWithhold = AbsentWithhold(emp.EmployeeId,(int)(atd.WorkAbsentNum+atd.OffDutyAbsentNum+atd.NoonAbsentNum));
                                 atd.Remark = Remark;
                                 atd.IsDel = false;
                                 atd.IsApproval = false;
@@ -823,57 +824,49 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             return result;
         }
 
-        //public decimal AbsentWithhold(string empid,int ) {
-
-        //}
-
-        ///// <summary>
-        ///// 上/下班缺卡的异常添加
-        ///// </summary>
-        ///// <param name="AbsentRecord">上/下班缺卡记录</param>
-        ///// <param name="empid ">员工编号</param>
-        ///// <param name="year_month">年月份</param>
-        ///// <returns></returns>
-        //public bool AddAbsentAnormaly(string AbsentRecord, string empid, DateTime year_month)
-        //{
-        //    bool result = false;
-        //    AttendanceAnormalyManage aamanage = new AttendanceAnormalyManage();
-        //    AttendanceAnormalyDetailsManage aadetailmanage = new AttendanceAnormalyDetailsManage();
-        //    try
-        //    {
-        //        if (!string.IsNullOrEmpty(AbsentRecord))
-        //        {
-        //            string[] str = AbsentRecord.Split(';');
-        //            foreach (var item in str)
-        //            {
-        //                string[] newstr = item.Split(',');
-        //                AttendanceAnormalyDetails aadetail = new AttendanceAnormalyDetails();
-        //                aadetail.AnormalyDay = newstr[0];//异常具体日期
-        //                aadetail.AnormalyTypeId = aamanage.GetaaidByaaname(newstr[1]);//异常类型
-        //                aadetail.EmployeeId = empid;
-        //                aadetail.YearAndMonth = year_month;
-        //                aadetail.IsDel = false;
-        //                aadetailmanage.Insert(aadetail);
-        //                result = true;
-        //            }
-        //        }
-
-        //    }
-        //    catch (Exception)
-        //    {
-        //        result = false;
-        //    }
-        //    return result;
-        //}
-
         /// <summary>
-        /// 用于考勤异常表中将'是否属实'属性改为无效时把该员工考勤的缺卡次数也进行改变
+        /// 计算缺卡扣费
         /// </summary>
         /// <param name="empid"></param>
-        /// <param name="year_month"></param>
-        /// <param name="aatypeid"></param>
+        /// <param name="AbsentNum">总缺卡次数</param>
         /// <returns></returns>
-        public AjaxResult AbsentNumChange(string empid, DateTime year_month, int aatypeid)
+        public decimal AbsentWithhold(string empid,int AbsentNum)
+        {
+            decimal result=0;
+            EmployeesInfoManage empmanage = new EmployeesInfoManage();
+            var emprank = empmanage.JudgeEmpType(empid);//1代表校长；2代表副校长；3代表主任；4代表普通员工
+            if (AbsentNum>3) {
+                    if (emprank == 1)
+                    {
+                        result = 200;
+                    }
+                    else if (emprank == 2)
+                    {
+                        result = 150;
+                    }
+                    else if (emprank == 3)
+                    {
+                        result = 100;
+                    }
+                    else if (emprank == 4)
+                    {
+                        result = 50;
+                    }
+              
+            }
+            return result;
+        }
+
+
+
+            /// <summary>
+            /// 用于考勤异常表中将'是否属实'属性改为无效时把该员工考勤的缺卡次数也进行改变
+            /// </summary>
+            /// <param name="empid"></param>
+            /// <param name="year_month"></param>
+            /// <param name="aatypeid"></param>
+            /// <returns></returns>
+            public AjaxResult AbsentNumChange(string empid, DateTime year_month, int aatypeid)
         {
             AttendanceAnormalyManage aamanage = new AttendanceAnormalyManage();
             var ajaxresult = new AjaxResult();

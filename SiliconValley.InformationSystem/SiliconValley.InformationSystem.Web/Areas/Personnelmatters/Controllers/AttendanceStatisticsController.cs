@@ -11,7 +11,7 @@ using System.Data;
 using System.Text;
 using System.IO;
 using SiliconValley.InformationSystem.Business.Base_SysManage;
-
+using SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBusiness;
 namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
 {
     public class AttendanceStatisticsController : Controller
@@ -62,7 +62,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 string deptname = str[1];
                 string pname = str[2];
                 string empstate = str[3];
-
                 attlist = attlist.Where(e => empmanage.GetInfoByEmpID(e.EmployeeId).EmpName.Contains(ename)).ToList();
                 if (!string.IsNullOrEmpty(deptname))
                 {
@@ -239,7 +238,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             return View();
         }
         /// <summary>
-        /// 批量录入(excel导入)
+        /// 批量录入(excel导入)考勤数据
         /// </summary>
         /// <param name="excelfile"></param>
         /// <returns></returns>
@@ -266,6 +265,14 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             string rr = Server.MapPath("/uploadXLSXfile/Template/AttendenceTemplate.xlsx");  //获取下载文件的路径         
             FileStream stream = new FileStream(rr, FileMode.Open);
             return File(stream, "application/octet-stream", Server.UrlEncode("ExcleTemplate.xls"));
+        }
+
+
+        public ActionResult OvertimeRecordImport(HttpPostedFileBase excelfile) {
+            Stream filestream = excelfile.InputStream;
+            OvertimeRecordManage otrmanage = new OvertimeRecordManage();
+            var result = otrmanage.ImportDataFormExcel(filestream, excelfile.ContentType);
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
 

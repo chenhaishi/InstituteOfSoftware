@@ -416,6 +416,7 @@
     <Compile Include="ViewEntity\LoadTree_ZhurenView.cs" />
     <Compile Include="ViewEntity\MessagenotificationView.cs" />
     <Compile Include="ViewEntity\NetClientRecordView.cs" />
+    <Compile Include="ViewEntity\OvertimeRecordErrorDataView.cs" />
     <Compile Include="ViewEntity\PutStudentDataView.cs" />
     <Compile Include="ViewEntity\RecruitPhoneTraceView.cs" />
     <Compile Include="ViewEntity\Refunditemsview.cs" />
