@@ -21,6 +21,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         public int Id { get; set; }
         //员工编号
         public string EmployeeId { get; set; }
+        public Nullable<System.DateTime> YearAndMonth { get; set; }//年月份
         //开始时间
         public Nullable<System.DateTime> StartTime { get; set; }
         //结束时间
