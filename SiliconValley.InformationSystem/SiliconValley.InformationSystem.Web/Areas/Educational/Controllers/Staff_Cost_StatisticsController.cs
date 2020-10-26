@@ -194,7 +194,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                     Position position = db_staf_Cost.GetPositionByEmp(Emp_List[i].EmployeeId);
                     if (concile_List.Count == 1 && position.PositionName=="教学主任")
                     {
-                        int ClassCount = Reconcile_Entity.GetTeacherJieshu(dt.Year,dt.Month,Emp_List[i].EmployeeId);
+                        //int ClassCount = Reconcile_Entity.GetTeacherJieshu(dt.Year,dt.Month,Emp_List[i].EmployeeId);
 
                         Teacher teacher = TeacherBusiness_Entity.GetList().FirstOrDefault(s=>s.EmployeeId==Emp_List[i].EmployeeId);
                     }
