@@ -93,7 +93,8 @@
                         type: "post",
                         data: { "name": data.field.Nameofarticle },
                         success: function (res) {
-                            if (res == true) {
+                            console.log(res);
+                            if (res == "True") {
                                 layer.msg("此物品已存在");
                             } else {
                                 $.ajax({
