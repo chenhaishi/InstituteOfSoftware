@@ -368,6 +368,7 @@
     <Content Include="Areas\Courseware\images\timg.jpg" />
     <Content Include="Areas\Courseware\images\wen.jpg" />
     <Content Include="Areas\Courseware\images\wenjin.jpg" />
+    <Content Include="Areas\DormitoryMaintenance\Views\DormitoryDeposit\AddSafeView.cshtml" />
     <Content Include="Areas\Dormitory\Script\operationdormxml.js" />
     <Content Include="Areas\ExaminationSystem\config\InvigilatorConfig.xml">
       <SubType>Designer</SubType>
@@ -1934,7 +1935,6 @@
     <Content Include="Areas\DormitoryMaintenance\Views\DormitoryDeposit\StudentinfomatuonView.cshtml" />
     <Content Include="Areas\DormitoryMaintenance\Views\DormitoryDeposit\ClassStudentMoneyView.cshtml" />
     <Content Include="Areas\DormitoryMaintenance\Views\DormitoryDeposit\MantainDefileView.cshtml" />
-    <Content Include="Areas\DormitoryMaintenance\Views\DormitoryDeposit\AddSafeView.cshtml" />
     <Content Include="Areas\Dormitory\Views\StudentBedtime\StudentChangDorView.cshtml" />
     <Content Include="Areas\Dormitory\Views\StudentBedtime\ChangDorView.cshtml" />
     <Content Include="Areas\DormitoryMaintenance\Views\DormitoryMantainPrice\EditDormitoryMantainPriceView.cshtml" />
