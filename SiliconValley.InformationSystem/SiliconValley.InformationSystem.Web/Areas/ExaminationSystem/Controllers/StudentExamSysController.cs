@@ -149,7 +149,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 {
                     var scores = db_examScores.StuExamScores(examview.ID, studentNumber);
                     //判断如果选择题的分数不等于空，那么就默认他考试结束
-                    if (candidateinfo.ComputerPaper == "1")
+                    if (candidateinfo.ComputerPaper == "1" || candidateinfo.ComputerPaper == null && candidateinfo.Paper ==null)
                     {
                         result.Data = examview;
                         result.Msg = "考试继续";
