@@ -184,6 +184,19 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
 
 
         /// <summary>
+        /// 筛选出部门为教质，教学，信息部
+        /// </summary>
+        /// <returns></returns>
+        public List<EmployeesInfo> GetEmpByDeptName()
+        {
+            return this.GetAll().Where(s =>
+            this.GetDeptByPid(s.PositionId).DeptName.Contains("教学部") ||
+            this.GetDeptByPid(s.PositionId).DeptName.Contains("教质部") ||
+            this.GetDeptByPid(s.PositionId).DeptName.Contains("信息部")
+            ).ToList();
+        }
+
+        /// <summary>
         /// 渠道
         /// </summary>
         private ChannelStaffBusiness dbchannel;

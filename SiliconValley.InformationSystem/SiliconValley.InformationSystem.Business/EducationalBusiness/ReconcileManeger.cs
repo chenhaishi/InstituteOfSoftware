@@ -2729,7 +2729,28 @@ Curriculum_Id like '职素' or Curriculum_Id like '班会' or Curriculum_Id like
 
             return number;
         }
-        
+
+        public int GetTeacherJieshu(int year, int month, string empname)
+        {
+            string sqlstr = @"select * from Reconcile where YEAR(AnPaiDate)='" + year + "' and MONTH(AnPaiDate)='" + month + "' and EmployeesInfo_Id='" + empname + "' and Curriculum_Id='" + currName + "'";
+
+            List<Reconcile> list = this.GetListBySql<Reconcile>(sqlstr);
+
+            int number = 0;
+
+            foreach (Reconcile item in list)
+            {
+                if (item.Curse_Id.Contains("12") || item.Curse_Id.Contains("34"))
+                {
+                    number += 2;
+                }
+                else
+                {
+                    number += 4;
+                }
+            }
+            return number;
+        }
         #endregion
 
         #region 给教质提供的数据查询
