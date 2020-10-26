@@ -13,10 +13,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 {
     using System.IO;
     using System.Text;
+    using System.Xml;
     using Newtonsoft.Json;
     using SiliconValley.InformationSystem.Business.Cloudstorage_Business;
+    using SiliconValley.InformationSystem.Business.CourseSyllabusBusiness;
     using SiliconValley.InformationSystem.Business.StudentBusiness;
     using SiliconValley.InformationSystem.Business.TeachingDepBusiness;
+    using SiliconValley.InformationSystem.Entity.ViewEntity.zhongyike;
 
     /// <summary>
     /// 学员成绩控制器
@@ -38,6 +41,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         private readonly AnswerQuestionBusiness db_answerQuestion;
 
         private readonly StudentInformationBusiness db_student;
+        private readonly CourseBusiness db_course;
 
         public ExamScoresController()
         {
@@ -46,6 +50,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             db_stuExam = new StudentExamBusiness();
             db_answerQuestion = new AnswerQuestionBusiness();
             db_student = new StudentInformationBusiness();
+            db_course =  new CourseBusiness();
         }
 
         public ActionResult Index()
@@ -692,9 +697,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         public ActionResult ExamScoreSearch()
         {
             //获取所有考试
-            var allExam = db_exam.AllExamination();
+            //var allExam = db_exam.AllExamination();
 
-            ViewBag.Examlist = allExam;
+            //ViewBag.Examlist = allExam;
 
             //获取这堂考试的阶段
 
@@ -808,16 +813,44 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
 
         /// <summary>
-        /// 获取参加考试的班级,string riqi
+        /// 获取这个时间段参加考试的考试
         /// </summary>
-        /// <returns></returns>
-        public ActionResult ExamJoinClass(int examid)
+        /// <returns>riqi</returns>日期
+        public ActionResult ExamJoinClass(string riqi)
         {
             AjaxResult result = new AjaxResult();
+            //var list = new List<Examination>();
 
+            List<MyExamCurren> mylist = new List<MyExamCurren>();
+            MyExamCurren mydata = new MyExamCurren();
             try
             {
-               var classlist = db_examScores.GetExamJoinClass(examid);
+               
+                var exam = db_exam.GetList().ToList();
+                
+                foreach (Examination item in exam)
+                {
+                   
+                   int year= item.BeginDate.Year;
+                   int month = item.BeginDate.Month;
+                   int day = item.BeginDate.Day;
+                   XmlElement xmlelm = db_exam.ExamCourseConfigRead(item.ID);
+
+                   int courseid = int.Parse(xmlelm.FirstChild.Attributes["id"].Value);
+                   var KeCheng = db_course.GetCurriculas().Where(d => d.CurriculumID == courseid).SingleOrDefault().CourseName;
+                                    
+                   string mm = year + "-" + month + "-" + day;
+
+                    if (riqi == mm)
+                    {
+                        mydata.CurreName = KeCheng;
+                        mydata.Title = item.Title;
+                        mydata.ID = item.ID;
+                        mylist.Add(mydata);
+                    }
+
+
+                }
                 //foreach (var item in classlist)
                 //{
                 //    if () {
@@ -825,7 +858,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 //    }
                 //}
                 result.ErrorCode = 200;
-                result.Data = classlist;
+                result.Data = mylist;
                 result.Msg = "";
             }
             catch (Exception ex)

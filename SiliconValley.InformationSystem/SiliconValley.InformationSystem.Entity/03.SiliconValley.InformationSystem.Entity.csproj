@@ -526,6 +526,7 @@
     <Compile Include="ViewEntity\vierprice.cs" />
     <Compile Include="ViewEntity\XYK_Data\Grand_SUM.cs" />
     <Compile Include="ViewEntity\XYK_Data\Student .cs" />
+    <Compile Include="ViewEntity\zhongyike\MyExamCurren.cs" />
     <Compile Include="ViewEntity\ZhuanghuanluData.cs" />
     <Compile Include="ZhuceShowData.cs" />
   </ItemGroup>
