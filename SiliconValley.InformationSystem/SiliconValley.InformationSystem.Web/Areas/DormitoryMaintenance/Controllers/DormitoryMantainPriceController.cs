@@ -128,8 +128,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
         {
             bool flag = false;
             List<Pricedormitoryarticles> price_list = PricedorGood_Entity.GetList();
-            var temp = price_list.Where(s=>s.Nameofarticle == name);
-            if (temp != null)
+            var temp = price_list.Where(s=>s.Nameofarticle == name).Count();
+            if (temp>0)
             {
                 flag = true;
             }

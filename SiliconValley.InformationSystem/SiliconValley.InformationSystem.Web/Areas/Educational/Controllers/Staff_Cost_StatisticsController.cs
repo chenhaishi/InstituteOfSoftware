@@ -3,11 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-/// <summary>
-/// ////////////////////////
-/// </summary>
-/// 
-
 using SiliconValley.InformationSystem.Business.EducationalBusiness;
 using SiliconValley.InformationSystem.Entity.MyEntity;
 using SiliconValley.InformationSystem.Util;
@@ -15,14 +10,20 @@ using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 using SiliconValley.InformationSystem.Entity.ViewEntity;
 using System.IO;
 using SiliconValley.InformationSystem.Business.Cloudstorage_Business;
+using SiliconValley.InformationSystem.Business.TeachingDepBusiness;
 
 namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 {
     public class Staff_Cost_StatisticsController : Controller
     {
-
-        private Staff_Cost_StatisticssBusiness db_staf_Cost;
-
+        //员工费用统计业务类
+        private Staff_Cost_StatisticssBusiness db_staf_Cost =new Staff_Cost_StatisticssBusiness ();
+        //员工业务类
+        public EmployeesInfoManage EmployeesInfoManage_Entity;
+        //排课业务类
+        public ReconcileManeger Reconcile_Entity = new ReconcileManeger ();
+        //教员业务类
+        public TeacherBusiness TeacherBusiness_Entity = new TeacherBusiness();
 
         public Staff_Cost_StatisticsController()
         {
@@ -40,7 +41,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
             var deps = db_staf_Cost.GetDepartments();
 
-            ViewBag.Deps = deps;
+            ViewBag.deps = deps;
 
             return View();
         }
@@ -153,8 +154,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             
             return Json(result, JsonRequestBehavior.AllowGet);
         }
-
-
+        
         /// <summary>
         /// 生成费用统计数
         /// </summary>
@@ -163,7 +163,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         {
             var deps = db_staf_Cost.GetDepartments();
 
-            ViewBag.Deps = deps;
+            ViewBag.deps = deps;
             return View();
         }
 
@@ -172,53 +172,34 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult CostStatistics(string date, int workingDays)
+        public ActionResult CostStatistics(string date, int DeptID)
         {
 
             AjaxResult resultObj = new AjaxResult();
 
             try
             {
-                EmployeesInfoManage tempdb_emp = new EmployeesInfoManage();
-                //获取所以员工信息
-                var list = tempdb_emp.GetAll();
+                DateTime dt = Convert.ToDateTime(date.Substring(0, 4) + "-" + date.Substring(4, 2) + "-" + date.Substring(6, 2));
 
-                List<Cose_StatisticsItems> result = new List<Cose_StatisticsItems>();
+                //根据部门生成费用
+                List<EmployeesInfo> Emp_List = EmployeesInfoManage_Entity.GetEmpsByDeptid(DeptID);
 
-                List<Staff_Cost_StatisticesDetailView> detaillist = new List<Staff_Cost_StatisticesDetailView>();
-                foreach (var item in list)
+                for (int i = 0; i < Emp_List.Count; i++)
                 {
-                 
-                    try
+                    //带班数量
+                    string sqlstr = "select ClassSchedule_Id from Reconcile  where Year(AnPaiDate)='"+dt.Year+"' " +
+                        " and Month(AnPaiDate) = '"+dt.Month+"' and EmployeesInfo_Id = '"+Emp_List[i].EmployeeId+"'" +
+                        " group by ClassSchedule_Id";
+                    List<Reconcile> concile_List = Reconcile_Entity.GetListBySql<Reconcile>(sqlstr);
+                    Position position = db_staf_Cost.GetPositionByEmp(Emp_List[i].EmployeeId);
+                    if (concile_List.Count == 1 && position.PositionName=="教学主任")
                     {
-                        var data = db_staf_Cost.Staff_CostData(item.EmployeeId, DateTime.Parse(date), workingDays);
+                        int ClassCount = Reconcile_Entity.GetTeacherJieshu(dt.Year,dt.Month,Emp_List[i].EmployeeId);
 
-                        var obj = db_staf_Cost.Statistics_Cost(data);
-
-                        result.Add(obj);
-
-                        detaillist.Add(data);
+                        Teacher teacher = TeacherBusiness_Entity.GetList().FirstOrDefault(s=>s.EmployeeId==Emp_List[i].EmployeeId);
                     }
-                    catch (Exception ex)
-                    {
 
-
-                        //emp = item.emp;
-                    }
-                   
                 }
-
-                string Detailfilename = DateTime.Parse(date).Year + "-" + DateTime.Parse(date).Month + "费用统计明细表";
-
-                db_staf_Cost.SaveStaff_CostData(detaillist, result, Detailfilename);
-                //保存到文件 
-                string filename = DateTime.Parse(date).Year + "-" + DateTime.Parse(date).Month+"费用统计表";
-
-                db_staf_Cost.SaveToExcel(result, filename);
-
-                resultObj.ErrorCode = 200;
-                resultObj.Msg = "成功";
-                resultObj.Data = result;
 
             }
             catch (Exception ex)
@@ -351,6 +332,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
             return Json(obj, JsonRequestBehavior.AllowGet);
 
+        }
+
+
+        public ActionResult Emp_Cost_Statististics(string data)
+        {
+            return View();
         }
     }
 }
