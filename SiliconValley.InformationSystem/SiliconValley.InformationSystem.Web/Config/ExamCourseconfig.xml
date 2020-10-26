@@ -51,4 +51,10 @@
   <exam id="4035">
     <course id="26" />
   </exam>
+  <exam id="4036">
+    <course id="111" />
+  </exam>
+  <exam id="4037">
+    <course id="26" />
+  </exam>
 </root>
