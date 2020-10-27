@@ -1938,6 +1938,7 @@
     <Content Include="Areas\Dormitory\Views\StudentBedtime\StudentChangDorView.cshtml" />
     <Content Include="Areas\Dormitory\Views\StudentBedtime\ChangDorView.cshtml" />
     <Content Include="Areas\DormitoryMaintenance\Views\DormitoryMantainPrice\EditDormitoryMantainPriceView.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\AttendanceStatistics\OvertimeRecordImport.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
@@ -3638,6 +3639,7 @@
     <Content Include="uploadXLSXfile\Zhiban\班主任值班模板.xlsx" />
     <Content Include="uploadXLSXfile\Template\AttendenceTemplate.xlsx" />
     <Content Include="uploadXLSXfile\Template\班主任值班模板.xlsx" />
+    <Content Include="uploadXLSXfile\Template\OvertimeTemplate.xlsx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
