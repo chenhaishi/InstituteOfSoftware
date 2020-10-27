@@ -24,6 +24,8 @@ namespace SiliconValley.InformationSystem.Entity.Entity
         ///  寝室号
         /// </summary>
         public int DormId { get; set; }
+
+        public int ChuangNumber { get; set; }
         /// <summary>
         /// 学号
         /// </summary>

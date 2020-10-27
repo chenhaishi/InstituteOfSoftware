@@ -300,5 +300,26 @@ namespace SiliconValley.InformationSystem.Business.DormitoryMantainBusiness
             }
             return SumMoney;
         }
+
+        /// <summary>
+        /// 获取这个学生目前所在班级
+        /// </summary>
+        /// <param name="stuNumber"></param>
+        /// <returns></returns>
+        public string GetClass(string stuNumber)
+        {
+            string sqlstr = "select * from ScheduleForTrainees where  CurrentClass=1 and StudentID='"+ stuNumber + "'";
+
+            List<ScheduleForTrainees> list= this.GetListBySql<ScheduleForTrainees>(sqlstr);
+
+            if (list.Count>0)
+            {
+                return list[0].ClassID;
+            }
+            else
+            {
+                return "无数据";
+            }
+        }
     }
 }

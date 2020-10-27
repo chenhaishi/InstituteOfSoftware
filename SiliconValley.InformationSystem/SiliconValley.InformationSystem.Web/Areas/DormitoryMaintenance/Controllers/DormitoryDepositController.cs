@@ -49,6 +49,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
                 Nameofarticle = Dormitory_Entity.DormitoryMaintenance_Entity.GetEntity(l.MaintainGood).Nameofarticle,//物品名称
                 MaintainState = l.MaintainState,
                 stuName = Dormitory_Entity.StudentInformation_Entity.GetEntity(l.StuNumber).Name,
+                ChuangNumber=l.ChuangNumber,//床位号
+                ClassName = Dormitory_Entity.GetClass(l.StuNumber)
             }).ToList();
 
             var jsondata = new { count = listall.Count, code = 0, data = data };
@@ -87,6 +89,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
                 Nameofarticle = Dormitory_Entity.DormitoryMaintenance_Entity.GetEntity(l.MaintainGood).Nameofarticle,//物品名称
                 MaintainState = l.MaintainState,
                 stuName = Dormitory_Entity.StudentInformation_Entity.GetEntity(l.StuNumber).Name,
+                ChuangNumber = l.ChuangNumber,
+                ClassName= Dormitory_Entity.GetClass(l.StuNumber)
             }).ToList();
 
 
@@ -236,7 +240,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
                         dormitory.Maintain = mantinDate;
                         dormitory.MaintainGood = weixiugood;
                         dormitory.MaintainState = 1;
-                        dormitory.StuNumber = stu.StudentNumber;                        
+                        dormitory.StuNumber = stu.StudentNumber;
+                        dormitory.ChuangNumber = list.Where(l => l.Studentnumber == stu.StudentNumber).FirstOrDefault().BedId;
                         Dormlist.Add(dormitory);
                     }
 
