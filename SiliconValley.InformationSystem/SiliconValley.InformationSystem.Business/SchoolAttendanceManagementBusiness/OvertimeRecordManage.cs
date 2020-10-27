@@ -76,17 +76,17 @@ namespace SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBus
                     //加班人[1]
                     string name = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(1))) ? null : getrow.GetCell(1).ToString();
                     //开始时间[2]
-                    string begintime = getrow.GetCell(2).ToString();
+                    string begintime = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(2))) ? null: getrow.GetCell(2).ToString();
                     //结束时间[3]
-                    string endtime = getrow.GetCell(3).ToString();
+                    string endtime = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(3))) ? null : getrow.GetCell(3).ToString();
                     //时长（h）[4]
                     string duration = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(4))) ? null : getrow.GetCell(4).ToString();
                     //加班原因[5]
-                    string overtimereason = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(4))) ? null : getrow.GetCell(4).ToString();
+                    string overtimereason = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(5))) ? null : getrow.GetCell(5).ToString();
                     //是否调休[6]
-                    string Isdayoff = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(4))) ? null : getrow.GetCell(4).ToString();
+                    string Isdayoff = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(6))) ? "是" : getrow.GetCell(6).ToString();
                     //加班类型[7]
-                    string overtimetype = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(4))) ? null : getrow.GetCell(4).ToString();
+                    string overtimetype = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(7))) ? "1" : getrow.GetCell(7).ToString();
                     #endregion
 
                     string year_month = time;
@@ -121,14 +121,37 @@ namespace SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBus
                                 var emp = empmanage.GetEmpByDDid(Convert.ToInt32(ddid));
 
                                 otr.EmployeeId = emp.EmployeeId;
-                                otr.YearAndMonth = Convert.ToDateTime(year_month);
-                                otr.StartTime = Convert.ToDateTime(begintime);
-                                otr.EndTime = Convert.ToDateTime(endtime);
+                                if (!string.IsNullOrEmpty(year_month))
+                                {
+                                    otr.YearAndMonth = Convert.ToDateTime(year_month);
+                                }
+                                if(!string.IsNullOrEmpty(begintime)){
+                                    otr.StartTime= Convert.ToDateTime(begintime);
+                                }
+                                if (!string.IsNullOrEmpty(endtime))
+                                {
+                                    otr.EndTime = Convert.ToDateTime(endtime);
+                                }
                                 otr.Duration = Convert.ToDecimal(duration);
                                 otr.OvertimeReason = overtimereason;
-                                otr.IsNoDaysOff =Convert.ToBoolean(Isdayoff);
-                                otr.OvertimeTypeId =Convert.ToInt32(overtimetype);
+                                if (Isdayoff == "是")
+                                {
+                                    otr.IsNoDaysOff = true;
+                                }
+                                else
+                                {
+                                    otr.IsNoDaysOff = false;
+                                }
+                                if (overtimetype!="1" && overtimetype!= "2" && overtimetype != "3" && overtimetype != "4")
+                                {
+                                    otr.OvertimeTypeId = 1;
+                                }
+                                else {
+                                    otr.OvertimeTypeId = Convert.ToInt32(overtimetype);
+                                }
+                               
                                 this.Insert(otr);
+
                             }
                         }
 
@@ -157,7 +180,65 @@ namespace SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBus
                 ajaxresult.Msg = ex.Message;
                 ajaxresult.Data = "0";
             }
+            
             return ajaxresult;
         }
+
+        /// <summary>
+        /// 加班费用计算规则
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="duration"></param>
+        /// <returns></returns>
+        public decimal OvertimeWithhold(int type,decimal myduration) {
+           var result = 0;
+            var duration = Convert.ToDouble(myduration);
+            if (type == 1)
+            {//晚上加班
+                if (duration >= 1.5 && duration <= 30)
+                {
+                    result = 30;
+                }
+                else if (duration > 30)
+                {
+                    result = 50;
+                }
+            }
+            else if (type == 2)
+            {//周末加班
+                if (duration == 3.5)
+                {//半天
+                    result = 50;
+                }
+                else if (duration == 7)
+                {//一天
+                    result = 100;
+                }
+            }
+            else if (type == 3)
+            {
+                if (duration == 3.5)//节假日半天
+                {
+                    result = 100;
+                }
+                else if (duration == 7)//节假日一天
+                {
+                    result = 200;
+                }
+            }
+            else if(type==4){
+                result = 100;
+            }
+            return result;
+        }
+
+
+        public List<OvertimeRecord> GetOTRData(string empid,DateTime year_month) {
+            var year = year_month.Year;
+            var month = year_month.Month;
+            var otrsqllist = this.GetListBySql<OvertimeRecord>("select * from OvertimeRecord where EmployeeId='empid' and YEAR(YearAndMonth)="+year+ " and MONTH(YearAndMonth)="+month);
+            return otrsqllist;
+        }
+
     }
 }

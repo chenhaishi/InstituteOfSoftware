@@ -18,6 +18,7 @@
 @*操作栏*@
 <script type="text/html" id="barDemo">
     <a class="layui-btn  layui-btn-xs " lay-event="edit">编辑</a>
+    <a class="layui-btn  layui-btn-xs " lay-event="OvertimeRecord">加班详情</a>
 </script>
 
 @*员工在职状态*@
@@ -107,7 +108,7 @@
                     , { field: 'empPosition', title: '所属岗位', width: 110, sort: true }
                     , { field: 'DeserveToRegularDays', title: '应到勤天数', width: 100 }
                     , { field: 'ToRegularDays', title: '到勤天数',  width: 100 }
-                    , { field: 'LeaveDays', title: '请假时长(天数)', width: 100 }
+                    , { field: 'LeaveDays', title: '请假时长(天)', width: 110 }
                     , { field: 'LeaveRecord', title: '请假记录', width: 100 }
                     , { field: 'NoClockTotalNum', title: '总缺卡次数', width: 135 }
                     , { field: 'WorkAbsentNum', title: '上班缺卡次数',width: 135}
@@ -119,9 +120,8 @@
                     , { field: 'TardyAndLeaveWithhold', title: '迟到/早退扣款(元)', width: 115 }
                     , { field: 'LeaveEarlyNum', title: '早退次数',  width: 100 }
                     , { field: 'LeaveEarlyRecord', title: '早退记录', width: 100 }
-                    //, { field: 'LeaveWithhold', title: '请假扣款(元)', width: 115 }
-                    , { field: 'OvertTimeRecord', title: '加班记录', width: 115 }
-                    , { field: 'OvertTimeDuration', title: '加班时长', width: 115 }
+                        , { field: 'OvertimeCharges', title: '加班费用', width: 115 }
+                    //, { field: 'OvertTimeDuration', title: '加班时长', width: 115 }
                     , { field: 'DaysoffRecord', title: '调休记录', width: 115 }
                     , { field: 'DaysoffDuration', title: '调休时长', width: 115 }
                     , { field: 'AbsenteeismRecord', title: '旷工记录', width: 115 }
@@ -146,6 +146,7 @@
                         break;
                     case 'OvertimeRecordImport':
                         OvertimeRecordImport();
+                        break;
                     case 'BatchAdd':
                         BatchAdd();
                         break;
