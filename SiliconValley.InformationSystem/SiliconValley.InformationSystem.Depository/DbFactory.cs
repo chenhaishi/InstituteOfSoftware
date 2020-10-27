@@ -86,7 +86,7 @@ namespace SiliconValley.InformationSystem.Depository
         /// </summary>
         /// <param name="obj">初始化参数，可为连接字符串或者DbContext</param>
         /// <param name="dbType">数据库类型</param>
-        /// <returns></returns>ss
+        /// <returns></returns>
         public static DbContext GetDbContext(Object obj, DatabaseType dbType, string entityNamespace)
         {
             DbContext dbContext = null;

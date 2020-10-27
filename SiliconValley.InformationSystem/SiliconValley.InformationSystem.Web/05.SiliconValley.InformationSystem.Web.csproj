@@ -571,6 +571,7 @@
     <Content Include="dleiicon\font_xhlb4bpyaza\iconfont.css" />
     <Content Include="dleiicon\font_xhlb4bpyaza\iconfont.js" />
     <Content Include="dleiicon\font_xhlb4bpyaza\iconfont.svg" />
+    <Content Include="Images\测试照片.jpg" />
     <Content Include="Images\2019090308462490.gif" />
     <Content Include="Images\del.png" />
     <Content Include="Images\Login\315.gif" />
