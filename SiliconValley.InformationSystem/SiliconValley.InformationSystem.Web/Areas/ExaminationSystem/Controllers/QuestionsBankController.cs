@@ -1550,7 +1550,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             var obj = db_computerTestQuestion.AllComputerTestQuestion().Where(d => d.ID == id).FirstOrDefault();
 
-           var filename = Path.GetFileName(obj.SaveURL);
+            var filename = Path.GetFileName(obj.SaveURL);
 
             //var path = Server.MapPath("/uploadXLSXfile/ComputerTestQuestionsWord/"+filename);
 
