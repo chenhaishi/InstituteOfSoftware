@@ -82,11 +82,16 @@
                 var data = obj.data;
                 //console.log(obj)
                 if (obj.event === 'changdor') {
-                    layer.open({
-                        type: 2,
-                        content: ' /Dormitory/StudentBedtime/ChangDorView/' + data.StuNumber,
-                        area: ['1000px', '600px']
-                    });
+                    layer.confirm('确定调寝吗？', function (index) {
+                        layer.open({
+                            type: 2,
+                            content: ' /Dormitory/StudentBedtime/ChangDorView/' + data.StuNumber,
+                            area: ['1000px', '600px']
+                        });
+
+                        layer.close(index);
+                    });       
+                     
                 }  
             });
 

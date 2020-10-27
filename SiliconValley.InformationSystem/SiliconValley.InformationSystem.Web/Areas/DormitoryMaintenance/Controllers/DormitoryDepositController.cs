@@ -106,7 +106,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
             //获取宿舍楼地址
             ViewBag.tung = Dormitory_Entity.Tung_Entity.GetList().Select(s => new SelectListItem() { Value = s.Id.ToString(), Text = s.TungName }).ToList();
             //获取维修物品 
-            ViewBag.goodname = Dormitory_Entity.DormitoryMaintenance_Entity.GetList().Select(s => new SelectListItem() { Value = s.ID.ToString(), Text = s.Nameofarticle }).ToList();
+            ViewBag.goodname = Dormitory_Entity.DormitoryMaintenance_Entity.GetList().Where(s=>s.Dateofregistration==true).Select(s => new SelectListItem() { Value = s.ID.ToString(), Text = s.Nameofarticle }).ToList();
             return View();
 
         }
@@ -491,9 +491,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
             //获取所带班级
             ViewBag.tung = classlist;
             //获取维修物品 
-            ViewBag.goodname = Dormitory_Entity.DormitoryMaintenance_Entity.GetList().Select(s => new SelectListItem() { Value = s.ID.ToString(), Text = s.Nameofarticle }).ToList();
+            ViewBag.goodname = Dormitory_Entity.DormitoryMaintenance_Entity.GetList().Where(s=>s.Dateofregistration==true).Select(s => new SelectListItem() { Value = s.ID.ToString(), Text = s.Nameofarticle }).ToList();
             return View();
         }
+       
         #endregion
 
         #region 财务操作
