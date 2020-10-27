@@ -647,30 +647,6 @@
 
             }
 
-            //监听选择文件  表单数据
-            //$("#Upload").change(function () {
-
-            //    var fileElem = document.getElementsByName("computerQuestion")[0];
-
-            //    //获取上传的文件
-            //    var file = fileElem.files[0];
-
-            //    console.log(file);
-
-            //    //上传条件 1.文件必须是压缩包(rar)
-            //    var index = file.name.lastIndexOf(".");
-            //    var suffix = file.name.substr(index + 1); //文件拓展名
-
-            //    if (suffix == "rar" || suffix == "zip") {
-
-            //        formData.append("rarfile", file);
-            //    } else {
-
-            //        layer.msg("请将文件压缩后再上产 (rar,zip)");
-            //    }
-
-            //});
-
             $(document).off("click", ".optiond").on("click", ".optiond", function () {
 
                 $(this).find("input").click();

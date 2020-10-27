@@ -18,6 +18,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
     using SiliconValley.InformationSystem.Entity.ViewEntity;
     using SiliconValley.InformationSystem.Business.AttendanceAnormalyBusiness;
     using System.Text.RegularExpressions;
+    using SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBusiness;
 
     public class AttendanceInfoManage : BaseBusiness<AttendanceInfo>
     {
@@ -37,6 +38,15 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             }
             atdinfolist = rc.GetCache<List<AttendanceInfo>>("InRedisATDData");
             return atdinfolist;
+        }
+
+        /// <summary>
+        /// 通过sql语句返回考勤数据集合
+        /// </summary>
+        /// <returns></returns>
+        public List<AttendanceInfo> GetAtdBySql() {
+            var atdlist = this.GetListBySql<AttendanceInfo>("select * from AttendanceInfo");
+            return atdlist;
         }
 
         /// <summary>
@@ -504,7 +514,9 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                                 var emp = empmanage.GetEmpByDDid(Convert.ToInt32(ddid));
 
                                 atd.EmployeeId = emp.EmployeeId;
-                                atd.YearAndMonth = Convert.ToDateTime(year_month);
+                                if (!string.IsNullOrEmpty(year_month)) {
+                                    atd.YearAndMonth = Convert.ToDateTime(year_month);
+                                }
                                 atd.DeserveToRegularDays = Convert.ToDecimal(deserveToRegularDays);
                                 atd.ToRegularDays = Convert.ToDecimal(workeddays);
 
@@ -523,8 +535,6 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                                 atd.LeaveEarlyNum = Convert.ToInt32(leaveEarlyNum);
                                 atd.LeaveEarlyRecord = leaveEarlyRecord;
 
-                                //  atd.OvertTimeDuration = Convert.ToDecimal(OvertTimeDuration);
-                                // atd.OvertTimeRecord = OvertTimeRecord;
                                 atd.DaysoffDuration = Convert.ToDecimal(DaysoffDuration);
                                 atd.DaysoffRecord = DaysoffRecord;
                                 atd.AbsenteeismDays = Convert.ToDecimal(absenteeismDays);
@@ -534,11 +544,10 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                                 atd.EvectionNum = Convert.ToDecimal(EvectionNum);
                                 atd.EvectionRecord = EvectionRecord;
 
-                                //atd.TardyWithhold = item.TardyWithhold;
-                                //atd.LeaveWithhold = item.LeaveWithhold;
                                 atd.AbsenteeismWithhold = GetAbsenteeismWithhold(emp.EmployeeId, Convert.ToDouble(atd.WorkAbsentNum + atd.NoonAbsentNum + atd.OffDutyAbsentNum));
                                 atd.TardyAndLeaveWithhold = TardyWithhold(emp.EmployeeId,Convert.ToInt32(atd.TardyNum+atd.LeaveEarlyNum),atd.TardyRecord,atd.LeaveEarlyRecord);
                                 atd.AbsentNumWithhold = AbsentWithhold(emp.EmployeeId,(int)(atd.WorkAbsentNum+atd.OffDutyAbsentNum+atd.NoonAbsentNum));
+                                atd.OvertimeCharges = GetOvertimeWithhold(emp.EmployeeId,(DateTime)atd.YearAndMonth);
                                 atd.Remark = Remark;
                                 atd.IsDel = false;
                                 atd.IsApproval = false;
@@ -640,10 +649,10 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
         /// <param name="empid">员工编号</param>
         /// <param name="absenteeismDays">旷工天数</param>
         /// <returns></returns>
-        public decimal GetAbsenteeismWithhold(string empid, double absenteeismDays)
+        public Nullable<decimal> GetAbsenteeismWithhold(string empid, double absenteeismDays)
         {
             EmployeesInfoManage empmanage = new EmployeesInfoManage();
-            var result = 0;
+            Nullable<decimal> result=null;
             var emprank = empmanage.JudgeEmpType(empid);//1代表校长；2代表副校长；3代表主任；4代表普通员工
             if (absenteeismDays == 0.5)//旷工半天
             {
@@ -741,9 +750,9 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
         /// <param name="absentnum">迟到早退总次数</param>
         /// <param name="absenttime">迟到早退时长</param>
         /// <returns></returns>
-        public decimal TardyWithhold(string empid,int absentnum, string tardyrecord, string leaveearlyrecord/* string absenttime*/)
+        public Nullable<decimal> TardyWithhold(string empid,int absentnum, string tardyrecord, string leaveearlyrecord/* string absenttime*/)
         {
-            var result = 0;
+            Nullable<decimal> result = null;
             EmployeesInfoManage empmanage = new EmployeesInfoManage();
             var emprank = empmanage.JudgeEmpType(empid);//1代表校长；2代表副校长；3代表主任；4代表普通员工
             string absenttime = GetAbsentTime(tardyrecord,leaveearlyrecord);
@@ -830,9 +839,9 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
         /// <param name="empid"></param>
         /// <param name="AbsentNum">总缺卡次数</param>
         /// <returns></returns>
-        public decimal AbsentWithhold(string empid,int AbsentNum)
+        public Nullable<decimal> AbsentWithhold(string empid,int AbsentNum)
         {
-            decimal result=0;
+            Nullable<decimal> result=null;
             EmployeesInfoManage empmanage = new EmployeesInfoManage();
             var emprank = empmanage.JudgeEmpType(empid);//1代表校长；2代表副校长；3代表主任；4代表普通员工
             if (AbsentNum>3) {
@@ -857,8 +866,24 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             return result;
         }
 
+        /// <summary>
+        /// 计算加班费用
+        /// </summary>
+        /// <param name="empid"></param>
+        /// <param name="year_month"></param>
+        /// <returns></returns>
+        public Nullable<decimal> GetOvertimeWithhold(string empid,DateTime year_month) {
+            OvertimeRecordManage otrmanage = new OvertimeRecordManage();
+            Nullable<decimal> result = null;
+            var ortlist = otrmanage.GetOTRData(empid, year_month);
+            foreach (var item in ortlist)
+            {
+                result += otrmanage.OvertimeWithhold(item.OvertimeTypeId,(decimal)item.Duration);
+            }
+            return result;
+        }
 
-
+       
             /// <summary>
             /// 用于考勤异常表中将'是否属实'属性改为无效时把该员工考勤的缺卡次数也进行改变
             /// </summary>
@@ -866,7 +891,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             /// <param name="year_month"></param>
             /// <param name="aatypeid"></param>
             /// <returns></returns>
-            public AjaxResult AbsentNumChange(string empid, DateTime year_month, int aatypeid)
+        public AjaxResult AbsentNumChange(string empid, DateTime year_month, int aatypeid)
         {
             AttendanceAnormalyManage aamanage = new AttendanceAnormalyManage();
             var ajaxresult = new AjaxResult();

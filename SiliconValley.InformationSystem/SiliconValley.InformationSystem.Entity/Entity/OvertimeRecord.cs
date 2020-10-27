@@ -33,7 +33,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         //是否不调休
         public Nullable<bool> IsNoDaysOff { get; set; }
         //加班类型
-        public int OvertimeTypeId { get; set; }
+        public int OvertimeTypeId { get; set; }//(1：晚上加班；2：周末加班；3：法定节假日加班；4：行政值班)
         ////是否过了年限
         //public Nullable<bool> IsPassYear { get; set; }
         //备注

@@ -249,15 +249,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             AttendanceInfoManage atdmanage = new AttendanceInfoManage();
             var result =  atdmanage.ImportDataFormExcel(filestream, excelfile.ContentType);
             if (result.Success) {
-                DateTime year_month = (DateTime)atdmanage.GetList().FirstOrDefault().YearAndMonth;
-              var mytime = DateTime.Parse(year_month.ToString()).Year + "-" + DateTime.Parse(year_month.ToString()).Month;
-                FirstTime = mytime;
+                if (atdmanage.GetAtdBySql().Count()>0) {
+                    DateTime year_month = (DateTime)atdmanage.GetList().FirstOrDefault().YearAndMonth;
+                    var mytime = DateTime.Parse(year_month.ToString()).Year + "-" + DateTime.Parse(year_month.ToString()).Month;
+                    FirstTime = mytime;
+                }            
             }
             return Json(result, JsonRequestBehavior.AllowGet);
-        }
-
+        }    
         /// <summary>
-        /// 模板下载 
+        /// 考勤模板下载 
         /// </summary>
         /// <returns></returns>        
         public FileStreamResult DownFile()
@@ -267,14 +268,32 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             return File(stream, "application/octet-stream", Server.UrlEncode("ExcleTemplate.xls"));
         }
 
-
+        /// <summary>
+        /// 加班记录导入
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult OvertimeRecordImport()
+        {
+            return View();
+        }
+        [HttpPost]
         public ActionResult OvertimeRecordImport(HttpPostedFileBase excelfile) {
             Stream filestream = excelfile.InputStream;
             OvertimeRecordManage otrmanage = new OvertimeRecordManage();
             var result = otrmanage.ImportDataFormExcel(filestream, excelfile.ContentType);
+        
             return Json(result, JsonRequestBehavior.AllowGet);
         }
-
+        /// <summary>
+        /// 加班记录模板下载
+        /// </summary>
+        /// <returns></returns>
+        public FileStreamResult OvertimeDownFile()
+        {
+            string rr = Server.MapPath("/uploadXLSXfile/Template/OvertimeTemplate.xlsx");  //获取下载文件的路径         
+            FileStream stream = new FileStream(rr, FileMode.Open);
+            return File(stream, "application/octet-stream", Server.UrlEncode("ExcleTemplate.xls"));
+        }
 
         /// <summary> 
         /// 批量添加
