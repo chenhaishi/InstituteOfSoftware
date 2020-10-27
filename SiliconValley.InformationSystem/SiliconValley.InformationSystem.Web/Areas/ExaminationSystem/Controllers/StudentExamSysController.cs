@@ -32,6 +32,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         private readonly ExamScoresBusiness db_examScores;
         private readonly AnswerQuestionBusiness db_answerQuestion;
         private readonly CandidateInfoBusiness db_candidateinfo;
+        private readonly ComputerTestQuestionsBusiness db_computerTestQuestion;
 
         public StudentExamSysController()
         {
@@ -41,6 +42,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             db_examScores = new ExamScoresBusiness();
             db_answerQuestion = new AnswerQuestionBusiness();
             db_candidateinfo =new CandidateInfoBusiness();
+            db_computerTestQuestion = new ComputerTestQuestionsBusiness();
         }
         // GET: ExaminationSystem/StudentExamSys
         public ActionResult StuExamIndex()
@@ -347,23 +349,23 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
         public ActionResult ComputerQuestionUpload(int examid)
         {
-           var exam = db_exam.AllExamination().Where(d=>d.ID == examid).FirstOrDefault();
+            var exam = db_exam.AllExamination().Where(d => d.ID == examid).FirstOrDefault();
             var examview = db_exam.ConvertToExaminationView(exam);
 
             //随机选择一个机试题
             var studentNumber = SessionHelper.Session["studentnumber"].ToString();
             //首先查看是否已经随机获取到了一个
 
-            var candidateInfo =  db_exam.AllCandidateInfo(examid).Where(d=>d.StudentID == studentNumber).FirstOrDefault();
+            var candidateInfo = db_exam.AllCandidateInfo(examid).Where(d => d.StudentID == studentNumber).FirstOrDefault();
             ComputerTestQuestionsView computer = null;
-            if (candidateInfo.ComputerPaper == null)
+            if (candidateInfo.ComputerPaper == "1")
             {
                 //第一次
 
                 //判断考试类型
                 if (examview.ExamType.ExamTypeID == 1)
                 {
-                    computer = db_stuExam.productComputerQuestion(exam,0);
+                    computer = db_stuExam.productComputerQuestion(exam, 0);
 
                     candidateInfo.ComputerPaper = computer.ID.ToString() + ",";
 
@@ -383,28 +385,26 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                     candidateInfo.ComputerPaper = computer.ID.ToString() + ",";
 
                     db_exam.UpdateCandidateInfo(candidateInfo);
-                }           
+                }
             }
+                CloudstorageBusiness Bos = new CloudstorageBusiness();
+                
+                var client = Bos.BosClient();
+              
+                var ar = candidateInfo.ComputerPaper.Split(',');
+                 
+                var com = db_exam.AllComputerTestQuestion(IsNeedProposition: false).Where(d => d.ID == int.Parse(ar[0])).FirstOrDefault();
+                
+                var filename = Path.GetFileName(com.SaveURL);
+              
+                //var path = Server.MapPath("/uploadXLSXfile/ComputerTestQuestionsWord/" + filename);
+              
+                var fileData = client.GetObject("xinxihua", $"/ExaminationSystem/ComputerTestQuestionsWord/{filename}");
+              
+                //FileStream fileStream = new FileStream(path, FileMode.Open);
+              
+                return File(fileData.ObjectContent, "application/octet-stream", Server.UrlEncode(filename));
 
-
-            CloudstorageBusiness Bos = new CloudstorageBusiness();
-
-            var client = Bos.BosClient();
-
-            var ar = candidateInfo.ComputerPaper.Split(',');
-
-           var com = db_exam.AllComputerTestQuestion(IsNeedProposition : false).Where(d => d.ID ==int.Parse( ar[0])).FirstOrDefault();
-
-            var filename = Path.GetFileName(com.SaveURL);
-
-            //var path = Server.MapPath("/uploadXLSXfile/ComputerTestQuestionsWord/" + filename);
-
-            var fileData = client.GetObject("xinxihua", $"/ExaminationSystem/ComputerTestQuestionsWord/{filename}");
-
-            //FileStream fileStream = new FileStream(path, FileMode.Open);
-
-            return File(fileData.ObjectContent, "application/octet-stream", Server.UrlEncode(filename));
-            
         }
         /// <summary>
         /// 获取选择题答案

@@ -628,7 +628,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
             var list = db_computerQuestion.AllComputerTestQuestion();
             foreach (var item in list)
             {
-                var obj = db_computerQuestion.ConvertToComputerTestQuestionsView(item,true);
+                var obj = db_computerQuestion.ConvertToComputerTestQuestionsView(item, true);
 
                 if (obj != null)
                 {
