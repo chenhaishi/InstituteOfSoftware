@@ -36,7 +36,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
 
         public Nullable<decimal> BaseSalary { get; set; }//基本工资
         public Nullable<decimal> PositionSalary { get; set; }//岗位工资
-        public Nullable<decimal> MonthPerformancePay { get; set; }//绩效工资
+        //public Nullable<decimal> MonthPerformancePay { get; set; }//绩效工资
         public Nullable<decimal> PersonalSocialSecurity { get; set; }//个人社保
         public Nullable<decimal> SocialSecuritySubsidy { get; set; }//社保补贴
         public Nullable<decimal> NetbookSubsidy { get; set; }//笔记本补助

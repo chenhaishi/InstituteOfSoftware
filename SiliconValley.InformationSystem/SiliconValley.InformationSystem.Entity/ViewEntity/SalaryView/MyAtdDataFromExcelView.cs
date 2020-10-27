@@ -101,9 +101,9 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.SalaryView
         public string LeaveRecord { get; set; }
 
         
-        public Nullable<decimal> OvertTimeDuration { get; set; }//加班时长
+        //public Nullable<decimal> OvertTimeDuration { get; set; }//加班时长
 
-        public string OvertTimeRecord { get; set; }//加班记录
+        //public string OvertTimeRecord { get; set; }//加班记录
         //public Nullable<decimal> OvertimeCharges { get; set; }//加班费用
 
         public Nullable<decimal> DaysoffDuration { get; set; }//调休时长

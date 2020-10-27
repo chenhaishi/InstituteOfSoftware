@@ -59,5 +59,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         public string GoOutRecord { get; set; }//外出记录
         public Nullable<decimal> EvectionNum { get; set; }//出差天数
         public string EvectionRecord { get; set; }//出差记录
+
+        public Nullable<decimal> AbsentNumWithhold { get; set; }//缺卡扣费
     }
 } 

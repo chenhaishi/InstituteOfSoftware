@@ -43,6 +43,15 @@
     <Reference Include="Nest, Version=6.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
       <HintPath>..\packages\NEST.6.6.0\lib\net461\Nest.dll</HintPath>
     </Reference>
+    <Reference Include="Spire.License, Version=1.3.8.40, Culture=neutral, PublicKeyToken=b1144360237c8b3f, processorArchitecture=MSIL">
+      <HintPath>..\packages\FreeSpire.XLS.10.10.0\lib\net40\Spire.License.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.Pdf, Version=6.10.0.0, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
+      <HintPath>..\packages\FreeSpire.XLS.10.10.0\lib\net40\Spire.Pdf.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.XLS, Version=10.10.1.0, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
+      <HintPath>..\packages\FreeSpire.XLS.10.10.0\lib\net40\Spire.XLS.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -415,8 +424,11 @@
     <Compile Include="ViewEntity\layuitableview.cs" />
     <Compile Include="ViewEntity\ListStockGoods.cs" />
     <Compile Include="ViewEntity\LoadTree_ZhurenView.cs" />
+    <Compile Include="ViewEntity\MeritsCheckErrorDataView.cs" />
+    <Compile Include="ViewEntity\MeritsCheckView.cs" />
     <Compile Include="ViewEntity\MessagenotificationView.cs" />
     <Compile Include="ViewEntity\NetClientRecordView.cs" />
+    <Compile Include="ViewEntity\OvertimeRecordErrorDataView.cs" />
     <Compile Include="ViewEntity\PutStudentDataView.cs" />
     <Compile Include="ViewEntity\RecruitPhoneTraceView.cs" />
     <Compile Include="ViewEntity\Refunditemsview.cs" />
@@ -502,6 +514,8 @@
     <Compile Include="ViewEntity\TeachingItem.cs" />
     <Compile Include="ViewEntity\TeamleaderdistributionView.cs" />
     <Compile Include="ViewEntity\ThearStuCommentView.cs" />
+    <Compile Include="ViewEntity\TM_Data\DorChangeStudentData.cs" />
+    <Compile Include="ViewEntity\TM_Data\DorChuang.cs" />
     <Compile Include="ViewEntity\TM_Data\EmtyClassroom.cs" />
     <Compile Include="ViewEntity\TM_Data\Laterecord.cs" />
     <Compile Include="ViewEntity\TM_Data\Laterecord_StudentAttendance.cs" />
@@ -532,6 +546,7 @@
     <Compile Include="ViewEntity\vierprice.cs" />
     <Compile Include="ViewEntity\XYK_Data\Grand_SUM.cs" />
     <Compile Include="ViewEntity\XYK_Data\Student .cs" />
+    <Compile Include="ViewEntity\zhongyike\MyExamCurren.cs" />
     <Compile Include="ViewEntity\ZhuanghuanluData.cs" />
     <Compile Include="ZhuceShowData.cs" />
   </ItemGroup>
