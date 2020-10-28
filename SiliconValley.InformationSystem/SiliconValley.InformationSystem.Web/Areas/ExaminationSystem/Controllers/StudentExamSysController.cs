@@ -349,6 +349,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
         public ActionResult ComputerQuestionUpload(int examid)
         {
+            var courseid = 0;
             var exam = db_exam.AllExamination().Where(d => d.ID == examid).FirstOrDefault();
             var examview = db_exam.ConvertToExaminationView(exam);
 
@@ -379,21 +380,21 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
                     XmlElement xmlelm = db_exam.ExamCourseConfigRead(examid);
 
-                    int courseid = int.Parse(xmlelm.FirstChild.Attributes["id"].Value);
+                    courseid = int.Parse(xmlelm.FirstChild.Attributes["id"].Value);
                     computer = db_stuExam.productComputerQuestion(exam, courseid);
 
-                    candidateInfo.ComputerPaper = computer.ID.ToString() + ",";
+                    //candidateInfo.ComputerPaper = computer.ID.ToString() + ",";
 
-                    db_exam.UpdateCandidateInfo(candidateInfo);
+                    //db_exam.UpdateCandidateInfo(candidateInfo);
                 }
             }
                 CloudstorageBusiness Bos = new CloudstorageBusiness();
                 
                 var client = Bos.BosClient();
-              
-                var ar = candidateInfo.ComputerPaper.Split(',');
-                 
-                var com = db_exam.AllComputerTestQuestion(IsNeedProposition: false).Where(d => d.ID == int.Parse(ar[0])).FirstOrDefault();
+
+            //var ar = candidateInfo.ComputerPaper.Split(',');.Where(d => d.ID == int.Parse(ar[0]))
+
+            var com = db_exam.AllComputerTestQuestion(courseid,IsNeedProposition: false);
                 
                 var filename = Path.GetFileName(com.SaveURL);
               
