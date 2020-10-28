@@ -454,15 +454,10 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     //早退记录[15]
                     string leaveEarlyRecord = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(15))) ? null : getrow.GetCell(15).ToString();
 
-                    ////加班时长[16]
-                    //string OvertTimeDuration = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(16))) ? null : getrow.GetCell(16).ToString();
-                    ////加班记录[17]
-                    //string OvertTimeRecord = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(17))) ? null : getrow.GetCell(17).ToString();
-
                     //调休时长[16]
-                    string DaysoffDuration = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(18))) ? null : getrow.GetCell(18).ToString();
+                    string DaysoffDuration = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(16))) ? null : getrow.GetCell(16).ToString();
                     //调休记录[17]
-                    string DaysoffRecord = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(19))) ? null : getrow.GetCell(19).ToString();
+                    string DaysoffRecord = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(17))) ? null : getrow.GetCell(17).ToString();
 
                     //旷工天数[18]
                     string absenteeismDays = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(18))) ? null : getrow.GetCell(18).ToString();
@@ -486,7 +481,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
 
                     AttendanceInfo atd = new AttendanceInfo();
                     AttendanceInfoErrorDataView attview = new AttendanceInfoErrorDataView();
-                    if (!empmanage.DDidIsExist(Convert.ToInt32(ddid)))
+                    if (string.IsNullOrEmpty(ddid))
                     {//判断员工钉钉号是否为空
                         attview.empname = name;
                         attview.errorExplain = "工号为空！";
@@ -494,6 +489,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     }
                     else
                     {
+                       
                         if (string.IsNullOrEmpty(deserveToRegularDays))
                         {
                             attview.empname = name;
@@ -512,47 +508,56 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                             {
 
                                 var emp = empmanage.GetEmpByDDid(Convert.ToInt32(ddid));
-
-                                atd.EmployeeId = emp.EmployeeId;
-                                if (!string.IsNullOrEmpty(year_month)) {
-                                    atd.YearAndMonth = Convert.ToDateTime(year_month);
+                                if (this.IsExist(emp.EmployeeId, Convert.ToDateTime(year_month)))
+                                {
+                                    attview.empname = name;
+                                    attview.errorExplain = "该员工这个月的考勤已存在！";
+                                    attdatalist.Add(attview);
                                 }
-                                atd.DeserveToRegularDays = Convert.ToDecimal(deserveToRegularDays);
-                                atd.ToRegularDays = Convert.ToDecimal(workeddays);
+                                else
+                                {
+                                    atd.EmployeeId = emp.EmployeeId;
+                                    if (!string.IsNullOrEmpty(year_month))
+                                    {
+                                        atd.YearAndMonth = Convert.ToDateTime(year_month);
+                                    }
+                                    atd.DeserveToRegularDays = Convert.ToDecimal(deserveToRegularDays);
+                                    atd.ToRegularDays = Convert.ToDecimal(workeddays);
 
-                                atd.LeaveDays = Convert.ToDecimal(leaveddays);
-                                atd.LeaveRecord = leaveRecord;
+                                    atd.LeaveDays = Convert.ToDecimal(leaveddays);
+                                    atd.LeaveRecord = leaveRecord;
 
-                                atd.WorkAbsentNum = Convert.ToInt32(workAbsentNum);
-                                atd.WorkAbsentRecord = workAbsentRecord;
-                                atd.NoonAbsentNum = Convert.ToInt32(noonAbsentNum);
-                                atd.NoonAbsentRecord = noonAbsentRecord;
-                                atd.OffDutyAbsentNum = Convert.ToInt32(offDutyAbsentNum);
-                                atd.OffDutyAbsentRecord = OffDutyAbsentRecord;
+                                    atd.WorkAbsentNum = Convert.ToInt32(workAbsentNum);
+                                    atd.WorkAbsentRecord = workAbsentRecord;
+                                    atd.NoonAbsentNum = Convert.ToInt32(noonAbsentNum);
+                                    atd.NoonAbsentRecord = noonAbsentRecord;
+                                    atd.OffDutyAbsentNum = Convert.ToInt32(offDutyAbsentNum);
+                                    atd.OffDutyAbsentRecord = OffDutyAbsentRecord;
 
-                                atd.TardyNum = Convert.ToInt32(tardyNum);
-                                atd.TardyRecord = tardyRecord;
-                                atd.LeaveEarlyNum = Convert.ToInt32(leaveEarlyNum);
-                                atd.LeaveEarlyRecord = leaveEarlyRecord;
+                                    atd.TardyNum = Convert.ToInt32(tardyNum);
+                                    atd.TardyRecord = tardyRecord;
+                                    atd.LeaveEarlyNum = Convert.ToInt32(leaveEarlyNum);
+                                    atd.LeaveEarlyRecord = leaveEarlyRecord;
 
-                                atd.DaysoffDuration = Convert.ToDecimal(DaysoffDuration);
-                                atd.DaysoffRecord = DaysoffRecord;
-                                atd.AbsenteeismDays = Convert.ToDecimal(absenteeismDays);
-                                atd.AbsenteeismRecord = absenteeismRecord;
-                                atd.GoOutNum = Convert.ToInt32(GoOutNum);
-                                atd.GoOutRecord = GoOutRecord;
-                                atd.EvectionNum = Convert.ToDecimal(EvectionNum);
-                                atd.EvectionRecord = EvectionRecord;
+                                    atd.DaysoffDuration = Convert.ToDecimal(DaysoffDuration);
+                                    atd.DaysoffRecord = DaysoffRecord;
+                                    atd.AbsenteeismDays = Convert.ToDecimal(absenteeismDays);
+                                    atd.AbsenteeismRecord = absenteeismRecord;
+                                    atd.GoOutNum = Convert.ToInt32(GoOutNum);
+                                    atd.GoOutRecord = GoOutRecord;
+                                    atd.EvectionNum = Convert.ToDecimal(EvectionNum);
+                                    atd.EvectionRecord = EvectionRecord;
 
-                                atd.AbsenteeismWithhold = GetAbsenteeismWithhold(emp.EmployeeId, Convert.ToDouble(atd.WorkAbsentNum + atd.NoonAbsentNum + atd.OffDutyAbsentNum));
-                                atd.TardyAndLeaveWithhold = TardyWithhold(emp.EmployeeId,Convert.ToInt32(atd.TardyNum+atd.LeaveEarlyNum),atd.TardyRecord,atd.LeaveEarlyRecord);
-                                atd.AbsentNumWithhold = AbsentWithhold(emp.EmployeeId,(int)(atd.WorkAbsentNum+atd.OffDutyAbsentNum+atd.NoonAbsentNum));
-                                atd.OvertimeCharges = GetOvertimeWithhold(emp.EmployeeId,(DateTime)atd.YearAndMonth);
-                                atd.Remark = Remark;
-                                atd.IsDel = false;
-                                atd.IsApproval = false;
-                                this.Insert(atd);
-                                rc.RemoveCache("InRedisATDData");
+                                    atd.AbsenteeismWithhold = GetAbsenteeismWithhold(emp.EmployeeId, Convert.ToDouble(atd.WorkAbsentNum + atd.NoonAbsentNum + atd.OffDutyAbsentNum));
+                                    atd.TardyAndLeaveWithhold = TardyWithhold(emp.EmployeeId, Convert.ToInt32(atd.TardyNum + atd.LeaveEarlyNum), atd.TardyRecord, atd.LeaveEarlyRecord);
+                                    atd.AbsentNumWithhold = AbsentWithhold(emp.EmployeeId, (int)(atd.WorkAbsentNum + atd.OffDutyAbsentNum + atd.NoonAbsentNum));
+                                    atd.OvertimeCharges = GetOvertimeWithhold(emp.EmployeeId, (DateTime)atd.YearAndMonth);
+                                    atd.Remark = Remark;
+                                    atd.IsDel = false;
+                                    atd.IsApproval = false;
+                                    this.Insert(atd);
+                                    rc.RemoveCache("InRedisATDData");
+                                }
                             }
                         }
 
@@ -707,7 +712,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     result = 300;
                 }
             }
-            else//旷工3天以上（含3天）
+            else if(absenteeismDays>=3)//旷工3天以上（含3天）
             {
                 result = 2000;
             }
@@ -756,80 +761,83 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             EmployeesInfoManage empmanage = new EmployeesInfoManage();
             var emprank = empmanage.JudgeEmpType(empid);//1代表校长；2代表副校长；3代表主任；4代表普通员工
             string absenttime = GetAbsentTime(tardyrecord,leaveearlyrecord);
-            foreach (var item in absenttime.Split(';'))
-            {
-                //迟到或早退30分钟以内扣费
-                if (item.Contains("分钟") && !item.Contains("小时"))
+            if (!string.IsNullOrEmpty(absenttime)) {
+                foreach (var item in absenttime.Split(';'))
                 {
-                    int time = int.Parse(System.Text.RegularExpressions.Regex.Replace(item, @"[^0-9]+", ""));
-                    if (time <= 10)//迟到/早退10分钟以内
+                    result = 0;
+                    //迟到或早退30分钟以内扣费
+                    if (item.Contains("分钟") && !item.Contains("小时"))
+                    {
+                        int time = int.Parse(System.Text.RegularExpressions.Regex.Replace(item, @"[^0-9]+", ""));
+                        if (time <= 10)//迟到/早退10分钟以内
+                        {
+                            if (emprank == 1)
+                            {
+                                result += 50;
+                            }
+                            else if (emprank == 2)
+                            {
+                                result += 30;
+                            }
+                            else if (emprank == 3)
+                            {
+                                result += 20;
+                            }
+                            else if (emprank == 4)
+                            {
+                                result += 10;
+                            }
+
+                        }
+                        else if (time > 10 && time <= 30)//迟到/早退10分钟以上30分钟以内
+                        {
+                            if (emprank == 1)
+                            {
+                                result += 100;
+                            }
+                            else if (emprank == 2)
+                            {
+                                result += 80;
+                            }
+                            else if (emprank == 3)
+                            {
+                                result += 50;
+                            }
+                            else if (emprank == 4)
+                            {
+                                result += 20;
+                            }
+
+                        }
+                    }
+                    //迟到或早退30分钟以上扣费
+                    else
                     {
                         if (emprank == 1)
                         {
-                            result += 50;
+                            result += 200;
                         }
                         else if (emprank == 2)
                         {
-                            result += 30;
+                            result += 150;
                         }
                         else if (emprank == 3)
-                        {
-                            result += 20;
-                        }
-                        else if (emprank == 4)
-                        {
-                            result += 10;
-                        }
-                                           
-                    }
-                    else if (time > 10 && time <= 30)//迟到/早退10分钟以上30分钟以内
-                    {
-                        if (emprank == 1)
                         {
                             result += 100;
                         }
-                        else if (emprank == 2)
-                        {
-                            result += 80;
-                        }
-                        else if (emprank == 3)
+                        else if (emprank == 4)
                         {
                             result += 50;
                         }
-                        else if (emprank == 4)
-                        {
-                            result += 20;
-                        }
-
                     }
                 }
-                //迟到或早退30分钟以上扣费
-                else
-                {
-                    if (emprank == 1)
-                    {
-                        result += 200;
-                    }
-                    else if (emprank == 2)
-                    {
-                        result += 150;
-                    }
-                    else if (emprank == 3)
-                    {
-                        result += 100;
-                    }
-                    else if (emprank == 4)
-                    {
-                        result += 50;
-                    }
-                }
-            }
                 if (absentnum > 3)
                 {
                     var num = absentnum - 3;
                     result += num * 100;
                 }
-            
+            }
+
             return result;
         }
 
@@ -845,6 +853,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             EmployeesInfoManage empmanage = new EmployeesInfoManage();
             var emprank = empmanage.JudgeEmpType(empid);//1代表校长；2代表副校长；3代表主任；4代表普通员工
             if (AbsentNum>3) {
+                result = 0;
                     if (emprank == 1)
                     {
                         result = 200;
@@ -861,7 +870,6 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     {
                         result = 50;
                     }
-              
             }
             return result;
         }
@@ -878,6 +886,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             var ortlist = otrmanage.GetOTRData(empid, year_month);
             foreach (var item in ortlist)
             {
+                result = 0;
                 result += otrmanage.OvertimeWithhold(item.OvertimeTypeId,(decimal)item.Duration);
             }
             return result;
@@ -936,6 +945,23 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             else
             {
                 result = false;
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 判断是否存在符合条件（同一个人，同一月份）的考勤数据
+        /// </summary>
+        /// <param name="empid"></param>
+        /// <param name="year_month"></param>
+        /// <returns></returns>
+        public bool IsExist(string empid,DateTime year_month) {
+            var result = false;
+            var year = year_month.Year;
+            var month = year_month.Month;
+            var atd= this.GetListBySql<AttendanceInfo>("select * from AttendanceInfo where EmployeeId='empid' and YEAR(YearAndMonth)=" + year + " and MONTH(YearAndMonth)=" + month);
+            if (atd.Count()>0) {
+                result = true;
             }
             return result;
         }

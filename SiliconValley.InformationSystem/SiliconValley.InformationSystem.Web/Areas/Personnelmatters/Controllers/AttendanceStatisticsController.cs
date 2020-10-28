@@ -12,6 +12,7 @@ using System.Text;
 using System.IO;
 using SiliconValley.InformationSystem.Business.Base_SysManage;
 using SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBusiness;
+
 namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
 {
     public class AttendanceStatisticsController : Controller
@@ -295,46 +296,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             return File(stream, "application/octet-stream", Server.UrlEncode("ExcleTemplate.xls"));
         }
 
-        /// <summary> 
-        /// 批量添加
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult BatchAdd() {
-       
-            return View();
-        }
-        [HttpPost]
-        public ActionResult BatchAdd(string time,string days) {
-            EmplSalaryEmbodyManage esemanage = new EmplSalaryEmbodyManage();
-            var AjaxResultxx = new AjaxResult();
-            try
-            {
-                //获取未禁用的员工
-                var elist = esemanage.GetEmpESEData().Where(s => s.IsDel == false).ToList();
-                foreach (var item in elist)
-                {
-                    AttendanceInfo atd = new AttendanceInfo();
-                    atd.EmployeeId = item.EmployeeId;
-                    atd.YearAndMonth = DateTime.Parse(time);
-                    atd.DeserveToRegularDays = Convert.ToDecimal(days);
-                    atd.ToRegularDays = Convert.ToDecimal(days);
-                    atd.IsDel = false;
-                    atd.IsApproval = false;
-                    atdmanage.Insert(atd);
-                   
-                    rc.RemoveCache("InRedisATDData");
-                }
-                AjaxResultxx = atdmanage.Success();
-            }
-            catch (Exception ex)
-            {
-              AjaxResultxx=atdmanage.Error(ex.Message);
-            }
-            FirstTime = time;
-            //Firstshouldday = days;
-            return Json(AjaxResultxx,JsonRequestBehavior.AllowGet);
-        }
-
         #endregion
 
         /// <summary>
@@ -427,7 +388,44 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult OTRDetail(int id) {
+            ViewBag.atdid = id;
+            return View();
+        }
 
-
+        public ActionResult GetOvertimeData(int id,int page, int limit) {
+            OvertimeRecordManage otrmanage = new OvertimeRecordManage();
+            var otrlist = otrmanage.GetOTRDataByAtdid(id);
+            var mylist = from e in otrlist
+                         select new
+                         {
+                             #region 获取值
+                             e.Id,
+                             e.EmployeeId,
+                             DDAppId=empmanage.GetInfoByEmpID(e.EmployeeId).DDAppId,
+                             empName = empmanage.GetInfoByEmpID(e.EmployeeId).EmpName,
+                             empDept = empmanage.GetDeptByEmpid(e.EmployeeId).DeptName,
+                             empPosition = empmanage.GetPositionByEmpid(e.EmployeeId).PositionName,    
+                             e.YearAndMonth,
+                             e.StartTime,
+                             e.EndTime,
+                             e.Duration,
+                             e.Remark,
+                             e.OvertimeReason,
+                             e.IsNoDaysOff,
+                             e.OvertimeTypeId,
+                             e.IsPass,
+                             #endregion
+                         };
+            var newlist = mylist.OrderByDescending(s => s.Id).Skip((page - 1) * limit).Take(limit).ToList();
+            var newobj = new
+            {
+                code = 0,
+                msg = "",
+                count = mylist.Count(),
+                data = newlist
+            };
+            return Json(newobj, JsonRequestBehavior.AllowGet);
+        }
     }
 }

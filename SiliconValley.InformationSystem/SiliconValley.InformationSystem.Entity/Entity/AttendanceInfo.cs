@@ -43,9 +43,6 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
 
         public string LeaveRecord { get; set; }//请假记录（事假）
 
-
-        //public Nullable<decimal> OvertTimeDuration { get; set; }//加班时长
-        //public string OvertTimeRecord { get; set; }//加班记录
         public Nullable<decimal> OvertimeCharges { get; set; }//加班费用
         public Nullable<decimal> DaysoffDuration { get; set; }//调休时长
         public string DaysoffRecord { get; set; }//调休记录
