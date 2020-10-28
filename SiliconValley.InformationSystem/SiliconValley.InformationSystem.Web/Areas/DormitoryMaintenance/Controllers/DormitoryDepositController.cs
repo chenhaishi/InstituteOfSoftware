@@ -429,7 +429,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
             foreach (ScheduleForTrainees s in stulist)
             {
                 //判断这个学生在哪个宿舍
-                string sqlstr2 = @"select * from DormInformation where Id= (select DormId from Accdationinformation where Studentnumber='" + s.StudentID + "' and StayDate <= '" + dateTime + "' and (EndDate is null or EndDate>='" + dateTime + "'))";
+                string sqlstr2 = @"select * from DormInformation where Id= (select DormId from Accdationinformation where Studentnumber='" + s.StudentID + "' and StayDate >= '" + dateTime + "' and (EndDate is null or EndDate<='" + dateTime + "'))";
                 List<DormInformation> list2 = Dormitory_Entity.GetListBySql<DormInformation>(sqlstr2);
                 if (list2.Count > 0)
                 {
@@ -468,7 +468,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
                 result.Success = Dormitory_Entity.AddData(Dorlist);
                 result.Msg = result.Success == false ? "操作失败" : "操作成功";
             }
-            else if(Dorlist.Count>0 && Dorlist.Count!=0)
+            else if(sb.Length>0)
             {
                 result.Success = false;
                 result.Msg = sb.ToString() + "没有宿舍信息！,请核对学生数据在进行数据录入！";

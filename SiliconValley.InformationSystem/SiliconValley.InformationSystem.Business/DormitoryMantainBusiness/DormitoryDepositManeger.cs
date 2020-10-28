@@ -80,7 +80,7 @@ namespace SiliconValley.InformationSystem.Business.DormitoryMantainBusiness
         /// <returns></returns>
         public List<Accdationinformation> GetStudentSushe(DateTime date,int Number)
         {
-            string sqlstr = "select * from Accdationinformation where StayDate<='" + date + "' and DormId =" + Number+ " and (EndDate is null or EndDate>='"+ date + "') ";
+            string sqlstr = "select * from Accdationinformation where StayDate>='" + date + "' and DormId =" + Number+ " and (EndDate is null or EndDate<='"+ date + "') ";
 
             List<Accdationinformation> list = this.Accdationinformation_Entity.GetListBySql<Accdationinformation>(sqlstr);//获取属于这个寝室的所有学生
 
@@ -296,7 +296,11 @@ namespace SiliconValley.InformationSystem.Business.DormitoryMantainBusiness
 
             if (list.Count>0)
             {
-                SumMoney =(decimal) list[0].Data;
+                if (list[0].Data!=null)
+                {
+                    SumMoney = (decimal)list[0].Data;
+                }
+                
             }
             return SumMoney;
         }
