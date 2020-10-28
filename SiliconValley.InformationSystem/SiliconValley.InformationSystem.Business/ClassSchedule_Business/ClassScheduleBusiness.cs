@@ -1051,7 +1051,7 @@ namespace SiliconValley.InformationSystem.Business.ClassSchedule_Business
             transactionView.StudentID = StudentID;//学号
             transactionView.Telephone = student.Telephone;//联系电话
             transactionView.Postaladdress = student.Familyaddress;//家庭住址
-            transactionView.NowHeadmaster = Hadmst.ClassHeadmaster(scheduleForTraineesBusiness.SutdentCLassName(StudentID).ID_ClassName).EmpName;//班主任姓名
+            //transactionView.NowHeadmaster = Hadmst.ClassHeadmaster(scheduleForTraineesBusiness.SutdentCLassName(StudentID).ID_ClassName).EmpName;//班主任姓名
             transactionView.IDnumber = student.identitydocument;//身份证
             //获取班级对象
             var Stage = this.GetEntity(scheduleForTraineesBusiness.SutdentCLassName(StudentID).ID_ClassName);
