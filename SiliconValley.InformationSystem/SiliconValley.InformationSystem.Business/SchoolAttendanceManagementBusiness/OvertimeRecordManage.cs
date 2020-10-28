@@ -11,6 +11,7 @@ using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 using SiliconValley.InformationSystem.Entity.MyEntity;
 using SiliconValley.InformationSystem.Util;
 using SiliconValley.InformationSystem.Entity.ViewEntity;
+using SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness;
 
 namespace SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBusiness
 {
@@ -149,7 +150,7 @@ namespace SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBus
                                 else {
                                     otr.OvertimeTypeId = Convert.ToInt32(overtimetype);
                                 }
-                               
+                                otr.IsPass = false;
                                 this.Insert(otr);
 
                             }
@@ -236,9 +237,17 @@ namespace SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBus
         public List<OvertimeRecord> GetOTRData(string empid,DateTime year_month) {
             var year = year_month.Year;
             var month = year_month.Month;
-            var otrsqllist = this.GetListBySql<OvertimeRecord>("select * from OvertimeRecord where EmployeeId='empid' and YEAR(YearAndMonth)="+year+ " and MONTH(YearAndMonth)="+month);
+            var otrsqllist = this.GetListBySql<OvertimeRecord>("select * from OvertimeRecord where EmployeeId="+empid+" and YEAR(YearAndMonth)="+year+ " and MONTH(YearAndMonth)="+month);
             return otrsqllist;
         }
 
+        public List<OvertimeRecord> GetOTRDataByAtdid(int id) {
+            AttendanceInfoManage atdmanage = new AttendanceInfoManage();
+            var atd = atdmanage.GetEntity(id);
+            string empid = atd.EmployeeId;
+            var time = atd.YearAndMonth;
+            var otdlist = this.GetOTRData(empid,(DateTime)time);
+            return otdlist;
+        }
     }
 }

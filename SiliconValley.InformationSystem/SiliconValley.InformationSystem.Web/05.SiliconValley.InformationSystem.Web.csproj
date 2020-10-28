@@ -1778,7 +1778,6 @@
     <Content Include="Areas\Personnelmatters\Views\PerformanceAssess\AddMCEmps.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\PerformanceAssess\ChangeMCTime.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\PerformanceAssess\EditEmpPFAssess.cshtml" />
-    <Content Include="Areas\Personnelmatters\Views\AttendanceStatistics\BatchAdd.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\AttendanceStatistics\BatchImport.cshtml" />
     <Content Include="Areas\Educational\Views\TeacherNight\ClassMasterIndex.cshtml" />
     <Content Include="Areas\Educational\Views\TeacherNight\EditDateChangeView.cshtml" />
@@ -1940,6 +1939,7 @@
     <Content Include="Areas\Dormitory\Views\StudentBedtime\ChangDorView.cshtml" />
     <Content Include="Areas\DormitoryMaintenance\Views\DormitoryMantainPrice\EditDormitoryMantainPriceView.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\AttendanceStatistics\OvertimeRecordImport.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\AttendanceStatistics\OTRDetail.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
@@ -3749,6 +3749,9 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -1,0 +1,178 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>OTRDetail</title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/layui/layui.js"></script>
+</head>
+<body>
+    <div>
+        <table id="overtimetab" lay-filter="overtimetab"></table>
+    </div>
+
+    <script>
+        layui.use(['table', 'layer', 'form', 'laydate', 'element'], function () {
+            var table = layui.table;
+            var layer = layui.layer;
+            var form = layui.form;
+            var laydate = layui.laydate;
+            var element = layui.element;
+            var atdid =@ViewBag.atdid;
+            console.log("考勤编号：" + atdid);
+          var tab1=  table.render({
+              elem: '#overtimetab'
+              , url: '/Personnelmatters/AttendanceStatistics/GetOvertimeData?id=' + atdid
+                , id: "myEmpInfo"
+                , toolbar: '#toolbarDemo'
+
+                , limits: [5,10,15,20,25,30]
+                , limit: 5
+                , cols: [[
+                      { field: 'EmployeeId', title: '员工编号', width: 126 }
+                    , { field: 'DDAppId', title: '钉钉工号', width: 108, sort: true }
+                    , { field: 'empName', title: '加班人', width: 110, sort: true, edit: 'text' }
+                    , { field: 'empDept', title: '所属部门', width: 110, sort: true }
+                    , { field: 'empPosition', title: '所属岗位', width: 110, sort: true }
+                    , { field: 'StartTime', title: '开始时间', sort: true, width: 110, templet: function (d) { return changeDateTimeFormat(d.EntryTime) } }
+                    , { field: 'EndTime', title: '结束时间', sort: true, width: 110, templet: function (d) { return changeDateTimeFormat(d.PositiveDate) } }
+                    , { field: 'Duration', title: '时长(h)', sort: true, width: 135 }
+                    , { field: 'OvertimeReason', title: '加班理由', sort: true, width: 110 }
+                    , { field: 'IsNoDaysOff', title: '是否调休', sort: true, width: 110}
+                    , { field: 'OvertimeTypeId', title: '加班类型', sort: true, width: 110 }
+                    , { field: 'Remark', title: '加班理由', sort: true, width: 110 }
+                    , { fixed: 'right', title: '操作', toolbar: '#barDemo' }
+                ]],
+                page: true
+            });
+
+            //监听行工具事件
+            table.on('tool(overtimetab)', function (obj) {
+                var data = obj.data;
+                var empid = data.EmployeeId;
+                console.log("员工编号："+data.EmployeeId);
+                if (obj.event === 'edit') {
+                    layer.open({
+                        type: 2,
+                        content: '/Personnelmatters/AttendanceStatistics/EditEmp/?id=' + empid
+                        , area: ["1200px", "730px"]
+                        , title: '编辑员工信息'
+                        , shade: 0.8
+                        , anim: 4
+                        , skin: 'demo-class'
+                    });
+                }
+            });
+
+            //监听单元格编辑
+            table.on('edit(overtimetab)', function (obj) {
+                var value = obj.value //得到修改后的值
+                    , data = obj.data //得到所在行所有键值
+                    , field = obj.field; //得到字段
+                $.ajax({
+                    type: "get",
+                    dataType: "json",
+                    url: "/Personnelmatters/EmployeesInfo/EditTableCell",
+                    data: { id: data.EmployeeId, Attrbute: field, endvalue: value },
+                    success: function (data) {
+                        if (data.Success) {
+                            layui.table.reload('myEmpInfo');
+                        } else {
+                            layer.msg("修改失败!");
+                        }
+                    }
+                });
+
+            });
+
+
+        });
+
+        function changeDateTimeFormat(cellval) {
+            if (cellval != null) {
+                var date;
+                if (cellval.indexOf("/Date(") >= 0) {
+                    date = new Date(parseInt(cellval.replace("/Date(", "").replace(")/", ""), 10));
+                }
+                else {
+                    date = new Date(cellval);
+                }
+
+                var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+                var currentDate = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+                var hour = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+                var minute = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+                var ss = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+
+                return date.getFullYear() + "-" + month + "-" + currentDate + " " + hour + ":" + minute + ":" + ss;
+            } else {
+                return "";
+            }
+        }
+    </script>
+
+    @*部门与岗位的下拉框动态赋值及下拉框二级联动*@
+    <script>
+        layui.use(['form', 'upload', 'layer'], function () {
+
+            var form = layui.form;
+            $.ajax({
+                url: '/Personnelmatters/EmployeesInfo/BindDeptSelect',
+                data: {},
+                dataType: "json",
+                success: function (resultData) {
+                    $("#deptid").empty();
+                    if (resultData.code == 0) {
+
+                        $("#deptid").append(new Option("请选择部门", ""));
+                        $.each(resultData.data, function (index, item) {
+                            $('#deptid').append(new Option(item.DeptName, item.DeptId));
+                        });
+                    } else {
+                        $("#deptid").append(new Option("暂无数据", ""));
+                    }
+
+                    layui.form.render("select");
+                }
+            });
+
+            //级联子项目
+            //select 监听
+            form.on('select(deptidfilter)', function (data) {
+                var value = data.value;  //select选中的值
+                $.ajax({
+                    url: "/Personnelmatters/EmployeesInfo/BindPositionSelect",
+                    data: { deptid: value },
+                    dataType: "json",
+                    success: function (resultData) {
+                        if (resultData.code == 0) {
+                            //清空赋值
+                            $("#PositionId").empty();
+                            //console.log(resultData.data);
+                            $("#PositionId").append(new Option("请选择岗位", ""));
+                            $.each(resultData.data, function (index, item) {
+                                //赋值
+                                $('#PositionId')
+                                    .append(new Option(item.PositionName, item.Pid));
+                            });
+                        } else {
+                            $("#PositionId").append(new Option("暂无数据", ""));
+                        }
+                        layui.form.render("select");
+                    }
+                });
+            })
+            layui.form.render("select");
+
+        });
+    </script>
+</body>
+</html>
