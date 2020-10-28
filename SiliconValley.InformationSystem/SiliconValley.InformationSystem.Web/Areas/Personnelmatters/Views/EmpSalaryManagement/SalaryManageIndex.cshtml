@@ -63,16 +63,6 @@
     </form>
 </fieldset>
 <table id="salarytab" lay-filter="salarytab"></table>
-<div class="layui-hide">
-    <div class="layui-row layui-form-item">
-        <div>
-            <label class="layui-form-label">请输入邮箱授权码：</label>
-            <div class="layui-input-inline">
-                <input type="text" id="AuthorizationCode"  class="layui-input">
-            </div>
-        </div>
-        </div>
-    </div>
     @*操作栏*@
     <script type="text/html" id="barDemo">
         <a class="layui-btn  layui-btn-xs " lay-event="edit">编辑</a>
@@ -197,11 +187,8 @@
                     case 'Email': 
                         layer.confirm('是否要向所有员工发送工资条', { icon: 3, title: '提示' }, function (index) {
                             layer.close(index);
-                            var index = layer.msg("正在发送邮件");
-                            //layer.open({
-                            //    title: '提示',
-                            //    content: '邮件发送成功!' + data.Msg
-                            //}); 
+                            var index = layer.msg("正在发送邮件", { icon: 16, shade: 0.6});
+                            layer.shade 
                             $.ajax({
                                 url: "/Personnelmatters/EmpSalaryManagement/PaySlipExcel",
                                 type: "post",
@@ -209,12 +196,13 @@
                                 dataType: "json",
                                 contentType: "Application/json",
                                 success: function (data) {
+                                    console.log(data);
                                     if (data.Success) {
                                         layer.close(index)
-                                        layer.open({
-                                            title: '提示',
-                                            content: '邮件发送成功!'
-                                        }); 
+                                        layer.msg(data.Msg, { icon: 1 });
+                                    } else {
+                                        layer.close(index)
+                                        layer.msg("邮件发送失败", { icon: 2 });
                                     }
                                 }
                             })

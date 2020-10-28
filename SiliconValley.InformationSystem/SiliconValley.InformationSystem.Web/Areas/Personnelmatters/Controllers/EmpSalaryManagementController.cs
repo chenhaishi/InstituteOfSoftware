@@ -467,30 +467,22 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         {
             AjaxResult result = new AjaxResult();
             MonthlySalaryRecordManage monthly = new MonthlySalaryRecordManage();
-            EmployeesInfoManage manage = new EmployeesInfoManage();
             List<MonthlySalaryRecord> salary = monthly.GetEmpMsrData();
 
-            string ToMail = "";
-            string FromMail = "";
-            string AuthorizationCode = "";
-            //string AuthorizationCode = "zheshixiaohao0";
+            //收件人邮箱
+            string ToMail = "3330616589@qq.com";
+            //发件人邮箱
+            string FromMail = "2651396164@qq.com";
+            //发件人邮箱授权码
+            string AuthorizationCode = "xuobhcbwwnewecde";
 
-            string msg = ""; 
             foreach (var i in salary)
             {
-                string name = manage.GetEntity(i.EmployeeId).EmpName;
 
-               msg= monthly.ExcelToImg(i).Msg;
-
-                result = monthly.WagesDataToEmail(FromMail, ToMail, name, i.EmployeeId, AuthorizationCode);
+                result = monthly.WagesDataToEmail(FromMail, ToMail, AuthorizationCode,i);
             }
-            result.Msg = msg;
                 return Json(result, JsonRequestBehavior.AllowGet);
             
         }
-            public ActionResult EmailMail()
-            {
-                return View();
-            }
         } 
 }

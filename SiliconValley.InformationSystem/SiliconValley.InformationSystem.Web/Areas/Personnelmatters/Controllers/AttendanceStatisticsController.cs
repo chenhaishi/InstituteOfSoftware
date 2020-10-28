@@ -37,7 +37,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         }
 
         static string FirstTime = GetFirstTime(); 
-
+    
         //考勤统计
         // GET: Personnelmatters/AttendanceStatistics
         public ActionResult AttendanceStatisticsIndex()

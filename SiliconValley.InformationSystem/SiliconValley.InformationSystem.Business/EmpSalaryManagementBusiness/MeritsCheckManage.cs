@@ -205,7 +205,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                             merits1.YearAndMonth = item.YearAndMonth;
                             merits1.IsDel = false;
                             this.Insert(merits1);
-
+                            BusHelper.WriteSysLog("Excel文件导入成功", Entity.Base_SysManage.EnumType.LogType.Excle文件导入);
                             rc.RemoveCache("InRedisEmpInfoData");
                         }
                     }
