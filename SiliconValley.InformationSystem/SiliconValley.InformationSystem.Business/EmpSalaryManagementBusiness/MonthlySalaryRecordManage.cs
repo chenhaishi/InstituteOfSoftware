@@ -594,7 +594,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                      </tr>";
 
                 var att = attendance.GetADInfoData().Where(i => i.EmployeeId == m.EmployeeId).FirstOrDefault();
-                //迟到早退
+                ////迟到早退
                 if (!att.TardyAndLeaveWithhold.IsNullOrEmpty())
                 {
                     mail.Body += "<tr><td>迟到/早退扣款</td>" +
@@ -647,13 +647,38 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 {
                     mail.Body += "<tr><td>加班费用</td>" +
                       "<td>加班记录:<br/>" +
-                      "加班时长:" + 
+                      "加班时长:" +
                       "</td>" +
                       "<td>" + att.OvertimeCharges + "</td>" +
                       "</tr>";
                 }
+                //调休
+                if (!att.DaysoffRecord.IsNullOrEmpty() && !att.DaysoffDuration.IsNullOrEmpty())
+                {
+                    mail.Body += "<tr><td>调休</td>" +
+                     "<td>调休记录:" + att.DaysoffRecord + "<br/>" +
+                     "调休时长:" + att.DaysoffDuration +
+                     "</td><td></td></tr>";
+                }
+               //外出
+                if (!att.GoOutRecord.IsNullOrEmpty() && !att.GoOutNum.IsNullOrEmpty())
+                {
+                    mail.Body += "<tr><td>外出</td>" +
+                     "<td>外出记录:" + att.GoOutRecord + "<br/>" +
+                     "外出次数:" + att.GoOutNum +
+                     "</td><td></td></tr>";
+                }
+                //出差
+                if (!att.EvectionRecord.IsNullOrEmpty() && !att.EvectionNum.IsNullOrEmpty())
+                {
+                    mail.Body += "<tr><td>出差</td>" +
+                     "<td>出差记录:" + att.EvectionRecord + "<br/>" +
+                     "出差次数:" + att.EvectionNum +
+                     "</td><td></td></tr>";
+                }
 
-                // mail.Body += "</table></div>";
+                mail.Body += "</table></div>";
+
                 #endregion
                 //实例化一个SmtpClient类。
                 SmtpClient client = new SmtpClient();

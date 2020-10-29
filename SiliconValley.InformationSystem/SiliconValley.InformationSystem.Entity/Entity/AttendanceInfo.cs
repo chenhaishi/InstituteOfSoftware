@@ -23,7 +23,6 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         public Nullable<decimal> DeserveToRegularDays { get; set; }//应到勤天数
         public Nullable<decimal> ToRegularDays { get; set; }//到勤天数
         public Nullable<decimal> LeaveDays { get; set; }//请假天数
-        
         public Nullable<int> WorkAbsentNum { get; set; }//上班缺卡次数
         public string WorkAbsentRecord { get; set; }//上班缺卡记录
         public Nullable<int> OffDutyAbsentNum { get; set; }//下班缺卡次数
