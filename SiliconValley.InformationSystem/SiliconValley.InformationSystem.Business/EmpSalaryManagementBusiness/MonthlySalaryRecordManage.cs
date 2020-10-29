@@ -131,7 +131,6 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             var mcobj = mcmanage.GetEmpMCData().Where(s => s.EmployeeId == empid && DateTime.Parse(s.YearAndMonth.ToString()).Year == time.Year && DateTime.Parse(s.YearAndMonth.ToString()).Month == time.Month).FirstOrDefault();
             return mcobj;
         }
-
         //工资表生成的方法
         public bool CreateSalTab(string time)
         {
@@ -481,101 +480,17 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="filePath">文件路径</param>
-        /// <returns></returns>
-        public AjaxResult ExcelToImg(MonthlySalaryRecord m)
-        {
-            AjaxResult result = new AjaxResult();
-            Workbook workbook = new Workbook();
-            EmployeesInfoManage manage = new EmployeesInfoManage();
-
-            string name = manage.GetEntity(m.EmployeeId).EmpName + m.EmployeeId;
-            //workbook.LoadFromFile("C:/XinxihuaData/PaySlipExcel2020-10/" +name+ ".xls");
-            Worksheet sheet = workbook.Worksheets[0];
-
-            CreateHeader();
-
-            CreateCell(2, 1, manage.GetEntity(m.EmployeeId).EmpName);
-            CreateCell(2, 2, manage.GetPositionByEmpid(m.EmployeeId).PositionName);
-            CreateCell(2, 3, m.PerformancePay.ToString());
-            CreateCell(2, 4, m.PositionSalary.ToString());
-            CreateCell(2, 5, m.BaseSalary.ToString());
-
-
-            //获得项目的基目录
-            string path = System.AppDomain.CurrentDomain.BaseDirectory.Split('\\')[0];
-
-            var Path = System.IO.Path.Combine(path, @"\XinxihuaData\PaySlipImage" + DateTime.Now.ToString("yyyy-MM")); //进到基目录录找“Uploadss->PaySlipImage”文件夹
-
-            if (!System.IO.Directory.Exists(Path))     //判断是否有该文件夹
-                System.IO.Directory.CreateDirectory(Path); //如果没有在Uploads文件夹下创建文件夹PaySlipImage
-            string saveFileName = Path + "\\" + name+"." + ImageFormat.Jpeg;
-            try
-            {
-                sheet.SaveToImage(saveFileName);
-
-                result.Success = true;
-                result.ErrorCode = 200;
-                result.Msg = "导入成功！文件位置" + saveFileName;
-            }
-            catch (Exception e)
-            {
-                result.Success = true;
-                result.ErrorCode = 200;
-                result.Msg = "导入失败";
-            }
-
-            return result;
-
-            void CreateHeader()
-            {
-                CreateCell(1, 1, "姓名");
-                CreateCell(1, 2, "岗位");
-                CreateCell(1, 3, "到勤天数");
-                CreateCell(1, 4, "基本工资");
-                CreateCell(1, 5, "岗位工资");
-                CreateCell(1, 6, "绩效分");
-                CreateCell(1, 7, "绩效工资");
-                CreateCell(1, 8, "笔记本补助");
-                CreateCell(1, 9, "社保补贴");
-                CreateCell(1, 10, "应发工资");
-
-            }
-            void CreateCell(int row, int index, string value)
-            {
-
-                sheet.Range[row, index].Value = value;
-                sheet.AllocatedRange.AutoFitRows();
-                sheet.AllocatedRange.AutoFitColumns();
-                sheet.Range[1, index].Style.Font.IsBold = true;
-                var style = sheet.Range[row, index].Style;
-                style.HorizontalAlignment = HorizontalAlignType.Center;
-                style.VerticalAlignment = VerticalAlignType.Center;
-                
-                style.Font.IsBold = false;
-                style.Font.Size = 12;
-                style.Font.FontName = "宋体";
-                style.Borders[BordersLineType.EdgeLeft].LineStyle = LineStyleType.Thin;
-                style.Borders[BordersLineType.EdgeRight].LineStyle = LineStyleType.Thin;
-                style.Borders[BordersLineType.EdgeTop].LineStyle = LineStyleType.Thin;
-                style.Borders[BordersLineType.EdgeBottom].LineStyle = LineStyleType.Thin;
-            }
-
-        }
-
-    
-
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="FromMail">发件人地址</param>
         /// <param name="ToMail">收件人地址</param>
         /// <param name="AuthorizationCode">发件人授权码</param>
         /// <returns></returns>
-        public AjaxResult WagesDataToEmail(string FromMail, string ToMail, string name,string EmployeeId, string AuthorizationCode)
+        public AjaxResult WagesDataToEmail(string FromMail, string ToMail,string AuthorizationCode,MonthlySalaryRecord m)
         {
 
-            string File_Path = "C:/XinxihuaData/PaySlipImage2020-10/" + name + EmployeeId + ".Jpeg";
+            EmployeesInfoManage manage = new EmployeesInfoManage();
+            MeritsCheckManage merits = new MeritsCheckManage();
+            AttendanceInfoManage attendance = new AttendanceInfoManage();
+
             AjaxResult result = new AjaxResult();
             try
             {
@@ -594,31 +509,181 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 mail.IsBodyHtml = true;
                 
                 //邮件标题。
-                mail.Subject = "guigu";
+                mail.Subject = "您好！这是您" + DateTime.Now.ToString("yyyy年MM月") + "的工资条";
                 //邮件内容。
-                mail.Body = name+"，您好，这是您"+DateTime.Now.ToString("yyyy年MM月")+"的工资<br/>";
 
-                //设置邮件的附件，将在客户端选择的附件先上传到服务器保存一个，然后加入到mail中  
-                if (File_Path != "" && File_Path != null)
+                #region 邮件正文
+                mail.Body ="<div>工资详情<br/>";
+                mail.Body += "<table border='1' cellspacing='0' style='text-align:center'>";
+
+                mail.Body += @"<tr><th rowspan='2'>姓名</th>
+                <th rowspan='2'>岗位</th>
+                <th rowspan='2'>出勤天数</th>
+                <th rowspan='2'>基本工资</th>
+                <th rowspan='2'>岗位工资</th>
+                <th rowspan='2'>绩效分</th>
+                <th rowspan='2'>绩效工资</th>
+                <th rowspan='2'>笔记本补助</th>
+                <th rowspan='2'>应发工资</th>
+                <th colspan='2'>考勤扣款</th>
+                <th rowspan='2'>其他扣款</th>
+                <th rowspan='2'>应发工资2</th>
+                <th rowspan='2'>个人社保</th>
+                <th rowspan='2'>个税</th>
+                <th rowspan='2'>实发工资</th>
+                <th rowspan='2'>备注</th>
+            </tr>
+            <tr>
+                <th>迟到次数</th>
+                <th>扣费/元</th>
+            </tr>";
+               
+                mail.Body += "<tr><td></td>"+
+                        "<td></td>"+
+                        "<td></td>"+
+                        "<td>"+m.BaseSalary + "</td>"+
+                        "<td>"+m.PositionSalary+"</td>"+
+                        "<td></td>"+
+                        "<td></td>"+
+                        "<td></td>"+
+                        "<td></td>"+
+                        "<td></td>"+
+                        "<td></td>"+
+                        "<td></td>"+
+                        "<td></td>"+
+                        "<td></td>"+
+                        "<td></td>"+
+                        "<td></td>"+
+                        "<td></td>"+
+                   "</tr></table></div>";
+
+                mail.Body += "<div>绩效详情";
+
+                mail.Body += "<table border='1' cellspacing='0' style='text-align:center'>";
+
+                mail.Body += @"<tr><th>日常工作内容</th>
+                    <th>日常工作权重占比</th>
+                    <th>日常工作完成率</th>           
+                    <th>其他或领导临时指派任务</th>
+                    <th>其他工作权重占比</th>
+                    <th>其他工作完成率</th>
+                    <th>上级评分</th>
+                    <th>绩效分</th>
+                    <th>绩效工资</th>
+                </tr></table></div>";
+
+                var mer = merits.GetEmpMCData().Where(i => i.EmployeeId == m.EmployeeId).FirstOrDefault();
+                //绩效工资
+                var MonthPerformancePay = GetempPerformanceSalary(mer.FinalGrade, m.PerformancePay);
+                mail.Body += "<tr><td>" + mer.RoutineWork + "</td>" +
+                            "<td>" + mer.RoutineWorkPropotion + "%</td>" +
+                            "<td>" + mer.RoutineWorkFillRate + "%</td>" +
+                            "<td>" + mer.OtherWork + "</td>" +
+                            "<td>" + mer.OtherWorkPropotion + "%</td>" +
+                            "<td>" + mer.OtherWorkFillRate + "%</td>" +
+                            "<td>" + mer.SuperiorGrade + "</td>" +
+                            "<td>" + mer.FinalGrade + "</td>" +
+                            "<td>" + MonthPerformancePay + "</td>" +
+                        "</tr></table></div>";
+
+                mail.Body += "<div>考勤详情<br/><table border='1' cellspacing='0' style='text-align:center'>";
+
+                mail.Body += @"<tr><th>详情</th>
+                         <th>内容</th>
+                         <th>金额</th>
+                     </tr>";
+
+                var att = attendance.GetADInfoData().Where(i => i.EmployeeId == m.EmployeeId).FirstOrDefault();
+                ////迟到早退
+                if (!att.TardyAndLeaveWithhold.IsNullOrEmpty())
                 {
-
-                    //Attachment attachment = new System.Net.Mail.Attachment(File_Path);
-                    //将附件添加到邮件
-                    Attachment attachment = new System.Net.Mail.Attachment(File_Path);
-                    mail.Attachments.Add(attachment);
-                    mail.Body += "<img src=\"cid:" + attachment.ContentId + "\"/>";
-
-                    //获取或设置此电子邮件的发送通知。
-                    mail.DeliveryNotificationOptions = DeliveryNotificationOptions.OnSuccess;
+                    mail.Body += "<tr><td>迟到/早退扣款</td>" +
+                        "<td>迟到记录:" + att.TardyRecord + "<br/>" +
+                        "迟到次数:" + att.TardyNum + "<br/>" +
+                        "早退记录:" + att.LeaveEarlyRecord + "<br/>" +
+                        "早退次数:" + att.LeaveEarlyNum +
+                        "</td>" +
+                        "<td>" + att.TardyAndLeaveWithhold + "</td>" +
+                        "</tr>";
+                }
+                //旷工
+                if (!att.AbsenteeismWithhold.IsNullOrEmpty())
+                {
+                    mail.Body += "<tr><td>旷工扣款</td>" +
+                       "<td>旷工记录:" + att.AbsenteeismRecord + "<br/>" +
+                       "旷工天数:" + att.AbsenteeismDays +
+                       "</td>" +
+                       "<td>" + att.AbsenteeismWithhold + "</td>" +
+                       "</tr>";
+                }
+                //缺卡
+                var NoClockWithhold = GetNoClockWithhold(m.Id, MonthPerformancePay, att.DeserveToRegularDays, att.LeaveDays);
+                if (!NoClockWithhold.IsNullOrEmpty())
+                {
+                    mail.Body += "<tr><td>缺卡扣款</td>" +
+                      "<td>上班缺卡记录:" + att.WorkAbsentRecord + "<br/>" +
+                      "上班缺卡次数:" + att.WorkAbsentNum + "<br/>" +
+                      "中午缺卡记录:" + att.NoonAbsentRecord + "<br/>" +
+                      "中午缺卡次数:" + att.NoonAbsentNum + "<br/>" +
+                      "下班缺卡记录:" + att.OffDutyAbsentRecord + "<br/>" +
+                      "下班缺卡次数:" + att.OffDutyAbsentNum +
+                      "</td>" +
+                      "<td>" + NoClockWithhold + "</td>" +
+                      "</tr>";
+                }
+                //请假
+                var LeaveWithhold = GetLeaveDeductions(m.Id, m.PositionSalary + m.BaseSalary, MonthPerformancePay, att.DeserveToRegularDays, att.LeaveDays);
+                if (!LeaveWithhold.IsNullOrEmpty())
+                {
+                    mail.Body += "<tr><td>请假扣款</td>" +
+                     "<td>请假记录:" + att.LeaveRecord + "<br/>" +
+                     "请假天数:" + att.LeaveDays +
+                     "</td>" +
+                     "<td>" + LeaveWithhold + "</td>" +
+                     "</tr>";
+                }
+                //加班
+                if (!att.OvertimeCharges.IsNullOrEmpty())
+                {
+                    mail.Body += "<tr><td>加班费用</td>" +
+                      "<td>加班记录:<br/>" +
+                      "加班时长:" +
+                      "</td>" +
+                      "<td>" + att.OvertimeCharges + "</td>" +
+                      "</tr>";
+                }
+                //调休
+                if (!att.DaysoffRecord.IsNullOrEmpty() && !att.DaysoffDuration.IsNullOrEmpty())
+                {
+                    mail.Body += "<tr><td>调休</td>" +
+                     "<td>调休记录:" + att.DaysoffRecord + "<br/>" +
+                     "调休时长:" + att.DaysoffDuration +
+                     "</td><td></td></tr>";
+                }
+               //外出
+                if (!att.GoOutRecord.IsNullOrEmpty() && !att.GoOutNum.IsNullOrEmpty())
+                {
+                    mail.Body += "<tr><td>外出</td>" +
+                     "<td>外出记录:" + att.GoOutRecord + "<br/>" +
+                     "外出次数:" + att.GoOutNum +
+                     "</td><td></td></tr>";
+                }
+                //出差
+                if (!att.EvectionRecord.IsNullOrEmpty() && !att.EvectionNum.IsNullOrEmpty())
+                {
+                    mail.Body += "<tr><td>出差</td>" +
+                     "<td>出差记录:" + att.EvectionRecord + "<br/>" +
+                     "出差次数:" + att.EvectionNum +
+                     "</td><td></td></tr>";
                 }
 
+                mail.Body += "</table></div>";
+
+                #endregion
                 //实例化一个SmtpClient类。
                 SmtpClient client = new SmtpClient();
 
                 #region 设置邮件服务器地址
-
-                //在这里我使用的是163邮箱，所以是smtp.163.com，如果你使用的是qq邮箱，那么就是smtp.qq.com。
-                // client.Host = "smtp.163.com";
 
                 if (FromMail.Length != 0)
                 {
@@ -640,7 +705,6 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                             break;
                         case "hotmail":
                             client.Host = "smtp.live.com";//outlook邮箱
-                            //client.Port = 587;
                             break;
                         case "foxmail":
                             client.Host = "smtp.foxmail.com";
@@ -672,11 +736,11 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 result.ErrorCode = 200;
                 result.Msg = "邮件发送成功";
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 result.Success = false;
                 result.ErrorCode = 100;
-                result.Msg = "邮件发送失败";
+                result.Msg =e.Message;
 
             }
             return result;
