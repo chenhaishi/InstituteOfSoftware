@@ -117,9 +117,9 @@
                     , { field: 'SalaryOne', title: '应发工资1', width: 115, rowspan: 2 }
                     , { field: 'OvertimeCharges', title: '加班费用', width: 105, rowspan: 2 }
                     , { field: 'Bonus', title: '奖金(元)', width: 105, rowspan: 2 }
-
-                    , { align: 'center', title: '考勤扣款', colspan: 5 }
-
+                    , { field: 'leavedays', title: '请假天数', width: 110 }
+                    , { field: 'LeaveDeductions', title: '请假扣款(元)', width: 115 }
+                    , { align: 'center', title: '考勤扣款', colspan: 3}
                     , { field: 'OtherDeductions', title: '其他扣款(元)', width: 105, rowspan: 2 }
                     , { field: 'SalaryTwo', title: '应发工资2', width: 115, rowspan: 2 }
                     , { field: 'PersonalSocialSecurity', title: '个人社保', sort: true, width: 110, rowspan: 2 }
@@ -129,13 +129,13 @@
                     , { field: 'CashSalary', title: '实发工资(现金)', width: 150, rowspan: 2 }
                     , { field: 'EmpState', title: '员工状态', width: 100, rowspan: 2, templet: '#empstate' }
                     , { title: '操作', toolbar: '#barDemo', width: 100, fixed: 'right', rowspan: 2 }
-                ], [
-                    { field: 'leavedays', title: '请假天数', width: 110 }
-                    , { field: 'LeaveDeductions', title: '请假扣款(元)', width: 115 }
+                    ]
+                    ,[
+                     { field: 'TardyAndLeaveWithhold', title: '迟到/早退扣款(元)', width: 115 }
                     , { field: 'NoClockWithhold', title: '缺卡扣款(元)', width: 115 }
-                        , { field: 'TardyAndLeaveWithhold', title: '迟到/早退扣款(元)', width: 115 }
-                    //, { field: 'LeaveWithhold', title: '早退扣款/元', width: 115 }
-                ]]
+                    , { field: 'AbsentNumWithhold', title: '旷工扣款(元)', width: 115 }
+                    ]
+                ]
                 , page: true
             });
 

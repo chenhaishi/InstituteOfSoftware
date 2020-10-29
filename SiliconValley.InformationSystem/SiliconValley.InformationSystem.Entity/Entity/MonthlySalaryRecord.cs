@@ -25,7 +25,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         public Nullable<decimal> OvertimeCharges { get; set; }//加班费用
         public Nullable<decimal> Bonus { get; set; }  //奖金/元
         public Nullable<decimal> LeaveDeductions { get; set; }//（请假）扣款
-        public Nullable<decimal> NoClockWithhold { get; set; }//缺卡
+        //public Nullable<decimal> NoClockWithhold { get; set; }//缺卡
         public Nullable<decimal> OtherDeductions { get; set; }//其他扣款
 
         public Nullable<decimal> Total { get; set; }//合计
@@ -34,7 +34,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         public Nullable<bool> IsDel { get; set; }
         public Nullable<bool> IsApproval { get; set; }//是否已审批
 
-        public Nullable<decimal> BaseSalary { get; set; }//基本工资
+        public Nullable<decimal> BaseSalary { get; set; }//基本工资 
         public Nullable<decimal> PositionSalary { get; set; }//岗位工资
         public Nullable<decimal> MonthPerformancePay { get; set; }//绩效工资
         public Nullable<decimal> PersonalSocialSecurity { get; set; }//个人社保

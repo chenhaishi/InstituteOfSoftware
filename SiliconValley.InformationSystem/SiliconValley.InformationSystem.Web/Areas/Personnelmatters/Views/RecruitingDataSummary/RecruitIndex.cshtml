@@ -96,14 +96,14 @@
                             <div class="layui-inline" style="margin-left:-50px;">
                                 <label class="layui-form-label">从:</label>
                                 <div class="layui-input-inline">
-                                    <input type="text" id="start_TraceTime" name="start_TraceTime" placeholder="yyyy-MM" lay-verify="start_TraceTime" autocomplete="off" class="layui-input">
+                                    <input type="text" id="start_TraceTime" name="start_TraceTime" lay-verify="start_TraceTime" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
 
                             <div class="layui-inline" style="margin-left:-50px;">
                                 <label class="layui-form-label">至:</label>
                                 <div class="layui-input-inline">
-                                    <input type="text" id="end_TraceTime" name="end_TraceTime" placeholder="yyyy-MM" lay-verify="end_TraceTime" autocomplete="off" class="layui-input">
+                                    <input type="text" id="end_TraceTime" name="end_TraceTime"lay-verify="end_TraceTime" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
                         </div>
@@ -113,14 +113,14 @@
                             <div class="layui-inline" style="margin-left:-40px;">
                                 <label class="layui-form-label">从:</label>
                                 <div class="layui-input-inline">
-                                    <input type="text" id="start_ForwardDate" name="start_ForwardDate" placeholder="yyyy-MM" lay-verify="start_ForwardDate" autocomplete="off" class="layui-input">
+                                    <input type="text" id="start_ForwardDate" name="start_ForwardDate"lay-verify="start_ForwardDate" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
 
                             <div class="layui-inline" style="margin-left:-50px;">
                                 <label class="layui-form-label">至:</label>
                                 <div class="layui-input-inline">
-                                    <input type="text" id="end_ForwardDate" name="end_ForwardDate" placeholder="yyyy-MM" lay-verify="end_ForwardDate" autocomplete="off" class="layui-input">
+                                    <input type="text" id="end_ForwardDate" name="end_ForwardDate" lay-verify="end_ForwardDate" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
                         </div>
@@ -273,6 +273,7 @@
             //日期
             var start_TraceTime = laydate.render({
                 elem: '#start_TraceTime',
+                type: 'datetime',
                 done: function (value, date) {
                     end_TraceTime.config.min = {
                         year: date.year,
@@ -283,6 +284,7 @@
             });
             var end_TraceTime = laydate.render({
                 elem: '#end_TraceTime',
+                type: 'datetime',
                 done: function (value, date) {
                     start_TraceTime.config.max = {
                         year: date.year,
@@ -293,6 +295,7 @@
             });
             var start_ForwardDate = laydate.render({
                 elem: '#start_ForwardDate',
+                type: 'datetime',
                 done: function (value, date) {
                     end_ForwardDate.config.min = {
                         year: date.year,
@@ -303,6 +306,7 @@
             });
             var end_ForwardDate = laydate.render({
                 elem: '#end_ForwardDate',
+                type: 'datetime',
                 done: function (value, date) {
                     start_ForwardDate.config.max = {
                         year: date.year,
