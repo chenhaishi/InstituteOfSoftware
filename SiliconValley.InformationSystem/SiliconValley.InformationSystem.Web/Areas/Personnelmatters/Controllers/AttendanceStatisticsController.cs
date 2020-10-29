@@ -131,7 +131,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
 
 
         /// <summary>
-        /// 年月份及应到勤天数的改变
+        /// 年月份及应到勤天数的改变（查看记录）
         /// </summary>
         /// <returns></returns>
         [HttpGet]
