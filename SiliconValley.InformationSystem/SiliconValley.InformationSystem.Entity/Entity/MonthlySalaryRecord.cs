@@ -33,7 +33,6 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         public Nullable<decimal> CashSalary { get; set; }//现金工资
         public Nullable<bool> IsDel { get; set; }
         public Nullable<bool> IsApproval { get; set; }//是否已审批
-
         public Nullable<decimal> BaseSalary { get; set; }//基本工资 
         public Nullable<decimal> PositionSalary { get; set; }//岗位工资
         public Nullable<decimal> MonthPerformancePay { get; set; }//绩效工资
@@ -44,6 +43,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         public Nullable<decimal> PersonalIncomeTax { get; set; }//个税
 
         public Nullable<decimal> PerformancePay { get; set; }//绩效额度
+        public Nullable<decimal> FinalGrade { get; set; }//绩效分
 
         public Nullable<decimal> TardyAndLeaveWithhold { get; set; }//迟到/早退扣费
         public Nullable<decimal> AbsenteeismWithhold { get; set; }//旷工扣费

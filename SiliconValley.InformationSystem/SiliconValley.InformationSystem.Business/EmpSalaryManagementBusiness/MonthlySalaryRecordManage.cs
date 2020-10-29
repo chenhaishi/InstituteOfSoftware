@@ -153,14 +153,30 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     var forbiddenlist = this.GetEmpMsrData().Where(s => s.IsDel == true || (DateTime.Parse(s.YearAndMonth.ToString()).Year == nowtime.Year && DateTime.Parse(s.YearAndMonth.ToString()).Month == nowtime.Month)).ToList();
 
                     for (int i = 0; i < forbiddenlist.Count(); i++)
-                    {//将月度工资表中已禁用的员工去员工表中去除
+                    {//将月度工资表中已禁用的员工去员工工资体系表中去除
                         emplist.Remove(emplist.Where(e => e.EmployeeId == forbiddenlist[i].EmployeeId).FirstOrDefault());
                     }
                     foreach (var item in emplist)
                     {//再将未禁用的员工添加到月度工资表中
+                        AttendanceInfo attendance = GetAttendanceInfoByEmpid(item.EmployeeId,Convert.ToDateTime(time));
+                        MeritsCheck merits = GetMCByEmpid(item.EmployeeId,Convert.ToDateTime(time));
                         MonthlySalaryRecord msr = new MonthlySalaryRecord();
                         msr.EmployeeId = item.EmployeeId;
                         msr.YearAndMonth = Convert.ToDateTime(time);
+                        msr.FinalGrade = merits.FinalGrade;
+                        msr.BaseSalary = item.BaseSalary;
+                        msr.PositionSalary = item.PositionSalary;
+                        msr.PerformancePay = item.PerformancePay;
+                        msr.PersonalSocialSecurity = item.PersonalSocialSecurity;
+                        msr.SocialSecuritySubsidy = item.SocialSecuritySubsidy;
+                        msr.NetbookSubsidy = item.NetbookSubsidy;
+                        msr.ContributionBase = item.ContributionBase;
+                        msr.PersonalIncomeTax = item.PersonalIncomeTax;
+                        msr.OvertimeCharges = attendance.OvertimeCharges;
+                        msr.TardyAndLeaveWithhold = attendance.TardyAndLeaveWithhold;
+                        msr.AbsenteeismWithhold = attendance.AbsenteeismWithhold;
+                        msr.AbsentNumWithhold = attendance.AbsentNumWithhold;
+                        msr.MonthPerformancePay = GetempPerformanceSalary(merits.FinalGrade,item.PerformancePay);
                         msr.IsDel = false;
                         msr.IsApproval = false;
                         this.Insert(msr);
@@ -199,6 +215,8 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             {
                 result = performancelimit * (finalGrade * (decimal)0.01);
             }
+
+            rc.RemoveCache("InRedisMSRData");
             return result;
         }
         /// <summary>
@@ -517,15 +535,21 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 mail.Body += "<table border='1' cellspacing='0' style='text-align:center'>";
 
                 mail.Body += @"<tr><th rowspan='2'>姓名</th>
-                <th rowspan='2'>岗位</th>
+                <th rowspan='2'>所属部门</th>
+                <th rowspan='2'>所属岗位</th>
                 <th rowspan='2'>出勤天数</th>
                 <th rowspan='2'>基本工资</th>
                 <th rowspan='2'>岗位工资</th>
                 <th rowspan='2'>绩效分</th>
                 <th rowspan='2'>绩效工资</th>
                 <th rowspan='2'>笔记本补助</th>
+                <th rowspan='2'>社保补贴</th>
                 <th rowspan='2'>应发工资</th>
-                <th colspan='2'>考勤扣款</th>
+                <th rowspan='2'>加班费用</th>
+                <th rowspan='2'>奖金(元)</th>
+                <th rowspan='2'>请假天数</th>
+                <th rowspan='2'>请假扣款(元)</th>
+                <th colspan='3'>考勤扣款</th>
                 <th rowspan='2'>其他扣款</th>
                 <th rowspan='2'>应发工资2</th>
                 <th rowspan='2'>个人社保</th>
@@ -534,27 +558,34 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 <th rowspan='2'>备注</th>
             </tr>
             <tr>
-                <th>迟到次数</th>
-                <th>扣费/元</th>
+                <th>迟到/早退扣款</th>
+                <th>缺卡扣款(元)</th>
+                <th>旷工扣款(元)</th>
             </tr>";
                
-                mail.Body += "<tr><td></td>"+
-                        "<td></td>"+
-                        "<td></td>"+
-                        "<td>"+m.BaseSalary + "</td>"+
+                mail.Body += "<tr><td>"+ manage.GetEntity(m.EmployeeId).EmpName+ "</td>"+
+                        "<td>"+manage.GetDeptByEmpid(m.EmployeeId).DeptName+ "</td>"+
+                        "<td>"+manage.GetPositionByEmpid(m.EmployeeId).PositionName+"</td>"+
+                        "<td></td>" +
+                        "<td>" +m.BaseSalary + "</td>"+
                         "<td>"+m.PositionSalary+"</td>"+
+                        "<td>"+m.FinalGrade+"</td>"+
+                        "<td>"+m.MonthPerformancePay + "</td>"+
+                        "<td>"+m.NetbookSubsidy + "</td>"+
+                        "<td>"+m.SocialSecuritySubsidy + "</td>"+
                         "<td></td>"+
+                        "<td>"+m.OvertimeCharges + "</td>"+
+                        "<td>"+ m.Bonus + "</td>"+
                         "<td></td>"+
+                        "<td>"+ m.LeaveDeductions + "</td>"+
+                        "<td>"+m.TardyAndLeaveWithhold + "</td>"+
+                        "<td>"+m.AbsentNumWithhold + "</td>"+
+                        "<td>"+m.AbsenteeismWithhold + "</td>"+
+                        "<td>"+m.OtherDeductions + "</td>"+
                         "<td></td>"+
-                        "<td></td>"+
-                        "<td></td>"+
-                        "<td></td>"+
-                        "<td></td>"+
-                        "<td></td>"+
-                        "<td></td>"+
-                        "<td></td>"+
-                        "<td></td>"+
-                        "<td></td>"+
+                        "<td>" + m.PersonalSocialSecurity + "</td>" +
+                        "<td>" + m.PersonalIncomeTax + "</td>" +
+
                    "</tr></table></div>";
 
                 mail.Body += "<div>绩效详情";
@@ -574,7 +605,6 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
 
                 var mer = merits.GetEmpMCData().Where(i => i.EmployeeId == m.EmployeeId).FirstOrDefault();
                 //绩效工资
-                var MonthPerformancePay = GetempPerformanceSalary(mer.FinalGrade, m.PerformancePay);
                 mail.Body += "<tr><td>" + mer.RoutineWork + "</td>" +
                             "<td>" + mer.RoutineWorkPropotion + "%</td>" +
                             "<td>" + mer.RoutineWorkFillRate + "%</td>" +
@@ -582,8 +612,8 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                             "<td>" + mer.OtherWorkPropotion + "%</td>" +
                             "<td>" + mer.OtherWorkFillRate + "%</td>" +
                             "<td>" + mer.SuperiorGrade + "</td>" +
-                            "<td>" + mer.FinalGrade + "</td>" +
-                            "<td>" + MonthPerformancePay + "</td>" +
+                            "<td>" + m.FinalGrade + "</td>" +
+                            "<td>" + m.MonthPerformancePay + "</td>" +
                         "</tr></table></div>";
 
                 mail.Body += "<div>考勤详情<br/><table border='1' cellspacing='0' style='text-align:center'>";
@@ -617,8 +647,8 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                        "</tr>";
                 }
                 //缺卡
-                var NoClockWithhold = GetNoClockWithhold(m.Id, MonthPerformancePay, att.DeserveToRegularDays, att.LeaveDays);
-                if (!NoClockWithhold.IsNullOrEmpty())
+               
+                if (!m.AbsentNumWithhold.IsNullOrEmpty())
                 {
                     mail.Body += "<tr><td>缺卡扣款</td>" +
                       "<td>上班缺卡记录:" + att.WorkAbsentRecord + "<br/>" +
@@ -628,11 +658,11 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                       "下班缺卡记录:" + att.OffDutyAbsentRecord + "<br/>" +
                       "下班缺卡次数:" + att.OffDutyAbsentNum +
                       "</td>" +
-                      "<td>" + NoClockWithhold + "</td>" +
+                      "<td>" + m.AbsentNumWithhold + "</td>" +
                       "</tr>";
                 }
                 //请假
-                var LeaveWithhold = GetLeaveDeductions(m.Id, m.PositionSalary + m.BaseSalary, MonthPerformancePay, att.DeserveToRegularDays, att.LeaveDays);
+                var LeaveWithhold = GetLeaveDeductions(m.Id, m.PositionSalary + m.BaseSalary, m.MonthPerformancePay, att.DeserveToRegularDays, att.LeaveDays);
                 if (!LeaveWithhold.IsNullOrEmpty())
                 {
                     mail.Body += "<tr><td>请假扣款</td>" +

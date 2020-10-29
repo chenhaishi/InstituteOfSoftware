@@ -97,7 +97,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 }
                 else
                 {
-                    view.finalGrade = msrmanage.GetMCByEmpid(item.EmployeeId, (DateTime)item.YearAndMonth).FinalGrade;
+                    view.finalGrade = item.FinalGrade;
                 }
                 if (view.finalGrade == null)
                 {
@@ -105,7 +105,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 }
                 else
                 {
-                    view.PerformanceSalary = msrmanage.GetempPerformanceSalary(view.finalGrade, eseobj.PerformancePay);
+                    view.PerformanceSalary = msrmanage.GetempPerformanceSalary(item.FinalGrade, eseobj.PerformancePay);
                 }
 
                 view.netbookSubsidy = eseobj.NetbookSubsidy;//笔记本补助
