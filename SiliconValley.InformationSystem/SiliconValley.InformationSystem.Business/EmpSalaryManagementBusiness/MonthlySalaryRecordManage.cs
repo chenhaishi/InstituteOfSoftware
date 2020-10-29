@@ -290,42 +290,42 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
         /// <param name="shouldday">应出勤天数</param>
         /// <param name="leaveday">请假天数</param>
         /// <returns></returns>
-        public decimal? GetNoClockWithhold(int id, decimal? one, decimal? persalary, decimal? shouldday)
-        {
-            AjaxResult result = new AjaxResult();
-            decimal? countsalary = one;
-            var msr = this.GetEntity(id);
-            try
-            {
-                if (!string.IsNullOrEmpty(shouldday.ToString()))
-                {
-                    if (!string.IsNullOrEmpty(persalary.ToString()))
-                    {
-                        countsalary = countsalary + persalary;
+        //public decimal? GetNoClockWithhold(int id, decimal? one, decimal? persalary, decimal? shouldday)
+        //{
+        //    AjaxResult result = new AjaxResult();
+        //    decimal? countsalary = one;
+        //    var msr = this.GetEntity(id);
+        //    try
+        //    {
+        //        if (!string.IsNullOrEmpty(shouldday.ToString()))
+        //        {
+        //            if (!string.IsNullOrEmpty(persalary.ToString()))
+        //            {
+        //                countsalary = countsalary + persalary;
 
-                    }
-                    countsalary = countsalary / shouldday / 2;
-                    msr.NoClockWithhold = countsalary;
-                    this.Update(msr);
-                    rc.RemoveCache("InRedisMSRData");
-                    result = this.Success();
-                    countsalary = (decimal)Math.Round(Convert.ToDouble(countsalary), 2);
-                }
-                else
-                {
-                    countsalary = null;
-                }
+        //            }
+        //            countsalary = countsalary / shouldday / 2;
+        //            msr.NoClockWithhold = countsalary;
+        //            this.Update(msr);
+        //            rc.RemoveCache("InRedisMSRData");
+        //            result = this.Success();
+        //            countsalary = (decimal)Math.Round(Convert.ToDouble(countsalary), 2);
+        //        }
+        //        else
+        //        {
+        //            countsalary = null;
+        //        }
 
 
-            }
-            catch (Exception ex)
-            {
-                result = this.Error(ex.Message);
-                countsalary = null;
-            }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        result = this.Error(ex.Message);
+        //        countsalary = null;
+        //    }
 
-            return countsalary;
-        }
+        //    return countsalary;
+        //}
 
         /// <summary>
         /// 计算应发工资2

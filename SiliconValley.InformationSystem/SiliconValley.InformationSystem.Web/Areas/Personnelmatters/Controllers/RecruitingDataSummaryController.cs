@@ -106,23 +106,23 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 }
                 if (!string.IsNullOrEmpty(start_TraceTime))
                 {
-                    DateTime stime = Convert.ToDateTime(start_TraceTime + " 00:00:00.000");
+                    DateTime stime = Convert.ToDateTime(start_TraceTime);
                     rptviewlist = rptviewlist.Where(a => a.TraceTime >= stime).ToList();
                 }
                 if (!string.IsNullOrEmpty(end_TraceTime))
                 {
-                    DateTime stime = Convert.ToDateTime(end_TraceTime + " 00:00:00.000");
-                    rptviewlist = rptviewlist.Where(a => a.TraceTime >= stime).ToList();
+                    DateTime stime = Convert.ToDateTime(end_TraceTime);
+                    rptviewlist = rptviewlist.Where(a => a.TraceTime <= stime).ToList();
                 }
                 if (!string.IsNullOrEmpty(start_ForwardDate))
                 {
-                    DateTime stime = Convert.ToDateTime(start_ForwardDate + " 00:00:00.000");
+                    DateTime stime = Convert.ToDateTime(start_ForwardDate );
                     rptviewlist = rptviewlist.Where(a => a.forwardDate >= stime).ToList();
                 }
                 if (!string.IsNullOrEmpty(end_ForwardDate))
                 {
-                    DateTime stime = Convert.ToDateTime(end_ForwardDate + " 00:00:00.000");
-                    rptviewlist = rptviewlist.Where(a => a.forwardDate >= stime).ToList();
+                    DateTime stime = Convert.ToDateTime(end_ForwardDate);
+                    rptviewlist = rptviewlist.Where(a => a.forwardDate <= stime).ToList();
                 }
 
             }

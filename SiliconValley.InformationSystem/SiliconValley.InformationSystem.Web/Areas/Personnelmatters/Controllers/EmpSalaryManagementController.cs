@@ -137,14 +137,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                     view.TardyAndLeaveWithhold = attendobj.TardyAndLeaveWithhold;//迟到扣款
                                                                                  //  view.LeaveWithhold = attendobj.LeaveWithhold;//早退扣款
                     var NoClocknum = attendobj.WorkAbsentNum + attendobj.OffDutyAbsentNum;
-                    if (NoClocknum > 3)
-                    {
-                        view.NoClockWithhold = msrmanage.GetNoClockWithhold(view.Id, one, view.PerformanceSalary, attendobj.DeserveToRegularDays);//缺卡扣款
-                    }
-                    else
-                    {
-                        view.NoClockWithhold = null;
-                    }
+                    //if (NoClocknum > 3)
+                    //{
+                    //    view.NoClockWithhold = attendobj.AbsentNumWithhold; /*msrmanage.GetNoClockWithhold(view.Id, one, view.PerformanceSalary, attendobj.DeserveToRegularDays);//缺卡扣款*/
+                    //}
+                    //else
+                    //{
+                    //    view.NoClockWithhold = null;
+                    //}
+                    view.NoClockWithhold = attendobj.NoonAbsentNum;
+                    view.AbsentNumWithhold = attendobj.AbsentNumWithhold;
                 }
 
                 view.OvertimeCharges = item.OvertimeCharges;//加班费用

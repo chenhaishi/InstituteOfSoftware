@@ -129,5 +129,10 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.SalaryView
         /// </summary>
         public Nullable<bool> EmpState { get; set; }
 
+
+        /// <summary>
+        /// 旷工扣款
+        /// </summary>
+        public Nullable<decimal> AbsentNumWithhold { get; set; }
     }
 }
