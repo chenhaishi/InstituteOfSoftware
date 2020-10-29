@@ -48,8 +48,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         }
         //获取考勤数据
         public ActionResult GetCheckingInData(int page, int limit, string AppCondition,string ymtime)
-        {
-          
+        {          
             ymtime = FirstTime;
             var attlist = atdmanage.GetADInfoData().Where(s => s.IsDel == false).ToList();
             if (!string.IsNullOrEmpty( ymtime)) {
