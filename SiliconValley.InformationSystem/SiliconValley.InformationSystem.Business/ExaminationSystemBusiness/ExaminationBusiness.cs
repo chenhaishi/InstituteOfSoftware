@@ -622,11 +622,11 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
             return list;
         }
 
-        public ComputerTestQuestionsView AllComputerTestQuestion(int courseid,bool IsNeedProposition = true)
+        public ComputerTestQuestionsView AllComputerTestQuestion(int PaperLevel, int courseid,bool IsNeedProposition = true)
         {
             List<ComputerTestQuestionsView> resutlist = new List<ComputerTestQuestionsView>();
             //List<ComputerTestQuestionsView> resutlist2 = new List<ComputerTestQuestionsView>();
-            var list = db_computerQuestion.AllComputerTestQuestion().Where(d=>d.Course == courseid);
+            var list = db_computerQuestion.AllComputerTestQuestion().Where(d=>d.Course == courseid && d.Level == PaperLevel);
             foreach (var item in list)
             {
                 var obj = db_computerQuestion.ConvertToComputerTestQuestionsView(item, true);

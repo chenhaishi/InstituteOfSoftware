@@ -170,7 +170,7 @@
 
                 <div class="infoitem totalPaper">试卷总数量--<span></span></div>
                 <div class="infoitem filshPaper">已阅卷数量--<span></span></div>
-
+                <a class="btn btn-danger" id="YiJian">一键下载机试</a>
             </div>
         </div>
     </div>
@@ -824,6 +824,9 @@
                     $(this).val(0);
                 }
             });
+            $(document).off("click", "#YiJian").on("click", "#YiJian", function () {
+                layer.msg("尽情期待！");
+            })
         });
 
     </script>   
