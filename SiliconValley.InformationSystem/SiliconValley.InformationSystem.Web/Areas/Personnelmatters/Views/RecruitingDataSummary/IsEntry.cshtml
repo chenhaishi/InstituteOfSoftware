@@ -600,7 +600,6 @@
                 for (var item in data.field) {
                     fd.append(item, data.field[item]);
                 }
-                console.log("云哥1：" + data.field.EmpName);
                 $.ajax({
                     type: "post",
                     url: "/Personnelmatters/EmployeesInfo/AddEmpInfo",
@@ -618,7 +617,7 @@
                             console.log("应聘员工入职后获取的招聘编号：" + id);
                             $.post("/Personnelmatters/RecruitingDataSummary/EdiIsEntrytTrack", { id: id }, function (data) {
                                 if (data.Success) {
-                                    layer.alert("编辑成功!", { icon: 1 }, function () {
+                                    layer.alert("入职成功!", { icon: 1 }, function () {
                                         var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                                         parent.layui.table.reload('myrptData');
                                         parent.layui.table.reload('myRecruitData');
@@ -626,7 +625,7 @@
 
                                     });
                                 } else {
-                                    layer.alert("编辑失败!");
+                                    layer.alert("入职失败!");
                                 }
                             });
                            

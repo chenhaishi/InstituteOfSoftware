@@ -430,13 +430,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult IsEntry(string id)
+        public ActionResult EdiIsEntrytTrack(int id)
         {
             RecruitPhoneTraceManage rmanage = new RecruitPhoneTraceManage();
             var AjaxResultxx = new AjaxResult();
             try
             {
-                var rpt = rmanage.GetEntity(int.Parse(id));
+                var rpt = rmanage.GetEntity(id);
                 var rptlist = rmanage.GetList().Where(s => s.SonId == rpt.SonId).ToList();
                 foreach (var item in rptlist)
                 {

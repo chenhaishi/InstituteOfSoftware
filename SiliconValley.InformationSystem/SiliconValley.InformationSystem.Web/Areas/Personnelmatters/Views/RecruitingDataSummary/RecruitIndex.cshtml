@@ -103,7 +103,7 @@
                             <div class="layui-inline" style="margin-left:-50px;">
                                 <label class="layui-form-label">至:</label>
                                 <div class="layui-input-inline">
-                                    <input type="text" id="end_TraceTime" name="end_TraceTime"lay-verify="end_TraceTime" autocomplete="off" class="layui-input">
+                                    <input type="text" id="end_TraceTime" name="end_TraceTime" lay-verify="end_TraceTime" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
                         </div>
@@ -113,7 +113,7 @@
                             <div class="layui-inline" style="margin-left:-40px;">
                                 <label class="layui-form-label">从:</label>
                                 <div class="layui-input-inline">
-                                    <input type="text" id="start_ForwardDate" name="start_ForwardDate"lay-verify="start_ForwardDate" autocomplete="off" class="layui-input">
+                                    <input type="text" id="start_ForwardDate" name="start_ForwardDate" lay-verify="start_ForwardDate" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
 
@@ -191,9 +191,13 @@
     </div>
 </div>
 
-@*招聘电话追踪记录的是否入职属性*@
+@*招聘电话追踪记录的面试结果属性*@
 <script type="text/html" id="switchTp2">
-    <input type="checkbox" name="IsEntry" value="{{d.Id}}" lay-skin="switch" lay-text="是|否" lay-filter="entryDemo" {{ d.IsEntry == true ? 'checked' : '' }}>
+    {{# if(d.IsEntry==false){ }}
+    {{ d.IsEntry="未入职" }}
+    {{# }else{ }}
+    {{ d.IsEntry="已入职" }}
+    {{# } }}
 </script>
 
 
@@ -233,7 +237,7 @@
                     , { field: 'ResumeType', title: '简历类型', sort: true, width: 110 }
                     , { field: 'forwardDate', title: '预面试时间', width: 170, sort: true, templet: function (d) { return changeDateTimeFormat(d.forwardDate); } }
                     , { field: 'result', title: '面试结果', width: 100, templet: '#faceresult' }
-                    , { field: 'IsEntry', title: '是否入职', width: 100, templet: '#switchTp2', unresize: true }
+                    , { field: 'IsEntry', title: '是否入职', width: 100, templet: '#switchTp2' }
                     , { field: 'Remark', title: '备注', sort: true, width: 90 }
                     , { fixed: 'right', title: '操作', toolbar: '#barDemo' }
                 ]]
@@ -262,7 +266,7 @@
                         page: {
                             curr: 1 //重新从第 1 页开始
                         }, where: {
-                            AppCondition: name+"," + deptid + "," + pid + "," + PhoneNumber + "," + Channel + "," + ResumeType + "," + result + "," + IsEntry + "," + start_TraceTime + "," + end_TraceTime + "," + start_ForwardDate + "," + end_ForwardDate
+                            AppCondition: name + "," + deptid + "," + pid + "," + PhoneNumber + "," + Channel + "," + ResumeType + "," + result + "," + IsEntry + "," + start_TraceTime + "," + end_TraceTime + "," + start_ForwardDate + "," + end_ForwardDate
                         }
                     });
                 });
