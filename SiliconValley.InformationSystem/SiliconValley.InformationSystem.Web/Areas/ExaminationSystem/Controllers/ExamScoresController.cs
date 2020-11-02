@@ -397,7 +397,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             //获取答卷路径
 
-            if (candidateinfo.ComputerPaper == null)
+            if (candidateinfo.ComputerPaper == null || candidateinfo.ComputerPaper == "1")
             {
                 return Json("404", JsonRequestBehavior.AllowGet);
             }
