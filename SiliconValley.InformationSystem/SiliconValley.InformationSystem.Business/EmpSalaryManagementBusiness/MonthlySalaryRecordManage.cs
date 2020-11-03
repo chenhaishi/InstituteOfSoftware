@@ -193,7 +193,6 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             }
             return result;
         }
-
         /// <summary>
         /// 计算绩效工资
         /// </summary>
@@ -508,6 +507,8 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             EmployeesInfoManage manage = new EmployeesInfoManage();
             MeritsCheckManage merits = new MeritsCheckManage();
             AttendanceInfoManage attendance = new AttendanceInfoManage();
+            SchoolAttendanceManagementBusiness.OvertimeRecordManage overtime = new SchoolAttendanceManagementBusiness.OvertimeRecordManage();
+            var att = GetAttendanceInfoByEmpid(m.EmployeeId,Convert.ToDateTime(m.YearAndMonth));
 
             AjaxResult result = new AjaxResult();
             try
@@ -555,36 +556,38 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 <th rowspan='2'>个人社保</th>
                 <th rowspan='2'>个税</th>
                 <th rowspan='2'>实发工资</th>
-                <th rowspan='2'>备注</th>
             </tr>
             <tr>
                 <th>迟到/早退扣款</th>
                 <th>缺卡扣款(元)</th>
                 <th>旷工扣款(元)</th>
             </tr>";
-               
-                mail.Body += "<tr><td>"+ manage.GetEntity(m.EmployeeId).EmpName+ "</td>"+
-                        "<td>"+manage.GetDeptByEmpid(m.EmployeeId).DeptName+ "</td>"+
-                        "<td>"+manage.GetPositionByEmpid(m.EmployeeId).PositionName+"</td>"+
-                        "<td></td>" +
-                        "<td>" +m.BaseSalary + "</td>"+
-                        "<td>"+m.PositionSalary+"</td>"+
-                        "<td>"+m.FinalGrade+"</td>"+
-                        "<td>"+m.MonthPerformancePay + "</td>"+
-                        "<td>"+m.NetbookSubsidy + "</td>"+
-                        "<td>"+m.SocialSecuritySubsidy + "</td>"+
-                        "<td></td>"+
-                        "<td>"+m.OvertimeCharges + "</td>"+
-                        "<td>"+ m.Bonus + "</td>"+
-                        "<td></td>"+
-                        "<td>"+ m.LeaveDeductions + "</td>"+
-                        "<td>"+m.TardyAndLeaveWithhold + "</td>"+
-                        "<td>"+m.AbsentNumWithhold + "</td>"+
-                        "<td>"+m.AbsenteeismWithhold + "</td>"+
-                        "<td>"+m.OtherDeductions + "</td>"+
-                        "<td></td>"+
+                var SalaryOne = GetSalaryone(m.BaseSalary + m.PositionSalary, m.MonthPerformancePay, m.NetbookSubsidy, m.SocialSecuritySubsidy);
+                var SalaryTwo = GetSalarytwo(SalaryOne, m.OvertimeCharges, m.Bonus, m.LeaveDeductions, m.TardyAndLeaveWithhold, m.AbsentNumWithhold, m.OtherDeductions);
+
+                mail.Body += "<tr><td>" + manage.GetEntity(m.EmployeeId).EmpName + "</td>" +
+                        "<td>" + manage.GetDeptByEmpid(m.EmployeeId).DeptName + "</td>" +
+                        "<td>" + manage.GetPositionByEmpid(m.EmployeeId).PositionName + "</td>" +
+                        "<td>" + att.ToRegularDays + "</td>" +
+                        "<td>" + m.BaseSalary + "</td>" +
+                        "<td>" + m.PositionSalary + "</td>" +
+                        "<td>" + m.FinalGrade + "</td>" +
+                        "<td>" + m.MonthPerformancePay + "</td>" +
+                        "<td>" + m.NetbookSubsidy + "</td>" +
+                        "<td>" + m.SocialSecuritySubsidy + "</td>" +
+                        "<td>" + SalaryOne + "</td>" +
+                        "<td>" + m.OvertimeCharges + "</td>" +
+                        "<td>" + m.Bonus + "</td>" +
+                        "<td>" + att.LeaveDays + "</td>" +
+                        "<td>" + m.LeaveDeductions + "</td>" +
+                        "<td>" + m.TardyAndLeaveWithhold + "</td>" +
+                        "<td>" + m.AbsentNumWithhold + "</td>" +
+                        "<td>" + m.AbsenteeismWithhold + "</td>" +
+                        "<td>" + m.OtherDeductions + "</td>" +
+                        "<td>" + SalaryTwo + "</td>" +
                         "<td>" + m.PersonalSocialSecurity + "</td>" +
                         "<td>" + m.PersonalIncomeTax + "</td>" +
+                        "<td>" + m.Total + "</td>" +
 
                    "</tr></table></div>";
 
@@ -601,7 +604,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     <th>上级评分</th>
                     <th>绩效分</th>
                     <th>绩效工资</th>
-                </tr></table></div>";
+                </tr>";
 
                 var mer = merits.GetEmpMCData().Where(i => i.EmployeeId == m.EmployeeId).FirstOrDefault();
                 //绩效工资
@@ -623,7 +626,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                          <th>金额</th>
                      </tr>";
 
-                var att = attendance.GetADInfoData().Where(i => i.EmployeeId == m.EmployeeId).FirstOrDefault();
+                
                 ////迟到早退
                 if (!att.TardyAndLeaveWithhold.IsNullOrEmpty())
                 {
@@ -647,7 +650,6 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                        "</tr>";
                 }
                 //缺卡
-               
                 if (!m.AbsentNumWithhold.IsNullOrEmpty())
                 {
                     mail.Body += "<tr><td>缺卡扣款</td>" +
@@ -662,24 +664,27 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                       "</tr>";
                 }
                 //请假
-                var LeaveWithhold = GetLeaveDeductions(m.Id, m.PositionSalary + m.BaseSalary, m.MonthPerformancePay, att.DeserveToRegularDays, att.LeaveDays);
-                if (!LeaveWithhold.IsNullOrEmpty())
+                if (!m.LeaveDeductions.IsNullOrEmpty())
                 {
                     mail.Body += "<tr><td>请假扣款</td>" +
                      "<td>请假记录:" + att.LeaveRecord + "<br/>" +
                      "请假天数:" + att.LeaveDays +
                      "</td>" +
-                     "<td>" + LeaveWithhold + "</td>" +
+                     "<td>" + m.LeaveDeductions + "</td>" +
                      "</tr>";
                 }
                 //加班
+                var over = overtime.GetList().Where(i=>i.EmployeeId==m.EmployeeId);
+                
                 if (!att.OvertimeCharges.IsNullOrEmpty())
                 {
-                    mail.Body += "<tr><td>加班费用</td>" +
-                      "<td>加班记录:<br/>" +
-                      "加班时长:" +
-                      "</td>" +
-                      "<td>" + att.OvertimeCharges + "</td>" +
+                    mail.Body += "<tr><td>加班费用</td>";
+                    foreach (var i in over)
+                    {
+                        mail.Body +="<td>加班记录:" + i.StartTime+"至"+i.EndTime+"<br/>";
+                        mail.Body += "加班时长:" + i.Duration + "<br/></td>";
+                    }
+                    mail.Body += "<td>" + att.OvertimeCharges + "</td>" +
                       "</tr>";
                 }
                 //调休

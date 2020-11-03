@@ -17,16 +17,19 @@
 @*操作栏*@
 <script type="text/html" id="barDemo">
     <a class="layui-btn  layui-btn-xs " lay-event="edit">编辑</a>
+    {{# if(d.OvertimeCharges!=null){ }}
     <a class="layui-btn  layui-btn-xs " lay-event="OvertimeRecorddetail">加班详情</a>
+    {{# } }}
 </script>
 
 @*员工在职状态*@
 <script type="text/html" id="empstate">
-    {{# if(d.empIsDel==false){ }}
+    {{# if(d.empIsDel==false){ }}j
     {{ d.empIsDel="在职" }}
     {{# }else{ }}
     {{ d.empIsDel="离职" }}
     {{# } }}
+    
 </script>
 
 <div>

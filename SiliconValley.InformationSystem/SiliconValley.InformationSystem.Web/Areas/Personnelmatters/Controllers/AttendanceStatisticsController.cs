@@ -426,5 +426,65 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             };
             return Json(newobj, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult OvertimeEdit(int  id)
+        {
+            OvertimeRecordManage overtime = new OvertimeRecordManage();
+            EmployeesInfoManage manage = new EmployeesInfoManage();
+
+            var s = overtime.GetEntity(id);
+            ViewBag.EmpName = manage.GetEntity(s.EmployeeId).EmpName;
+            return View(s);
+        }
+        [HttpPost]
+        public ActionResult OvertimeEdit(OvertimeRecord over, int type,string Duration)
+        {
+            AjaxResult result = new AjaxResult();
+            OvertimeRecordManage overtime = new OvertimeRecordManage();
+            MonthlySalaryRecordManage monthly = new MonthlySalaryRecordManage();
+            AttendanceInfoManage attendance = new AttendanceInfoManage();
+        
+
+            var s = overtime.GetEntity(over.Id);
+            over.EmployeeId = s.EmployeeId;
+            over.YearAndMonth = s.YearAndMonth;
+          
+            overtime.Update(over);
+
+         var att=monthly.GetAttendanceInfoByEmpid(over.EmployeeId,Convert.ToDateTime(over.YearAndMonth));
+            var OvertimeWithhold= overtime.OvertimeWithhold(over.OvertimeTypeId, (dynamic)over.Duration);
+            var oldOvertime= overtime.OvertimeWithhold(type,Convert.ToDecimal(Duration));
+            att.OvertimeCharges = OvertimeWithhold;
+
+            attendance.Update(att);
+            
+            var month = monthly.GetEmpMsrData().Where(i => i.EmployeeId == over.EmployeeId && DateTime.Parse(i.YearAndMonth.ToString()).Year == DateTime.Parse(over.YearAndMonth.ToString()).Year&& DateTime.Parse(i.YearAndMonth.ToString()).Month == DateTime.Parse(over.YearAndMonth.ToString()).Month).FirstOrDefault();
+            if (!month.IsNullOrEmpty())
+            {
+                month.OvertimeCharges = (month.OvertimeCharges-oldOvertime)+ OvertimeWithhold;
+                monthly.Update(month);
+            }
+
+           
+
+            att.OvertimeCharges = (att.OvertimeCharges - oldOvertime )+ OvertimeWithhold;
+
+            attendance.Update(att);
+
+            try
+            {
+                result.Msg = "修改成功";
+                result.Success = true;
+                result.ErrorCode = 200;
+            }
+            catch (Exception e)
+            {
+                result.Msg = "修改失败";
+                result.Success = true;
+                result.ErrorCode = 200;
+            }
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
     }
 }

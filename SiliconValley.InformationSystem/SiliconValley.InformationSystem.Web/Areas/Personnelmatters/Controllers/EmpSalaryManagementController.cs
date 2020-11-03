@@ -465,11 +465,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             return resultsalary;
         }
 
-        public ActionResult PaySlipExcel()
+        public ActionResult PaySlipExcel(string time)
         {
             AjaxResult result = new AjaxResult();
             MonthlySalaryRecordManage monthly = new MonthlySalaryRecordManage();
-            List<MonthlySalaryRecord> salary = monthly.GetEmpMsrData();
+            List<MonthlySalaryRecord> salary = monthly.GetEmpMsrData().Where(i => i.IsDel == false && i.IsApproval == true && Convert.ToDateTime(i.YearAndMonth.ToString().Substring(0, 7)) ==Convert.ToDateTime(time)).ToList();
+
 
             //收件人邮箱
             string ToMail = "3330616589@qq.com";
@@ -481,9 +482,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             foreach (var i in salary)
             {
 
-                result = monthly.WagesDataToEmail(FromMail, ToMail, AuthorizationCode,i);
+                result = monthly.WagesDataToEmail(FromMail, ToMail, AuthorizationCode, i);
             }
-                return Json(result, JsonRequestBehavior.AllowGet);
+            return Json(result, JsonRequestBehavior.AllowGet);
             
         }
         } 
