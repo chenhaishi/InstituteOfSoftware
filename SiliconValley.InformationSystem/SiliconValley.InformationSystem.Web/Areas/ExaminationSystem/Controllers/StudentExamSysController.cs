@@ -325,7 +325,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
         public ActionResult ComputerQuestionUpload(int examid)
         {
-           var exam = db_exam.AllExamination().Where(d=>d.ID == examid).FirstOrDefault();
+            var exam = db_exam.AllExamination().Where(d=>d.ID == examid).FirstOrDefault();
             var examview = db_exam.ConvertToExaminationView(exam);
 
             //随机选择一个机试题

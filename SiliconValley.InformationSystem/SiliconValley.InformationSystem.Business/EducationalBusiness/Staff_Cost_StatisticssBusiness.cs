@@ -126,9 +126,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             DepartmentBusiness.DepartmentManage tempdb_dep = new DepartmentBusiness.DepartmentManage();
 
             return tempdb_dep.GetDepartments().Where(
-                s => s.DeptName.Contains("教学") ||
-                s.DeptName.Contains("教质") ||
-                s.DeptName.Contains("信息部")
+                s => s.DeptName.Contains("教学") 
                 ).ToList();
         }
 

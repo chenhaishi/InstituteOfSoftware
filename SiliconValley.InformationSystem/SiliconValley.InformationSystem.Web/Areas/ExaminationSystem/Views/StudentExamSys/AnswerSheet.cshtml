@@ -107,7 +107,7 @@
             <h3 style="text-align:center; font-size:18px;">解答题</h3>
         </div>
         <div style="text-align:center">
-            <button type="button" style="" class="layui-btn layui-btn-warm" id="COMMIT">提交笔试</button><text style="color:red">（提交完笔试之后进行机试）</text>
+            <button type="button" style="" class="layui-btn" id="COMMIT">提交笔试</button><text style="color:red">（提交完笔试之后进行机试）</text>
         </div>
         @*<div id="ComputerQuestion">
                 <h3 style="text-align:center; font-size:18px;">机试题下载区</h3>
@@ -698,18 +698,18 @@
                 }
 
             }, 60000);
-            var allowNum = 3; // 允许两次切屏，超过则提交
-            window.onblur = function () {
-                if (allowNum < 1) {
-                    submitTest()
-                }
-                allowNum--;
-                alert("您已切屏,剩余" + allowNum + "次自动提交试卷");
-                if (allowNum == 0) {
-                    alert("您切屏超过3次,自动交卷！");
-                    CommitAnswerSheet();
-                }
-            }
+            //var allowNum = 3; // 允许两次切屏，超过则提交
+            //window.onblur = function () {
+            //    if (allowNum < 1) {
+            //        submitTest()
+            //    }
+            //    allowNum--;
+            //    alert("您已切屏,剩余" + allowNum + "次自动提交试卷");
+            //    if (allowNum == 0) {
+            //        alert("您切屏超过3次,自动交卷！");
+            //        CommitAnswerSheet();
+            //    }
+            //}
         });
 
 
