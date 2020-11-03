@@ -79,10 +79,12 @@
             form = layui.form;
             laydate.render({
                 elem: '#date',
+                format: 'yyyy-MM',
+                type: 'month',
                 trigger: 'click',//点击触发
                 done: function (value, date, endDate) {
                     var riqi = value;
-                  //  console.log(riqi);
+                    console.log(riqi);
                     $.ajax({
                         url: "/ExaminationSystem/ExamScores/ExamJoinClass",
                         data: { riqi: riqi },

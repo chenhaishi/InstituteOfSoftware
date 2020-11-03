@@ -197,6 +197,7 @@
     <Compile Include="DataAccess\PostgreSqlHelper.cs" />
     <Compile Include="DataAccess\RedisHelper.cs" />
     <Compile Include="DataAccess\SqlServerHelper.cs" />
+    <Compile Include="ErrorLog\clsLogHelper.cs" />
     <Compile Include="Extention\Extention.ActionExecutingContext.cs" />
     <Compile Include="Extention\Extention.Byte.cs" />
     <Compile Include="Extention\Extention.DataTable.cs" />

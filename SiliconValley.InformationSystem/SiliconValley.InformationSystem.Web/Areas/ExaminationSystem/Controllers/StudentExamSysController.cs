@@ -534,8 +534,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             //获取我需要的配置		foreach	error CS1525: 表达式项“foreach”无效	
 
-            //
-
+           
             var choxml = (XmlElement)xmlRoot.GetElementsByTagName("choicequestion")[0];
             var answer = (XmlElement)xmlRoot.GetElementsByTagName("answerQuestion")[0];
             int choiceCount  = int.Parse(choxml.GetElementsByTagName("total")[0].InnerText);
@@ -704,7 +703,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             } 
             catch (Exception ex)
             {
-
+                //SiliconValley.InformationSystem.Util.ErrorLog.clsLogHelper.m_CreateErrorLogTxt("myExecute(" & str执行SQL语句 & ")", Err.Number.ToString, Err.Description)
                 result.ErrorCode = 500;
                 result.Msg = "失败";
                 result.Data = null;
