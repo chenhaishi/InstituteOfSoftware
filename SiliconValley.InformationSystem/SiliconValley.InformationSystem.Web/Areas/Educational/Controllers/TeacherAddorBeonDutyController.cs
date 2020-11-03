@@ -109,7 +109,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             else
             {
                 //教务查看的数据
-                List<TeacherAddorBeonDutyView> list = Tb_Entity.GetViewAll().OrderBy(l => l.Anpaidate).ToList();
+                List<TeacherAddorBeonDutyView> list = Tb_Entity.GetViewAll().OrderBy(l => l.EmpName).ToList();
                 var jsondata = new { code = 0, Msg = "", count = list.Count, data = list.Skip((page - 1) * limit).Take(limit).ToList() };
                 return Json(jsondata, JsonRequestBehavior.AllowGet);
             }
@@ -190,7 +190,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             {
                 //获取属于这个老师的值班数据
                 list = list.Where(l => l.Tearcher_Id == emp).ToList();
-                var ee = list.OrderByDescending(l => l.Anpaidate).Skip((page - 1) * limit).Take(limit).ToList();
+                var ee = list.OrderByDescending(l => l.EmpName).Skip((page - 1) * limit).Take(limit).ToList();
 
                 var data = new { code = 0, msg = "", count = list.Count, data = ee };
 
@@ -205,13 +205,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 {
                     list2.AddRange(list.Where(l => l.Tearcher_Id == item.EmployeeId).ToList());
                 }
-                var data = list2.OrderBy(l => l.Anpaidate).Skip((page - 1) * limit).Take(limit).ToList();
+                var data = list2.OrderBy(l => l.EmpName).Skip((page - 1) * limit).Take(limit).ToList();
                 var datajson = new { code = 0, msg = "", count = list2.Count, data = data };
                 return Json(datajson, JsonRequestBehavior.AllowGet);
             }
             else
             {
-                var data = list.OrderBy(l => l.Anpaidate).Skip((page - 1) * limit).Take(limit).ToList();
+                var data = list.OrderBy(l => l.EmpName).Skip((page - 1) * limit).Take(limit).ToList();
                 var datajson = new { code = 0, msg = "", count = list.Count, data = data };
                 return Json(datajson, JsonRequestBehavior.AllowGet);
             }
@@ -536,14 +536,14 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
                     //s1/s2教务
                     //获取S1/S2教质部门的老师值班数据
-                    teachers = Tb_Entity.GetListBySql<TeacherAddorBeonDutyView>(sb.ToString()).OrderBy(te => te.Anpaidate).ToList();
+                    teachers = Tb_Entity.GetListBySql<TeacherAddorBeonDutyView>(sb.ToString()).OrderBy(te => te.EmpName).ToList();
                 }
                 else
                 {
                     //S3教务
                     StringBuilder sb = new StringBuilder(@"select tea.Id,tea.OnByReak,tea.BeOnDuty_Id,tea.Anpaidate,tea.Tearcher_Id,tea.AttendDate,tea.evning_Id,tea.ClassroomName,tea.ClassNumber,tea.curd_name,tea.TypeName,tea.EmpName,tea.IsDels from TeacherAddorBeonDutyView as tea left join EmployeesInfo as emp on emp.EmployeeId=tea.Tearcher_Id where YEAR(tea.Anpaidate)='" + mon.Year + "' and MONTH(tea.Anpaidate)='" + mon.Month + "' and (emp.PositionId=2013 or emp.PositionId=2014 or emp.PositionId=2015  or emp.PositionId=2016 or emp.PositionId=4040 or emp.PositionId=4041 or emp.PositionId=4042 or emp.PositionId=5040 or emp.PositionId=5041 or emp.PositionId=5042 or emp.PositionId=5043)");
 
-                    teachers = Tb_Entity.GetListBySql<TeacherAddorBeonDutyView>(sb.ToString()).OrderBy(te => te.Anpaidate).ToList();
+                    teachers = Tb_Entity.GetListBySql<TeacherAddorBeonDutyView>(sb.ToString()).OrderBy(te => te.EmpName).ToList();
                 }
                 //读取考勤记录表
 

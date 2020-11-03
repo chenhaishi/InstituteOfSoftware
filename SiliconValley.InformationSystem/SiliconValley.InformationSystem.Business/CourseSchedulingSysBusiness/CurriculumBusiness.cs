@@ -29,5 +29,16 @@ namespace SiliconValley.InformationSystem.Business.CourseSchedulingSysBusiness
             return false;
         }
 
+        public Curriculum GetPeriodMoneyByName(string name)
+        {
+            string sql = $"select * from Curriculum where CourseName='{name}'";
+            return GetListBySql<Curriculum>(sql).FirstOrDefault();
+        }
+
+        //public string GetGrand_Name(string courseName)
+        //{
+
+        //}
+
     }
 }
