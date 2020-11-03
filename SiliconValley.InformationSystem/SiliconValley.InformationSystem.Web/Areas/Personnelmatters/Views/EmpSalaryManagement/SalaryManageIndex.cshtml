@@ -22,7 +22,7 @@
     <legend>条件查询</legend>
     <form class="layui-form" action="" lay-filter="formtest">
         <div class="layui-row layui-form-item">
-            <div >
+            <div>
                 <label class="layui-form-label">姓名：</label>
                 <div class="layui-input-inline">
                     <input type="text" id="EmpName" name="EmpName" autocomplete="off" class="layui-input">
@@ -53,7 +53,7 @@
                         <option value="False">在职</option>
                         <option value="True">离职</option>
                     </select>
-                  
+
                 </div>
             </div>
             <button class="layui-btn" type="button" id="Conditionselect" style="margin-left:30px;"><i class="layui-icon layui-icon-search"></i>查询</button>
@@ -63,20 +63,27 @@
     </form>
 </fieldset>
 <table id="salarytab" lay-filter="salarytab"></table>
-    @*操作栏*@
-    <script type="text/html" id="barDemo">
-        <a class="layui-btn  layui-btn-xs " lay-event="edit">编辑</a>
+@*操作栏*@
+<script type="text/html" id="barDemo">
+    <a class="layui-btn  layui-btn-xs " lay-event="edit">编辑</a>
 
-    </script>
-    @*员工在职状态*@
-    <script type="text/html" id="empstate">
-        {{# if(d.EmpState==false){ }}
-        {{ d.EmpState="在职" }}
-        {{# }else{ }}
-        {{ d.EmpState="离职" }}
-        {{# } }}
-    </script>
-
+</script>
+@*员工在职状态*@
+<script type="text/html" id="empstate">
+    {{# if(d.EmpState==false){ }}
+    {{ d.EmpState="在职" }}
+    {{# }else{ }}
+    {{ d.EmpState="离职" }}
+    {{# } }}
+</script>
+<div class="layui-hide" id="datamonth">
+    <div class="layui-form-item">
+        <label class="layui-form-label">请选择日期</label>
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input" id="month" placeholder="yyyy-MM">
+        </div>
+    </div>
+</div>
     @section script{
         <script>
 
@@ -184,33 +191,53 @@
                             });
                         }
                         break;
-                    case 'Email': 
-                        layer.confirm('是否要向所有员工发送工资条', { icon: 3, title: '提示' }, function (index) {
-                            layer.close(index);
-                            var index = layer.msg("正在发送邮件", { icon: 16, shade: 0.6});
-                            layer.shade 
-                            $.ajax({
-                                url: "/Personnelmatters/EmpSalaryManagement/PaySlipExcel",
-                                type: "post",
-                                data: null,
-                                dataType: "json",
-                                contentType: "Application/json",
-                                success: function (data) {
-                                    console.log(data);
-                                    if (data.Success) {
-                                        layer.close(index)
-                                        layer.msg(data.Msg, { icon: 1 });
-                                    } else {
-                                        layer.close(index)
-                                        layer.msg("邮件发送失败", { icon: 2 });
-                                    }
-                                }
-                            })
-                        });
-                    
+                    case 'Email':
+                        laydate.render({
+                            elem: "#month",
+                            type: 'month'
+                        })
+                      var open= layer.open({
+                          type: 1,
+                          closeBtn: 0,
+                          content: $("#datamonth").removeClass("layui-hide"),
+                          btn: ['确定', '取消'], 
+                          yes: function () {
+                                layer.close(open);
+                                $("#datamonth").addClass("layui-hide");
+                                var year = $("#month").val().substring(0, 4);
+                                var month = $("#month").val().substring(5);
+                                layer.confirm('是否要向所有员工发送' + year + "年" + month + '月的工资条', { icon: 3, title: '提示' }, function (index) {
+                                    layer.close(index);
+                                    var index = layer.msg("正在发送邮件", { icon: 16, shade: 0.6 });
+                                    $.ajax({
+                                        url: "/Personnelmatters/EmpSalaryManagement/PaySlipExcel",
+                                        type: "post",
+                                        data: JSON.stringify({ "time": $("#month").val()}),
+                                        dataType: "json",
+                                        contentType: "Application/json",
+                                        success: function (data) {
+                                            console.log(data);
+                                            if (data.Success) {
+                                                layer.close(index)
+                                                layer.msg(data.Msg, { icon: 1 });
+                                            } else {
+                                                layer.close(index)
+                                                layer.msg("邮件发送失败", { icon: 2 });
+                                            }
+                                        }
+                                    })
+                                });
+                          },
+                          btn2: function () {
+                              $("#datamonth").addClass("layui-hide");
+                          }
+                            
+
+                        })
                         break;
                 };
             });
+
 
             //监听行工具事件
             table.on('tool(salarytab)', function (obj) {

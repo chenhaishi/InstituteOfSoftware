@@ -196,11 +196,11 @@ namespace SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBus
             var duration = Convert.ToDouble(myduration);
             if (type == 1)
             {//晚上加班
-                if (duration >= 1.5 && duration <= 30)
+                if (duration >= 1.5 && duration <= 3)
                 {
                     result = 30;
                 }
-                else if (duration > 30)
+                else if (duration > 3)
                 {
                     result = 50;
                 }
@@ -232,7 +232,6 @@ namespace SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBus
             }
             return result;
         }
-
 
         public List<OvertimeRecord> GetOTRData(string empid,DateTime year_month) {
             var year = year_month.Year;

@@ -10,9 +10,11 @@
     <meta name="viewport" content="width=device-width" />
     <title>OTRDetail</title>
     <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
-
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/layui/layui.js"></script>
+    <script type="text/html" id="barDemo">
+        <input type="button" class="layui-btn layui-btn-sm" lay-event="edit" value="编辑" />
+    </script>
 </head>
 <body>
     <div>
@@ -33,7 +35,6 @@
               , url: '/Personnelmatters/AttendanceStatistics/GetOvertimeData?id=' + atdid
                 , id: "myEmpInfo"
                 , toolbar: '#toolbarDemo'
-
                 , limits: [5,10,15,20,25,30]
                 , limit: 5
                 , cols: [[
@@ -57,14 +58,13 @@
             //监听行工具事件
             table.on('tool(overtimetab)', function (obj) {
                 var data = obj.data;
-                var empid = data.EmployeeId;
-                console.log("员工编号："+data.EmployeeId);
+                console.log(data);
                 if (obj.event === 'edit') {
                     layer.open({
                         type: 2,
-                        content: '/Personnelmatters/AttendanceStatistics/EditEmp/?id=' + empid
-                        , area: ["1200px", "730px"]
-                        , title: '编辑员工信息'
+                        content: '/Personnelmatters/AttendanceStatistics/OvertimeEdit/?id=' + data.Id
+                        , area: ["800px", "500px"]
+                        , title: '编辑加班信息'
                         , shade: 0.8
                         , anim: 4
                         , skin: 'demo-class'
