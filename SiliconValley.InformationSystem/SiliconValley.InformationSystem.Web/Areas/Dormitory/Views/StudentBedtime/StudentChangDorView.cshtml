@@ -39,7 +39,7 @@
 
 <script type="text/html" id="StudentbarDemo">
     <a class="layui-btn layui-btn-xs" lay-event="changdor">调寝</a>
-    @*<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>*@
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">休寝</a>
 </script>
 
 <script>
@@ -87,6 +87,31 @@
                             type: 2,
                             content: ' /Dormitory/StudentBedtime/ChangDorView/' + data.StuNumber,
                             area: ['1000px', '600px']
+                        });
+
+                        layer.close(index);
+                    });       
+                     
+                } else if (obj.event === 'del') {
+                    layer.confirm('确定结束入住吗？', function (index) {
+                        //layer.open({
+                        //    type: 2,
+                        //    content: ' /Dormitory/StudentBedtime/ChangDorView/' + data.StuNumber,
+                        //    area: ['1000px', '600px']
+                        //});
+
+                        $.ajax({
+                            url: '/Dormitory/StudentBedtime/EndFunction',
+                            type: 'POST',
+                            data: { "StuNumber": data.StuNumber},
+
+                        }).done(function (res) {
+                            if (res.Success) {
+                                layer.msg(res.Msg, { icon: 1, shade:0.8 });
+                            } else {
+                                layer.msg(res.Msg, { icon: 2, shade:0.8 });
+                            }
+                            
                         });
 
                         layer.close(index);

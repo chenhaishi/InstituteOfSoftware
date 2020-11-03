@@ -18,12 +18,15 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
     public class DormitoryDepositController : Controller
     {
         DormitoryDepositManeger Dormitory_Entity = new DormitoryDepositManeger();
-        // GET: /DormitoryMaintenance/DormitoryDeposit/ClassJiesuan
+        // GET: /DormitoryMaintenance/DormitoryDeposit/StuNameDefileFuntion
 
         #region 登记人操作
 
         public ActionResult DormitoryDepositIndex()
         {
+            //Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
+            //int number = Dormitory_Entity.Number(UserName.EmpNumber);
+            //ViewBag.number = number; 
             return View();
         }
 
@@ -333,13 +336,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
         /// <returns></returns>
         public ActionResult OneData()
         {
-            List<StudentDorMoney> list = new List<StudentDorMoney>() { new StudentDorMoney() { StuName ="请查询", PayMoney =0, MantainMoney =0, SumMoney =0} };
+            List<StudentDorMoney> list = new List<StudentDorMoney>() { new StudentDorMoney() { StuName ="请查询", PayMoney =0, MantainMoney =0, SumMoney =0,BaoxianguiMoney =0} };
             var jsondata = new { code=0,count=0,data=list};
             return Json(jsondata, JsonRequestBehavior.AllowGet);
         }
         
         /// <summary>
-        /// 获取某个班级的所有学生维修费用
+        /// 获取某个班级的所有学生维修费用(包括保险柜押金扣除的费用)
         /// </summary>
         /// <returns></returns>
         public ActionResult ClassMoneyFuntion()
@@ -359,7 +362,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
                     StuNumber = s.StudentID,
                     PayMoney = Dormitory_Entity.GetStudentMoney(s.StudentID),
                     MantainMoney = Dormitory_Entity.GetMantainMoney(s.StudentID),
-                    SumMoney = Dormitory_Entity.GetStudentMoney(s.StudentID) - Dormitory_Entity.GetMantainMoney(s.StudentID)
+                    BaoxianguiMoney = Dormitory_Entity.BaoxianguiStu(s.StudentID),
+                    SumMoney = Dormitory_Entity.GetStudentMoney(s.StudentID) - Dormitory_Entity.GetMantainMoney(s.StudentID)- Dormitory_Entity.BaoxianguiStu(s.StudentID)
                 };
                 stumoneylist.Add(data);
             });
@@ -376,7 +380,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
         public ActionResult MantainDefileView(string id)
         {
             //去查询这个学生的没有支付的维修费用
-             var liststu= Dormitory_Entity.StudentDormitoryDepsitData(id).Select(s=>new StuSusheData()
+             var liststu= Dormitory_Entity.StudentDormitoryDepsitData(id,false).Select(s=>new StuSusheData()
              {
                  DeaID = s.ID,
                  DeaMaintain = s.Maintain,//维修日期
@@ -395,9 +399,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
 
             //获取这个学生所缴宿舍押金
             decimal GetStuMoney = Dormitory_Entity.GetStudentMoney(id);
-           
+            //宿舍保险费费用
+            decimal baoxiangMoenty = Dormitory_Entity.BaoxianguiStu(id);
             //获取应退费用
-            decimal GetTuiMoney = GetStuMoney - SumMantanMoney;
+            decimal GetTuiMoney = GetStuMoney - SumMantanMoney- baoxiangMoenty;
 
             ListStusheData datas = new ListStusheData() { listdata = liststu , SumMantanMoney = SumMantanMoney , GetTuiMoney = GetTuiMoney };
 
@@ -500,6 +505,33 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
             return View();
         }
        
+        /// <summary>
+        /// 学生住宿详情
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult StuNameDefileView(string id)
+        {
+            ViewBag.StuNumber = id;
+            return View();
+        }
+        
+        public ActionResult StuNameDefileFuntion(string id)
+        {
+           var data= Dormitory_Entity.Stulist(id).Select(s=>new {
+               stuName = Dormitory_Entity.StudentInformation_Entity.GetEntity(s.Studentnumber).Name,
+               Studentnumber=s.Studentnumber,
+               BedId=s.BedId,
+               DorName = Dormitory_Entity.DormInformation_Entity.GetEntity(s.DormId).DormInfoName,//房间编号            
+               StarTime=s.StayDate,
+               EndTime=s.EndDate
+           }).ToList();
+
+            var jsondata = new { count=data.Count,data= data ,code=0};
+
+            return Json(jsondata, JsonRequestBehavior.AllowGet);
+           
+        }
         #endregion
 
         #region 财务操作
@@ -567,14 +599,15 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
 
 
             //去查询这个学生的没有支付的维修费用
-            var liststu = Dormitory_Entity.StudentDormitoryDepsitData(id).Select(s => new StuSusheData()
+            var liststu = Dormitory_Entity.StudentDormitoryDepsitData(id,true).Select(s => new StuSusheData()
             {
                 DeaID = s.ID,
                 DeaMaintain = s.Maintain,//维修日期
                 DeaDorName = Dormitory_Entity.DormInformation_Entity.GetEntity(s.DormId).DormInfoName,//房间编号
                 DeaGoodPrice = s.GoodPrice,//维修金额
                 DeaNameofarticle = Dormitory_Entity.DormitoryMaintenance_Entity.GetEntity(s.MaintainGood).Nameofarticle,//物品名称
-                DeastuName = Dormitory_Entity.StudentInformation_Entity.GetEntity(s.StuNumber).Name
+                DeastuName = Dormitory_Entity.StudentInformation_Entity.GetEntity(s.StuNumber).Name,
+                Isdelete = s.MaintainState == 1 ? "未支付" : "已支付",               
             }).ToList();
 
             if (!string.IsNullOrEmpty(startime))
@@ -594,7 +627,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
 
             liststu.ForEach(s =>
             {
-                SumMantanMoney += s.DeaGoodPrice;
+                if (s.Isdelete== "未支付")
+                {
+                    SumMantanMoney += s.DeaGoodPrice;
+                }
+                
             });
 
             //获取这个学生所缴宿舍押金
@@ -665,7 +702,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
         }
         
         #endregion
-
 
     }
 }

@@ -122,7 +122,7 @@ namespace SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness
             //根据Emp获取岗位
             int id = Enplo_Entity.GetEntity(emp).PositionId;
             Position find_p = Position_Entity.GetEntity(id);
-            if (find_p.PositionName == "网络咨询师")
+            if (find_p.PositionName == "网络咨询师" || find_p.PositionName == "竞价专员")
             {
                 Key = 3;
             }
@@ -137,7 +137,7 @@ namespace SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness
             else if (find_p.PositionName == "网络主任")
             {
                 Key = 2;
-            }
+            } 
             else
             {
                 Department find_b = Department_Entity.GetEntity(find_p.DeptId);
