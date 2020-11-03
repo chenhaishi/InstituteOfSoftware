@@ -13,7 +13,21 @@
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/layui/layui.js"></script>
     <script type="text/html" id="barDemo">
+        {{# if(d.IsApproval==false) { }}
         <input type="button" class="layui-btn layui-btn-sm" lay-event="edit" value="编辑" />
+        {{# } }}
+    </script>
+    <script type="text/html" id="type">
+        {{# if(d.OvertimeTypeId=="1"){ }}
+        {{ d.OvertimeTypeId="晚上加班" }}
+        {{#  }else if(d.OvertimeTypeId=="2"){ }}
+        {{ d.OvertimeTypeId="周末加班" }}
+        {{#  }else if(d.OvertimeTypeId=="3"){ }}
+        {{ d.OvertimeTypeId="法定节假日加班" }}
+        {{# }else{ }}
+        {{ d.empIsDel="行政值班" }}
+        {{# } }}
+
     </script>
 </head>
 <body>
@@ -43,12 +57,12 @@
                     , { field: 'empName', title: '加班人', width: 110, sort: true, edit: 'text' }
                     , { field: 'empDept', title: '所属部门', width: 110, sort: true }
                     , { field: 'empPosition', title: '所属岗位', width: 110, sort: true }
-                    , { field: 'StartTime', title: '开始时间', sort: true, width: 110, templet: function (d) { return changeDateTimeFormat(d.EntryTime) } }
-                    , { field: 'EndTime', title: '结束时间', sort: true, width: 110, templet: function (d) { return changeDateTimeFormat(d.PositiveDate) } }
+                    , { field: 'StartTime', title: '开始时间', sort: true, width: 110, templet: function (d) { return changeDateTimeFormat(d.StartTime) } }
+                    , { field: 'EndTime', title: '结束时间', sort: true, width: 110, templet: function (d) { return changeDateTimeFormat(d.EndTime) } }
                     , { field: 'Duration', title: '时长(h)', sort: true, width: 135 }
                     , { field: 'OvertimeReason', title: '加班理由', sort: true, width: 110 }
                     , { field: 'IsNoDaysOff', title: '是否调休', sort: true, width: 110}
-                    , { field: 'OvertimeTypeId', title: '加班类型', sort: true, width: 110 }
+                    , { field: 'OvertimeTypeId', title: '加班类型', templet: '#type',sort: true, width: 110 }
                     , { field: 'Remark', title: '加班理由', sort: true, width: 110 }
                     , { fixed: 'right', title: '操作', toolbar: '#barDemo' }
                 ]],

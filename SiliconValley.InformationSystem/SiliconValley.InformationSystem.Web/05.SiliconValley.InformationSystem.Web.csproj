@@ -1942,6 +1942,7 @@
     <Content Include="Areas\Personnelmatters\Views\AttendanceStatistics\OvertimeRecordImport.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\AttendanceStatistics\OTRDetail.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\AttendanceStatistics\OvertimeEdit.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\PerformanceAssess\AssessmentUpload.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
