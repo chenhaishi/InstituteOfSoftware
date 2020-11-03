@@ -394,6 +394,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
 
         public ActionResult GetOvertimeData(int id,int page, int limit) {
             OvertimeRecordManage otrmanage = new OvertimeRecordManage();
+            MonthlySalaryRecordManage monthly = new MonthlySalaryRecordManage();
             var otrlist = otrmanage.GetOTRDataByAtdid(id);
             var mylist = from e in otrlist
                          select new
@@ -401,10 +402,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                              #region 获取值
                              e.Id,
                              e.EmployeeId,
-                             DDAppId=empmanage.GetInfoByEmpID(e.EmployeeId).DDAppId,
+                             DDAppId = empmanage.GetInfoByEmpID(e.EmployeeId).DDAppId,
                              empName = empmanage.GetInfoByEmpID(e.EmployeeId).EmpName,
                              empDept = empmanage.GetDeptByEmpid(e.EmployeeId).DeptName,
-                             empPosition = empmanage.GetPositionByEmpid(e.EmployeeId).PositionName,    
+                             empPosition = empmanage.GetPositionByEmpid(e.EmployeeId).PositionName,
+                             IsApproval = monthly.GetAttendanceInfoByEmpid(e.EmployeeId,(DateTime)e.YearAndMonth).IsApproval,
                              e.YearAndMonth,
                              e.StartTime,
                              e.EndTime,
@@ -454,22 +456,18 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
          var att=monthly.GetAttendanceInfoByEmpid(over.EmployeeId,Convert.ToDateTime(over.YearAndMonth));
             var OvertimeWithhold= overtime.OvertimeWithhold(over.OvertimeTypeId, (dynamic)over.Duration);
             var oldOvertime= overtime.OvertimeWithhold(type,Convert.ToDecimal(Duration));
-            att.OvertimeCharges = OvertimeWithhold;
 
+            att.OvertimeCharges = (att.OvertimeCharges - oldOvertime )+ OvertimeWithhold;
             attendance.Update(att);
             
-            var month = monthly.GetEmpMsrData().Where(i => i.EmployeeId == over.EmployeeId && DateTime.Parse(i.YearAndMonth.ToString()).Year == DateTime.Parse(over.YearAndMonth.ToString()).Year&& DateTime.Parse(i.YearAndMonth.ToString()).Month == DateTime.Parse(over.YearAndMonth.ToString()).Month).FirstOrDefault();
+            var month = monthly.GetEmpMsrData().Where(i => i.EmployeeId == over.EmployeeId && DateTime.Parse(i.YearAndMonth.ToString()).Year == DateTime.Parse(over.YearAndMonth.ToString()).Year&& DateTime.Parse(i.YearAndMonth.ToString()).Month == DateTime.Parse(over.YearAndMonth.ToString()).Month&& i.IsApproval==false).FirstOrDefault();
             if (!month.IsNullOrEmpty())
             {
                 month.OvertimeCharges = (month.OvertimeCharges-oldOvertime)+ OvertimeWithhold;
                 monthly.Update(month);
             }
 
-           
 
-            att.OvertimeCharges = (att.OvertimeCharges - oldOvertime )+ OvertimeWithhold;
-
-            attendance.Update(att);
 
             try
             {
