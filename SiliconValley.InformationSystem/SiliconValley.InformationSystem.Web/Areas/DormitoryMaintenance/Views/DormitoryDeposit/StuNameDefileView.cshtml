@@ -1,0 +1,70 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>StuNameDefileView</title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+     
+</head>
+<body>
+    <table id="StuDorTable" lay-filter="StuDorTable"></table><input type="hidden" name="number" id="number" value="@ViewBag.StuNumber"/>
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/layui/layui.js"></script>
+    <script>
+
+        //转换时间的方法
+        function MyTimeChange(newtime) {
+            if (newtime == null)
+                return "";
+
+            var date = new Date(parseInt(newtime.slice(6)));
+            var year = date.getFullYear();
+            var month = parseInt(date.getMonth()) + 1;
+            if (parseInt(month) < 10) {
+                month = "0" + month;
+            }
+            var days = date.getDate();
+            if (days < 10) {
+                days = "0" + days;
+            }
+            var result = year + '-' + month + '-' + days;
+            return result;
+        }
+
+        var table;
+        $(function () {
+            layui.use(['table'], function () {
+                table = layui.table;
+
+                table.render({
+                    elem: '#StuDorTable'
+                    , url: '/DormitoryMaintenance/DormitoryDeposit/StuNameDefileFuntion/' + $("#number").val()
+                    
+                    , cols: [[
+                        { type: 'checkbox', fixed: 'left' }
+                        , { field: 'stuName', title: '学生姓名' ,fixed: 'left'}
+                        , { field: 'DorName', title: '宿舍编号'}                         
+                        , {field: 'BedId', title: '床位号' }
+                        , {
+                            field: 'StarTime', title: '入住时间', templet: function (res) {
+                                return MyTimeChange(res.StarTime);
+                            }}
+                        , {
+                            field: 'EndTime', title: '结束时间', templet: function (res) {
+                                return MyTimeChange(res.EndTime);
+                            }}
+                        
+                    ]]
+                    , page: true
+                });
+            });
+        });
+    </script>
+</body>
+</html>
