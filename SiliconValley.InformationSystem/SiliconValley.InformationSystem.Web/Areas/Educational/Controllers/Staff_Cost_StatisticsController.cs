@@ -453,10 +453,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                             List<ScheduleForTrainees> Trainees_List = ScheduleForTrainees_Entity.GetListBySql<ScheduleForTrainees>(sql);
                             if (Trainees_List.Count < 10)
                             {
-                                FirstStage += Reconcile_Entity.GetTeacherJieshu(dt.Year, dt.Month, mydata[i].EmployeesInfo_Id, "前预科", false);
+                                FirstStage += Reconcile_Entity.GetTeacherJieshus(dt.Year, dt.Month, mydata[i].EmployeesInfo_Id, "前预科", false);
                             }
                             else {
-                                FirstStage += Reconcile_Entity.GetTeacherJieshu(dt.Year, dt.Month, mydata[i].EmployeesInfo_Id, "前预科", true);
+                                FirstStage += Reconcile_Entity.GetTeacherJieshus(dt.Year, dt.Month, mydata[i].EmployeesInfo_Id, "前预科", true);
                             }
                         }
                     }
@@ -485,18 +485,18 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                         curriculum.CourseName.Contains("班会") ||
                         curriculum.CourseName.Contains("军事"))
                     {
-                        OtherStage += Reconcile_Entity.GetTeacherJieshu(dt.Year, dt.Month, mydata[i].EmployeesInfo_Id, curriculum.CourseName,true);
+                        OtherStage += Reconcile_Entity.GetTeacherJieshus(dt.Year, dt.Month, mydata[i].EmployeesInfo_Id, curriculum.CourseName,true);
                     }
                     else
                     {
                         Grand grand = Grand_Entity.GetEntity(curriculum1.Grand_Id);
                         if (grand.GrandName.Contains("S1") || grand.GrandName.Contains("S2") || grand.GrandName.Contains("Y1"))
                         {
-                            FirstStage += Reconcile_Entity.GetTeacherJieshu(dt.Year, dt.Month, mydata[i].EmployeesInfo_Id, curriculum.CourseName,true);
+                            FirstStage += Reconcile_Entity.GetTeacherJieshus(dt.Year, dt.Month, mydata[i].EmployeesInfo_Id, curriculum.CourseName,true);
                         }
                         else if (grand.GrandName.Contains("S3") || grand.GrandName.Contains("S4"))
                         {
-                            SecondStage += Reconcile_Entity.GetTeacherJieshu(dt.Year, dt.Month, mydata[i].EmployeesInfo_Id, curriculum.CourseName,true);
+                            SecondStage += Reconcile_Entity.GetTeacherJieshus(dt.Year, dt.Month, mydata[i].EmployeesInfo_Id, curriculum.CourseName,true);
                         }
                     }
                     }
