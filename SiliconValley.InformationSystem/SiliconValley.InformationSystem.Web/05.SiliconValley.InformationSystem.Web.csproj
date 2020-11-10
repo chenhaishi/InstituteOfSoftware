@@ -1930,6 +1930,7 @@
     <Content Include="Areas\DormitoryMaintenance\Views\DormitoryDeposit\AddView.cshtml" />
     <Content Include="Areas\Educational\Views\Reconcile\TeacherReconfile.cshtml" />
     <Content Include="Areas\DormitoryMaintenance\Views\DormitoryDeposit\FinanceIndex.cshtml" />
+    <Content Include="Areas\ExaminationSystem\Views\ExamScores\MarkingPapers.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
