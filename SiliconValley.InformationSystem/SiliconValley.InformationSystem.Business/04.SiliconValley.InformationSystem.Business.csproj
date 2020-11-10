@@ -270,6 +270,7 @@
     <Compile Include="SchoolAttendanceManagementBusiness\OvertimeRecordManage.cs" />
     <Compile Include="SchoolAttendanceManagementBusiness\SalaryRaiseApplyManage.cs" />
     <Compile Include="Shortmessage_Business\ShortmessageBusiness.cs" />
+    <Compile Include="SocialSecurityDetail_Business\SocialSecurityDetailManage.cs" />
     <Compile Include="StageGrade_Business\StageGradeBusiness.cs" />
     <Compile Include="StudentBusiness\StudentInformationBusiness.cs" />
     <Compile Include="StudentKeepOnRecordBusiness\Delte_StudentPutinfoManeger.cs" />
@@ -466,5 +467,6 @@
       <Name>01.SiliconValley.InformationSystem.Util</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

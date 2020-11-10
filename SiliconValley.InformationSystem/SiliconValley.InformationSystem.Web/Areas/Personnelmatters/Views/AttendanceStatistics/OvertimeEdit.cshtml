@@ -82,16 +82,16 @@
                                 else
                                 {
 
-                                    <input type="radio" name="IsNoDaysOff" value="true" title="不调休" >
+                                    <input type="radio" name="IsNoDaysOff" value="true" title="不调休">
                                     <input type="radio" name="IsNoDaysOff" value="false" title="调休" checked>
                                 }
                             }
+                            <input type="hidden" name="NoDaysOff" value="@overtime.IsNoDaysOff" />
                         </div>
                     </div>
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label" style="width:120px;margin-left:-40px;">是否禁用:</label>
                         <div class="layui-input-inline" style="width:190px;">
-
                             @{
                                 if (@overtime.IsPass == true)
                                 {
@@ -104,6 +104,7 @@
                                     <input type="radio" name="IsPass" value="false" title="否" checked>
                                 }
                             }
+                            <input type="hidden" name="Pass" value="@overtime.IsPass" />
                         </div>
                     </div>
                     <div class="layui-row layui-form-item">
@@ -147,6 +148,12 @@
 
             form.on("submit(demo)", function (obj) {
                 var data = obj.field;
+                console.log(data);
+                if (!data.NoDaysOff|| data.Pass) {
+                    $("#type").val(0)
+                    $("#Dur").val(0)
+                }
+
                 console.log(data);
                 $.ajax({
                     url: "/Personnelmatters/AttendanceStatistics/OvertimeEdit",

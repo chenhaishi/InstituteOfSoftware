@@ -32,7 +32,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
     {
         RedisCache rc;
         /// <summary>
-        /// 将员工信息表数据存储到redis服务器中 
+        /// 将员工信息表数据存储到redis服务器中
         /// </summary>
         /// <returns></returns>
         public List<EmployeesInfo> GetEmpInfoData()
