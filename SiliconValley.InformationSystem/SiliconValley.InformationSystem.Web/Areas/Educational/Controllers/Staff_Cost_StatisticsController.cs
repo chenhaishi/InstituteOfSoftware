@@ -460,7 +460,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                             }
                         }
                     }
-                    else {
+                    else { 
                         
                     //根据课程名称获取第一条数据 &&a.Curriculum_Id!="项目答辩" && a.Curriculum_Id != ""
                     Reconcile reconcile = mydata.Where(a => a.Curriculum_Id == ClassGroup[j].Key).FirstOrDefault();
