@@ -414,7 +414,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 var AnPaiGroup = (
                     from m in mydata
                     group m by m.AnPaiDate into list
-                    select list
+                    select list 
                     ).ToList();
 
                 //根据课程分组
