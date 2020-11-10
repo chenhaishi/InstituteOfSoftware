@@ -2746,7 +2746,7 @@ Curriculum_Id like '职素' or Curriculum_Id like '班会' or Curriculum_Id like
         /// <param name="currName">课程名称</param>
         /// <param name="IsCount">人数是否>10人   false 小于  true  大于</param>
         /// <returns></returns>
-        public int GetTeacherJieshus(int year, int month, string empname, string currName, bool IsCount)
+        public int GetTeacherClassCount(int year, int month, string empname, string currName, bool IsCount)
         {
               string sqlstr = @"select * from Reconcile where YEAR(AnPaiDate)='" + year + "' and MONTH(AnPaiDate)='" + month + "' and EmployeesInfo_Id='" + empname + "' and Curriculum_Id='" + currName + "'";
 
