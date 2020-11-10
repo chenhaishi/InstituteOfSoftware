@@ -27,6 +27,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
         public EmployeesInfoManage dbemployeesInfo = new EmployeesInfoManage();
         public TeacherClassBusiness TeacherClass_Entity = new TeacherClassBusiness();
+        public ClassScheduleBusiness ClassSchedule_Entity = new ClassScheduleBusiness();
 
         public Reconcile GetReconcile_classschedule(int year, int month, string EmpID, string CourseName)
         {
@@ -59,9 +60,9 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         /// <param name="month"></param>
         /// <param name="Emp_ID"></param>
         /// <returns></returns>
-        public List<Reconcile> GetReoncileByDate(int year,int month,string Emp_ID)
+        public List<Reconcile> GetReoncileByDate(int year, int month, string Emp_ID)
         {
-            string sql = $"select * from Reconcile where YEAR(AnPaiDate)='"+year+"' and MONTH(AnPaiDate)= '"+month+"' and EmployeesInfo_Id = '"+Emp_ID+"'";
+            string sql = $"select * from Reconcile where YEAR(AnPaiDate)='" + year + "' and MONTH(AnPaiDate)= '" + month + "' and EmployeesInfo_Id = '" + Emp_ID + "'";
             return GetListBySql<Reconcile>(sql);
         }
 
@@ -2743,29 +2744,44 @@ Curriculum_Id like '职素' or Curriculum_Id like '班会' or Curriculum_Id like
         /// <param name="month">月</param>
         /// <param name="empname">员工编号</param>
         /// <param name="currName">课程名称</param>
+        /// <param name="IsCount">人数是否>10人   false 小于  true  大于</param>
         /// <returns></returns>
-        public int GetTeacherJieshu(int year, int month, string empname, string currName)
+        public int GetTeacherJieshu(int year, int month, string empname, string currName, bool IsCount)
         {
             string sqlstr = @"select * from Reconcile where YEAR(AnPaiDate)='" + year + "' and MONTH(AnPaiDate)='" + month + "' and EmployeesInfo_Id='" + empname + "' and Curriculum_Id='" + currName + "'";
 
             List<Reconcile> list = this.GetListBySql<Reconcile>(sqlstr);
 
             int number = 0;
-
-            foreach (Reconcile item in list)
+            if (!IsCount)
             {
-                if (item.Curse_Id.Contains("12") || item.Curse_Id.Contains("34"))
+                foreach (Reconcile item in list)
                 {
-                    number += 2;
-                }
-                else
-                {
-                    number += 4;
+                    if (item.Curse_Id.Contains("12") || item.Curse_Id.Contains("34"))
+                    {
+                        number += 1;
+                    }
+                    else
+                    {
+                        number += 2;
+                    }
                 }
             }
-
-
-
+            else
+            {
+                foreach (Reconcile item in list)
+                {
+                    if (item.Curse_Id.Contains("12") || item.Curse_Id.Contains("34"))
+                    {
+                        number += 2;
+                    }
+                    else
+                    {
+                        number += 4;
+                    }
+                }
+            }
+            
             return number;
         }
 

@@ -17,6 +17,7 @@ using SiliconValley.InformationSystem.Business;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using SiliconValley.InformationSystem.Business.ClassSchedule_Business;
+using SiliconValley.InformationSystem.Business.ClassesBusiness;
 
 namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 {
@@ -41,6 +42,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         public ClassScheduleBusiness ClassSchedule_Entity = new ClassScheduleBusiness();
 
         public GrandBusiness Grand_Entity = new GrandBusiness();
+
+        public ScheduleForTraineesBusiness ScheduleForTrainees_Entity = new ScheduleForTraineesBusiness();
 
         public Staff_Cost_StatisticsController()
         {
@@ -404,6 +407,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
                 string sqlstr = $"select * from Reconcile  where Year(AnPaiDate)={dt.Year} and Month(AnPaiDate) = {dt.Month} and EmployeesInfo_Id ={ Emp_List[i].EmployeeId }";
                 List<Reconcile> mydata = Reconcile_Entity.GetListBySql<Reconcile>(sqlstr).ToList();
+
+                //筛选出前预科的数据
+                var qianyuke = mydata.Where(a => a.Curriculum_Id == "前预科").ToList();
                 //根据时间分组
                 var AnPaiGroup = (
                     from m in mydata
@@ -412,10 +418,18 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                     ).ToList();
 
                 //根据课程分组
-                var ClassGroup = (
+                var ClassGroup1 = (
                     from m in mydata
                     group m by m.Curriculum_Id into list
                     select list).ToList();
+
+                //根据班级id分组
+                var ClassScheduleGroup = (
+                    from m in qianyuke
+                    group m by m.ClassSchedule_Id into list
+                    select list).ToList();
+
+                var ClassGroup = ClassGroup1.Where(a=>a.Key!="复习").ToList();
 
                 //计算全天课天数
                 for (int k = 0; k < AnPaiGroup.Count; k++)
@@ -429,8 +443,27 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 int OtherStage = 0;//其他  语，数，英，职素，班会，军事
                 for (int j = 0; j < ClassGroup.Count; j++)
                 {
-                    //根据课程名称获取第一条数据
-                    Reconcile reconcile = mydata.Where(a => a.Curriculum_Id == ClassGroup[j].Key &&a.Curriculum_Id!="项目答辩").FirstOrDefault();
+                    //判断是否为“前预科”
+                    if (ClassGroup[j].Key == "前预科")
+                    {
+                        for (int q = 0; q < ClassScheduleGroup.Count; q++)
+                        {
+                            ClassSchedule schedule = ClassSchedule_Entity.GetEntity(ClassScheduleGroup[q].Key);
+                            string sql = $"select * from ScheduleForTrainees where ClassID='{schedule.ClassNumber}' and CurrentClass=1";
+                            List<ScheduleForTrainees> Trainees_List = ScheduleForTrainees_Entity.GetListBySql<ScheduleForTrainees>(sql);
+                            if (Trainees_List.Count < 10)
+                            {
+                                FirstStage += Reconcile_Entity.GetTeacherJieshu(dt.Year, dt.Month, mydata[i].EmployeesInfo_Id, "前预科", false);
+                            }
+                            else {
+                                FirstStage += Reconcile_Entity.GetTeacherJieshu(dt.Year, dt.Month, mydata[i].EmployeesInfo_Id, "前预科", true);
+                            }
+                        }
+                    }
+                    else {
+                        
+                    //根据课程名称获取第一条数据 &&a.Curriculum_Id!="项目答辩" && a.Curriculum_Id != ""
+                    Reconcile reconcile = mydata.Where(a => a.Curriculum_Id == ClassGroup[j].Key).FirstOrDefault();
                     //根据班级id查询单条数据
                     ClassSchedule classSchedule = ClassSchedule_Entity.GetEntity(reconcile.ClassSchedule_Id);
                     //根据课程名称以及阶段id筛选
@@ -444,6 +477,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                         !a.CourseName.Contains("班会") &&
                         !a.CourseName.Contains("军事"))
                         .FirstOrDefault(a => a.CourseName == reconcile.Curriculum_Id && a.Grand_Id == classSchedule.grade_Id);
+
                     if (curriculum.CourseName.Contains("语文") ||
                         curriculum.CourseName.Contains("数学") ||
                         curriculum.CourseName.Contains("英语") ||
@@ -451,21 +485,21 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                         curriculum.CourseName.Contains("班会") ||
                         curriculum.CourseName.Contains("军事"))
                     {
-                        OtherStage += Reconcile_Entity.GetTeacherJieshu(dt.Year, dt.Month, mydata[i].EmployeesInfo_Id, curriculum.CourseName);
+                        OtherStage += Reconcile_Entity.GetTeacherJieshu(dt.Year, dt.Month, mydata[i].EmployeesInfo_Id, curriculum.CourseName,true);
                     }
                     else
                     {
                         Grand grand = Grand_Entity.GetEntity(curriculum1.Grand_Id);
                         if (grand.GrandName.Contains("S1") || grand.GrandName.Contains("S2") || grand.GrandName.Contains("Y1"))
                         {
-                            FirstStage += Reconcile_Entity.GetTeacherJieshu(dt.Year, dt.Month, mydata[i].EmployeesInfo_Id, curriculum.CourseName);
+                            FirstStage += Reconcile_Entity.GetTeacherJieshu(dt.Year, dt.Month, mydata[i].EmployeesInfo_Id, curriculum.CourseName,true);
                         }
                         else if (grand.GrandName.Contains("S3") || grand.GrandName.Contains("S4"))
                         {
-                            SecondStage += Reconcile_Entity.GetTeacherJieshu(dt.Year, dt.Month, mydata[i].EmployeesInfo_Id, curriculum.CourseName);
+                            SecondStage += Reconcile_Entity.GetTeacherJieshu(dt.Year, dt.Month, mydata[i].EmployeesInfo_Id, curriculum.CourseName,true);
                         }
                     }
-
+                    }
                 }
 
                 if (FirstStage != 0)
@@ -491,8 +525,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 staff.totalClass = FirstStage + SecondStage + OtherStage;
                 staff.summoney = summoney;
                 staff.Emp_Name = Emp_List[i].EmpName;
+                staff.ClassCount = ClassGroup.Count();
                 staff_list.Add(staff);
-
+                
                 summoney = 0;
                 QuanDay = 0;
                 ClassTime = 0;
