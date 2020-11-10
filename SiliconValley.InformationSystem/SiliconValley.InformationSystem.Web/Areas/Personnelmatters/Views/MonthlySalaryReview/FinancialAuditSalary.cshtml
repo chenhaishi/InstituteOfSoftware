@@ -1,18 +1,13 @@
-﻿
-@{
-    ViewBag.Title = "SalaryManageIndex";
+﻿@{
+    ViewBag.Title = "FinancialAuditSalary";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 
 @*头部工具栏*@
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-sm" lay-event="timeUpdate"><i class="layui-icon layui-icon-edit"></i>年月份改变</button>
-        <button class="layui-btn layui-btn-sm" lay-event="Approved"><i class="layui-icon layui-icon-edit"></i>确认审批</button>
-        <button class="layui-btn layui-btn-sm" lay-event="forbiddenEmp"><i class="layui-icon layui-icon-fonts-del"></i>禁用</button>Salary
-        <button type="button" class="layui-btn layui-btn-sm" lay-event="Email"><i class="layui-icon layui-icon-release"></i>发送工资条</button>
-        <button type="button" class="layui-btn layui-btn-sm" lay-event="Salary"><i class="layui-icon layui-icon-release"></i>月度工资导出</button>
+        <button class="layui-btn layui-btn-sm" lay-event="Approved"><i class="layui-icon layui-icon-edit"></i>一键审批</button>
+        <button class="layui-btn layui-btn-sm" lay-event="reject"><i class="layui-icon layui-icon-edit"></i>一键驳回</button>
     </div>
 </script>
 
@@ -66,7 +61,7 @@
 <table id="salarytab" lay-filter="salarytab"></table>
 @*操作栏*@
 <script type="text/html" id="barDemo">
-    <a class="layui-btn  layui-btn-xs " lay-event="edit">编辑</a>
+    <a class="layui-btn  layui-btn-xs " lay-event="edit">审批</a>
 
 </script>
 @*员工在职状态*@
@@ -77,27 +72,8 @@
     {{ d.EmpState="离职" }}
     {{# } }}
 </script>
-<script type="text/html" id="Audit">
-    {{# if(d.IsFinancialAudit==0){ }}
-    {{ d.IsFinancialAudit="未审核" }}
-    {{# }else if(d.IsFinancialAudit==1){ }}
-    {{ d.IsFinancialAudit="已审核" }}
-    {{# }else{ }}
-    {{ d.IsFinancialAudit="已驳回" }}
-    {{# } }}
-
-</script>
-<div class="layui-hide" id="datamonth">
-    <div class="layui-form-item">
-        <label class="layui-form-label">请选择日期</label>
-        <div class="layui-input-inline">
-            <input type="text" class="layui-input" id="month" placeholder="yyyy-MM">
-        </div>
-    </div>
-</div>
-    @section script{
-        <script>
-
+@section script{
+    <script>
         layui.use(['table', 'layer', 'form', 'laydate', 'element'], function () {
             var table = layui.table;
             var layer = layui.layer;
@@ -106,7 +82,7 @@
             var element = layui.element;
             table.render({
                 elem: '#salarytab'
-                , url: '/Personnelmatters/EmpSalaryManagement/EmpSalaryData'
+                , url: '/Personnelmatters/MonthlySalaryReview/FinancialEmpSalaryData'
                 , id: "mySalaryStatistics"
                 , toolbar: '#toolbarDemo'
                 , limits: [5, 10, 15, 20, 25, 30,50,100,120,150,180,200,250,300]
@@ -136,7 +112,6 @@
                     , { field: 'PayCardSalary', title: '实发工资(工资卡)', width: 160, rowspan: 2 }
                     , { field: 'CashSalary', title: '实发工资(现金)', width: 150, rowspan: 2 }
                     , { field: 'EmpState', title: '员工状态', width: 100, rowspan: 2, templet: '#empstate' }
-                    , { field: 'IsFinancialAudit', title: '财务审核状态', sort: true, width: 110, fixed: "right", templet: '#Audit' }
                     , { title: '操作', toolbar: '#barDemo', width: 100, fixed: 'right', rowspan: 2 }
                     ]
                     ,[
@@ -152,21 +127,19 @@
             table.on('toolbar(salarytab)', function (obj) {
                 var checkStatus = table.checkStatus(obj.config.id);
                 switch (obj.event) {
-                    case 'timeUpdate':
-                        TimeUpdate();
-                        break;
                     case 'Approved':
                         var time = '@ViewBag.yearandmonth';
                         if (JSON.stringify(time) != "{}") {
                             $.ajax({
                                 type: "post",
                                 dataType: "json",
-                                url: "/Personnelmatters/EmpSalaryManagement/IsConfirmApproval",
-                                data: time,
+                                async: false,
+                                url: "/Personnelmatters/MonthlySalaryReview/IsConfirmApproval",
+                                data: { time: time },
                                 //报错请加入以下三行，则ajax提交无问题
-                                cache: false,
-                                processData: false,
-                                contentType: false,
+                                //cache: false,
+                                //processData: false,
+                                //contentType: false,
                                 success: function (data) {
                                     if (data.ErrorCode == 200) {
                                         if (data.Success) {
@@ -187,75 +160,52 @@
                             layer.msg("没有数据可审批!");
                         }
                         break;
-                    case 'forbiddenEmp':
+                    case 'reject':
                         var data = checkStatus.data;
-                        console.log(data);
-                        if (data == 0) {
-                            layui.use('layer', function () {
-                                var layer = layui.layer;
-                                layer.alert('请至少选中一条记录', { title: '提示信息', icon: 0 }, function (index) {
-                                    layer.close(index);
-                                });
-                            });
-                        } else {
-                            layer.confirm('确定禁用选中的员工?', function (index) {
-                                delSalaryEmpinfo(data);
-                            });
+                        var id = null
+                        for (var i = 0; i < data.length; i++) {
+                            if (i < data.length - 1) {
+                                id += data[i].Id + ",";
+                            } else {
+                                id += data[i].Id;
+                            }
                         }
-                        break;
-                    case 'Email':
-                        laydate.render({
-                            elem: "#month",
-                            type: 'month'
-                        })
-                      var open= layer.open({
-                          type: 1,
-                          closeBtn: 0,
-                          content: $("#datamonth").removeClass("layui-hide"),
-                          btn: ['确定', '取消'], 
-                          yes: function () {
-                                layer.close(open);
-                                $("#datamonth").addClass("layui-hide");
-                                var year = $("#month").val().substring(0, 4);
-                                var month = $("#month").val().substring(5);
-                                layer.confirm('是否要向所有员工发送' + year + "年" + month + '月的工资条', { icon: 3, title: '提示' }, function (index) {
-                                    layer.close(index);
-                                    var index = layer.msg("正在发送邮件", { icon: 16, shade: 0.6 });
-                                    $.ajax({
-                                        url: "/Personnelmatters/EmpSalaryManagement/PaySlipExcel",
-                                        type: "post",
-                                        data: JSON.stringify({ "time": $("#month").val()}),
-                                        dataType: "json",
-                                        contentType: "Application/json",
-                                        success: function (data) {
-                                            console.log(data);
+                        if (data.length<1) {
+                            layer.msg("请选择数据!");
+                        } else {
+                         var prom= layer.prompt({
+                                title: "驳回原因",
+                                formType: 2,
+                                value: '',
+                         }, function (value, index, elem) {
+                             layer.close(prom);
+                                $.ajax({
+                                    type: "post",
+                                    dataType: "json",
+                                    async: false,
+                                    url: "/Personnelmatters/MonthlySalaryReview/OneClickRejection",
+                                    data: {
+                                        id: id,
+                                        remark: value
+                                    },
+                                    success: function (data) {
+                                        if (data.ErrorCode == 200) {
                                             if (data.Success) {
-                                                layer.close(index)
-                                                layer.msg(data.Msg, { icon: 1 });
+                                                ConfirmApproval(time);
                                             } else {
-                                                layer.close(index)
-                                                layer.msg("邮件发送失败", { icon: 2 });
+                                                layer.alert(data.Data, { icon: 1 }, function (index) {
+                                                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                                    window.parent.location.reload();
+                                                    parent.layer.close(index);
+                                                });
                                             }
+                                        } else {
+                                            layer.msg("系统错误,请联系后台管理员!");
                                         }
-                                    })
+                                    }
                                 });
-                          },
-                          btn2: function () {
-                              $("#datamonth").addClass("layui-hide");
-                          }
-                            
-
-                        })
-                        break;
-                    case 'Salary':
-                        layer.open({
-                            type: 2,
-                            content: '/Personnelmatters/EmpSalaryManagement/MonthlySalaryExport'
-                            , title: '月度工资导出'
-                            , shade: 0.8
-                            , anim: 4
-                            , skin: 'demo-class'
-                        });
+                            })    
+                        }
                         break;
                 };
             });
@@ -267,53 +217,19 @@
                 if (obj.event === 'edit') {
                     var id = data.Id;
                     console.log("工资编号：" + id);
-                    $.post('/Personnelmatters/EmpSalaryManagement/JudgeIsApproval', { 'id': id }, function (da) {
-                        if (da.ErrorCode == 200) {
-                            if (da.Success) {
-                                layer.msg("该员工本月工资已确认审批了，不可编辑！", {
-                                    icon: 1,
-                                    time: 5000 //2秒关闭（如果不配置，默认是3秒）
-                                }, function () {
-                                    var index = parent.layer.getFrameIndex(window.name);
-                                    parent.layui.table.reload('mySalaryStatistics');
-                                    parent.layer.close(index);
-                                });
-                            }
-                            else {
-                                if (data.IsFinancialAudit!=2) {
-                                    layer.open({
-                                        type: 2,
-                                        content: '/Personnelmatters/EmpSalaryManagement/EditEmpSalary/?id=' + id
-                                        , area: ["500px", "500px"]
-                                        , title: '编辑员工月度工资信息'
-                                        , shade: 0.8
-                                        , anim: 4
-                                        , skin: 'demo-class'
-                                    });
-                                } else {
-                                    layer.open({
-                                        type: 2,
-                                        content: '/Personnelmatters/EmpSalaryManagement/ModifyAbnormalData/?id=' + id
-                                        , area: ["800px", "650px"]
-                                        , title: '编辑员工月度工资信息'
-                                        , shade: 0.8
-                                        , anim: 4
-                                        , skin: 'demo-class'
-                                    });
-                                }
-                            
-                            }
-                        } else {
-                            layer.alert("系统出错，请多次尝试后");
-                        }
-
+                    layer.open({
+                        type: 2,
+                        content: '/Personnelmatters/MonthlySalaryReview/SalaryApproval/?id=' + id
+                        , area: ["800px", "650px"]
+                        , title: '审核员工月度工资信息'
+                        , shade: 0.8
+                        , anim: 4
+                        , skin: 'demo-class'
                     });
 
                 }
 
             });
-
-
             //模糊查询点击事件
             $("#Conditionselect").click(function () {
                 var ename = $("#EmpName").val();//员工姓名
@@ -399,10 +315,10 @@
 
         }
 
-        </script>
+    </script>
 
-        @*部门与岗位的下拉框动态赋值及下拉框二级联动*@
-        <script>
+    @*部门与岗位的下拉框动态赋值及下拉框二级联动*@
+    <script>
             layui.use(['form', 'upload', 'layer'], function () {
 
                 var form = layui.form;
@@ -456,5 +372,6 @@
                 layui.form.render("select");
 
             });
-        </script>
-    }
+    </script>
+}
+

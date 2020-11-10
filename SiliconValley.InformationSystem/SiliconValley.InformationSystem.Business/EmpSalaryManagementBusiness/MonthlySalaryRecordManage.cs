@@ -14,6 +14,7 @@ using System.IO;
 using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 using System.Drawing.Imaging;
 using Spire.Xls;
+using NPOI.SS.Util;
 
 namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
 {
@@ -179,6 +180,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                         msr.MonthPerformancePay = GetempPerformanceSalary(merits.FinalGrade,item.PerformancePay);
                         msr.IsDel = false;
                         msr.IsApproval = false;
+                        msr.IsFinancialAudit = 0;
                         this.Insert(msr);
                         rc.RemoveCache("InRedisMSRData");
                     }
@@ -528,7 +530,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 mail.IsBodyHtml = true;
                 
                 //邮件标题。
-                mail.Subject = "您好！这是您" + DateTime.Now.ToString("yyyy年MM月") + "的工资条";
+                mail.Subject = "您好！这是您"+Convert.ToDateTime(m.YearAndMonth).ToString("yyyy年MM月") + "的工资条";
                 //邮件内容。
 
                 #region 邮件正文
@@ -590,34 +592,37 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                         "<td>" + m.Total + "</td>" +
 
                    "</tr></table></div>";
+                #region
+                //mail.Body += "<div>绩效详情";
 
-                mail.Body += "<div>绩效详情";
+                //mail.Body += "<table border='1' cellspacing='0' style='text-align:center'>";
 
-                mail.Body += "<table border='1' cellspacing='0' style='text-align:center'>";
+                //mail.Body += @"<tr><th>日常工作内容</th>
+                //    <th>日常工作权重占比</th>
+                //    <th>日常工作完成率</th>           
+                //    <th>其他或领导临时指派任务</th>
+                //    <th>其他工作权重占比</th>
+                //    <th>其他工作完成率</th>
+                //    <th>上级评分</th>
+                //    <th>绩效分</th>
+                //    <th>绩效工资</th>
+                //</tr>";
 
-                mail.Body += @"<tr><th>日常工作内容</th>
-                    <th>日常工作权重占比</th>
-                    <th>日常工作完成率</th>           
-                    <th>其他或领导临时指派任务</th>
-                    <th>其他工作权重占比</th>
-                    <th>其他工作完成率</th>
-                    <th>上级评分</th>
-                    <th>绩效分</th>
-                    <th>绩效工资</th>
-                </tr>";
+                //var mer = merits.GetEmpMCData().Where(i => i.EmployeeId == m.EmployeeId).FirstOrDefault();
+                ////绩效工资
+                //mail.Body += "<tr><td>" + mer.RoutineWork + "</td>" +
+                //            "<td>" + mer.RoutineWorkPropotion + "%</td>" +
+                //            "<td>" + mer.RoutineWorkFillRate + "%</td>" +
+                //            "<td>" + mer.OtherWork + "</td>" +
+                //            "<td>" + mer.OtherWorkPropotion + "%</td>" +
+                //            "<td>" + mer.OtherWorkFillRate + "%</td>" +
+                //            "<td>" + mer.SuperiorGrade + "</td>" +
+                //            "<td>" + m.FinalGrade + "</td>" +
+                //            "<td>" + m.MonthPerformancePay + "</td>" +
+                //        "</tr></table></div>";
+                #endregion
 
-                var mer = merits.GetEmpMCData().Where(i => i.EmployeeId == m.EmployeeId).FirstOrDefault();
-                //绩效工资
-                mail.Body += "<tr><td>" + mer.RoutineWork + "</td>" +
-                            "<td>" + mer.RoutineWorkPropotion + "%</td>" +
-                            "<td>" + mer.RoutineWorkFillRate + "%</td>" +
-                            "<td>" + mer.OtherWork + "</td>" +
-                            "<td>" + mer.OtherWorkPropotion + "%</td>" +
-                            "<td>" + mer.OtherWorkFillRate + "%</td>" +
-                            "<td>" + mer.SuperiorGrade + "</td>" +
-                            "<td>" + m.FinalGrade + "</td>" +
-                            "<td>" + m.MonthPerformancePay + "</td>" +
-                        "</tr></table></div>";
+
 
                 mail.Body += "<div>考勤详情<br/><table border='1' cellspacing='0' style='text-align:center'>";
 
@@ -674,17 +679,36 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                      "</tr>";
                 }
                 //加班
-                var over = overtime.GetList().Where(i=>i.EmployeeId==m.EmployeeId);
+                var over = overtime.GetList().Where(i=>i.EmployeeId==m.EmployeeId&&Convert.ToDateTime(i.YearAndMonth).Year== Convert.ToDateTime(m.YearAndMonth).Year&& Convert.ToDateTime(i.YearAndMonth).Month == Convert.ToDateTime(m.YearAndMonth).Month);
                 
                 if (!att.OvertimeCharges.IsNullOrEmpty())
                 {
-                    mail.Body += "<tr><td>加班费用</td>";
+                    mail.Body += "<tr><td>加班费用</td><td>";
                     foreach (var i in over)
                     {
-                        mail.Body +="<td>加班记录:" + i.StartTime+"至"+i.EndTime+"<br/>";
-                        mail.Body += "加班时长:" + i.Duration + "<br/></td>";
+                        var type = "";
+                        switch (i.OvertimeTypeId)
+                        {
+                            case 1:
+                                type = "晚上加班";
+                                break;
+                            case 2:
+                                type = "周末加班";
+                                break;
+                            case 3:
+                                type = "法定节假日加班";
+                                break;
+                            case 4:
+                                type = "行政值班";
+                                break;
+                            default:
+                                break;
+                        }
+                        mail.Body +="加班记录:" + i.StartTime+"至"+i.EndTime+"<br/>";
+                        mail.Body += "加班类型:"+type+"<br/>";
+                        mail.Body += "加班时长:" + i.Duration + "<br/>";
                     }
-                    mail.Body += "<td>" + att.OvertimeCharges + "</td>" +
+                    mail.Body += "</td><td>" + att.OvertimeCharges + "</td>" +
                       "</tr>";
                 }
                 //调休
@@ -781,6 +805,156 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             return result;
         }
 
+        public AjaxResult Month(List<MonthlySalaryRecord> data)
+        {
+
+            var ajaxresult = new AjaxResult();
+
+            var workbook = new HSSFWorkbook();
+            EmployeesInfoManage manage = new EmployeesInfoManage();
+            AttendanceInfoManage attendance = new AttendanceInfoManage();
+
+            //创建工作区
+            var sheet = workbook.CreateSheet();
+
+            #region 表头样式
+
+            HSSFCellStyle HeadercellStyle = (HSSFCellStyle)workbook.CreateCellStyle();
+            HSSFFont HeadercellFont = (HSSFFont)workbook.CreateFont();
+
+            HeadercellStyle.Alignment = HorizontalAlignment.Center;
+            HeadercellStyle.VerticalAlignment = VerticalAlignment.Center;
+            HeadercellFont.IsBold = true;
+
+            HeadercellStyle.SetFont(HeadercellFont);
+
+            #endregion
+
+
+            HSSFCellStyle ContentcellStyle = (HSSFCellStyle)workbook.CreateCellStyle();
+            HSSFFont ContentcellFont = (HSSFFont)workbook.CreateFont();
+
+            ContentcellStyle.Alignment = HorizontalAlignment.Center;
+
+            CreateHeader();
+
+            int num = 2;
+            var YearAndMonth = "";
+            data.ForEach(d =>
+            {
+                var row = (HSSFRow)sheet.CreateRow(num);
+                YearAndMonth = d.YearAndMonth.ToString();
+
+                var Salaryone = GetSalaryone(d.BaseSalary + d.PositionSalary, d.MonthPerformancePay, d.NetbookSubsidy, d.SocialSecuritySubsidy);
+                var Salarytwo = GetSalarytwo(Salaryone, d.OvertimeCharges, d.Bonus, d.LeaveDeductions, d.TardyAndLeaveWithhold, d.AbsentNumWithhold, d.OtherDeductions);
+                var PaycardSalary = GetPaycardSalary(d.Id, d.Total, d.PersonalSocialSecurity, d.ContributionBase);
+
+                CreateCell(row, ContentcellStyle, 0, d.EmployeeId);//员工编号
+                CreateCell(row, ContentcellStyle, 1, manage.GetEntity(d.EmployeeId).EmpName);//员工姓名
+                CreateCell(row, ContentcellStyle, 2, manage.GetDeptByEmpid(d.EmployeeId).DeptName);//所属部门
+                CreateCell(row, ContentcellStyle, 3, manage.GetPositionByEmpid(d.EmployeeId).PositionName);//所属岗位
+                CreateCell(row, ContentcellStyle, 4, d.BaseSalary.ToString());//基本工资
+                CreateCell(row, ContentcellStyle, 5, d.PositionSalary.ToString());//岗位工资
+                CreateCell(row, ContentcellStyle, 6, d.FinalGrade.ToString());//绩效分
+                CreateCell(row, ContentcellStyle, 7, d.MonthPerformancePay.ToString());//绩效工资
+                CreateCell(row, ContentcellStyle, 8, d.NetbookSubsidy.ToString());//笔记本补助
+                CreateCell(row, ContentcellStyle, 9, d.SocialSecuritySubsidy.ToString());//社保补贴
+                CreateCell(row, ContentcellStyle, 10, Salaryone.ToString());//应发工资1
+                CreateCell(row, ContentcellStyle, 11, d.OvertimeCharges.ToString());//加班费用
+                CreateCell(row, ContentcellStyle, 12, d.Bonus.ToString());//奖金(元)
+                CreateCell(row, ContentcellStyle, 13, GetAttendanceInfoByEmpid(d.EmployeeId,(DateTime)d.YearAndMonth).LeaveDays.ToString());//请假天数
+                CreateCell(row, ContentcellStyle, 14, d.LeaveDeductions.ToString());//请假扣款(元)
+                CreateCell(row, ContentcellStyle, 15, d.TardyAndLeaveWithhold.ToString());//迟到/早退扣款(元)
+                CreateCell(row, ContentcellStyle, 16, d.AbsentNumWithhold.ToString());//缺卡扣款(元)
+                CreateCell(row, ContentcellStyle, 17, d.AbsenteeismWithhold.ToString());//旷工扣款(元)
+                CreateCell(row, ContentcellStyle, 18, d.OtherDeductions.ToString());//其他扣款(元)
+                CreateCell(row, ContentcellStyle, 19, Salarytwo.ToString());//应发工资2
+                CreateCell(row, ContentcellStyle, 20, d.PersonalSocialSecurity.ToString());//个人社保
+                CreateCell(row, ContentcellStyle, 21, d.PersonalIncomeTax.ToString());//个税
+                CreateCell(row, ContentcellStyle, 22, PaycardSalary.ToString());//实发工资(工资卡)
+                CreateCell(row, ContentcellStyle, 23, GetCashSalary(d.Id,d.Total, PaycardSalary).ToString());//实发工资(现金)
+                num++;
+
+            });
+
+            string path = System.AppDomain.CurrentDomain.BaseDirectory.Split('\\')[0];    //获得项目的基目录
+            //var s = path.Split('\\'); 
+            //var mypath = s[0];
+            var Path = System.IO.Path.Combine(path, @"\XinxihuaData\Excel"); //进到基目录录找“Uploadss->Excel”文件夹
+
+            if (!System.IO.Directory.Exists(Path))     //判断是否有该文件夹
+                System.IO.Directory.CreateDirectory(Path); //如果没有在Uploads文件夹下创建文件夹Excel
+            string saveFileName = Path + "\\" + Convert.ToDateTime(YearAndMonth).ToString("yyyy年MM月") + "员工工资" + ".xls"; //路径+表名+文件类型
+            //}
+            try
+            {
+                FileStream fs = new FileStream(saveFileName, FileMode.Create, FileAccess.Write);
+                workbook.Write(fs);  //写入文件
+                workbook.Close();  //关闭
+                ajaxresult.ErrorCode = 200;
+                ajaxresult.Msg = "导入成功！文件地址：" + saveFileName;
+                // ajaxresult.Data = list;
+
+            }
+            catch (Exception ex)
+            {
+                ajaxresult.ErrorCode = 100;
+                ajaxresult.Msg = "导入失败，" + ex.Message;
+
+            }
+            return ajaxresult;
+            void CreateHeader()
+            {
+                HSSFRow Header = (HSSFRow)sheet.CreateRow(0);
+
+                for (int i = 0; i < 24; i++)
+                {
+                    if (i<15||i>17)
+                    {
+                        sheet.AddMergedRegion(new CellRangeAddress(0, 1, i, i));
+                    }
+                }
+                sheet.AddMergedRegion(new CellRangeAddress(0, 0, 15, 17));
+
+                CreateCell(Header, HeadercellStyle, 0, "员工编号");
+                CreateCell(Header, HeadercellStyle, 1, "员工姓名");
+                CreateCell(Header, HeadercellStyle, 2, "所属部门");
+                CreateCell(Header, HeadercellStyle, 3, "所属岗位");
+                CreateCell(Header, HeadercellStyle, 8, "出勤天数");
+                CreateCell(Header, HeadercellStyle, 4, "基本工资");
+                CreateCell(Header, HeadercellStyle, 5, "岗位工资");
+                CreateCell(Header, HeadercellStyle, 6, "绩效分");
+                CreateCell(Header, HeadercellStyle, 7, "绩效工资");
+                CreateCell(Header, HeadercellStyle, 8, "笔记本补助");
+                CreateCell(Header, HeadercellStyle, 9, "社保补贴");
+                CreateCell(Header, HeadercellStyle, 10, "应发工资1");
+                CreateCell(Header, HeadercellStyle, 11, "加班费用");
+                CreateCell(Header, HeadercellStyle, 12, "奖金(元)");
+                CreateCell(Header, HeadercellStyle, 13, "请假天数");
+                CreateCell(Header, HeadercellStyle, 14, "请假扣款(元)");
+                CreateCell(Header, HeadercellStyle, 15, "考勤扣款");
+                CreateCell(Header, HeadercellStyle, 18, "其他扣款(元)");
+                CreateCell(Header, HeadercellStyle, 19, "应发工资2");
+                CreateCell(Header, HeadercellStyle, 20, "个人社保");
+                CreateCell(Header, HeadercellStyle, 21, "个税");
+                CreateCell(Header, HeadercellStyle, 22, "实发工资(工资卡)");
+                CreateCell(Header, HeadercellStyle, 23, "实发工资(现金)");
+                HSSFRow Header2 = (HSSFRow)sheet.CreateRow(1);
+                CreateCell(Header2, HeadercellStyle, 15, "迟到/早退扣款(元)");
+                CreateCell(Header2, HeadercellStyle, 16, "缺卡扣款(元)");
+                CreateCell(Header2, HeadercellStyle, 17, "旷工扣款(元)");
+
+            }
+
+            void CreateCell(HSSFRow row, HSSFCellStyle TcellStyle, int index, string value)
+            {
+                HSSFCell Header_Name = (HSSFCell)row.CreateCell(index);
+
+                Header_Name.SetCellValue(value);
+
+                Header_Name.CellStyle = TcellStyle;
+            }
+        }
     } 
     }
 

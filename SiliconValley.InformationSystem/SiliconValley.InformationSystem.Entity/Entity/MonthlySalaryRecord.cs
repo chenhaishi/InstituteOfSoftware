@@ -48,5 +48,18 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         public Nullable<decimal> TardyAndLeaveWithhold { get; set; }//迟到/早退扣费
         public Nullable<decimal> AbsenteeismWithhold { get; set; }//旷工扣费
         public Nullable<decimal> AbsentNumWithhold { get; set; }//缺卡扣费
+        /// <summary>
+        /// 财务审核状态 0-未审核 1-已审核 2-已驳回
+        /// </summary>
+        public int IsFinancialAudit { get; set; }
+        /// <summary>
+        /// 财务备注
+        /// </summary>
+        public string FinancialRemarks  {get; set; }
+        /// <summary>
+        /// 人事备注
+        /// </summary>
+        public string Remarks { get; set; }
+
     }
 }

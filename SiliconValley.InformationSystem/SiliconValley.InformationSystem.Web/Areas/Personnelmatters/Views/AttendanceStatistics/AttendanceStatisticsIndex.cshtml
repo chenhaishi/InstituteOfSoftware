@@ -32,8 +32,9 @@
     {{# }else{ }}
     {{ d.empIsDel="离职" }}
     {{# } }}
-    
+
 </script>
+
 
 <div>
     <h2 style="text-align:center;">湖南硅谷云教育科技有限公司--@ViewBag.yearandmonth--月考勤统计表</h2>
@@ -163,7 +164,7 @@
                         break;
                     case 'Approved':
                         var time = '@ViewBag.yearandmonth';
-                        console.log("我的时间：" + JSON.stringify(time) );
+                        console.log("我的时间：" + JSON.stringify(time));
                         if (JSON.stringify(time) != "{}") {
                             $.ajax({
                                 type: "post",
