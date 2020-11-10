@@ -126,10 +126,14 @@
                                     <input type="text" placeholder="结束时间" class="layui-input" name="endTime" id="endTime" />
                                 </div>
                             </div>
+                            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                                <label class="LableCss1">班级:</label>
+                                <div id="ClssTime" class="layui-input-block">
+                                    @Html.DropDownList("Classid", ViewBag.ClassName as IEnumerable<SelectListItem>, new Dictionary<string, object>() { { "lay-search", "ClassName" } })
+                                </div>
+                            </div>
                             <div class="layui-col-xs2 layui-col-sm2 layui-col-md2" style="text-align:center">
                                 <button type="button" class="layui-btn" onclick="Sercher()">查询</button>
-
-
                             </div>
                         </div>
                     </form>
@@ -220,7 +224,7 @@
             }
             else if (ViewBag.emp == 2)
             {
-                @*<button class="layui-btn layui-btn-sm" lay-event="getCheckData_addNight"><i class="layui-icon">&#xe624;</i>添加值班数据</button>*@
+                <button class="layui-btn layui-btn-sm" lay-event="getCheckData_outExcel"><i class="layui-icon">&#xe624;</i>Excel导出</button>
                 <button class="layui-btn layui-btn-sm" lay-event="getCheckData_delNight"><i class="layui-icon">&#x1006;</i>批量删除数据</button>
                 <button class="layui-btn layui-btn-sm" lay-event="getCheckData_addNight"><i class="layui-icon">&#xe624;</i>添加值班数据</button>
             }
@@ -253,9 +257,27 @@
     </form>
 </div>
 
+<div class="DivCss2" id="OutDiv">
+    <form class="layui-form" lay-filter="OutForm" style="margin-top:40px;">
+
+        <div class="layui-form-item">
+            <label class="LableCss1">选择日期:</label>
+            <div class="layui-input-block">
+                <input type="text" id="OutMonth" name="OutMonth" class="layui-input" style="width:300px;" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="subOutExcel" style="width:100px;">导出</button>
+            </div>
+        </div>
+        
+    </form>
+</div>
 
 <script>
     var dateindex;
+    var outIndex;
 
     //转换时间的方法
     function MyTimeChange(newtime) {
@@ -287,7 +309,7 @@
             } else {
                 table.reload('TeacherNight_table', {
                     url: '/Educational/TeacherAddorBeonDuty/TabledataSecher'
-                    , where: { "tid": data1.teacherid, "olddate": data1.starTime, "newdate": data1.endTime }
+                    , where: { "tid": data1.teacherid, "olddate": data1.starTime, "newdate": data1.endTime, "ClassName": $("#Classid").val() }
                 });
             }
 
@@ -322,6 +344,12 @@
 
         laydate.render({
             elem: '#Month',
+            type: 'month',
+            trigger: 'click'
+        });
+
+        laydate.render({
+            elem: '#OutMonth',
             type: 'month',
             trigger: 'click'
         });
@@ -559,6 +587,15 @@
                         })
                     }
                     break;
+                case 'getCheckData_outExcel':
+                    outIndex = layer.open({
+                        type: 1,
+                        shade: 0.8,
+                        title: '数据导出',
+                        content: $("#OutDiv"),
+                        area: ['500px', '300px']
+                    });
+                    break;
 
             };
         });
@@ -749,6 +786,23 @@
             });
             return false;
         });
+
+        //值班数据导出
+        form.on('submit(subOutExcel)', function (data) {
+            console.log(data.field);
+            $.ajax({
+                url:"/Educational/TeacherAddorBeonDuty/dutyDataToExcel",
+                data: { "dutyTime": data.field.OutMonth },
+                success: function (res) {
+                    if (res.ErrorCode == "200") {
+                        layer.msg(res.Msg, { icon: 1, time: 4000 });
+                    } else {
+                        layer.msg(res.Msg, { icon: 1, time: 4000 });
+                    }
+                }
+            });
+            return false;
+        })
     });
 
     function Close() {
