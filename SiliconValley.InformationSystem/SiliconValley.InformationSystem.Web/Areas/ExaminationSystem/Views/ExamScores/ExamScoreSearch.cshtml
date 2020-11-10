@@ -23,7 +23,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label">日期</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="date" id="date" lay-filter="date" lay-verify="date" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input"> 
+                        <input type="text" name="date" id="date" lay-filter="date" lay-verify="date" placeholder="yyyy-MM" autocomplete="off" class="layui-input"> 
                     </div>
                 </div>
                 <div class="layui-inline">
@@ -101,13 +101,13 @@
 
                                 for (var i = 0; i < result.Data.length; i++) {
                                     //  console.log(result.Data[i]);
-                                    $('<option value=' + result.Data[i].ID + '>' + result.Data[i].Title + result.Data[i].CurreName+ '</option>').appendTo($('#Exam'));
+                                    $('<option value=' + result.Data[i].ID + '>' + result.Data[i].Title + result.Data[i].CurreName + '</option>').appendTo($('#Exam'));
                                     //$('#Exam').append(new Option(result.Data[i].Title, result.Data[i].ID));
                                 }
                                 form.render(); //更新全部
                                 //$.each( , function (index, item) {
                                 //    var i = index;
-                                   
+
                                 //    //赋值
                                 //    //console.log(item.Data.Title);
                                 //    //$('#Exam').append(new Option(item.Data.Title, item.Data.ID));
@@ -118,7 +118,9 @@
                             }
                             layui.form.render("select");
                         }
-                    })
+                    }).fail(function (data) {
+                        console.log(data);
+                    });
                 }
                 
             });
