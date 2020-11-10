@@ -466,5 +466,6 @@
       <Name>01.SiliconValley.InformationSystem.Util</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

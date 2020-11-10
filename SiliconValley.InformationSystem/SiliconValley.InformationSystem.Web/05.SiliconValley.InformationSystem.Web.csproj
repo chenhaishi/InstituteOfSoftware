@@ -319,7 +319,9 @@
     <Compile Include="Areas\Personnelmatters\Controllers\EmpSalaryManagementController.cs" />
     <Compile Include="Areas\Personnelmatters\Controllers\EmpTransactionRecordController.cs" />
     <Compile Include="Areas\Personnelmatters\Controllers\PerformanceAssessController.cs" />
+    <Compile Include="Areas\Personnelmatters\Controllers\MonthlySalaryReviewController.cs" />
     <Compile Include="Areas\Personnelmatters\Controllers\RecruitingDataSummaryController.cs" />
+    <Compile Include="Areas\Personnelmatters\Controllers\SocialSecurityDetailController.cs" />
     <Compile Include="Areas\Personnelmatters\PersonnelmattersAreaRegistration.cs" />
     <Compile Include="Areas\ReportForm\Controllers\ReportController.cs" />
     <Compile Include="Areas\ReportForm\ReportFormAreaRegistration.cs" />
@@ -1946,6 +1948,10 @@
     <Content Include="Areas\Personnelmatters\Views\AttendanceStatistics\OTRDetail.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\AttendanceStatistics\OvertimeEdit.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\PerformanceAssess\AssessmentUpload.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\MonthlySalaryReview\FinancialAuditSalary.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\MonthlySalaryReview\SalaryApproval.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\EmpSalaryManagement\ModifyAbnormalData.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\EmpSalaryManagement\MonthlySalaryExport.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
@@ -3697,6 +3703,7 @@
     <Folder Include="Areas\OrThert\Views\TMorther\" />
     <Folder Include="Areas\Personnelmatters\Models\" />
     <Folder Include="Areas\Personnelmatters\Views\Shared\" />
+    <Folder Include="Areas\Personnelmatters\Views\SocialSecurityDetail\" />
     <Folder Include="Areas\ReportForm\Models\" />
     <Folder Include="Areas\ReportForm\Views\Shared\" />
     <Folder Include="Areas\Studenteducation\Models\" />

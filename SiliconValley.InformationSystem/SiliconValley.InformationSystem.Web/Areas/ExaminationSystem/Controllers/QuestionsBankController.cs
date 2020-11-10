@@ -57,7 +57,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         // GET: ExaminationSystem/QuestionsBank
         public ActionResult QuestionsBankIndex()
         {
+            GrandBusiness GrandBusiness = new GrandBusiness();
+            //提供难度级别数据
 
+            ViewBag.QuestionLevel = db_questionLevel.AllQuestionLevel();
+
+            ViewBag.grand = GrandBusiness.AllGrand();
             //StudentExamBusiness studentExamBusiness = new StudentExamBusiness();
 
             //ExaminationBusiness examinationBusiness = new ExaminationBusiness();
@@ -66,7 +71,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             //studentExamBusiness.productAnswerQuestion(e, 10);
 
-             return View();
+            return View();
         }
         /// <summary>
         /// 选择题去重分布视图

@@ -1,0 +1,190 @@
+﻿@{
+    Layout = null;
+}
+@using SiliconValley.InformationSystem.Entity.MyEntity
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/layui/layui.js"></script>
+</head>
+<body>
+    @{
+        MonthlySalaryRecord monthly = Model as MonthlySalaryRecord;
+    }
+    <div>
+        <form class="layui-form" action="" lay-filter="over">
+            <input type="hidden" name="Id" value="@monthly.Id" />
+            <div class="layui-container" style="margin-top:20px;">
+                <div class="layui-row layui-form-item">
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                        <label class="layui-form-label">姓名:</label>
+                        <div class="layui-input-block">
+                            <input type="text" readonly class="layui-input" style="border:0px;" value="@ViewBag.EmpName" />
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-row layui-form-item">
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                        <label class="layui-form-label" style="width:120px;margin-left:-40px;">基本工资:</label>
+                        <div class="layui-input-block" style="width:190px;">
+                            <input type="text" class="layui-input" name="BaseSalary" value="@monthly.BaseSalary" />
+                        </div>
+                    </div>
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                        <label class="layui-form-label" style="width:120px;margin-left:-40px;">岗位工资:</label>
+                        <div class="layui-input-block" style="width:190px;">
+                            <input type="text" class="layui-input" name="PositionSalary" value="@monthly.PositionSalary" />
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-row layui-form-item">
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                        <label class="layui-form-label" style="width:120px;margin-left:-40px;">绩效分:</label>
+                        <div class="layui-input-inline" style="width:190px;">
+                            <input type="text" class="layui-input" name="FinalGrade" value="@monthly.FinalGrade" />
+                        </div>
+                    </div>
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                        <label class="layui-form-label" style="width:120px;margin-left:-40px;">绩效工资:</label>
+                        <div class="layui-input-block" style="width:190px;">
+                            <input type="text" class="layui-input" name="MonthPerformancePay" value="@monthly.MonthPerformancePay" />
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-row layui-form-item">
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                        <label class="layui-form-label" style="width:120px;margin-left:-40px;">笔记本补助:</label>
+                        <div class="layui-input-inline" style="width:190px;">
+                            <input type="text" class="layui-input" name="NetbookSubsidy" value="@monthly.NetbookSubsidy" />
+                        </div>
+                    </div>
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                        <label class="layui-form-label" style="width:120px;margin-left:-40px;">社保补贴:</label>
+                        <div class="layui-input-inline" style="width:190px;">
+                            <input type="text" class="layui-input" name="SocialSecuritySubsidy" value="@monthly.SocialSecuritySubsidy" />
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-row layui-form-item">
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                        <label class="layui-form-label" style="width:120px;margin-left:-40px;">加班费用:</label>
+                        <div class="layui-input-inline" style="width:190px;">
+                            <input type="text" class="layui-input" name="OvertimeCharges" value="@monthly.OvertimeCharges" />
+                        </div>
+                    </div>
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                        <label class="layui-form-label" style="width:120px;margin-left:-40px;">奖金:</label>
+                        <div class="layui-input-inline" style="width:190px;">
+                            <input type="text" class="layui-input" name="Bonus" value="@monthly.Bonus" />
+                        </div>
+                    </div>
+
+                </div>
+                <div class="layui-row layui-form-item">
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                        <label class="layui-form-label" style="width:120px;margin-left:-40px;">缺卡扣款:</label>
+                        <div class="layui-input-inline" style="width:190px;">
+                            <input type="text" class="layui-input" name="AbsentNumWithhold" value="@monthly.AbsentNumWithhold" />
+                        </div>
+                    </div>
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                        <label class="layui-form-label" style="width:120px;margin-left:-40px;">旷工扣款:</label>
+                        <div class="layui-input-inline" style="width:190px;">
+                            <input type="text" class="layui-input" name="AbsenteeismWithhold" value="@monthly.AbsenteeismWithhold" />
+                        </div>
+                    </div>
+
+                </div>
+                <div class="layui-row layui-form-item">
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                        <label class="layui-form-label" style="width:120px;margin-left:-40px;">其他扣款:</label>
+                        <div class="layui-input-inline" style="width:190px;">
+                            <input type="text" class="layui-input" name="OtherDeductions" value="@monthly.OtherDeductions" />
+                        </div>
+                    </div>
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                        <label class="layui-form-label" style="width:120px;margin-left:-40px;">个人社保:</label>
+                        <div class="layui-input-inline" style="width:190px;">
+                            <input type="text" class="layui-input" name="PersonalSocialSecurity" value="@monthly.PersonalSocialSecurity" />
+                        </div>
+                    </div>
+
+                </div>
+                <div class="layui-row layui-form-item">
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                        <label class="layui-form-label" style="width:120px;margin-left:-40px;">个税:</label>
+                        <div class="layui-input-inline" style="width:190px;">
+                            <input type="text" class="layui-input" name="PersonalIncomeTax" value="@monthly.PersonalIncomeTax" />
+                        </div>
+                    </div>
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                        <label class="layui-form-label" style="width:120px;margin-left:-40px;">合计:</label>
+                        <div class="layui-input-inline" style="width:190px;">
+                            <input type="text" class="layui-input" name="Total" value="@monthly.Total" />
+                        </div>
+                    </div>
+
+                </div>
+                <div class="layui-row layui-form-item">
+                    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                        <label class="layui-form-label" style="width:120px;margin-left:-40px;">驳回原因:</label>
+                        <div class="layui-input-block">
+                            <textarea name="FinancialRemarks" style="height:70px" readonly class="layui-input">@monthly.FinancialRemarks</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item" style="margin-left:200px;margin-top:20px;">
+                <div class="layui-input-block">
+                    <button class="layui-btn " lay-submit="" type="button" lay-filter="demo1">提交给财务审核</button>
+                    <button class="layui-btn " id="btnclose1">关闭</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script>
+        layui.use(['layer', 'form', 'laydate'], function () {
+            var layer = layui.layer;
+            var form = layui.form;
+            var laydate = layui.laydate;
+
+            form.on("submit(demo1)", function (obj) {
+                var data = obj.field;
+                $.ajax({
+                    url: "/Personnelmatters/EmpSalaryManagement/ModifyAbnormalData",
+                    type: "post",
+                    data: JSON.stringify({
+                        "m": data,
+                    }),
+                    dataType: "json",
+                    contentType: "Application/json",
+                    success: function (data) {
+                        if (data.Success) {
+                            layer.alert("提交成功", { icon: 1 }, function (index) {
+                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                window.parent.location.reload();
+                                parent.layer.close(index);
+                            });
+                        } else {
+                            layer.msg("提交失败");
+                        }
+                    }
+                })
+            })
+            //关闭页面
+            $("#btnclose1").click(function () {
+                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                window.parent.location.reload();
+                parent.layer.close(index);
+            });
+        })
+
+    </script>
+</body>
+</html>

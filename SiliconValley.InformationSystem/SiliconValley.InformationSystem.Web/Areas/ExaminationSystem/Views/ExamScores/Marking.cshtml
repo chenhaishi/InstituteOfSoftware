@@ -780,7 +780,6 @@
             });
 
 
-
             $(document).off("click", "#download").on("click", "#download", function () {
 
                 var status = $(this).attr("Nohave");
@@ -822,10 +821,13 @@
                 if (parseFloat(cuscore) > parseFloat(max)) {
 
                     $(this).val(0);
+
                 }
             });
-            $(document).off("click", "#YiJian").on("click", "#YiJian", function () {
-                layer.msg("尽情期待！");
+            $(document).off("click", "#YiJian").on("click", "#YiJian", function () {             
+                $.post("/ExaminationSystem/ExamScores/OneClickDownload?examid=" + Examid, {}, function () {
+                    layer.msg("下载完毕！");
+                })
             })
         });
 

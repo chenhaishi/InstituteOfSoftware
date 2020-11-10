@@ -134,5 +134,17 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.SalaryView
         /// 旷工扣款
         /// </summary>
         public Nullable<decimal> AbsentNumWithhold { get; set; }
+        /// <summary>
+        /// 财务审核状态 0-未审核 1-已审核 2-已驳回
+        /// </summary>
+        public int IsFinancialAudit { get; set; }
+        /// <summary>
+        /// 财务备注
+        /// </summary>
+        public string FinancialRemarks { get; set; }
+        /// <summary>
+        /// 人事备注
+        /// </summary>
+        public string Remarks { get; set; }
     }
 }
