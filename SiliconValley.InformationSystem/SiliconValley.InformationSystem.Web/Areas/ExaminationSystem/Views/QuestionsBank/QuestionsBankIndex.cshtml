@@ -226,14 +226,20 @@
                 layer.open({
                     type: 1,
                     title: "更改",
-                    area: ["700px", "400px"],
+                    area: ["700px", "370px"],
                     content: $('#TeacherDiv'),
 
                 });
 
             });
+            
             $("#QueRen").click(function () {
-                layer.msg("尽情期待！");
+                var kecheng = $("#courseS").val();
+                console.log(kecheng);
+                $.post("/ExaminationSystem/QuestionsBank/Export", { kecheng: kecheng }, function () {
+                    layer.msg("前去C盘查收！");
+                })
+                
             })
 
         });
