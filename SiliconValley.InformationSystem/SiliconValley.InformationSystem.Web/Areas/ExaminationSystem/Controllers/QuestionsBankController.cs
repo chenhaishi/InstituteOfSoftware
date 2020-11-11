@@ -84,6 +84,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         /// <returns></returns>
         public Document Export(int kecheng)
         {
+            
             Document doc = new Document();
 
             //添加section
@@ -93,7 +94,81 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             var xuanze = db_choiceQuestion.AllChoiceQuestionData().Where(d => d.Course == kecheng).ToList();
             //查询这个课程的解答题
             var jieda = db_answerQuestion.AllAnswerQuestion().Where(d => d.Course == kecheng).ToList();
+                //添加段落
+                Paragraph para1 = s.AddParagraph();
+                para1.AppendText("考前复习题");
+                Paragraph para2 = s.AddParagraph();
+                int a = 1;
+                foreach (var item in xuanze)
+                {
+                    para2.AppendText(a + ":" + item.Title + "   " + item.Answer + "\r\n" + "A:" + item.OptionA + "\r\n" + "B:" + item.OptionB + "\r\n" + "C:" + item.OptionC + "\r\n" + "D:" + item.OptionD + "\r\n");
+                    a++;
+                }
 
+                Paragraph para3 = s.AddParagraph();
+                Paragraph para4 = s.AddParagraph();
+                int b = 1;
+                foreach (var item in jieda)
+                {
+                    para3.AppendText(b + ":" + item.Title + "\r\n" + item.ReferenceAnswer + "\r\n");
+                    b++;
+                }
+
+
+                //创建段落样式1
+                ParagraphStyle style1 = new ParagraphStyle(doc);
+                style1.Name = "titleStyle";
+                style1.CharacterFormat.Bold = true;
+                style1.CharacterFormat.TextColor = Color.Purple;
+                style1.CharacterFormat.FontName = "宋体";
+                style1.CharacterFormat.FontSize = 12;
+                doc.Styles.Add(style1);
+                para1.ApplyStyle("titleStyle");
+
+                //创建段落样式2
+                ParagraphStyle style2 = new ParagraphStyle(doc);
+                style2.Name = "paraStyle";
+                style2.CharacterFormat.FontName = "宋体";
+                style2.CharacterFormat.FontSize = 11;
+
+                doc.Styles.Add(style2);
+                para2.ApplyStyle("paraStyle");
+                para3.ApplyStyle("paraStyle");
+
+                //设置段落对齐方式
+                para1.Format.HorizontalAlignment = HorizontalAlignment.Center;
+                para2.Format.HorizontalAlignment = HorizontalAlignment.Justify;
+                para3.Format.HorizontalAlignment = HorizontalAlignment.Justify;
+
+                //设置段落缩进
+                para2.Format.FirstLineIndent = 30;
+                para3.Format.FirstLineIndent = 30;
+                para1.Format.AfterSpacing = 15;
+                para2.Format.AfterSpacing = 10;
+
+                //保存文档
+                doc.SaveToFile("C:\\考前复习" + kecheng + ".docx", FileFormat.Docx2013);
+
+                return doc;
+               
+        }
+        /// <summary>
+        /// 将选择题导成word文档
+        /// </summary>
+        /// <param name="kecheng"></param>
+        /// <returns></returns>
+        public Document Exporter(int kecheng)
+        {
+
+            Document doc = new Document();
+
+            //添加section
+            Section s = doc.AddSection();
+
+            //查询这个课程的选择题
+            var xuanze = db_choiceQuestion.AllChoiceQuestionData().Where(d => d.Course == kecheng).ToList();
+            //查询这个课程的解答题
+            var jieda = db_answerQuestion.AllAnswerQuestion().Where(d => d.Course == kecheng).ToList();
             //添加段落
             Paragraph para1 = s.AddParagraph();
             para1.AppendText("考前复习题");
@@ -101,19 +176,19 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             int a = 1;
             foreach (var item in xuanze)
             {
-                para2.AppendText(a+":"+item.Title+"   "+item.Answer+ "\r\n"+"A:"+item.OptionA+ "\r\n"+"B:"+item.OptionB+ "\r\n"+"C:"+item.OptionC+ "\r\n"+"D:"+item.OptionD+ "\r\n");
+                para2.AppendText(a + ":" + item.Title + "   " + item.Answer + "\r\n" + "A:" + item.OptionA + "\r\n" + "B:" + item.OptionB + "\r\n" + "C:" + item.OptionC + "\r\n" + "D:" + item.OptionD + "\r\n");
                 a++;
             }
-            
-            Paragraph para3 = s.AddParagraph();
-            Paragraph para4 = s.AddParagraph();
-            int b = 1;
-            foreach (var item in jieda)
-            {
-                para3.AppendText(b+":"+item.Title+ "\r\n"+ item.ReferenceAnswer + "\r\n");
-                b++;
-            }
-            
+
+            //Paragraph para3 = s.AddParagraph();
+            //Paragraph para4 = s.AddParagraph();
+            //int b = 1;
+            //foreach (var item in jieda)
+            //{
+            //    para3.AppendText(b + ":" + item.Title + "\r\n" + item.ReferenceAnswer + "\r\n");
+            //    b++;
+            //}
+
 
             //创建段落样式1
             ParagraphStyle style1 = new ParagraphStyle(doc);
@@ -133,25 +208,98 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             doc.Styles.Add(style2);
             para2.ApplyStyle("paraStyle");
-            para3.ApplyStyle("paraStyle");
+            //para3.ApplyStyle("paraStyle");
 
             //设置段落对齐方式
             para1.Format.HorizontalAlignment = HorizontalAlignment.Center;
             para2.Format.HorizontalAlignment = HorizontalAlignment.Justify;
-            para3.Format.HorizontalAlignment = HorizontalAlignment.Justify;
+            //para3.Format.HorizontalAlignment = HorizontalAlignment.Justify;
 
             //设置段落缩进
             para2.Format.FirstLineIndent = 30;
-            para3.Format.FirstLineIndent = 30;
+            //para3.Format.FirstLineIndent = 30;
             para1.Format.AfterSpacing = 15;
             para2.Format.AfterSpacing = 10;
 
             //保存文档
-             doc.SaveToFile("C:\\考前复习.docx", FileFormat.Docx2013);
+            doc.SaveToFile("C:\\考前复习选择题" + kecheng + ".docx", FileFormat.Docx2013);
 
             return doc;
 
+        }
+        /// <summary>
+        /// 将解答题导成word文档
+        /// </summary>
+        /// <param name="kecheng"></param>
+        /// <returns></returns>
+        public Document Exportsan(int kecheng)
+        {
 
+            Document doc = new Document();
+
+            //添加section
+            Section s = doc.AddSection();
+
+            //查询这个课程的选择题
+            var xuanze = db_choiceQuestion.AllChoiceQuestionData().Where(d => d.Course == kecheng).ToList();
+            //查询这个课程的解答题
+            var jieda = db_answerQuestion.AllAnswerQuestion().Where(d => d.Course == kecheng).ToList();
+            //添加段落
+            Paragraph para1 = s.AddParagraph();
+            para1.AppendText("考前复习题");
+            //Paragraph para2 = s.AddParagraph();
+            //int a = 1;
+            //foreach (var item in xuanze)
+            //{
+            //    para2.AppendText(a + ":" + item.Title + "   " + item.Answer + "\r\n" + "A:" + item.OptionA + "\r\n" + "B:" + item.OptionB + "\r\n" + "C:" + item.OptionC + "\r\n" + "D:" + item.OptionD + "\r\n");
+            //    a++;
+            //}
+
+            Paragraph para3 = s.AddParagraph();
+            Paragraph para4 = s.AddParagraph();
+            int b = 1;
+            foreach (var item in jieda)
+            {
+                para3.AppendText(b + ":" + item.Title + "\r\n" + item.ReferenceAnswer + "\r\n");
+                b++;
+            }
+
+
+            //创建段落样式1
+            ParagraphStyle style1 = new ParagraphStyle(doc);
+            style1.Name = "titleStyle";
+            style1.CharacterFormat.Bold = true;
+            style1.CharacterFormat.TextColor = Color.Purple;
+            style1.CharacterFormat.FontName = "宋体";
+            style1.CharacterFormat.FontSize = 12;
+            doc.Styles.Add(style1);
+            para1.ApplyStyle("titleStyle");
+
+            //创建段落样式2
+            ParagraphStyle style2 = new ParagraphStyle(doc);
+            style2.Name = "paraStyle";
+            style2.CharacterFormat.FontName = "宋体";
+            style2.CharacterFormat.FontSize = 11;
+
+            doc.Styles.Add(style2);
+            //para2.ApplyStyle("paraStyle");
+            para3.ApplyStyle("paraStyle");
+
+            //设置段落对齐方式
+            para1.Format.HorizontalAlignment = HorizontalAlignment.Center;
+            //para2.Format.HorizontalAlignment = HorizontalAlignment.Justify;
+            para3.Format.HorizontalAlignment = HorizontalAlignment.Justify;
+
+            //设置段落缩进
+            //para2.Format.FirstLineIndent = 30;
+            para3.Format.FirstLineIndent = 30;
+            para1.Format.AfterSpacing = 15;
+            //para2.Format.AfterSpacing = 10;
+
+            //保存文档
+            doc.SaveToFile("C:\\考前复习解答题"+kecheng + ".docx" , FileFormat.Docx2013);
+
+            return doc;
 
         }
         /// <summary>
@@ -212,7 +360,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 result.Data = null;
                 result.Msg = ex.Message;
             }
-
+            result.ErrorCode = 200;
+            result.Data = null;
+            result.Msg = "成功";
             return Json(result, JsonRequestBehavior.AllowGet);
 
         }
