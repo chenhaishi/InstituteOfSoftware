@@ -128,7 +128,9 @@
                 </div>
             </div>
         </div>
-        <button type="button" style="text-align:center;width:68%" class="layui-btn layui-btn layui-input-block" id="QueRen">导出</button>
+        <button type="button" style="text-align:center;width:68%" class="layui-btn layui-btn layui-input-block" id="QueRen">一键导出</button><br />
+        <button type="button" style="text-align:center;width:68%" class="layui-btn layui-btn layui-input-block" id="QueRener">导出选择题</button><br />
+        <button type="button" style="text-align:center;width:68%" class="layui-btn layui-btn layui-input-block" id="QueRensan">导出解答题</button>
     </form>
 </div>
 @section script{
@@ -241,7 +243,22 @@
                 })
                 
             })
+            $("#QueRener").click(function () {
+                var kecheng = $("#courseS").val();
+                console.log(kecheng);
+                $.post("/ExaminationSystem/QuestionsBank/Exporter", { kecheng: kecheng }, function () {
+                    layer.msg("前去C盘查收！");
+                })
 
+            })
+            $("#QueRensan").click(function () {
+                var kecheng = $("#courseS").val();
+                console.log(kecheng);
+                $.post("/ExaminationSystem/QuestionsBank/Exportsan", { kecheng: kecheng }, function () {
+                    layer.msg("前去C盘查收！");
+                })
+
+            })
         });
 
 
