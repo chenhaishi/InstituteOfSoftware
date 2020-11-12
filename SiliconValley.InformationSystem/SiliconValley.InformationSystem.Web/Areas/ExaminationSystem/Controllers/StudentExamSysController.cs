@@ -603,7 +603,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             return Json(result);
         }
 
-
+        [HttpPost]
+        [ValidateInput(false)]
         /// <summary>
         /// 学员提交答卷 
         /// </summary>

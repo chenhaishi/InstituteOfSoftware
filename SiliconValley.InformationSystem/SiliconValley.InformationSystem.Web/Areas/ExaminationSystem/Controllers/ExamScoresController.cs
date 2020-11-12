@@ -890,7 +890,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             CloudstorageBusiness Bos = new CloudstorageBusiness();
 
             var client = Bos.BosClient();
-
+            List<FileStreamResult> zhi = new List<FileStreamResult>() ;
             var candidateinfo = db_exam.AllCandidateInfo(examid).ToList();
                 foreach (var item in candidateinfo)
                 {
@@ -904,10 +904,14 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
                         var filename = Path.GetFileName(computerPath);
 
-                        return File(filedata.ObjectContent, "application/octet-stream", Server.UrlEncode(filename));
+                       //return File(filedata.ObjectContent, "application/octet-stream", Server.UrlEncode(filename));
+                        zhi.Add(File(filedata.ObjectContent, "application/octet-stream", Server.UrlEncode(filename)));
                     }
+
                 }
-            return null;
+
+            var obj = new { data=zhi};
+            return Json(obj, JsonRequestBehavior.AllowGet);
         }
     }
 }

@@ -825,9 +825,10 @@
                 }
             });
             $(document).off("click", "#YiJian").on("click", "#YiJian", function () {             
-                $.post("/ExaminationSystem/ExamScores/OneClickDownload?examid=" + Examid, {}, function () {
-                    layer.msg("下载完毕！");
-                })
+                //$.post("/ExaminationSystem/ExamScores/OneClickDownload?examid=" + Examid, {}, function (data) {
+                //    console.log(data);
+                //})
+                layer.msg("功能优化中");
             })
         });
 
