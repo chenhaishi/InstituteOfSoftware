@@ -467,10 +467,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             AjaxResult result = new AjaxResult();
             MonthlySalaryRecordManage monthly = new MonthlySalaryRecordManage();
             List<MonthlySalaryRecord> salary = monthly.GetEmpMsrData().Where(i => i.IsDel == false && i.IsApproval == true && Convert.ToDateTime(i.YearAndMonth.ToString().Substring(0, 7)) ==Convert.ToDateTime(time)).ToList();
+            EmployeesInfoManage manage = new EmployeesInfoManage();
 
-
-            //收件人邮箱
-            string ToMail = "3330616589@qq.com";
             //发件人邮箱
             string FromMail = "2651396164@qq.com";
             //发件人邮箱授权码
@@ -479,7 +477,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             foreach (var i in salary)
             {
 
-                result = monthly.WagesDataToEmail(FromMail, ToMail, AuthorizationCode, i);
+                result = monthly.WagesDataToEmail(FromMail,"", AuthorizationCode, i);
             }
             return Json(result, JsonRequestBehavior.AllowGet);
             

@@ -1949,6 +1949,11 @@
     <Content Include="Areas\Personnelmatters\Views\MonthlySalaryReview\SalaryApproval.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\EmpSalaryManagement\ModifyAbnormalData.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\EmpSalaryManagement\MonthlySalaryExport.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\SocialSecurityDetail\Index.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\SocialSecurityDetail\SocialSecProportionEdit.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\SocialSecurityDetail\UpdateTime.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\SocialSecurityDetail\SupplementaryPayment.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\SocialSecurityDetail\PaySicknessInsurance.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
@@ -3700,7 +3705,6 @@
     <Folder Include="Areas\OrThert\Views\TMorther\" />
     <Folder Include="Areas\Personnelmatters\Models\" />
     <Folder Include="Areas\Personnelmatters\Views\Shared\" />
-    <Folder Include="Areas\Personnelmatters\Views\SocialSecurityDetail\" />
     <Folder Include="Areas\ReportForm\Models\" />
     <Folder Include="Areas\ReportForm\Views\Shared\" />
     <Folder Include="Areas\Studenteducation\Models\" />

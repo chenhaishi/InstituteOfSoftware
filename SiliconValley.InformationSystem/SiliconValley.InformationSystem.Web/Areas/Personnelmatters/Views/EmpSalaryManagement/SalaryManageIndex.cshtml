@@ -10,7 +10,7 @@
     <div class="layui-btn-container">
         <button class="layui-btn layui-btn-sm" lay-event="timeUpdate"><i class="layui-icon layui-icon-edit"></i>年月份改变</button>
         <button class="layui-btn layui-btn-sm" lay-event="Approved"><i class="layui-icon layui-icon-edit"></i>确认审批</button>
-        <button class="layui-btn layui-btn-sm" lay-event="forbiddenEmp"><i class="layui-icon layui-icon-fonts-del"></i>禁用</button>Salary
+        <button class="layui-btn layui-btn-sm" lay-event="forbiddenEmp"><i class="layui-icon layui-icon-fonts-del"></i>禁用</button>
         <button type="button" class="layui-btn layui-btn-sm" lay-event="Email"><i class="layui-icon layui-icon-release"></i>发送工资条</button>
         <button type="button" class="layui-btn layui-btn-sm" lay-event="Salary"><i class="layui-icon layui-icon-release"></i>月度工资导出</button>
     </div>
@@ -125,8 +125,8 @@
                     , { field: 'SalaryOne', title: '应发工资1', width: 115, rowspan: 2 }
                     , { field: 'OvertimeCharges', title: '加班费用', width: 105, rowspan: 2 }
                     , { field: 'Bonus', title: '奖金(元)', width: 105, rowspan: 2 }
-                    , { field: 'leavedays', title: '请假天数', width: 110 }
-                    , { field: 'LeaveDeductions', title: '请假扣款(元)', width: 115 }
+                    , { field: 'leavedays', title: '请假天数', width: 110, rowspan: 2}
+                    , { field: 'LeaveDeductions', title: '请假扣款(元)', width: 115, rowspan: 2}
                     , { align: 'center', title: '考勤扣款', colspan: 3}
                     , { field: 'OtherDeductions', title: '其他扣款(元)', width: 105, rowspan: 2 }
                     , { field: 'SalaryTwo', title: '应发工资2', width: 115, rowspan: 2 }
@@ -231,10 +231,10 @@
                                             console.log(data);
                                             if (data.Success) {
                                                 layer.close(index)
-                                                layer.msg(data.Msg, { icon: 1 });
+                                                layer.alert(data.Msg, { icon: 1 });
                                             } else {
                                                 layer.close(index)
-                                                layer.msg("邮件发送失败", { icon: 2 });
+                                                layer.alert("邮件发送失败", { icon: 2 });
                                             }
                                         }
                                     })

@@ -10,6 +10,9 @@ namespace SiliconValley.InformationSystem.Business.SocialSecurity_Business
 {
    public  class SocialSecProportionManage:BaseBusiness<SocialSecProportion>
     {
-
+        public SocialSecProportion GetbyType(string type)
+        {
+            return this.GetList().Where(i=>i.PayType==type).FirstOrDefault();
+        }
     }
 }

@@ -231,9 +231,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
 
             return Json(ajaxresult, JsonRequestBehavior.AllowGet);
         }
-
-
-
         /// <summary>
         /// 获取未审批的调休记录
         /// </summary>
@@ -356,7 +353,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             };
             return Json(empobj, JsonRequestBehavior.AllowGet);
         }
-
         //审批调休申请
         [HttpPost]
         public ActionResult DaysoffIsPassed(int id, bool state)
@@ -537,7 +533,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
 
             return Json(obj, JsonRequestBehavior.AllowGet);
         }
-
         // 图片上传
         public string ImageUpload()
         {
