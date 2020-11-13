@@ -336,6 +336,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 string Channel = str[4];
                 string ResumeType = str[5];
                 string remark = str[6];
+                string ForwardDate = str[7];
                 var rpt = rptmanage.GetEntity(int.Parse(id));
                 rpt.Pid = int.Parse(pid);
                 rpt.TraceTime = Convert.ToDateTime(time);
@@ -343,6 +344,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 rpt.Channel = Channel;
                 rpt.ResumeType = ResumeType;
                 rpt.Remark = remark;
+                rpt.ForwardDate =Convert.ToDateTime(ForwardDate);
                 rptmanage.Update(rpt);
                 AjaxResultxx = rptmanage.Success();
 

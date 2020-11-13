@@ -494,6 +494,8 @@
     <Compile Include="ViewEntity\ShowyearnameView.cs" />
     <Compile Include="ViewEntity\simpleDataClass.cs" />
     <Compile Include="ViewEntity\SingUpStudent.cs" />
+    <Compile Include="ViewEntity\SocialSecProportionView.cs" />
+    <Compile Include="ViewEntity\SocialSecurityView.cs" />
     <Compile Include="ViewEntity\StaffaccdationView.cs" />
     <Compile Include="ViewEntity\StaffOfRoomwithFormdataView.cs" />
     <Compile Include="ViewEntity\Staff_CostView.cs" />

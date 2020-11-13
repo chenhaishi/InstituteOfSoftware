@@ -1,17 +1,131 @@
 ﻿@{
-    Layout = null;
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using SiliconValley.InformationSystem.Entity.MyEntity
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>修改社保比例</button>
+        <button class="layui-btn layui-btn-sm" lay-event="year"><i class="layui-icon layui-icon-edit"></i>更改年月份</button>
+    </div>
+</script>
+<script type="text/html" id="barDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="insert">补缴社保</button>
+        <button class="layui-btn layui-btn-sm" lay-event="payment">缴纳大病保险</button>
+    </div>
+</script>
+<div>
+    <h3 style="text-align:center;">湖南硅谷云教育科技有限公司--@ViewBag.yearandmonth--社保详情表</h3>
+
+    <table id="Soctab" lay-filter="Soctab"></table>
+</div>
+@{
+    SocialSecProportion social = Model as SocialSecProportion;
 }
 
-<!DOCTYPE html>
+<script>
+    layui.use(['table', 'layer', 'form', 'laydate', 'element'], function () {
+        var table = layui.table;
+        var layer = layui.layer;
+        var form = layui.form;
+        var laydate = layui.laydate;
+        var element = layui.element;
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title></title>
-</head>
-<body>
-    <div>
-    
-    </div>
-</body>
-</html>
+        table.render({
+            elem: "#Soctab",
+            url: "/Personnelmatters/SocialSecurityDetail/GetSocialSecurityList",
+            id: "Soctab",
+            toolbar: '#toolbarDemo',
+            limits: [5, 10, 15, 20, 25, 30, 50, 100, 120, 150, 180, 200, 250, 300],
+            limit: 10,
+            cols: [[{ type: 'checkbox', width: 28, rowspan: 2 }
+                , { field: 'empName', title: '姓名', width: 100, sort: true, rowspan: 2 }
+                , { field: 'Depart', title: '所属部门', width: 130, sort: true, rowspan: 2 }
+                , { field: 'Position', title: '所属岗位', width: 110, sort: true, rowspan: 2 }
+                , { field: 'Type', title: '员工状态', width: 110, sort: true, rowspan: 2 }
+                , { field: 'PaymentBase', title: '缴费基数', width: 110, sort: true, rowspan: 2 }
+                , { align: 'center', title: '单位部分', colspan: 7 }
+                , { align: 'center', title: '个人部分', colspan: 6 }
+                , { field: 'Total', title: '合计', width: 110, sort: true, rowspan: 2 },
+                { title: '操作', toolbar: '#barDemo', width: 180, fixed: 'right', rowspan: 2 }
+            ]
+                , [
+                { field: 'EndowmentInsurance', title: '养老保险(@social.EndowmentInsurance%)', width: 115 },
+                { field: 'MedicalInsurance', title: '医疗保险(@social.MedicalInsurance%)', width: 115 },
+                { field: 'WorkInjuryInsurance', title: '工伤保险(@social.WorkInjuryInsurance%)', width: 115 },
+                { field: 'MaternityInsurance', title: '生育保险(@social.MaternityInsurance%)', width: 115 },
+                { field: 'UnemploymentInsurance', title: '失业保险(@social.UnemploymentInsurance%)', width: 115 },
+                    { field: 'UnitSupplementaryPayment', title: '补缴  @ViewBag.year 月', width: 115 },
+                { field: 'UnitTotal', title: '单位小计', width: 115 },
+                { field: 'PersonalEndowmentInsurance', title: '养老保险(@ViewBag.PersonalEndowmentInsurance%)', width: 115 },
+                { field: 'PersonalMedicalInsurance', title: '医疗保险(@ViewBag.PersonalMedicalInsurance%)', width: 115 },
+                { field: 'PersonalUnemploymentInsurance', title: '失业保险(@ViewBag.PersonalUnemploymentInsurance%)', width: 115 },
+                { field: 'SeriousIllnessInsurance', title: '大病保险', width: 115 },
+                { field: 'PersonalSupplementaryPayment', title: '补缴 @ViewBag.year 月', width: 115 },
+                { field: 'PersonalTotal', title: '个人小计', width: 115 },
+
+            ]
+
+            ]
+            , page: true
+        });
+        table.on('toolbar(Soctab)', function (obj) {
+            var data = obj.data;
+            switch (obj.event) {
+                case 'edit':
+                    layer.open({
+                        type: 2,
+                        content: '/Personnelmatters/SocialSecurityDetail/SocialSecProportionEdit',
+                        title: '社保比例修改',
+                        area: ["450px", "650px"],
+                        shade: 0.8,
+                        anim: 4,
+                        skin: 'demo-class'
+                    });
+                    break; 
+                case 'year':
+                    layer.open({
+                        type: 2,
+                        content: '/Personnelmatters/SocialSecurityDetail/UpdateTime',
+                        title: '更改年月份',
+                        area: ["400px", "300px"],
+                        shade: 0.8,
+                        anim: 4,
+                        skin: 'demo-class'
+                    });
+                    break;
+                default:
+            }
+           
+
+        });
+        table.on('tool(Soctab)', function (obj) {
+            switch (obj.event) {
+                case 'insert':
+                    layer.open({
+                        type: 2,
+                        content: '/Personnelmatters/SocialSecurityDetail/SupplementaryPayment?id=' + obj.data.Id,
+                        title: '补缴社保',
+                        area: ["450px", "500px"],
+                        shade: 0.8,
+                        anim: 4,
+                        skin: 'demo-class'
+                    });
+                    break;
+                case 'payment':
+                    layer.open({
+                        type: 2,
+                        content: '/Personnelmatters/SocialSecurityDetail/PaySicknessInsurance?id=' + obj.data.Id,
+                        title: '缴纳大病保险',
+                        area: ["400px", "300px"],
+                        shade: 0.8,
+                        anim: 4,
+                        skin: 'demo-class'
+                    });
+                    break;
+                default:
+            }
+        })
+    })
+</script>

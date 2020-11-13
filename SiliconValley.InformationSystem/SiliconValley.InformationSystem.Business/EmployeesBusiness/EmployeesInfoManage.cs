@@ -383,7 +383,20 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
             }
             return result;
         }
-
+        public bool Finance(string empid)
+        {
+            var result = false;
+            var emp = this.GetInfoByEmpID(empid);
+            if (this.GetDeptByEmpid(empid).DeptName == "财务部")
+            {
+                result = true;
+            }
+            else
+            {
+                result = false;
+            }
+            return result;
+        }
 
         /// <summary>
         /// 将员工加入对相应的部门

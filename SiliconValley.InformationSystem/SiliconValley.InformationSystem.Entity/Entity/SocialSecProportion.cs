@@ -20,7 +20,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         [Key]
         public int Id { get; set; }
         /// <summary>
-        /// 社保状态
+        /// 社保类型
         /// </summary>
         public string PayType { get; set; }
         /// <summary>
