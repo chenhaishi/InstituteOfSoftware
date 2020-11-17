@@ -113,7 +113,7 @@
                             <div class="layui-inline" style="margin-left:-40px;">
                                 <label class="layui-form-label">从:</label>
                                 <div class="layui-input-inline">
-                                    <input  type="text" id="start_ForwardDate" name="start_ForwardDate" lay-verify="start_ForwardDate" autocomplete="off" class="layui-input">
+                                    <input type="text" id="start_ForwardDate" name="start_ForwardDate" lay-verify="start_ForwardDate" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
 
@@ -198,9 +198,13 @@
     </div>
 </div>
 
-@*招聘电话追踪记录的是否入职属性*@
+@*招聘电话追踪记录的面试结果属性*@
 <script type="text/html" id="switchTp2">
-    <input type="checkbox" name="IsEntry" value="{{d.Id}}" lay-skin="switch" lay-text="是|否" lay-filter="entryDemo" {{ d.IsEntry == true ? 'checked' : '' }}>
+    {{# if(d.IsEntry==false){ }}
+    {{ d.IsEntry="未入职" }}
+    {{# }else{ }}
+    {{ d.IsEntry="已入职" }}
+    {{# } }}
 </script>
 
 
