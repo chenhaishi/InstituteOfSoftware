@@ -86,7 +86,7 @@
                     <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
                         <label class="layui-form-label" style="margin-left:-40px;width:120px;">预面试时间:</label>
                         <div class="layui-input-block">
-                            <input type="text" name="ForwardDate" id="ForwardDate" class="layui-input">
+                            <input type="text" name="ForwardDate" id="ForwardDate" value="@ViewBag.forwarddate" class="layui-input">
                         </div>
                     </div>
 
@@ -218,7 +218,7 @@
                 layui.use(['layer', 'form', 'table'], function () {
                     var form = layui.form;
                     data.TraceTime1 = changeDateTimeFormat(data.TraceTime);
-                    data.ForwardDate = changeDateTimeFormat(data.ForwardDate);
+                    data.ForwardDate = changeDateTimeFormat($("#ForwardDate").val());
                    // data.deptid = data.Deptid;
                     data.PhoneCommunicateResult1 = data.PhoneCommunicateResult;
                     data.Remark1 = data.Remark;

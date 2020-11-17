@@ -78,7 +78,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 string end_TraceTime = str[9];
                 string start_ForwardDate = str[10];
                 string end_ForwardDate = str[11];
+                string remarks = str[12];
                 rptviewlist = rptviewlist.Where(e => e.Name.Contains(name)).ToList();
+              
                 if (!string.IsNullOrEmpty(deptid))
                 {
                     rptviewlist = rptviewlist.Where(e => empmanage.GetDept((int)e.Pid).DeptId== int.Parse(deptid)).ToList();
@@ -106,7 +108,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 }
                 if (!string.IsNullOrEmpty(start_TraceTime))
                 {
-                    DateTime stime = Convert.ToDateTime(start_TraceTime);
+                    DateTime stime = Convert.ToDateTime(start_TraceTime.Substring(0,11));
                     rptviewlist = rptviewlist.Where(a => a.TraceTime >= stime).ToList();
                 }
                 if (!string.IsNullOrEmpty(end_TraceTime))
@@ -124,6 +126,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                     DateTime stime = Convert.ToDateTime(end_ForwardDate);
                     rptviewlist = rptviewlist.Where(a => a.forwardDate <= stime).ToList();
                 }
+                if (!string.IsNullOrEmpty(remarks))
+                {
+                    rptviewlist = rptviewlist.Where(e => e.Remark!=null&& e.Remark.Contains(remarks)).ToList();
+                }
 
             }
             var myrdslist = rptviewlist.OrderByDescending(r => r.Id).Skip((page - 1) * limit).Take(limit).ToList();
@@ -137,8 +143,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             }; 
             return Json(newobj, JsonRequestBehavior.AllowGet);
         }
-
-
         #region 获取某个部门或岗位
 
         /// <summary>
@@ -188,9 +192,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             return pid;
         }
         #endregion
-
-    
-
         /// <summary>
         /// 通过编号获取某条招聘记录数据
         /// </summary>
@@ -255,6 +256,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             var rds = rmanage.GetEntity(id);
             var rdslist = rmanage.GetList().Where(r => r.SonId == rds.SonId).ToList();
             ViewBag.Number = rdslist.Count() - 1;
+            ViewBag.date =rmanage.GetNewestForwardDate(id);
             // ViewBag.rdslist = rdslist;
             return View();
         }
@@ -287,8 +289,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                     beforerpt.PhoneCommunicateResult = rptnew.PhoneCommunicateResult;
                     rptmanage.Update(beforerpt);
                     AjaxResultxx = rptmanage.Success();
+                   
                 }
-            }
+
+            } 
             catch (Exception ex)
             {
                 AjaxResultxx = rptmanage.Error(ex.Message);
@@ -312,6 +316,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             ViewBag.rptviewlist = rptviewlist;
             ViewBag.Number = rptviewlist.Count();
             var rpt = rmanage.GetRptView(id);
+            ViewBag.forwarddate = rmanage.GetNewestForwardDate(id);
             ViewBag.pid = rpt.Pid;
             ViewBag.pname = rpt.Pname;
             return View(rpt);
@@ -344,8 +349,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 rpt.Channel = Channel;
                 rpt.ResumeType = ResumeType;
                 rpt.Remark = remark;
-                rpt.ForwardDate =Convert.ToDateTime(ForwardDate);
+                rpt.ForwardDate = Convert.ToDateTime(ForwardDate);
                 rptmanage.Update(rpt);
+
                 AjaxResultxx = rptmanage.Success();
 
             }
@@ -383,6 +389,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                     string PhoneNumber = str[3];
                     string Channel = str[4];
                     string ResumeType = str[5];
+                    string ForwardDate = str[7];
                     // string result = str[6];
                     string remark = str[6];
                     var rpt2 = rptmanage.GetEntity(int.Parse(id));
@@ -395,6 +402,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                     rpt2.Remark = remark;
                     rpt2.PhoneCommunicateResult = rpt1.PhoneCommunicateResult;
                     rptmanage.Update(rpt2);
+                   var s= rptmanage.UpdNewestForwardDate(int.Parse(id), ForwardDate);
                     AjaxResultxx = rptmanage.Success();
 
                 }
@@ -454,7 +462,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
 
             return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
         }
-
 
         //获取月度招聘数据汇总
         public ActionResult GetRecruitData(int page, int limit, string AppCondition)
@@ -646,6 +653,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                     else
                     {
                         rdsmanage.Insert(rdsdate);
+
                     }
                     #endregion
                 }
@@ -657,6 +665,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             catch (Exception ex)
             {
                 AjaxResultxx = rdsmanage.Error(ex.Message);
+                BusHelper.WriteSysLog(ex.Message, EnumType.LogType.查询数据error);
             }
             return AjaxResultxx;
         }

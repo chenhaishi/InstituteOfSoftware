@@ -75,7 +75,7 @@
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label">预面试时间:</label>
                         <div class="layui-input-block">
-                            <input type="text" name="ForwardDate" id="ForwardDate" class="layui-input" style="border:0px" readonly="readonly">
+                            <input type="text" name="ForwardDate" id="ForwardDate" class="layui-input" value="@ViewBag.date" style="border:0px" readonly="readonly">
                         </div>
                     </div>
                   
@@ -105,15 +105,14 @@
                             <input type="radio" name="PhoneCommunicateResult1" value="True" title="通过">
                         </div>
                     </div>
-
-                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                        <label class="layui-form-label">备注:</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="Remark1" id="Remark1" class="layui-input linu">
+                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                            <label class="layui-form-label">备注:</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="Remark1" id="Remark1" class="layui-input linu">
+                            </div>
                         </div>
-                    </div>
+                   
                 </div>
-            </div>
 
             <div class="layui-form-item" style="margin-top:50px;">
                 <div class="layui-input-block">
@@ -135,9 +134,8 @@
                 layui.use(['layer', 'form', 'table'], function () {
                     var form = layui.form;
                     data.TraceTime = changeDateTimeFormat(data.TraceTime);
-                    data.ForwardDate = changeDateTimeFormat(data.ForwardDate);
+                    data.ForwardDate = $("#ForwardDate").val()
                     form.val("formtest", data);
-
                 });
             })
         }

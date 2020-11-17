@@ -103,7 +103,7 @@
                             <div class="layui-inline" style="margin-left:-50px;">
                                 <label class="layui-form-label">至:</label>
                                 <div class="layui-input-inline">
-                                    <input type="text" id="end_TraceTime" name="end_TraceTime"lay-verify="end_TraceTime" autocomplete="off" class="layui-input">
+                                    <input type="text" id="end_TraceTime" name="end_TraceTime" lay-verify="end_TraceTime" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
                         </div>
@@ -113,7 +113,7 @@
                             <div class="layui-inline" style="margin-left:-40px;">
                                 <label class="layui-form-label">从:</label>
                                 <div class="layui-input-inline">
-                                    <input type="text" id="start_ForwardDate" name="start_ForwardDate"lay-verify="start_ForwardDate" autocomplete="off" class="layui-input">
+                                    <input  type="text" id="start_ForwardDate" name="start_ForwardDate" lay-verify="start_ForwardDate" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
 
@@ -124,7 +124,14 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="layui-btn" type="button" id="Conditionselect1" style="margin-left:40px;"><i class="layui-icon layui-icon-search"></i>查询</button>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">备注:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="remarks" name="remarks" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+
+                        <button class="layui-btn" type="button" id="Conditionselect1" style="margin-left:10px;"><i class="layui-icon layui-icon-search"></i>查询</button>
                     </div>
                 </form>
             </fieldset>
@@ -256,13 +263,14 @@
                 var end_TraceTime = $("#end_TraceTime").val();//终止联系时间
                 var start_ForwardDate = $("#start_ForwardDate").val();//起始预面试时间
                 var end_ForwardDate = $("#end_ForwardDate").val();//终止预面试时间
+                var remarks = $("#remarks").val();
                 layui.use(['table'], function () {
                     var table = layui.table;
                     table.reload('myrptData', {
                         page: {
                             curr: 1 //重新从第 1 页开始
                         }, where: {
-                            AppCondition: name+"," + deptid + "," + pid + "," + PhoneNumber + "," + Channel + "," + ResumeType + "," + result + "," + IsEntry + "," + start_TraceTime + "," + end_TraceTime + "," + start_ForwardDate + "," + end_ForwardDate
+                            AppCondition: name + "," + deptid + "," + pid + "," + PhoneNumber + "," + Channel + "," + ResumeType + "," + result + "," + IsEntry + "," + start_TraceTime + "," + end_TraceTime + "," + start_ForwardDate + "," + end_ForwardDate + "," + remarks
                         }
                     });
                 });
