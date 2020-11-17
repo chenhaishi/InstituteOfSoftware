@@ -1940,6 +1940,8 @@
     <Content Include="Areas\Educational\Views\Reconcile\TeacherReconfile.cshtml" />
     <Content Include="Areas\DormitoryMaintenance\Views\DormitoryDeposit\FinanceIndex.cshtml" />
     <Content Include="Areas\ExaminationSystem\Views\ExamScores\MarkingPapers.cshtml" />
+    <Content Include="Areas\ExaminationSystem\Views\QuestionsBank\EditingMachineTestQuestions.cshtml" />
+    <Content Include="Areas\ExaminationSystem\Views\ExamArrangement\ReleaseTestEditor.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />

@@ -1,0 +1,189 @@
+﻿
+@{
+    Layout = null;
+}
+@model SiliconValley.InformationSystem.Entity.ViewEntity.ExaminationSystemView.ComputerTestQuestionsView
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>EditingMachineTestQuestions</title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+    <style>
+        #warp {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        #content {
+            width: 90%;
+            margin: 50px auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="warp">
+
+        <div id="content">
+
+            <input type="hidden" value="@Model.ID" id="questionid"style="display:none"/>
+            <hr />
+            <form class="layui-form layui-form-pane">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">题名</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="title" name="username" value="@Model.Title" lay-verify="required"  autocomplete="off" class="layui-input">
+                        </div>
+                        @*<label class="layui-form-label">题名:</label>
+                        <div class="layui-input-inline">
+                            <button type="button" class="layui-btn layui-btn-primary">@Model.Title</button>
+                        </div>*@
+                    </div>
+                    
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">命题人</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="username" value="@Model.Proposition.EmpName" lay-verify="required" autocomplete="off" class="layui-input" disabled>
+                        </div>
+                        @*<label class="layui-form-label">命题人:</label>
+                        <div class="layui-input-inline">
+                            <button type="button" class="layui-btn layui-btn-primary">@Model.Proposition.EmpName</button>
+                        </div>*@
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">命题时间</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="creatdate" name="username" value="@Model.CreateDate" lay-verify="required" autocomplete="off" class="layui-input" placeholder="yyyy-MM-dd" disabled>
+                        </div>
+                        @*<label class="layui-form-label">命题时间:</label>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input" readonly value="@Model.CreateDate" id="creatdate" placeholder="yyyy-MM-dd">
+                        </div>*@
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        @*<label class="layui-form-label">课程</label>
+                        <div class="layui-input-inline">
+                            <input type="text"  name="username" value="@{string name = Model.Course == null ? "升学题目" : Model.Course.CourseName;}@name" lay-verify="required" autocomplete="off" class="layui-input"  disabled>
+                        </div>*@
+                        <label class="layui-form-label">课程</label>
+                        <div class="layui-input-block">
+                            <button type="button" class="layui-btn layui-btn-primary">
+                                @{
+
+                                    string name = Model.Course == null ? "升学题目" : Model.Course.CourseName;
+
+                                }@name
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="layui-inline">
+                        <label class="layui-form-label">难度级别</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="Leve"  name="username" value="@Model.Level.LevelName" lay-verify="required" autocomplete="off" class="layui-input" >
+
+                        </div>
+                        @*<label class="layui-form-label">难度级别</label>
+                        <div class="layui-input-inline">
+                            <button class="layui-btn layui-btn-primary">@Model.Level.LevelName</button>
+
+                        </div>*@
+                    </div>
+
+                </div>
+
+                <hr />
+
+
+
+
+            </form>
+
+
+
+    </div>
+        <div style="text-align:center;">
+
+            <button type="button" id="xiugai" style="width:30%; margin-top:10px;" class="layui-btn layui-btn-primary">修改</button>
+
+            <button type="button" id="close" style="width:30%; margin-top:10px;" class="layui-btn layui-btn-primary">关闭</button>
+
+
+            @*<a style="width:30%; margin-top:10px;" class="layui-btn layui-btn-primary" href="/ExaminationSystem/QuestionsBank/Dowle/@Model.ID">下载文件</a>*@
+        </div>
+
+</div>
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/layui/layui.js"></script>
+
+<script>
+
+        var INDEX = 0;
+
+        layui.use(['form', 'layer'], function () {
+
+
+            var form = layui.form;
+            var layer = layui.layer;
+            //关闭
+            $("#close").click(function () {
+
+                var index = parent.layer.getFrameIndex(window.name);
+                parent.layer.close(index);
+
+            });
+            //修改
+            $("#xiugai").click(function () {
+                layer.confirm('确认修改吗？', function (index) {
+
+                    var questionid = $("#questionid").val();
+                    
+                    var title = $("#title").val();
+                    
+                    var Leve = $("#Leve").val();
+                    console.log(Leve);
+                    var nandu = 0;
+                    if (Leve == "困难") {
+                        nandu = 3;
+                    } else if (Leve == "普通") {
+                        nandu = 2;
+                    } else if (Leve == "简单") {
+                        nandu = 1;
+                    } else {
+                        layer.msg("难度格式输入错误");
+                        return;
+                    }
+                    console.log(nandu);
+                    $.post('/ExaminationSystem/QuestionsBank/XiuGaiTestQuestions', { questionid: questionid, title: title, nandu: nandu}, function (data) {
+                        if (data.ErrorCode == 200) {
+                            layer.msg("修改成功!");
+                        } else if (data.ErrorCode == 400) {
+                            layer.msg("修改失败!");
+                        }
+                    })
+                })
+            })
+            var dateval = $("#creatdate").val();
+
+            var date = new Date(dateval);
+
+            var year = date.getFullYear();
+            var moutn = date.getMonth() + 1;
+            var day = date.getDate();
+
+
+
+            $("#creatdate").val(year + "年" + moutn + "月" + day + "日");
+
+        });
+</script>
+</body>
+</html>
