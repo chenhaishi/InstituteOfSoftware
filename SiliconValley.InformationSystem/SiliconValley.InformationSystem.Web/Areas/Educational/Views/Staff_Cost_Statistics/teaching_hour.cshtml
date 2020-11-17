@@ -64,18 +64,7 @@
             </form>
         </div>
 
-        <div style="margin-top:40px;margin-left:350px;">
-            <table style="text-align:center;height:200px;vertical-align:top" id="Cost_tab">
-                <tr style="background-color:azure;font-size:larger">
-                    <td width="140px">员工编号</td>
-                    <td width="140px">员工名称</td>
-                    <td width="140px">课时费</td>
-                    <td width="140px">总课时</td>
-                    <td width="140px">课程数</td>
-                </tr>
-            </table>
-        </div>
-
+        
         <div style="margin-top:50px;text-align:center">
             <button class="layui-btn layui-btn-radius layui-btn-primary" id="Btn_Cost">开始统计</button>&emsp;
             <button class="layui-btn layui-btn-radius layui-btn-primary" id="Btn_SaveExcel">保存文件</button>
@@ -105,10 +94,9 @@
            
             if ($("#test11").val() == "") {
                 layer.msg('请选择时间', { icon: 2, time: 500 });
-            } else if ($("#dep_select").val() == "0") {
-                layer.msg('请选择部门', { icon: 2, time: 500 });
             } else {
                 $("#Cost_tab tr:not(:first)").html("");
+                
                         $.ajax({
                             url: "/Educational/Staff_Cost_Statistics/TempFunction",
                             type: "POST",
@@ -118,12 +106,10 @@
                                 WorkDay: $("#WorkDay").val()
                             },
                             success: function (res) {
-                                $.each(res.data, function (k, v) {
-                                    $("#Cost_tab").append("<tr style='font-size:larger'><td>" + v.Emp_ID + "</td><td>" + v.Emp_Name + "</td><td>" + v.summoney + "</td><td>" + v.totalClass + "</td><td>" + v.ClassCount + "</td><tr>");
-                                });
+                                
                             }
                         });
-                        layer.msg('数据统计中', { icon: 1, time: 5000 });
+                layer.msg('数据统计中', { icon: 1, time: 8000 });
             }
             
         });
