@@ -1,174 +1,333 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "MarkingPapers";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@*ExaminationSystem/ExamScores/MarkingPapers*@
 
-@section style{
 
-    <style>
+<link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
 
-        #mywarp {
-            position: relative;
-            width: 100%;
+<link href="~/Content/iconfont.css" rel="stylesheet" />
+<script src="~/Content/iconfont.js"></script>
+<link href="~/Areas/ExaminationSystem/css/reset.min.css" rel="stylesheet" />
+<link href="~/Areas/ExaminationSystem/css/style.css" rel="stylesheet" />
+<link rel="shortcut icon" href="/assets/Assets_L1/assets/images/favicon.ico">
+<!-- jQuery  -->
+<script src="/assets/Assets_L1/assets/libs/jquery/jquery.min.js"></script>
+<script src="/assets/Assets_L1/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/assets/Assets_L1/assets/libs/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+<script src="/assets/Assets_L1/assets/libs/metismenu/metisMenu.min.js"></script>
+
+<!-- App js -->
+<script src="/assets/Assets_L1/assets/js/jquery.core.js"></script>
+<script src="/assets/Assets_L1/assets/js/jquery.app.js"></script>
+<!-- Icons css -->
+<link href="~/assets/Assets_L1/assets/libs/mdi/font/css/materialdesignicons.min.css" rel="stylesheet" type="text/css" />
+<link href="/assets/Assets_L1/assets/libs/dripicons/webfont/webfont.css" rel="stylesheet" type="text/css" />
+<link href="/assets/Assets_L1/assets/libs/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css" />
+
+<!-- App css -->
+<!-- build:css -->
+<link href="/assets/Assets_L1/assets/css/app.css" rel="stylesheet" type="text/css" />
+<!-- endbuild -->
+<style>
+    .box {
+        width: 100%;
+        height: 120px;
+    }
+
+        .box:hover {
+            background-color: #e8eef2;
         }
 
-        #infofixd {
-            position: fixed;
-            width: 85%;
-            -moz-box-shadow: 2px 2px 5px #333333;
-            -webkit-box-shadow: 2px 2px 5px #333333;
-            box-shadow: 2px 2px 5px #333333;
-            height: 140px;
-            top: 65px;
-            border-radius: 1em;
-            z-index: 1;
-            border: 1px solid gray;
-        }
+    .row {
+        margin-left: 30px;
+    }
+</style>
+<div class="row" style=" border: 1px solid #dcdcdc; display:block;box-sizing: border-box; height:1000px">
+    <div style="background-color: #f3f7fd; padding: 10px 10px 10px 15px; border-bottom: 1px solid #ebeef5; display: block; font-size: 20px;">试卷区</div>
+    <div style="width:50%;">
+        <div class="box" style=" display: block;text-align: center;border-bottom:solid 5px green">
+            <div style="position: relative;font-size:26px;color: #ec661a;line-height:100px;"></div>
+            <div style="font-size: 16px;line-height: 30px;margin-right:50px">
+                <a href="#" style="text-decoration: none;">测试数据10-20/3013 <span class="layui-badge layui-bg-orange">待阅卷</span></a>
+                <a href="#" style="text-decoration: none;">以阅卷数据10-20/3013 <span class="layui-badge layui-bg-green">已阅卷</span></a>
+                <a href="#" style="text-decoration: none;">以阅卷数据10-20/3013 <span class="layui-badge layui-bg-green">已阅卷</span></a>
+            </div>
+        </div>
+        <div class="box" style=" display: block;text-align: center; margin-top:-120px;margin-left:710px;border-bottom:solid 5px green">
+            <div style="position: relative;font-size: 26px;color: #ec661a;line-height: 50px;"></div>
+            <div style="font-size: 16px;line-height: 30px;text-align: center;">
 
-        #paper {
-            position: relative;
-            width: 100%;
-            border: 1px solid gray;
-            margin-top: 130px;
-            border-radius: 1em;
-        }
+                <label style="color:black;margin-right:100px">考试名称:<span style="color:#009688!important">1817NAjava考试</span></label>
+                <label style="color:black">考试时间:<span style="color:#009688!important">2020.10.12--7:50</span></label>
 
-        #stayMarkingArea {
-            float: left;
-            width: 49%;
-            height: 100%;
-            border: 0px solid red;
-            border-right: 1px solid gray;
-        }
+                <div style="margin-right:100px;margin-bottom:30px;">
+                    <label style="color:black;margin-right:200px">试卷总数:<span style="color:#009688!important">20</span></label>
+                    <label style="color:black">已阅卷数量:<span style="color:#009688!important">0</span></label>
 
-        #MarkingInfoArea {
-            float: left;
-            width: 50%;
-            height: 100%;
-            border: 0px solid red;
-            border-left: 1px solid gray;
-        }
+                </div>
 
-        .tayMarkinglist {
-            list-style-type: none;
-        }
+                <a class="layui-btn layui-btn-danger" style="text-decoration: none;margin-top:-55px;margin-right:300px;width:200px;color:white">一键下载所有机试</a>
 
-            .tayMarkinglist .tayMarkingitem {
-                width: 320px;
-                float: left;
-                font-size: 20px;
-                color: gray;
-                border: 0px solid red;
-                border-bottom: 1px solid gray;
-                margin-left: 50px;
-                margin-top: 30px;
-                cursor: pointer;
-            }
-
-        .infoitem {
-            display: inline-block;
-            margin-left: 30px;
-            margin-top: 10px;
-            width: 250px;
-        }
-
-            .infoitem span {
-                color: green;
-            }
-
-        #paper .answerSheetItem {
-            margin-top: 30px;
-            display: block;
-        }
-
-        #butDiv {
-            width: 600px;
-            margin: 0 auto;
-            margin-top: 50px;
-        }
-
-            #butDiv button {
-                width: 100px;
-            }
-
-        #RecordScoreFloadDiv {
-            position: absolute;
-            width: 100%;
-            height: 150px;
-            border: 1px solid gray;
-            border-radius: 1em;
-            bottom: 0px;
-            display: none;
-            background-color: white;
-        }
-
-        .LableCss1 {
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            float: left;
-            display: block;
-            padding: 9px 15px;
-            width: 200px;
-            font-weight: 400;
-            line-height: 20px;
-            text-align: right
-        }
-
-        .floatbtn {
-            display: inline-block;
-            text-align: right;
-        }
-
-        #Stulist {
-            width: 100%;
-            height: 60px;
-            margin-top: 20px;
-            border: 1px solid gray;
-            overflow-x: scroll;
-            overflow-y: hidden; /* 超出内容不可见 */
-            white-space: nowrap;
-            display: none;
-        }
-
-            #Stulist ul {
-                list-style-type: none;
-            }
-
-                #Stulist ul li {
-                    float: left;
-                    width: 200px;
-                }
-
-        #biaoji {
-            display: none;
-        }
-
-        .currentstudent {
-            background-color: #20419d;
-        }
-    </style>
-}
-<div id="infofixd">
-
-    <div id="stayMarkingArea">
-
-        <ul class="tayMarkinglist"></ul>
-
-    </div>
-
-    <div id="MarkingInfoArea">
-
-
-        <div>
-
-            <div class="infoitem examName">考试名称--<span></span></div>
-            <div class="infoitem examDate">考试时间--<span></span></div>
-            <div class="infoitem totalPaper">试卷总数量--<span></span></div>
-            <div class="infoitem filshPaper">已阅卷数量--<span></span></div>
-            <a class="btn btn-danger" id="YiJian">一键下载机试</a>
+            </div>
         </div>
     </div>
+
+
+    <div style="width:380px">
+        <table class="layui-table" style="width:380px;float:left;">
+            <colgroup>
+                <col width="120">
+
+            </colgroup>
+            <thead>
+                <tr>
+                    <th colspan="6" style="font-weight:bold">学生考试名单</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="height:50px">
+                    <td colspan="2" @*style="width:150px"*@><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-green">已阅</span></a></td>
+                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-green">已阅</span></a></td>
+                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">黄涛<span class="layui-badge layui-bg-orange">待阅 </span></a></td>
+
+                </tr>
+                <tr style="height:50px">
+                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-orange">待阅</span></a></td>
+                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-green">已阅</span></a></td>
+                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">黄涛<span class="layui-badge layui-bg-green">已阅</span></a></td>
+
+                </tr>
+                <tr style="height:50px">
+                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">黄涛<span class="layui-badge layui-bg-green">已阅</span></a></td>
+                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-green">已阅</span></a></td>
+                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">黄涛<span class="layui-badge layui-bg-green">已阅</span></a></td>
+
+                </tr>
+                <tr style="height:50px">
+                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">黄涛<span class="layui-badge layui-bg-orange">待阅</span></a></td>
+                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-green">已阅</span></a></td>
+                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-green">已阅</span></a></td>
+
+                </tr>
+                <tr style="height:50px">
+                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">黄涛<span class="layui-badge layui-bg-orange">待阅</span></a></td>
+                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-green">已阅</span></a></td>
+                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">黄涛<span class="layui-badge layui-bg-green">已阅</span></a></td>
+
+                </tr>
+                <tr style="height:50px">
+                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-orange">待阅</span></a></td>
+                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-green">已阅</span></a></td>
+                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">黄涛<span class="layui-badge layui-bg-green">已阅</span></a></td>
+
+                </tr>
+                <tr style="height:50px">
+                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">黄涛<span class="layui-badge layui-bg-orange">待阅</span></a></td>
+                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-green">已阅</span></a></td>
+                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-green">已阅</span></a></td>
+
+                </tr>
+                <tr style="height:50px">
+                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-orange">待阅</span></a></td>
+                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-green">已阅</span></a></td>
+                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-green">已阅</span></a></td>
+
+                </tr>
+                <tr style="height:50px">
+                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">黄涛<span class="layui-badge layui-bg-orange">待阅</span></a></td>
+                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">黄涛<span class="layui-badge layui-bg-green">已阅</span></a></td>
+                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-green">已阅</span></a></td>
+
+                </tr>
+                <tr style="height:50px">
+                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">黄涛<span class="layui-badge layui-bg-orange">待阅</span></a></td>
+                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">黄涛<span class="layui-badge layui-bg-green">已阅</span></a></td>
+                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-green">已阅</span></a></td>
+
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <table class="table table-hover table-bordered" style="width:280px;margin-left:80.3%;margin-top:10px;float:none">
+        <tbody>
+            <tr>
+                <td colspan="2">
+                    <label style="color:black">选择题分数：<span style="color:#ff0000">80</span></label>
+                </td>
+
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <label style="color:black">解答题分数：<span style="color:#ff0000">80</span></label>
+                </td>
+
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <label style="color:black">机试题分数：<span style="color:#ff0000">80</span></label>
+                </td>
+
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <label style="color:black">总&nbsp;&nbsp;&nbsp;&nbsp;分：<span style="color:#ff0000">160</span></label>
+                </td>
+
+            </tr>
+            <tr>
+                <td style="text-align:center;" colspan="2">
+                    <h2 style="color:red">记录分数</h2>
+                </td>
+
+            </tr>
+            <tr>
+                <td style="text-align:center;">
+                    <label style="color:black">解答题分数:</label><input class="form-control" style="color:red" />
+                </td>
+                <td style="text-align:center;">
+                    <a class="layui-btn" style="color:white">解答题一键评分</a>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><a class="layui-btn layui-btn-warm" style="width:250px;color:white">解答题一键满分</a></td>
+            </tr>
+            <tr>
+                <td style="text-align:center;" colspan="2">
+                    <label style="color:black">机试题分数:</label><input class="form-control" style="color:red" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <label style="color:black">备注：</label><textarea class="form-control" rows="5"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <a class="layui-btn layui-btn-danger" style="width:250px;color:white">确定</a>
+                    
+                </td>
+            </tr>
+        </tbody>
+
+    </table>
+   
+  
+    <div style="width:658px;margin-left:470px;margin-top:-810px">
+        <div style="margin-top:10px">
+            <div id="accordion" class="mb-3">
+                <div class="card">
+                    <div class="card-header" id="headingOne">
+                        <h5 class="m-0">
+                            <a class="text-dark collapsed" data-toggle="collapse" href="#collapseOne" aria-expanded="false">
+                                <span>1.</span><font style="vertical-align: inherit;">
+                                    <font style="vertical-align: inherit;">
+                                        什么是Lorem Ipsum？
+                                    </font>
+                                </font>
+                            </a>
+                        </h5>
+                    </div>
+
+                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion" style="">
+                        <div class="card-body">
+                            <font style="vertical-align: inherit;">
+                                <font style="vertical-align: inherit;">
+                                    Animal pariatur cliche reprehenderit，enim eiusmod high lifeAccusamus Terry Richardson ad squid。
+                                </font><font style="vertical-align: inherit;">3狼月亮官方定义，非铜版滑板dolor早午餐。</font><font style="vertical-align: inherit;">食品卡车藜麦nesciunt labourum eiusmod。</font><font style="vertical-align: inherit;">早午餐3狼月亮时期，圣阿里夸在上面放了一只鸟，鱿鱼单一产地的咖啡，原汁原味地假定是乌贼。</font><font style="vertical-align: inherit;">Nihil anim keffiyeh Helvetica，精酿啤酒劳斯·韦斯·安德森·克里斯·内塞普·萨皮恩特都很有名。</font><font style="vertical-align: inherit;">广告纯素食者屠夫副lomo。</font><font style="vertical-align: inherit;">
+                                    绑腿occaecat精酿啤酒农场到餐桌，您可能还没有的原始牛仔美学合成纤维nesciunt
+                                </font>
+                            </font>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" id="headingTwo">
+                        <h5 class="m-0">
+                            <a class="text-dark collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false">
+                                <span>2.</span><font style="vertical-align: inherit;">
+                                    <font style="vertical-align: inherit;">
+                                        为什么要使用Lorem Ipsum？
+                                    </font>
+                                </font>
+                            </a>
+                        </h5>
+                    </div>
+                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion" style="">
+                        <div class="card-body">
+                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute,
+                            non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon
+                            tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil
+                            anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan
+                            excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt
+                            you probably haven't heard of them accusamus labore sustainable VHS.
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" id="headingThree">
+                        <h5 class="m-0">
+                            <a class="text-dark collapsed" data-toggle="collapse" href="#collapseThree" aria-expanded="false">
+                                <span>3.</span><font style="vertical-align: inherit;">
+                                    <font style="vertical-align: inherit;">
+                                        存在多少种变化？
+                                    </font>
+                                </font>
+                            </a>
+                        </h5>
+                    </div>
+                    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion" style="">
+                        <div class="card-body">
+                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute,
+                            non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon
+                            tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil
+                            anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan
+                            excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt
+                            you probably haven't heard of them accusamus labore sustainable VHS.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header" id="headingFour">
+                        <h5 class="m-0">
+                            <a class="text-dark collapsed" data-toggle="collapse" href="#collapseFour" aria-expanded="false">
+                                <span>4.</span><font style="vertical-align: inherit;">
+                                    <font style="vertical-align: inherit;">
+                                        什么是Lorem Ipsum？
+                                    </font>
+                                </font>
+                            </a>
+                        </h5>
+                    </div>
+                    <div id="collapseFour" class="collapse" aria-labelledby="collapseFour" data-parent="#accordion" style="">
+                        <div class="card-body">
+                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute,
+                            non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon
+                            tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil
+                            anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan
+                            excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt
+                            you probably haven't heard of them accusamus labore sustainable VHS.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a class="layui-btn layui-btn-danger" style="color:white;width:100%">下载机试</a>
+        <br />
+        
+        <a class="layui-btn layui-btn-primary"  style="color:black;width:50%;float:none;margin-top:10px">上一页</a>
+        
+        <a class="layui-btn layui-btn-primary" style="color:black;width:50%;margin-top:-60px;margin-left:330px">下一页</a>
+        <br />
+        <a class="layui-btn" style="color:white;width:100%">是否阅卷完毕</a>
+    </div>
+    
+
+
+
 </div>
-
-
