@@ -73,7 +73,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
                 CreateCell(row, ContentcellStyle, 0, d.EmpName);
                 CreateCell(row, ContentcellStyle, 1, d.ClassroomName);
-                CreateCell(row, ContentcellStyle, 2, d.AttendDate.ToString());
+                CreateCell(row, ContentcellStyle, 2, d.Anpaidate.ToString());
                 CreateCell(row, ContentcellStyle, 3, d.ClassNumber);
                 num++;
 
@@ -148,6 +148,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
             List<ClassSchedule> classSchedules =ClassSchedule_Entity.GetList().ToList();
             List<SelectListItem> ClassList = classSchedules.Select(a=>new SelectListItem() { Text = a.ClassNumber,Value=a.ClassNumber }).ToList();
+            ClassList.Add(new SelectListItem() { Text="--请选择--",Value=""});
             ClassList = ClassList.OrderBy(t => t.Value).ToList() ;
             ViewBag.ClassName = ClassList;
             return View();
@@ -241,7 +242,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             string ClassName = Request.QueryString["ClassName"];
 
             
-            StringBuilder sb = new StringBuilder("select * from TeacherAddorBeonDutyView ");
+            StringBuilder sb = new StringBuilder("select * from TeacherAddorBeonDutyView where 1=1 ");
             Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
             if (Tb_Entity.Isjiaowu(UserName.EmpNumber) == 3)
             {

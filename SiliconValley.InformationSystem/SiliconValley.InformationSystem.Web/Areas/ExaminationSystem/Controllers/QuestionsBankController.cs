@@ -78,6 +78,55 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             return View();
         }
         /// <summary>
+        /// 机试题编辑页面
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult EditingMachineTestQuestions(string ids)
+        {
+            string[] ary1 = ids.Split(',');
+
+            var list = ary1.ToList();
+
+            list.RemoveAt(ary1.Length - 1);
+
+            var obj = db_computerTestQuestion.AllComputerTestQuestion().Where(d => d.ID == int.Parse(list[0])).FirstOrDefault();
+
+            var result = db_computerTestQuestion.ConvertToComputerTestQuestionsView(obj, true);
+
+            ViewBag.ComputerTestQuestionIds = ids;
+
+            ////读取文件
+            //byte[] s = System.IO.File.ReadAllBytes(obj.SaveURL);
+
+            ViewBag.ids = ids;
+            return View(result);
+        }
+        /// <summary>
+        /// 题库机试 编辑
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult XiuGaiTestQuestions(int questionid,string title,int nandu)
+        {
+            AjaxResult result = new AjaxResult();
+            try
+            {
+                var mach = db_computerTestQuestion.GetEntity(questionid);
+                mach.Level = nandu;
+                mach.Title = title;
+                db_computerTestQuestion.Update(mach);
+                result.ErrorCode = 200;
+                result.Msg = "成功";
+                result.Data = mach;
+            }
+            catch (Exception ex)
+            {
+                result.ErrorCode = 400;
+                result.Msg = "失败";
+                result.Data = null;
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
         /// 将选择题及解答题导成word文档
         /// </summary>
         /// <param name="kecheng"></param>
