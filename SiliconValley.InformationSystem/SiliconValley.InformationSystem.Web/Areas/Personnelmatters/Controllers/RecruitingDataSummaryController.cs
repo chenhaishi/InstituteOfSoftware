@@ -578,6 +578,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             try
             {
                 var list = from r in rptlist
+                           where r.TraceTime != null
                            group r by new
                            { r.Pid, month = Condition((DateTime)r.TraceTime, "month") }
                            into g
