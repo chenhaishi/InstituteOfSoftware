@@ -82,7 +82,26 @@ namespace SiliconValley.InformationSystem.Business.RecruitPhoneTraceBusiness
             DateTime? time = rptlist.LastOrDefault().ForwardDate;
             return time;
         }
+       public AjaxResult UpdNewestForwardDate(int sonid, string forwarddate)
+        {
+            AjaxResult result = new AjaxResult();
+            try
+            {
+                var list = this.GetList().Where(i => i.SonId == sonid);
+                int id = list.LastOrDefault().Id;
+                var recruit = this.GetEntity(id);
+                recruit.ForwardDate = Convert.ToDateTime(forwarddate);
+                this.Update(recruit);   
+               result= this.Success();
+            }
+            catch (Exception e)
+            {
+                result = this.Error(e.Message);
+            }
 
+            return result;
+           
+        }
         /// <summary>
         /// 获取最新面试结果
         /// </summary>
