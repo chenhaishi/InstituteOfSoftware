@@ -211,7 +211,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             List<TreeClass> listtree = new List<TreeClass>();
             foreach (var item in list)
             {
-                if (item.Name== "自考本科费用"|| item.Name == "其它")
+                if (item.Name== "自考本科费用"|| item.Name == "重修费")
                 {
                     TreeClass seclass = new TreeClass();
                     seclass.title = item.Name;
