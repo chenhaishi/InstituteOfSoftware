@@ -120,6 +120,7 @@
                     <button class="layui-btn " id="btnclose1">关闭</button>
                 </div>
             </div>
+                </div>
         </form>
     </div>
 
@@ -159,20 +160,50 @@
                 var loadindex = layer.load(1);
                 data.field.PhoneCommunicateResult = data.field.PhoneCommunicateResult1 ;
                 data.field.Remark = $("#Remark1").val();
-                $.post("/Personnelmatters/RecruitingDataSummary/AddTrack", data.field, function (data) {
-                    layer.close(loadindex);
-                    if (data.Success) {
-                        layer.alert("添加成功!", { icon: 1 }, function () {
-                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                            parent.layui.table.reload('myrptData');
-                            parent.layui.table.reload('myRecruitData');
-                            parent.layer.close(index);
 
-                        });
-                    } else {
-                        layer.alert("添加失败!");
-                    }
-                });
+                var isQuery = false;
+                if (!isQuery) {
+                    $.ajax({
+                        url: "/Personnelmatters/RecruitingDataSummary/AddTrack",
+                        type: "post",
+                        data: JSON.stringify({ "rpt": data.field }),
+                        dataType: "json",
+                        contentType: "Application/json",
+                        beforeSend: function () {
+                            isQuery = true;
+                            layer.msg("正在执行", { icon: 16, shade: 0.6 });
+                        }, success: function (data) {
+                            isQuery = false;
+                            if (data.Success) {
+                                layer.alert("添加成功!", { icon: 1 }, function () {
+                                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                    parent.layui.table.reload('myrptData');
+                                    parent.layui.table.reload('myRecruitData');
+                                    parent.layer.close(index);
+                                });
+                            }
+                        }, error: function (e) {
+                            isQuery = false;
+                        }
+
+                    })
+                } else {
+                    console.log("请不要重复点击");
+                }
+                //$.post("/Personnelmatters/RecruitingDataSummary/AddTrack", data.field, function (data) {
+                //    layer.close(loadindex);
+                //    if (data.Success) {
+                //        layer.alert("添加成功!", { icon: 1 }, function () {
+                //            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                //            parent.layui.table.reload('myrptData');
+                //            parent.layui.table.reload('myRecruitData');
+                //            parent.layer.close(index);
+
+                //        });
+                //    } else {
+                //        layer.alert("添加失败!");
+                //    }
+                //});
                 return false;
             });
 
