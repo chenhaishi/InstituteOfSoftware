@@ -161,8 +161,7 @@
                 ]]
                 , page: true
             });
-
-
+            
             ///部门筛选员工
 
             form.on('select(dep_select)', function (data) {
@@ -178,8 +177,6 @@
                 });
 
             });
-
-
             //姓名筛选
 
             $("#search").click(function () {
@@ -199,11 +196,10 @@
             });
 
             $("#createEmpCost").click(function () {
-
                 layer.open({
                     type: 2,
                     title: "费用统计",
-                    area: ['1300px', '800px'],
+                    area: ['1100px', '400px'],
                     content:'/Educational/Staff_Cost_Statistics/teaching_hour'
                 });
 
@@ -216,7 +212,7 @@
                 if (obj.event == 'cost_history') {
                     layer.open({
                         type: 2,
-                        area: ['1000px', '500px'],
+                        area: ['400px', '300px'],
                         title: "费用统计",
                         content: '/Educational/Staff_Cost_Statistics/PersonalCostStatics?empid=' + data.EmployeeId
                     });

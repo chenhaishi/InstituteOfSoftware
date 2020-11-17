@@ -391,9 +391,15 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         {
             string datetime = date.Substring(0, 4);
             DateTime dt = Convert.ToDateTime(date.Substring(0, 4) + "-" + date.Substring(5, 2) + "-" + date.Substring(8, 2));
-
-            //根据部门生成费用
-            List<EmployeesInfo> Emp_List = EmployeesInfoManage_Entity.GetEmpsByDeptid(DeptID);
+            List<EmployeesInfo> Emp_List = null;
+            if (DeptID == 0)
+            {
+                 Emp_List = EmployeesInfoManage_Entity.GetEmpByDeptName();
+            }
+            else {
+                 Emp_List = EmployeesInfoManage_Entity.GetEmpsByDeptid(DeptID);
+            }
+            
             List<Staff_CostView> staff_list = new List<Staff_CostView>();
 
             decimal? summoney = 0;
@@ -429,9 +435,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                     group m by m.ClassSchedule_Id into list
                     select list).ToList();
 
-                var ClassGroup = ClassGroup1.Where(a=>a.Key!="复习").ToList();
+                var ClassGroup = ClassGroup1.Where
+                    (a=>a.Key!="复习" && a.Key!= "项目答辩"
+                        &&!a.Key.Contains("职素")&&!a.Key.Contains("班")).ToList();
 
-                //计算全天课天数
+                //计算全天课天数&& a.Curriculum_Id != "项目答辩"
                 for (int k = 0; k < AnPaiGroup.Count; k++)
                 {
                     QuanDay += Cost_EndClass(AnPaiGroup[k].Key, Emp_List[i].EmployeeId);
@@ -453,17 +461,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                             List<ScheduleForTrainees> Trainees_List = ScheduleForTrainees_Entity.GetListBySql<ScheduleForTrainees>(sql);
                             if (Trainees_List.Count < 10)
                             {
-                                FirstStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, mydata[i].EmployeesInfo_Id, "前预科", false);
+                                FirstStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, "前预科", false);
                             }
                             else {
-                                FirstStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, mydata[i].EmployeesInfo_Id, "前预科", true);
+                                FirstStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, "前预科", true);
                             }
                         }
                     }
                     else { 
-                        
-                    //根据课程名称获取第一条数据 &&a.Curriculum_Id!="项目答辩" && a.Curriculum_Id != ""
-                    Reconcile reconcile = mydata.Where(a => a.Curriculum_Id == ClassGroup[j].Key).FirstOrDefault();
+                    //根据课程名称获取第一条数据 && && a.Curriculum_Id != ""
+                    Reconcile reconcile = mydata.Where(a => a.Curriculum_Id == ClassGroup[j].Key ).FirstOrDefault();
                     //根据班级id查询单条数据
                     ClassSchedule classSchedule = ClassSchedule_Entity.GetEntity(reconcile.ClassSchedule_Id);
                     //根据课程名称以及阶段id筛选
@@ -485,18 +492,18 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                         curriculum.CourseName.Contains("班会") ||
                         curriculum.CourseName.Contains("军事"))
                     {
-                        OtherStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, mydata[i].EmployeesInfo_Id, curriculum.CourseName,true);
+                        OtherStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName,true);
                     }
                     else
                     {
                         Grand grand = Grand_Entity.GetEntity(curriculum1.Grand_Id);
                         if (grand.GrandName.Contains("S1") || grand.GrandName.Contains("S2") || grand.GrandName.Contains("Y1"))
                         {
-                            FirstStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, mydata[i].EmployeesInfo_Id, curriculum.CourseName,true);
+                            FirstStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName,true);
                         }
                         else if (grand.GrandName.Contains("S3") || grand.GrandName.Contains("S4"))
                         {
-                            SecondStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, mydata[i].EmployeesInfo_Id, curriculum.CourseName,true);
+                            SecondStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName,true);
                         }
                     }
                     }
