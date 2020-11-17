@@ -427,7 +427,7 @@
                 //1判断考试是否结束
                 //获取考试ID
                 var examid = $(this).attr("examid");
-                var examroom = $(this).attr("examroom");
+                var examroom = $(this).attr("examroom"); 
                 console.log(examid);
                 $.post("/ExaminationSystem/ExamScores/ExamIsEnd", { examid: examid }, function (result) {
 
