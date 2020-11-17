@@ -1,6 +1,7 @@
 ﻿
 @{
     Layout = null;
+    var List = ViewBag.Preferential_List as List<SiliconValley.InformationSystem.Entity.Entity.Preferential>;
 }
 @model  SiliconValley.InformationSystem.Entity.MyEntity.StudentFeeRecord
 <!DOCTYPE html>
@@ -25,7 +26,7 @@
     </style>
 </head>
 <body>
-    <form class="layui-form" action="" id="form">
+    <form class="layui-form" action="" id="form" lay-filter="studentForm">
         <div class="layui-container">
             <fieldset>
                 <legend>基础数据</legend>
@@ -97,10 +98,20 @@
                         <div class="layui-collapse" style="margin-left:50px;">
                             <div class="layui-colla-item">
                                 <h2 class="layui-colla-title">学杂费</h2>
+
                                 <div class="layui-colla-content" id="Unitpricename"></div>
                             </div>
                         </div>
+                    </div>
+                    <div>
+                        <label style="font-size:14px;margin-left:50px;">学费补助</label>
+                        @{
+                            foreach (var item in List)
+                            {
 
+                              <input type="checkbox" lay-filter="mycheck" name="Help" id="HepeID" title="@item.PNmae @Math.Round(item.PPrice,2).ToString()" value="@item.PNmae@Math.Round(item.PPrice,2).ToString()">
+                            }
+                        }
 
                     </div>
                     <div class="layui-col-xs12 layui-col-sm12 layui-col-md12 mysql">
@@ -327,11 +338,52 @@
 
             }
         });
+        //优惠选中项修改
+        var name = "";
+        var name_text = "";
+        form.on('checkbox(mycheck)', function (data) {
+
+            var mytitle = $(data.elem).attr("title");
+            console.log(data.elem); //得到checkbox原始DOM对象
+            console.log(data.elem.checked); //是否被选中，true或者false
+            console.log(data.value); //复选框value值，也可以通过data.elem.value得到
+            console.log(data.othis); //得到美化后的DOM对象
+            if (data.elem.checked == true) {
+                layer.prompt({ title: '请输入金额', formType: 3, value: data.value }, function (text, index) {
+                    //alert(text);
+                    $('input[name="Help"]:checked').each(function (index, ele) {
+                        var titlemy = $(ele).attr("title");
+                        if (titlemy == mytitle) {
+                            name_text = $(ele).attr("title", text);
+                            name = $(ele).val(text);
+                            form.render();
+                        }
+                    });
+                    
+                  
+                    console.log(name_text);
+                    layer.close(index);
+
+                     
+                }); 
+            }
+        });
+
+
         //监听提交
         form.on('submit(demo1)', function (data) {
-         //  window.parent.StudentShow("/Finance/Pricedetails/Receipt", "收费收据", 1, 900, 600);
+            //var data1 = form.val("studentForm");
+            var helpList = [];
+            $('input[name="Help"]:checked').each(function (index, ele) {
+               var help_a=$(ele).val();
+                //console.log(help_a);
+                helpList.push(help_a);
+                //console.log(helpList);
+            });
+            //console.log(data1.Help);
+           //window.parent.StudentShow("/Finance/Pricedetails/Receipt", "收费收据", 1, 900, 600);
             var db = data.field;
-            console.log(db);
+            //console.log(db);
         
             if (Number(db.Amountofmoney) >= 0 || Number(db.Amountofmoneys) >= 0) {
                 if (Number(db.Amountofmoney) > 0 ) {
@@ -350,6 +402,7 @@
                 }
 
                 var dbase = {
+                    Help: helpList,
                     person: JSON.stringify(list),
                     Remarks: db.Remarks,
                     Stage: db.Stage
@@ -366,6 +419,7 @@
             }
 
         });
+       
         //文本框监听/学费
         $("#Amountofmoney").keyup(function () {      // 按键弹起时触发的事件；
 

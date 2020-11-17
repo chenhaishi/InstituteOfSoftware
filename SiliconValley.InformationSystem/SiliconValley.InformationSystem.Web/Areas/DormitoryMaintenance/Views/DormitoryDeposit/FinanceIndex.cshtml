@@ -16,18 +16,79 @@
         line-height: 20px;
         text-align: right
     }
+
+    .Divdis
+    {
+        display: none
+    }
+
+    .ColorText
+    {
+        color: red;
+    }
+
+    .TextCen
+    {
+        text-align: center
+    }
+
+    tr td
+    {
+        width: 230px;
+        font-size: 24px;
+        font-family: FangSong;
+        border: 1px solid black;
+    }
+
+    tr
+    {
+        margin-top: 20px;
+        border: 1px solid black;
+    }
+    .TexceClore{
+      color:red;
+    }
 </style>
-@*<table id="Financetable" lay-filter="Financetable"></table>*@
+
 
 <div>
+    <form class="layui-form" lay-filter="sercherform2">
+        <div class="layui-row layui-form-item">
+            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                <label class="LableCss1">选择年月:</label>
+                <div class="layui-input-block">
+                    <input type="text" placeholder="开始时间" class="layui-input" name="yearMone" id="yearMone" />
+                </div>
+            </div>
+            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                <label class="LableCss1">选择地址:</label>
+                <div class="layui-input-block">
+                   @Html.DropDownList("Address", ViewBag.Addree as IEnumerable<SelectListItem>,new Dictionary<string, object>() { { "class","layui-select"} })
+                </div>
+            </div>
+            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                <label class="LableCss1">总金额:</label>
+                <div id="ClssTime" class="layui-input-block">
+                    <input type="text" placeholder="某个月的维修总金额" class="layui-input" id="MonMoney" readonly="readonly" />
+                </div>
+            </div>
+            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2" style="text-align:center">
+                <button type="button" class="layui-btn" onclick="SercherFuntion2()">查询</button>
+            </div>
+        </div>
+    </form>
+
     <form class="layui-form" lay-filter="sercherform">
         <div class="layui-row layui-form-item">
             <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
-                <label class="LableCss1">学生姓名:</label>
+                <label class="LableCss1">选择学生:</label>
                 <div class="layui-input-block">
-                    <input type="text" placeholder="学生姓名" class="layui-input" id="inputname"/>
-                    <input type="hidden" name="stuName" id="stuName" />
+                    <input type="button" class="layui-btn" value="点击选择学生" onclick="OpenView()" />
                 </div>
+            </div>
+            <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                <input type="text" class="layui-input" id="inputname" readonly="readonly" placeholder="不能输入姓名！" />
+                <input type="hidden" name="stuName" id="stuName" />
             </div>
             <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
                 <label class="LableCss1">开始时间:</label>
@@ -44,11 +105,38 @@
             <div class="layui-col-xs2 layui-col-sm2 layui-col-md2" style="text-align:center">
                 <button type="button" class="layui-btn" onclick="SercherFuntion()">查询</button>
             </div>
+            <div class="layui-col-xs1 layui-col-sm1 layui-col-md1" style="text-align:center">
+                <button type="button" ></button>
+                <a href="/DormitoryMaintenance/DormitoryDeposit/ClassStudentMoneyView" class="layui-btn">班级押金结算</a>
+            </div>
         </div>
     </form>
+
+
+    <table id="MantainTable"> </table>
+    <div id="FarDiv"></div>
 </div>
 
+
+
 <script>
+
+    function ShenyeDate(newtime) {
+        if (newtime == null)
+            return "";
+        var date = new Date(parseInt(newtime.slice(6)));
+        var year = date.getFullYear();
+        var month = parseInt(date.getMonth()) + 1;
+        if (month < 10) {
+            month = "0" + month;
+        }
+        var days = date.getDate();
+        if (days < 10) {
+            days = "0" + days;
+        }
+        var result = year + '-' + month + '-' + days;
+        return result;
+    }
     var table;
     var laydate;
     var layer;
@@ -69,21 +157,70 @@
                 elem: '#endTime'
                 , trigger: 'click'
             });
+
+            laydate.render({
+                elem: '#yearMone'
+                , trigger: 'click'
+                , type: 'month'
+            });
+
+
         });
     });
 
-
-    function SercherFuntion() {
-        var data1 = form.val("sercherform");
-
-
+     
+    function OpenView() {
+        layer.open({
+            type: 2,
+            content: '/DormitoryMaintenance/DormitoryDeposit/StudentinfomatuonView',
+            area: ['600px', '400px']
+        });
     }
 
-    $("#inputname").keydown(function (event) {
-         　　　if (event.keyCode == 13) {
-            　　　　//　alert('你按下了Enter');      
-                
-              }         
-    });
+    function SetVlaue(value1,value2) {
+        $("#stuName").val(value1);
+        $("#inputname").val(value2);
+    }
+
+    //获取学生维修详情
+    function SercherFuntion() {
+        var data1 = form.val('sercherform');
+        $("#MantainTable")[0].innerHTML = "";
+        $("#FarDiv")[0].innerHTML = "";
+        //获取某个学生的维修详情
+        $.ajax({
+            url: '/DormitoryMaintenance/DormitoryDeposit/StudentDorManinData',
+            data: { "stunumber": data1.stuName, "star": data1.starTime, "end": data1.endTime},
+            type: 'POST',
+            success: function (res) {
+                if (res.listdata.length > 0) {
+                    
+                    $("<tr> <td rowspan='" + res.listdata.length + 1 + "'>维修详细</td><td colspan='2' class='TextCen'>日期</td>  <td colspan='2'>寝室号</td> <td colspan='2'>维修物品</td> <td colspan='1'>维修金额</td> <td colspan='1'>状态</td>").appendTo($("#MantainTable"));
+                    for (var i = 0; i < res.listdata.length; i++) {
+                        $('<tr> <td colspan="2" class="TextCen"><span>' + ShenyeDate(res.listdata[i].DeaMaintain) + '</span></td> <td colspan="2">' + res.listdata[i].DeaDorName + '</td>  <td colspan="2">' + res.listdata[i].DeaNameofarticle + '</td> <td>' + res.listdata[i].DeaGoodPrice + '</td> <td>' + res.listdata[i].Isdelete+'</td></tr>').appendTo($("#MantainTable"));
+                    }
+
+                    $('<tr><td colspan="4"><span>维修总金额:</span><span class="ColorText">' + res.SumMantanMoney + '</span><span>元</span></td>  <td colspan="4"><span>应退总金额:</span><span class="ColorText">' + res.GetTuiMoney + '</span><span>元</span></td>  </tr>').appendTo($("#MantainTable"));
+                } else {
+                    $('<h2 style="font-family: FangSong">未产生维修费用</h2>').appendTo($("#FarDiv"));
+                }
+            }
+        });
+    }
+
+    //获取某个月份的总维修金额
+    function SercherFuntion2() {
+        var data1 = form.val("sercherform2");
+        $.ajax({
+            url: '/DormitoryMaintenance/DormitoryDeposit/addressMoney',
+            data: { "date": data1.yearMone, "address": data1.Address },
+            type:'POST',
+            success: function (res) {
+                var moeny = res + "元";
+                $("#MonMoney").val(moeny);
+            }
+        });
+    }
+
 </script>
 

@@ -5,9 +5,17 @@
 
 <div class="layui-tab layui-tab-card">
     <ul class="layui-tab-title">
-        <li class="layui-this">在职员工信息</li>
-        <li>离职员工信息</li>
+        @{ if (ViewBag.IsFinance == 1)
+            {
+                <li class="layui-this">在职员工信息</li>
+            }
+            else
+            {
+                <li class="layui-this">在职员工信息</li>
+                <li>离职员工信息</li>
+            }}
     </ul>
+  
     <div class="layui-tab-content">
         <div class="layui-tab-item layui-show">
             @*模糊查询*@
@@ -38,54 +46,51 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
-                            <label class="layui-form-label">学历:</label>
-                            <div class="layui-input-inline">
-                                <select name="Education" id="Education" style="width:130px;">
-                                    <option value="">--请选择--</option>
-                                    <option value="大专">大专</option>
-                                    <option value="博士">博士</option>
-                                    <option value="硕士">硕士</option>
-                                    <option value="本科">本科</option>
-                                    <option value="高中">高中</option>
-                                    <option value="中专">中专</option>
-                                    <option value="初中">初中</option>
-                                    <option value="小学">小学</option>
-                                    <option value="群众">群众</option>
-                                </select>
-                            </div>
-                        </div>
+                                <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
+                                    <label class="layui-form-label">学历:</label>
+                                    <div class="layui-input-inline">
+                                        <select name="Education" id="Education" style="width:130px;">
+                                            <option value="">--请选择--</option>
+                                            <option value="大专">大专</option>
+                                            <option value="博士">博士</option>
+                                            <option value="硕士">硕士</option>
+                                            <option value="本科">本科</option>
+                                            <option value="高中">高中</option>
+                                            <option value="中专">中专</option>
+                                            <option value="初中">初中</option>
+                                            <option value="小学">小学</option>
+                                            <option value="群众">群众</option>
+                                        </select>
+                                    </div>
+                                </div>
                     </div>
-
                     <div class="layui-row layui-form-item">
+                                <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
+                                    <label class="layui-form-label" style="margin-left:-10px;">性别:</label>
+                                    <div class="layui-input-inline" style="margin-left:10px;">
+                                        <select name="Sex" id="Sex">
+                                            <option value="">--请选择--</option>
+                                            <option value="男">男</option>
+                                            <option value="女">女</option>
+                                        </select>
+                                    </div>
+                                </div>
 
-                        <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
-                            <label class="layui-form-label" style="margin-left:-10px;">性别:</label>
-                            <div class="layui-input-inline" style="margin-left:10px;">
-                                <select name="Sex" id="Sex">
-                                    <option value="">--请选择--</option>
-                                    <option value="男">男</option>
-                                    <option value="女">女</option>
-                                </select>
-                            </div>
-                        </div>
-                       
-                        <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
-                            <label class="layui-form-label" style="width:100px;">政治面貌:</label>
-                            <div class="layui-input-inline">
-                                <select name="PoliticsStatus" id="PoliticsStatus">
-                                    <option value="">--请选择--</option>
-                                    <option value="党员">党员</option>
-                                    <option value="团员">团员</option>
-                                    <option value="群众">群众</option>
-                                </select>
+                                <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
+                                    <label class="layui-form-label" style="width:100px;">政治面貌:</label>
+                                    <div class="layui-input-inline">
+                                        <select name="PoliticsStatus" id="PoliticsStatus">
+                                            <option value="">--请选择--</option>
+                                            <option value="党员">党员</option>
+                                            <option value="团员">团员</option>
+                                            <option value="群众">群众</option>
+                                        </select>
 
-                            </div>
-                        </div>
-
+                                    </div>
+                                </div>
                         <div class="layui-inline">
                             <label class="layui-form-label" style="width:120px;margin-left:-10px;">入职时间：</label>
-                            <div class="layui-inline" >
+                            <div class="layui-inline">
                                 <label class="layui-form-label" style="margin-left:-20px;">从：</label>
                                 <div class="layui-input-inline">
                                     <input type="text" id="start_time" name="start_time" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
@@ -100,29 +105,47 @@
                             </div>
                             <button class="layui-btn " type="button" id="Conditionselect" style="margin-left:20px;"><i class="layui-icon layui-icon-search"></i>查询</button>
                         </div>
-                       
+
 
                     </div>
 
+                        
+
+
                 </form>
             </fieldset>
+            @*<input type="hidden" id="ISHR" name="ISHR" value="@ViewBag.IsHR" />*@
             @*头部工具栏*@
             <script type="text/html" id="toolbarDemo">
-                <div class="layui-btn-container">
-                    <button class="layui-btn layui-btn-sm" lay-event="AddEmps"><i class="layui-icon layui-icon-addition"></i>添加员工</button>
-                    <button class="layui-btn layui-btn-sm" lay-event="BatchImport"><i class="layui-icon layui-icon-upload-drag"></i>excel批量导入</button>
-                    <button class="layui-btn layui-btn-sm" lay-event="BatchExport"><i class="layui-icon layui-icon-upload-drag"></i>excel批量导出</button>
-                    <button class="layui-btn layui-btn-sm" lay-event="DeptAndPositionOperation"><i class="layui-icon layui-icon-app"></i>部门及岗位管理</button>
+                <div class="layui-btn-container ">
+                    @{
+                        var ishr = ViewBag.IsHR;
+                        if (ishr == 1)
+                        {
+                            <button class="layui-btn layui-btn-sm headbtn" lay-event="AddEmps"><i class="layui-icon layui-icon-addition"></i>添加员工</button>
+                            <button class="layui-btn layui-btn-sm headbtn" lay-event="BatchImport"><i class="layui-icon layui-icon-upload-drag"></i>excel批量导入</button>
+                            <button class="layui-btn layui-btn-sm headbtn" lay-event="BatchExport"><i class="layui-icon layui-icon-upload-drag"></i>excel批量导出</button>
+                            <button class="layui-btn layui-btn-sm headbtn" lay-event="DeptAndPositionOperation"><i class="layui-icon layui-icon-app"></i>部门及岗位管理</button>
+
+                        }
+                    }
 
                 </div>
             </script>
             @*操作栏*@
             <script type="text/html" id="barDemo">
-                <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+                @{
+                    var hr = ViewBag.IsHR;
+                    if (hr == 1)
+                    {
+                    <a class="layui-btn layui-btn-xs myedit" lay-event="edit">编辑</a>
+                        }
+                    }
+
                 <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="detail">详情查看</a>
                 <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="ETRdetail">异动详情</a>
             </script>
-            <button class="layui-btn layui-btn-warm" style="display:none;" id="contractEndbtn" >合同到期人员</button>
+            <button class="layui-btn layui-btn-warm" style="display:none;" id="contractEndbtn">合同到期人员</button>
 
             <table id="emptab" lay-filter="emptab"></table>
         </div>
@@ -167,68 +190,93 @@
 
              var contractend =@ViewBag.contractEnd;
              if (contractend != 0) {
-                 //console.log("到期人数：" + contractend);
                  document.getElementById('contractEndbtn').style.display= "block";
              } else {
                  document.getElementById('contractEndbtn').style.display = "none";
              }
-            // console.log($("#contractEndbtn").css("display"));
+            
+
         });
       
-      //在职员工加载
+      //财务页面
+        
         layui.use(['table', 'layer', 'form', 'laydate', 'element'], function () {
             var table = layui.table;
             var layer = layui.layer;
             var form = layui.form;
             var laydate = layui.laydate;
             var element = layui.element;
- 
-          var tab1=  table.render({
+            if (@ViewBag.IsFinance==1) {
+            var tab1 = table.render({
                 elem: '#emptab'
                 , url: '/Personnelmatters/EmployeesInfo/GetData'
                 , id: "myEmpInfo"
                 , toolbar: '#toolbarDemo'
-            
-                , limits: [5, 10,20, 30,100,120,150,200,250,300,350,400,450,500]
+
+                , limits: [5, 10, 20, 30, 100, 120, 150, 200, 250, 300, 350, 400, 450, 500]
                 , limit: 20
                 , cols: [[
-                      { field: 'EmployeeId', title: '员工编号', width: 126 }
-                    , { field: 'DDAppId', title: '钉钉工号', width: 108, sort: true }
-                    , { field: 'EmpName', title: '姓名', width: 110, sort: true, edit: 'text' }
-                    , { field: 'Depart', title: '所属部门', width: 110, sort: true }
-                    , { field: 'Position', title: '所属岗位', width: 110, sort: true }
-                    , { field: 'Phone', title: '电话号码', sort: true, width: 110, edit: 'text' }
-                    , { field: 'Sex', title: '性别', sort: true, width: 90, templet: '#switchTp2', unresize: true }
-                    , { field: 'IdCardNum', title: '身份证号码', sort: true, width: 120, edit: 'text' }
-                    , { field: 'EntryTime', title: '入职时间', sort: true, width: 110, templet: function (d) { return GetYMD(d.EntryTime) } }
-                    , { field: 'PositiveDate', title: '转正日期', sort: true, width: 110, templet: function (d) { return GetYMD(d.PositiveDate) } }
-                    , { field: 'SSStartMonth', title: '社保起始月份', sort: true, width: 135, event: 'date', data_field: "SSStartMonth", templet: function (d) { return GetYearAndMonth(d.SSStartMonth) } }
-                    , { field: 'Remark', title: '备注', sort: true, width: 110, edit: 'text' }
-                    , { field: 'Nation', title: '民族', sort: true, width: 110, hide: true }
-                    , { field: 'Age', title: '年龄', sort: true, width: 110, hide: true }
-                    , { field: 'ContractStartTime', title: '合同起始时间', sort: true, width: 110, hide: true, templet: function (d) { return GetYMD(d.ContractStartTime) }  }
-                    , { field: 'ContractEndTime', title: '合同终止时间', sort: true, width: 110, hide: true, templet: function (d) { return GetYMD(d.ContractEndTime) }  }
-                    , { field: 'Birthdate', title: '出生日期', sort: true, width: 110, hide: true, templet: function (d) { return GetYMD(d.Birthdate) }  }
-                    , { field: 'Birthday', title: '生日', sort: true, width: 110, hide: true }
-                    , { field: 'UrgentPhone', title: '紧急联系电话', sort: true, width: 110, hide: true }
-                    , { field: 'Education', title: '学历', sort: true, width: 110, hide: true }
-                    , { field: 'MaritalStatus', title: '婚姻状态', sort: true, width: 110, hide: true }
-                    , { field: 'DomicileAddress', title: '户籍地址', sort: true, width: 110, hide: true }
-                    , { field: 'Address', title: '现居地址', sort: true, width: 110, hide: true }
-                    , { field: 'IdCardIndate', title: '身份证有效期', sort: true, width: 110, hide: true, templet: function (d) { return GetYMD(d.IdCardIndate) } }
-                    , { field: 'PositiveDate', title: '政治面貌', sort: true, width: 110, hide: true }
-                    , { field: 'ProbationSalary', title: '试用期工资', sort: true, width: 110, hide: true }
-                    , { field: 'Salary', title: '转正后工资', sort: true, width: 110, hide: true }
-                    , { field: 'BCNum', title: '银行卡号', sort: true, width: 110, hide: true }
-                    , { field: 'RecruitSource', title: '招聘来源', sort: true, width: 110, hide: true }
-                    , { field: 'Material', title: '材料', sort: true, width: 110, hide: true }
-                    , { fixed: 'right', title: '操作', toolbar: '#barDemo' }
+                    { field: 'EmployeeId', title: '员工编号', width: 150 }
+                    , { field: 'DDAppId', title: '钉钉工号', width: 150, sort: true }
+                    , { field: 'EmpName', title: '姓名', width: 150, sort: true, edit: 'text' }
+                    , { field: 'Depart', title: '所属部门', width: 150, sort: true }
+                    , { field: 'Position', title: '所属岗位', width: 150, sort: true }
+                    , { field: 'BCNum', title: '银行卡号', width: 200, sort: true }
+                    , { field: 'Remark', title: '备注', width: 300, sort: true, edit: 'text' }
                 ]],
                 data: [{
                     SSStartMonth: ''
                 }]
                 , page: true
             });
+        } else  {
+                var tab1 = table.render({
+                    elem: '#emptab'
+                    , url: '/Personnelmatters/EmployeesInfo/GetData'
+                    , id: "myEmpInfo"
+                    , toolbar: '#toolbarDemo'
+                    , limits: [5, 10, 20, 30, 100, 120, 150, 200, 250, 300, 350, 400, 450, 500]
+                    , limit: 20
+                    , cols: [[
+                        { field: 'EmployeeId', title: '员工编号', width: 126 }
+                        , { field: 'DDAppId', title: '钉钉工号', width: 108, sort: true }
+                        , { field: 'EmpName', title: '姓名', width: 110, sort: true, edit: 'text' }
+                        , { field: 'Depart', title: '所属部门', width: 110, sort: true }
+                        , { field: 'Position', title: '所属岗位', width: 110, sort: true }
+                        , { field: 'Phone', title: '电话号码', sort: true, width: 110, edit: 'text' }
+                        , { field: 'Sex', title: '性别', sort: true, width: 90, templet: '#switchTp2', unresize: true }
+                        , { field: 'IdCardNum', title: '身份证号码', sort: true, width: 120, edit: 'text' }
+                        , { field: 'EntryTime', title: '入职时间', sort: true, width: 110, templet: function (d) { return GetYMD(d.EntryTime) } }
+                        , { field: 'PositiveDate', title: '转正日期', sort: true, width: 110, templet: function (d) { return GetYMD(d.PositiveDate) } }
+                        , { field: 'SSStartMonth', title: '社保起始月份', sort: true, width: 135, event: 'date', data_field: "SSStartMonth", templet: function (d) { return GetYearAndMonth(d.SSStartMonth) } }
+                        , { field: 'Remark', title: '备注', sort: true, width: 110, edit: 'text' }
+                        , { field: 'Nation', title: '民族', sort: true, width: 110, hide: true }
+                        , { field: 'Age', title: '年龄', sort: true, width: 110, hide: true }
+                        , { field: 'ContractStartTime', title: '合同起始时间', sort: true, width: 110, hide: true, templet: function (d) { return GetYMD(d.ContractStartTime) } }
+                        , { field: 'ContractEndTime', title: '合同终止时间', sort: true, width: 110, hide: true, templet: function (d) { return GetYMD(d.ContractEndTime) } }
+                        , { field: 'Birthdate', title: '出生日期', sort: true, width: 110, hide: true, templet: function (d) { return GetYMD(d.Birthdate) } }
+                        , { field: 'Birthday', title: '生日', sort: true, width: 110, hide: true }
+                        , { field: 'UrgentPhone', title: '紧急联系电话', sort: true, width: 110, hide: true }
+                        , { field: 'Education', title: '学历', sort: true, width: 110, hide: true }
+                        , { field: 'MaritalStatus', title: '婚姻状态', sort: true, width: 110, hide: true }
+                        , { field: 'DomicileAddress', title: '户籍地址', sort: true, width: 110, hide: true }
+                        , { field: 'Address', title: '现居地址', sort: true, width: 110, hide: true }
+                        , { field: 'IdCardIndate', title: '身份证有效期', sort: true, width: 110, hide: true, templet: function (d) { return GetYMD(d.IdCardIndate) } }
+                        , { field: 'PositiveDate', title: '政治面貌', sort: true, width: 110, hide: true }
+                        , { field: 'ProbationSalary', title: '试用期工资', sort: true, width: 110, hide: true }
+                        , { field: 'Salary', title: '转正后工资', sort: true, width: 110, hide: true }
+                        , { field: 'BCNum', title: '银行卡号', sort: true, width: 110, hide: true }
+                        , { field: 'RecruitSource', title: '招聘来源', sort: true, width: 110, hide: true }
+                        , { field: 'Material', title: '材料', sort: true, width: 110, hide: true }
+                        , { fixed: 'right', title: '操作', toolbar: '#barDemo' }
+                    ]],
+                    data: [{
+                        SSStartMonth: ''
+                    }]
+                    , page: true
+                });
+            }
+         
             // table.exportFile(tab1.config.id, data, 'xls');
             //头工具栏事件
             table.on('toolbar(emptab)', function (obj) {

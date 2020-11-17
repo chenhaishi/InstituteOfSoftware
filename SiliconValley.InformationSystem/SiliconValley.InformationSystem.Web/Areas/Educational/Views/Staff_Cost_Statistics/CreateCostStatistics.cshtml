@@ -51,9 +51,8 @@
         </div>
 
         <div style='display: flex; margin-top:20px;'>
-
             <hr />
-            <input type="text" id='date-input' class="layui-input" style='display: inline-block; font-size:20px; text-align:center; border:0px solid white;'>
+            <input type="text" class="layui-input" id='date-input' style='display: inline-block; font-size:20px; text-align:center; border:0px solid white;'>
         </div>
 
         <hr />
@@ -94,11 +93,7 @@
                         </div>
                     </div>
                 </div>
-
-
             </form>
-
-
         </div>
 
         <hr />
@@ -187,22 +182,9 @@
 
             //刷新
             $("#flush").click(function () {
-                var date1 = $("#date-input").val();
                 var lodeindex = layer.load(1, { time: 10 * 1000 });
-
-                WorkingDay(date1, function (result) {
-
-                    layer.close(lodeindex);
-
-                    if (result.ErrorCode == 200) {
-
-                        $("#dayNumber").val(result.Data);
-                    }
-                    else {
-
-                        $("#dayNumber").val("0");
-                    }
-                });
+                location.reload();
+                layer.close(lodeindex);
             });
 
             //开始统计
@@ -211,8 +193,7 @@
                 //获取到日期
 
                 var date = $("#date-input").val();
-
-                var days = $("#dayNumber").val();
+                
 
                 $("#pross").css("display", "block");
 
@@ -225,18 +206,16 @@
                         clearInterval(test);
                     }
 
-                    num += 0.5;
+                    num += 1;
 
                     element.progress('demo', num + '%');
 
-                }, 2000);
+                }, 1000);
 
                 $("#tipMSg").text("统计中.......");
 
                 $.post('/Educational/Staff_Cost_Statistics/CostStatistics', { date: date, workingDays: days }, function (result) {
-
-
-
+                    
                     if (result.ErrorCode == 200) {
                         clearInterval(test);
                         element.progress('demo', '100%');
@@ -254,8 +233,7 @@
                     }
 
                 });
-
-
+                
             });
 
             $("#download").click(function () {

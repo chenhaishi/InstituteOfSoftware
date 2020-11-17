@@ -222,7 +222,7 @@
                     url: '/Educational/Reconcile/GetClassScheduleSelect/' + data.value,
                     success: function (sudata) {
                         //获取班级slect
-                        var classselect = $('<select  id="orther_myclass" name="orther_myclass" lay-filter="orther_bianji"><option value="0" selected>--请选择--</select>');
+                        var classselect = $('<select  id="orther_myclass" name="orther_myclass" lay-filter="orther_bianji"><option value="0" selected>--请选择--</option></select>');
                         for (var i = 0; i < sudata.length; i++) {
                             $('<option value=' + sudata[i].id + '>' + sudata[i].ClassNumber + '<option>').appendTo(classselect);
                         }

@@ -1,0 +1,114 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+    <script src="~/Scripts/layui/layui.js"></script>
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+    <div>
+
+    </div>
+    <div>
+        <form class="layui-form" action="" id="Positive" lay-filter="Positive">
+            <div class="layui-container">
+
+                <div class="layui-form-item" style="margin-top:60px;">
+                    <label class="layui-form-label">选择时间:</label>
+                    <div class="layui-input-block" style="width:200px">
+                        <input type="text" id="CurrentTime" name="CurrentTime" class="layui-input" value="@ViewBag.time" />
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="layui-form-item" style="margin-left:20px;margin-top:50px;">
+                <div class="layui-input-block">
+                    <button class="layui-btn " lay-submit="" type="button" lay-filter="demo1">立即提交</button>
+                    <button class="layui-btn " id="btnclose1">关闭</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+
+        layui.use(['form', 'layedit', 'laydate'], function () {
+            var form = layui.form
+                , layer = layui.layer
+                , layedit = layui.layedit
+                , laydate = layui.laydate;
+
+            //日期
+            laydate.render({
+                elem: '#CurrentTime',
+                type: 'month',
+                format: 'yyyy-MM',
+
+            });
+
+            //提交
+            form.on('submit(demo1)', function (data) {
+                var currenttime = data.field;
+                console.log(data.field.CurrentTime);
+                var time = data.field.CurrentTime;
+                $.post("/Personnelmatters/SocialSecurityDetail/UpdateTime", currenttime, function (data) {
+                    var count = data.Data;
+                    if (count > 0) {//说明有该月份的数据，则显示数据就好
+                        layer.confirm('确认查看' + time + '月份的社保详情吗？', function (index) {
+                            $.post('/Personnelmatters/SocialSecurityDetail/SocialSecurityRefresh', { 'time': time }, function (da) {
+                                if (da) {
+                                    layer.alert("查询成功!", { icon: 1 }, function (index) {
+                                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                        window.parent.location.reload();
+                                        parent.layer.close(index);
+                                    });
+                                }
+                                else {
+                                    layer.alert("查询失败!");
+                                }
+                            })
+
+
+                        });
+
+                    } else {
+                        layer.confirm('确认生成' + time + '月份的社保详情？', function (index) {
+                            $.post('/Personnelmatters/SocialSecurityDetail/SocialSecurityRefresh', { 'time': time }, function (da) {
+                                if (da) {
+                                    layer.alert("生成成功!", { icon: 1 }, function (index) {
+                                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                        window.parent.location.reload();
+                                        parent.layer.close(index);
+                                    });
+                                }
+                                else {
+                                    layer.alert("生成失败!");
+                                }
+                            })
+                        });
+                    }
+                });
+                return false;
+            });
+
+            //关闭页面
+            $("#btnclose1").click(function () {
+                var index = parent.layer.getFrameIndex(window.name);
+                parent.layui.table.reload('Soctab');
+                parent.layer.close(index);
+            });
+        });
+
+
+    </script>
+
+</body>
+</html>

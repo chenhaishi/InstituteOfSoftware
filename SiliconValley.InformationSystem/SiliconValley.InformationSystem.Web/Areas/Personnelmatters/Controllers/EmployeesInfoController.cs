@@ -24,6 +24,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
     using System.Text;
     using System.IO;
     using System.Globalization;
+    using SiliconValley.InformationSystem.Business.Base_SysManage;
 
     public class EmployeesInfoController : Controller
     {
@@ -34,9 +35,54 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         {
             ViewBag.birth = GetTheGodOfLongevity().Count();
             ViewBag.contractEnd = ContractEndRemind().Count();
+            var IsHR = JudgeIsHR();
+            ViewBag.IsHR = IsHR;
+            ViewBag.IsFinance = Finance();
             return View();
         }
 
+        /// <summary>
+        /// 判断当前登录人是否属于人事部员工
+        /// </summary>
+        /// <returns></returns>
+        public int JudgeIsHR() {
+            var result = 0;
+            EmployeesInfoManage empmanage = new EmployeesInfoManage();
+            var UserName = Base_UserBusiness.GetCurrentUser();//获取当前登录人
+            string eid = UserName.EmpNumber;//登录人编号
+            if (empmanage.JudgeIsHR(eid))
+            {
+                result = 1;//代表是人事部人员
+            }
+            else {
+                result = 0;
+            }
+
+            return result;
+           
+        }
+        /// <summary>
+        /// 判断当前登录人是否是财务
+        /// </summary>
+        /// <returns></returns>
+        public int Finance()
+        {
+            var result = 0;
+            EmployeesInfoManage empmanage = new EmployeesInfoManage();
+            var UserName = Base_UserBusiness.GetCurrentUser();//获取当前登录人
+            string eid = UserName.EmpNumber;//登录人编号
+            if (empmanage.Finance(eid))
+            {
+                result = 1;//代表是财务部
+            }
+            else
+            {
+                result = 0;
+            }
+
+            return result;
+
+        }
         /// <summary>
         ///获取在职员工员工信息数据
         /// </summary>
@@ -889,6 +935,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             EmployeesInfoManage empmanage = new EmployeesInfoManage();
             var emp = empmanage.GetInfoByEmpID(id);
             ViewBag.pid = emp.PositionId;
+            ViewBag.deptid = empmanage.GetDeptByEmpid(emp.EmployeeId).DeptId;
             ViewBag.pname = empmanage.GetPobjById(emp.PositionId).PositionName;
             return View(emp);
         }

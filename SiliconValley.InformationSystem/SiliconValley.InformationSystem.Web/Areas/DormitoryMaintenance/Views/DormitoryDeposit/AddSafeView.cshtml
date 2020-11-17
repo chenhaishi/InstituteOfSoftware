@@ -1,0 +1,148 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>AddSafeView</title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+    <style>
+        .DivCss1
+        {
+            margin: 0px auto;
+            margin-top: 20px;
+            width: 98%;
+        }
+
+        .LableCss1
+        {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            float: left;
+            display: block;
+            padding: 9px 15px;
+            width: 80px;
+            font-weight: 400;
+            line-height: 20px;
+            text-align: right
+        }
+   
+    </style>
+</head>
+<body>
+    <div class="DivCss1">
+        <form id="adddataform" class="layui-form" lay-filter="adddataform">
+            <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                <label class="LableCss1">选择日期:</label>
+                <div class="layui-input-block">
+                    <input id="mantinDate" name="mantinDate" type="tel" class="layui-input" lay-verify="required" />
+                </div>
+            </div>
+
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                    <label class="LableCss1">选择班级:</label>
+                    <div class="layui-input-block">
+                        @{
+                            List<SelectListItem> list = ViewBag.tung as List<SelectListItem>;
+                            foreach (var item in list)
+                            {
+                                <input type="radio" name="classId" value="@item.Value" title="@item.Text" lay-filter="Addree" />
+                            }
+                        }
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                <label class="LableCss1">维修物品:</label>
+                <div class="layui-input-block">
+                    @{
+                        List<SelectListItem> list2 = ViewBag.goodname as List<SelectListItem>;
+
+                        foreach (var item in list2)
+                        {
+                            <input type="radio" name="weixiugood" value="@item.Value" title="@item.Text" />
+                        }
+                    }
+                </div>
+            </div>
+
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12" style="text-align:center;margin-top:30px;">
+                    <button type="submit" class="layui-btn" lay-submit="" lay-filter="addbtn">确定添加</button>
+                    <button id="btn1" type="button" class="layui-btn">取消关闭</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/layui/layui.js"></script>
+    <script>
+        var form;
+        var layer;
+        var laydate;
+        $(function () {
+            layui.use(['form', 'layer','laydate'], function () {
+                form = layui.form;
+                layer = layui.layer;
+                laydate = layui.laydate;
+
+                laydate.render({
+                    elem: '#mantinDate'
+                    , trigger: 'click'
+                    //, done: function (value, date, endDate) {
+                    //    //mydate = value;
+                    //}
+                });
+
+
+                form.on('submit(addbtn)', function (data) {
+
+                    //console.log(data.field);
+                    if (data.field.weixiugood == undefined) {
+                        layer.msg('请选择维修物品！', { icon: 2, shade: 0.8 });
+                    } else if (data.field.classId == undefined) {
+                        layer.msg('请选择班级！', { icon: 2, shade: 0.8 });
+                    } else {
+                        $.ajax({
+                            url: '/DormitoryMaintenance/DormitoryDeposit/AddSafeFuntion',
+                            data: data.field,
+                            type: 'POST',
+                            success: function (res) {
+                                if (res.Success) {
+                                    layer.msg(res.Msg, { icon: 1, shade: 0.8 }, function () {
+
+                                        window.parent.TableFlush();
+
+                                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                        parent.layer.close(index); //再执行关闭   
+
+                                    });
+                                } else {
+                                    layer.msg(res.Msg, { icon: 2, shade: 0.8 });
+                                }
+                            }
+                        });
+                    }
+
+
+                    return false;
+                });
+            });
+
+            $("#btn1").click(function () {
+                
+                var index = parent.layer.getFrameIndex(window.name);  
+                parent.layer.close(index);  
+            });
+        });
+
+    </script>
+</body>
+</html>

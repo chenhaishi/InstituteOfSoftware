@@ -757,7 +757,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
  
  
             List<ExportStudentBeanData> list = s_Entity.StudentOrride(id);
-            var data = list.Select(s => new StudentData
+            var data = list.Select(s => new SiliconValley.InformationSystem.Entity.ViewEntity.StudentData
             {
                 stuSex = s.StuSex,
                 StuName = s.StuName,

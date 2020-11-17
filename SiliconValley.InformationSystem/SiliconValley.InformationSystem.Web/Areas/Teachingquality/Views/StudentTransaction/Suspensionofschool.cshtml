@@ -302,7 +302,7 @@
         var laydate = layui.laydate;
         //日期正则
         var curDate = new Date();
-        var curYearMonthrDay = curDate.getFullYear() + "-" + MoDay(parseInt(curDate.getMonth()) + 1) + "-" + MoDay(parseInt(curDate.getDate()));
+        var curYearMonthrDay = curDate.getFullYear() + "-" + MoDay(parseInt(curDate.getMonth())+1) + "-" + MoDay(parseInt(curDate.getDate())-15);
 
         $("#Dateofapplication").val(curYearMonthrDay);
         laydate.render({
@@ -331,10 +331,10 @@
                     layer.msg('开始时间不能大于结束时间');
                     $('#qBeginTime').val($('#qEndTime').val());
                 }
-                if (startDate < curDate.getTime()) {
-                    layer.msg('开始时间不能小于当前时间');
-                    $('#qBeginTime').val(curYearMonthrDay);
-                }
+                //if (startDate < curDate.getTime()) {
+                //    layer.msg('开始时间不能小于当前时间');
+                //    $('#qBeginTime').val(curYearMonthrDay);
+                //}
             }
         })
         // 时间选择器初始化 结束时间
@@ -354,6 +354,8 @@
                 }
             }
         })
+        
+
         //监听提交
         form.on('submit(demo1)', function (data) {
             //layer.alert(JSON.stringify(data.field), {

@@ -13,8 +13,8 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    [Table("AttendanceInfo")]//考勤表
-    public partial class AttendanceInfo
+    [Table(name:"AttendanceInfo")]//考勤表
+    public partial class AttendanceInfo 
     { 
         [Key] 
         public int AttendanceId { get; set; }
@@ -36,21 +36,27 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         public string LeaveEarlyRecord { get; set; }//早退记录
      
         public Nullable<decimal> TardyAndLeaveWithhold { get; set; }//迟到/早退扣费
-   //     public Nullable<decimal> LeaveWithhold { get; set; }//请假扣费
+
         public string Remark { get; set; }//备注
         public Nullable<bool> IsDel { get; set; }
         public Nullable<bool> IsApproval { get; set; }
 
         public string LeaveRecord { get; set; }//请假记录（事假）
 
-
-        public Nullable<decimal> OvertTimeDuration { get; set; }//加班时长
-        public string OvertTimeRecord { get; set; }//加班记录
         public Nullable<decimal> OvertimeCharges { get; set; }//加班费用
         public Nullable<decimal> DaysoffDuration { get; set; }//调休时长
         public string DaysoffRecord { get; set; }//调休记录
         public Nullable<decimal> AbsenteeismDays { get; set; }//旷工天数
         public string AbsenteeismRecord { get; set; }//旷工记录
         public Nullable<decimal> AbsenteeismWithhold { get; set; }//旷工扣费
+
+        public Nullable<int> NoonAbsentNum { get; set; }//中午缺卡次数
+        public string NoonAbsentRecord { get; set; }//中午缺卡记录
+        public Nullable<int> GoOutNum { get; set; }//外出次数
+        public string GoOutRecord { get; set; }//外出记录
+        public Nullable<decimal> EvectionNum { get; set; }//出差天数
+        public string EvectionRecord { get; set; }//出差记录
+
+        public Nullable<decimal> AbsentNumWithhold { get; set; }//缺卡扣费
     }
 } 

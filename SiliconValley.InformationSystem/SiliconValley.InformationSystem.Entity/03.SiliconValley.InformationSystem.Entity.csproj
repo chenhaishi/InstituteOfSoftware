@@ -43,6 +43,15 @@
     <Reference Include="Nest, Version=6.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
       <HintPath>..\packages\NEST.6.6.0\lib\net461\Nest.dll</HintPath>
     </Reference>
+    <Reference Include="Spire.License, Version=1.3.8.40, Culture=neutral, PublicKeyToken=b1144360237c8b3f, processorArchitecture=MSIL">
+      <HintPath>..\packages\FreeSpire.XLS.10.10.0\lib\net40\Spire.License.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.Pdf, Version=6.10.0.0, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
+      <HintPath>..\packages\FreeSpire.XLS.10.10.0\lib\net40\Spire.Pdf.dll</HintPath>
+    </Reference>
+    <Reference Include="Spire.XLS, Version=10.10.1.0, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
+      <HintPath>..\packages\FreeSpire.XLS.10.10.0\lib\net40\Spire.XLS.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -118,6 +127,7 @@
     <Compile Include="Entity\ClassStudyGroup.cs" />
     <Compile Include="Entity\ClassTeacher.cs" />
     <Compile Include="Entity\ClassTeacherKeep.cs" />
+    <Compile Include="Entity\Preferential.cs" />
     <Compile Include="Entity\ReqClient.cs" />
     <Compile Include="Entity\Consult.cs" />
     <Compile Include="Entity\ConsultTeacher.cs" />
@@ -356,6 +366,7 @@
     <Compile Include="ViewEntity\ClassSchedltData.cs" />
     <Compile Include="ViewEntity\ClassStudentView.cs" />
     <Compile Include="ViewEntity\ClassTableView.cs" />
+    <Compile Include="ViewEntity\ClockInTime.cs" />
     <Compile Include="ViewEntity\ConsultAndStedent.cs" />
     <Compile Include="ViewEntity\ConsultShowData.cs" />
     <Compile Include="ViewEntity\ConsultZhuzImageData.cs" />
@@ -413,8 +424,11 @@
     <Compile Include="ViewEntity\layuitableview.cs" />
     <Compile Include="ViewEntity\ListStockGoods.cs" />
     <Compile Include="ViewEntity\LoadTree_ZhurenView.cs" />
+    <Compile Include="ViewEntity\MeritsCheckErrorDataView.cs" />
+    <Compile Include="ViewEntity\MeritsCheckView.cs" />
     <Compile Include="ViewEntity\MessagenotificationView.cs" />
     <Compile Include="ViewEntity\NetClientRecordView.cs" />
+    <Compile Include="ViewEntity\OvertimeRecordErrorDataView.cs" />
     <Compile Include="ViewEntity\PutStudentDataView.cs" />
     <Compile Include="ViewEntity\RecruitPhoneTraceView.cs" />
     <Compile Include="ViewEntity\Refunditemsview.cs" />
@@ -480,8 +494,11 @@
     <Compile Include="ViewEntity\ShowyearnameView.cs" />
     <Compile Include="ViewEntity\simpleDataClass.cs" />
     <Compile Include="ViewEntity\SingUpStudent.cs" />
+    <Compile Include="ViewEntity\SocialSecProportionView.cs" />
+    <Compile Include="ViewEntity\SocialSecurityView.cs" />
     <Compile Include="ViewEntity\StaffaccdationView.cs" />
     <Compile Include="ViewEntity\StaffOfRoomwithFormdataView.cs" />
+    <Compile Include="ViewEntity\Staff_CostView.cs" />
     <Compile Include="ViewEntity\Staff_Cost_StatisticesDetailView.cs" />
     <Compile Include="ViewEntity\StartingYear.cs" />
     <Compile Include="ViewEntity\StudentData.cs" />
@@ -500,6 +517,8 @@
     <Compile Include="ViewEntity\TeachingItem.cs" />
     <Compile Include="ViewEntity\TeamleaderdistributionView.cs" />
     <Compile Include="ViewEntity\ThearStuCommentView.cs" />
+    <Compile Include="ViewEntity\TM_Data\DorChangeStudentData.cs" />
+    <Compile Include="ViewEntity\TM_Data\DorChuang.cs" />
     <Compile Include="ViewEntity\TM_Data\EmtyClassroom.cs" />
     <Compile Include="ViewEntity\TM_Data\Laterecord.cs" />
     <Compile Include="ViewEntity\TM_Data\Laterecord_StudentAttendance.cs" />
@@ -508,9 +527,13 @@
     <Compile Include="ViewEntity\TM_Data\MyViewEntity\EvningSelfStudyView.cs" />
     <Compile Include="ViewEntity\TM_Data\MyViewEntity\LaterecordView.cs" />
     <Compile Include="ViewEntity\TM_Data\MyViewEntity\ReconcileView.cs" />
+    <Compile Include="ViewEntity\TM_Data\MyViewEntity\SqlData.cs" />
+    <Compile Include="ViewEntity\TM_Data\MyViewEntity\StudentDorMoney.cs" />
     <Compile Include="ViewEntity\TM_Data\MyViewEntity\TeacherNightView.cs" />
     <Compile Include="ViewEntity\TM_Data\Print\Onbety_Print.cs" />
     <Compile Include="ViewEntity\TM_Data\StudentbeanLog.cs" />
+    <Compile Include="ViewEntity\TM_Data\StudentInfoData.cs" />
+    <Compile Include="ViewEntity\TM_Data\StuSusheData.cs" />
     <Compile Include="ViewEntity\TM_Data\TeacherAddorBeonDuty.cs" />
     <Compile Include="ViewEntity\TM_Data\TM_ConsultView.cs" />
     <Compile Include="ViewEntity\TotalcostView.cs" />

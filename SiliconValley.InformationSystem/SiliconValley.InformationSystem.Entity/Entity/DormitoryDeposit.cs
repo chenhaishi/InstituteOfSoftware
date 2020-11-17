@@ -24,20 +24,13 @@ namespace SiliconValley.InformationSystem.Entity.Entity
         ///  寝室号
         /// </summary>
         public int DormId { get; set; }
+
+        public int ChuangNumber { get; set; }
         /// <summary>
         /// 学号
         /// </summary>
         public string StuNumber { get; set; }
 
-        /// <summary>
-        /// 班级编号
-        /// </summary>
-        public int Classid { get; set; }
-
-        /// <summary>
-        /// 阶段编号
-        /// </summary>
-        public int Grandid { get; set; }
         /// <summary>
         ///  维修的物品
         /// </summary>

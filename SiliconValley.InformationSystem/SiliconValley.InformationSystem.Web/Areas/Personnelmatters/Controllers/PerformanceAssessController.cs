@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using SiliconValley.InformationSystem.Entity.MyEntity;
 using SiliconValley.InformationSystem.Util;
 using SiliconValley.InformationSystem.Business.Base_SysManage;
+using System.IO;
 
 namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
 {
@@ -16,7 +17,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         RedisCache rc = new RedisCache();
         MeritsCheckManage mcmanage = new MeritsCheckManage();
 
-        //第一次进入月度工资表页面时加载的年月份的方法
+        //第一次进入绩效考核页面时加载的年月份的方法
         static string GetFirstTime()
         {
             MeritsCheckManage msrmanage = new MeritsCheckManage();
@@ -319,9 +320,23 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
         }
 
-
         public ActionResult PermissionManage() {
             return View();
+        }
+
+        public ActionResult AssessmentUpload()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult AssessmentUpload(HttpPostedFileBase excelfile)//当文件类型错误，则excelfile=null
+        {
+            Stream filestream = excelfile.InputStream;
+            MeritsCheckManage meritsCheckManage = new MeritsCheckManage();
+
+            var result = meritsCheckManage.ImportDataFormExcel(filestream, excelfile.ContentType);
+
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
     }
 }

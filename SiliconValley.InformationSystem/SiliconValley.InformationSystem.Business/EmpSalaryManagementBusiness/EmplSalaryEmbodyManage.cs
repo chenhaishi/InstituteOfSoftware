@@ -8,6 +8,8 @@ using SiliconValley.InformationSystem.Business.Common;
 using SiliconValley.InformationSystem.Entity.MyEntity;
 using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 using SiliconValley.InformationSystem.Util;
+
+
 namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
 {
    
@@ -187,7 +189,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
         /// <returns></returns>
         public decimal GetPerformancePay(string dname,string pname) {
             var resultsalary = 0;
-            if (dname == "校办")
+            if (dname == "校办") 
             {
                 if (pname == "常务副校长" || pname == "工会主席兼办公室主任")
                 {//指杨校和黄主任

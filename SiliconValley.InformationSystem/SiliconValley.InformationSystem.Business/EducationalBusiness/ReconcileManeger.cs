@@ -19,7 +19,7 @@ using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 using SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data.MyViewEntity;
 using SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data;
 
-namespace SiliconValley.InformationSystem.Business.EducationalBusiness 
+namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 {
     public class ReconcileManeger : BaseBusiness<Reconcile>
     {
@@ -27,6 +27,45 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
         public EmployeesInfoManage dbemployeesInfo = new EmployeesInfoManage();
         public TeacherClassBusiness TeacherClass_Entity = new TeacherClassBusiness();
+        public ClassScheduleBusiness ClassSchedule_Entity = new ClassScheduleBusiness();
+
+        public Reconcile GetReconcile_classschedule(int year, int month, string EmpID, string CourseName)
+        {
+            string sql = $"select * from Reconcile where YEAR(AnPaiDate)='{year}' and MONTH(AnPaiDate)='{month}' and EmployeesInfo_Id='{EmpID}' and Curriculum_Id = '{CourseName}'";
+            return GetListBySql<Reconcile>(sql).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// 查询改员工在本月的教课数量
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <param name="Emp_ID"></param>
+        /// <returns></returns>
+        public int GetClassCount(int year, int month, string Emp_ID)
+        {
+            string sql = $"select * from Reconcile where YEAR(AnPaiDate)='{year}' and MONTH(AnPaiDate)= '{month}'and EmployeesInfo_Id = '{Emp_ID}'";
+            List<Reconcile> myrecon = GetListBySql<Reconcile>(sql);
+            var concile_List = (from m in myrecon
+                                group m by m.Curriculum_Id
+                           into list
+                                select list).ToList();
+            return concile_List.Count;
+        }
+
+        /// <summary>
+        /// 根据年 月 员工ID 返回集合
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <param name="Emp_ID"></param>
+        /// <returns></returns>
+        public List<Reconcile> GetReoncileByDate(int year, int month, string Emp_ID)
+        {
+            string sql = $"select * from Reconcile where YEAR(AnPaiDate)='" + year + "' and MONTH(AnPaiDate)= '" + month + "' and EmployeesInfo_Id = '" + Emp_ID + "'";
+            return GetListBySql<Reconcile>(sql);
+        }
+
         /// <summary>
         /// 通过sql语句获取所有数据
         /// </summary>
@@ -36,17 +75,17 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             List<ReconcileView> list = this.GetListBySql<ReconcileView>("select * from ReconcileView");
             return list;
         }
-       
+
         /// <summary>
         /// 根据班级获取某个时间之后的排课数据
         /// </summary>
         /// <param name="class_id"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        public List<Reconcile> Class_Date(int class_id ,DateTime date)
+        public List<Reconcile> Class_Date(int class_id, DateTime date)
         {
-            string sql = "select * from Reconcile where ClassSchedule_Id=" + class_id + " and AnPaiDate>='" + date+"'";
-           return this.GetListBySql<Reconcile>(sql);
+            string sql = "select * from Reconcile where ClassSchedule_Id=" + class_id + " and AnPaiDate>='" + date + "'";
+            return this.GetListBySql<Reconcile>(sql);
         }
 
         /// <summary>
@@ -55,21 +94,21 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         /// <param name="date"></param>
         /// <param name="class_id"></param>
         /// <returns></returns>
-        public List<Reconcile> GetSingData(DateTime date,int class_id)
+        public List<Reconcile> GetSingData(DateTime date, int class_id)
         {
-            Grand find_g= Reconcile_Com.GetGrand_Id().Where(g => g.GrandName=="Y1" || g.GrandName=="y1").FirstOrDefault();
-            List<Reconcile> list = this.GetListBySql<Reconcile>("select * from Reconcile where anpaidate='"+ date + "' and ClassSchedule_Id="+class_id+"");
+            Grand find_g = Reconcile_Com.GetGrand_Id().Where(g => g.GrandName == "Y1" || g.GrandName == "y1").FirstOrDefault();
+            List<Reconcile> list = this.GetListBySql<Reconcile>("select * from Reconcile where anpaidate='" + date + "' and ClassSchedule_Id=" + class_id + "");
             List<Reconcile> koshi = list.Where(l => l.Curriculum_Id.Contains("考试")).ToList();
-            ClassSchedule find_c= Reconcile_Com.ClassSchedule_Entity.GetEntity(class_id);
+            ClassSchedule find_c = Reconcile_Com.ClassSchedule_Entity.GetEntity(class_id);
             List<CourseType> type = Reconcile_Com.CourseType_Entity.GetList();
             CourseType find_t1 = type.Where(t => t.TypeName.Equals("专业课")).FirstOrDefault();
-            if (find_c.grade_Id==find_g.Id)
+            if (find_c.grade_Id == find_g.Id)
             {
                 //如果是Y1,只需要专业，英语、数学、语文
-                             
-               CourseType find_t2 = type.Where(t => t.TypeName.Equals("语文课")).FirstOrDefault();
-               CourseType find_t3 = type.Where(t => t.TypeName.Equals("数学课")).FirstOrDefault();
-               CourseType find_t4 = type.Where(t => t.TypeName.Equals("英语课")).FirstOrDefault();
+
+                CourseType find_t2 = type.Where(t => t.TypeName.Equals("语文课")).FirstOrDefault();
+                CourseType find_t3 = type.Where(t => t.TypeName.Equals("数学课")).FirstOrDefault();
+                CourseType find_t4 = type.Where(t => t.TypeName.Equals("英语课")).FirstOrDefault();
 
                 list = list.Where(l => Reconcile_Com.findname(l.Curriculum_Id) != null).ToList();//排除考试及其他活动的安排数据
 
@@ -87,18 +126,18 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
                 list.AddRange(koshi);
             }
-           
-            
+
+
             return list;
         }
-        
+
         /// <summary>
         /// 获取排课所有数据
         /// </summary>
         /// <returns></returns>
         public List<Reconcile> GetAll()
         {
-           return this.GetListBySql<Reconcile>("select * from  Reconcile");
+            return this.GetListBySql<Reconcile>("select * from  Reconcile");
         }
         /// <summary>
         /// 根据iD获取排课数据
@@ -107,7 +146,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         /// <returns></returns>
         public Reconcile FindId(int id)
         {
-            List<Reconcile> list = this.GetListBySql<Reconcile>("select * from  Reconcile where Id="+id);
+            List<Reconcile> list = this.GetListBySql<Reconcile>("select * from  Reconcile where Id=" + id);
             return list.Count > 0 ? list[0] : null;
         }
 
@@ -137,7 +176,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 {
                     this.Insert(r);
                     s = true;
-                     
+
                 }
                 else
                 {
@@ -157,7 +196,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             }
             return s;
         }
-      
+
         public AjaxResult AddData(List<Reconcile> r)
         {
             AjaxResult a = new AjaxResult();
@@ -175,7 +214,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
             return a;
         }
-        
+
         /// <summary>
         /// 修改数据 （false--失败,true--成功）
         /// </summary>
@@ -288,7 +327,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             return a;
         }
 
-        public AjaxResult Update_data2(List<ReconcileView> r, string timename,int room)
+        public AjaxResult Update_data2(List<ReconcileView> r, string timename, int room)
         {
             AjaxResult a = new AjaxResult();
             try
@@ -305,7 +344,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                         item.Curse_Id = timename == "上午" ? "下午" + tr + "节" : "上午" + tr + "节";
                     }
 
-                    if (item.ClassRoom_Id!=room)
+                    if (item.ClassRoom_Id != room)
                     {
                         item.ClassRoom_Id = room;
                     }
@@ -330,7 +369,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             AjaxResult a = new AjaxResult();
             try
             {
-                this.Update(r);    
+                this.Update(r);
                 a.Success = true;
                 //Reconcile_Com.redisCache.RemoveCache("ReconcileList");
             }
@@ -430,8 +469,8 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             List<Headmaster> find_m = basemaster.GetList().Where(m => m.IsDelete == false && m.IsAttend == true).ToList();//获取没有辞职的可以上职素课的班主任
             foreach (Headmaster e1 in find_m)
             {
-               EmployeesInfo findata= Reconcile_Com.Employees_Entity.GetEntity(e1.informatiees_Id);
-                if (findata!=null)
+                EmployeesInfo findata = Reconcile_Com.Employees_Entity.GetEntity(e1.informatiees_Id);
+                if (findata != null)
                 {
                     //判断这个班主任是否有课
                     bool s = IsHaveClass(findata.EmployeeId, timename, time);
@@ -439,10 +478,10 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                     {
                         list.Add(findata);
                     }
-                }                
+                }
             }
             List<EmployeesInfo> list_saff = Reconcile_Com.GetObtainTeacher();//获取未辞职的就业部老师
-                                                                                         
+
             foreach (EmployeesInfo item in list_saff)
             {
                 bool s = IsHaveClass(item.EmployeeId, timename, time);
@@ -456,7 +495,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
             return list;
         }
-     
+
         /// <summary>
         /// 获取所有教官
         /// </summary>
@@ -472,12 +511,12 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 if (s)
                 {
                     //获取所有教官
-                    emolist.Add(dbemployeesInfo.FindEmpData(item.EmployeeNumber,true));
+                    emolist.Add(dbemployeesInfo.FindEmpData(item.EmployeeNumber, true));
                 }
                 else
                 {
                     //获取未离职教官
-                    if (item.IsDel==false)
+                    if (item.IsDel == false)
                     {
                         emolist.Add(dbemployeesInfo.GetEntity(item.EmployeeNumber));
                     }
@@ -496,10 +535,10 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         /// <returns></returns>
         public List<EmployeesInfo> GetSir(DateTime time, string timename)
         {
-            
-             List<EmployeesInfo> employees = GetAlljiaoguan(false); 
-             List<EmployeesInfo> em2 = new List<EmployeesInfo>();//获取空闲的教官
-            
+
+            List<EmployeesInfo> employees = GetAlljiaoguan(false);
+            List<EmployeesInfo> em2 = new List<EmployeesInfo>();//获取空闲的教官
+
             //判断教官是否在这个时间段有课
             foreach (EmployeesInfo ee in employees)
             {
@@ -647,7 +686,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         public List<ClassSchedule> GetGrandClass(int grand_id)
         {
             //获取有效的班级数据//获取属于某个阶段的班级
-            List<ClassSchedule> c_list = Reconcile_Com.GetClass().Where(c =>c.grade_Id == grand_id).ToList();
+            List<ClassSchedule> c_list = Reconcile_Com.GetClass().Where(c => c.grade_Id == grand_id).ToList();
             return c_list;
         }
         /// <summary>
@@ -748,9 +787,9 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                     else
                     {
                         list.Add(item);
-                        
+
                     }
-                   
+
                 }
                 if (orrindex != 0)
                 {
@@ -790,7 +829,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                     {
                         s = true;
                     }
-                   
+
                 }
             }
             else
@@ -1030,8 +1069,8 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 s = true;
             }
             return s;
-        }        
-      
+        }
+
         /// <summary>
         ///  判断XX班级在这期间是否上过XX课程(false--没有，ture--有)
         /// </summary>
@@ -1050,7 +1089,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             }
             return s;
         }
-        
+
         /// <summary>
         /// 获取非专业老师
         /// </summary>
@@ -1084,7 +1123,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 this.Delete(ReconcileView.ToModel(find_r));
                 a.Success = true;
                 a.Msg = "操作成功";
-                 
+
             }
             catch (Exception ex)
             {
@@ -1181,7 +1220,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             //    days = days - 1;
             //}
             try
-            {                
+            {
                 List<Reconcile> Recon = new List<Reconcile>();
                 for (int i = 0; i < days; i++)
                 {
@@ -1216,9 +1255,9 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                     }
                     this.Update(Recon);
                 }
-                
 
-                 
+
+
                 s = true;
             }
             catch (Exception)
@@ -1250,7 +1289,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                         DayOfWeek week = re.AnPaiDate.DayOfWeek;
                         if (re.AnPaiDate.Month >= year.StartmonthName && re.AnPaiDate.Month <= year.EndmonthName)
                         {
-                            
+
                             //单休
                             if (week == DayOfWeek.Monday)
                             {
@@ -1291,7 +1330,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
             return s;
         }
-        
+
         /// <summary>
         /// 班级大批量的调课
         /// </summary>
@@ -1299,14 +1338,14 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         /// <param name="days"></param>
         /// <param name="class_id"></param>
         /// <returns></returns>
-        public bool AidClassData(DateTime date, int days, int class_id,GetYear YearMon)
+        public bool AidClassData(DateTime date, int days, int class_id, GetYear YearMon)
         {
             bool s = false;
             //days = days - 1;
             try
             {
                 List<Reconcile> recon = new List<Reconcile>();
-                List<Reconcile> reconciles = GetReconcileDate(date,true).Where(r =>r.ClassSchedule_Id == class_id).ToList();
+                List<Reconcile> reconciles = GetReconcileDate(date, true).Where(r => r.ClassSchedule_Id == class_id).ToList();
                 for (int i = 0; i < days; i++)
                 {
                     foreach (Reconcile re in reconciles)
@@ -1342,7 +1381,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                     }
                     this.Update(recon);
                 }
-                 
+
                 s = true;
             }
             catch (Exception)
@@ -1352,7 +1391,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
             return s;
         }
-      
+
         public bool DescClassData(DateTime date, int days, int class_id, GetYear YearMon)
         {
             bool s = false;
@@ -1360,7 +1399,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             try
             {
                 List<Reconcile> recon = new List<Reconcile>();
-                List<Reconcile> reconciles = GetReconcileDate(date, true).Where(r => r.ClassSchedule_Id == class_id).OrderBy(r=>r.AnPaiDate).ToList();
+                List<Reconcile> reconciles = GetReconcileDate(date, true).Where(r => r.ClassSchedule_Id == class_id).OrderBy(r => r.AnPaiDate).ToList();
                 for (int i = days; i < 0; i++)
                 {
                     foreach (Reconcile re in reconciles)
@@ -1369,7 +1408,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                         if (re.AnPaiDate.Month >= YearMon.StartmonthName && re.AnPaiDate.Month <= YearMon.EndmonthName)
                         {
                             //单休
-                            if ( week== DayOfWeek.Monday)
+                            if (week == DayOfWeek.Monday)
                             {
                                 re.AnPaiDate = re.AnPaiDate.AddDays(-2);
                             }
@@ -1381,7 +1420,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                         else
                         {
                             //双休
-                           
+
                             if (week == DayOfWeek.Monday)
                             {
                                 re.AnPaiDate = re.AnPaiDate.AddDays((-3));
@@ -1407,7 +1446,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
             return s;
         }
-         
+
         #region 提供修改排课数据的方法
         /// <summary>
         /// 获取XX班级在这XX天上XX课程的排课情况
@@ -1430,7 +1469,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         {
             ResconcileView view = new ResconcileView();
             view.AnPaiDate = r.AnPaiDate;
-            view.ClassRoom_Id = new Classroom() { Id=r.ClassRoom_Id,ClassroomName=r.ClassroomName};
+            view.ClassRoom_Id = new Classroom() { Id = r.ClassRoom_Id, ClassroomName = r.ClassroomName };
             view.ClassSchedule_Id = new ClassSchedule() { id = r.ClassSchedule_Id, ClassNumber = r.ClassNumber };
             view.Curriculum_Id = r.Curriculum_Id;
             view.Curse_Id = r.Curse_Id;
@@ -1653,9 +1692,9 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         /// <returns></returns>
         public List<ReconcileView> GetReconciles(DateTime time)
         {
-           return this.GetListBySql<ReconcileView>("select * from ReconcileView where AnPaiDate='" + time + "'");             
+            return this.GetListBySql<ReconcileView>("select * from ReconcileView where AnPaiDate='" + time + "'");
         }
-         
+
         /// <summary>
         /// 高中生排课
         /// </summary>
@@ -1667,34 +1706,35 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         /// <param name="empNo">老师员工编号</param>
         /// <param name="classNo">班级编号</param>
         /// <returns></returns>
-        public List<Reconcile> HeghtStudentReconcileFunction(GetYear getYear, int curNo, DateTime time, string timename, int classroomid, string empNo, int classNo,int grand,int marjion_id)
+        public List<Reconcile> HeghtStudentReconcileFunction(GetYear getYear, int curNo, DateTime time, string timename, int classroomid, string empNo, int classNo, int grand, int marjion_id)
         {
             Curriculum find_curdata = Reconcile_Com.Curriculum_Entity.GetEntity(curNo);   //获取课程
 
-            List<Curriculum> find_curr_list = this.GetCurr(grand, true, marjion_id).Where(c => c.Sort >= find_curdata.Sort).OrderBy(c=>c.Sort).ToList();
+            List<Curriculum> find_curr_list = this.GetCurr(grand, true, marjion_id).Where(c => c.Sort >= find_curdata.Sort).OrderBy(c => c.Sort).ToList();
 
             List<Reconcile> r_list = new List<Reconcile>();
 
             foreach (Curriculum cur in find_curr_list)
             {
                 int Sumcout = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(cur.CourseCount / 4.0))); //获取总节数,不算考试在内
-                if (!cur.CourseName.Contains("STB") && cur.Grand_Id!=3 && cur.Grand_Id != 4 && cur.Grand_Id != 1002)//StB不需要考试，Y1，S3,S4不需要课程考试，需要项目答辩
+                if (!cur.CourseName.Contains("STB") && cur.Grand_Id != 3 && cur.Grand_Id != 4 && cur.Grand_Id != 1002)//StB不需要考试，Y1，S3,S4不需要课程考试，需要项目答辩
                 {
                     Sumcout = Sumcout + 1;
-                }else if (cur.Grand_Id == 3 || cur.Grand_Id == 4 || cur.Grand_Id == 1002)
+                }
+                else if (cur.Grand_Id == 3 || cur.Grand_Id == 4 || cur.Grand_Id == 1002)
                 {
                     if (this.IsEndCurr(cur.CourseName))
                     {
                         Sumcout = Sumcout + 1;
                     }
                 }
-                
+
                 int index = 0;
                 for (int i = 0; i < Sumcout; i++)
                 {
                     index++;
 
-                    if (time.Month<= getYear.EndmonthName && time.Month>=getYear.StartmonthName) //单休
+                    if (time.Month <= getYear.EndmonthName && time.Month >= getYear.StartmonthName) //单休
                     {
                         if (this.IsSaturday(time) == 2)
                         {
@@ -1706,7 +1746,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                     }
                     else //双休
                     {
-                         
+
                         if (this.IsSaturday(time) == 1)
                         {
                             Sumcout = Sumcout + 2;
@@ -1735,16 +1775,16 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                         else
                         {
                             //如果是STB则不需要考试，如果是S3、S4、Y1的课程，不需要处理
-                            if (!cur.CourseName.Contains("STB") && cur.Grand_Id!=3 && cur.Grand_Id != 4 && cur.Grand_Id!=1002)
+                            if (!cur.CourseName.Contains("STB") && cur.Grand_Id != 3 && cur.Grand_Id != 4 && cur.Grand_Id != 1002)
                             {
                                 new_R.Curriculum_Id = cur.CourseName + "考试";
                                 new_R.EmployeesInfo_Id = null;
                             }
-                             
+
                         }
 
                     }
-                    
+
                     r_list.Add(new_R);
                     time = time.AddDays(1);
 
@@ -1930,7 +1970,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         //    return r_list;
         //}
         #endregion
-        
+
         /// <summary>
         /// 高中生单个课程数据安排
         /// </summary>
@@ -1946,38 +1986,76 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         /// <returns></returns>
         public List<Reconcile> HeghtStudent_SingCurs(GetYear getYear, int curNo, DateTime time, string timename, int classroomid, string empNo, int classNo, int grand, int marjion_id)
         {
-               Curriculum find_curdata = Reconcile_Com.Curriculum_Entity.GetEntity(curNo);   //获取课程
-             
+            Curriculum find_curdata = Reconcile_Com.Curriculum_Entity.GetEntity(curNo);   //获取课程
 
-                List<Reconcile> r_list = new List<Reconcile>();
 
-             
-                int Sumcout = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(find_curdata.CourseCount / 4.0))); //获取总节数,不算考试在内
-                
-                for (int i = 0; i < Sumcout; i++)
-                {                   
-                    if (time.Month <= getYear.EndmonthName && time.Month >= getYear.StartmonthName) //单休
+            List<Reconcile> r_list = new List<Reconcile>();
+
+
+            int Sumcout = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(find_curdata.CourseCount / 4.0))); //获取总节数,不算考试在内
+
+            for (int i = 0; i < Sumcout; i++)
+            {
+                if (time.Month <= getYear.EndmonthName && time.Month >= getYear.StartmonthName) //单休
+                {
+                    if (this.IsSaturday(time) == 2)
                     {
-                        if (this.IsSaturday(time) == 2)
-                        {
-                            time = time.AddDays(1);
-                            Sumcout++;
-                            
-                            i++;
-                        }
+                        time = time.AddDays(1);
+                        Sumcout++;
+
+                        i++;
                     }
-                    else //双休
+                }
+                else //双休
+                {
+
+                    if (this.IsSaturday(time) == 1)
                     {
+                        Sumcout = Sumcout + 2;
 
-                        if (this.IsSaturday(time) == 1)
-                        {
-                            Sumcout = Sumcout + 2;
-                            
-                            i = i + 2;
-                            time = time.AddDays(2);
-                        }
-
+                        i = i + 2;
+                        time = time.AddDays(2);
                     }
+
+                }
+                Reconcile new_R = new Reconcile();
+                new_R.AnPaiDate = time;
+                new_R.Curse_Id = timename;
+                new_R.ClassRoom_Id = classroomid;
+                new_R.ClassSchedule_Id = classNo;
+                new_R.EmployeesInfo_Id = empNo;
+                new_R.NewDate = DateTime.Now;
+                new_R.IsDelete = false;
+                new_R.Curriculum_Id = find_curdata.CourseName;
+
+
+                r_list.Add(new_R);
+                time = time.AddDays(1);
+
+
+            }
+
+
+            if (this.IsEndCurr(find_curdata.CourseName))
+            {
+                Reconcile new_R = new Reconcile();
+                new_R.AnPaiDate = time;
+                new_R.Curse_Id = timename;
+                new_R.ClassRoom_Id = classroomid;
+                new_R.ClassSchedule_Id = classNo;
+                new_R.EmployeesInfo_Id = empNo;
+                new_R.NewDate = DateTime.Now;
+                new_R.IsDelete = false;
+                new_R.Curriculum_Id = find_curdata.CourseName;
+                new_R.Curriculum_Id = "升学考试";
+                new_R.EmployeesInfo_Id = null;
+                r_list.Add(new_R);
+            }
+            else
+            {
+                //如果是STB则不需要考试，如果是Y1、S3、S4的课程，不需要处理
+                if (!find_curdata.CourseName.Contains("STB") && find_curdata.Grand_Id != 3 && find_curdata.Grand_Id != 4 && find_curdata.Grand_Id != 1002)
+                {
                     Reconcile new_R = new Reconcile();
                     new_R.AnPaiDate = time;
                     new_R.Curse_Id = timename;
@@ -1987,55 +2065,17 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                     new_R.NewDate = DateTime.Now;
                     new_R.IsDelete = false;
                     new_R.Curriculum_Id = find_curdata.CourseName;
-                    
-
+                    new_R.Curriculum_Id = find_curdata.CourseName + "考试";
+                    new_R.EmployeesInfo_Id = null;
                     r_list.Add(new_R);
-                    time = time.AddDays(1);
-
-                    
                 }
 
-           
-                if (this.IsEndCurr(find_curdata.CourseName))
-                {
-                        Reconcile new_R = new Reconcile();
-                        new_R.AnPaiDate = time;
-                        new_R.Curse_Id = timename;
-                        new_R.ClassRoom_Id = classroomid;
-                        new_R.ClassSchedule_Id = classNo;
-                        new_R.EmployeesInfo_Id = empNo;
-                        new_R.NewDate = DateTime.Now;
-                        new_R.IsDelete = false;
-                        new_R.Curriculum_Id = find_curdata.CourseName;
-                        new_R.Curriculum_Id = "升学考试";
-                        new_R.EmployeesInfo_Id = null;
-                        r_list.Add(new_R);
-                }
-                else
-                {
-                    //如果是STB则不需要考试，如果是Y1、S3、S4的课程，不需要处理
-                    if (!find_curdata.CourseName.Contains("STB") && find_curdata.Grand_Id != 3 && find_curdata.Grand_Id != 4 && find_curdata.Grand_Id != 1002)
-                    {
-                        Reconcile new_R = new Reconcile();
-                        new_R.AnPaiDate = time;
-                        new_R.Curse_Id = timename;
-                        new_R.ClassRoom_Id = classroomid;
-                        new_R.ClassSchedule_Id = classNo;
-                        new_R.EmployeesInfo_Id = empNo;
-                        new_R.NewDate = DateTime.Now;
-                        new_R.IsDelete = false;
-                        new_R.Curriculum_Id = find_curdata.CourseName;
-                        new_R.Curriculum_Id = find_curdata.CourseName + "考试";
-                        new_R.EmployeesInfo_Id = null;
-                        r_list.Add(new_R);
-                    }
+            }
 
-                }
 
-            
             return r_list;
         }
-       
+
         #region 初中生单个课程排课
         /// <summary>
         /// 初中生单个课程数据安排
@@ -2056,7 +2096,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         //{
         //    Curriculum find_curdata = Reconcile_Com.Curriculum_Entity.GetEntity(curNo);   //获取课程
 
-           
+
 
         //    List<Reconcile> r_list = new List<Reconcile>();
 
@@ -2066,7 +2106,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
         //    string[] strtimename = new string[] { "上午12节,上午34节", "下午12节,下午34节" };
 
-            
+
         //        int Sumcout = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(find_curdata.CourseCount / 4.0))); //获取总节数
         //        int nomargin = 0;
         //        for (int i = 0; i < Sumcout; i++)
@@ -2206,7 +2246,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         //            mycc.IsDelete = false;
         //            r_list.Add(mycc);
         //        }
-            
+
 
         //    return r_list;
         //}
@@ -2225,7 +2265,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             List<Curriculum> find_list = new List<Curriculum>();
             if (whyMarjio)//获取专业课程
             {
-                list = list.Where(c =>c.CourseType_Id == typeid && c.Grand_Id == grand_id).ToList();
+                list = list.Where(c => c.CourseType_Id == typeid && c.Grand_Id == grand_id).ToList();
                 //判断是否是Y1/S1
                 GrandBusiness grand_entity = new GrandBusiness();
                 int g_id1 = grand_entity.GetList().Where(g => g.GrandName.Equals("Y1", StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault().Id;
@@ -2236,11 +2276,11 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 }
                 else
                 {
-                    if (marjoi_id!=0)
+                    if (marjoi_id != 0)
                     {
                         find_list.AddRange(list.Where(c => c.MajorID == marjoi_id).ToList());//获取相关专业的课程
                     }
-                     
+
                     find_list.AddRange(list.Where(c => c.MajorID == null).ToList());//获取公共课程
                 }
 
@@ -2248,7 +2288,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             else //获取非专业课程
             {
                 list = list.Where(c => c.Grand_Id == grand_id || c.Grand_Id == null).ToList();
-                List<Curriculum> find = list.Where(c => c.CourseType_Id != typeid && c.MajorID==null).OrderBy(c => c.CurriculumID).ToList();
+                List<Curriculum> find = list.Where(c => c.CourseType_Id != typeid && c.MajorID == null).OrderBy(c => c.CurriculumID).ToList();
                 find_list.AddRange(find);
 
             }
@@ -2275,13 +2315,13 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             {
                 headmasterlist = headmarster_Entity.GetIQueryable().Where(h => h.IsDelete == false && h.IsAttend == true).ToList(); //获取所有在职的可以上职素课的班主任
             }
-             
-            
+
+
             foreach (Headmaster h in headmasterlist)
             {
                 list.Add(emplist.Where(e => e.EmployeeId == h.informatiees_Id).FirstOrDefault());
             }
-            list.AddRange( Reconcile_Com.GetObtainTeacher());//获取就业部人员
+            list.AddRange(Reconcile_Com.GetObtainTeacher());//获取就业部人员
             return list;
         }
         /// <summary>
@@ -2290,12 +2330,12 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         /// <returns></returns>
         public List<EmployeesInfo> GetInstructorAll()
         {
-            List<Position> plist= Reconcile_Com.PositionBusiness.GetIQueryable().Where(p => p.PositionName.Contains("教官")).ToList();//获取教官岗位Id
-            List<EmployeesInfo> emplist= Reconcile_Com.Employees_Entity.GetIQueryable().ToList();
+            List<Position> plist = Reconcile_Com.PositionBusiness.GetIQueryable().Where(p => p.PositionName.Contains("教官")).ToList();//获取教官岗位Id
+            List<EmployeesInfo> emplist = Reconcile_Com.Employees_Entity.GetIQueryable().ToList();
             List<EmployeesInfo> list = new List<EmployeesInfo>();
             foreach (Position item in plist)
             {
-               list.AddRange( emplist.Where(e => e.PositionId == item.Pid).ToList());
+                list.AddRange(emplist.Where(e => e.PositionId == item.Pid).ToList());
             }
 
             return list;
@@ -2306,10 +2346,10 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         /// <returns></returns>
         public List<EmployeesInfo> GetEnglishTeacherAll()
         {
-           int pid= Reconcile_Com.PositionBusiness.GetIQueryable().Where(p => p.PositionName.Contains("英语老师")).FirstOrDefault().Pid;
-           return  Reconcile_Com.Employees_Entity.GetEmpByPid(pid).Where(e=>e.IsDel==false).ToList();
+            int pid = Reconcile_Com.PositionBusiness.GetIQueryable().Where(p => p.PositionName.Contains("英语老师")).FirstOrDefault().Pid;
+            return Reconcile_Com.Employees_Entity.GetEmpByPid(pid).Where(e => e.IsDel == false).ToList();
         }
-       
+
         public int Days(DateTime time)
         {
             var day = time.DayOfWeek;
@@ -2329,11 +2369,11 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             return 0;
         }
 
-        public List<Reconcile> AnPaiNoMarginFuntion(DateTime time,int class_id,int classroom_id,string emp_id,string timename,int curtype_id,int grand_id,int days)
+        public List<Reconcile> AnPaiNoMarginFuntion(DateTime time, int class_id, int classroom_id, string emp_id, string timename, int curtype_id, int grand_id, int days)
         {
             List<Reconcile> list = new List<Reconcile>();
             Curriculum find_cur = Reconcile_Com.Curriculum_Entity.GetIQueryable().Where(c => c.CourseType_Id == curtype_id && c.Grand_Id == grand_id).FirstOrDefault(); //根据课程类型/阶段获取课程编号
-            if (find_cur!=null)
+            if (find_cur != null)
             {
                 for (int i = 0; i < find_cur.CourseCount; i++)
                 {
@@ -2414,42 +2454,42 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                     list.Add(new_r);
                 }
             }
-                      
+
             return list;
         }
-       /// <summary>
-       /// 获取所有在职的专业课老师
-       /// </summary>
-       /// <returns></returns>
+        /// <summary>
+        /// 获取所有在职的专业课老师
+        /// </summary>
+        /// <returns></returns>
         public List<EmployeesInfo> GetTeacherAll()
         {
             TeacherBusiness teacher_Entity = new TeacherBusiness();
             List<EmployeesInfo> list = new List<EmployeesInfo>();
-             List<Teacher> tt_list= Reconcile_Com.Teacher_Entity.GetTeachers();
-             List<EmployeesInfo> ee_list =  Reconcile_Com.Employees_Entity.GetIQueryable().ToList();
+            List<Teacher> tt_list = Reconcile_Com.Teacher_Entity.GetTeachers();
+            List<EmployeesInfo> ee_list = Reconcile_Com.Employees_Entity.GetIQueryable().ToList();
             foreach (Teacher t in tt_list)
             {
-                list.Add( ee_list.Where(e => e.EmployeeId == t.EmployeeId).FirstOrDefault());
+                list.Add(ee_list.Where(e => e.EmployeeId == t.EmployeeId).FirstOrDefault());
             }
 
             return list;
         }
-       
+
 
         public AjaxResult UpdateSingleData(Reconcile reconcile)
         {
             StringBuilder ab = new StringBuilder();
-            
+
             AjaxResult a = new AjaxResult();
             try
             {
-                List<ReconcileView> findlist= this.SQLGetReconcileDate().Where(r => r.ClassRoom_Id == reconcile.ClassRoom_Id && r.Curse_Id == reconcile.Curse_Id && r.ClassSchedule_Id!=reconcile.ClassSchedule_Id).ToList();
-                if (findlist.Count>0)
+                List<ReconcileView> findlist = this.SQLGetReconcileDate().Where(r => r.ClassRoom_Id == reconcile.ClassRoom_Id && r.Curse_Id == reconcile.Curse_Id && r.ClassSchedule_Id != reconcile.ClassSchedule_Id).ToList();
+                if (findlist.Count > 0)
                 {
-                    for (int i=0;i<findlist.Count;i++)
+                    for (int i = 0; i < findlist.Count; i++)
                     {
-                        ClassSchedule findclass= Reconcile_Com.ClassSchedule_Entity.GetEntity(findlist[i].ClassSchedule_Id);
-                        if (i==(findlist.Count-1))
+                        ClassSchedule findclass = Reconcile_Com.ClassSchedule_Entity.GetEntity(findlist[i].ClassSchedule_Id);
+                        if (i == (findlist.Count - 1))
                         {
                             ab.Append(findclass.ClassNumber);
                         }
@@ -2457,7 +2497,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                         {
                             ab.Append(findclass.ClassNumber + "、");
                         }
-                         
+
                     }
                     ab.Append("班级已在这个教室安排了课程,请注意查看!!!");
                     a.Msg = ab.ToString();
@@ -2487,33 +2527,33 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         /// <param name="date">日期</param>
         /// <param name="equsls">true--获取大于并等于该日期的数据，false--获取等于该日期的数据</param>
         /// <returns></returns>
-        public List<Reconcile> GetReconcileDate(DateTime date,bool equsls)
+        public List<Reconcile> GetReconcileDate(DateTime date, bool equsls)
         {
             string dd = date.Year + "-" + date.Month + "-" + date.Day;
             if (equsls)
             {
                 //大于等于该日期的数据
-                List<Reconcile> list = this.GetListBySql<Reconcile>("select * from Reconcile where AnPaiDate>='"+dd+"'");
+                List<Reconcile> list = this.GetListBySql<Reconcile>("select * from Reconcile where AnPaiDate>='" + dd + "'");
                 return list;
             }
             else
             {
                 //等于该日期的数据
-                List<Reconcile> list = this.GetListBySql<Reconcile>("select * from Reconcile where AnPaiDate='" + dd+"'");
+                List<Reconcile> list = this.GetListBySql<Reconcile>("select * from Reconcile where AnPaiDate='" + dd + "'");
                 return list;
             }
-            
+
         }
 
 
         #endregion
-      
+
         /// <summary>
         /// 获取空教室
         /// </summary>
         /// <param name="addressid">校区</param>
         /// <returns></returns>
-        public  List<EmtyClassroom> GetEmtyClassroom(int addressid,DateTime date,List<Classroom> classrooms)
+        public List<EmtyClassroom> GetEmtyClassroom(int addressid, DateTime date, List<Classroom> classrooms)
         {
             List<EmtyClassroom> ddlit = new List<EmtyClassroom>();
             try
@@ -2577,11 +2617,11 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             }
             catch (Exception ex)
             {
-
+                  
                 string m = ex.Message;
             }
-           
-            
+
+
             return ddlit;
         }
 
@@ -2592,19 +2632,19 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         /// <param name="myclass"></param>
         /// <param name="classrooms"></param>
         /// <returns></returns>
-         public List<Reconcile> SysclassStuty(List<ClassSchedule> myclass, List<EmtyClassroom> classrooms,DateTime date)
+        public List<Reconcile> SysclassStuty(List<ClassSchedule> myclass, List<EmtyClassroom> classrooms, DateTime date)
         {
             List<Reconcile> list = new List<Reconcile>();
-             
+
             string str = @"select * from ReconcileView where Curriculum_Id like '语文' or Curriculum_Id like '数学' or Curriculum_Id like '英语' or
 Curriculum_Id like '职素' or Curriculum_Id like '班会' or Curriculum_Id like '军事'";
             List<ReconcileView> all = this.GetListBySql<ReconcileView>(str);
-            all = all.Where(a=>a.AnPaiDate==date).ToList();
+            all = all.Where(a => a.AnPaiDate == date).ToList();
             List<ClassSchedule> myclass2 = new List<ClassSchedule>();
             for (int i = 0; i < myclass.Count; i++)
             {
                 //判断班级是否安排了英语，数学，语文，班会，职素，军事,如果安排了，就不需要自习了       
-               List<ReconcileView> finddata = all.Where(a => a.ClassSchedule_Id == myclass[i].id).ToList();
+                List<ReconcileView> finddata = all.Where(a => a.ClassSchedule_Id == myclass[i].id).ToList();
                 if (finddata.Count <= 0)
                 {
                     myclass2.Add(myclass[i]);
@@ -2613,9 +2653,9 @@ Curriculum_Id like '职素' or Curriculum_Id like '班会' or Curriculum_Id like
             int count = myclass2.Count;
             for (int i = 0; i < classrooms.Count; i++)
             {
-               int j =i;
-                if (j< count)
-                {                                                                                                       
+                int j = i;
+                if (j < count)
+                {
                     Reconcile r = new Reconcile();
                     r.AnPaiDate = date;
                     r.ClassRoom_Id = classrooms[i].ClassroomId;
@@ -2645,9 +2685,9 @@ Curriculum_Id like '职素' or Curriculum_Id like '班会' or Curriculum_Id like
             List<Reconcile> newdata = new List<Reconcile>();
             foreach (Reconcile item in list)
             {
-               int count= Rlist.Where(r => r.AnPaiDate == item.AnPaiDate && r.ClassSchedule_Id == item.ClassSchedule_Id && r.Curriculum_Id == item.Curriculum_Id).Count();
+                int count = Rlist.Where(r => r.AnPaiDate == item.AnPaiDate && r.ClassSchedule_Id == item.ClassSchedule_Id && r.Curriculum_Id == item.Curriculum_Id).Count();
 
-                if (count<=0)
+                if (count <= 0)
                 {
                     newdata.Add(item);
                 }
@@ -2664,25 +2704,25 @@ Curriculum_Id like '职素' or Curriculum_Id like '班会' or Curriculum_Id like
         /// <param name="date"></param>
         /// <param name="clasid"></param>
         /// <returns></returns>
-        public Reconcile Teacher_Reconfile(DateTime date,int clasid)
+        public Reconcile Teacher_Reconfile(DateTime date, int clasid)
         {
-           List<Reconcile> list= this.GetListBySql<Reconcile>("select * from Reconcile where ClassSchedule_Id=" + clasid + " and AnPaiDate='" + date + "'");
+            List<Reconcile> list = this.GetListBySql<Reconcile>("select * from Reconcile where ClassSchedule_Id=" + clasid + " and AnPaiDate='" + date + "'");
             Reconcile reconcile = null;
             foreach (Reconcile item in list)
             {
-                Curriculum findata= Reconcile_Com.GetNameGetCur(item.Curriculum_Id);
-                
-                if (findata != null && findata.CourseType_Id==1)
+                Curriculum findata = Reconcile_Com.GetNameGetCur(item.Curriculum_Id);
+
+                if (findata != null && findata.CourseType_Id == 1)
                 {
-                    
-                        
-                       return  item;                   
+
+
+                    return item;
                 }
             }
 
             return reconcile;
         }
-        
+
         /// <summary>
         /// 如果有考试就返回true
         /// </summary>
@@ -2691,10 +2731,80 @@ Curriculum_Id like '职素' or Curriculum_Id like '班会' or Curriculum_Id like
         /// <returns></returns>
         public bool FindCouse(DateTime date, int clasid)
         {
-            List<Reconcile> list= this.GetListBySql<Reconcile>("select * from Reconcile where ClassSchedule_Id=" + clasid + " and AnPaiDate='" + date + "' and Curriculum_Id is not null");
-            int cout= list.Where(l => l.Curriculum_Id.Contains("考试") || l.Curriculum_Id.Contains("语文") || l.Curriculum_Id.Contains("数学")).Count();
+            List<Reconcile> list = this.GetListBySql<Reconcile>("select * from Reconcile where ClassSchedule_Id=" + clasid + " and AnPaiDate='" + date + "' and Curriculum_Id is not null");
+            int cout = list.Where(l => l.Curriculum_Id.Contains("考试") || l.Curriculum_Id.Contains("语文") || l.Curriculum_Id.Contains("数学")).Count();
 
             return cout > 0 ? true : false;
+        }
+
+        /// <summary>
+        /// 获取XX教员XX年XX月XX课程的节数
+        /// </summary>
+        /// <param name="year">年</param>
+        /// <param name="month">月</param>
+        /// <param name="empname">员工编号</param>
+        /// <param name="currName">课程名称</param>
+        /// <param name="IsCount">人数是否>10人   false 小于  true  大于</param>
+        /// <returns></returns>
+        public int GetTeacherClassCount(int year, int month, string empname, string currName, bool IsCount)
+        {
+              string sqlstr = @"select * from Reconcile where YEAR(AnPaiDate)='" + year + "' and MONTH(AnPaiDate)='" + month + "' and EmployeesInfo_Id='" + empname + "' and Curriculum_Id='" + currName + "'";
+
+            List<Reconcile> list = this.GetListBySql<Reconcile>(sqlstr);
+
+            int number = 0;
+            if (!IsCount)
+            {
+                foreach (Reconcile item in list)
+                {
+                    if (item.Curse_Id.Contains("12") || item.Curse_Id.Contains("34"))
+                    {
+                        number += 1;
+                    }
+                    else
+                    {
+                        number += 2;
+                    }
+                }
+            }
+            else
+            {
+                foreach (Reconcile item in list)
+                {
+                    if (item.Curse_Id.Contains("12") || item.Curse_Id.Contains("34"))
+                    {
+                        number += 2;
+                    }
+                    else
+                    {
+                        number += 4;
+                    }
+                }
+            }
+            
+            return number;
+        }
+
+        public int GetTeacherJieshu(int year, int month, string empname)
+        {
+            string sqlstr = @"select * from Reconcile where YEAR(AnPaiDate)='" + year + "' and MONTH(AnPaiDate)='" + month + "' and EmployeesInfo_Id='" + empname + "'";
+
+            List<Reconcile> list = this.GetListBySql<Reconcile>(sqlstr);
+
+            int number = 0;
+
+            foreach (Reconcile item in list)
+            {
+                if (item.Curse_Id.Contains("12") || item.Curse_Id.Contains("34"))
+                {
+                    number += 2;
+                }
+                else
+                {
+                    number += 4;
+                }
+            }
+            return number;
         }
         #endregion
 
@@ -2706,11 +2816,11 @@ Curriculum_Id like '职素' or Curriculum_Id like '班会' or Curriculum_Id like
         /// <param name="class_id">班级编号</param>
         /// <param name="currname">课程名称</param>
         /// <returns></returns>
-        public bool Further_education(int class_id,string currname)
+        public bool Further_education(int class_id, string currname)
         {
-            string sql = "select * from  ReconcileView where ClassSchedule_Id="+class_id+ " and Curriculum_Id='"+currname+ "' and AnPaiDate<='"+DateTime.Now+"'";
+            string sql = "select * from  ReconcileView where ClassSchedule_Id=" + class_id + " and Curriculum_Id='" + currname + "' and AnPaiDate<='" + DateTime.Now + "'";
 
-            int count= this.GetListBySql<ReconcileView>(sql).Count;
+            int count = this.GetListBySql<ReconcileView>(sql).Count;
 
             return count > 0 ? true : false;
         }
@@ -2732,17 +2842,17 @@ Curriculum_Id like '职素' or Curriculum_Id like '班会' or Curriculum_Id like
         /// <param name="curse">上课时间段</param>
         /// <param name="emp">上课老师</param>
         /// <returns></returns>
-        public List<Reconcile> AddCurr(int count,DateTime date,int class_id ,GetYear year,string currname,int classroomid,string curse,string emp)
+        public List<Reconcile> AddCurr(int count, DateTime date, int class_id, GetYear year, string currname, int classroomid, string curse, string emp)
         {
             List<Reconcile> datalist = new List<Reconcile>();
             for (int i = 0; i < count; i++)
             {
                 Reconcile r = new Reconcile();
                 r.AnPaiDate = date;
-                if (date.Month>=year.StartmonthName && date.Month<=year.EndmonthName)
+                if (date.Month >= year.StartmonthName && date.Month <= year.EndmonthName)
                 {
                     //单休
-                    if (date.DayOfWeek==DayOfWeek.Saturday)
+                    if (date.DayOfWeek == DayOfWeek.Saturday)
                     {
                         //星期六
                         date = date.AddDays(2);
@@ -2773,13 +2883,13 @@ Curriculum_Id like '职素' or Curriculum_Id like '班会' or Curriculum_Id like
                 r.EmployeesInfo_Id = emp;
                 r.IsDelete = false;
                 r.NewDate = DateTime.Now;
-                
+
                 datalist.Add(r);
             }
 
             return datalist;
         }
-        
+
         #endregion
     }
 }

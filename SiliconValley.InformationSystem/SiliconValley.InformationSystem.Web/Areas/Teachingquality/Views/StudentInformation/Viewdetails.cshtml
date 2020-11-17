@@ -13,7 +13,7 @@
 
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/layui/layui.js"></script>
-    <style>
+    @*<style>
         .layui-col-xs12 {
             border: 1px;
             border-bottom-style: solid;
@@ -26,10 +26,66 @@
             right: 50px;
             top: 50px;
         }
-    </style>
+    </style>*@
+
+    
 </head>
 <body>
-    <div id="StudentImages" ></div>
+    <br />
+    <h2 style="text-align:center;"><b>学生档案表</b></h2>
+    <br />
+    <div class="layui-form">
+        <table class="layui-table">
+            <tbody>
+                <tr>
+                    <td width="100px" style="background-color:#DEDEDE;text-align:center;font-size:15px;border:2px solid black;color:black"><b>姓名</b></td>
+                    <td style=" border:2px solid black;">
+                        <div class="layui-input-inline"><input type="text" id="Name" readonly="readonly" style="line-height:20px;color:black;border:0px;" /></div>
+                    </td>
+                    <td width="100px" style="background-color:#DEDEDE;text-align:center;font-size:15px;border:2px solid black;color:black"><b>性别</b></td>
+                    <td style=" border:2px solid black;"><input type="text" id="Sex" readonly="readonly" style="line-height:20px;color:black;border:0px;" /></td>
+                    <td style="width:100px;height:150px;border:2px solid black;" rowspan="5"><div id="StudentImages"><input type="text" style="display:none;" value="@ViewBag.stuid" id="stuid" /></div></td>
+                </tr>
+                <tr>
+                    <td style="background-color:#DEDEDE;text-align:center;font-size:15px;border:2px solid black;color:black"><b>年龄</b></td>
+                    <td> <input type="text" id="BirthDate" readonly="readonly" style="line-height:20px;color:black;border:0px;" /></td>
+                    <td style="background-color:#DEDEDE;text-align:center;font-size:15px;border:2px solid black;color:black"><b>出生日期</b></td>
+                    <td style=" border:2px solid black;"> <input type="text" id="BirthDates" readonly="readonly" style="line-height:20px;color:black;border:0px;" /></td>
+
+                </tr>
+
+                <tr>
+                    <td style="background-color:#DEDEDE;text-align:center;font-size:15px;border:2px solid black;color:black"><b>班级编号</b></td>
+                    <td colspan="3" style=" border:2px solid black;"><input type="text" id="classa" readonly="readonly" style="line-height:20px;color:black;border:0px;" /></td>
+
+                </tr>
+
+                <tr>
+                    <td rowspan="2" style=" background-color:#DEDEDE;text-align:center;font-size:15px;border:2px solid black;color:black"><b>入学日期</b></td>
+                    <td colspan="3" style=" border:2px solid black;">入校日期： <input type="text" id="InsitDate" readonly="readonly" style="line-height:20px;color:black;border:0px;" /></td>
+
+                </tr>
+                <tr><td colspan="3" style="border:2px solid black;">入班日期：<input type="text" id="AddDate" readonly="readonly" style="line-height:20px;color:black;border:0px;" /></td></tr>
+                <tr><td style="background-color:#DEDEDE;text-align:center;font-size:15px;border:2px solid black;color:black"><b>学号</b></td><td colspan="4" style="border:2px solid black;"><input type="text" name="StudentNumber" readonly="readonly" style="line-height:20px;color:black;border:0px;" id="StudentNumber" /></td></tr>
+                <tr><td style="background-color:#DEDEDE;text-align:center;font-size:15px;border:2px solid black;color:black"><b>身份证号</b></td><td colspan="4" style="border:2px solid black;"><input type="text" id="identitydocument" readonly="readonly" style="line-height:20px;color:black;border:0px;" /></td></tr>
+                <tr><td style="background-color:#DEDEDE;text-align:center;font-size:15px;border:2px solid black;color:black"><b>学历</b></td><td colspan="4" style="border:2px solid black;">  <input type="text" id="Education" readonly="readonly" style="line-height:20px;color:black;border:0px;" /></td></tr>
+                
+                <tr><td style="background-color:#DEDEDE;text-align:center;font-size:15px;border:2px solid black;color:black"><b>家庭详细地址</b></td><td colspan="4" style="border:2px solid black;"><input type="text" id="Familyaddress" readonly="readonly" style="line-height:40px;color:black;border:0px;width:250px;" /></td></tr>
+                <tr><td style="background-color:#DEDEDE;text-align:center;font-size:15px;border:2px solid black;color:black" rowspan="3"><b>联系方式</b></td><td colspan="4" style="border:2px solid black;">家属电话：<input type="text" id="Familyphone" readonly="readonly" style="line-height:20px;color:black;border:0px;" /></td></tr>
+                <tr><td colspan="4" style="border:2px solid black;">微信号: <input type="text" id="WeChat" readonly="readonly" style="line-height:20px;color:black;border:0px;" /></td></tr>
+                <tr><td colspan="2" style="border:2px solid black;">本人电话：<input type="text" id="Telephone" readonly="readonly" style="line-height:20px;color:black;border:0px;" /></td><td colspan="2" style="border:2px solid black;">QQ：1242316522</td></tr>
+                <tr><td style="background-color:#DEDEDE;text-align:center;font-size:15px;border:2px solid black;color:black"><b>性格</b></td><td colspan="4" style="border:2px solid black;"> <input type="text" id="Traine" readonly="readonly" style="line-height:40px;color:black;border:0px;" /></td></tr>
+                <tr><td style="background-color:#DEDEDE;text-align:center;font-size:15px;border:2px solid black;color:black"><b>兴趣爱好</b></td><td colspan="4" style="border:2px solid black;"><input type="text" id="Hobby" readonly="readonly" style="line-height:40px;color:black;border:0px;" /></td></tr>
+                <tr><td style="background-color:#DEDEDE;text-align:center;font-size:15px;border:2px solid black;color:black"><b>备注</b></td><td colspan="4" style="border:2px solid black;"> <input type="text" id="Reack" style="line-height:40px;color:black;border:0px;" /></td></tr>
+            </tbody>
+        </table>
+        <div style="text-align:center;margin-top:10px;height:30px;">
+            <button class="layui-btn" type="button" id="but1">关闭</button>
+        </div>
+    </div>
+</body>
+@*<body>
+    <div id="StudentImages" ></div>图片
     <input type="text" style="display:none;" value="@ViewBag.stuid" id="stuid" />
     <div style="text-align:center;margin-top:10px;height:30px;">
         <h3>详细资料</h3>
@@ -157,7 +213,7 @@
     <div style="text-align:center;margin-top:10px;height:30px;">
         <button class="layui-btn"  type="button" id="but1" >确认</button>
     </div>
-</body>
+</body>*@
 </html>
 <script>
     //计算年龄

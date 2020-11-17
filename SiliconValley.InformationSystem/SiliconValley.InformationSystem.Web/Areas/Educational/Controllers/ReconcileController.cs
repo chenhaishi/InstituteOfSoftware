@@ -805,7 +805,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         }
 
         public ActionResult GetReconAllData(int page, int limit)
-        {
+        {           
             List<ReconcileView> all = Reconcile_Entity.SQLGetReconcileDate().OrderBy(r => r.AnPaiDate).ToList();//获取所有排课数据                   
             string class_select1 = Request.QueryString["class_select1"];
             string starTime = Request.QueryString["starTime"];

@@ -181,9 +181,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             try
             {
                 or.IsNoDaysOff = false;//默认为调休
-                or.IsPassYear = false;//默认未过年限
+                //or.IsPassYear = false;//默认未过年限
                 or.IsPass = false;//默认审批未通过
-                or.IsApproval = false;//默认未审批
+               // or.IsApproval = false;//默认未审批
                 ormanage.Insert(or);
                 AjaxResultxx = ormanage.Success();
             }

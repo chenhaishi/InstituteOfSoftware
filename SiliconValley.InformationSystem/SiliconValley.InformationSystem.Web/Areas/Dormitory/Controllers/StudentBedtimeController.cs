@@ -3,6 +3,7 @@ using SiliconValley.InformationSystem.Business.DormitoryBusiness;
 using SiliconValley.InformationSystem.Entity.Entity;
 using SiliconValley.InformationSystem.Entity.MyEntity;
 using SiliconValley.InformationSystem.Entity.ViewEntity;
+using SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data;
 using SiliconValley.InformationSystem.Util;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Dormitory.Controllers
         private AccdationinformationBusiness dbacc;
         private ProDormInfoViewBusiness dbproDormInfoViewBusiness;
         private dbprosutdent_dbproheadmaster dbprosutdent_Dbproheadmaster;
-        // GET: Dormitory/c
+        private ChangeDorStudent ChangeDorStudent_Entity = new ChangeDorStudent();
+
+        // GET: /Dormitory/StudentBedtime/EndFunction
         public ActionResult StudentBedtimeIndex()
         {
             return View();
@@ -325,6 +328,179 @@ namespace SiliconValley.InformationSystem.Web.Areas.Dormitory.Controllers
 
 
             return Json(ajaxResult, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 学员信息显示页面
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult StudentChangDorView()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult StudentChangDorData()
+        {
+            string StuName= Request.QueryString["stuname"];
+            string sqlstr = "select * from StudentInformation where Name like '%"+StuName+"%'";
+
+            List<StudentInformation> stulist= ChangeDorStudent_Entity.GetListBySql<StudentInformation>(sqlstr);
+
+            //学生姓名，所在班级，班主任姓名，所在寝室，所在床位
+            List<DorChangeStudentData> dorchanglist = new List<DorChangeStudentData>();
+
+            foreach (StudentInformation item in stulist)
+            {
+                DorChangeStudentData studentData = new DorChangeStudentData();
+                studentData.StuName = item.Name;
+                studentData.StuNumber = item.StudentNumber;
+                ScheduleForTrainees classname = ChangeDorStudent_Entity.GetClassName(item.StudentNumber);
+                if (classname.ClassID!=null)
+                {
+                    studentData.ClassName = classname.ClassID;
+                }
+                else
+                {
+                    studentData.ClassName = "无";
+                }
+                studentData.ClassName = ChangeDorStudent_Entity.GetClassName(item.StudentNumber).ClassID;
+                studentData.TeacherName = ChangeDorStudent_Entity.Headmaster_Entity.Listheadmasters(item.StudentNumber).EmpName;
+
+                DorChuang chuang = ChangeDorStudent_Entity.GetDorName(item.StudentNumber);
+                if (chuang.DorNumber!=null)
+                {
+                    studentData.DorName = chuang.DorNumber;
+                    studentData.ChuangNumber = chuang.ChuangNumber;
+                }
+                else
+                {
+                    studentData.DorName = "无";
+                    studentData.ChuangNumber =-1;
+                }
+
+                dorchanglist.Add(studentData);
+            }
+
+            var jsondata = new {data= dorchanglist ,code=0,count= dorchanglist.Count };
+
+            return Json(jsondata,JsonRequestBehavior.AllowGet) ;
+
+        }
+
+        /// <summary>
+        /// 学员调寝页面
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ChangDorView(string id)
+        {
+            //获取宿舍楼地址
+            ViewBag.tung = ChangeDorStudent_Entity.Tung_Entity.GetList().Select(s => new SelectListItem() { Value = s.Id.ToString(), Text = s.TungName }).ToList();
+            ViewBag.StuNumber = id;
+            return View();
+        }
+
+        /// <summary>
+        /// 调寝
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult ChangDorFunction()
+        {
+            AjaxResult result = new AjaxResult() { Success=false,Msg="操作失败"};
+            int chuangNumber = Convert.ToInt32(Request.Form["changid"]);
+
+            int DorId = Convert.ToInt32(Request.Form["dorname"]);
+
+            string stuNumber = Request.Form["StuNumber"];
+
+            DateTime endtime = Convert.ToDateTime(Request.Form["endtime"]);
+
+            string sqlstr = @"select * from Accdationinformation where Studentnumber='"+ stuNumber + "' and EndDate is null";
+
+            List<Accdationinformation> list= ChangeDorStudent_Entity.GetListBySql<Accdationinformation>(sqlstr);
+
+            List<Accdationinformation> Update = new List<Accdationinformation>();
+
+            foreach (Accdationinformation item in list)
+            {
+                item.EndDate = endtime;
+                item.IsDel = true;
+
+                Update.Add(item);
+            }
+            if (Update.Count>0)
+            {
+                bool Isretult = ChangeDorStudent_Entity.UpdateData(Update);
+
+                if (Isretult)
+                {
+                    Accdationinformation data = new Accdationinformation();
+                    data.BedId = chuangNumber;
+                    data.CreationTime = DateTime.Now;
+                    data.DormId = DorId;
+                    data.IsDel = false;
+                    data.StayDate = DateTime.Now;
+                    data.Studentnumber = stuNumber;
+                    data.Remark = string.Empty;
+
+                    result.Success = ChangeDorStudent_Entity.AddData(data);
+
+                    result.Msg = result.Success == false ? "操作失败！" : "调寝成功！";
+                }
+                 
+            }
+            else
+            {
+                Accdationinformation data = new Accdationinformation();
+                data.BedId = chuangNumber;
+                data.CreationTime = DateTime.Now;
+                data.DormId = DorId;
+                data.IsDel = false;
+                data.StayDate = DateTime.Now;
+                data.Studentnumber = stuNumber;
+                data.Remark = string.Empty;
+
+                result.Success = ChangeDorStudent_Entity.AddData(data);
+
+                result.Msg = result.Success == false ? "操作失败！" : "调寝成功！";
+            }
+            
+
+           
+            return Json(result,JsonRequestBehavior.AllowGet);
+             
+        }
+
+        [HttpPost]
+        public ActionResult EndFunction()
+        {
+            AjaxResult result = new AjaxResult() { Success = false, Msg = "操作失败" };
+
+            string stuNumber = Request.Form["StuNumber"];
+
+            string sqlstr = @"select * from Accdationinformation where Studentnumber='" + stuNumber + "' and EndDate is null";
+
+            List<Accdationinformation> list = ChangeDorStudent_Entity.GetListBySql<Accdationinformation>(sqlstr);
+
+            List<Accdationinformation> Update = new List<Accdationinformation>();
+            foreach (Accdationinformation item in list)
+            {
+                item.EndDate = DateTime.Now;
+                item.IsDel = true;
+
+                Update.Add(item);
+            }
+
+            bool Isretult = ChangeDorStudent_Entity.UpdateData(Update);
+
+            if (Isretult)
+            {
+                result.Msg = "操作成功！";
+                result.Success = Isretult;
+            }
+
+            return Json(result,JsonRequestBehavior.AllowGet);
         }
     }
 }

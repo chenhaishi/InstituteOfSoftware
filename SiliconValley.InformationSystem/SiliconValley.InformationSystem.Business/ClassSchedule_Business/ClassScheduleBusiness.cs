@@ -89,6 +89,18 @@ namespace SiliconValley.InformationSystem.Business.ClassSchedule_Business
         //学生居住信息
         private AccdationinformationBusiness Accdation;
 
+        //public 
+
+        /// <summary>
+        /// 根据班级表id 查询班级数据
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ClassSchedule Getgrade_idById(int id)
+        {
+            return GetList().Where(a => a.id==id && a.ClassStatus==false && a.IsDelete==false).FirstOrDefault();
+        }
+
         /// <summary>
         /// 通过班级名称获取学号，姓名，职位
         /// </summary>
@@ -419,8 +431,6 @@ namespace SiliconValley.InformationSystem.Business.ClassSchedule_Business
         {
 
             AjaxResult retus = null;
-
-
             try
             {
                 retus = new SuccessResult();
@@ -1053,7 +1063,7 @@ namespace SiliconValley.InformationSystem.Business.ClassSchedule_Business
             transactionView.StudentID = StudentID;//学号
             transactionView.Telephone = student.Telephone;//联系电话
             transactionView.Postaladdress = student.Familyaddress;//家庭住址
-            transactionView.NowHeadmaster = Hadmst.ClassHeadmaster(scheduleForTraineesBusiness.SutdentCLassName(StudentID).ID_ClassName).EmpName;//班主任姓名
+            //transactionView.NowHeadmaster = Hadmst.ClassHeadmaster(scheduleForTraineesBusiness.SutdentCLassName(StudentID).ID_ClassName).EmpName;//班主任姓名
             transactionView.IDnumber = student.identitydocument;//身份证
             //获取班级对象
             var Stage = this.GetEntity(scheduleForTraineesBusiness.SutdentCLassName(StudentID).ID_ClassName);
@@ -2518,12 +2528,12 @@ namespace SiliconValley.InformationSystem.Business.ClassSchedule_Business
             int i = 0;
             if (a == 1)
             {
-                var classID = ScheduleForTrainees.GetList().Where(d => d.StudentID == studentID && d.AddDate.Year == date.Year && d.AddDate.Month == date.Month && d.AddDate.Day == date.Day).SingleOrDefault();
+                var classID = ScheduleForTrainees.GetList().Where(d => d.StudentID == studentID && d.AddDate == date).SingleOrDefault();
                 i = classID.ID_ClassName;
                 
             }
             else if(a==2){
-                var GreadID = ScheduleForTrainees.GetList().Where(d => d.StudentID == studentID && d.AddDate.Year == date.Year && d.AddDate.Month == date.Month && d.AddDate.Day == date.Day).SingleOrDefault();
+                var GreadID = ScheduleForTrainees.GetList().Where(d => d.StudentID == studentID && d.AddDate == date).SingleOrDefault();
                 var grandID = ClassSchedule.GetList().Where(d => d.id == GreadID.ID_ClassName).SingleOrDefault();
                 i = grandID.grade_Id;
             }

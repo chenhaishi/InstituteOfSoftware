@@ -3,7 +3,28 @@
     ViewBag.Title = "DormitoryMantainPriceIndex";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<div class="layui-collapse" lay-accordion>
+    <div class="layui-colla-item">
+        <h2 class="layui-colla-title">筛选
+            <i class="layui-icon layui-colla-icon"></i></h2>
+        <div class="layui-colla-content layui-show">
 
+            <div class="layui-form" action="">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="Nameofarticle" style="width:400px" name="Nameofarticle" class="layui-input">
+                    </div>
+                </div>
+                
+                <div class="layui-form-item">
+                    &emsp;&emsp;<button class="layui-btn" id="search_btn">查询</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
 <table id="PriceGoodform" lay-filter="PriceGoodform"></table>
 
 
@@ -13,21 +34,20 @@
     </div>
 </script>
 
-<script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-</script>
+
 
 <script>
     var tablefulsh;//table数据刷新
     $(function () {
         var table;
         var layer;
-        layui.use(['table'], function () {
+        var form;
+        layui.use(['table','element'], function () {
+            var element = layui.element;
             table = layui.table;
             layer = layui.layer;
-
-            table.render({
+            form = layui.form;
+            var tableIns=  table.render({
                 elem: '#PriceGoodform'
                 , url: '/DormitoryMaintenance/DormitoryMantainPrice/Tabledata'
                 , toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
@@ -40,8 +60,16 @@
                         field: 'Dateofregistration', title: '状态', templet: function (res) {
                             if (res.Dateofregistration) { return '正常' } else { return '已禁用' }
                         }
-                    }                    
-                    , { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150 }
+                    }
+                    , {
+                        fixed: 'right', title: '操作', width: 150, templet: function (res) {
+                            if (res.Dateofregistration) {
+                                return '<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a><a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">禁用</a>';
+                            } else {
+                                return '<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a><a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">启用</a>';
+                            }
+                        }
+                    }
                 ]]
                 , page: true
             });
@@ -66,28 +94,51 @@
                 //console.log(obj)
                 if (obj.event === 'del') {
                     layer.confirm('真的删除行么', function (index) {
-                        obj.del();
-                        layer.close(index);
-                    });
-                } else if (obj.event === 'edit') {
-                    layer.prompt({
-                        formType: 2
-                        , value: data.email
-                    }, function (value, index) {
-                        obj.update({
-                            email: value
+                        $.ajax({
+                            url: "/DormitoryMaintenance/DormitoryMantainPrice/UpdateStatus?id=" + data.ID,
+                            type: "Post",
+                            success: function (res) {
+                                if (res.Success) {
+                                    layer.msg("操作成功");
+                                    tablefulsh();
+                                }
+                            }
                         });
                         layer.close(index);
                     });
+                } else if (obj.event === 'edit') {
+                    if (data.Dateofregistration == false) {
+                        layer.msg("该数据已禁用！");
+                    } else {
+                        layer.open({
+                            type: 2,
+                            content: '/DormitoryMaintenance/DormitoryMantainPrice/EditDormitoryMantainPriceView?id=' + data.ID,
+                            area: ['700px', '400px'],
+                        });
+                    }
+                      
                 }
             });
 
-        });
+            $("#search_btn").click(function () {
+                tablereload($("#Nameofarticle").val());
+            })
 
+            tablereload = function (name) {
+                tableIns.reload({
+                    where: {
+                        name: name
+                    }
+                });
+            }
+        });
+        
         tablefulsh = function () {
             table.reload('PriceGoodform');
         }
+        
     });
+    
 </script>
 
 

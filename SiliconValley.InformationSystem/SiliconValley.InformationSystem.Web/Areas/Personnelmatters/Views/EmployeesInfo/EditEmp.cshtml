@@ -47,7 +47,8 @@
     <div>
         <input type="hidden" id="mypname" value="@ViewBag.pname" />
         <input type="hidden" id="mypid" value="@ViewBag.pid" />
-        <form class="layui-form" action="" lay-filter="formtest"  enctype="multipart/form-data" >
+        <input type="hidden" id="mydeptid" value="@ViewBag.deptid" />
+        <form class="layui-form" action="" lay-filter="formtest" enctype="multipart/form-data">
             <div class="layui-container" style="margin-top:20px;">
 
                 <div class="layui-row layui-form-item">
@@ -81,7 +82,6 @@
                         <label class="layui-form-label needTextColor" style="width:100px;margin-left:-20px;">所属部门:</label>
                         <div class="layui-input-inline">
                             <select name="deptid" id="deptid" style="width:130px;" lay-filter="deptidfilter" lay-verify="required" lay-search=""></select>
-
                         </div>
                     </div>
 
@@ -650,6 +650,7 @@
                         $.each(resultData.data, function (index, item) {
                             $("#deptid").append(new Option(item.DeptName, item.DeptId));
                         });
+                        $('#deptid').val($('#mydeptid').val());
                     } else {
                         $("#deptid").append(new Option("暂无数据", ""));
                     }

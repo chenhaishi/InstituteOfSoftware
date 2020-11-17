@@ -177,7 +177,7 @@
 
 
             // $("#text thead").append($('<tr style="text-align:center;"><td colspan="6">' + Receiptdata[i].GrandName + Receiptdata[i].ostitemsName + '</td><td colspan="4">' + Amountofmoney + '</td></tr>'));
-        } else if ( Receiptdata[i].Rategory == "其它" || Receiptdata[i].Rategory == "驾校费") {
+        } else if ( Receiptdata[i].Rategory == "重修费" || Receiptdata[i].Rategory == "驾校费") {
             var Amountofmoney = Receiptdata[i].Amountofmoney + ".00";
             $("#xiangmu").append($('<tr style="height:55px;"> <td colspan="4" style="text-align:center;">' + Receiptdata[i].Rategory + Receiptdata[i].ostitemsName + '</td> <td colspan="4" style="text-align:inherit;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + Amountofmoney + '</td></tr>'));
             // $("#text thead").append($('<tr style="text-align:center;"><td colspan="6">' + Receiptdata[i].Rategory+"：" + Receiptdata[i].ostitemsName + '</td><td colspan="4">' + Amountofmoney + '</td></tr>'));

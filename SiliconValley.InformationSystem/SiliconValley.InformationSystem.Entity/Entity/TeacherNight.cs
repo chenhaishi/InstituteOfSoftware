@@ -45,7 +45,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
 
         public string Rmark { get; set; }
         /// <summary>
-        /// 是否审核
+        /// 是否审核  (false--未审核,true--已审核)
         /// </summary>
         public bool IsDelete { get; set; }
     

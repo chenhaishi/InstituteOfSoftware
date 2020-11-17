@@ -1,0 +1,103 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>StudentinfomatuonView</title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+    <style>
+        .LableCss1
+        {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            float: left;
+            display: block;
+            padding: 9px 15px;
+            width: 80px;
+            font-weight: 400;
+            line-height: 20px;
+            text-align: right
+        }
+
+    </style>
+</head>
+<body>
+    <form class="layui-form" lay-filter="sercherform">
+        <div class="layui-row layui-form-item">
+            <div class="layui-col-xs8 layui-col-sm8 layui-col-md8">
+                <label class="LableCss1">学生姓名:</label>
+                <div class="layui-input-block">
+                    <input type="text" class="layui-input" id="inputname"/>                     
+                </div>
+            </div> 
+            <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
+                <input type="button" class="layui-btn" value="查询" onclick="serinfomation()"/>
+            </div>
+        </div>
+    </form>
+    <table id="Financetable" lay-filter="Financetable"></table>
+    <input type="hidden" value="@ViewBag.stuname" id="stuanme" />
+
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/layui/layui.js"></script>
+    <script>
+        var table;
+        var layer;
+        $(function () {
+            layui.use(['table', 'layer'], function () {
+                table = layui.table;
+                layer = layui.layer;
+                
+                table.render({
+                    elem: '#Financetable'
+                    , url: '/DormitoryMaintenance/DormitoryDeposit/GetStudentData'
+                    , cols: [[
+                        { type: 'radio', fixed: 'left' },
+                        { field: 'Stuname', title: '学生姓名' }
+                        , { field: 'ClassID', title: '班级' }
+                        , { field: 'GrandName', title: '阶段' }
+                        , { field: 'EmpName', title: '班主任' }
+                    ]]
+                });
+
+                //监听行双击事件
+                table.on('rowDouble(Financetable)', function (obj) {
+                    //console.log(obj.data);
+                    var msg_my = "确定选择" + obj.data.Stuname + "吗？";
+                    layer.confirm(msg_my, function (index) {
+                        window.parent.SetVlaue(obj.data.StudentNumber, obj.data.Stuname);
+
+                        var index = parent.layer.getFrameIndex(window.name);
+                        parent.layer.close(index);  
+
+                        layer.close(index);
+                    });
+
+                    
+                });
+            });
+        });
+
+        function serinfomation() {
+            var value = $("#inputname").val();
+            if (value.length > 0) {
+                table.reload('Financetable', {
+                    url: '/DormitoryMaintenance/DormitoryDeposit/GetStudentData'
+                    , where: { "stuname": value } //设定异步数据接口的额外参数
+
+                });
+            } else {
+                layer.msg('值不能为空！', {icon:2,shade:0.8});
+            }
+             
+        }
+
+
+    </script>
+</body>
+</html>

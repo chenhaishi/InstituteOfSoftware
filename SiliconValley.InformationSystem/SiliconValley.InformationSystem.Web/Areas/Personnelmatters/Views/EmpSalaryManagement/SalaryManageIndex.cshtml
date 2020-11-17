@@ -11,6 +11,8 @@
         <button class="layui-btn layui-btn-sm" lay-event="timeUpdate"><i class="layui-icon layui-icon-edit"></i>年月份改变</button>
         <button class="layui-btn layui-btn-sm" lay-event="Approved"><i class="layui-icon layui-icon-edit"></i>确认审批</button>
         <button class="layui-btn layui-btn-sm" lay-event="forbiddenEmp"><i class="layui-icon layui-icon-fonts-del"></i>禁用</button>
+        <button type="button" class="layui-btn layui-btn-sm" lay-event="Email"><i class="layui-icon layui-icon-release"></i>发送工资条</button>
+        <button type="button" class="layui-btn layui-btn-sm" lay-event="Salary"><i class="layui-icon layui-icon-release"></i>月度工资导出</button>
     </div>
 </script>
 
@@ -21,7 +23,7 @@
     <legend>条件查询</legend>
     <form class="layui-form" action="" lay-filter="formtest">
         <div class="layui-row layui-form-item">
-            <div >
+            <div>
                 <label class="layui-form-label">姓名：</label>
                 <div class="layui-input-inline">
                     <input type="text" id="EmpName" name="EmpName" autocomplete="off" class="layui-input">
@@ -52,7 +54,7 @@
                         <option value="False">在职</option>
                         <option value="True">离职</option>
                     </select>
-                  
+
                 </div>
             </div>
             <button class="layui-btn" type="button" id="Conditionselect" style="margin-left:30px;"><i class="layui-icon layui-icon-search"></i>查询</button>
@@ -62,10 +64,10 @@
     </form>
 </fieldset>
 <table id="salarytab" lay-filter="salarytab"></table>
-
 @*操作栏*@
 <script type="text/html" id="barDemo">
     <a class="layui-btn  layui-btn-xs " lay-event="edit">编辑</a>
+
 </script>
 @*员工在职状态*@
 <script type="text/html" id="empstate">
@@ -75,9 +77,26 @@
     {{ d.EmpState="离职" }}
     {{# } }}
 </script>
+<script type="text/html" id="Audit">
+    {{# if(d.IsFinancialAudit==0){ }}
+    {{ d.IsFinancialAudit="未审核" }}
+    {{# }else if(d.IsFinancialAudit==1){ }}
+    {{ d.IsFinancialAudit="已审核" }}
+    {{# }else{ }}
+    {{ d.IsFinancialAudit="已驳回" }}
+    {{# } }}
 
-@section script{
-    <script>
+</script>
+<div class="layui-hide" id="datamonth">
+    <div class="layui-form-item">
+        <label class="layui-form-label">请选择日期</label>
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input" id="month" placeholder="yyyy-MM">
+        </div>
+    </div>
+</div>
+    @section script{
+        <script>
 
         layui.use(['table', 'layer', 'form', 'laydate', 'element'], function () {
             var table = layui.table;
@@ -106,9 +125,9 @@
                     , { field: 'SalaryOne', title: '应发工资1', width: 115, rowspan: 2 }
                     , { field: 'OvertimeCharges', title: '加班费用', width: 105, rowspan: 2 }
                     , { field: 'Bonus', title: '奖金(元)', width: 105, rowspan: 2 }
-
-                    , { align: 'center', title: '考勤扣款', colspan: 5 }
-
+                    , { field: 'leavedays', title: '请假天数', width: 110, rowspan: 2}
+                    , { field: 'LeaveDeductions', title: '请假扣款(元)', width: 115, rowspan: 2}
+                    , { align: 'center', title: '考勤扣款', colspan: 3}
                     , { field: 'OtherDeductions', title: '其他扣款(元)', width: 105, rowspan: 2 }
                     , { field: 'SalaryTwo', title: '应发工资2', width: 115, rowspan: 2 }
                     , { field: 'PersonalSocialSecurity', title: '个人社保', sort: true, width: 110, rowspan: 2 }
@@ -117,14 +136,15 @@
                     , { field: 'PayCardSalary', title: '实发工资(工资卡)', width: 160, rowspan: 2 }
                     , { field: 'CashSalary', title: '实发工资(现金)', width: 150, rowspan: 2 }
                     , { field: 'EmpState', title: '员工状态', width: 100, rowspan: 2, templet: '#empstate' }
+                    , { field: 'IsFinancialAudit', title: '财务审核状态', sort: true, width: 110, fixed: "right", templet: '#Audit' }
                     , { title: '操作', toolbar: '#barDemo', width: 100, fixed: 'right', rowspan: 2 }
-                ], [
-                    { field: 'leavedays', title: '请假天数', width: 110 }
-                    , { field: 'LeaveDeductions', title: '请假扣款(元)', width: 115 }
+                    ]
+                    ,[
+                     { field: 'TardyAndLeaveWithhold', title: '迟到/早退扣款(元)', width: 115 }
                     , { field: 'NoClockWithhold', title: '缺卡扣款(元)', width: 115 }
-                        , { field: 'TardyAndLeaveWithhold', title: '迟到/早退扣款(元)', width: 115 }
-                    //, { field: 'LeaveWithhold', title: '早退扣款/元', width: 115 }
-                ]]
+                    , { field: 'AbsentNumWithhold', title: '旷工扣款(元)', width: 115 }
+                    ]
+                ]
                 , page: true
             });
 
@@ -137,7 +157,7 @@
                         break;
                     case 'Approved':
                         var time = '@ViewBag.yearandmonth';
-                        if (JSON.stringify(time) == "{}") {
+                        if (JSON.stringify(time) != "{}") {
                             $.ajax({
                                 type: "post",
                                 dataType: "json",
@@ -165,7 +185,7 @@
                             });
                         } else {
                             layer.msg("没有数据可审批!");
-                        } 
+                        }
                         break;
                     case 'forbiddenEmp':
                         var data = checkStatus.data;
@@ -183,8 +203,63 @@
                             });
                         }
                         break;
+                    case 'Email':
+                        laydate.render({
+                            elem: "#month",
+                            type: 'month'
+                        })
+                      var open= layer.open({
+                          type: 1,
+                          closeBtn: 0,
+                          content: $("#datamonth").removeClass("layui-hide"),
+                          btn: ['确定', '取消'], 
+                          yes: function () {
+                                layer.close(open);
+                                $("#datamonth").addClass("layui-hide");
+                                var year = $("#month").val().substring(0, 4);
+                                var month = $("#month").val().substring(5);
+                                layer.confirm('是否要向所有员工发送' + year + "年" + month + '月的工资条', { icon: 3, title: '提示' }, function (index) {
+                                    layer.close(index);
+                                    var index = layer.msg("正在发送邮件", { icon: 16, shade: 0.6 });
+                                    $.ajax({
+                                        url: "/Personnelmatters/EmpSalaryManagement/PaySlipExcel",
+                                        type: "post",
+                                        data: JSON.stringify({ "time": $("#month").val()}),
+                                        dataType: "json",
+                                        contentType: "Application/json",
+                                        success: function (data) {
+                                            console.log(data);
+                                            if (data.Success) {
+                                                layer.close(index)
+                                                layer.alert(data.Msg, { icon: 1 });
+                                            } else {
+                                                layer.close(index)
+                                                layer.alert("邮件发送失败", { icon: 2 });
+                                            }
+                                        }
+                                    })
+                                });
+                          },
+                          btn2: function () {
+                              $("#datamonth").addClass("layui-hide");
+                          }
+                            
+
+                        })
+                        break;
+                    case 'Salary':
+                        layer.open({
+                            type: 2,
+                            content: '/Personnelmatters/EmpSalaryManagement/MonthlySalaryExport'
+                            , title: '月度工资导出'
+                            , shade: 0.8
+                            , anim: 4
+                            , skin: 'demo-class'
+                        });
+                        break;
                 };
             });
+
 
             //监听行工具事件
             table.on('tool(salarytab)', function (obj) {
@@ -205,22 +280,35 @@
                                 });
                             }
                             else {
-                                layer.open({
-                                    type: 2,
-                                    content: '/Personnelmatters/EmpSalaryManagement/EditEmpSalary/?id=' + id
-                                    , area: ["500px", "500px"]
-                                    , title: '编辑员工月度工资信息'
-                                    , shade: 0.8
-                                    , anim: 4
-                                    , skin: 'demo-class'
-                                });
+                                if (data.IsFinancialAudit!=2) {
+                                    layer.open({
+                                        type: 2,
+                                        content: '/Personnelmatters/EmpSalaryManagement/EditEmpSalary/?id=' + id
+                                        , area: ["500px", "500px"]
+                                        , title: '编辑员工月度工资信息'
+                                        , shade: 0.8
+                                        , anim: 4
+                                        , skin: 'demo-class'
+                                    });
+                                } else {
+                                    layer.open({
+                                        type: 2,
+                                        content: '/Personnelmatters/EmpSalaryManagement/ModifyAbnormalData/?id=' + id
+                                        , area: ["800px", "650px"]
+                                        , title: '编辑员工月度工资信息'
+                                        , shade: 0.8
+                                        , anim: 4
+                                        , skin: 'demo-class'
+                                    });
+                                }
+                            
                             }
                         } else {
                             layer.alert("系统出错，请多次尝试后");
                         }
 
                     });
-                   
+
                 }
 
             });
@@ -246,6 +334,7 @@
 
 
             });
+
 
         });
         //年月份改变
@@ -310,65 +399,62 @@
 
         }
 
-    </script>
+        </script>
 
-    @*部门与岗位的下拉框动态赋值及下拉框二级联动*@
-    <script>
-        layui.use(['form', 'upload', 'layer'], function () {
+        @*部门与岗位的下拉框动态赋值及下拉框二级联动*@
+        <script>
+            layui.use(['form', 'upload', 'layer'], function () {
 
-            var form = layui.form;
-            $.ajax({
-                url: '/Personnelmatters/EmployeesInfo/BindDeptSelect',
-                data: {},
-                dataType: "json",
-                success: function (resultData) {
-                    $("#deptid").empty();
-                    if (resultData.code == 0) {
-
-                        $("#deptid").append(new Option("请选择部门", ""));
-                        $.each(resultData.data, function (index, item) {
-                            $('#deptid').append(new Option(item.DeptName, item.DeptId));
-                        });
-                    } else {
-                        $("#deptid").append(new Option("暂无数据", ""));
-                    }
-
-                    layui.form.render("select");
-                }
-            });
-
-            //级联子项目
-            //select 监听
-            form.on('select(deptidfilter)', function (data) {
-                var value = data.value;  //select选中的值
-                console.log("选中值" + value);
+                var form = layui.form;
                 $.ajax({
-                    url: "/Personnelmatters/EmployeesInfo/BindPositionSelect",
-                    data: { deptid: value },
+                    url: '/Personnelmatters/EmployeesInfo/BindDeptSelect',
+                    data: {},
                     dataType: "json",
                     success: function (resultData) {
+                        $("#deptid").empty();
                         if (resultData.code == 0) {
-                            //清空赋值
-                            $("#PositionId").empty();
-                            console.log(resultData.data);
-                            $("#PositionId").append(new Option("请选择岗位", ""));
+
+                            $("#deptid").append(new Option("请选择部门", ""));
                             $.each(resultData.data, function (index, item) {
-                                //赋值
-                                $('#PositionId')
-                                    .append(new Option(item.PositionName, item.Pid));
+                                $('#deptid').append(new Option(item.DeptName, item.DeptId));
                             });
                         } else {
-                            $("#PositionId").append(new Option("暂无数据", ""));
+                            $("#deptid").append(new Option("暂无数据", ""));
                         }
+
                         layui.form.render("select");
                     }
                 });
-            })
-            layui.form.render("select");
 
-        });
-    </script>
+                //级联子项目
+                //select 监听
+                form.on('select(deptidfilter)', function (data) {
+                    var value = data.value;  //select选中的值
+                    console.log("选中值" + value);
+                    $.ajax({
+                        url: "/Personnelmatters/EmployeesInfo/BindPositionSelect",
+                        data: { deptid: value },
+                        dataType: "json",
+                        success: function (resultData) {
+                            if (resultData.code == 0) {
+                                //清空赋值
+                                $("#PositionId").empty();
+                                console.log(resultData.data);
+                                $("#PositionId").append(new Option("请选择岗位", ""));
+                                $.each(resultData.data, function (index, item) {
+                                    //赋值
+                                    $('#PositionId')
+                                        .append(new Option(item.PositionName, item.Pid));
+                                });
+                            } else {
+                                $("#PositionId").append(new Option("暂无数据", ""));
+                            }
+                            layui.form.render("select");
+                        }
+                    });
+                })
+                layui.form.render("select");
 
-
-
-}
+            });
+        </script>
+    }

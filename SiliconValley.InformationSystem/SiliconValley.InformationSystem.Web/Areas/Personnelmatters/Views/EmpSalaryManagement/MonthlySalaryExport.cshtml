@@ -1,0 +1,59 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/layui/layui.js"></script>
+</head>
+<body>
+    <div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">请选择日期</label>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" id="month" placeholder="yyyy-MM">
+            </div>
+        </div> <div class="layui-form-item" style="margin-left:50px;margin-top:70px;">
+            <div class="layui-input-block">
+                <button class="layui-btn " lay-submit="" type="button" lay-filter="demo1">确定</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        layui.use(['layer', 'form', 'laydate'], function () {
+            var layer = layui.layer;
+            var form = layui.form;
+            var laydate = layui.laydate;
+
+            laydate.render({
+                elem: "#month",
+                type: 'month'
+            })
+            form.on("submit(demo1)", function () {
+                $.ajax({
+                    url: "/Personnelmatters/EmpSalaryManagement/MonthlySalaryExport",
+                    type: "post",
+                    data: JSON.stringify({ "time": $("#month").val() }),
+                    dataType: "json",
+                    contentType: "Application/json",
+                    success: function (data) {
+                        layer.alert(data.Msg, function myfunction() {
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            window.parent.location.reload();
+                            parent.layer.close(index);
+                        });
+                       
+                    }
+                })
+            })
+           
+        })
+    </script>
+</body>
+</html>

@@ -74,7 +74,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
                 if (DepId == "0")
                 {
-                    result = templist;
+                    result = db_emp.GetEmpByDeptName();
                 }
                 else
                 {
@@ -125,7 +125,9 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         {
             DepartmentBusiness.DepartmentManage tempdb_dep = new DepartmentBusiness.DepartmentManage();
 
-            return tempdb_dep.GetDepartments();
+            return tempdb_dep.GetDepartments().Where(
+                s => s.DeptName.Contains("教学") 
+                ).ToList();
         }
 
 
@@ -1794,8 +1796,5 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         {
             return null;
         }
-
-
-
     }
 }

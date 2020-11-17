@@ -21,6 +21,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         public int Id { get; set; }
         //员工编号
         public string EmployeeId { get; set; }
+        public Nullable<System.DateTime> YearAndMonth { get; set; }//年月份
         //开始时间
         public Nullable<System.DateTime> StartTime { get; set; }
         //结束时间
@@ -32,14 +33,14 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         //是否不调休
         public Nullable<bool> IsNoDaysOff { get; set; }
         //加班类型
-        public int OvertimeTypeId { get; set; }
-        //是否过了年限
-        public Nullable<bool> IsPassYear { get; set; }
+        public int OvertimeTypeId { get; set; }//(1：晚上加班；2：周末加班；3：法定节假日加班；4：行政值班)
+        ////是否过了年限
+        //public Nullable<bool> IsPassYear { get; set; }
         //备注
         public string Remark { get; set; }
-        //是否禁用
+        ////是否禁用
         public Nullable<bool> IsPass { get; set; }
-        public Nullable<bool> IsApproval { get; set; }
+        //public Nullable<bool> IsApproval { get; set; }
 
 
     }
