@@ -1942,6 +1942,7 @@
     <Content Include="Areas\ExaminationSystem\Views\ExamScores\MarkingPapers.cshtml" />
     <Content Include="Areas\ExaminationSystem\Views\QuestionsBank\EditingMachineTestQuestions.cshtml" />
     <Content Include="Areas\ExaminationSystem\Views\ExamArrangement\ReleaseTestEditor.cshtml" />
+    <Content Include="assets\Assets_L1\assets\libs\jquery-steps\build\jQuery.Steps.1.1.0.nupkg" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
@@ -3692,6 +3693,12 @@
     <Folder Include="Areas\Teaching\Models\" />
     <Folder Include="Areas\Teaching\Views\StudentDataKeep\" />
     <Folder Include="Areas\Teaching\Views\StudentHomeWork\" />
+    <Folder Include="assets\Assets_L1\assets\fonts\" />
+    <Folder Include="assets\Assets_L1\assets\libs\chartist\scss\settings\" />
+    <Folder Include="assets\Assets_L1\assets\libs\jquery-steps\demo\" />
+    <Folder Include="assets\Assets_L1\assets\libs\mdi\font\scss\" />
+    <Folder Include="assets\Assets_L1\assets\libs\simple-line-icons\less\" />
+    <Folder Include="assets\Assets_L1\assets\libs\simple-line-icons\scss\" />
     <Folder Include="assets\img\" />
     <Folder Include="Scripts\layui-v2.5.4\layui\css\modules\laydate\default\" />
     <Folder Include="Scripts\layui-v2.5.4\layui\css\modules\layer\default\" />
