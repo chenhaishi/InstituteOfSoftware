@@ -11,6 +11,7 @@ using System.Data;
 using System.Text;
 using System.IO;
 using SiliconValley.InformationSystem.Business.Base_SysManage;
+using SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBusiness;
 
 namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
 {
@@ -37,7 +38,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         }
 
         static string FirstTime = GetFirstTime(); 
-
+    
         //考勤统计
         // GET: Personnelmatters/AttendanceStatistics
         public ActionResult AttendanceStatisticsIndex()
@@ -47,8 +48,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         }
         //获取考勤数据
         public ActionResult GetCheckingInData(int page, int limit, string AppCondition,string ymtime)
-        {
-          
+        {          
             ymtime = FirstTime;
             var attlist = atdmanage.GetADInfoData().Where(s => s.IsDel == false).ToList();
             if (!string.IsNullOrEmpty( ymtime)) {
@@ -62,7 +62,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 string deptname = str[1];
                 string pname = str[2];
                 string empstate = str[3];
-
                 attlist = attlist.Where(e => empmanage.GetInfoByEmpID(e.EmployeeId).EmpName.Contains(ename)).ToList();
                 if (!string.IsNullOrEmpty(deptname))
                 {
@@ -131,7 +130,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
 
 
         /// <summary>
-        /// 年月份及应到勤天数的改变
+        /// 年月份及应到勤天数的改变（查看记录）
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -239,7 +238,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             return View();
         }
         /// <summary>
-        /// 批量录入(excel导入)
+        /// 批量录入(excel导入)考勤数据
         /// </summary>
         /// <param name="excelfile"></param>
         /// <returns></returns>
@@ -250,15 +249,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             AttendanceInfoManage atdmanage = new AttendanceInfoManage();
             var result =  atdmanage.ImportDataFormExcel(filestream, excelfile.ContentType);
             if (result.Success) {
-                DateTime year_month = (DateTime)atdmanage.GetList().FirstOrDefault().YearAndMonth;
-              var mytime = DateTime.Parse(year_month.ToString()).Year + "-" + DateTime.Parse(year_month.ToString()).Month;
-                FirstTime = mytime;
+                if (atdmanage.GetAtdBySql().Count()>0) {
+                    DateTime year_month = (DateTime)atdmanage.GetList().FirstOrDefault().YearAndMonth;
+                    var mytime = DateTime.Parse(year_month.ToString()).Year + "-" + DateTime.Parse(year_month.ToString()).Month;
+                    FirstTime = mytime;
+                }            
             }
             return Json(result, JsonRequestBehavior.AllowGet);
-        }
-
+        }    
         /// <summary>
-        /// 模板下载 
+        /// 考勤模板下载 
         /// </summary>
         /// <returns></returns>        
         public FileStreamResult DownFile()
@@ -268,45 +268,31 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             return File(stream, "application/octet-stream", Server.UrlEncode("ExcleTemplate.xls"));
         }
 
-
-        /// <summary> 
-        /// 批量添加
+        /// <summary>
+        /// 加班记录导入
         /// </summary>
         /// <returns></returns>
-        public ActionResult BatchAdd() {
-       
+        public ActionResult OvertimeRecordImport()
+        {
             return View();
         }
         [HttpPost]
-        public ActionResult BatchAdd(string time,string days) {
-            EmplSalaryEmbodyManage esemanage = new EmplSalaryEmbodyManage();
-            var AjaxResultxx = new AjaxResult();
-            try
-            {
-                //获取未禁用的员工
-                var elist = esemanage.GetEmpESEData().Where(s => s.IsDel == false).ToList();
-                foreach (var item in elist)
-                {
-                    AttendanceInfo atd = new AttendanceInfo();
-                    atd.EmployeeId = item.EmployeeId;
-                    atd.YearAndMonth = DateTime.Parse(time);
-                    atd.DeserveToRegularDays = Convert.ToDecimal(days);
-                    atd.ToRegularDays = Convert.ToDecimal(days);
-                    atd.IsDel = false;
-                    atd.IsApproval = false;
-                    atdmanage.Insert(atd);
-                   
-                    rc.RemoveCache("InRedisATDData");
-                }
-                AjaxResultxx = atdmanage.Success();
-            }
-            catch (Exception ex)
-            {
-              AjaxResultxx=atdmanage.Error(ex.Message);
-            }
-            FirstTime = time;
-            //Firstshouldday = days;
-            return Json(AjaxResultxx,JsonRequestBehavior.AllowGet);
+        public ActionResult OvertimeRecordImport(HttpPostedFileBase excelfile) {
+            Stream filestream = excelfile.InputStream;
+            OvertimeRecordManage otrmanage = new OvertimeRecordManage();
+            var result = otrmanage.ImportDataFormExcel(filestream, excelfile.ContentType);
+        
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
+        /// 加班记录模板下载
+        /// </summary>
+        /// <returns></returns>
+        public FileStreamResult OvertimeDownFile()
+        {
+            string rr = Server.MapPath("/uploadXLSXfile/Template/OvertimeTemplate.xlsx");  //获取下载文件的路径         
+            FileStream stream = new FileStream(rr, FileMode.Open);
+            return File(stream, "application/octet-stream", Server.UrlEncode("ExcleTemplate.xls"));
         }
 
         #endregion
@@ -401,7 +387,107 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult OTRDetail(int id) {
+            ViewBag.atdid = id;
+            return View();
+        }
+
+        public ActionResult GetOvertimeData(int id,int page, int limit) {
+            OvertimeRecordManage otrmanage = new OvertimeRecordManage();
+            MonthlySalaryRecordManage monthly = new MonthlySalaryRecordManage();
+            var otrlist = otrmanage.GetOTRDataByAtdid(id);
+            var mylist = from e in otrlist
+                         select new
+                         {
+                             #region 获取值
+                             e.Id,
+                             e.EmployeeId,
+                             DDAppId = empmanage.GetInfoByEmpID(e.EmployeeId).DDAppId,
+                             empName = empmanage.GetInfoByEmpID(e.EmployeeId).EmpName,
+                             empDept = empmanage.GetDeptByEmpid(e.EmployeeId).DeptName,
+                             empPosition = empmanage.GetPositionByEmpid(e.EmployeeId).PositionName,
+                             IsApproval = monthly.GetAttendanceInfoByEmpid(e.EmployeeId,(DateTime)e.YearAndMonth).IsApproval,
+                             e.YearAndMonth,
+                             e.StartTime,
+                             e.EndTime,
+                             e.Duration,
+                             e.Remark,
+                             e.OvertimeReason,
+                             e.IsNoDaysOff,
+                             e.OvertimeTypeId,
+                             e.IsPass,
+                             #endregion
+                         };
+            var newlist = mylist.OrderByDescending(s => s.Id).Skip((page - 1) * limit).Take(limit).ToList();
+            var newobj = new
+            {
+                code = 0,
+                msg = "",
+                count = mylist.Count(),
+                data = newlist
+            };
+            return Json(newobj, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult OvertimeEdit(int  id)
+        {
+            OvertimeRecordManage overtime = new OvertimeRecordManage();
+            EmployeesInfoManage manage = new EmployeesInfoManage();
+
+            var s = overtime.GetEntity(id);
+            ViewBag.EmpName = manage.GetEntity(s.EmployeeId).EmpName;
+            return View(s);
+        }
+        [HttpPost]
+        public ActionResult OvertimeEdit(OvertimeRecord over, int type,string Duration)
+        {
+            AjaxResult result = new AjaxResult();
+            OvertimeRecordManage overtime = new OvertimeRecordManage();
+            MonthlySalaryRecordManage monthly = new MonthlySalaryRecordManage();
+            AttendanceInfoManage attendance = new AttendanceInfoManage();
+        
+
+            var s = overtime.GetEntity(over.Id);
+            over.EmployeeId = s.EmployeeId;
+            over.YearAndMonth = s.YearAndMonth;
+          
+            overtime.Update(over);
+
+         var att=monthly.GetAttendanceInfoByEmpid(over.EmployeeId,Convert.ToDateTime(over.YearAndMonth));
+            var OvertimeWithhold= overtime.OvertimeWithhold(over.OvertimeTypeId, (dynamic)over.Duration);
+            if (!(bool)over.IsNoDaysOff|| (bool)over.IsPass)
+            {
+                OvertimeWithhold = 0;
+            }
+
+            var oldOvertime= overtime.OvertimeWithhold(type,Convert.ToDecimal(Duration));
+
+            att.OvertimeCharges = (att.OvertimeCharges - oldOvertime )+ OvertimeWithhold;
+            attendance.Update(att);
+            
+            var month = monthly.GetEmpMsrData().Where(i => i.EmployeeId == over.EmployeeId && DateTime.Parse(i.YearAndMonth.ToString()).Year == DateTime.Parse(over.YearAndMonth.ToString()).Year&& DateTime.Parse(i.YearAndMonth.ToString()).Month == DateTime.Parse(over.YearAndMonth.ToString()).Month&& i.IsApproval==false).FirstOrDefault();
+            if (!month.IsNullOrEmpty())
+            {
+                month.OvertimeCharges = (month.OvertimeCharges-oldOvertime)+ OvertimeWithhold;
+                monthly.Update(month);
+            }
 
 
+
+            try
+            {
+                result.Msg = "修改成功";
+                result.Success = true;
+                result.ErrorCode = 200;
+            }
+            catch (Exception e)
+            {
+                result.Msg = "修改失败";
+                result.Success = true;
+                result.ErrorCode = 200;
+            }
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
     }
 }

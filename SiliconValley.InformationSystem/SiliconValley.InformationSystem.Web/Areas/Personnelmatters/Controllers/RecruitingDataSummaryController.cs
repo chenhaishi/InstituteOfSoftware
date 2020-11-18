@@ -29,39 +29,125 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         {
             return View();
         }
-       
+
         //获取招聘电话追踪数据
-        public ActionResult GetTraceData(int page, int limit)
-        {  
+        public ActionResult GetTraceData(int page, int limit,string AppCondition)
+        {
             RecruitPhoneTraceManage rptmanage = new RecruitPhoneTraceManage();
+            EmployeesInfoManage empmanage = new EmployeesInfoManage();
+            var rdslist = rptmanage.GetRptFromSql()/*.Where(s => s.IsDel == false).ToList()*/;
             List<RecruitPhoneTraceView> rptviewlist = new List<RecruitPhoneTraceView>();
-          
-            var rdslist = rptmanage.GetList().Where(s=>s.IsDel==false).ToList();         
             foreach (var item in rdslist)
             {
-                RecruitPhoneTraceView rptview = rptmanage.GetRptView(item.Id);
+                RecruitPhoneTraceView rptview = new RecruitPhoneTraceView();
+                var dept = empmanage.GetDeptByPid((int)item.Pid);
+                #region 获取值
+                rptview.Id = item.Id;
+                rptview.Pid = item.Pid;
+                rptview.Dname = dept.DeptName;
+                rptview.Deptid = dept.DeptId;
+                rptview.Pname = empmanage.GetPobjById((int)item.Pid).PositionName;
+                rptview.Name = item.Name;
+                rptview.PhoneNumber = item.PhoneNumber;
+                rptview.TraceTime = item.TraceTime;
+                rptview.Channel = item.Channel;
+                rptview.ResumeType = item.ResumeType;
+                rptview.PhoneCommunicateResult = item.PhoneCommunicateResult;
+                rptview.IsEntry = item.IsEntry;
+                rptview.Remark = item.Remark;
+                rptview.IsDel = item.IsDel;
+                rptview.SonId = item.SonId;
+                rptview.forwardDate = rptmanage.GetNewestForwardDate((int)item.SonId);
+                rptview.result = rptmanage.GetPhoneCommunicateResult((int)item.SonId);
+                #endregion
                 rptviewlist.Add(rptview);
             }
+
+            if (!string.IsNullOrEmpty(AppCondition))
+            {
+                string[] str = AppCondition.Split(',');
+                string name = str[0];
+                string deptid = str[1];
+                string pid = str[2];
+                string PhoneNumber = str[3];
+                string Channel = str[4];
+                string ResumeType = str[5];
+                string result = str[6];
+                string IsEntry = str[7];
+                string start_TraceTime = str[8];
+                string end_TraceTime = str[9];
+                string start_ForwardDate = str[10];
+                string end_ForwardDate = str[11];
+                rptviewlist = rptviewlist.Where(e => e.Name.Contains(name)).ToList();
+                if (!string.IsNullOrEmpty(deptid))
+                {
+                    rptviewlist = rptviewlist.Where(e => empmanage.GetDept((int)e.Pid).DeptId== int.Parse(deptid)).ToList();
+                }
+                if (!string.IsNullOrEmpty(pid))
+                {
+                    rptviewlist = rptviewlist.Where(e => e.Pid == int.Parse(pid)).ToList();
+                }
+                rptviewlist = rptviewlist.Where(e => e.PhoneNumber.Contains(PhoneNumber)).ToList();
+                if (!string.IsNullOrEmpty(Channel))
+                {
+                    rptviewlist = rptviewlist.Where(e =>e.Channel.Contains(Channel)).ToList();
+                }
+                if (!string.IsNullOrEmpty(ResumeType))
+                {
+                    rptviewlist = rptviewlist.Where(e =>e.ResumeType.Contains(e.ResumeType)).ToList();
+                }
+                if (!string.IsNullOrEmpty(result))
+                {
+                    rptviewlist = rptviewlist.Where(e => e.result == Convert.ToBoolean(result)).ToList();
+                }
+                if (!string.IsNullOrEmpty(IsEntry))
+                {
+                    rptviewlist = rptviewlist.Where(e => e.IsEntry==Convert.ToBoolean(IsEntry)).ToList();
+                }
+                if (!string.IsNullOrEmpty(start_TraceTime))
+                {
+                    DateTime stime = Convert.ToDateTime(start_TraceTime);
+                    rptviewlist = rptviewlist.Where(a => a.TraceTime >= stime).ToList();
+                }
+                if (!string.IsNullOrEmpty(end_TraceTime))
+                {
+                    DateTime stime = Convert.ToDateTime(end_TraceTime);
+                    rptviewlist = rptviewlist.Where(a => a.TraceTime <= stime).ToList();
+                }
+                if (!string.IsNullOrEmpty(start_ForwardDate))
+                {
+                    DateTime stime = Convert.ToDateTime(start_ForwardDate );
+                    rptviewlist = rptviewlist.Where(a => a.forwardDate >= stime).ToList();
+                }
+                if (!string.IsNullOrEmpty(end_ForwardDate))
+                {
+                    DateTime stime = Convert.ToDateTime(end_ForwardDate);
+                    rptviewlist = rptviewlist.Where(a => a.forwardDate <= stime).ToList();
+                }
+
+            }
             var myrdslist = rptviewlist.OrderByDescending(r => r.Id).Skip((page - 1) * limit).Take(limit).ToList();
+         
             var newobj = new
             {
                 code = 0,
                 msg = "",
                 count = rptviewlist.Count(),
                 data = myrdslist
-            };
+            }; 
             return Json(newobj, JsonRequestBehavior.AllowGet);
         }
 
-      
+
         #region 获取某个部门或岗位
-       
+
         /// <summary>
         /// 获取部门对象
         /// </summary>
         /// <param name="deptid"></param>
         /// <returns></returns>
-        public Department GetDept(int deptid) {
+        public Department GetDept(int deptid)
+        {
             DepartmentManage dmanage = new DepartmentManage();
             var deptobj = dmanage.GetEntity(deptid);
             return deptobj;
@@ -84,7 +170,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public int GetDeptidByName(string name) {
+        public int GetDeptidByName(string name)
+        {
             DepartmentManage dmanage = new DepartmentManage();
             var dept = dmanage.GetList().Where(s => s.DeptName == name).FirstOrDefault();
             return dept.DeptId;
@@ -94,34 +181,39 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public int GetPidByName(string name) {
+        public int GetPidByName(string name)
+        {
             PositionManage pmanage = new PositionManage();
             var pid = pmanage.GetList().Where(p => p.PositionName == name).FirstOrDefault().Pid;
             return pid;
         }
         #endregion
 
+    
 
         /// <summary>
         /// 通过编号获取某条招聘记录数据
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public ActionResult GetRPTById(int id) {
+        public ActionResult GetRPTById(int id)
+        {
             RecruitPhoneTraceManage rptmanage = new RecruitPhoneTraceManage();
             var rptview = rptmanage.GetRptView(id);
-            return Json(rptview,JsonRequestBehavior.AllowGet);
+            return Json(rptview, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
         /// 添加招聘电话追踪基本信息
         /// </summary>
         /// <returns></returns>
-        public ActionResult Addrpt() {
+        public ActionResult Addrpt()
+        {
             return View();
         }
         [HttpPost]
-        public ActionResult Addrpt(RecruitPhoneTrace rpt) {
+        public ActionResult Addrpt(RecruitPhoneTrace rpt)
+        {
             RecruitPhoneTraceManage rmanage = new RecruitPhoneTraceManage();
             var AjaxResultxx = new AjaxResult();
             try
@@ -131,7 +223,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 rpt.PhoneCommunicateResult = false;
                 rmanage.Insert(rpt);
                 AjaxResultxx = rmanage.Success();
-              
+
             }
             catch (Exception ex)
 
@@ -144,7 +236,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 rmanage.Update(rpt);
                 AjaxResultxx = rmanage.Success();
             }
-            if (AjaxResultxx.Success) {
+            if (AjaxResultxx.Success)
+            {
                 AddRecruitData();
             }
             return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
@@ -155,39 +248,42 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public ActionResult AddTrack(int id) {
+        public ActionResult AddTrack(int id)
+        {
             RecruitPhoneTraceManage rmanage = new RecruitPhoneTraceManage();
             ViewBag.Id = id;
             var rds = rmanage.GetEntity(id);
             var rdslist = rmanage.GetList().Where(r => r.SonId == rds.SonId).ToList();
-            ViewBag.Number = rdslist.Count()-1;
-           // ViewBag.rdslist = rdslist;
+            ViewBag.Number = rdslist.Count() - 1;
+            // ViewBag.rdslist = rdslist;
             return View();
         }
         [HttpPost]
-        public ActionResult AddTrack(RecruitPhoneTrace rpt) {
+        public ActionResult AddTrack(RecruitPhoneTrace rpt)
+        {
             RecruitPhoneTraceManage rptmanage = new RecruitPhoneTraceManage();
             var AjaxResultxx = new AjaxResult();
             try
             {
-                var beforerpt = rptmanage.GetList().Where(r => r.Id==rpt.Id && r.IsDel == false).FirstOrDefault();
+                var beforerpt = rptmanage.GetList().Where(r => r.Id == rpt.Id && r.IsDel == false).FirstOrDefault();
                 RecruitPhoneTrace rptnew = new RecruitPhoneTrace();
                 rptnew.SonId = beforerpt.SonId;
                 rptnew.Name = beforerpt.Name;
                 rptnew.PhoneNumber = beforerpt.PhoneNumber;
                 rptnew.TraceTime = rpt.TraceTime;
                 rptnew.ForwardDate = rpt.ForwardDate;
-                rptnew.PhoneCommunicateResult =rpt.PhoneCommunicateResult;
+                rptnew.PhoneCommunicateResult = rpt.PhoneCommunicateResult;
                 rptnew.Channel = beforerpt.Channel;
                 rptnew.ResumeType = beforerpt.ResumeType;
                 rptnew.IsEntry = beforerpt.IsEntry;
                 rptnew.Remark = rpt.Remark;
                 rptnew.IsDel = true;
                 rptnew.Pid = rpt.Pid;
-             
-               rptmanage.Insert(rptnew);
+
+                rptmanage.Insert(rptnew);
                 AjaxResultxx = rptmanage.Success();
-                if (AjaxResultxx.Success) {
+                if (AjaxResultxx.Success)
+                {
                     beforerpt.PhoneCommunicateResult = rptnew.PhoneCommunicateResult;
                     rptmanage.Update(beforerpt);
                     AjaxResultxx = rptmanage.Success();
@@ -197,8 +293,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             {
                 AjaxResultxx = rptmanage.Error(ex.Message);
             }
-           
-            return Json(AjaxResultxx,JsonRequestBehavior.AllowGet);
+
+            return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -206,7 +302,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public ActionResult EditTrack(int id) {
+        public ActionResult EditTrack(int id)
+        {
             RecruitPhoneTraceManage rmanage = new RecruitPhoneTraceManage();
             List<RecruitPhoneTraceView> rptviewlist = new List<RecruitPhoneTraceView>();
 
@@ -225,26 +322,29 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         /// <param name="Tracklist"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult EditTracks(string Tracklist) {
+        public ActionResult EditTracks(string Tracklist)
+        {
             var AjaxResultxx = new AjaxResult();
             RecruitPhoneTraceManage rptmanage = new RecruitPhoneTraceManage();
             try
             {
                 string[] str = Tracklist.Split(',');
-                    string id = str[0];
-                    string pid = str[1];
-                    string time = str[2];
-                    string PhoneNumber = str[3];
-                    string Channel = str[4];
-                    string ResumeType = str[5];
-                    string remark = str[6];
+                string id = str[0];
+                string pid = str[1];
+                string time = str[2];
+                string PhoneNumber = str[3];
+                string Channel = str[4];
+                string ResumeType = str[5];
+                string remark = str[6];
+                string ForwardDate = str[7];
                 var rpt = rptmanage.GetEntity(int.Parse(id));
-                rpt.Pid =int.Parse(pid);
-                rpt.TraceTime =Convert.ToDateTime(time);
+                rpt.Pid = int.Parse(pid);
+                rpt.TraceTime = Convert.ToDateTime(time);
                 rpt.PhoneNumber = PhoneNumber;
                 rpt.Channel = Channel;
                 rpt.ResumeType = ResumeType;
                 rpt.Remark = remark;
+                rpt.ForwardDate =Convert.ToDateTime(ForwardDate);
                 rptmanage.Update(rpt);
                 AjaxResultxx = rptmanage.Success();
 
@@ -253,7 +353,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             {
                 AjaxResultxx = rptmanage.Error(ex.Message);
             }
-            return Json(AjaxResultxx,JsonRequestBehavior.AllowGet);
+            return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
         /// 有面试记录的追踪编辑提交
@@ -262,18 +362,20 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         /// <param name="Tracklist"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult EditTrack(RecruitPhoneTrace mydata, string Tracklist) {
+        public ActionResult EditTrack(RecruitPhoneTrace mydata, string Tracklist)
+        {
             var AjaxResultxx = new AjaxResult();
             RecruitPhoneTraceManage rptmanage = new RecruitPhoneTraceManage();
             try
-            {     
+            {
                 var rpt1 = rptmanage.GetEntity(mydata.Id);
                 rpt1.TraceTime = mydata.TraceTime;
                 rpt1.PhoneCommunicateResult = mydata.PhoneCommunicateResult;
                 rpt1.Remark = mydata.Remark;
                 rptmanage.Update(rpt1);
                 AjaxResultxx = rptmanage.Success();
-                if (AjaxResultxx.Success) {
+                if (AjaxResultxx.Success)
+                {
                     string[] str = Tracklist.Split(',');
                     string id = str[0];
                     string pid = str[1];
@@ -281,7 +383,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                     string PhoneNumber = str[3];
                     string Channel = str[4];
                     string ResumeType = str[5];
-                   // string result = str[6];
+                    // string result = str[6];
                     string remark = str[6];
                     var rpt2 = rptmanage.GetEntity(int.Parse(id));
                     rpt2.Pid = int.Parse(pid);
@@ -289,19 +391,19 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                     rpt2.PhoneNumber = PhoneNumber;
                     rpt2.Channel = Channel;
                     rpt2.ResumeType = ResumeType;
-                  //  rpt2.PhoneCommunicateResult =Convert.ToBoolean(result);
+                    //  rpt2.PhoneCommunicateResult =Convert.ToBoolean(result);
                     rpt2.Remark = remark;
                     rpt2.PhoneCommunicateResult = rpt1.PhoneCommunicateResult;
                     rptmanage.Update(rpt2);
                     AjaxResultxx = rptmanage.Success();
-                 
+
                 }
             }
             catch (Exception ex)
             {
                 AjaxResultxx = rptmanage.Error(ex.Message);
             }
-            return Json(AjaxResultxx,JsonRequestBehavior.AllowGet);
+            return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -309,7 +411,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public ActionResult TrackDetailInfo(int id) {
+        public ActionResult TrackDetailInfo(int id)
+        {
             RecruitPhoneTraceManage rmanage = new RecruitPhoneTraceManage();
             List<RecruitPhoneTraceView> rptviewlist = new List<RecruitPhoneTraceView>();
             ViewBag.Id = id;
@@ -319,7 +422,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             return View();
         }
 
-        public ActionResult IsEntry(int id) {
+        public ActionResult IsEntry(int id)
+        {
             RecruitPhoneTraceManage rmanage = new RecruitPhoneTraceManage();
             var rpt = rmanage.GetRptView(id);
             ViewBag.Id = id;
@@ -328,26 +432,27 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult IsEntry(string id) {
+        public ActionResult EdiIsEntrytTrack(int id)
+        {
             RecruitPhoneTraceManage rmanage = new RecruitPhoneTraceManage();
             var AjaxResultxx = new AjaxResult();
             try
             {
-                var rpt = rmanage.GetEntity(int.Parse(id));
+                var rpt = rmanage.GetEntity(id);
                 var rptlist = rmanage.GetList().Where(s => s.SonId == rpt.SonId).ToList();
                 foreach (var item in rptlist)
                 {
                     item.IsEntry = true;
                     rmanage.Update(item);
                 }
-               AjaxResultxx= rmanage.Success();
+                AjaxResultxx = rmanage.Success();
             }
             catch (Exception ex)
             {
                 AjaxResultxx = rmanage.Error(ex.Message);
             }
-           
-            return Json(AjaxResultxx,JsonRequestBehavior.AllowGet);
+
+            return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
         }
 
 
@@ -437,24 +542,26 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         /// </summary>
         /// <param name="rptlist"></param>
         /// <returns></returns>
-        public int GetRefacednum(List<RecruitPhoneTrace> rptlist) {
-            int result=0;
-            var conditionrpt = rptlist.GroupBy(s=>s.SonId);
+        public int GetRefacednum(List<RecruitPhoneTrace> rptlist)
+        {
+            int result = 0;
+            var conditionrpt = rptlist.GroupBy(s => s.SonId);
 
-            conditionrpt.ForEach(d=>
+            conditionrpt.ForEach(d =>
             {
                 if (d.Count() > 1)
                 {
-                    result+=d.Count()-1;
+                    result += d.Count() - 1;
                 }
-                
+
             });
 
-           // result = conditionrpt.Count();
+            // result = conditionrpt.Count();
             return result;
         }
         //月度招聘数据汇总添加
-        public AjaxResult AddRecruitData()   {
+        public AjaxResult AddRecruitData()
+        {
             var AjaxResultxx = new AjaxResult();
             RecruitPhoneTraceManage rpt = new RecruitPhoneTraceManage();
             RecruitingDataSummaryManage rdsmanage = new RecruitingDataSummaryManage();
@@ -465,7 +572,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             {
                 var list = from r in rptlist
                            group r by new
-                           { r.Pid, month = Condition((DateTime)r.TraceTime, "month") } 
+                           { r.Pid, month = Condition((DateTime)r.TraceTime, "month") }
                            into g
                            select g;
                 foreach (var item in list)
@@ -526,7 +633,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                         {
                             rds.RecruitPercentage = Convert.ToDecimal(rds.InstantEntryNum) / Convert.ToDecimal(rds.PlanRecruitNum);
                         }
-                        else {
+                        else
+                        {
                             rds.RecruitPercentage = 0;
                         }
                         rdsmanage.Update(rds);
@@ -542,7 +650,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                     #endregion
                 }
 
-             
+
                 AjaxResultxx = rdsmanage.Success();
 
             }
@@ -558,12 +666,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         /// <param name="id"></param>
         /// <param name="endvalue"></param>
         /// <returns></returns>
-        public ActionResult EditTableCell(int id,string attribute, string endvalue) {
-           RecruitingDataSummaryManage rdsmanage = new RecruitingDataSummaryManage();
+        public ActionResult EditTableCell(int id, string attribute, string endvalue)
+        {
+            RecruitingDataSummaryManage rdsmanage = new RecruitingDataSummaryManage();
             var AjaxResultxx = new AjaxResult();
             try
             {
-                var rds= rdsmanage.GetEntity(id);
+                var rds = rdsmanage.GetEntity(id);
                 switch (attribute)
                 {
                     case "PlanRecruitNum":
@@ -579,14 +688,14 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                         rds.Remark = endvalue;
                         rdsmanage.Update(rds);
                         break;
-                }                          
-                AjaxResultxx= rdsmanage.Success();
+                }
+                AjaxResultxx = rdsmanage.Success();
             }
             catch (Exception ex)
             {
                 AjaxResultxx = rdsmanage.Error(ex.Message);
             }
-            return Json(AjaxResultxx,JsonRequestBehavior.AllowGet);
+            return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
         }
 
 

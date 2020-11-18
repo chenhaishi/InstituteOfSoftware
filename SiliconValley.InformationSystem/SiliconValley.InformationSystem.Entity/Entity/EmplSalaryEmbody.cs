@@ -15,7 +15,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     using System.ComponentModel.DataAnnotations.Schema;
     //员工工资体系表
     [Table(name: "EmplSalaryEmbody")]
-    public partial class EmplSalaryEmbody
+    public partial class EmplSalaryEmbody 
     {  [Key] 
         public int Id { get; set; }
         public string EmployeeId { get; set; }

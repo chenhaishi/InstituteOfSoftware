@@ -18,9 +18,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
     using SiliconValley.InformationSystem.Business.StudentBusiness;
     using SiliconValley.InformationSystem.Business.TeachingDepBusiness;
     using SiliconValley.InformationSystem.Entity.MyEntity;
-   
+    using SiliconValley.InformationSystem.Entity.ViewEntity;
 
-  
     public class StudentExamSysController : Controller
     {
 
@@ -32,6 +31,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         private readonly ExamScoresBusiness db_examScores;
         private readonly AnswerQuestionBusiness db_answerQuestion;
         private readonly CandidateInfoBusiness db_candidateinfo;
+        private readonly ComputerTestQuestionsBusiness db_computerTestQuestion;
 
         public StudentExamSysController()
         {
@@ -41,6 +41,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             db_examScores = new ExamScoresBusiness();
             db_answerQuestion = new AnswerQuestionBusiness();
             db_candidateinfo =new CandidateInfoBusiness();
+            db_computerTestQuestion = new ComputerTestQuestionsBusiness();
         }
         // GET: ExaminationSystem/StudentExamSys
         public ActionResult StuExamIndex()
@@ -90,6 +91,26 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             return View();
         }
         /// <summary>
+        /// 判断如果机试提交提交并且确认提交，提交压缩包为空那么就也默认考试完毕
+        /// </summary>
+        /// <param name="examid"></param>
+        /// <returns></returns>
+        //public ActionResult MachineTestisEmpty(int examid)
+        //{
+        //    AjaxResult result = new AjaxResult();
+        //    //获取当前登录学员
+        //    var studentNumber = SessionHelper.Session["studentnumber"].ToString();
+
+        //    var candidateinfo = db_candidateinfo.CandidateInfoList().Where(d => d.Examination == examid && d.StudentID == studentNumber).SingleOrDefault();
+        //    if (candidateinfo.ComputerPaper == "")
+        //    {
+        //        result.Data = "0";
+        //        result.Msg = "成功";
+        //        result.ErrorCode = 400;
+        //    }
+        //    return Json(result, JsonRequestBehavior.AllowGet);
+        //}
+        /// <summary>
         /// 如果中途关闭了机试页,再次进入考场直接跳转到机试页
         /// </summary>
         /// <param name="examid"></param>
@@ -101,7 +122,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             var studentNumber = SessionHelper.Session["studentnumber"].ToString();
 
             var candidateinfo = db_candidateinfo.CandidateInfoList().Where(d => d.Examination == examid && d.StudentID == studentNumber).SingleOrDefault();
-            if (candidateinfo.ComputerPaper == null)
+            if (candidateinfo.ComputerPaper == "1")
             {
                 result.Data = "0";
                 result.Msg = "成功";
@@ -110,8 +131,65 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             return Json(result, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
-        ///获取学员最近的一次考试
+        /// 当有考试 模拟考试禁止进入
         /// </summary>
+        /// <returns></returns>
+        //public ActionResult SimulationProhibit()
+        //{
+        //    AjaxResult result = new AjaxResult();
+        //    try
+        //    {
+        //        //查出所有未结束的考试,判断离今日最近的未结束考试,这堂考试时间来了之后就不能让他们访问，这堂考试结束之后才能结束访问
+        //        var list = db_exam.AllExamination().OrderByDescending(d => d.BeginDate).ToList();      
+                
+        //        var resultlist = new List<ExaminationView>();
+                
+        //        foreach (var item in list)
+        //        {
+        //            var tempobj = db_exam.ConvertToExaminationView(item);
+
+        //            if (tempobj != null)
+        //            {
+        //                resultlist.Add(tempobj);
+        //            }
+        //        }
+        //        result.Data = null;
+        //        result.Msg = "成功";
+        //        result.ErrorCode = 200;
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        result.Data = null;
+        //        result.Msg = "失败";
+        //        result.ErrorCode = 500;
+        //    }
+        //    return Json(result, JsonRequestBehavior.AllowGet);
+        //}
+        /// <summary>
+        /// 当有考试 刷题禁止进入
+        /// </summary>
+        /// <returns></returns>
+        //public ActionResult BrushthetopicProhibit()
+        //{
+        //    AjaxResult result = new AjaxResult();
+        //    try
+        //    {
+        //        result.Data = null;
+        //        result.Msg = "成功";
+        //        result.ErrorCode = 200;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        result.Data = null;
+        //        result.Msg = "失败";
+        //        result.ErrorCode = 500;
+        //    }
+        //    return Json(result, JsonRequestBehavior.AllowGet);
+        //}
+        /// <summary>
+        ///获取学员最近的一次考试
+        /// </summary> 
         /// <returns></returns>
         public ActionResult GetStuSooExam()
         {
@@ -119,34 +197,38 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             try
             {
+                //获取这个学生的信息
                 var studentNumber = SessionHelper.Session["studentnumber"].ToString();
+                //获取这个学生最近的一堂考试信息
                 var exam = db_stuExam.StudetnSoonExam(studentNumber.ToString()).OrderByDescending(d => d.BeginDate).FirstOrDefault();
                 var examview = db_exam.ConvertToExaminationView(exam);
-
+                var candidateinfo = db_candidateinfo.CandidateInfoList().Where(d => d.Examination == exam.ID && d.StudentID == studentNumber).SingleOrDefault();
                 //在判断是否考完了
 
-                if (examview != null)
+                if (examview != null )
                 {
                     var scores = db_examScores.StuExamScores(examview.ID, studentNumber);
-
-                    if (scores.ChooseScore != null)
+                    //判断如果选择题的分数不等于空，那么就默认他考试结束
+                    if (candidateinfo.ComputerPaper == "1" || candidateinfo.ComputerPaper == null && candidateinfo.Paper ==null)
                     {
-                        result.Data = "0";
-                        result.Msg = "成功";
-                        result.ErrorCode = 400;
+                        result.Data = examview;
+                        result.Msg = "考试继续";
+                        result.ErrorCode = 200;
                     }
                     else
                     {
-                        result.Data = examview;
-                        result.Msg = "成功";
-                        result.ErrorCode = 200;
+                        result.Msg = "考试结束";
+                        result.Data = "0";
+                        result.ErrorCode = 400;                        
                     }
+                    
                 }
                 else
                 {
                     result.Data = "0";
-                    result.Msg = "成功";
+                    result.Msg = "没有考试";
                     result.ErrorCode = 400;
+
                 }
 
 
@@ -325,23 +407,24 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
         public ActionResult ComputerQuestionUpload(int examid)
         {
-            var exam = db_exam.AllExamination().Where(d=>d.ID == examid).FirstOrDefault();
+            var courseid = 0;
+            var exam = db_exam.AllExamination().Where(d => d.ID == examid).FirstOrDefault();
             var examview = db_exam.ConvertToExaminationView(exam);
-
+            var PaperLevel = examview.PaperLevel.LevelID;
             //随机选择一个机试题
             var studentNumber = SessionHelper.Session["studentnumber"].ToString();
             //首先查看是否已经随机获取到了一个
 
-            var candidateInfo =  db_exam.AllCandidateInfo(examid).Where(d=>d.StudentID == studentNumber).FirstOrDefault();
+            var candidateInfo = db_exam.AllCandidateInfo(examid).Where(d => d.StudentID == studentNumber).FirstOrDefault();
             ComputerTestQuestionsView computer = null;
-            if (candidateInfo.ComputerPaper == null)
+            if (candidateInfo.ComputerPaper == "1")
             {
                 //第一次
 
                 //判断考试类型
                 if (examview.ExamType.ExamTypeID == 1)
                 {
-                    computer = db_stuExam.productComputerQuestion(exam,0);
+                    computer = db_stuExam.productComputerQuestion(exam, 0);
 
                     candidateInfo.ComputerPaper = computer.ID.ToString() + ",";
 
@@ -355,34 +438,32 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
                     XmlElement xmlelm = db_exam.ExamCourseConfigRead(examid);
 
-                    int courseid = int.Parse(xmlelm.FirstChild.Attributes["id"].Value);
+                    courseid = int.Parse(xmlelm.FirstChild.Attributes["id"].Value);
                     computer = db_stuExam.productComputerQuestion(exam, courseid);
 
-                    candidateInfo.ComputerPaper = computer.ID.ToString() + ",";
+                    //candidateInfo.ComputerPaper = computer.ID.ToString() + ",";
 
-                    db_exam.UpdateCandidateInfo(candidateInfo);
-                }           
+                    //db_exam.UpdateCandidateInfo(candidateInfo);
+                }
             }
+                CloudstorageBusiness Bos = new CloudstorageBusiness();
+                
+                var client = Bos.BosClient();
 
+            //var ar = candidateInfo.ComputerPaper.Split(',');.Where(d => d.ID == int.Parse(ar[0]))
 
-            CloudstorageBusiness Bos = new CloudstorageBusiness();
+            var com = db_exam.AllComputerTestQuestion(PaperLevel, courseid,IsNeedProposition: false);
+                
+                var filename = Path.GetFileName(com.SaveURL);
+              
+                //var path = Server.MapPath("/uploadXLSXfile/ComputerTestQuestionsWord/" + filename);
+              
+                var fileData = client.GetObject("xinxihua", $"/ExaminationSystem/ComputerTestQuestionsWord/{filename}");
+              
+                //FileStream fileStream = new FileStream(path, FileMode.Open);
+              
+                return File(fileData.ObjectContent, "application/octet-stream", Server.UrlEncode(filename));
 
-            var client = Bos.BosClient();
-
-            var ar = candidateInfo.ComputerPaper.Split(',');
-
-           var com = db_exam.AllComputerTestQuestion(IsNeedProposition : false).Where(d => d.ID ==int.Parse( ar[0])).FirstOrDefault();
-
-            var filename = Path.GetFileName(com.SaveURL);
-
-            //var path = Server.MapPath("/uploadXLSXfile/ComputerTestQuestionsWord/" + filename);
-
-            var fileData = client.GetObject("xinxihua", $"/ExaminationSystem/ComputerTestQuestionsWord/{filename}");
-
-            //FileStream fileStream = new FileStream(path, FileMode.Open);
-
-            return File(fileData.ObjectContent, "application/octet-stream", Server.UrlEncode(filename));
-            
         }
         /// <summary>
         /// 获取选择题答案
@@ -453,8 +534,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             //获取我需要的配置		foreach	error CS1525: 表达式项“foreach”无效	
 
-            //
-
+           
             var choxml = (XmlElement)xmlRoot.GetElementsByTagName("choicequestion")[0];
             var answer = (XmlElement)xmlRoot.GetElementsByTagName("answerQuestion")[0];
             int choiceCount  = int.Parse(choxml.GetElementsByTagName("total")[0].InnerText);
@@ -523,7 +603,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             return Json(result);
         }
 
-
+        [HttpPost]
+        [ValidateInput(false)]
         /// <summary>
         /// 学员提交答卷 
         /// </summary>
@@ -560,7 +641,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 //var computerfile = Request.Files["rarfile"];
 
                 //保存的机试题路径
-                string computerUrl = "";
+                //string computerUrl = "";
                 //if (computerfile != null)
                 //{
                 //获取文件拓展名称 
@@ -576,23 +657,23 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 var Candidateinfo = db_exam.AllCandidateInfo(examid).Where(d => d.Examination == examid && d.StudentID == studentNumber).FirstOrDefault();
                 //Candidateinfo.Paper = Server.MapPath("/Areas/ExaminationSystem/Files/AnswerSheet/" + direName + "/" + answerfilename);
                 Candidateinfo.Paper = $"{direName}{answerfilename}";
-
+                Candidateinfo.ComputerPaper = "1";
                 //获取需要替换的字符串路径
 
-                if (Candidateinfo.ComputerPaper != null)
-                {
-                    var old = Candidateinfo.ComputerPaper.Substring(Candidateinfo.ComputerPaper.IndexOf(',') + 1);
+                //if (Candidateinfo.ComputerPaper != null)
+                //{
+                //    var old = Candidateinfo.ComputerPaper.Substring(Candidateinfo.ComputerPaper.IndexOf(',') + 1);
 
-                    if (old.Length == 0)
-                    {
-                        Candidateinfo.ComputerPaper = Candidateinfo.ComputerPaper + computerUrl;
-                    }
-                    else
+                //    if (old.Length == 0)
+                //    {
+                //        Candidateinfo.ComputerPaper = Candidateinfo.ComputerPaper + computerUrl;
+                //    }
+                //    else
 
-                    {
-                        Candidateinfo.ComputerPaper = Candidateinfo.ComputerPaper.Replace(old, computerUrl);
-                    }
-                }
+                //    {
+                //        Candidateinfo.ComputerPaper = Candidateinfo.ComputerPaper.Replace(old, computerUrl);
+                //    }
+                //}
 
                 db_exam.UpdateCandidateInfo(Candidateinfo);
 
@@ -623,7 +704,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             } 
             catch (Exception ex)
             {
-
+                //SiliconValley.InformationSystem.Util.ErrorLog.clsLogHelper.m_CreateErrorLogTxt("myExecute(" & str执行SQL语句 & ")", Err.Number.ToString, Err.Description)
                 result.ErrorCode = 500;
                 result.Msg = "失败";
                 result.Data = null;

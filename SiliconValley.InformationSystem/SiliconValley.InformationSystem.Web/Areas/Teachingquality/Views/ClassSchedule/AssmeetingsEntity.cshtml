@@ -197,15 +197,13 @@
         //正则表达式
         form.verify({
             MyText: function (value) {
-                if (!/^[^\s]*$/.test(value)) {
-                    return '内容不能输入空格';
-                } else {
+              
                    
                         if (!/[\u4e00-\u9fa5][a-z,\u4e00-\u9fa5]*/.test(value)) {
                             return '输入内容不规范';
                         }
                    
-                }
+                
 
             }
 

@@ -20,10 +20,31 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         [Key]
         public int Id { get; set; }
         public string EmployeeId { get; set; }
+        /// <summary>
+        /// 缴费基数
+        /// </summary>
+        public Nullable<decimal> PaymentBase {get; set;}
+        /// <summary>
+        /// 大病保险
+        /// </summary>
+        public Nullable<decimal> SeriousIllnessInsurance { get; set; }
+        /// <summary>
+        /// 当前年月
+        /// </summary>
         public Nullable<System.DateTime> CurrentYearAndMonth { get; set; }
+        /// <summary>
+        /// 补缴月份
+        /// </summary>
         public Nullable<int> OverPayMonthNum { get; set; }
+        /// <summary>
+        /// 单位小计
+        /// </summary>
         public Nullable<decimal> UnitTotal { get; set; }
+        /// <summary>
+        /// 个人小计
+        /// </summary>
         public Nullable<decimal> PersonalTotal { get; set; }
+
         public string Remark { get; set; }
         public Nullable<bool> IsDel { get; set; }
     

@@ -35,5 +35,10 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data.MyViewEntity
         /// 应退金额
         /// </summary>
         public decimal SumMoney { get; set; }
+
+        /// <summary>
+        /// 保险柜费用
+        /// </summary>
+        public decimal BaoxianguiMoney { get; set; }
     }
 }

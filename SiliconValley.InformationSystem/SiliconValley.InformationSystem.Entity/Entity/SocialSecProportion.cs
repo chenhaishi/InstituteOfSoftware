@@ -19,11 +19,29 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     {
         [Key]
         public int Id { get; set; }
+        /// <summary>
+        /// 社保类型
+        /// </summary>
         public string PayType { get; set; }
+        /// <summary>
+        /// 养老保险
+        /// </summary>
         public Nullable<decimal> EndowmentInsurance { get; set; }
+        /// <summary>
+        /// 医疗保险
+        /// </summary>
         public Nullable<decimal> MedicalInsurance { get; set; }
+        /// <summary>
+        /// 工伤保险
+        /// </summary>
         public Nullable<decimal> WorkInjuryInsurance { get; set; }
+        /// <summary>
+        /// 生育保险
+        /// </summary>
         public Nullable<decimal> MaternityInsurance { get; set; }
+        /// <summary>
+        /// 失业保险
+        /// </summary>
         public Nullable<decimal> UnemploymentInsurance { get; set; }
         public Nullable<bool> IsDel { get; set; }
     }

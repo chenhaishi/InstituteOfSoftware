@@ -50,6 +50,7 @@
 </div>
 
 <table id="DormitoryDeposit_table" lay-filter="DormitoryDeposit_table"></table>
+ 
 
 <script type="text/html" id="DormitoryDeposit_toolbarDemo">
     <div class="layui-btn-container">
@@ -109,42 +110,47 @@
                 elem: '#endTime'
                 , trigger: 'click'
             });
-
-            table.render({
-                elem: '#DormitoryDeposit_table'
-                , url: '/DormitoryMaintenance/DormitoryDeposit/GetData'
-                , toolbar: '#DormitoryDeposit_toolbarDemo'  
-                , cols: [[
-                    { type: 'checkbox', fixed: 'left' }
-                    , { field: 'stuName', title: '学生姓名',fixed: 'left'}
-                    , { field: 'DorName', title: '寝室编号'}
-                    , {
-                        field: 'Maintain', title: '维修日期', templet: function (res) {
-                            return ShenyeDate(res.Maintain);
-                        }
-                    }
-                    , { field: 'Nameofarticle', title: '维修物品' }
-                    , {
-                        field: 'GoodPrice', title: '应付价格', templet: function (res) {
-                            return res.GoodPrice+"元"
-                        }
-                    }
-                    , {
-                        field: 'MaintainState', title: '状态',templet: function (res) {
-                            if (res.MaintainState == 1) {
-                                return '<span style="color:red">未处理</span>'
-                            } else if (res.MaintainState == 2) {
-                                return '已扣除'
+ 
+                table.render({
+                    elem: '#DormitoryDeposit_table'
+                    , url: '/DormitoryMaintenance/DormitoryDeposit/GetData'
+                    , toolbar: '#DormitoryDeposit_toolbarDemo'
+                    , cols: [[
+                        { type: 'checkbox', fixed: 'left' }
+                        , { field: 'stuName', title: '学生姓名', fixed: 'left' }
+                        , { field: 'ClassName', title: '目前班级' }
+                        , { field: 'DorName', title: '寝室编号' }
+                        , { field: 'ChuangNumber', title: '床位号' }
+                        , {
+                            field: 'Maintain', title: '维修日期', templet: function (res) {
+                                return ShenyeDate(res.Maintain);
                             }
                         }
-                    }
-                    
-                    //, { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150 }
-                ]]
-                , page: true
-                , limits: [20, 40, 50, 90, 100]
-                ,limit:20
-            });
+                        , { field: 'Nameofarticle', title: '维修物品' }
+                        , {
+                            field: 'GoodPrice', title: '应付价格', templet: function (res) {
+                                return res.GoodPrice + "元"
+                            }
+                        }
+                        , {
+                            field: 'MaintainState', title: '状态', templet: function (res) {
+                                if (res.MaintainState == 1) {
+                                    return '<span style="color:red">未处理</span>'
+                                } else if (res.MaintainState == 2) {
+                                    return '已扣除'
+                                }
+                            }
+                        }
+
+                        //, { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150 }
+                    ]]
+                    , page: true
+                    , limits: [20, 40, 50, 90, 100]
+                    , limit: 20
+                });
+             
+
+            
 
             //头工具栏事件
             table.on('toolbar(DormitoryDeposit_table)', function (obj) {

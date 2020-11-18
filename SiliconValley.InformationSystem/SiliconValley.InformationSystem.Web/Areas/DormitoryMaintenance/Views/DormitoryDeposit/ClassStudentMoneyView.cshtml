@@ -74,7 +74,8 @@
 
 
 <script type="text/html" id="classstudentbarDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="mantainDefault">维修详情</a>
+    <a class="layui-btn layui-btn-xs" lay-event="mantainDefault">物品维修详情</a>
+    <a class="layui-btn layui-btn-xs" lay-event="StuDefault">学生住宿详情</a>
 </script>
 
 <script type="text/html" id="ClasstoolbarDemo">
@@ -88,7 +89,7 @@
             else if (ViewBag.number == 2)
             {
 
-                <button class="layui-btn layui-btn-sm" lay-event="AddSafe">保险柜费用录入</button>
+                @*<button class="layui-btn layui-btn-sm" lay-event="AddSafe">保险柜费用录入</button>*@
             }
         }
 
@@ -113,7 +114,8 @@
                     { type: 'checkbox', fixed: 'left' }
                     , { field: 'StuName', title: '学生姓名' }
                     , { field: 'PayMoney', title: '宿舍押金' }
-                    , { field: 'MantainMoney', title: '维修费用' }
+                    , { field: 'BaoxianguiMoney', title: '保险柜总费用' }
+                    , { field: 'MantainMoney', title: '维修费用' }                    
                     , {
                         field: 'SumMoney', title: '应退费用', templet: function (res) {
 
@@ -121,7 +123,7 @@
                         }
 
                     }
-                    , { fixed: 'right', title: '操作', toolbar: '#classstudentbarDemo', width: 150 }
+                    , { fixed: 'right', title: '操作', toolbar: '#classstudentbarDemo', width: 250 }
                 ]]
             });
 
@@ -141,6 +143,13 @@
                         type: 2,
                         title: '维修详情',
                         content: '/DormitoryMaintenance/DormitoryDeposit/MantainDefileView/' + data.StuNumber,
+                        area: ['1000px', '600px']
+                    });
+                } else if (obj.event=== "StuDefault") {
+                    layer.open({
+                        type: 2,
+                        title: '学生住宿详情',
+                        content: '/DormitoryMaintenance/DormitoryDeposit/StuNameDefileView/' + data.StuNumber,
                         area: ['1000px', '600px']
                     });
                 }

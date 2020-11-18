@@ -1,0 +1,132 @@
+﻿@{
+    Layout = null;
+}
+@using SiliconValley.InformationSystem.Entity.MyEntity
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+    <script src="~/Scripts/layui/layui.js"></script>
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+    <div>
+        @{
+            SocialSecProportion  social = Model as SocialSecProportion;
+        }
+        <form class="layui-form" action="" id="formtest" lay-filter="formtest">
+            <fieldset class="layui-elem-field">
+                <legend>单位部分</legend>
+                <div class="layui-field-box">
+                    <div class="layui-container">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">养老保险:</label>
+                            <div class="layui-input-inline" style="width:200px;">
+                                <input type="text" name="EndowmentInsurance" class="layui-input" value="@social.EndowmentInsurance" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">医疗保险:</label>
+                            <div class="layui-input-inline" style="width:200px;">
+                                <input type="text" name="MedicalInsurance" class="layui-input" value="@social.MedicalInsurance" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">工伤保险:</label>
+                            <div class="layui-input-inline" style="width:200px;">
+                                <input type="text" name="WorkInjuryInsurance" class="layui-input" value="@social.WorkInjuryInsurance" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">生育保险:</label>
+                            <div class="layui-input-inline" style="width:200px;">
+                                <input type="text" name="MaternityInsurance" class="layui-input" value="@social.MaternityInsurance" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">失业保险:</label>
+                            <div class="layui-input-inline" style="width:200px;">
+                                <input type="text" name="UnemploymentInsurance" class="layui-input" value="@social.UnemploymentInsurance" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset class="layui-elem-field">
+                <legend> 个人部分</legend>
+                <div class="layui-field-box">
+                    <div class="layui-container">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">养老保险:</label>
+                            <div class="layui-input-inline" style="width:200px;">
+                                <input type="text" name="PersonalEndowmentInsurance" class="layui-input" value="@ViewBag.PersonalEndowmentInsurance" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">生育保险:</label>
+                            <div class="layui-input-inline" style="width:200px;">
+                                <input type="text" name="PersonalMedicalInsurance" class="layui-input" value="@ViewBag.PersonalMedicalInsurance" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">失业保险:</label>
+                            <div class="layui-input-inline" style="width:200px;">
+                                <input type="text" name="PersonalUnemploymentInsurance" class="layui-input" value="@ViewBag.PersonalUnemploymentInsurance" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+          
+
+
+
+            <div class="layui-form-item" style="margin-left:50px;margin-top:30px;">
+                <div class="layui-input-block">
+                    <button class="layui-btn " lay-submit="" type="button" lay-filter="demo1">立即提交</button>
+                    <button class="layui-btn " id="btnclose1">关闭</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script>
+        layui.use(['form', 'layer'], function () {
+            var form = layui.form, layer = layui.layer
+            form.on('submit(demo1)', function (data) {
+                $.ajax({
+                    url: "/Personnelmatters/SocialSecurityDetail/SocialSecProportionEdit",
+                    type: "post",
+                    data: JSON.stringify({
+                        "soc": data.field
+                    }),
+                    dataType: "json",
+                    contentType: "Application/json",
+                    success: function (data) {
+                        if (data.Success) {
+                            layer.alert(data.Msg, function () {
+                                var index = parent.layer.getFrameIndex(window.name);
+                                parent.layui.table.reload('Soctab');
+                                parent.layer.close(index);
+                            });
+                        } else {
+                            layer.alert(data.Msg);
+                        }
+                       
+                       
+                    }
+                })
+                return false;
+            });
+            $("#btnclose1").click(function () {
+                var index = parent.layer.getFrameIndex(window.name);
+                parent.layui.table.reload('Soctab');
+                parent.layer.close(index);
+            });
+        });
+    </script>
+</body>
+</html>

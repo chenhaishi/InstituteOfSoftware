@@ -13,10 +13,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 {
     using System.IO;
     using System.Text;
+    using System.Xml;
     using Newtonsoft.Json;
     using SiliconValley.InformationSystem.Business.Cloudstorage_Business;
+    using SiliconValley.InformationSystem.Business.CourseSyllabusBusiness;
     using SiliconValley.InformationSystem.Business.StudentBusiness;
     using SiliconValley.InformationSystem.Business.TeachingDepBusiness;
+    using SiliconValley.InformationSystem.Entity.ViewEntity.zhongyike;
 
     /// <summary>
     /// 学员成绩控制器
@@ -38,6 +41,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         private readonly AnswerQuestionBusiness db_answerQuestion;
 
         private readonly StudentInformationBusiness db_student;
+        private readonly CourseBusiness db_course;
 
         public ExamScoresController()
         {
@@ -46,6 +50,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             db_stuExam = new StudentExamBusiness();
             db_answerQuestion = new AnswerQuestionBusiness();
             db_student = new StudentInformationBusiness();
+            db_course =  new CourseBusiness();
         }
 
         public ActionResult Index()
@@ -97,14 +102,21 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
 
         /// <summary>
-        /// 阅卷
+        /// 阅卷页面1
         /// </summary>
         /// <returns></returns>
         public ActionResult Marking()
         {
             return View();
         }
-
+        /// <summary>
+        /// 阅卷页面2
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult MarkingPapers()
+        {
+            return View();
+        }
 
         /// <summary>
         /// 阅卷数据
@@ -392,7 +404,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             //获取答卷路径
 
-            if (candidateinfo.ComputerPaper == null)
+            if (candidateinfo.ComputerPaper == null || candidateinfo.ComputerPaper == "1" || candidateinfo.ComputerPaper == "")
             {
                 return Json("404", JsonRequestBehavior.AllowGet);
             }
@@ -420,7 +432,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
                 //获取答卷路径
 
-                if (candidateinfo.ComputerPaper == null)
+                if (candidateinfo.ComputerPaper == null || candidateinfo.ComputerPaper == "1" || candidateinfo.ComputerPaper == "")
                 {
                     result.ErrorCode = 200;
                     result.Data = "0";
@@ -691,24 +703,15 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         /// <returns></returns>
         public ActionResult ExamScoreSearch()
         {
-
-
-
             //获取所有考试
-            var allExam = db_exam.AllExamination();
+            //var allExam = db_exam.AllExamination();
 
-            ViewBag.Examlist = allExam;
+            //ViewBag.Examlist = allExam;
+
+            //获取这堂考试的阶段
 
 
             return View();
-        }
-        /// <summary>
-        /// 导出excel
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult DaoChuShuJu()
-        {
-            return null;
         }
         /// <summary>
         /// 计算考试合格率
@@ -817,19 +820,55 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
 
         /// <summary>
-        /// 获取参加考试的班级
+        /// 获取这个时间段参加考试的考试
         /// </summary>
-        /// <returns></returns>
-        public ActionResult ExamJoinClass(int examid)
+        /// <returns>riqi</returns>日期
+        public ActionResult ExamJoinClass(string riqi)
         {
             AjaxResult result = new AjaxResult();
-
+            DateTime dt = DateTime.Parse(riqi);
+            string yys = dt.Year.ToString();
+            string mms = dt.Month.ToString();
+            string nianyue = yys + "-" + mms;
+            //var list = new List<Examination>();
+            List<MyExamCurren> mylist = new List<MyExamCurren>();
+            
             try
             {
-               var classlist = db_examScores.GetExamJoinClass(examid);
+               
+                var exam = db_exam.GetList().ToList();
+                
+                foreach (Examination item in exam)
+                {
+                   
+                   int year= item.BeginDate.Year;
+                   int month = item.BeginDate.Month;
+                   //int day = item.BeginDate.Day;
+                   XmlElement xmlelm = db_exam.ExamCourseConfigRead(item.ID);
+                   int courseid = int.Parse(xmlelm.FirstChild.Attributes["id"].Value);
+                   var KeCheng = db_course.GetCurriculas().Where(d => d.CurriculumID == courseid).SingleOrDefault().CourseName;
+                    //+ "-" + day;
+                    string mm = year + "-" + month;
 
+                    if (nianyue == mm)
+                    {
+                        MyExamCurren mydata = new MyExamCurren();
+                        mydata.CurreName = KeCheng;
+                        mydata.Title = item.Title;
+                        mydata.ID = item.ID;
+                        mylist.Add(mydata);
+                    }
+
+
+                }
+                //foreach (var item in classlist)
+                //{
+                //    if () {
+
+                //    }
+                //}
                 result.ErrorCode = 200;
-                result.Data = classlist;
+                result.Data = mylist;
                 result.Msg = "";
             }
             catch (Exception ex)
@@ -842,6 +881,37 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             return Json(result, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        ///  一键下载这堂考试的所有机试
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult OneClickDownload(int examid)
+        {
+            CloudstorageBusiness Bos = new CloudstorageBusiness();
 
+            var client = Bos.BosClient();
+            List<FileStreamResult> zhi = new List<FileStreamResult>() ;
+            var candidateinfo = db_exam.AllCandidateInfo(examid).ToList();
+                foreach (var item in candidateinfo)
+                {
+                    if (!(item.ComputerPaper == null || item.ComputerPaper == "1" || item.ComputerPaper == ""))
+                    {
+                        //var computerPath = candidateinfo.ComputerPaper.Split(',')[1];
+                        var computerPath = item.ComputerPaper;
+                        //FileStream fileStream = new FileStream(computerPath, FileMode.Open);
+
+                        var filedata = client.GetObject("xinxihua", computerPath);
+
+                        var filename = Path.GetFileName(computerPath);
+
+                       //return File(filedata.ObjectContent, "application/octet-stream", Server.UrlEncode(filename));
+                        zhi.Add(File(filedata.ObjectContent, "application/octet-stream", Server.UrlEncode(filename)));
+                    }
+
+                }
+
+            var obj = new { data=zhi};
+            return Json(obj, JsonRequestBehavior.AllowGet);
+        }
     }
 }

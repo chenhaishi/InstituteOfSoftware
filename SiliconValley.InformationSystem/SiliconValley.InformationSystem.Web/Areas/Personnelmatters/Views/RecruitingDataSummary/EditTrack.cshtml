@@ -171,7 +171,7 @@
                                 <div class="layui-form-item">
                                     <div class="layui-input-block">
                                         <button class="layui-btn " lay-submit="" lay-filter="demo" style="margin-left:300px;">立即提交</button>
-                                        <button class="layui-btn btnclose">关闭</button>
+                                        <button class="layui-btn " id="btnclose">关闭</button>
                                     </div>
                                 </div>
 
@@ -306,8 +306,9 @@
                 var Channel = $("#Channel").val();
                 var ResumeType = $("#ResumeType").val();
                 //var result = $("#PhoneCommunicateResult1").val();
+                var ForwardDate = $("#ForwardDate").val();
                 var remark = $("#Remark1").val();
-                var Tracklist = id + "," + pid + "," + time + "," + pnumber + "," + Channel + "," + ResumeType + "," /*+ result + "," */+ remark;
+                var Tracklist = id + "," + pid + "," + time + "," + pnumber + "," + Channel + "," + ResumeType + "," /*+ result + "," */ + remark + "," + ForwardDate;
                 return Tracklist;
             }
 
@@ -318,6 +319,7 @@
                 var loadindex = layer.load(1);
                 $.post("/Personnelmatters/RecruitingDataSummary/EditTrack", { mydata: data.field, Tracklist: Tracklist }, function (data) {
                     layer.close(loadindex);
+                    console.log(data.field);
                     if (data.Success) {
                         layer.alert("编辑成功!", { icon: 1 }, function () {
                             var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引

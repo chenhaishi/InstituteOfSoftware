@@ -176,20 +176,33 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             var Preentry= Preentryfeebusenn.GetList().Where(a => a.identitydocument == studentInformationBusiness.GetEntity(id).identitydocument && a.Refundornot == null).ToList();
 
             ViewBag.Amountofmoney = dbtext.PreentryfeeFinet(id);
-
-
+            BaseBusiness<Preferential> Preferential = new BaseBusiness<Preferential>();
+            var Preferential_List = Preferential.GetList().ToList();
+            ViewBag.Preferential_List = Preferential_List;
             return View();
         }
         [HttpPost]
         //学员缴费数据操作
-        public ActionResult StudentPrices(string person, string Remarks,int? Stage)
+        public ActionResult StudentPrices(string person, string Remarks,int? Stage,string[] Help)
         {
             SessionHelper.Session["Stage"] = Stage;
             //引入序列化
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             //序列化
             var list = serializer.Deserialize<List<StudentFeeRecord>>(person);
-            return Json(dbtext.StudentPrices(list, Remarks), JsonRequestBehavior.AllowGet);
+            var Help_List = "";
+            //var Hele_List=serializer.Deserialize<List<StudentFeeRecord>>()
+            if (Help != null)
+            {
+                foreach (var item in Help)
+                {
+                    Help_List += item+",";
+                }
+                return Json(dbtext.StudentPrices(list, Remarks,Help_List), JsonRequestBehavior.AllowGet);
+            }
+                return Json(dbtext.StudentPrices(list, Remarks, Help_List), JsonRequestBehavior.AllowGet);
+            
+            
         }
             //树形菜单明目类别
         public ActionResult Tree()
@@ -198,7 +211,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             List<TreeClass> listtree = new List<TreeClass>();
             foreach (var item in list)
             {
-                if (item.Name== "自考本科费用"|| item.Name == "其它")
+                if (item.Name== "自考本科费用"|| item.Name == "重修费")
                 {
                     TreeClass seclass = new TreeClass();
                     seclass.title = item.Name;

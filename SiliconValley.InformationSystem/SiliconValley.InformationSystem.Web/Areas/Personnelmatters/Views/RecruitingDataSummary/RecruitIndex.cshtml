@@ -13,6 +13,122 @@
 
     <div class="layui-tab-content">
         <div class="layui-tab-item layui-show">
+            @*模糊查询*@
+            <fieldset>
+                <legend>条件查询</legend>
+                <form class="layui-form" action="" lay-filter="formtrace">
+                    <div class="layui-row layui-form-item">
+                        <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
+                            <label class="layui-form-label">姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名:</label>
+                            <div class="layui-input-inline" style="margin-left:10px;">
+                                <input type="text" id="Name" name="Name" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
+                            <label class="layui-form-label" style="width:100px;">部&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;门:</label>
+                            <div class="layui-input-inline">
+                                <select name="deptid1" id="deptid1" style="width:130px;" lay-filter="deptid1filter" lay-search=""></select>
+
+                            </div>
+                        </div>
+
+                        <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
+                            <label class="layui-form-label" style="width:100px;margin-left:-20px;">岗&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;位:</label>
+                            <div class="layui-input-inline">
+                                <select name="Pid1" id="Pid1" lay-filter="pid1filter" style="width:130px;">
+                                    <option value="">请选择应聘的岗位</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
+                            <label class="layui-form-label" style="width:100px;margin-left:-20px;">联系电话:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="PhoneNumber" name="PhoneNumber" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="layui-row layui-form-item">
+                        <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
+                            <label class="layui-form-label">渠&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;道:</label>
+                            <div class="layui-input-inline" style="margin-left:10px;">
+                                <input type="text" id="Channel" name="Channel" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
+                            <label class="layui-form-label" style="width:100px;">简历类型:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="ResumeType" name="ResumeType" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-col-xs3 layui-col-sm3 layui-col-md3" style="margin-left:-20px;">
+                            <label class="layui-form-label" style="width:100px;">面试结果:</label>
+                            <div class="layui-input-inline">
+                                <select name="result" id="result">
+                                    <option value="">--请选择--</option>
+                                    <option value="false">未通过</option>
+                                    <option value="true">已通过</option>
+                                </select>
+
+                            </div>
+                        </div>
+
+                        <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
+                            <label class="layui-form-label" style="width:100px;">是否入职:</label>
+                            <div class="layui-input-inline">
+                                <select name="IsEntry" id="IsEntry">
+                                    <option value="">--请选择--</option>
+                                    <option value="false">未入职</option>
+                                    <option value="true">已入职</option>
+                                </select>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="layui-row layui-form-item">
+                        <div class="layui-inline" style="margin-left:-13px;">
+                            <label class="layui-form-label" style="width:100px;margin-left:10px;">联系时间:</label>
+                            <div class="layui-inline" style="margin-left:-50px;">
+                                <label class="layui-form-label">从:</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" id="start_TraceTime" name="start_TraceTime" lay-verify="start_TraceTime" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-inline" style="margin-left:-50px;">
+                                <label class="layui-form-label">至:</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" id="end_TraceTime" name="end_TraceTime" lay-verify="end_TraceTime" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-inline">
+                            <label class="layui-form-label" style="width:120px;margin-left:-20px;">预面试时间:</label>
+                            <div class="layui-inline" style="margin-left:-40px;">
+                                <label class="layui-form-label">从:</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" id="start_ForwardDate" name="start_ForwardDate" lay-verify="start_ForwardDate" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-inline" style="margin-left:-50px;">
+                                <label class="layui-form-label">至:</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" id="end_ForwardDate" name="end_ForwardDate" lay-verify="end_ForwardDate" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+                        <button class="layui-btn" type="button" id="Conditionselect1" style="margin-left:40px;"><i class="layui-icon layui-icon-search"></i>查询</button>
+                    </div>
+                </form>
+            </fieldset>
+
             <table id="rptTab" lay-filter="rptTab"></table>
             @*头部工具栏*@
             <script type="text/html" id="toolbarDemo2">
@@ -29,6 +145,7 @@
             </script>
         </div>
         <div class="layui-tab-item">
+            @*月度汇总模糊查询*@
             <form class="layui-form" action="" lay-filter="formtest">
                 <div class="layui-row layui-form-item">
                     <div class="layui-inline">
@@ -64,33 +181,32 @@
                             </div>
                         </div>
                     </div>
-                    <button class="layui-btn" type="button" id="Conditionselect" style="margin-left:40px;"><i class="layui-icon layui-icon-search"></i>查询</button>
+                    <button class="layui-btn" type="button" id="Conditionselect" style="margin-left:160px;"><i class="layui-icon layui-icon-search"></i>查询</button>
                 </div>
             </form>
 
             <table id="recruitTab" lay-filter="recruitTab"></table>
-
         </div>
 
     </div>
 </div>
 
-@*招聘电话追踪记录的联系结果属性*@
-@*<script type="text/html" id="switchTp1">
-    <input type="checkbox" name="PhoneCommunicateResult" value="{{d.Id}}" lay-skin="switch" lay-text="通过|未通过" lay-filter="IsInterviewDemo" {{ d.PhoneCommunicateResult == true ? 'checked' : '' }}>
-</script>*@
-@*招聘电话追踪记录的是否入职属性*@
+@*招聘电话追踪记录的面试结果属性*@
 <script type="text/html" id="switchTp2">
-    <input type="checkbox" name="IsEntry" value="{{d.Id}}" lay-skin="switch" lay-text="是|否" lay-filter="entryDemo" {{ d.IsEntry == true ? 'checked' : '' }}>
+    {{# if(d.IsEntry==false){ }}
+    {{ d.IsEntry="未入职" }}
+    {{# }else{ }}
+    {{ d.IsEntry="已入职" }}
+    {{# } }}
 </script>
 
 
-@*复试结果*@
-<script type="text/html" id="result">
-    {{# if(d.RetestResult == "-1"){ }}
-    {{ d.RetestResult = "" }}
-    {{# } else { }}
-    {{ d.RetestResult = d.RetestResult }}
+@*招聘电话追踪记录的面试结果属性*@
+<script type="text/html" id="faceresult">
+    {{# if(d.result==false){ }}
+    {{ d.result="未通过" }}
+    {{# }else{ }}
+    {{ d.result="已通过" }}
     {{# } }}
 </script>
 
@@ -109,8 +225,8 @@
                 , url: '/Personnelmatters/RecruitingDataSummary/GetTraceData'
                 , id: "myrptData"
                 , toolbar: '#toolbarDemo2'
-                , limits: [1, 3, 6, 9, 12, 15, 18]
-                , limit: 6
+                , limits: [5, 10, 20, 30, 40, 50, 60]
+                , limit: 10
                 , cols: [[
                     { field: 'Name', title: '姓名', sort: true, width: 90 }
                     , { field: 'Dname', title: '应聘部门', sort: true, width: 130 }
@@ -119,12 +235,89 @@
                     , { field: 'TraceTime', title: '联系时间', width: 170, sort: true, templet: function (d) { return changeDateTimeFormat(d.TraceTime); } }
                     , { field: 'Channel', title: '渠道', width: 95, sort: true }
                     , { field: 'ResumeType', title: '简历类型', sort: true, width: 110 }
-                    , { field: 'ForwardDate', title: '预面试时间', width: 170, sort: true, templet: function (d) { return changeDateTimeFormat(d.ForwardDate); } }
-                    , { field: 'IsEntry', title: '是否入职', width: 100, templet: '#switchTp2', unresize: true }
+                    , { field: 'forwardDate', title: '预面试时间', width: 170, sort: true, templet: function (d) { return changeDateTimeFormat(d.forwardDate); } }
+                    , { field: 'result', title: '面试结果', width: 100, templet: '#faceresult' }
+                    , { field: 'IsEntry', title: '是否入职', width: 100, templet: '#switchTp2' }
                     , { field: 'Remark', title: '备注', sort: true, width: 90 }
                     , { fixed: 'right', title: '操作', toolbar: '#barDemo' }
                 ]]
                 , page: true
+            });
+
+            //模糊查询点击事件
+            $("#Conditionselect1").click(function () {
+                var name = $("#Name").val();
+                var deptid = $("#deptid1").val();
+                console.log(deptid);
+                var pid = $("#Pid1").val();//员工所属岗位
+                var PhoneNumber = $("#PhoneNumber").val();
+                var Channel = $("#Channel").val();
+                var ResumeType = $("#ResumeType").val();
+                var result = $("#result").val();
+                var IsEntry = $("#IsEntry").val();
+
+                var start_TraceTime = $("#start_TraceTime").val();//起始联系时间
+                var end_TraceTime = $("#end_TraceTime").val();//终止联系时间
+                var start_ForwardDate = $("#start_ForwardDate").val();//起始预面试时间
+                var end_ForwardDate = $("#end_ForwardDate").val();//终止预面试时间
+                layui.use(['table'], function () {
+                    var table = layui.table;
+                    table.reload('myrptData', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        }, where: {
+                            AppCondition: name + "," + deptid + "," + pid + "," + PhoneNumber + "," + Channel + "," + ResumeType + "," + result + "," + IsEntry + "," + start_TraceTime + "," + end_TraceTime + "," + start_ForwardDate + "," + end_ForwardDate
+                        }
+                    });
+                });
+
+
+
+            });
+            //日期
+            var start_TraceTime = laydate.render({
+                elem: '#start_TraceTime',
+                type: 'datetime',
+                done: function (value, date) {
+                    end_TraceTime.config.min = {
+                        year: date.year,
+                        month: date.month - 1//关键
+
+                    }
+                }
+            });
+            var end_TraceTime = laydate.render({
+                elem: '#end_TraceTime',
+                type: 'datetime',
+                done: function (value, date) {
+                    start_TraceTime.config.max = {
+                        year: date.year,
+                        month: date.month - 1//关键
+
+                    }
+                }
+            });
+            var start_ForwardDate = laydate.render({
+                elem: '#start_ForwardDate',
+                type: 'datetime',
+                done: function (value, date) {
+                    end_ForwardDate.config.min = {
+                        year: date.year,
+                        month: date.month - 1//关键
+
+                    }
+                }
+            });
+            var end_ForwardDate = laydate.render({
+                elem: '#end_ForwardDate',
+                type: 'datetime',
+                done: function (value, date) {
+                    start_ForwardDate.config.max = {
+                        year: date.year,
+                        month: date.month - 1//关键
+
+                    }
+                }
             });
 
             //头工具栏事件
@@ -184,7 +377,7 @@
                     }
                 });
             });
-
+            formtrace
         });
 
         //月度招聘数据汇总
@@ -469,6 +662,61 @@
             }
         }
     </script>
+
+    @*(追踪表的条件查询)部门与岗位的下拉框动态赋值及下拉框二级联动*@
+    <script>
+        layui.use(['form', 'upload', 'layer'], function () {
+            var form = layui.form;
+            $.ajax({
+                url: '/Personnelmatters/EmployeesInfo/BindDeptSelect',
+                data: {},
+                dataType: "json",
+                success: function (resultData) {
+                    $("#deptid1").empty();
+                    if (resultData.code == 0) {
+                        $("#deptid1").append(new Option("请选择部门", ""));
+                        $.each(resultData.data, function (index, item) {
+                            $("#deptid1").append(new Option(item.DeptName, item.DeptId));
+                        });
+                    } else {
+                        $("#deptid1").append(new Option("暂无数据", ""));
+                    }
+                    layui.form.render("select");
+                }
+            });
+
+            //级联子项目
+            //select 监听
+            form.on('select(deptid1filter)', function (data) {
+                var value = data.value;  //select选中的值
+                $.ajax({
+                    url: "/Personnelmatters/EmployeesInfo/BindPositionSelect",
+                    data: { deptid: value },
+                    dataType: "json",
+                    success: function (resultData) {
+                        if (resultData.code == 0) {
+                            //清空赋值
+                            $("#Pid1").empty();
+                            $("#Pid1").append(new Option("请选择岗位", ""));
+
+                            $.each(resultData.data, function (index, item) {
+                                //赋值
+                                $("#Pid1").append(new Option(item.PositionName, item.Pid));
+                            });
+                        } else {
+                            $("#Pid1").append(new Option("暂无数据", ""));
+                        }
+                        layui.form.render("select");
+                    }
+                });
+            })
+            layui.form.render("select");
+
+        });
+
+
+    </script>
+
 
     @*部门与岗位的下拉框动态赋值及下拉框二级联动*@
     <script>

@@ -3,7 +3,7 @@
     ViewBag.Title = "ExamScoreSearch";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@using SiliconValley.InformationSystem.Entity.MyEntity
+@*@using SiliconValley.InformationSystem.Entity.MyEntity*@
 @section style{
 
     <style>
@@ -20,29 +20,26 @@
         <form class="layui-form">
 
             <div class="layui-form-item">
-
+                <div class="layui-inline">
+                    <label class="layui-form-label">日期</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="date" id="date" lay-filter="date" lay-verify="date" placeholder="yyyy-MM" autocomplete="off" class="layui-input"> 
+                    </div>
+                </div>
                 <div class="layui-inline">
                     <label class="layui-form-label">考试</label>
                     <div class="layui-input-inline">
-                        <select name="Exam" lay-verify="required" lay-filter="Exam" lay-search="">
-                            @{
+                        <select id="Exam" name="Exam" lay-verify="required" lay-filter="Exam" lay-search="">
+                            @*@{
                                 foreach (var item in ViewBag.Examlist as List<Examination>)
                                 {
                                     <option value="@item.ID">@item.Title</option>
                                 }
-                            }
+                            }*@
 
                         </select>
                     </div>
                 </div>
-
-                <div class="layui-inline">
-                    <label class="layui-form-label">班级</label>
-                    <div class="layui-input-inline">
-                        <select name="classNumber" id="classnumber" lay-search=""></select>
-                    </div>
-                </div>
-
                 <div class="layui-inline">
 
                     <div class="layui-inline">
@@ -76,11 +73,64 @@
 
     <script>
         var FenShu = "";
+        var form;
+        layui.use(['laydate','form'], function () {
+            var laydate = layui.laydate;
+            form = layui.form;
+            laydate.render({
+                elem: '#date',
+                format: 'yyyy-MM',
+                type: 'month',
+                trigger: 'click',//点击触发
+                done: function (value, date, endDate) {
+                    var riqi = value;
+                    console.log(riqi);
+                    $.ajax({
+                        url: "/ExaminationSystem/ExamScores/ExamJoinClass",
+                        data: { riqi: riqi },
+                        dataType: "json",
+                        success: function (result) {
+
+                            //console.log(result);
+                            //console.log(result.Data[0].Title);
+                            if (result.ErrorCode == 200) {
+                                //清空赋值
+                                $("#Exam").empty();
+
+                                $("#Exam").append(new Option("考试", ""));
+
+                                for (var i = 0; i < result.Data.length; i++) {
+                                    //  console.log(result.Data[i]);
+                                    $('<option value=' + result.Data[i].ID + '>' + result.Data[i].Title + result.Data[i].CurreName + '</option>').appendTo($('#Exam'));
+                                    //$('#Exam').append(new Option(result.Data[i].Title, result.Data[i].ID));
+                                }
+                                form.render(); //更新全部
+                                //$.each( , function (index, item) {
+                                //    var i = index;
+
+                                //    //赋值
+                                //    //console.log(item.Data.Title);
+                                //    //$('#Exam').append(new Option(item.Data.Title, item.Data.ID));
+                                //});
+                            } else {
+                                layer.msg("数据加载错误！", { icon: 2 });
+                                $("#Exam").append(new Option("暂无数据", ""));
+                            }
+                            layui.form.render("select");
+                        }
+                    }).fail(function (data) {
+                        console.log(data);
+                    });
+                }
+                
+            });
+        });
         layui.use(['table', 'layer', 'form'], function () {
             var form = layui.form;
             var table = layui.table;
             var layer = layui.layer;
-
+            
+            
             table.render({
                 elem: '#ExamScores'
                 , url: '/ExaminationSystem/ExamScores/ExamScoreData'
@@ -91,7 +141,7 @@
                     , icon: 'layui-icon-tips'
                 }]
                 , id:"ExamScores"
-                , title: '用户数据表'
+                , title: '学生考试成绩表'
                 , cols: [[
                       { type: 'checkbox', fixed: 'left' }
                     , { field: 'id', title: '序号', width: 80, fixed: 'left', unresize: true, sort: true, templet: '#xuhao' }
@@ -116,42 +166,14 @@
                 , page: false
             });
 
-            form.on('select(Exam)', function (data) {
-                var value = data.value;  //select选中的值
-                console.log("选中值" + value);
-                $.ajax({
-                    url: "/ExaminationSystem/ExamScores/ExamJoinClass",
-                    data: { examid: value },
-                    dataType: "json",
-                    success: function (resultData) {
-
-                        console.log(resultData);
-
-                        if (resultData.ErrorCode == 200) {
-                            //清空赋值
-                            $("#classnumber").empty();
-
-                            $("#classnumber").append(new Option("班级", ""));
-                            $.each(resultData.Data, function (index, item) {
-                                //赋值
-                                console.log(item.ClassNumber);
-                                $('#classnumber').append(new Option(item.ClassNumber, item.id));
-                            });
-                        } else {
-                            layer.msg("数据加载错误！", { icon: 2 });
-                            $("#classnumber").append(new Option("暂无数据", ""));
-                        }
-                        layui.form.render("select");
-                    }
-                });
-            });
             layui.form.render("select");
 
             form.on('submit(search)', function (data) {
 
                 console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
                 console.log(data.field.Exam)
-                if (!data.field.classNumber) {
+                console.log(data.field.date)
+                   if (!data.field.classNumber) {
                     data.field.classNumber = "0";
                 }
 

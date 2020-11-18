@@ -8,15 +8,21 @@
     <div class="layui-btn-container">
         <button class="layui-btn layui-btn-sm" lay-event="InportTime"><i class="layui-icon layui-icon-upload-drag"></i>打卡时间导入</button>
         <button class="layui-btn layui-btn-sm" lay-event="BatchImport"><i class="layui-icon layui-icon-upload-drag"></i>excel考勤导入</button>
+        <button class="layui-btn layui-btn-sm" lay-event="OvertimeRecordImport"><i class="layui-icon layui-icon-upload-drag"></i>excel加班记录导入</button>
         @*<button class="layui-btn layui-btn-sm" lay-event="BatchAdd"><i class="layui-icon layui-icon-addition"></i>批量添加</button>*@
         <button class="layui-btn layui-btn-sm" lay-event="timeanddaysChange"><i class="layui-icon layui-icon-search"></i>查看记录</button>
         <button class="layui-btn layui-btn-sm" lay-event="Approved"><i class="layui-icon layui-icon-edit"></i>确认审批</button>
-
     </div>
 </script>
 @*操作栏*@
 <script type="text/html" id="barDemo">
+    {{# if(d.IsApproval==false) { }}
     <a class="layui-btn  layui-btn-xs " lay-event="edit">编辑</a>
+    {{# } }}
+    {{# if(d.OvertimeCharges!=null){ }}
+    <a class="layui-btn  layui-btn-xs " lay-event="OvertimeRecorddetail">加班详情</a>
+
+    {{# } }}
 </script>
 
 @*员工在职状态*@
@@ -26,7 +32,9 @@
     {{# }else{ }}
     {{ d.empIsDel="离职" }}
     {{# } }}
+
 </script>
+
 
 <div>
     <h2 style="text-align:center;">湖南硅谷云教育科技有限公司--@ViewBag.yearandmonth--月考勤统计表</h2>
@@ -102,32 +110,34 @@
                     [
                       { type: 'checkbox', width: 28, rowspan: 2}
                     , { field: 'empName', title: '姓名', width: 100, sort: true }
-                    , { field: 'empDept', title: '所属部门', width: 120, sort: true }
+                    , { field: 'empDept', title: '所属部门', width: 110, sort: true }
                     , { field: 'empPosition', title: '所属岗位', width: 110, sort: true }
-                    , { field: 'DeserveToRegularDays', title: '应到勤天数', width: 100 }
-                    , { field: 'ToRegularDays', title: '到勤天数',  width: 100 }
-                    , { field: 'LeaveDays', title: '请假时长(天数)', width: 100 }
-                    , { field: 'LeaveRecord', title: '请假记录', width: 100 }
-                    , { field: 'NoClockTotalNum', title: '总缺卡次数', width: 135 }
-                    , { field: 'WorkAbsentNum', title: '上班缺卡次数',width: 135}
-                    , { field: 'WorkAbsentRecord', title: '上班缺卡记录',  width: 135 }
-                    , { field: 'OffDutyAbsentNum', title: '下班缺卡次数', width: 135 }
-                    , { field: 'OffDutyAbsentRecord', title: '下班缺卡记录', width: 135 }
+                    , { field: 'DeserveToRegularDays', title: '应到勤天数', sort: true, width: 120 }
+                    , { field: 'ToRegularDays', title: '到勤天数',  width: 95 }
+                    , { field: 'LeaveDays', title: '请假天数', width: 95 }
+                    , { field: 'LeaveRecord', title: '请假记录', width: 95 }
+                    , { field: 'NoClockTotalNum', title: '总缺卡次数', width: 110}
+                    , { field: 'WorkAbsentNum', title: '上班缺卡次数',width: 120}
+                    , { field: 'WorkAbsentRecord', title: '上班缺卡记录', width: 120 }
+                    , { field: 'NoonAbsentNum', title: '中午缺卡次数', width: 120 }
+                    , { field: 'NoonAbsentRecord', title: '中午缺卡记录', width: 120 }
+                    , { field: 'OffDutyAbsentNum', title: '下班缺卡次数', width: 120 }
+                    , { field: 'OffDutyAbsentRecord', title: '下班缺卡记录', width: 120 }
+                    , { field: 'AbsentNumWithhold', title: '缺卡扣款', width: 100 }
                     , { field: 'TardyNum', title: '迟到次数', width: 100 }
                     , { field: 'TardyRecord', title: '迟到记录', width: 100 }
-                    , { field: 'TardyAndLeaveWithhold', title: '迟到/早退扣款(元)', width: 115 }
-                    , { field: 'LeaveEarlyNum', title: '早退次数',  width: 100 }
+                    , { field: 'LeaveEarlyNum', title: '早退次数', width: 100 }
                     , { field: 'LeaveEarlyRecord', title: '早退记录', width: 100 }
-                    //, { field: 'LeaveWithhold', title: '请假扣款(元)', width: 115 }
-                    , { field: 'OvertTimeRecord', title: '加班记录', width: 115 }
-                    , { field: 'OvertTimeDuration', title: '加班时长', width: 115 }
-                    , { field: 'DaysoffRecord', title: '调休记录', width: 115 }
-                    , { field: 'DaysoffDuration', title: '调休时长', width: 115 }
-                    , { field: 'AbsenteeismRecord', title: '旷工记录', width: 115 }
-                    , { field: 'AbsenteeismDays', title: '旷工天数', width: 115 }
+                    , { field: 'TardyAndLeaveWithhold', title: '迟到/早退扣款', width: 140 }
+                    , { field: 'AbsenteeismRecord', title: '旷工记录', width: 100 }
+                    , { field: 'AbsenteeismDays', title: '旷工天数', width: 100 }
+                    , { field: 'AbsenteeismWithhold', title: '旷工扣费', width: 100 }
+                    , { field: 'OvertimeCharges', title: '加班费用', width: 100 }
+                    , { field: 'DaysoffRecord', title: '调休记录', width: 100 }
+                    , { field: 'DaysoffDuration', title: '调休时长(h)', width: 110 }
                     , { field: 'Remark', title: '备注', width: 140 }
                     , { field: 'empIsDel', title: '员工状态', sort: true, width: 110, templet: '#empstate' }
-                    , { title: '操作', toolbar: '#barDemo', width: 100, fixed: 'right' }
+                    , { title: '操作', toolbar: '#barDemo', width: 150, fixed: 'right' }
                 ]]
                 , page: true
 
@@ -143,6 +153,9 @@
                     case 'BatchImport':
                         BatchImport();
                         break;
+                    case 'OvertimeRecordImport':
+                        OvertimeRecordImport();
+                        break;
                     case 'BatchAdd':
                         BatchAdd();
                         break;
@@ -151,7 +164,7 @@
                         break;
                     case 'Approved':
                         var time = '@ViewBag.yearandmonth';
-                        console.log("我的时间：" + JSON.stringify(time) );
+                        console.log("我的时间：" + JSON.stringify(time));
                         if (JSON.stringify(time) != "{}") {
                             $.ajax({
                                 type: "post",
@@ -181,7 +194,7 @@
                             });
                         } else {
                             layer.msg("没有数据可审批!");
-                        } 
+                        }
                         break;
                 };
             });
@@ -222,7 +235,17 @@
                         }
 
                     });
-             
+
+                } else if (obj.event ==='OvertimeRecorddetail') {
+                    layer.open({
+                        type: 2,
+                        content: '/Personnelmatters/AttendanceStatistics/OTRDetail/?id=' + id
+                        , area: ['1100px', '600px'],
+                        title: '加班详细信息'
+                        , shade: 0.8
+                        , anim: 4
+                        , skin: 'demo-class'
+                    });
                 }
 
             });
@@ -249,7 +272,7 @@
 
             });
 
-        }); 
+        });
 
         //打卡时间导入
         function InportTime() {
@@ -296,6 +319,20 @@
 
         }
 
+        function OvertimeRecordImport() {
+            layui.use(['layer'], function (args) {
+                var layer = layui.layer;      //layui对象
+                layer.open({
+                    type: 2
+                    , area: ["700px", "600px"]
+                    , title: "加班记录导入"
+                    , content: '/Personnelmatters/AttendanceStatistics/OvertimeRecordImport'
+                    , anim: 2
+                });
+            })
+
+        }
+
         //年月份/应到勤天数改变（查看记录）
         function TimeandDaysChange() {
             layui.use(['layer'], function (args) {
@@ -314,7 +351,7 @@
 
         //"确认审批"按钮事件
         function ConfirmApproval(time) {
-            layer.confirm('确认已完成线下审批，且开始进行线上确认审批？<br/><span style="color:red;">注：一经确认将不可进行任何修改！</span>', function (index) {
+            layer.confirm('确认已完成该月份考勤的线下审批，且开始进行线上确认审批？<br/><span style="color:red;">注：一经确认将不可进行任何修改！</span>', function (index) {
                 $.post('/Personnelmatters/AttendanceStatistics/ConfirmApproval', { 'time': time }, function (da) {
                     if (da) {
                         layer.alert("操作成功!", { icon: 1 }, function (index) {

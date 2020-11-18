@@ -1296,8 +1296,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         /// <summary>
         /// 安排座位表
         /// </summary>
-        /// <returns></returns>
-      
+        /// <returns></returns>   
         public ActionResult ArrangeSeatingChartData(int examid)
         {
             AjaxResult result = new AjaxResult();

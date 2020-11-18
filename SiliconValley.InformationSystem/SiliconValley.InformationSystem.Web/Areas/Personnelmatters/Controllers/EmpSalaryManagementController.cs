@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 using SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness;
-using SiliconValley.InformationSystem.Business.EmployeesBusiness;
+using SiliconValley.InformationSystem.Entity.MyEntity;
 using SiliconValley.InformationSystem.Entity.ViewEntity.SalaryView;
 using SiliconValley.InformationSystem.Util;
-using SiliconValley.InformationSystem.Entity.MyEntity;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Mvc;
 
 namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
 {
@@ -31,7 +30,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             return mytime;
         }
         static string FirstTime = GetFirstTime();
-
         //员工工资管理页面
         // GET: Personnelmatters/EmpSalaryManagement
         public ActionResult SalaryManageIndex()
@@ -48,7 +46,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             List<MonthlySalaryRecord> eselist = new List<MonthlySalaryRecord>();
             List<MySalaryObjView> result = new List<MySalaryObjView>();
             EmployeesInfoManage empmanage = new EmployeesInfoManage();//员工信息表
-
             eselist = msrmanage.GetEmpMsrData().Where(s => s.IsDel == false).ToList();
             if (!string.IsNullOrEmpty(ymtime))
             {
@@ -98,7 +95,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 }
                 else
                 {
-                    view.finalGrade = msrmanage.GetMCByEmpid(item.EmployeeId, (DateTime)item.YearAndMonth).FinalGrade;
+                    view.finalGrade = item.FinalGrade;
                 }
                 if (view.finalGrade == null)
                 {
@@ -106,7 +103,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 }
                 else
                 {
-                    view.PerformanceSalary = msrmanage.GetempPerformanceSalary(view.finalGrade, eseobj.PerformancePay);
+                    view.PerformanceSalary = msrmanage.GetempPerformanceSalary(item.FinalGrade, eseobj.PerformancePay);
                 }
 
                 view.netbookSubsidy = eseobj.NetbookSubsidy;//笔记本补助
@@ -136,16 +133,18 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                         view.LeaveDeductions = null;
                     }
                     view.TardyAndLeaveWithhold = attendobj.TardyAndLeaveWithhold;//迟到扣款
-                  //  view.LeaveWithhold = attendobj.LeaveWithhold;//早退扣款
+                                                                                 //  view.LeaveWithhold = attendobj.LeaveWithhold;//早退扣款
                     var NoClocknum = attendobj.WorkAbsentNum + attendobj.OffDutyAbsentNum;
-                    if (NoClocknum > 3)
-                    {
-                        view.NoClockWithhold = msrmanage.GetNoClockWithhold(view.Id, one, view.PerformanceSalary, attendobj.DeserveToRegularDays);//缺卡扣款
-                    }
-                    else
-                    {
-                        view.NoClockWithhold = null;
-                    }
+                    //if (NoClocknum > 3)
+                    //{
+                    //    view.NoClockWithhold = attendobj.AbsentNumWithhold; /*msrmanage.GetNoClockWithhold(view.Id, one, view.PerformanceSalary, attendobj.DeserveToRegularDays);//缺卡扣款*/
+                    //}
+                    //else
+                    //{
+                    //    view.NoClockWithhold = null;
+                    //}
+                    view.NoClockWithhold = attendobj.NoonAbsentNum;
+                    view.AbsentNumWithhold = attendobj.AbsentNumWithhold;
                 }
 
                 view.OvertimeCharges = item.OvertimeCharges;//加班费用
@@ -162,6 +161,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 view.Total = item.Total;//合计
                 view.PayCardSalary = msrmanage.GetPaycardSalary(view.Id, view.Total, view.PersonalSocialSecurity, eseobj.ContributionBase);//工资卡工资
                 view.CashSalary = msrmanage.GetCashSalary(view.Id, view.Total, view.PayCardSalary);//现金工资
+                view.IsFinancialAudit = item.IsFinancialAudit;
                 result.Add(view);
             }
 
@@ -217,7 +217,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             catch (Exception ex)
             {
                 AjaxResultxx.ErrorCode = 500;
-                AjaxResultxx=msrmanage.Error(ex.Message);
+                AjaxResultxx = msrmanage.Error(ex.Message);
             }
             return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
         }
@@ -341,6 +341,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         {
             MonthlySalaryRecordManage msrmanage = new MonthlySalaryRecordManage();
             var msr = msrmanage.GetEntity(id);
+            ViewBag.IsFinancialAudit = msr.IsFinancialAudit;
             ViewBag.id = id;
             return View(msr);
         }
@@ -407,7 +408,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             }
             return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
         }
-
         /// <summary>
         /// 确认审批（确认审批过的数据不可再编辑）
         /// </summary>
@@ -434,7 +434,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             }
             return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
         }
-
         public decimal GetPerformancePay(DateTime year_month, string dname, string pname) {
             var resultsalary = 0;
             EmplSalaryEmbodyManage esemanage = new EmplSalaryEmbodyManage();
@@ -459,11 +458,99 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
 
             }
             else {
-                esemanage.GetPerformancePay(dname,pname);
+                esemanage.GetPerformancePay(dname, pname);
             }
             return resultsalary;
         }
+        public ActionResult PaySlipExcel(string time)
+        {
+            AjaxResult result = new AjaxResult();
+            MonthlySalaryRecordManage monthly = new MonthlySalaryRecordManage();
+            List<MonthlySalaryRecord> salary = monthly.GetEmpMsrData().Where(i => i.IsDel == false && i.IsApproval == true && Convert.ToDateTime(i.YearAndMonth.ToString().Substring(0, 7)) ==Convert.ToDateTime(time)).ToList();
+            EmployeesInfoManage manage = new EmployeesInfoManage();
 
+            //发件人邮箱
+            string FromMail = "2651396164@qq.com";
+            //发件人邮箱授权码
+            string AuthorizationCode = "xuobhcbwwnewecde";
 
-    }
+            foreach (var i in salary)
+            {
+
+                result = monthly.WagesDataToEmail(FromMail,"", AuthorizationCode, i);
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+            
+        }
+        public ActionResult ModifyAbnormalData(int id)
+        {
+            MonthlySalaryRecordManage msrmanage = new MonthlySalaryRecordManage();//员工月度工资
+            EmployeesInfoManage manage = new EmployeesInfoManage();
+            var s = msrmanage.GetEntity(id);
+            ViewBag.EmpName = manage.GetEntity(s.EmployeeId).EmpName;
+            return View(s);
+        }
+        [HttpPost]
+        public ActionResult ModifyAbnormalData(MonthlySalaryRecord m)
+        {
+            MonthlySalaryRecordManage monthly = new MonthlySalaryRecordManage();
+            EmplSalaryEmbodyManage  empl = new EmplSalaryEmbodyManage();
+
+            AjaxResult result = new AjaxResult();
+
+            try
+            {
+                var monlies = monthly.GetEntity(m.Id);
+                var emplies = empl.GetEseByEmpid(monlies.EmployeeId);
+                emplies.BaseSalary = m.BaseSalary;
+                emplies.PositionSalary = m.PositionSalary;
+                emplies.SocialSecuritySubsidy = m.SocialSecuritySubsidy;
+                emplies.PersonalSocialSecurity = m.PersonalSocialSecurity;
+                emplies.NetbookSubsidy = m.NetbookSubsidy;
+                emplies.PersonalIncomeTax = m.PersonalIncomeTax;
+                empl.Update(emplies);
+                rc.RemoveCache("InRedisESEData");
+
+                monlies.IsFinancialAudit = 0;
+                monlies.BaseSalary = m.BaseSalary;
+                monlies.PositionSalary = m.PositionSalary;
+                monlies.FinalGrade = m.FinalGrade;
+                monlies.NetbookSubsidy = m.NetbookSubsidy;
+                monlies.SocialSecuritySubsidy = m.SocialSecuritySubsidy;
+                monlies.PersonalSocialSecurity = m.PersonalSocialSecurity;
+                monlies.OvertimeCharges = m.OvertimeCharges;
+                monlies.Bonus = m.Bonus;
+                monlies.AbsentNumWithhold = m.AbsentNumWithhold;
+                monlies.AbsenteeismWithhold = m.AbsenteeismWithhold;
+                monlies.OtherDeductions = m.OtherDeductions;
+                monlies.PersonalIncomeTax = m.PersonalIncomeTax;
+                monlies.MonthPerformancePay = m.MonthPerformancePay;
+                monlies.Total = m.Total;
+
+                monthly.Update(monlies);
+                rc.RemoveCache("InRedisMSRData");
+                result = monthly.Success();
+                result.ErrorCode = 200;
+            }
+            catch (Exception ex)
+            {
+                result = monthly.Error(ex.Message);
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public ActionResult MonthlySalaryExport(string time)
+        {
+            MonthlySalaryRecordManage monthly = new MonthlySalaryRecordManage();
+            AjaxResult result = new AjaxResult();
+          var data=  monthly.GetEmpMsrData().Where(i=>Convert.ToDateTime(i.YearAndMonth).Year==Convert.ToDateTime(time).Year&& Convert.ToDateTime(i.YearAndMonth).Month == Convert.ToDateTime(time).Month).ToList();
+
+            result = monthly.Month(data);
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult MonthlySalaryExport()
+        {
+            return View();
+        }
+    } 
 }
