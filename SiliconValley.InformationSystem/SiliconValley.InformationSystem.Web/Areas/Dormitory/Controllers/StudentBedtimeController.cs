@@ -365,7 +365,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Dormitory.Controllers
                     studentData.ClassName = "无";
                 }
                 studentData.ClassName = ChangeDorStudent_Entity.GetClassName(item.StudentNumber).ClassID;
-                studentData.TeacherName = ChangeDorStudent_Entity.Headmaster_Entity.Listheadmasters(item.StudentNumber).EmpName;
+                studentData.TeacherName = ChangeDorStudent_Entity.Headmaster_Entity.GetEmployessByStuid(item.StudentNumber).EmpName;
 
                 DorChuang chuang = ChangeDorStudent_Entity.GetDorName(item.StudentNumber);
                 if (chuang.DorNumber!=null)

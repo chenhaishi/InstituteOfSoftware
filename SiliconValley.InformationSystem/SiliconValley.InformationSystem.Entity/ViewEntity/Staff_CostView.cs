@@ -29,11 +29,31 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity
         /// <summary>
         /// 总课时
         /// </summary>
-        public int? totalClass { get; set; }
+        //public int? totalClass { get; set; }
 
         /// <summary>
         /// 教课数量
         /// </summary>
         public int ClassCount { get; set; }
+
+        /// <summary>
+        /// S1,S2
+        /// </summary>
+        public int FirstCount { get; set; }
+
+        /// <summary>
+        /// S3,S4
+        /// </summary>
+        public int SecondCount { get; set; }
+
+        /// <summary>
+        /// 语文，英语，数学之类的
+        /// </summary>
+        public int OtherCount { get; set; }
+
+        /// <summary>
+        /// 底课时
+        /// </summary>
+        public int EndCostTime { get; set; }
     }
 }

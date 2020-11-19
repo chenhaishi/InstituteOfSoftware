@@ -237,7 +237,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 resultObj.ErrorCode = 200;
                 resultObj.Msg = "成功";
                 resultObj.Data = result;
-                ////////
 
 
             }
@@ -327,6 +326,126 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             return View();
         }
 
+        public ActionResult UpExcel_Bos(string deptid,string date)
+        {
+            AjaxResult ajaxResult = new AjaxResult();
+            List<Staff_CostView> list = SessionHelper.Session["Cost_Emp_list"] as List<Staff_CostView>;
+
+
+            if (list != null)
+            {
+                var workbook = new HSSFWorkbook();
+                var sheet = workbook.CreateSheet("课时费统计");
+
+                #region 表头样式
+
+                HSSFCellStyle HeadercellStyle = (HSSFCellStyle)workbook.CreateCellStyle();
+                HSSFFont HeadercellFont = (HSSFFont)workbook.CreateFont();
+
+                HeadercellStyle.Alignment = HorizontalAlignment.Center;
+                HeadercellFont.IsBold = true;
+
+                HeadercellStyle.SetFont(HeadercellFont);
+
+                #endregion
+
+                #region 内容样式
+                HSSFCellStyle ContentcellStyle = (HSSFCellStyle)workbook.CreateCellStyle();
+                HSSFFont ContentcellFont = (HSSFFont)workbook.CreateFont();
+
+                ContentcellStyle.Alignment = HorizontalAlignment.Center;
+                #endregion
+
+                #region 创建表头
+
+                HSSFRow Header = (HSSFRow)sheet.CreateRow(0);
+                Header.HeightInPoints = 40;
+
+                CreateCell(Header, HeadercellStyle, 0, "员工编号");
+
+                CreateCell(Header, HeadercellStyle, 1, "员工姓名");
+                CreateCell(Header, HeadercellStyle, 2, "S1,S2课时");
+                CreateCell(Header, HeadercellStyle, 3, "S3,S4课时");
+                CreateCell(Header, HeadercellStyle, 4, "其他课时(语文,职素...)");
+
+                // CreateCell(Header, HeadercellStyle, 2, "总金额");
+
+                CreateCell(Header, HeadercellStyle, 5, "总课时");
+
+                CreateCell(Header, HeadercellStyle, 6, "教课数量");
+                CreateCell(Header, HeadercellStyle, 7, "底课时");
+                #endregion
+
+                int num = 1;
+                list.ForEach(d =>
+                {
+                    var row = (HSSFRow)sheet.CreateRow(num);
+
+                    CreateCell(row, ContentcellStyle, 0, d.Emp_ID);//员工编号
+                    CreateCell(row, ContentcellStyle, 1, d.Emp_Name);//姓名
+                    CreateCell(row, ContentcellStyle, 2, d.FirstCount.ToString());//S1S2
+                    CreateCell(row, ContentcellStyle, 3, d.SecondCount.ToString());//S3S4
+                    CreateCell(row, ContentcellStyle, 4, d.OtherCount.ToString());//其他课程
+                    CreateCell(row, ContentcellStyle, 5, d.summoney.ToString());//总金额
+
+                    //CreateCell(row, ContentcellStyle, 3, d.totalClass.ToString());//总课时
+                    CreateCell(row, ContentcellStyle, 6, d.ClassCount.ToString());//教课数量
+                    CreateCell(row, ContentcellStyle, 7, d.EndCostTime.ToString());//底课时
+                    num++;
+
+                });
+
+                void CreateCell(HSSFRow row, HSSFCellStyle TcellStyle, int index, string value)
+                {
+                    HSSFCell Header_Name = (HSSFCell)row.CreateCell(index);
+
+                    Header_Name.SetCellValue(value);
+
+                    Header_Name.CellStyle = TcellStyle;
+                }
+                Department department = null;
+                string filename = null;
+                if (deptid != "0")
+                {
+                    department = Department_Entity.GetEntity(deptid);
+                    filename = DateTime.Parse(date).Year + "-" + DateTime.Parse(date).Month + department.DeptName + "课时费统计表";
+                }
+                else {
+                    filename = DateTime.Parse(date).Year + "-" + DateTime.Parse(date).Month + "课时费统计表";
+                }
+                
+                string LOACpathName = System.Web.HttpContext.Current.Server.MapPath("/Areas/Educational/CostHistoryFiles/" + filename + ".xls");
+
+                string pathName = $"/CostHistoryFiles/{filename}.xls";
+
+                FileStream stream = new FileStream(LOACpathName, FileMode.Create, FileAccess.ReadWrite);
+
+                CloudstorageBusiness Bos = new CloudstorageBusiness();
+
+                var client = Bos.BosClient();
+
+                workbook.Write(stream);
+
+                stream.Close();
+
+                var FILEINFO = new FileInfo(LOACpathName);
+
+                client.PutObject("xinxihua", pathName, FILEINFO);
+
+                workbook.Close();
+
+                ajaxResult.ErrorCode = 200;
+                ajaxResult.Msg = "上传成功！";
+
+            }
+            else {
+                ajaxResult.ErrorCode = 404;
+                ajaxResult.Msg = "网络异常";
+            }
+            return Json(ajaxResult, JsonRequestBehavior.AllowGet);
+
+        }
+
         public ActionResult HistoryCostFileData(int page, int limit)
         {
 
@@ -394,12 +513,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             List<EmployeesInfo> Emp_List = null;
             if (DeptID == 0)
             {
-                 Emp_List = EmployeesInfoManage_Entity.GetEmpByDeptName();
+                Emp_List = EmployeesInfoManage_Entity.GetEmpByDeptName();
             }
-            else {
-                 Emp_List = EmployeesInfoManage_Entity.GetEmpsByDeptid(DeptID);
+            else
+            {
+                Emp_List = EmployeesInfoManage_Entity.GetEmpsByDeptid(DeptID);
             }
-            
+
             List<Staff_CostView> staff_list = new List<Staff_CostView>();
 
             decimal? summoney = 0;
@@ -420,7 +540,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 var AnPaiGroup = (
                     from m in mydata
                     group m by m.AnPaiDate into list
-                    select list 
+                    select list
                     ).ToList();
 
                 //根据课程分组
@@ -436,8 +556,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                     select list).ToList();
 
                 var ClassGroup = ClassGroup1.Where
-                    (a=>a.Key!="复习" && a.Key!= "项目答辩"
-                        &&!a.Key.Contains("职素")&&!a.Key.Contains("班")).ToList();
+                    (a => a.Key != "复习" && a.Key != "项目答辩"
+                        && !a.Key.Contains("职素") && !a.Key.Contains("班")).ToList();
 
                 //计算全天课天数&& a.Curriculum_Id != "项目答辩"
                 for (int k = 0; k < AnPaiGroup.Count; k++)
@@ -445,7 +565,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                     QuanDay += Cost_EndClass(AnPaiGroup[k].Key, Emp_List[i].EmployeeId);
                 }
                 ClassTime = 40 * QuanDay / WorkDay;//底课时   40*全天课天数/工作日天数
-                
+
                 int FirstStage = 0;//第一阶段  预科，S1,S2
                 int SecondStage = 0;//第二阶段 S3,S4
                 int OtherStage = 0;//其他  语，数，英，职素，班会，军事
@@ -463,92 +583,99 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                             {
                                 FirstStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, "前预科", false);
                             }
-                            else {
+                            else
+                            {
                                 FirstStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, "前预科", true);
                             }
                         }
                     }
-                    else { 
-                    //根据课程名称获取第一条数据 && && a.Curriculum_Id != ""
-                    Reconcile reconcile = mydata.Where(a => a.Curriculum_Id == ClassGroup[j].Key ).FirstOrDefault();
-                    //根据班级id查询单条数据
-                    ClassSchedule classSchedule = ClassSchedule_Entity.GetEntity(reconcile.ClassSchedule_Id);
-                    //根据课程名称以及阶段id筛选
-                    Curriculum curriculum = curriculum_Entity.GetList().FirstOrDefault(a => a.CourseName == reconcile.Curriculum_Id && a.Grand_Id == classSchedule.grade_Id);
-                    //去除语文课之类的
-                    Curriculum curriculum1 = curriculum_Entity.GetList()
-                        .Where(a => !a.CourseName.Contains("语文") &&
-                        !a.CourseName.Contains("数学") &&
-                        !a.CourseName.Contains("英语") &&
-                        !a.CourseName.Contains("职素") &&
-                        !a.CourseName.Contains("班会") &&
-                        !a.CourseName.Contains("军事"))
-                        .FirstOrDefault(a => a.CourseName == reconcile.Curriculum_Id && a.Grand_Id == classSchedule.grade_Id);
-
-                    if (curriculum.CourseName.Contains("语文") ||
-                        curriculum.CourseName.Contains("数学") ||
-                        curriculum.CourseName.Contains("英语") ||
-                        curriculum.CourseName.Contains("职素") ||
-                        curriculum.CourseName.Contains("班会") ||
-                        curriculum.CourseName.Contains("军事"))
-                    {
-                        OtherStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName,true);
-                    }
                     else
                     {
-                        Grand grand = Grand_Entity.GetEntity(curriculum1.Grand_Id);
-                        if (grand.GrandName.Contains("S1") || grand.GrandName.Contains("S2") || grand.GrandName.Contains("Y1"))
-                        {
-                            FirstStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName,true);
-                        }
-                        else if (grand.GrandName.Contains("S3") || grand.GrandName.Contains("S4"))
-                        {
-                            SecondStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName,true);
-                        }
-                    }
-                    }
-                }
+                        //根据课程名称获取第一条数据 && && a.Curriculum_Id != ""
+                        Reconcile reconcile = mydata.Where(a => a.Curriculum_Id == ClassGroup[j].Key).FirstOrDefault();
+                        //根据班级id查询单条数据
+                        ClassSchedule classSchedule = ClassSchedule_Entity.GetEntity(reconcile.ClassSchedule_Id);
+                        //根据课程名称以及阶段id筛选
+                        Curriculum curriculum = curriculum_Entity.GetList().FirstOrDefault(a => a.CourseName == reconcile.Curriculum_Id && a.Grand_Id == classSchedule.grade_Id);
+                        //去除语文课之类的
+                        Curriculum curriculum1 = curriculum_Entity.GetList()
+                            .Where(a => !a.CourseName.Contains("语文") &&
+                            !a.CourseName.Contains("数学") &&
+                            !a.CourseName.Contains("英语") &&
+                            !a.CourseName.Contains("职素") &&
+                            !a.CourseName.Contains("班会") &&
+                            !a.CourseName.Contains("军事"))
+                            .FirstOrDefault(a => a.CourseName == reconcile.Curriculum_Id && a.Grand_Id == classSchedule.grade_Id);
 
-                if (FirstStage != 0)
-                {
-                    FirstStage = FirstStage - ClassTime;
-                    if (FirstStage < 0) {
-                        if (SecondStage != 0)
+                        if (curriculum.CourseName.Contains("语文") ||
+                            curriculum.CourseName.Contains("数学") ||
+                            curriculum.CourseName.Contains("英语") ||
+                            curriculum.CourseName.Contains("职素") ||
+                            curriculum.CourseName.Contains("班会") ||
+                            curriculum.CourseName.Contains("军事"))
                         {
-                            SecondStage = SecondStage + FirstStage;
-                            if (SecondStage < 0)
+                            OtherStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
+                        }
+                        else
+                        {
+                            Grand grand = Grand_Entity.GetEntity(curriculum1.Grand_Id);
+                            if (grand.GrandName.Contains("S1") || grand.GrandName.Contains("S2") || grand.GrandName.Contains("Y1"))
                             {
-                                OtherStage = OtherStage + FirstStage;
+                                FirstStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
+                            }
+                            else if (grand.GrandName.Contains("S3") || grand.GrandName.Contains("S4"))
+                            {
+                                SecondStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
                             }
                         }
-                        else {
-                            OtherStage = OtherStage + FirstStage;
-                        }
                     }
+
                 }
 
+                //if (FirstStage > 0)
+                //{
+                //    FirstStage = FirstStage - ClassTime;
+                //    if (FirstStage < 0) {
+                //        if (SecondStage != 0)
+                //        {
+                //            SecondStage = SecondStage + FirstStage;
+                //            if (SecondStage < 0)
+                //            {
+                //                OtherStage = OtherStage + FirstStage;
+                //            }
+                //        }
+                //        else {
+                //            OtherStage = OtherStage + FirstStage;
+                //        }
+                //    }
+                //} else {
+                //    SecondStage = SecondStage - ClassTime;
+                //    if (SecondStage<0) {
+                //        OtherStage = OtherStage + SecondStage;
+                //    }
+                //}
 
+
+                staff.FirstCount = FirstStage;
+                staff.EndCostTime = ClassTime;
+                staff.SecondCount = SecondStage;
+                staff.OtherCount = OtherStage;
                 summoney = FirstStage * 55 + SecondStage * 65 + OtherStage * 30;
-                staff.totalClass = FirstStage + SecondStage + OtherStage;
+                //staff.totalClass = FirstStage + SecondStage + OtherStage;
                 staff.summoney = summoney;
                 staff.Emp_Name = Emp_List[i].EmpName;
                 staff.ClassCount = ClassGroup.Count();
                 staff_list.Add(staff);
-                
+
                 summoney = 0;
                 QuanDay = 0;
                 ClassTime = 0;
             }
 
-
-            var obj = new
-            {
-                msg = "连接断开！！！",
-                code = staff_list.Count,
-                data = staff_list
-            };
+            AjaxResult ajaxResult = new AjaxResult();
+            ajaxResult.Msg = "统计完成";
             SessionHelper.Session["Cost_Emp_list"] = staff_list;
-            return Json(obj, JsonRequestBehavior.AllowGet);
+            return Json(ajaxResult, JsonRequestBehavior.AllowGet);
 
         }
 
@@ -596,9 +723,14 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
                 CreateCell(row, ContentcellStyle, 0, d.Emp_ID);//员工编号
                 CreateCell(row, ContentcellStyle, 1, d.Emp_Name);//姓名
-                CreateCell(row, ContentcellStyle, 2, d.summoney.ToString());//总金额
-                CreateCell(row, ContentcellStyle, 3, d.totalClass.ToString());//总课时
-                CreateCell(row, ContentcellStyle, 4, d.ClassCount.ToString());//教课数量
+                CreateCell(row, ContentcellStyle, 2, d.FirstCount.ToString());//S1S2
+                CreateCell(row, ContentcellStyle, 3, d.SecondCount.ToString());//S3S4
+                CreateCell(row, ContentcellStyle, 4, d.OtherCount.ToString());//其他课程
+                CreateCell(row, ContentcellStyle, 5, d.summoney.ToString());//总金额
+
+                //CreateCell(row, ContentcellStyle, 3, d.totalClass.ToString());//总课时
+                CreateCell(row, ContentcellStyle, 6, d.ClassCount.ToString());//教课数量
+                CreateCell(row, ContentcellStyle, 7, d.EndCostTime.ToString());//底课时
                 num++;
 
             });
@@ -634,12 +766,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 CreateCell(Header, HeadercellStyle, 0, "员工编号");
 
                 CreateCell(Header, HeadercellStyle, 1, "员工姓名");
+                CreateCell(Header, HeadercellStyle, 2, "S1,S2课时");
+                CreateCell(Header, HeadercellStyle, 3, "S3,S4课时");
+                CreateCell(Header, HeadercellStyle, 4, "其他课时(语文,职素...)");
 
-                CreateCell(Header, HeadercellStyle, 2, "总金额");
+                // CreateCell(Header, HeadercellStyle, 2, "总金额");
 
-                CreateCell(Header, HeadercellStyle, 3, "总课时");
+                CreateCell(Header, HeadercellStyle, 5, "总课时");
 
-                CreateCell(Header, HeadercellStyle, 4, "教课数量");
+                CreateCell(Header, HeadercellStyle, 6, "教课数量");
+                CreateCell(Header, HeadercellStyle, 7, "底课时");
             }
 
             void CreateCell(HSSFRow row, HSSFCellStyle TcellStyle, int index, string value)
@@ -650,7 +786,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
                 Header_Name.CellStyle = TcellStyle;
             }
-
 
         }
 
