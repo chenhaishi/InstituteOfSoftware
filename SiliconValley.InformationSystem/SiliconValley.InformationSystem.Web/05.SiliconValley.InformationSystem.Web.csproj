@@ -1954,6 +1954,9 @@
     <Content Include="Areas\Personnelmatters\Views\SocialSecurityDetail\UpdateTime.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\SocialSecurityDetail\SupplementaryPayment.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\SocialSecurityDetail\PaySicknessInsurance.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\SocialSecurityDetail\EditSupplementaryPayment.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\SocialSecurityDetail\EditPaySicknessInsurance.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\SocialSecurityDetail\MultipleSocialSecurity.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />

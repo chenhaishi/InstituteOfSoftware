@@ -15,7 +15,7 @@
 <body>
     <div>
         <form class="layui-form" action="" id="formtest" lay-filter="formtest">
-            <input name="EmployeeId" value="@ViewBag.empid" class="layui-hide" />
+            <input name="id" value="@ViewBag.id" class="layui-hide" />
             <div class="layui-container" style="margin-top:25px">
                 <div class="layui-form-item">
                     <label class="layui-form-label">补缴月份:</label>
@@ -56,9 +56,10 @@
             form.on('submit(demo1)', function (data) {
                 console.log(data.field);
                 $.ajax({
-                    url: "/Personnelmatters/SocialSecurityDetail/SupplementaryPayment",
+                    url: "/Personnelmatters/SocialSecurityDetail/MultipleSocialSecurity",
                     type: "post",
                     data: JSON.stringify({
+                        "id": data.field.id,
                         "soc": data.field
                     }),
                     dataType: "json",

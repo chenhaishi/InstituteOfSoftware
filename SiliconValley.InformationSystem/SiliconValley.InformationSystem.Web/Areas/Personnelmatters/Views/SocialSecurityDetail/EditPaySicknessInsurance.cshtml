@@ -1,7 +1,7 @@
 ﻿@{
     Layout = null;
 }
-
+@using SiliconValley.InformationSystem.Entity.MyEntity
 <!DOCTYPE html>
 
 <html>
@@ -13,36 +13,21 @@
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
 </head>
 <body>
+    @{
+       SocialSecurityDetail social = Model as SocialSecurityDetail;
+    }
     <div>
         <form class="layui-form" action="" id="formtest" lay-filter="formtest">
-            <input name="EmployeeId" value="@ViewBag.empid" class="layui-hide" />
-            <div class="layui-container" style="margin-top:25px">
+            <input name="Id" value="@social.Id" class="layui-hide" />
+            <div class="layui-container" style="margin-top:60px">
                 <div class="layui-form-item">
-                    <label class="layui-form-label">补缴月份:</label>
-                    <div class="layui-input-inline" style="width:300px;">
-                        <input type="text" name="OverPayMonthNum" class="layui-input" />
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">缴费基数:</label>
-                    <div class="layui-input-inline" style="width:300px;">
-                        <input type="text" name="PaymentBase" class="layui-input" />
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">单位部分:</label>
-                    <div class="layui-input-inline" style="width:300px;">
-                        <input type="text" name="UnitTotal" class="layui-input" />
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">个人部分:</label>
-                    <div class="layui-input-inline" style="width:300px;">
-                        <input type="text" name="PersonalTotal" class="layui-input" />
+                    <label class="layui-form-label">大病保险:</label>
+                    <div class="layui-input-inline" style="width:200px;">
+                        <input type="text" name="SeriousIllnessInsurance" value="@social.SeriousIllnessInsurance" class="layui-input" />
                     </div>
                 </div>
             </div>
-            <div class="layui-form-item" style="margin-left:50px;margin-top:70px;">
+            <div class="layui-form-item" style="margin-left:20px;margin-top:50px;">
                 <div class="layui-input-block">
                     <button class="layui-btn " lay-submit="" type="button" lay-filter="demo1">立即提交</button>
                     <button class="layui-btn " id="btnclose1">关闭</button>
@@ -56,7 +41,7 @@
             form.on('submit(demo1)', function (data) {
                 console.log(data.field);
                 $.ajax({
-                    url: "/Personnelmatters/SocialSecurityDetail/SupplementaryPayment",
+                    url: "/Personnelmatters/SocialSecurityDetail/EditPaySicknessInsurance",
                     type: "post",
                     data: JSON.stringify({
                         "soc": data.field
@@ -79,7 +64,7 @@
             });
             $("#btnclose1").click(function () {
                 var index = parent.layer.getFrameIndex(window.name);
-                parent.layui.table.reload({});
+                parent.layui.table.reload('Soctab');
                 parent.layer.close(index);
             });
         });

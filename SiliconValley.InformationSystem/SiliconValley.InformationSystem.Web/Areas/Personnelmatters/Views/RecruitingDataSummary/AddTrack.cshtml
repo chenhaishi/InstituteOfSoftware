@@ -179,13 +179,12 @@
                                     var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                                     parent.layui.table.reload('myrptData');
                                     parent.layui.table.reload('myRecruitData');
-                                    parent.layer.close(index);
+                                    parent.layer.close(index); 
                                 });
                             }
                         }, error: function (e) {
                             isQuery = false;
                         }
-
                     })
                 } else {
                     console.log("请不要重复点击");

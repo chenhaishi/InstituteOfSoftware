@@ -171,6 +171,7 @@
                         beforeSend: function () {
                             isQuery = true;
                             layer.msg("正在执行", { icon: 16, shade: 0.6 });
+
                         }, success: function (data) {
                             isQuery = false;
                             if (data.Success) {
@@ -189,7 +190,6 @@
                 } else {
                     console.log("请不要重复点击");
                 }
-             
                 //$.post("/Personnelmatters/RecruitingDataSummary/Addrpt", data.field, function (data) {
                 //    layer.close(loadindex);
                 //    if (data.Success) {

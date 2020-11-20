@@ -11,36 +11,29 @@
     <meta name="viewport" content="width=device-width" />
     <title>EditEmpAttr</title>
     <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
-
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/layui/layui.js"></script>
 </head>
 <body>
     <div>
-      
+
         @Html.Hidden("EmployeeId")
         <form class="layui-form" action="" lay-filter="formtest" enctype="multipart/form-data">
-            <div class="layui-container"  style="margin-top:20px;">
-
+            <div class="layui-container" style="margin-top:20px;">
                 <div class="layui-row layui-form-item">
-
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label">姓名:</label>
-                        <div class="layui-input-block" >
-                            @Html.TextBoxFor(a => a.EmpName, new Dictionary<string, object>() { { "class", "layui-input " }, { "readonly", "readonly" },{ "style", "border:0px;" } })
+                        <div class="layui-input-block">
+                            @Html.TextBoxFor(a => a.EmpName, new Dictionary<string, object>() { { "class", "layui-input " }, { "readonly", "readonly" }, { "style", "border:0px;" } })
                         </div>
                     </div>
-
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                        <label class="layui-form-label" >所属部门:</label>
+                        <label class="layui-form-label">所属部门:</label>
                         <div class="layui-input-block">
                             <input type="text" id="dname" name="dname" readonly class="layui-input" style="border:0px;" />
                         </div>
                     </div>
-
-
                 </div>
-
                 <div class="layui-row layui-form-item">
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label">所属岗位:</label>
@@ -51,14 +44,14 @@
 
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label">手机号码:</label>
-                        <div class="layui-input-block" >
+                        <div class="layui-input-block">
                             @Html.TextBoxFor(a => a.Phone, new Dictionary<string, object>() { { "lay-verify", "myUrgentPhone" }, { "class", "layui-input" } })
                         </div>
                     </div>
 
                 </div>
 
-              
+
                 <div class="layui-row layui-form-item">
 
                     <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
@@ -80,14 +73,14 @@
                     </div>
                     <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
                         <div class="layui-input-block" style="margin-top:20px;margin-left:150px;">
-                            <button class="layui-btn " lay-submit="" type="button" lay-filter="demo1" >立即提交</button>
+                            <button class="layui-btn " lay-submit="" type="button" lay-filter="demo1">立即提交</button>
                             <button class="layui-btn " id="btnclose1" style="margin-left:20px;">关闭</button>
                         </div>
                     </div>
                 </div>
-                </div>
+            </div>
 
-         
+
         </form>
     </div>
 
@@ -96,7 +89,7 @@
             loadnetinfo();// 初始化编辑数据加载
         });
         function loadnetinfo() {
-           
+
             $.ajax({
                 type: "get",
                 url: "/Personnelmatters/EmployeesInfo/GetempById/" + $("#EmployeeId").val(),
@@ -148,7 +141,7 @@
                 , layer = layui.layer
                 , layedit = layui.layedit,
                 laydate = layui.laydate;
-          
+
             //自定义验证
             form.verify({
                 myUrgentPhone: function (value, item) {
@@ -165,7 +158,7 @@
 
             //添加提交
             form.on('submit(demo1)', function (data) {
-              
+
                 var fd = new FormData();
                 var myimg = document.querySelector("#MyImage").files[0];
                 console.log(myimg);
