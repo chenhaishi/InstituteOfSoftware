@@ -97,5 +97,6 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity
         /// 个人补缴部分
         /// </summary>
         public Nullable<decimal> PersonalSupplementaryPayment { get; set; }
+        public int Count { get; set; }
     }
 }

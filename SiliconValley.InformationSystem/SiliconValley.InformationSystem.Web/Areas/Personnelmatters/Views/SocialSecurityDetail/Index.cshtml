@@ -7,17 +7,70 @@
     <div class="layui-btn-container">
         <button class="layui-btn layui-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>修改社保比例</button>
         <button class="layui-btn layui-btn-sm" lay-event="year"><i class="layui-icon layui-icon-edit"></i>更改年月份</button>
+        <button class="layui-btn layui-btn-sm" lay-event="payment"><i class="layui-icon layui-icon-edit"></i>缴纳大病保险</button>
+        <button class="layui-btn layui-btn-sm" lay-event="Multiple"><i class="layui-icon layui-icon-edit"></i>补缴社保</button>
     </div>
 </script>
 <script type="text/html" id="barDemo">
     <div class="layui-btn-container">
         <button class="layui-btn layui-btn-sm" lay-event="insert">补缴社保</button>
+        {{# if(d.Count!=0) { }}
+        <button class="layui-btn layui-btn-sm" lay-event="edit">修改补缴社保</button>
+        {{# } }}
+
+        {{# if(d.SeriousIllnessInsurance==null) { }}
         <button class="layui-btn layui-btn-sm" lay-event="payment">缴纳大病保险</button>
+        {{# }else{ }}
+        <button class="layui-btn layui-btn-sm" lay-event="editpay">修改大病保险</button>
+        {{# } }}
     </div>
 </script>
 <div>
     <h3 style="text-align:center;">湖南硅谷云教育科技有限公司--@ViewBag.yearandmonth--社保详情表</h3>
+    <fieldset>
+        <legend>条件查询</legend>
+        <form class="layui-form" action="" lay-filter="formtest">
+            <div class="layui-row layui-form-item">
+                <div>
+                    <label class="layui-form-label">姓名：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="EmpName" name="EmpName" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div style="margin-left:20px;">
+                    <label class="layui-form-label" style="width:100px;">所属部门:</label>
+                    <div class="layui-input-inline">
+                        <select name="deptid" id="deptid" style="width:130px;" lay-filter="deptidfilter" lay-search="">
+                            <option value="">请选择所属部门</option>
+                        </select>
 
+                    </div>
+                </div>
+                <div style="margin-left:20px;">
+                    <label class="layui-form-label" style="width:100px;">所属岗位:</label>
+                    <div class="layui-input-inline">
+                        <select name="PositionId" id="PositionId" lay-search="" style="width:130px;">
+                            <option value="">--请选择--</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="margin-left:20px;">
+                    <label class="layui-form-label" style="width:100px;">员工状态:</label>
+                    <div class="layui-input-inline">
+                        <select name="Empstate" id="Empstate" lay-search="" style="width:130px;">
+                            <option value="">--请选择--</option>
+                            <option value="False">在职</option>
+                            <option value="True">离职</option>
+                        </select>
+
+                    </div>
+                </div>
+                <button class="layui-btn" type="button" id="Conditionselect" style="margin-left:30px;"><i class="layui-icon layui-icon-search"></i>查询</button>
+
+            </div>
+
+        </form>
+    </fieldset>
     <table id="Soctab" lay-filter="Soctab"></table>
 </div>
 @{
@@ -48,7 +101,7 @@
                 , { align: 'center', title: '单位部分', colspan: 7 }
                 , { align: 'center', title: '个人部分', colspan: 6 }
                 , { field: 'Total', title: '合计', width: 110, sort: true, rowspan: 2 },
-                { title: '操作', toolbar: '#barDemo', width: 180, fixed: 'right', rowspan: 2 }
+                { title: '操作', toolbar: '#barDemo', width: 280, fixed: 'right', rowspan: 2 }
             ]
                 , [
                 { field: 'EndowmentInsurance', title: '养老保险(@social.EndowmentInsurance%)', width: 115 },
@@ -70,8 +123,28 @@
             ]
             , page: true
         });
+        $("#Conditionselect").click(function () {
+            var ename = $("#EmpName").val();//员工姓名
+            var deptname = $("#deptid").val();//员工所属部门
+            var pname = $("#PositionId").val();//员工所属岗位
+            var Empstate = $("#Empstate").val();
+            layui.use(['table'], function () {
+                var table = layui.table;
+                table.reload('Soctab', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }, where: {
+                        AppCondition: ename + "," + deptname + "," + pname + "," + Empstate
+                    }
+                });
+            });
+
+
+
+        });
         table.on('toolbar(Soctab)', function (obj) {
             var data = obj.data;
+            var checkStatus = table.checkStatus(obj.config.id);
             switch (obj.event) {
                 case 'edit':
                     layer.open({
@@ -83,7 +156,7 @@
                         anim: 4,
                         skin: 'demo-class'
                     });
-                    break; 
+                    break;
                 case 'year':
                     layer.open({
                         type: 2,
@@ -95,9 +168,90 @@
                         skin: 'demo-class'
                     });
                     break;
+                case 'payment':
+                    console.log(checkStatus.data)
+                    var data = checkStatus.data;
+                    var id = null;
+                    for (var i = 0; i < data.length; i++) {
+                        if (i < data.length - 1) {
+                            if (i == 0) {
+                                id = data[i].Id + ",";
+                            } else {
+                                id += data[i].Id + ",";
+                            }
+                        }
+                        else {
+                            id += data[i].Id;
+                        }
+                    }
+                    console.log(id);
+                    if (data.length < 1) {
+                        layer.msg("请选择数据!");
+                    } else {
+                        var prom = layer.prompt({
+                            title: "缴纳大病保险",
+                            formType: 2,
+                            value: '',
+                        }, function (value, index, elem) {
+                            layer.close(prom);
+                            $.ajax({
+                                type: "post",
+                                dataType: "json",
+                                async: false,
+                                url: "/Personnelmatters/SocialSecurityDetail/SicknessInsurance",
+                                data: {
+                                    id: id,
+                                    SeriousIllnessInsurance: value
+                                },
+                                success: function (data) {
+                                    if (data.ErrorCode == 200) {
+                                        if (data.Success) {
+                                            layer.alert(data.Msg, { icon: 1 }, function (index) {
+                                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                                window.parent.location.reload();
+                                                parent.layer.close(index);
+                                            });
+                                        }
+                                    } else {
+                                        layer.msg("系统错误,请联系后台管理员!");
+                                    }
+                                }
+                            });
+                        })
+                    }
+                    break;
+                case 'Multiple':
+                    var data = checkStatus.data;
+                    var id = null;
+                    for (var i = 0; i < data.length; i++) {
+                        if (i < data.length - 1) {
+                            if (i == 0) {
+                                id = data[i].Id + ",";
+                            } else {
+                                id += data[i].Id + ",";
+                            }
+                        }
+                        else {
+                            id += data[i].Id;
+                        }
+                    }
+                    if (data.length < 1) {
+                        layer.msg("请选择数据!");
+                    } else {
+                        layer.open({
+                            type: 2,
+                            content: '/Personnelmatters/SocialSecurityDetail/MultipleSocialSecurity?id=' + id,
+                            title: '补缴社保',
+                            area: ["450px", "650px"],
+                            shade: 0.8,
+                            anim: 4,
+                            skin: 'demo-class'
+                        });
+                    }
+                    break;
                 default:
             }
-           
+
 
         });
         table.on('tool(Soctab)', function (obj) {
@@ -124,8 +278,86 @@
                         skin: 'demo-class'
                     });
                     break;
+                case 'edit':
+                    layer.open({
+                        type: 2,
+                        content: '/Personnelmatters/SocialSecurityDetail/EditSupplementaryPayment?id=' + obj.data.Id,
+                        title: '编辑补缴社保',
+                        area: ["450px", "500px"],
+                        shade: 0.8,
+                        anim: 4,
+                        skin: 'demo-class'
+                    });
+                    break;
+                case 'editpay':
+                    layer.open({
+                        type: 2,
+                        content: '/Personnelmatters/SocialSecurityDetail/EditPaySicknessInsurance?id=' + obj.data.Id,
+                        title: '编辑大病保险',
+                        area: ["400px", "300px"],
+                        shade: 0.8,
+                        anim: 4,
+                        skin: 'demo-class'
+                    });
+                    break;
                 default:
             }
         })
     })
+</script>
+@*部门与岗位的下拉框动态赋值及下拉框二级联动*@
+<script>
+    layui.use(['form', 'upload', 'layer'], function () {
+
+        var form = layui.form;
+        $.ajax({
+            url: '/Personnelmatters/EmployeesInfo/BindDeptSelect',
+            data: {},
+            dataType: "json",
+            success: function (resultData) {
+                $("#deptid").empty();
+                if (resultData.code == 0) {
+
+                    $("#deptid").append(new Option("请选择部门", ""));
+                    $.each(resultData.data, function (index, item) {
+                        $('#deptid').append(new Option(item.DeptName, item.DeptId));
+                    });
+                } else {
+                    $("#deptid").append(new Option("暂无数据", ""));
+                }
+
+                layui.form.render("select");
+            }
+        });
+
+        //级联子项目
+        //select 监听
+        form.on('select(deptidfilter)', function (data) {
+            var value = data.value;  //select选中的值
+            console.log("选中值" + value);
+            $.ajax({
+                url: "/Personnelmatters/EmployeesInfo/BindPositionSelect",
+                data: { deptid: value },
+                dataType: "json",
+                success: function (resultData) {
+                    if (resultData.code == 0) {
+                        //清空赋值
+                        $("#PositionId").empty();
+                        console.log(resultData.data);
+                        $("#PositionId").append(new Option("请选择岗位", ""));
+                        $.each(resultData.data, function (index, item) {
+                            //赋值
+                            $('#PositionId')
+                                .append(new Option(item.PositionName, item.Pid));
+                        });
+                    } else {
+                        $("#PositionId").append(new Option("暂无数据", ""));
+                    }
+                    layui.form.render("select");
+                }
+            });
+        })
+        layui.form.render("select");
+
+    });
 </script>
