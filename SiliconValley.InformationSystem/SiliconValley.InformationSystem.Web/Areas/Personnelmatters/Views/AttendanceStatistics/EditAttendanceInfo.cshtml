@@ -131,12 +131,7 @@
                         </div>
                     </div>
 
-                    <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
-                        <label class="layui-form-label" style="width:120px;margin-left:-40px;">迟到扣款:</label>
-                        <div class="layui-input-block" style="width:190px;">
-                            @Html.TextBoxFor(a => a.TardyWithhold, new Dictionary<string, object>() { { "class", "layui-input" } })
-                        </div>
-                    </div>
+                
 
                 </div>
 
@@ -157,9 +152,9 @@
                     </div>
 
                     <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
-                        <label class="layui-form-label" style="width:120px;margin-left:-40px;">早退扣款:</label>
+                        <label class="layui-form-label" style="width:120px;margin-left:-40px;">迟到早退扣款:</label>
                         <div class="layui-input-block" style="width:190px;">
-                            @Html.TextBoxFor(a => a.LeaveWithhold, new Dictionary<string, object>() { { "class", "layui-input " } })
+                            @Html.TextBoxFor(a => a.TardyAndLeaveWithhold, new Dictionary<string, object>() { { "class", "layui-input " } })
                         </div>
                     </div>
 
