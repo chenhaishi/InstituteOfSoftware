@@ -211,7 +211,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             List<TreeClass> listtree = new List<TreeClass>();
             foreach (var item in list)
             {
-                if (item.Name== "自考本科费用"|| item.Name == "其它")
+                if (item.Name== "自考本科费用"|| item.Name == "重修费")
                 {
                     TreeClass seclass = new TreeClass();
                     seclass.title = item.Name;
@@ -373,9 +373,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
         /// <param name="Remarks">备注</param>
         /// <param name="Typeid">名目</param>
         /// <returns></returns>
-        public ActionResult Otherconsumption(string StudenID, string Consumptionname, decimal Amountofmoney, string Remarks, int Typeid)
+        public ActionResult Otherconsumption(string StudenID, string Consumptionname, decimal Amountofmoney, string Remarks, int Typeid, string Consumptionname_su, decimal Amountofmoney_su)
         {
-            return Json(dbtext.Otherconsumption(StudenID, Consumptionname, Amountofmoney, Remarks, Typeid), JsonRequestBehavior.AllowGet);
+            return Json(dbtext.Otherconsumption(StudenID, Consumptionname, Amountofmoney, Remarks, Typeid,Consumptionname_su,Amountofmoney_su), JsonRequestBehavior.AllowGet);
         }
         /// <summary>
         /// 费用报表

@@ -64,18 +64,17 @@
                         </div>
 
                         <div class="layui-inline" style="width:60px;">
-
-
-                            <button id="search" type="button" class="layui-btn layui-btn-primary">查询<i class="layui-icon layui-icon-search"></i></button>
-
+                            <button id="search" type="button" class="layui-btn layui-btn-primary"><i class="layui-icon layui-icon-search"></i>查询</button>
                         </div>
                     </div>
                 </form>
             </div>
 
             <script type="text/html" id="barDemo">
-                <a class="layui-btn layui-btn-xs" lay-event="cost_history">历史统计数据</a>
-
+               
+                <a class="layui-btn layui-btn-xs" lay-event="search_class" title="查看课程">
+                    <i class="layui-icon layui-icon-template-1"></i>
+                </a>
             </script>
 
             <table class="layui-hide tablelist" id="emplist" lay-filter="emplist_filter"></table>
@@ -103,8 +102,7 @@
                 , url: '/Educational/Staff_Cost_Statistics/EmpData?depId=0'
                 , cellMinWidth: 100
                 , cols: [[
-                    { type: 'radio', fixed: 'left' }
-                    , { field: 'EmployeeId', title: '员工编号', width: 300 }
+                    { field: 'EmployeeId', title: '员工编号', width: 300 }
                     , { field: 'EmpName', title: '姓名', width: 300 }
                     , {
                         field: 'DepId', title: '所属部门', width: 300, templet: function (res) {
@@ -161,8 +159,7 @@
                 ]]
                 , page: true
             });
-
-
+            
             ///部门筛选员工
 
             form.on('select(dep_select)', function (data) {
@@ -178,8 +175,6 @@
                 });
 
             });
-
-
             //姓名筛选
 
             $("#search").click(function () {
@@ -199,12 +194,11 @@
             });
 
             $("#createEmpCost").click(function () {
-
                 layer.open({
                     type: 2,
                     title: "费用统计",
-                    area: ['1000px', '500px'],
-                    content:'/Educational/Staff_Cost_Statistics/CreateCostStatistics'
+                    area: ['1100px', '400px'],
+                    content:'/Educational/Staff_Cost_Statistics/teaching_hour'
                 });
 
             });
@@ -216,7 +210,7 @@
                 if (obj.event == 'cost_history') {
                     layer.open({
                         type: 2,
-                        area: ['1000px', '500px'],
+                        area: ['400px', '300px'],
                         title: "费用统计",
                         content: '/Educational/Staff_Cost_Statistics/PersonalCostStatics?empid=' + data.EmployeeId
                     });

@@ -18,9 +18,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
     using SiliconValley.InformationSystem.Business.StudentBusiness;
     using SiliconValley.InformationSystem.Business.TeachingDepBusiness;
     using SiliconValley.InformationSystem.Entity.MyEntity;
-   
+    using SiliconValley.InformationSystem.Entity.ViewEntity;
 
-  
     public class StudentExamSysController : Controller
     {
 
@@ -132,8 +131,65 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             return Json(result, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
-        ///获取学员最近的一次考试
+        /// 当有考试 模拟考试禁止进入
         /// </summary>
+        /// <returns></returns>
+        //public ActionResult SimulationProhibit()
+        //{
+        //    AjaxResult result = new AjaxResult();
+        //    try
+        //    {
+        //        //查出所有未结束的考试,判断离今日最近的未结束考试,这堂考试时间来了之后就不能让他们访问，这堂考试结束之后才能结束访问
+        //        var list = db_exam.AllExamination().OrderByDescending(d => d.BeginDate).ToList();      
+                
+        //        var resultlist = new List<ExaminationView>();
+                
+        //        foreach (var item in list)
+        //        {
+        //            var tempobj = db_exam.ConvertToExaminationView(item);
+
+        //            if (tempobj != null)
+        //            {
+        //                resultlist.Add(tempobj);
+        //            }
+        //        }
+        //        result.Data = null;
+        //        result.Msg = "成功";
+        //        result.ErrorCode = 200;
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        result.Data = null;
+        //        result.Msg = "失败";
+        //        result.ErrorCode = 500;
+        //    }
+        //    return Json(result, JsonRequestBehavior.AllowGet);
+        //}
+        /// <summary>
+        /// 当有考试 刷题禁止进入
+        /// </summary>
+        /// <returns></returns>
+        //public ActionResult BrushthetopicProhibit()
+        //{
+        //    AjaxResult result = new AjaxResult();
+        //    try
+        //    {
+        //        result.Data = null;
+        //        result.Msg = "成功";
+        //        result.ErrorCode = 200;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        result.Data = null;
+        //        result.Msg = "失败";
+        //        result.ErrorCode = 500;
+        //    }
+        //    return Json(result, JsonRequestBehavior.AllowGet);
+        //}
+        /// <summary>
+        ///获取学员最近的一次考试
+        /// </summary> 
         /// <returns></returns>
         public ActionResult GetStuSooExam()
         {
@@ -141,7 +197,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             try
             {
+                //获取这个学生的信息
                 var studentNumber = SessionHelper.Session["studentnumber"].ToString();
+                //获取这个学生最近的一堂考试信息
                 var exam = db_stuExam.StudetnSoonExam(studentNumber.ToString()).OrderByDescending(d => d.BeginDate).FirstOrDefault();
                 var examview = db_exam.ConvertToExaminationView(exam);
                 var candidateinfo = db_candidateinfo.CandidateInfoList().Where(d => d.Examination == exam.ID && d.StudentID == studentNumber).SingleOrDefault();
@@ -352,7 +410,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             var courseid = 0;
             var exam = db_exam.AllExamination().Where(d => d.ID == examid).FirstOrDefault();
             var examview = db_exam.ConvertToExaminationView(exam);
-
+            var PaperLevel = examview.PaperLevel.LevelID;
             //随机选择一个机试题
             var studentNumber = SessionHelper.Session["studentnumber"].ToString();
             //首先查看是否已经随机获取到了一个
@@ -394,7 +452,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             //var ar = candidateInfo.ComputerPaper.Split(',');.Where(d => d.ID == int.Parse(ar[0]))
 
-            var com = db_exam.AllComputerTestQuestion(courseid,IsNeedProposition: false);
+            var com = db_exam.AllComputerTestQuestion(PaperLevel, courseid,IsNeedProposition: false);
                 
                 var filename = Path.GetFileName(com.SaveURL);
               
@@ -476,8 +534,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             //获取我需要的配置		foreach	error CS1525: 表达式项“foreach”无效	
 
-            //
-
+           
             var choxml = (XmlElement)xmlRoot.GetElementsByTagName("choicequestion")[0];
             var answer = (XmlElement)xmlRoot.GetElementsByTagName("answerQuestion")[0];
             int choiceCount  = int.Parse(choxml.GetElementsByTagName("total")[0].InnerText);
@@ -546,7 +603,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             return Json(result);
         }
 
-
+        [HttpPost]
+        [ValidateInput(false)]
         /// <summary>
         /// 学员提交答卷 
         /// </summary>
@@ -646,7 +704,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             } 
             catch (Exception ex)
             {
-
+                //SiliconValley.InformationSystem.Util.ErrorLog.clsLogHelper.m_CreateErrorLogTxt("myExecute(" & str执行SQL语句 & ")", Err.Number.ToString, Err.Description)
                 result.ErrorCode = 500;
                 result.Msg = "失败";
                 result.Data = null;

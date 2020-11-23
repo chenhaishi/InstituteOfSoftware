@@ -102,14 +102,21 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
 
         /// <summary>
-        /// 阅卷
+        /// 阅卷页面1
         /// </summary>
         /// <returns></returns>
         public ActionResult Marking()
         {
             return View();
         }
-
+        /// <summary>
+        /// 阅卷页面2
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult MarkingPapers()
+        {
+            return View();
+        }
 
         /// <summary>
         /// 阅卷数据
@@ -397,7 +404,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             //获取答卷路径
 
-            if (candidateinfo.ComputerPaper == null)
+            if (candidateinfo.ComputerPaper == null || candidateinfo.ComputerPaper == "1" || candidateinfo.ComputerPaper == "")
             {
                 return Json("404", JsonRequestBehavior.AllowGet);
             }
@@ -425,7 +432,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
                 //获取答卷路径
 
-                if (candidateinfo.ComputerPaper == null)
+                if (candidateinfo.ComputerPaper == null || candidateinfo.ComputerPaper == "1" || candidateinfo.ComputerPaper == "")
                 {
                     result.ErrorCode = 200;
                     result.Data = "0";
@@ -819,10 +826,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         public ActionResult ExamJoinClass(string riqi)
         {
             AjaxResult result = new AjaxResult();
+            DateTime dt = DateTime.Parse(riqi);
+            string yys = dt.Year.ToString();
+            string mms = dt.Month.ToString();
+            string nianyue = yys + "-" + mms;
             //var list = new List<Examination>();
-
             List<MyExamCurren> mylist = new List<MyExamCurren>();
-            MyExamCurren mydata = new MyExamCurren();
+            
             try
             {
                
@@ -833,16 +843,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                    
                    int year= item.BeginDate.Year;
                    int month = item.BeginDate.Month;
-                   int day = item.BeginDate.Day;
+                   //int day = item.BeginDate.Day;
                    XmlElement xmlelm = db_exam.ExamCourseConfigRead(item.ID);
-
                    int courseid = int.Parse(xmlelm.FirstChild.Attributes["id"].Value);
                    var KeCheng = db_course.GetCurriculas().Where(d => d.CurriculumID == courseid).SingleOrDefault().CourseName;
-                                    
-                   string mm = year + "-" + month + "-" + day;
+                    //+ "-" + day;
+                    string mm = year + "-" + month;
 
-                    if (riqi == mm)
+                    if (nianyue == mm)
                     {
+                        MyExamCurren mydata = new MyExamCurren();
                         mydata.CurreName = KeCheng;
                         mydata.Title = item.Title;
                         mydata.ID = item.ID;
@@ -871,6 +881,37 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             return Json(result, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        ///  一键下载这堂考试的所有机试
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult OneClickDownload(int examid)
+        {
+            CloudstorageBusiness Bos = new CloudstorageBusiness();
 
+            var client = Bos.BosClient();
+            List<FileStreamResult> zhi = new List<FileStreamResult>() ;
+            var candidateinfo = db_exam.AllCandidateInfo(examid).ToList();
+                foreach (var item in candidateinfo)
+                {
+                    if (!(item.ComputerPaper == null || item.ComputerPaper == "1" || item.ComputerPaper == ""))
+                    {
+                        //var computerPath = candidateinfo.ComputerPaper.Split(',')[1];
+                        var computerPath = item.ComputerPaper;
+                        //FileStream fileStream = new FileStream(computerPath, FileMode.Open);
+
+                        var filedata = client.GetObject("xinxihua", computerPath);
+
+                        var filename = Path.GetFileName(computerPath);
+
+                       //return File(filedata.ObjectContent, "application/octet-stream", Server.UrlEncode(filename));
+                        zhi.Add(File(filedata.ObjectContent, "application/octet-stream", Server.UrlEncode(filename)));
+                    }
+
+                }
+
+            var obj = new { data=zhi};
+            return Json(obj, JsonRequestBehavior.AllowGet);
+        }
     }
 }

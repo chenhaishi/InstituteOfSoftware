@@ -498,6 +498,7 @@
     <Compile Include="ViewEntity\SocialSecurityView.cs" />
     <Compile Include="ViewEntity\StaffaccdationView.cs" />
     <Compile Include="ViewEntity\StaffOfRoomwithFormdataView.cs" />
+    <Compile Include="ViewEntity\Staff_CostView.cs" />
     <Compile Include="ViewEntity\Staff_Cost_StatisticesDetailView.cs" />
     <Compile Include="ViewEntity\StartingYear.cs" />
     <Compile Include="ViewEntity\StudentData.cs" />

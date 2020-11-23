@@ -101,6 +101,7 @@
 <!--行内工具按钮-->
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">详情</a>
+    <a class="layui-btn layui-btn-checked layui-btn-xs" lay-event="bianji" >编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 
@@ -130,8 +131,7 @@
                             $("#course").append(new Option("请选择项目", 0));
                             $.each(resultData, function (index, item) {
                                 //赋值
-                                $('#course')
-                                    .append(new Option(item.CourseName, item.CurriculumID));
+                                $('#course').append(new Option(item.CourseName, item.CurriculumID));
                             });
                         } else {
                             $("#course").empty();
@@ -204,7 +204,7 @@
 
                         }
                     },
-                    { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150 }
+                    { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 180 }
 
                 ]],
                 page: true
@@ -360,18 +360,25 @@
                         layer.close(index);
                     });
                 } else if (obj.event === 'detail') {
-
-
                     layer.open({
 
                         type: 2,
                         area: ['600px', '500px'],
                         title: '详细列表',
-                        content: '/ExaminationSystem/QuestionsBank/ComputerTestQuestionDetailList?ids=' + data.ID+','
+                        content: '/ExaminationSystem/QuestionsBank/ComputerTestQuestionDetailList?ids=' + data.ID + ','
 
 
                     });
 
+
+                } else if (obj.event === 'bianji') {
+
+                    layer.open({
+                        type: 2,
+                        area: ['600px', '500px'],
+                        title: '编辑列表',
+                        content: '/ExaminationSystem/QuestionsBank/EditingMachineTestQuestions?ids=' + data.ID+','
+                    })
 
                 }
             });

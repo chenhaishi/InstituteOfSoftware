@@ -89,6 +89,18 @@ namespace SiliconValley.InformationSystem.Business.ClassSchedule_Business
         //学生居住信息
         private AccdationinformationBusiness Accdation;
 
+        //public 
+
+        /// <summary>
+        /// 根据班级表id 查询班级数据
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ClassSchedule Getgrade_idById(int id)
+        {
+            return GetList().Where(a => a.id==id && a.ClassStatus==false && a.IsDelete==false).FirstOrDefault();
+        }
+
         /// <summary>
         /// 通过班级名称获取学号，姓名，职位
         /// </summary>

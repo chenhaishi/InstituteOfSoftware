@@ -40,6 +40,11 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data
         /// 物品名称
         /// </summary>
         public string DeaNameofarticle { get; set; }
+
+        /// <summary>
+        /// 是否支付
+        /// </summary>
+        public string Isdelete { get; set; }
     }
 
 

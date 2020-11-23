@@ -3,53 +3,48 @@
     ViewBag.Title = "QuestionsBankIndex";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+@using SiliconValley.InformationSystem.Entity.MyEntity
 @section style{
-    
- <style>
 
-     #titleImage {
-        
-         width:100%;
-         height:200px;
-         background-color:#0094ff;
-     
-     }
+    <style>
 
-     #questionTypeDiv {
-        
-         width:80%;
-         height:500px;
-         background-color:white;
-         margin:0 auto;
+        #titleImage {
+            width: 100%;
+            height: 200px;
+            background-color: #0094ff;
+        }
 
-     }
+        #questionTypeDiv {
+            width: 80%;
+            height: 500px;
+            background-color: white;
+            margin: 0 auto;
+        }
 
-     .questionType {
-        display:inline-block;
-        margin-left:100px;
-     }
-     .temp {
-         width: 100%;
-         margin: 0 auto;
-         height: 40px;
-         border-top: 1px solid gray;
-         
-         text-align:center;
-         line-height:40px;
-         font-size:18px;
-     }
+        .questionType {
+            display: inline-block;
+            margin-left: 100px;
+        }
 
- </style>   
-    
- }
+        .temp {
+            width: 100%;
+            margin: 0 auto;
+            height: 40px;
+            border-top: 1px solid gray;
+            text-align: center;
+            line-height: 40px;
+            font-size: 18px;
+        }
+    </style>
+
+}
 <div id="questionWarp">
 
     <div id="titleImage">
 
     </div>
     <div id="questionTypeDiv">
-        
+
 
         <div>
 
@@ -57,13 +52,13 @@
                 <i class="layui-icon layui-icon-home">笔试题库</i>
             </div>
 
-            <div class="questionType" >
+            <div class="questionType">
                 <i id="ChoiceQuestion" class="layui-icon layui-icon-template-1" style="font-size: 50px; color: #1E9FFF;"></i>
                 <br />
                 <a href="/ExaminationSystem/QuestionsBank/ChoiceQuestionIndex" style="text-decoration:none;">选择题</a>
             </div>
 
-            <div class="questionType" >
+            <div class="questionType">
                 <i id="clearlyExamination" class="layui-icon layui-icon-template-1" style="font-size: 50px; color: #1E9FFF;"></i>
                 <br />
                 <a href="/ExaminationSystem/QuestionsBank/ClearlyQuestionIndex" style="text-decoration:none;">解答题</a>
@@ -78,26 +73,68 @@
                 <i class="layui-icon layui-icon-home">机试题库</i>
             </div>
 
-            <div class="questionType" >
+            <div class="questionType">
                 <i id="ComputerTestQuestions" class="layui-icon layui-icon-template-1" style="font-size: 50px; color: #1E9FFF;"></i>
                 <br />
                 <a href="/ExaminationSystem/QuestionsBank/ComputerTestQuestionsIndex" style="text-decoration:none;">机试题库</a>
             </div>
 
-          
+
+        </div>
+        <div>
+
+            <div class="temp">
+                <i class="layui-icon layui-icon-home">考前导出</i>
+            </div>
+
+            <div class="questionType">
+                <i class="layui-icon layui-icon-template-1" style="font-size: 50px; color: #1E9FFF;"></i>
+                <br />
+                <a id="DaoChu" href="#" style="text-decoration:none;">导出文档</a>
+            </div>
+
+
         </div>
 
 
 
-      
 
     </div>
 
 
 </div>
+<div id="TeacherDiv" style="display:none">
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">阶段</label>
+                <div class="layui-input-inline">
+                    <select name="GrandS" lay-filter="majorS">
+                        <option value="0">请选择</option>
 
+                        @{
+                            foreach (var item in ViewBag.Grand as List<Grand>)
+                            {
+                                <option value="@item.Id">@item.GrandName</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">课程</label>
+                <div class="layui-input-inline">
+                    <select lay-verify="required" name="courseS" id="courseS"></select>
+                </div>
+            </div>
+        </div>
+        <button type="button" style="text-align:center;width:68%" class="layui-btn layui-btn layui-input-block" id="QueRen">一键导出</button><br />
+        <button type="button" style="text-align:center;width:68%" class="layui-btn layui-btn layui-input-block" id="QueRener">导出选择题</button><br />
+        <button type="button" style="text-align:center;width:68%" class="layui-btn layui-btn layui-input-block" id="QueRensan">导出解答题</button>
+    </form>
+</div>
 @section script{
-    
+
     <script>
 
         layui.use(['layer'], function () {
@@ -110,12 +147,12 @@
             $(".questionType").mouseover(function () {
 
 
-                $(this).attr("style","color:red;");
+                $(this).attr("style", "color:red;");
 
             });
 
 
-             ////鼠标移出去事件
+            ////鼠标移出去事件
             $(".questionType").mouseout(function () {
 
 
@@ -128,7 +165,7 @@
             $("#ChoiceQuestion").click(function () {
 
                 window.location.href = "/ExaminationSystem/QuestionsBank/ChoiceQuestionIndex";
-                
+
 
             });
 
@@ -149,13 +186,83 @@
                 window.location.href = "/ExaminationSystem/QuestionsBank/ComputerTestQuestionsIndex";
 
             });
+            layui.use(['table', 'layer', 'form'], function () {
 
+                var table = layui.table;
+                var layer = layui.layer;
+                var form = layui.form;
+                form.on('select(majorS)', function (data) {
+                    var value = data.value;  //select选中的值
 
+                    console.log("选中值" + value);
 
+                    $.ajax({
+                        url: "/ExaminationSystem/QuestionsBank/CourseData",
+                        data: { grandid: value },
+                        dataType: "json",
+                        success: function (resultData) {
+                            if (resultData.length > 0) {
+                                //清空赋值
+                                $("#courseS").empty();
+                                console.log(resultData);
+                                $("#courseS").append(new Option("请选择项目", ""));
+                                $.each(resultData, function (index, item) {
+                                    var grand_ = item.Grand == null ? "" : item.Grand.GrandName;
+                                    var namaC = item.CourseName + '(' + grand_ + ')'
+                                    //赋值
+                                    $('#courseS')
+                                        .append(new Option(namaC, item.CurriculumID));
+                                });
+                            } else {
+                                $("#courseS").empty();
+                                $("#courseS").append(new Option("暂无数据", ""));
+                            }
+                            $("#courseS").append(new Option("升学题", "0"));
+                            layui.form.render("select");
+                        }
+                    });
+                });
+               
+            });
+            $("#DaoChu").click(function () {
+                layer.open({
+                    type: 1,
+                    title: "更改",
+                    area: ["700px", "370px"],
+                    content: $('#TeacherDiv'),
+
+                });
+
+            });
+            
+            $("#QueRen").click(function () {
+                var kecheng = $("#courseS").val();
+                console.log(kecheng);
+                $.post("/ExaminationSystem/QuestionsBank/Export", { kecheng: kecheng }, function () {
+                    layer.msg("前去C盘查收！");
+                })
+                
+            })
+            $("#QueRener").click(function () {
+                var kecheng = $("#courseS").val();
+                console.log(kecheng);
+                $.post("/ExaminationSystem/QuestionsBank/Exporter", { kecheng: kecheng }, function () {
+                    layer.msg("前去C盘查收！");
+                })
+
+            })
+            $("#QueRensan").click(function () {
+                var kecheng = $("#courseS").val();
+                console.log(kecheng);
+                $.post("/ExaminationSystem/QuestionsBank/Exportsan", { kecheng: kecheng }, function () {
+                    layer.msg("前去C盘查收！");
+                })
+
+            })
         });
 
 
     </script>
-    
-    
+
+
 }

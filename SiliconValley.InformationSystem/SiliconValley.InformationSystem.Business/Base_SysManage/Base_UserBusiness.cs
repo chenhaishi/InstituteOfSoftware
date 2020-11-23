@@ -353,7 +353,15 @@ namespace SiliconValley.InformationSystem.Business.Base_SysManage
                     find = this.GetList().Where(u => u.EmpNumber == Value).FirstOrDefault();
                 }
                 find.WX_Unionid = null;
-                find.State = 0;
+               
+                if(find.State == 0)
+                {
+                    find.State = 1;
+                }
+                else
+                {
+                    find.State = 0;
+                }
                 find.Password = Extention.ToMD5String("tangdan2020");
                 this.Update(find);
             }

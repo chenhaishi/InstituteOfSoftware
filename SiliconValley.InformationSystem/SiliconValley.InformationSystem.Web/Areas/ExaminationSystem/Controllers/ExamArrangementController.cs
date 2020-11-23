@@ -75,6 +75,27 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             return View();
         }
         /// <summary>
+        /// 考试发布编辑页面
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult ReleaseTestEditor(int ids)
+        {
+            var list = db_examination.AllExamination().Where(d => d.ID == ids).SingleOrDefault();
+
+            ViewBag.zhi = list;
+
+            return View();
+        }
+        /// <summary>
+        /// 考试编辑
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ReleaseTestEditorbianji()
+        {
+            return null;
+        }
+        /// <summary>
         /// 选择题数据
         /// </summary>
         /// <param name="page"></param>
@@ -1296,8 +1317,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         /// <summary>
         /// 安排座位表
         /// </summary>
-        /// <returns></returns>
-      
+        /// <returns></returns>   
         public ActionResult ArrangeSeatingChartData(int examid)
         {
             AjaxResult result = new AjaxResult();

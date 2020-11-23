@@ -45,6 +45,9 @@
         margin-top: 20px;
         border: 1px solid black;
     }
+    .TexceClore{
+      color:red;
+    }
 </style>
 
 
@@ -192,9 +195,9 @@
             success: function (res) {
                 if (res.listdata.length > 0) {
                     
-                    $("<tr> <td rowspan='" + res.listdata.length + 1 + "'>维修详细</td><td colspan='2' class='TextCen'>日期</td>  <td colspan='2'>寝室号</td> <td colspan='2'>维修物品</td> <td colspan='1'>维修金额</td> ").appendTo($("#MantainTable"));
+                    $("<tr> <td rowspan='" + res.listdata.length + 1 + "'>维修详细</td><td colspan='2' class='TextCen'>日期</td>  <td colspan='2'>寝室号</td> <td colspan='2'>维修物品</td> <td colspan='1'>维修金额</td> <td colspan='1'>状态</td>").appendTo($("#MantainTable"));
                     for (var i = 0; i < res.listdata.length; i++) {
-                        $('<tr> <td colspan="2" class="TextCen"><span>' + ShenyeDate(res.listdata[i].DeaMaintain) + '</span></td> <td colspan="2">' + res.listdata[i].DeaDorName + '</td>  <td colspan="2">' + res.listdata[i].DeaNameofarticle + '</td> <td colspan="2">' + res.listdata[i].DeaGoodPrice + '</td>  </tr>').appendTo($("#MantainTable"));
+                        $('<tr> <td colspan="2" class="TextCen"><span>' + ShenyeDate(res.listdata[i].DeaMaintain) + '</span></td> <td colspan="2">' + res.listdata[i].DeaDorName + '</td>  <td colspan="2">' + res.listdata[i].DeaNameofarticle + '</td> <td>' + res.listdata[i].DeaGoodPrice + '</td> <td>' + res.listdata[i].Isdelete+'</td></tr>').appendTo($("#MantainTable"));
                     }
 
                     $('<tr><td colspan="4"><span>维修总金额:</span><span class="ColorText">' + res.SumMantanMoney + '</span><span>元</span></td>  <td colspan="4"><span>应退总金额:</span><span class="ColorText">' + res.GetTuiMoney + '</span><span>元</span></td>  </tr>').appendTo($("#MantainTable"));

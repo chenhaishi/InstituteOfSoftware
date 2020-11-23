@@ -1,0 +1,158 @@
+﻿
+@{
+    Layout = null;
+}
+@using SiliconValley.InformationSystem.Entity.MyEntity
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>teaching_hour</title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/layui/layui.js"></script>
+</head>
+<body>
+    <div>
+        <div id="title" style="text-align:center;">
+            <div class="line-title"></div>
+            <i class="layui-icon layui-icon-chart" style="font-size:35px;"><i style="font-size:18px;">员工费用统计</i> </i>
+            <div class="line-title"></div>
+        </div>
+
+        <div style="height:40px; line-height:40px; text-align:center;margin-top:30px;">
+            <form class="layui-form">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">部门：</label>
+                        <div class="layui-input-inline">
+                            <select name="dep" id="dep_select" lay-filter="dep_select" lay-search="">
+                                <option value="0">所有</option>
+                                @{
+                                    foreach (var item in ViewBag.deps as List<Department>)
+                                    {
+                                        <option value="@item.DeptId">@item.DeptName</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">时间：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input" id="test11" placeholder="yyyy年MM月dd日">
+                        </div>
+                    </div>
+
+                    <div class="layui-inline">
+                        <label class="layui-form-label">工作日天数：</label>
+                        <div class="layui-input-inline">
+                            <input type="number" id="WorkDay" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-inline" style=" width:40px;">
+                        <label style="width:50px; color:blue;" id="flush" class="layui-form-label">
+                            <i class="layui-icon layui-icon-refresh"></i>
+                        </label>
+                        <div class="layui-input-inline">
+
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div style="margin-top:50px;text-align:center">
+            <button class="layui-btn layui-btn-radius" id="Btn_Cost">开始统计</button>&emsp;
+            <button class="layui-btn layui-btn-radius layui-btn-normal" id="Btn_SaveExcel">下载文件</button>&emsp;
+            <button class="layui-btn layui-btn-radius layui-btn-warm" id="Btn_UpExcel">上传保存文件</button>
+        </div>
+
+    </div>
+</body>
+</html>
+
+<script>
+    layui.use(['layer', 'table', 'laydate','element'], function () {
+        var laydate = layui.laydate;
+        var layer = layui.layer;
+        var table = layui.table;
+        var element = layui.element;
+
+        var obj = new Date();
+
+        var start = obj.getFullYear() + "-" + obj.getMonth() + "-" + 30;
+        laydate.render({
+            elem: '#test11'
+            , format: 'yyyy年MM月dd日'
+            , max: start
+            , trigger: 'click'
+        });
+
+        $("#Btn_Cost").click(function () {
+           
+            if ($("#test11").val() == "") {
+                layer.msg('请选择时间', { icon: 2, time: 500 });
+            } else {
+                $("#Cost_tab tr:not(:first)").html("");
+                
+                        $.ajax({
+                            url: "/Educational/Staff_Cost_Statistics/TempFunction",
+                            type: "POST",
+                            data: {
+                                date: $("#test11").val(),
+                                DeptID: $("#dep_select").val(),
+                                WorkDay: $("#WorkDay").val()
+                            },
+                            success: function (res) {
+                                layer.msg(res.Msg);
+                            }
+                        });
+                //layer.msg('数据统计中', { icon: 1, time: 8000 });
+            }
+            
+        });
+        
+        $("#flush").click(function () {
+            layer.msg('刷新中', { icon: 1, time: 100 });
+            location.reload();
+            
+        });
+
+        $("#Btn_SaveExcel").click(function () {
+            $.ajax({
+                url: "/Educational/Staff_Cost_Statistics/CostDataToExcel",
+                type: "post",
+                success: function (res) {
+                    console.log(res);
+                    if (res.ErrorCode == "200") {
+                        
+                        layer.msg(res.Msg, { icon: 1, time: 4000 });
+                    } else {
+                        layer.msg(res.Msg, { icon: 1, time: 4000 });
+                    }
+                }
+            });
+        });
+
+        //上传将文件保存到百度云对象储存
+        $("#Btn_UpExcel").click(function () {
+            $.ajax({
+                url: "/Educational/Staff_Cost_Statistics/UpExcel_Bos",
+                type: "post",
+                data: {
+                    deptid: $("#dep_select").val(),
+                    date: $("#test11").val()
+                },
+                success: function (res) {
+                    layer.msg(res.Msg, { icon: 1, time: 3000 });
+                }
+
+            });
+        });
+    });
+
+    
+</script>

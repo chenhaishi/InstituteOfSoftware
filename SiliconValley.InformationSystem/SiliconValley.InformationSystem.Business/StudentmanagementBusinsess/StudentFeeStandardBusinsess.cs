@@ -634,7 +634,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
         /// <param name="Remarks">备注</param>
         /// <param name="Typeid">名目</param>
         /// <returns></returns>
-        public AjaxResult Otherconsumption(string StudenID, string Consumptionname, decimal Amountofmoney, string Remarks, int Typeid)
+        public AjaxResult Otherconsumption(string StudenID, string Consumptionname, decimal Amountofmoney, string Remarks, int Typeid, string Consumptionname_su, decimal Amountofmoney_su)
         {
             AjaxResult retus = null;
             try
@@ -643,8 +643,20 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                 Base_UserModel user = Base_UserBusiness.GetCurrentUser();
                 var fine = finacemo.GetList().Where(a => a.Financialstaff == user.EmpNumber).FirstOrDefault();
                 var x = costitemsBusiness.GetList().Where(a => a.Name == Consumptionname).FirstOrDefault();
-                if (x == null)
+                var xu = costitemsBusiness.GetList().Where(d => d.Name == Consumptionname_su).FirstOrDefault();
+                if (x == null||xu==null)
                 {
+                    if (Consumptionname_su != null)
+                    {
+                        Costitems costitems_list = new Costitems();
+                        costitems_list.Amountofmoney = Amountofmoney_su;
+                        costitems_list.Name = Consumptionname_su;
+                        costitems_list.IsDelete = false;
+                        costitems_list.Rategory = Typeid;
+                        costitemsBusiness.Insert(costitems_list);
+                        xu = costitemsBusiness.GetList().Where(a => a.Name == Consumptionname_su).OrderByDescending(d => d.id).FirstOrDefault();
+                    }
+                    
                     Costitems costitems = new Costitems();
                     costitems.Amountofmoney = Amountofmoney;
                     costitems.Name = Consumptionname;
@@ -653,7 +665,28 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                     costitemsBusiness.Insert(costitems);
                     x = costitemsBusiness.GetList().Where(a => a.Name == Consumptionname).OrderByDescending(a => a.id).FirstOrDefault();
                 }
-                List<Payview> liststudents = new List<Payview>();
+                List<Payview> liststudents_1 = new List<Payview>();
+                if (Consumptionname_su != null)
+                {
+                   
+                    Payview studentFee_1 = new Payview();
+                    studentFee_1.StudenID = StudenID;
+                    studentFee_1.Amountofmoney = Amountofmoney_su;
+                    studentFee_1.AddDate = DateTime.Now;
+                    studentFee_1.Remarks = Remarks;
+                    studentFee_1.IsDelete = false;
+                    studentFee_1.Costitemsid = xu.id;
+                    studentFee_1.FinanceModelid = fine.id;
+                    PayviewBusiness.Insert(studentFee_1);
+                    liststudents_1.Add(studentFee_1);
+                    this.Studentpayment(StudenID, fine.id, 1);
+                    SessionHelper.Session["person"] = liststudents_1;
+                    retus = new SuccessResult();
+                    retus.Success = true;
+                    retus.Msg = "缴费成功";
+                    BusHelper.WriteSysLog("其它缴费数据", Entity.Base_SysManage.EnumType.LogType.添加数据);
+                }
+                
                 Payview studentFee = new Payview();
                 studentFee.StudenID = StudenID;
                 studentFee.Amountofmoney = Amountofmoney;
@@ -663,9 +696,10 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                 studentFee.Costitemsid = x.id;
                 studentFee.FinanceModelid = fine.id;
                 PayviewBusiness.Insert(studentFee);
-                liststudents.Add(studentFee);
+                liststudents_1.Add(studentFee);
                 this.Studentpayment(StudenID, fine.id,1);
-                SessionHelper.Session["person"] = liststudents;
+                SessionHelper.Session["person"] = liststudents_1;
+               
                 retus = new SuccessResult();
                 retus.Success = true;
                 retus.Msg = "缴费成功";

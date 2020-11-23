@@ -107,7 +107,8 @@
             <h3 style="text-align:center; font-size:18px;">解答题</h3>
         </div>
         <div style="text-align:center">
-            <button type="button" style="" class="layui-btn layui-btn-warm" id="COMMIT">提交笔试</button><text style="color:red">（提交完笔试之后进行机试）</text>
+            <button type="button" style="" class="layui-btn layui-btn-warm" id="COMMIT">提交笔试</button>
+            @*<a  class="layui-btn layui-btn-warm" id="COMMIT">提交笔试</a>*@
         </div>
         @*<div id="ComputerQuestion">
                 <h3 style="text-align:center; font-size:18px;">机试题下载区</h3>
@@ -150,43 +151,31 @@
                 <span class="questionIndex">{{=index}}</span> <code style="margin-left:5px;color:#000000">{{=question}}</code>&nbsp;&nbsp;(<span class="listScores">{{=score}}</span>分)<input type="hidden" class="hidescore" value="{{=score}}" />
             </div>
             <div class="option">
-                @*<form class="layui-form">
-                        <div class="layui-form-item">
-                            <label class="layui-form-label"></label>
-                            <div class="layui-input-block">
-
-                            </div>
-                        </div>
-                    </form>*@
                 <form>
-                    @*<input type="checkbox" value="A" lay-filter="option" name="OptionA" title="{{=A}} (选项A)">*@
                     <div class="optiond"><label>选项A：</label><input name="1" value="A" type="radio" /><code>{{=A}}</code></div>
                     <br />
                     <div class="optiond"><label>选项B：</label><input name="1" value="B" type="radio" /><code name="OptionA">{{=B}}</code></div>
-                    @*<input type="checkbox" value="B" lay-filter="option" name="OptionB" title="{{=B}} (选项B)">*@
                     <br />
                     <div class="optiond"><label>选项C：</label><input name="1" value="C" type="radio" /><code name="OptionA">{{=C}}</code></div>
                     <br />
-                    @*<input type="checkbox" value="C" lay-filter="option" name="OptionC" title="{{=C}} (选项C)">*@
                     <div class="optiond"><label>选项D：</label><input name="1" value="D" type="radio" /><code name="OptionA">{{=D}}</code></div>
-                    @*<input type="checkbox" value="D" lay-filter="option" name="OptionD" title="{{=D}} (选项D)">*@
                 </form>
-
             </div>
         </div>
     </script>
 
     <script type="text/template" id="answerquestionmoban">
         <div questionid="{{=questionid}}" class="questionItem">
-            <div>
+            @*<div>
                 <span class="questionIndex">{{=index}}</span> <code style="margin-left:5px;color:#000000">{{=question}}</code>&nbsp;&nbsp;(<span class="listScores">{{=score}}</span>分)<input type="hidden" value="{{=score}}" class="hidescore" />
-            </div>
+            </div>*@
+            <label class="questionIndex">{{=index}}</label><label style="margin-left:5px;color:#000000">{{=question}}</label>&nbsp;&nbsp;(<span class="listScores">{{=score}}</span>分)<input type="hidden" value="{{=score}}" class="hidescore" />
             <div style="position:relative;right:109px;" class="layui-input-block">
                 <textarea style="height:250px" placeholder="请填写你的内容" class="layui-textarea desc"></textarea>
             </div>
             @*<div class="simple-editor"
-                <h2>答题区</h2>
-            </div>*@
+            <h2>答题区</h2>
+        </div>*@
         </div>
     </script>
 
@@ -558,20 +547,20 @@
                                 var isTrue = arry_answer.toString() == arry_stuanswer.toString();
                                 questionitem.find(".title").find(".panduan").remove();
 
-                                if (isTrue) {
+                                //if (isTrue) {
 
                                     //如果一致
                                     var score = $(questionitem).find(".hidescore").val();
 
                                     trueQuestionscores += parseFloat(score);
-                                    var span = $('<span class="panduan"><i style="font-size:25px; color:green;" class="layui-icon layui-icon-ok"></i></span>');
-                                    questionitem.find(".title").append(span);
+                                    //var span = $('<span class="panduan"><i style="font-size:25px; color:green;" class="layui-icon layui-icon-ok"></i></span>');
+                                    //questionitem.find(".title").append(span);
 
-                                }
-                                else {
-                                    var span = $('<span class="panduan"><i style="font-size:25px; color:red;" class="layui-icon layui-icon-close"></i></span>');
-                                    questionitem.find(".title").append(span);
-                                }
+                                //}
+                                //else {
+                                //    var span = $('<span class="panduan"><i style="font-size:25px; color:red;" class="layui-icon layui-icon-close"></i></span>');
+                                //    questionitem.find(".title").append(span);
+                                //}
 
                             }
                         });
@@ -612,7 +601,6 @@
                         },
                         error: function () {
                             layer.msg('异常。。', { icon: 2 });
-
                         }
 
 

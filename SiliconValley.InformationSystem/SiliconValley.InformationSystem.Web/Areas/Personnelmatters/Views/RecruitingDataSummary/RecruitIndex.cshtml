@@ -124,14 +124,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label">备注:</label>
-                            <div class="layui-input-inline">
-                                <input type="text" id="remarks" name="remarks" autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-
-                        <button class="layui-btn" type="button" id="Conditionselect1" style="margin-left:10px;"><i class="layui-icon layui-icon-search"></i>查询</button>
+                        <button class="layui-btn" type="button" id="Conditionselect1" style="margin-left:40px;"><i class="layui-icon layui-icon-search"></i>查询</button>
                     </div>
                 </form>
             </fieldset>
@@ -244,7 +237,7 @@
                     , { field: 'ResumeType', title: '简历类型', sort: true, width: 110 }
                     , { field: 'forwardDate', title: '预面试时间', width: 170, sort: true, templet: function (d) { return changeDateTimeFormat(d.forwardDate); } }
                     , { field: 'result', title: '面试结果', width: 100, templet: '#faceresult' }
-                    , { field: 'IsEntry', title: '是否入职', width: 100, templet: '#switchTp2', unresize: true }
+                    , { field: 'IsEntry', title: '是否入职', width: 100, templet: '#switchTp2' }
                     , { field: 'Remark', title: '备注', sort: true, width: 90 }
                     , { fixed: 'right', title: '操作', toolbar: '#barDemo' }
                 ]]
@@ -267,14 +260,13 @@
                 var end_TraceTime = $("#end_TraceTime").val();//终止联系时间
                 var start_ForwardDate = $("#start_ForwardDate").val();//起始预面试时间
                 var end_ForwardDate = $("#end_ForwardDate").val();//终止预面试时间
-                var remarks = $("#remarks").val();
                 layui.use(['table'], function () {
                     var table = layui.table;
                     table.reload('myrptData', {
                         page: {
                             curr: 1 //重新从第 1 页开始
                         }, where: {
-                            AppCondition: name + "," + deptid + "," + pid + "," + PhoneNumber + "," + Channel + "," + ResumeType + "," + result + "," + IsEntry + "," + start_TraceTime + "," + end_TraceTime + "," + start_ForwardDate + "," + end_ForwardDate + "," + remarks
+                            AppCondition: name + "," + deptid + "," + pid + "," + PhoneNumber + "," + Channel + "," + ResumeType + "," + result + "," + IsEntry + "," + start_TraceTime + "," + end_TraceTime + "," + start_ForwardDate + "," + end_ForwardDate
                         }
                     });
                 });

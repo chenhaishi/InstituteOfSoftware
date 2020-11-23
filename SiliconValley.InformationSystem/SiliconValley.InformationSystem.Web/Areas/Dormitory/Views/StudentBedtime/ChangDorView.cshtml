@@ -37,6 +37,14 @@
         <form id="adddataform" class="layui-form" lay-filter="adddataform">
             <input name="StuNumber" id="StuNumber" type="hidden" value="@ViewBag.StuNumber"/>
             <div class="layui-row layui-form-item">
+                <div class="layui-row layui-form-item">
+                    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                        <label class="LableCss1">调寝日期:</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="endtime" name="endtime" class="layui-input" lay-verify="required"/>
+                        </div>
+                    </div>
+                </div>
                 <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
                     <label class="LableCss1">宿舍地址:</label>
                     <div class="layui-input-block">
@@ -105,7 +113,9 @@
                 laydate = layui.laydate;
 
                 laydate.render({
-                    elem: '#mantinDate'
+                    elem: '#endtime'
+                    , min: -2
+                    , max: 0
                     , trigger: 'click'
                     , done: function (value, date, endDate) {
                         mydate = value;

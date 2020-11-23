@@ -170,7 +170,7 @@
 
                 <div class="infoitem totalPaper">试卷总数量--<span></span></div>
                 <div class="infoitem filshPaper">已阅卷数量--<span></span></div>
-
+                <a class="btn btn-danger" id="YiJian">一键下载机试</a>
             </div>
         </div>
     </div>
@@ -427,7 +427,7 @@
                 //1判断考试是否结束
                 //获取考试ID
                 var examid = $(this).attr("examid");
-                var examroom = $(this).attr("examroom");
+                var examroom = $(this).attr("examroom"); 
                 console.log(examid);
                 $.post("/ExaminationSystem/ExamScores/ExamIsEnd", { examid: examid }, function (result) {
 
@@ -780,7 +780,6 @@
             });
 
 
-
             $(document).off("click", "#download").on("click", "#download", function () {
 
                 var status = $(this).attr("Nohave");
@@ -822,8 +821,15 @@
                 if (parseFloat(cuscore) > parseFloat(max)) {
 
                     $(this).val(0);
+
                 }
             });
+            $(document).off("click", "#YiJian").on("click", "#YiJian", function () {             
+                //$.post("/ExaminationSystem/ExamScores/OneClickDownload?examid=" + Examid, {}, function (data) {
+                //    console.log(data);
+                //})
+                layer.msg("功能优化中");
+            })
         });
 
     </script>   
