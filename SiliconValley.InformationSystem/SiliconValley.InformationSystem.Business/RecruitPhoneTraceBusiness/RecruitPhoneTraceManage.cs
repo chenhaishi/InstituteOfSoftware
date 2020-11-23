@@ -82,7 +82,17 @@ namespace SiliconValley.InformationSystem.Business.RecruitPhoneTraceBusiness
             DateTime? time = rptlist.LastOrDefault().ForwardDate;
             return time;
         }
-       public AjaxResult UpdNewestForwardDate(int sonid, string forwarddate)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sonid"></param>
+        /// <returns></returns>
+        public RecruitPhoneTrace GetNewest(int sonid)
+        {
+            var rptlist = this.GetListBySql<RecruitPhoneTrace>("select * from RecruitPhoneTrace where SonId=" + sonid).Last();
+            return rptlist;
+        }
+        public AjaxResult UpdNewestForwardDate(int sonid, string forwarddate)
         {
             AjaxResult result = new AjaxResult();
             try

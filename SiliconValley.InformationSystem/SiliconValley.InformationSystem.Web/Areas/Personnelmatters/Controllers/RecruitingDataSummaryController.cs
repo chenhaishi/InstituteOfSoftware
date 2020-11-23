@@ -52,8 +52,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 rptview.TraceTime = item.TraceTime;
                 rptview.Channel = item.Channel;
                 rptview.ResumeType = item.ResumeType;
-                rptview.PhoneCommunicateResult = item.PhoneCommunicateResult;
-                rptview.IsEntry = item.IsEntry;
+                rptview.PhoneCommunicateResult = rptmanage.GetNewest((int)item.SonId).PhoneCommunicateResult;
+                rptview.IsEntry = rptmanage.GetNewest((int)item.SonId).IsEntry;
                 rptview.Remark = item.Remark;
                 rptview.IsDel = item.IsDel;
                 rptview.SonId = item.SonId;
