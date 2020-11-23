@@ -207,12 +207,12 @@
             table.on('tool(emplist_filter)', function (obj) {
                
                 var data = obj.data;
-                if (obj.event == 'cost_history') {
+                if (obj.event == 'search_class') {
                     layer.open({
                         type: 2,
-                        area: ['400px', '300px'],
+                        area: ['1000px', '750px'],
                         title: "费用统计",
-                        content: '/Educational/Staff_Cost_Statistics/PersonalCostStatics?empid=' + data.EmployeeId
+                        content: '/Educational/Staff_Cost_Statistics/Search_PersonClass?empid=' + data.EmployeeId
                     });
                 } 
                
