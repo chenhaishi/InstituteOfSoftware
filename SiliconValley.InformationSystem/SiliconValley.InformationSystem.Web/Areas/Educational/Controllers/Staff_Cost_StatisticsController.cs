@@ -66,6 +66,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             return View();
         }
 
+        public ActionResult Search_PersonClass(string empid)
+        {
+            ViewBag.EmpID = empid;
+            return View();
+        }
+
         /// <summary>
         /// 员工数据
         /// </summary>

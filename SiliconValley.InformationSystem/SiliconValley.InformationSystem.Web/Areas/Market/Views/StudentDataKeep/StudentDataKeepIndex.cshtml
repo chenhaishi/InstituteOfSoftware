@@ -891,8 +891,9 @@
             var layer = layui.layer;
             var checkStatus = table.checkStatus('tabletest1');
             if (checkStatus.data.length == 1) {
+               // console.log(checkStatus.data[0]);
                 //判断是否指派了咨询师
-                if (checkStatus.data[0].ConsultTeacher.length <= 0 || checkStatus.data[0].ConsultTeacher == "") {
+                if (checkStatus.data[0].ConsultTeacher == null || checkStatus.data[0].ConsultTeacher == "") {
                     layer.msg('请先指派咨询师！！！', { icon: 2, shade: 0.8 });
                 } else {
                     layer.open({
@@ -921,6 +922,7 @@
             var checkStatus = table.checkStatus('tabletest1');
             if (checkStatus.data.length == 1) {
                 //判断是否指派了咨询师
+                console.log(checkStatus.data[0].ConsultTeacher.length);
                 if (checkStatus.data[0].ConsultTeacher.length <= 0 || checkStatus.data[0].ConsultTeacher == "") {
                     layer.msg('请先指派咨询师！！！', { icon: 2, shade: 0.8 });
                 } else {
