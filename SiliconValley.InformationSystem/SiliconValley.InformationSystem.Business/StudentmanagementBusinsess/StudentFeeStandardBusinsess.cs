@@ -644,7 +644,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                 var fine = finacemo.GetList().Where(a => a.Financialstaff == user.EmpNumber).FirstOrDefault();
                 var x = costitemsBusiness.GetList().Where(a => a.Name == Consumptionname).FirstOrDefault();
                 var xu = costitemsBusiness.GetList().Where(d => d.Name == Consumptionname_su).FirstOrDefault();
-                if (x == null||xu==null)
+                if (x == null || xu == null)
                 {
                     if (Consumptionname_su != null)
                     {
@@ -656,7 +656,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                         costitemsBusiness.Insert(costitems_list);
                         xu = costitemsBusiness.GetList().Where(a => a.Name == Consumptionname_su).OrderByDescending(d => d.id).FirstOrDefault();
                     }
-                    
+
                     Costitems costitems = new Costitems();
                     costitems.Amountofmoney = Amountofmoney;
                     costitems.Name = Consumptionname;
@@ -666,19 +666,18 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                     x = costitemsBusiness.GetList().Where(a => a.Name == Consumptionname).OrderByDescending(a => a.id).FirstOrDefault();
                 }
                 List<Payview> liststudents_1 = new List<Payview>();
-                if (Consumptionname_su != null)
+                if (Amountofmoney == 0)
                 {
-                   
-                    Payview studentFee_1 = new Payview();
-                    studentFee_1.StudenID = StudenID;
-                    studentFee_1.Amountofmoney = Amountofmoney_su;
-                    studentFee_1.AddDate = DateTime.Now;
-                    studentFee_1.Remarks = Remarks;
-                    studentFee_1.IsDelete = false;
-                    studentFee_1.Costitemsid = xu.id;
-                    studentFee_1.FinanceModelid = fine.id;
-                    PayviewBusiness.Insert(studentFee_1);
-                    liststudents_1.Add(studentFee_1);
+                    Payview studentFee_2 = new Payview();
+                    studentFee_2.StudenID = StudenID;
+                    studentFee_2.Amountofmoney = Amountofmoney_su;
+                    studentFee_2.AddDate = DateTime.Now;
+                    studentFee_2.Remarks = Remarks;
+                    studentFee_2.IsDelete = false;
+                    studentFee_2.Costitemsid = xu.id;
+                    studentFee_2.FinanceModelid = fine.id;
+                    PayviewBusiness.Insert(studentFee_2);
+                    liststudents_1.Add(studentFee_2);
                     this.Studentpayment(StudenID, fine.id, 1);
                     SessionHelper.Session["person"] = liststudents_1;
                     retus = new SuccessResult();
@@ -686,24 +685,66 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                     retus.Msg = "缴费成功";
                     BusHelper.WriteSysLog("其它缴费数据", Entity.Base_SysManage.EnumType.LogType.添加数据);
                 }
-                
-                Payview studentFee = new Payview();
-                studentFee.StudenID = StudenID;
-                studentFee.Amountofmoney = Amountofmoney;
-                studentFee.AddDate = DateTime.Now;
-                studentFee.Remarks = Remarks;
-                studentFee.IsDelete = false;
-                studentFee.Costitemsid = x.id;
-                studentFee.FinanceModelid = fine.id;
-                PayviewBusiness.Insert(studentFee);
-                liststudents_1.Add(studentFee);
-                this.Studentpayment(StudenID, fine.id,1);
-                SessionHelper.Session["person"] = liststudents_1;
-               
-                retus = new SuccessResult();
-                retus.Success = true;
-                retus.Msg = "缴费成功";
-                BusHelper.WriteSysLog("其它缴费数据", Entity.Base_SysManage.EnumType.LogType.添加数据);
+                else if (Amountofmoney_su == 0)
+                {
+                    Payview studentFee_3 = new Payview();
+                    studentFee_3.StudenID = StudenID;
+                    studentFee_3.Amountofmoney = Amountofmoney;
+                    studentFee_3.AddDate = DateTime.Now;
+                    studentFee_3.Remarks = Remarks;
+                    studentFee_3.IsDelete = false;
+                    studentFee_3.Costitemsid = x.id;
+                    studentFee_3.FinanceModelid = fine.id;
+                    PayviewBusiness.Insert(studentFee_3);
+                    liststudents_1.Add(studentFee_3);
+                    this.Studentpayment(StudenID, fine.id, 1);
+                    SessionHelper.Session["person"] = liststudents_1;
+                    retus = new SuccessResult();
+                    retus.Success = true;
+                    retus.Msg = "缴费成功";
+                    BusHelper.WriteSysLog("其它缴费数据", Entity.Base_SysManage.EnumType.LogType.添加数据);
+                }
+                else
+                {
+                    if (Consumptionname_su != null)
+                    {
+
+                        Payview studentFee_1 = new Payview();
+                        studentFee_1.StudenID = StudenID;
+                        studentFee_1.Amountofmoney = Amountofmoney_su;
+                        studentFee_1.AddDate = DateTime.Now;
+                        studentFee_1.Remarks = Remarks;
+                        studentFee_1.IsDelete = false;
+                        studentFee_1.Costitemsid = xu.id;
+                        studentFee_1.FinanceModelid = fine.id;
+                        PayviewBusiness.Insert(studentFee_1);
+                        liststudents_1.Add(studentFee_1);
+                        this.Studentpayment(StudenID, fine.id, 1);
+                        SessionHelper.Session["person"] = liststudents_1;
+                        retus = new SuccessResult();
+                        retus.Success = true;
+                        retus.Msg = "缴费成功";
+                        BusHelper.WriteSysLog("其它缴费数据", Entity.Base_SysManage.EnumType.LogType.添加数据);
+                    }
+
+                    Payview studentFee = new Payview();
+                    studentFee.StudenID = StudenID;
+                    studentFee.Amountofmoney = Amountofmoney;
+                    studentFee.AddDate = DateTime.Now;
+                    studentFee.Remarks = Remarks;
+                    studentFee.IsDelete = false;
+                    studentFee.Costitemsid = x.id;
+                    studentFee.FinanceModelid = fine.id;
+                    PayviewBusiness.Insert(studentFee);
+                    liststudents_1.Add(studentFee);
+                    this.Studentpayment(StudenID, fine.id, 1);
+                    SessionHelper.Session["person"] = liststudents_1;
+
+                    retus = new SuccessResult();
+                    retus.Success = true;
+                    retus.Msg = "缴费成功";
+                    BusHelper.WriteSysLog("其它缴费数据", Entity.Base_SysManage.EnumType.LogType.添加数据);
+                }
             }
             catch (Exception ex)
             {

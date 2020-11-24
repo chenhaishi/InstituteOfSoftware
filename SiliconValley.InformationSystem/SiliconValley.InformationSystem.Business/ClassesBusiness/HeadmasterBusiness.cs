@@ -277,11 +277,10 @@ namespace SiliconValley.InformationSystem.Business.ClassesBusiness
         /// <returns></returns>
         public EmployeesInfo Listheadmasters(string StudentID)
         {
-
             var ClassID = scheduleForTraineesBusiness.SutdentCLassName(StudentID);//获取班级
             var leid =ClassID==null?new HeadClass(): Hoadclass.GetList().Where(c => c.IsDelete == false  && c.ClassID == ClassID.ID_ClassName).FirstOrDefault();//查询带班班主任id
-          var Empid =leid==null?new Headmaster(): this.GetEntity(leid.LeaderID);//员工编号
-         return Empid==null?new EmployeesInfo(): employeesInfoManage.GetEntity(Empid.informatiees_Id);
+            var Empid =leid==null?new Headmaster(): this.GetEntity(leid.LeaderID);//员工编号
+            return Empid==null?new EmployeesInfo(): employeesInfoManage.GetEntity(Empid.informatiees_Id);
         }
         /// <summary>
         /// 班主任职业素养培训数据
