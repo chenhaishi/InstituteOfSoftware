@@ -51,6 +51,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         /// <returns></returns>
         public ActionResult PerformanceAssessShow(int page, int limit, string AppCondition, string time)
         {
+            time = FirstTime;
             //var UserName = Base_UserBusiness.GetCurrentUser();//获取当前登录人
             //string eid = UserName.EmpNumber;//为测试，暂时设置的死数据
              
@@ -142,14 +143,15 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             var AjaxResultxx = new AjaxResult();
             try
             {
-                var attlist = mcmanage.GetEmpMCData().Where(s => s.IsDel == false).ToList();
-                for (int i = 0; i < attlist.Count(); i++)
-                {
-                    attlist[i].YearAndMonth = Convert.ToDateTime(CurrentTime);
-                    mcmanage.Update(attlist[i]);
-                    rc.RemoveCache("InRedisMCData");
-                    AjaxResultxx = mcmanage.Success();
-                }
+                FirstTime = CurrentTime;
+                //var attlist = mcmanage.GetEmpMCData().Where(s => s.IsDel == false).ToList();
+                //for (int i = 0; i < attlist.Count(); i++)
+                //{
+                //    attlist[i].YearAndMonth = Convert.ToDateTime(CurrentTime);
+                //    mcmanage.Update(attlist[i]);
+                //    rc.RemoveCache("InRedisMCData");
+                AjaxResultxx = mcmanage.Success();
+                //}
             }
             catch (Exception ex)
             {

@@ -14,9 +14,9 @@
 </head>
 <body>
     <div>
-        <div class="layui-form-item">
+        <div class="layui-form-item" style="margin-top:60px;">
             <label class="layui-form-label">请选择日期</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-inline ">
                 <input type="text" class="layui-input" id="month" placeholder="yyyy-MM">
             </div>
         </div> <div class="layui-form-item" style="margin-left:50px;margin-top:70px;">
@@ -25,6 +25,7 @@
             </div>
         </div>
     </div>
+   
     <script>
         layui.use(['layer', 'form', 'laydate'], function () {
             var layer = layui.layer;
@@ -48,11 +49,11 @@
                             window.parent.location.reload();
                             parent.layer.close(index);
                         });
-                       
+
                     }
                 })
             })
-           
+
         })
     </script>
 </body>

@@ -43,15 +43,9 @@ namespace SiliconValley.InformationSystem.Business.SocialSecurity_Business
 
                 if (matchlist.Count() <= 0)//表示社保明细表中无该月的数据
                 {
-                    //找到已禁用的或者该月份的员工集合
-                    var forbiddenlist = this.GetSocData().Where(s => s.IsDel == true || (DateTime.Parse(s.CurrentYearAndMonth.ToString()).Year == nowtime.Year && DateTime.Parse(s.CurrentYearAndMonth.ToString()).Month == nowtime.Month)).ToList();
-
-                    for (int i = 0; i < forbiddenlist.Count(); i++)
-                    {//将社保明细表中已禁用的员工去员工工资体系表中去除
-                        emplist.Remove(emplist.Where(e => e.EmployeeId == forbiddenlist[i].EmployeeId).FirstOrDefault());
-                    }
+                  
                     foreach (var item in emplist)
-                    {//再将未禁用的员工添加到月度工资表中
+                    {//再将未禁用的员工添加到社保明细表中
                         SocialSecurityDetail soc = new SocialSecurityDetail();
                         var unit = social.GetbyType("单位部分");
                         var personal = social.GetbyType("个人部分");
@@ -64,6 +58,10 @@ namespace SiliconValley.InformationSystem.Business.SocialSecurity_Business
                         soc.CurrentYearAndMonth = Convert.ToDateTime(time);
                         soc.IsDel = false;
                         this.Insert(soc);
+
+                      var emp=  esemanage.GetEseByEmpid(item.EmployeeId);
+                        emp.PersonalSocialSecurity= GetTotal((int)item.ContributionBase, personalindex);
+                        esemanage.Update(emp);
                         rc.RemoveCache("InRedisSocialSecurityData");
                     }
                 }
