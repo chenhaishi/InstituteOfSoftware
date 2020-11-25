@@ -738,7 +738,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             }
             if (!string.IsNullOrEmpty(leaveearlyrecord))
             {
-                string[] str = tardyrecord.Split(';');
+                string[] str = leaveearlyrecord.Split(';');
                 foreach (var item in str)
                 {
                     string[] sArray = Regex.Split(item, "早退", RegexOptions.IgnoreCase);

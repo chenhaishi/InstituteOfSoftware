@@ -136,8 +136,10 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
         public bool CreateSalTab(string time)
         {
             bool result = false;
+           var sssss = "";
             try
             {
+                
                 var msrlist = this.GetEmpMsrData().Where(s => s.IsDel == false).ToList();
                 // EmployeesInfoManage empmanage = new EmployeesInfoManage();
                 EmplSalaryEmbodyManage esemanage = new EmplSalaryEmbodyManage();
@@ -188,9 +190,12 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
 
                 result = true;
             }
+
             catch (Exception ex)
             {
+                sssss = ex.Message;
                 result = false;
+                
 
             }
             return result;

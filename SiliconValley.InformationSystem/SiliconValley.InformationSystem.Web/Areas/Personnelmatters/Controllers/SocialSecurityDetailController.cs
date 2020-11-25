@@ -8,6 +8,7 @@ using SiliconValley.InformationSystem.Entity.MyEntity;
 using SiliconValley.InformationSystem.Entity.ViewEntity;
 using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 using SiliconValley.InformationSystem.Util;
+using SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness;
 
 namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
 {
@@ -254,12 +255,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             AjaxResult result = new AjaxResult();
             try
             {
+                EmplSalaryEmbodyManage esemanage = new EmplSalaryEmbodyManage();
                 SocialSecurityDetailManage socialmanage = new SocialSecurityDetailManage();
                 var s = socialmanage.GetEntity(soc.Id);
                 s.SeriousIllnessInsurance = soc.SeriousIllnessInsurance;
                 s.PersonalTotal += soc.SeriousIllnessInsurance;
 
                 socialmanage.Update(s);
+                var emp = esemanage.GetEseByEmpid(soc.EmployeeId);
+                emp.PersonalSocialSecurity = s.PersonalTotal;
+                esemanage.Update(emp);
                 rc.RemoveCache("InRedisSocialSecurityData");
 
                 result = socialmanage.Success();

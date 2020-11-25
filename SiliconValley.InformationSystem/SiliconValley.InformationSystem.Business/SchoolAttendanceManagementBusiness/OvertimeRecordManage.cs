@@ -53,6 +53,8 @@ namespace SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBus
         public AjaxResult ExcelImportAtdSql(ISheet sheet)
         {
             EmployeesInfoManage empmanage = new EmployeesInfoManage();
+            AttendanceInfoManage attendance = new AttendanceInfoManage();
+            MonthlySalaryRecordManage monthly = new MonthlySalaryRecordManage();
             var ajaxresult = new AjaxResult();
             int num = 2;
             List<OvertimeRecordErrorDataView> otratalist = new List<OvertimeRecordErrorDataView>();
@@ -150,6 +152,10 @@ namespace SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBus
                                 else {
                                     otr.OvertimeTypeId = Convert.ToInt32(overtimetype);
                                 }
+                               
+                                var att = monthly.GetAttendanceInfoByEmpid(otr.EmployeeId, Convert.ToDateTime(otr.YearAndMonth));
+                                att.OvertimeCharges=attendance.GetOvertimeWithhold(otr.EmployeeId,(DateTime)otr.YearAndMonth);
+                                attendance.Update(att);
                                 otr.IsPass = false;
                                 this.Insert(otr);
 
