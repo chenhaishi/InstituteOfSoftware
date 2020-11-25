@@ -152,13 +152,13 @@ namespace SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBus
                                 else {
                                     otr.OvertimeTypeId = Convert.ToInt32(overtimetype);
                                 }
-                               
-                                var att = monthly.GetAttendanceInfoByEmpid(otr.EmployeeId, Convert.ToDateTime(otr.YearAndMonth));
-                                att.OvertimeCharges=attendance.GetOvertimeWithhold(otr.EmployeeId,(DateTime)otr.YearAndMonth);
-                                attendance.Update(att);
                                 otr.IsPass = false;
                                 this.Insert(otr);
 
+                                var att = monthly.GetAttendanceInfoByEmpid(otr.EmployeeId, Convert.ToDateTime(otr.YearAndMonth));
+                                att.OvertimeCharges = attendance.GetOvertimeWithhold(otr.EmployeeId, (DateTime)otr.YearAndMonth);
+
+                                attendance.Update(att);
                             }
                         }
 
