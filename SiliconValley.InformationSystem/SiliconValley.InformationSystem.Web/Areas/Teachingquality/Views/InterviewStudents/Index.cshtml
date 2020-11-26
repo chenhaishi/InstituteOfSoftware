@@ -205,8 +205,19 @@
                     , { field: 'InterviewRecorderID', title: '记录人工号 ' }
                     , { field: 'InterviewRecorderName', title: '记录人姓名 ' }
                     , {
-                        field: 'Dateofinterview', title: '谈话日期', templet: function (c) {
-                            return TimeChange(c.Dateofinterview);
+                        field: 'Dateofinterview', title: '谈话日期', templet: function (row) {
+                            //return TimeChange(c.Dateofinterview);
+                            var utc = row.Dateofinterview.substr(row.Dateofinterview.indexOf('(') + 1, 13);
+
+                            var date = new Date(parseInt(utc));
+
+                            var year = date.getFullYear();
+
+                            var mouth = date.getMonth() + 1;
+
+                            var day = date.getDate();
+
+                            return year + '年 ' + mouth + "月 " + day + '日';
                         }
                     }
 
