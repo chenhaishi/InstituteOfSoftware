@@ -89,7 +89,7 @@ namespace SiliconValley.InformationSystem.Business.RecruitPhoneTraceBusiness
         /// <returns></returns>
         public RecruitPhoneTrace GetNewest(int sonid)
         {
-            var rptlist = this.GetListBySql<RecruitPhoneTrace>("select * from RecruitPhoneTrace where SonId=" + sonid).Last();
+            var rptlist = this.GetListBySql<RecruitPhoneTrace>("select * from RecruitPhoneTrace where SonId=" + sonid).LastOrDefault();
             return rptlist;
         }
         public AjaxResult UpdNewestForwardDate(int sonid, string forwarddate)

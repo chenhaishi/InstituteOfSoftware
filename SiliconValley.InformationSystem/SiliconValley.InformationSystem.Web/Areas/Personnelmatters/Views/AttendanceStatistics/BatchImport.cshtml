@@ -127,6 +127,7 @@
                     success: function (data) {
                         layer.close(loadindex);
                         if (data.Success) {
+                            
                             var msg = "";
                             if (data.ErrorCode == 100) {//没有一条数据出错
                                  msg = "录入成功!  录入数量：" + data.Msg;

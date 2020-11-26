@@ -136,8 +136,10 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
         public bool CreateSalTab(string time)
         {
             bool result = false;
+           var sssss = "";
             try
             {
+                
                 var msrlist = this.GetEmpMsrData().Where(s => s.IsDel == false).ToList();
                 // EmployeesInfoManage empmanage = new EmployeesInfoManage();
                 EmplSalaryEmbodyManage esemanage = new EmplSalaryEmbodyManage();
@@ -150,13 +152,19 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
 
                 if (matchlist.Count() <= 0)//表示月度工资表中无该月的数据
                 {
-                    //找到已禁用的或者该月份的员工集合
+                    //找到已禁用的或者该月份的员工集合 
+                    if (this.GetEmpMsrData().Count>0)
+                        {
                     var forbiddenlist = this.GetEmpMsrData().Where(s => s.IsDel == true || (DateTime.Parse(s.YearAndMonth.ToString()).Year == nowtime.Year && DateTime.Parse(s.YearAndMonth.ToString()).Month == nowtime.Month)).ToList();
+                        for (int i = 0; i < forbiddenlist.Count(); i++)
+                        {//将月度工资表中已禁用的员工去员工工资体系表中去除
 
-                    for (int i = 0; i < forbiddenlist.Count(); i++)
-                    {//将月度工资表中已禁用的员工去员工工资体系表中去除
-                        emplist.Remove(emplist.Where(e => e.EmployeeId == forbiddenlist[i].EmployeeId).FirstOrDefault());
+                            emplist.Remove(emplist.Where(e => e.EmployeeId == forbiddenlist[i].EmployeeId).FirstOrDefault());
+
+
+                        }
                     }
+                    
                     foreach (var item in emplist)
                     {//再将未禁用的员工添加到月度工资表中
                         AttendanceInfo attendance = GetAttendanceInfoByEmpid(item.EmployeeId,Convert.ToDateTime(time));
@@ -188,9 +196,12 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
 
                 result = true;
             }
+
             catch (Exception ex)
             {
+                sssss = ex.Message;
                 result = false;
+                
 
             }
             return result;
