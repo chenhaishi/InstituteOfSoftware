@@ -89,7 +89,7 @@
                         <p class="wx-help"><a href="javascript:;" class="help-a">如何使用？</a></p>
                     </div>
                     <div class="login-normal" style="display:block;">
-                        <form id="nameLoginForm" class="layui-form" method="post" autocomplete="off" onsubmit="return nameLoginCheck();">
+                        <form id="nameLoginForm" class="layui-form" method="post" onkeydown="keyLogin()" autocomplete="off" onsubmit="return nameLoginCheck()">
                             <div class="form-error" style=""><i></i><label class="text"></label></div>
                             <dl class="clearfix">
                                 <dt>账户名：</dt>
@@ -107,7 +107,7 @@
                             </div>
                             <div class="btn-box clearfix">
                                 @*<input id="normalSubmit" class="btn-settlement" type=submit value="登    录" tjjj="passport.button.login">*@
-                                <input type="button" class="submit btn-settlement" loginType="account" tabindex="3" value="登    录" lay-submit lay-filter="subone">
+                                <input type="button" class="submit btn-settlement" id="btn" loginType="account" tabindex="3" value="登    录" lay-submit lay-filter="subone"/>
                             </div>
                             <div class="link-box clearfix">
                                 <a href="javascript:;" class="register" tjjj="passport.login.fstreg">新用户注册</a>
@@ -242,7 +242,15 @@
     var flashQrCodeWaitingTimer = null;
     var getQrCodeStatusTimer = null;
     var getQrCodeTimer = null;
-    function nameLoginCheck() {
+
+
+    function keyLogin(event) {
+
+        //谷歌能识别event，火狐识别不了，所以增加了这一句，chrome浏览器可以直接支持event.keyCode  
+        var theEvent = window.event || arguments.callee.caller.arguments[0];
+
+        var key = theEvent.keyCode;
+        function nameLoginCheck() {
         var loginName = $("#nameLoginForm").find("#normalUser").eq(0).val();
         var password = $("#nameLoginForm").find("#normalPassword").eq(0).val();
         if ($(".tips ").is(":visible")) {
@@ -264,6 +272,36 @@
         }
         return true;
     }
+        if (key == 13) {//回车键的键值为13
+                 nameLoginCheck();
+                var toClick = document.getElementById("btn");
+                toClick.click();  //调用登录按钮的登录事件
+        }
+    }
+
+
+    //function nameLoginCheck() {
+    //    var loginName = $("#nameLoginForm").find("#normalUser").eq(0).val();
+    //    var password = $("#nameLoginForm").find("#normalPassword").eq(0).val();
+    //    if ($(".tips ").is(":visible")) {
+    //        return false;
+    //    }
+    //    if (loginName == null || loginName == "") {
+    //        showError("请输入用户名");
+    //        return false;
+    //    }
+    //    if (password == null || password == "") {
+    //        showError("请输入密码");
+    //        return false;
+    //    }
+    //    if ($("#normalYzm") && $("#nameLoginForm").find("#normalYzm").length > 0) {
+    //        if ($("#normalYzm").val() == "" || $("#normalYzm").val() == null) {
+    //            showError("请输入验证码");
+    //            return false;
+    //        }
+    //    }
+    //    return true;
+    //}
 
     //页面加载事件
     $(document).ready(function () {
@@ -454,6 +492,9 @@
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
     });
+
+ 
+    
 
     
 
