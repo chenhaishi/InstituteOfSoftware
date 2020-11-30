@@ -400,7 +400,7 @@
                         for (var i = 0; i < data.Data.length; i++) {
 
                             var studentName = data.Data[i].student.Name;
-                            var studentNumber = data.Data[i].student.StudentNumber;
+                            var   = data.Data[i].student.StudentNumber;
                             var isMarke = data.Data[i].IsMark == true? "已阅":"未阅";
                             var layerthtml = _.template($("#stulistmoban").html());
                             var classStyle = isMarke == "已阅" ? "layui-badge layui-bg-gray" : "layui-badge";
@@ -562,6 +562,7 @@
                     //首先发送请求 查看是否有机试题
 
                     checkHaveComputerPaper(Examid, StuExamNumber, function (data) {
+                        console.log(data);
                         if (data == "1") {
                             button[0].href = "/ExaminationSystem/ExamScores/DownloadComputerSheet?examid=" + Examid + "&kaohao=" + StuExamNumber;
                             button.text("机试题下载");
@@ -770,6 +771,7 @@
                 var studetnnumber = $(this).attr("stuNumber");
 
                 $(this).siblings().removeClass("currentstudent");
+
 
                 $(this).addClass("currentstudent");
 

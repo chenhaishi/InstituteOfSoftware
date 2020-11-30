@@ -2,7 +2,7 @@
     ViewBag.Title = "MarkingPapers";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@*ExaminationSystem/ExamScores/MarkingPapers*@
+
 
 
 <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
@@ -43,33 +43,35 @@
     .row {
         margin-left: 30px;
     }
+    .currentstudent {
+        background-color: #ffd800;
+    }
 </style>
 <div class="row" style=" border: 1px solid #dcdcdc; display:block;box-sizing: border-box; height:1000px">
     <div style="background-color: #f3f7fd; padding: 10px 10px 10px 15px; border-bottom: 1px solid #ebeef5; display: block; font-size: 20px;">试卷区</div>
     <div style="width:50%;">
         <div class="box" style=" display: block;text-align: center;border-bottom:solid 5px green">
             <div style="position: relative;font-size:26px;color: #ec661a;line-height:100px;"></div>
-            <div style="font-size: 16px;line-height: 30px;margin-right:50px">
-                <a href="#" style="text-decoration: none;">测试数据10-20/3013 <span class="layui-badge layui-bg-orange">待阅卷</span></a>
-                <a href="#" style="text-decoration: none;">以阅卷数据10-20/3013 <span class="layui-badge layui-bg-green">已阅卷</span></a>
-                <a href="#" style="text-decoration: none;">以阅卷数据10-20/3013 <span class="layui-badge layui-bg-green">已阅卷</span></a>
+            <div id="stayMarkingArea" style="font-size: 22px;line-height: 30px;margin-right:50px">
+                <ul class="tayMarkinglist">
+                    
+                </ul>
             </div>
         </div>
         <div class="box" style=" display: block;text-align: center; margin-top:-120px;margin-left:710px;border-bottom:solid 5px green">
             <div style="position: relative;font-size: 26px;color: #ec661a;line-height: 50px;"></div>
-            <div style="font-size: 16px;line-height: 30px;text-align: center;">
+            <div id="MarkingInfoArea" style="font-size: 16px;line-height: 30px;text-align: center;">
 
-                <label style="color:black;margin-right:100px">考试名称:<span style="color:#009688!important">1817NAjava考试</span></label>
-                <label style="color:black">考试时间:<span style="color:#009688!important">2020.10.12--7:50</span></label>
+                <label class="infoitem examName" style="color:black;margin-right:200px">考试名称:<span style="color:#009688!important"></span></label>
+                <label class="infoitem examDate" style="color:black">考试时间:<span style="color:#009688!important"></span></label>
 
                 <div style="margin-right:100px;margin-bottom:30px;">
-                    <label style="color:black;margin-right:200px">试卷总数:<span style="color:#009688!important">20</span></label>
-                    <label style="color:black">已阅卷数量:<span style="color:#009688!important">0</span></label>
+                    <label class="infoitem totalPaper" style="color:black;margin-right:200px">试卷总数:<span id="fenliang" style="color:#009688!important"></span></label>
+                    <label class="infoitem filshPaper" style="color:black">已阅卷数量:<span style="color:#009688!important"></span></label>
 
                 </div>
 
-                <a class="layui-btn layui-btn-danger" style="text-decoration: none;margin-top:-55px;margin-right:300px;width:200px;color:white">一键下载所有机试</a>
-
+                <a id="YiJian" class="layui-btn layui-btn-danger" style="text-decoration: none;margin-top:-55px;margin-right:300px;width:200px;color:white">一键下载所有机试</a>
             </div>
         </div>
     </div>
@@ -87,67 +89,9 @@
 
                 </tr>
             </thead>
-            <tbody>
-                <tr style="height:50px">
-                    <td colspan="2" @*style="width:150px"*@><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-green">已阅</span></a></td>
-                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-green">已阅</span></a></td>
-                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">黄涛<span class="layui-badge layui-bg-orange">待阅 </span></a></td>
+            <tbody id="stulist">
 
-                </tr>
-                <tr style="height:50px">
-                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-orange">待阅</span></a></td>
-                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-green">已阅</span></a></td>
-                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">黄涛<span class="layui-badge layui-bg-green">已阅</span></a></td>
 
-                </tr>
-                <tr style="height:50px">
-                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">黄涛<span class="layui-badge layui-bg-green">已阅</span></a></td>
-                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-green">已阅</span></a></td>
-                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">黄涛<span class="layui-badge layui-bg-green">已阅</span></a></td>
-
-                </tr>
-                <tr style="height:50px">
-                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">黄涛<span class="layui-badge layui-bg-orange">待阅</span></a></td>
-                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-green">已阅</span></a></td>
-                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-green">已阅</span></a></td>
-
-                </tr>
-                <tr style="height:50px">
-                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">黄涛<span class="layui-badge layui-bg-orange">待阅</span></a></td>
-                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-green">已阅</span></a></td>
-                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">黄涛<span class="layui-badge layui-bg-green">已阅</span></a></td>
-
-                </tr>
-                <tr style="height:50px">
-                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-orange">待阅</span></a></td>
-                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-green">已阅</span></a></td>
-                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">黄涛<span class="layui-badge layui-bg-green">已阅</span></a></td>
-
-                </tr>
-                <tr style="height:50px">
-                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">黄涛<span class="layui-badge layui-bg-orange">待阅</span></a></td>
-                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-green">已阅</span></a></td>
-                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-green">已阅</span></a></td>
-
-                </tr>
-                <tr style="height:50px">
-                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-orange">待阅</span></a></td>
-                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-green">已阅</span></a></td>
-                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-green">已阅</span></a></td>
-
-                </tr>
-                <tr style="height:50px">
-                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">黄涛<span class="layui-badge layui-bg-orange">待阅</span></a></td>
-                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">黄涛<span class="layui-badge layui-bg-green">已阅</span></a></td>
-                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-green">已阅</span></a></td>
-
-                </tr>
-                <tr style="height:50px">
-                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">黄涛<span class="layui-badge layui-bg-orange">待阅</span></a></td>
-                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">黄涛<span class="layui-badge layui-bg-green">已阅</span></a></td>
-                    <td colspan="2"><a href="#" style="text-decoration: none;color:#008DE7" class="layui-btn layui-btn-primary">谢彦奎<span class="layui-badge layui-bg-green">已阅</span></a></td>
-
-                </tr>
             </tbody>
         </table>
     </div>
@@ -157,25 +101,30 @@
         <tbody>
             <tr>
                 <td colspan="2">
-                    <label style="color:black">选择题分数：<span style="color:#ff0000">80</span></label>
+                    <a class="layui-btn" style="color:white;width:100%" id="Markingornot">阅卷完毕</a>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <label style="color:black">选择题分数：<span id="choice" style="color:#ff0000"></span></label>
                 </td>
 
             </tr>
             <tr>
                 <td colspan="2">
-                    <label style="color:black">解答题分数：<span style="color:#ff0000">80</span></label>
+                    <label style="color:black">解答题分数：<span id="answer" style="color:#ff0000"></span></label>
                 </td>
 
             </tr>
             <tr>
                 <td colspan="2">
-                    <label style="color:black">机试题分数：<span style="color:#ff0000">80</span></label>
+                    <label style="color:black">机试题分数：<span id="Machinetest" style="color:#ff0000"></span></label>
                 </td>
 
             </tr>
             <tr>
                 <td colspan="2">
-                    <label style="color:black">总&nbsp;&nbsp;&nbsp;&nbsp;分：<span style="color:#ff0000">160</span></label>
+                    <label style="color:black">总&nbsp;&nbsp;&nbsp;&nbsp;分：<span id="zongfen" style="color:#ff0000"></span></label>
                 </td>
 
             </tr>
@@ -187,147 +136,563 @@
             </tr>
             <tr>
                 <td style="text-align:center;">
-                    <label style="color:black">解答题分数:</label><input class="form-control" style="color:red" />
+                    <label style="color:black">解答题分数:</label><input id="answerScores" class="form-control" style="color:red" />
                 </td>
                 <td style="text-align:center;">
-                    <a class="layui-btn" style="color:white">解答题一键评分</a>
+                    <a id="caclAnswerScore" class="layui-btn" style="color:white">解答题一键评分</a>
                 </td>
             </tr>
             <tr>
-                <td colspan="2"><a class="layui-btn layui-btn-warm" style="width:250px;color:white">解答题一键满分</a></td>
+                <td colspan="2"><a id="manfen" class="layui-btn layui-btn-warm" style="width:250px;color:white">解答题一键满分</a></td>
             </tr>
             <tr>
                 <td style="text-align:center;" colspan="2">
-                    <label style="color:black">机试题分数:</label><input class="form-control" style="color:red" />
+                    <label style="color:black">机试题分数:</label><input id="computerScores" class="form-control" style="color:red" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><a id="jsmanfen" class="layui-btn layui-btn-warm" style="width:250px;color:white">机试题一键满分</a></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <label style="color:black">备注：</label><textarea id="scoreRemark" class="form-control" rows="5"></textarea>
                 </td>
             </tr>
             <tr>
                 <td colspan="2">
-                    <label style="color:black">备注：</label><textarea class="form-control" rows="5"></textarea>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <a class="layui-btn layui-btn-danger" style="width:250px;color:white">确定</a>
-                    
+                    <a id="recordScoresBtn" class="layui-btn layui-btn-danger" style="width:250px;color:white">确定</a>
+
                 </td>
             </tr>
         </tbody>
 
     </table>
-   
-  
-    <div style="width:658px;margin-left:470px;margin-top:-810px">
+
+
+    <div style="width:748px;margin-left:390px;margin-top:-950px">
         <div style="margin-top:10px">
-            <div id="accordion" class="mb-3">
-                <div class="card">
-                    <div class="card-header" id="headingOne">
-                        <h5 class="m-0">
-                            <a class="text-dark collapsed" data-toggle="collapse" href="#collapseOne" aria-expanded="false">
-                                <span>1.</span><font style="vertical-align: inherit;">
-                                    <font style="vertical-align: inherit;">
-                                        什么是Lorem Ipsum？
-                                    </font>
-                                </font>
-                            </a>
-                        </h5>
-                    </div>
+            <div class="mb-3">
 
-                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion" style="">
-                        <div class="card-body">
-                            <font style="vertical-align: inherit;">
-                                <font style="vertical-align: inherit;">
-                                    Animal pariatur cliche reprehenderit，enim eiusmod high lifeAccusamus Terry Richardson ad squid。
-                                </font><font style="vertical-align: inherit;">3狼月亮官方定义，非铜版滑板dolor早午餐。</font><font style="vertical-align: inherit;">食品卡车藜麦nesciunt labourum eiusmod。</font><font style="vertical-align: inherit;">早午餐3狼月亮时期，圣阿里夸在上面放了一只鸟，鱿鱼单一产地的咖啡，原汁原味地假定是乌贼。</font><font style="vertical-align: inherit;">Nihil anim keffiyeh Helvetica，精酿啤酒劳斯·韦斯·安德森·克里斯·内塞普·萨皮恩特都很有名。</font><font style="vertical-align: inherit;">广告纯素食者屠夫副lomo。</font><font style="vertical-align: inherit;">
-                                    绑腿occaecat精酿啤酒农场到餐桌，您可能还没有的原始牛仔美学合成纤维nesciunt
-                                </font>
-                            </font>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header" id="headingTwo">
-                        <h5 class="m-0">
-                            <a class="text-dark collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false">
-                                <span>2.</span><font style="vertical-align: inherit;">
-                                    <font style="vertical-align: inherit;">
-                                        为什么要使用Lorem Ipsum？
-                                    </font>
-                                </font>
-                            </a>
-                        </h5>
-                    </div>
-                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion" style="">
-                        <div class="card-body">
-                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute,
-                            non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon
-                            tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil
-                            anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan
-                            excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt
-                            you probably haven't heard of them accusamus labore sustainable VHS.
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header" id="headingThree">
-                        <h5 class="m-0">
-                            <a class="text-dark collapsed" data-toggle="collapse" href="#collapseThree" aria-expanded="false">
-                                <span>3.</span><font style="vertical-align: inherit;">
-                                    <font style="vertical-align: inherit;">
-                                        存在多少种变化？
-                                    </font>
-                                </font>
-                            </a>
-                        </h5>
-                    </div>
-                    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion" style="">
-                        <div class="card-body">
-                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute,
-                            non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon
-                            tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil
-                            anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan
-                            excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt
-                            you probably haven't heard of them accusamus labore sustainable VHS.
-                        </div>
-                    </div>
+                <div id="itemlist" class="card">
+
                 </div>
 
-                <div class="card">
-                    <div class="card-header" id="headingFour">
-                        <h5 class="m-0">
-                            <a class="text-dark collapsed" data-toggle="collapse" href="#collapseFour" aria-expanded="false">
-                                <span>4.</span><font style="vertical-align: inherit;">
-                                    <font style="vertical-align: inherit;">
-                                        什么是Lorem Ipsum？
-                                    </font>
-                                </font>
-                            </a>
-                        </h5>
-                    </div>
-                    <div id="collapseFour" class="collapse" aria-labelledby="collapseFour" data-parent="#accordion" style="">
-                        <div class="card-body">
-                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute,
-                            non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon
-                            tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil
-                            anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan
-                            excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt
-                            you probably haven't heard of them accusamus labore sustainable VHS.
-                        </div>
-                    </div>
-                </div>
+
             </div>
         </div>
-        <a class="layui-btn layui-btn-danger" style="color:white;width:100%">下载机试</a>
+        <div id="computerBtn">
+
+        </div>
+        <br />
+
+        @*<a class="layui-btn" id="preBtn" style="color:black;width:50%;float:none;margin-top:10px">上一个</a>
+
+        <a class="layui-btn" id="nextBtn" style="color:black;width:50%;margin-top:-60px;margin-left:376px">下一个</a>*@
         <br />
         
-        <a class="layui-btn layui-btn-primary"  style="color:black;width:50%;float:none;margin-top:10px">上一页</a>
-        
-        <a class="layui-btn layui-btn-primary" style="color:black;width:50%;margin-top:-60px;margin-left:330px">下一页</a>
-        <br />
-        <a class="layui-btn" style="color:white;width:100%">是否阅卷完毕</a>
     </div>
-    
+
 
 
 
 </div>
+
+<!--模板-->
+<script type="text/template" id="moban1">
+    @*<li examid="{{=examid}}" examroom="{{=examroomid}}" class="tayMarkingitem"><span>{{=ExamTitle}}</span> --- <span>{{=ExamRoom}}</span> <span class="{{=styleClass}}" style="margin-left:5px;">{{=text}}</span></li>*@
+    <li />
+    <a examid="{{=examid}}" examroom="{{=examroomid}}" style="text-decoration: none;" class="tayMarkingitem"><span>{{=ExamTitle}}</span> - <span>{{=ExamRoom}}</span><span class="{{=styleClass}}">{{=text}}</span></a>
+    </li>
+</script>
+<!--模板-->
+<script type="text/template" id="moban2">
+    <div class="answerSheetItem">
+        <div>
+            <span class="questionIndex">{{=index}}</span> <code style="margin-left:5px; font-size:18px;">{{=question}}</code>&nbsp;&nbsp;(<span class="listScores">{{=scores}}</span>分)
+            <input class="scoreitem" type="number" value="0" max="{{=scores}}" placeholder="输入分数" style="margin-left:10px; border-top:0px solid white;border-left:0px solid white;border-right:0px solid white;border-bottom:1px solid black;" />
+            <label style=" color:black;font-size:18px;">参考答案:</label>{{=referenceanswer}}
+            <div class="Questionanswer" style="display:block; margin-left:50px; background-color:white; margin-top:20px; color:black; font-size:16px; padding:30px;">
+
+                {{=answer}}
+
+            </div>
+
+        </div>
+    </div>
+</script>
+@section script{
+    <script src="~/Scripts/underscore.js"></script>
+    <script>
+        var Sheetindex = 0;``
+        var StuExamNumber; //学员考号
+        var TopstudentNumber;
+        var Examid; //考试ID
+        var ExamRoom; // 考是（教室ID）StuExamNumberStuExamNumber
+        var IsEndSheet = false; //是否为最后一个答卷
+        function escapeHTMLString(str) {
+            str = str.replace(/</g, '&lt;');
+            str = str.replace(/>/g, '&gt;');
+            return str;
+        }
+
+        if (!document.HTMLDOMtoString) {
+            document.HTMLDOMtoString = function (HTMLDOM) {
+                const div = document.createElement("div");
+                div.appendChild(HTMLDOM);
+                return div.innerHTML;
+            }
+        }
+        function flushStuStatu(stuNumber) {
+            $("#Stulist .stuBtn").each(function (index, elem) {
+
+                var cstunumber = $(this).attr("stuNumber");
+                if (cstunumber == TopstudentNumber) {
+
+                    $(elem).find("span").text("已阅");
+                    $(elem).find("span").attr("class", "layui-badge layui-bg-gray");
+
+                    return;
+                }
+
+            });
+        }
+        layui.use(['layer'], function () {
+            var layer = layui.layer;
+            //加载待阅卷试卷
+            $.post('/ExaminationSystem/ExamScores/MarkeData', {}, function (result) {
+                if (result.ErrorCode == 200) {
+                    for (var i = 0; i < result.Data.length; i++) {
+
+                        var layerthtml = _.template($("#moban1").html());
+                        var ExamTitle = result.Data[i].markingView.ExamID.Title;
+                        var ExamRoom = result.Data[i].markingView.ID;
+                        var examIsEnd = result.Data[i].ExamIsEnd;
+                        var styleClass;
+                        var text;
+                        if (examIsEnd == true) {
+                            styleClass = "layui-badge layui-bg-orange";
+                            text = "待阅";
+                        }
+                        else {
+                            styleClass = "layui-badge layui-bg-black";
+                            text = "考试未结束";
+                        }
+
+
+                        var layerdata = layerthtml({ ExamTitle: ExamTitle, ExamRoom: ExamRoom, styleClass: styleClass, text: text, examid: result.Data[i].markingView.ExamID.ID, examroomid: result.Data[i].markingView.ExamRoom.Classroom_Id });
+
+                        $("#stayMarkingArea  .tayMarkinglist").append(layerdata);
+                    }
+                }
+            });
+            // 点击试卷1：加载试卷信息2： 加载参加考试人员名单
+            //2： 加载参加考试人员名单
+            function loadStuData(examid, examroom) {
+
+                $("#stulist").html("");
+                $.post('/ExaminationSystem/ExamScores/MakeStuData', { examid: examid, examroom: examroom }, function (data) {
+
+                    
+                    if (data.ErrorCode == 200) {
+                        var a = 1;
+                        $("#stulist").empty();
+                        var cols = data.Data.length % 2 == 0 ? (data.Data.length-2)/2 : (data.Data.length - 1)/2;
+                        
+                        for (var i = 0; i <= cols; i++) {
+
+                            //var studentNumber = data.Data[i].student.StudentNumber;
+
+                            var isMarke = "";
+                            var noMarke = "";
+
+                            var classStyle = isMarke == "已阅" ? "layui-badge layui-bg-green" : "layui-badge layui-bg-orange";
+                            var Styleclass = isMarke == "已阅" ? "layui-badge layui-bg-green" : "layui-badge layui-bg-orange";
+                            
+                            if (i == 0) {
+                                //   0/1
+                                if (data.Data.length % 2 != 0 && i == cols) {   
+
+                                    isMarke = data.Data[i].IsMark == true ? "已阅" : "未阅";
+                                    classStyle = isMarke == "已阅" ? "layui-badge layui-bg-green" : "layui-badge layui-bg-orange";
+                                    $("#stulist").append("<tr style='height: 50px'><td colspan='2'><a stuNumber='" + data.Data[i].student.StudentNumber + "' style='text-decoration: none; color: #008DE7' class='layui-btn layui-btn-primary stuBtn'>" + data.Data[i].student.Name + "<span class='" + classStyle + "'>" + isMarke + "</span></a></td>");
+                                    
+                                } else {
+                                    isMarke = data.Data[i].IsMark == true ? "已阅" : "未阅";
+                                    noMarke = data.Data[a].IsMark == true ? "已阅" : "未阅";
+                                    classStyle = isMarke == "已阅" ? "layui-badge layui-bg-green" : "layui-badge layui-bg-orange";
+                                    Styleclass = noMarke == "已阅" ? "layui-badge layui-bg-green" : "layui-badge layui-bg-orange";
+                                    $("#stulist").append("<tr style='height: 50px'><td colspan='2'><a stuNumber='" + data.Data[i].student.StudentNumber + "' style='text-decoration: none; color: #008DE7' class='layui-btn layui-btn-primary stuBtn'>" + data.Data[i].student.Name + "<span class='" + classStyle + "'>" + isMarke + "</span></a></td>" +
+                                        "<td colspan='2'><a stuNumber='" + data.Data[a].student.StudentNumber + "' style='text-decoration: none; color: #008DE7' class='layui-btn layui-btn-primary stuBtn'>" + data.Data[a].student.Name + "<span class='" + Styleclass + "'>" + noMarke + "</span></a></td>");
+                                }
+
+                            } else if (i == 1) {
+                                //   2/3
+                                if (data.Data.length % 2 != 0 && i == cols) {
+                                   
+                                    isMarke = data.Data[i + 1].IsMark == true ? "已阅" : "未阅";
+                                    classStyle = isMarke == "已阅" ? "layui-badge layui-bg-green" : "layui-badge layui-bg-orange";
+                                    $("#stulist").append("<tr style='height: 50px'><td colspan='2'><a stuNumber='" + data.Data[i + 1].student.StudentNumber + "'  style='text-decoration: none; color: #008DE7' class='layui-btn layui-btn-primary stuBtn'>" + data.Data[i + 1].student.Name + "<span class='" + classStyle + "'>" + isMarke + "</span></a></td>");
+                                    
+                                } else {
+                                    isMarke = data.Data[i + 1].IsMark == true ? "已阅" : "未阅";
+                                    noMarke = data.Data[a].IsMark == true ? "已阅" : "未阅";
+                                    classStyle = isMarke == "已阅" ? "layui-badge layui-bg-green" : "layui-badge layui-bg-orange";
+                                    Styleclass = noMarke == "已阅" ? "layui-badge layui-bg-green" : "layui-badge layui-bg-orange";
+                                    $("#stulist").append("<tr style='height: 50px'><td colspan='2'><a stuNumber='" + data.Data[i + 1].student.StudentNumber + "'  style='text-decoration: none; color: #008DE7' class='layui-btn layui-btn-primary stuBtn'>" + data.Data[i + 1].student.Name + "<span class='" + classStyle + "'>" + isMarke + "</span></a></td>" +
+                                        "<td colspan='2'><a stuNumber='" + data.Data[a].student.StudentNumber + "' style='text-decoration: none; color: #008DE7' class='layui-btn layui-btn-primary stuBtn'>" + data.Data[a].student.Name + "<span class='" + Styleclass + "'>" + noMarke + "</span></a></td>");
+                                }
+                            } else if (i >= 2) {
+                                //  4/5
+                                if (data.Data.length % 2 != 0 && i == cols) {
+                                    isMarke = data.Data[i * 2].IsMark == true ? "已阅" : "未阅";
+                                    classStyle = isMarke == "已阅" ? "layui-badge layui-bg-green" : "layui-badge layui-bg-orange"; 
+                                    $("#stulist").append("<tr style='height: 50px'><td colspan='2'><a stuNumber='" + data.Data[i * 2].student.StudentNumber + "' style='text-decoration: none; color: #008DE7' class='layui-btn layui-btn-primary stuBtn'>" + data.Data[i * 2].student.Name + "<span class='" + classStyle + "'>" + isMarke + "</span></a></td>");
+                                } else { 
+                                isMarke = data.Data[i*2].IsMark == true ? "已阅" : "未阅";
+                                noMarke = data.Data[a].IsMark == true ? "已阅" : "未阅";
+                                classStyle = isMarke == "已阅" ? "layui-badge layui-bg-green" : "layui-badge layui-bg-orange";
+                                Styleclass = noMarke == "已阅" ? "layui-badge layui-bg-green" : "layui-badge layui-bg-orange";
+                                $("#stulist").append("<tr style='height: 50px'><td colspan='2'><a stuNumber='" + data.Data[i * 2].student.StudentNumber + "' style='text-decoration: none; color: #008DE7' class='layui-btn layui-btn-primary stuBtn'>" + data.Data[i * 2].student.Name + "<span class='" + classStyle + "'>" + isMarke + "</span></a></td>" +
+                                "<td colspan='2'><a stuNumber='" + data.Data[a].student.StudentNumber + "' style='text-decoration: none; color: #008DE7' class='layui-btn layui-btn-primary stuBtn'>" + data.Data[a].student.Name + "<span class='" + Styleclass + "'>" + noMarke + "</span></a></td>");
+                                }
+                            }
+                            a += 2;
+                        }
+                        
+                            
+                    }
+                    else {
+                        layer.msg('服务器错误。。', { icon: 2 });
+                    }
+                });
+            }
+            
+            //3:点击加载阅卷信息及人员名单
+            $(document).off("click", ".tayMarkinglist .tayMarkingitem").on("click", '.tayMarkinglist .tayMarkingitem', function () {
+                // 1首先判断考试是否结束   2考试结束才加载考场信息
+                //1判断考试是否结束
+                //获取考试ID
+                
+                var examid = $(this).attr("examid");
+                var examroom = $(this).attr("examroom");
+                
+                $.post("/ExaminationSystem/ExamScores/ExamIsEnd", { examid: examid }, function (result) {
+
+
+                    if (result.ErrorCode == 200) {
+
+                        if (result.Data == true) {
+
+                            $("#biaoji").slideDown();
+
+                            $(".tianchong").hide();
+
+                            //考试信息 考场信息 试卷数量 以阅卷数量
+                            $.post("/ExaminationSystem/ExamScores/MarkeDatax", { examid: examid, examroom: examroom }, function (data) {
+                                
+                                Examid = data.Data.exam.ID;
+                                ExamRoom = data.Data.examroom.Classroom_Id;
+                                $("#MarkingInfoArea .examName").find("span").text(data.Data.exam.Title);
+
+                                var examdate = data.Data.exam.BeginDate;
+
+
+
+                                var dateutc = examdate.substr(examdate.indexOf("(") + 1, 13);
+                                var date = new Date(parseInt(dateutc));
+
+                                var year = date.getFullYear(); var month = date.getMonth() + 1; var day = date.getDate(); var hours = date.getHours(); var minus = date.getMinutes();
+
+                                $("#MarkingInfoArea .examDate").find("span").text(year + '年' + month + '月' + day + '日--' + hours + '时' + minus + '分');
+
+                                $("#MarkingInfoArea .totalPaper").find("span").text(data.Data.total.length);
+
+                                $("#MarkingInfoArea .filshPaper").find("span").text(parseInt(data.Data.total.length) - data.Data.NoScoresCount.length);
+
+
+                                Sheetindex++;
+                                
+                                loadAnswerSheet(examid, examroom, Sheetindex);
+
+                                loadStuData(Examid, ExamRoom);
+
+                                //TotalScore(Examid, StuExamNumber);
+                                
+
+                                $("#stulist").show();
+
+                            });
+
+
+
+                        }
+                        else {
+                            layer.msg('考试还未结束。。', { icon: 2 });
+                        }
+
+                    }
+                    else {
+                        layer.msg('服务器错误。。', { icon: 2 });
+                    }
+
+                });
+            });
+
+                //加载答卷方法及选择题解答题总分
+                 function checkHaveComputerPaper(examid, kaohao, callback, errorcallback) {
+                     $.post('/ExaminationSystem/ExamScores/checkHaveComputerPaper', { examid: examid, kaohao: kaohao }, function (result) {
+                 
+                         if (result.ErrorCode == 200) {
+                 
+                             callback(result.Data)
+                         }
+                         else {
+                 
+                             errorcallback();
+                         }
+                 
+                     });
+                 
+                 }
+                //加载答卷
+                function loadAnswerSheet(examid, examroom, index, studentnumber) {
+                    
+                    
+                    //清空分数
+                    $("#answerScores").val(0);
+                    $("#computerScores").val(0);
+                    var lodindex = layer.load(1); //换了种风格
+               
+                    $.post("/ExaminationSystem/ExamScores/MarkeAnswerSheetData", { examid: examid, examroom: examroom, index: index, studentnumber: studentnumber }, function (result) {
+                    layer.close(lodindex);
+                    $("#itemlist").html("");
+                    $("#download").remove();
+                        if (result.Data.length > 0) {
+                            StuExamNumber = result.Data[0].candidinfo.CandidateNumber;
+                            TotalScore(Examid, StuExamNumber);
+                            TopstudentNumber = result.Data[0].candidinfo.StudentID;
+                        if (result.Data[0].isEnd == true) {
+
+                            IsEndSheet = true;
+
+                        }
+                    }
+
+                    for (var i = 0; i < result.Data.length; i++) {
+
+                        if (result.Data[0].question != "") {
+                            var layerthtml = _.template($("#moban2").html());
+
+                            var label = $("<label></label>");
+                            var labels = $("<label style=' font-size:18px;'></label>");
+                            label.text(result.Data[i].questionTitle.Title);
+                            labels.text(result.Data[i].questionTitle.ReferenceAnswer);
+                            var layerdata = layerthtml({ index: i + 1, question: document.HTMLDOMtoString(label[0]), scores: result.Data[i].question.questionScores, answer: result.Data[i].question.answer, referenceanswer: document.HTMLDOMtoString(labels[0]) });
+                            $("#itemlist").append(layerdata);
+                        }
+
+                        if (result.Data[0].question == "") {
+
+                            $("#itemlist").append("<h2 style='text-align:center;'>空</h2>");
+
+                        }
+
+                    }
+                    var button = $('<a id="download" class="layui-btn layui-btn-fluid layui-btn-primary"></a>');
+
+                    //首先发送请求 查看是否有机试题
+
+                    checkHaveComputerPaper(Examid, StuExamNumber, function (data) {
+
+                        if (data == "1") {
+                            button[0].href = "/ExaminationSystem/ExamScores/DownloadComputerSheet?examid=" + Examid + "&kaohao=" + StuExamNumber;
+                            button.text("机试题下载");
+                            $("#computerBtn").append(button);
+                        }
+                        else {
+                            button[0].href = "javascript:void(0);";
+                            button.text("该考生无机试题答卷");
+                            button.attr("Nohave", "Nohave");
+                            $("#computerBtn").append(button);
+                        }
+
+                    }, function () {
+
+
+                    });
+
+
+
+                    layer.close(lodindex);
+
+
+                });
+
+                    
+                }
+                //下载机试
+                $(document).off("click", "#download").on("click", "#download", function () {
+
+                var status = $(this).attr("Nohave");
+
+                if (status != undefined) {
+                    layer.msg("该考生并未提交机试题答卷");
+
+                };
+            })
+                ///上一个                
+                //$(document).off("click", "#preBtn").on("click", '#preBtn',function () {
+
+
+                //    if (Sheetindex == 1) {
+                //        layer.msg('当前是第一份哦。。', { icon: 2 }, function () {
+                //            layer.close(index);
+                //        });
+                //        return;
+                //    }
+
+
+                //    var cure = $("#stulist a");
+                //    cure.removeClass("currentstudent");
+                //    cure.addClass("currentstudent");
+
+                //    Sheetindex--;
+
+                //    loadAnswerSheet(Examid, ExamRoom, Sheetindex);
+
+                //});
+                ///下一个            
+            //    $(document).off("click", "#nextBtn").on("click", '#nextBtn',function () {
+
+            //        var fenliang = $("#fenliang").text();
+            //        if (Sheetindex == fenliang) {
+            //            layer.msg('当前是最后一份', { icon: 2 }, function () {
+            //                layer.close(index);
+            //            });
+            //            return;
+            //        }
+            //        var cure = $("#stulist a");
+            //        cure.removeClass("currentstudent");
+            //        cure.addClass("currentstudent");
+
+            //        Sheetindex++;
+
+            //        loadAnswerSheet(Examid, ExamRoom, Sheetindex);
+
+            //});
+                //解答题一键评分
+                 $(document).off("click", "#caclAnswerScore").on("click", "#caclAnswerScore", function () {
+                 
+                     var score = 0;
+                 
+                     $(".scoreitem").each(function (index, elem) {
+                 
+                         score += parseFloat($(elem).val());
+                 
+                     });
+                     $("#answerScores").val(score);
+                 
+                 });
+                //一键下载机试题
+                $(document).off("click", "#YiJian").on("click", "#YiJian", function () {
+                    //$.post("/ExaminationSystem/ExamScores/OneClickDownload?examid=" + Examid, {}, function (data) {
+                    //    console.log(data);
+                    //})
+                    layer.msg("功能优化中");
+                })
+                //提交分数               
+                $(document).off("click", "#recordScoresBtn").on("click", '#recordScoresBtn',function () {
+                    //获取分数
+                    var answerScores = $("#answerScores").val();
+                    var computerScores = $("#computerScores").val();
+                    var remark = $("#scoreRemark").val();
+
+                    
+                    $.post("/ExaminationSystem/ExamScores/CommitScores", { examid: Examid, StuExamNumber: StuExamNumber, answerScores: answerScores, computerScores: computerScores, remark: remark }, function (result) {
+
+                        if (result.ErrorCode == 200) {
+
+
+                            layer.msg('记录成功', { icon: 1 }, function () {
+                                layer.close(index);
+                                loadStuData(Examid, ExamRoom);
+                            });
+                            
+                            flushStuStatu(StuExamNumber);
+                            //刷新考生
+                            //$("#Stulist button").remove();
+                            //loadStuData(Examid, ExamRoom);
+
+                            //刷新信息
+                            loadMarkInfo(Examid, ExamRoom);
+
+                            //检查是否全部阅完毕
+                            IsMarkeFinsh(Examid, ExamRoom);
+
+                        }
+
+                    });
+
+                });
+                //解答题一键满分           
+                $(document).off("click", "#manfen").on("click", '#manfen',function () {
+                    $("#answerScores").val("30");
+                })
+                //机试题一键满分                     
+                $(document).off("click", "#jsmanfen").on("click", '#jsmanfen',function () {
+                    $("#computerScores").val("60");
+                })
+                //点击阅卷完毕
+                $(document).off("click", "#Markingornot").on("click", '#Markingornot', function () {
+                    layer.confirm('是否确定阅卷完毕,完毕之后将不能继续阅卷！', function (index) {
+                        $.post("/ExaminationSystem/ExamScores/Endofmarking", { examid: Examid, examroom: ExamRoom }, function (date) {
+                            if (date.ErrorCode == 200) {
+                                layer.msg("阅卷成功！");
+                                location.href = "/ExaminationSystem/ExamScores/MarkingPapers";
+                            } else {
+                                layer.msg("阅卷失败！");
+                            }
+                        })
+                        layer.close(index);
+                    })
+
+            });
+
+               function TotalScore(Examid, StuExamNumber) {
+                $.post("/ExaminationSystem/ExamScores/StuScores", { examid: Examid, StuExamNumber: StuExamNumber }, function (data) {
+                    //初始化分数
+                    if (data.ErrorCode == 200) {
+                        //选择题
+                        var choicequestion = data.Data.ChooseScore;
+                        //解答题
+                        var answerScoress = data.Data.TextQuestionScore;
+                        //机试题
+                        var computerScores = data.Data.OnBoard;
+                        // 总分
+                        var TotalScore = data.Data.ChooseScore + data.Data.TextQuestionScore + data.Data.OnBoard;
+
+                        $("#choice").html(choicequestion);
+                        $("#answer").html(answerScoress);
+                        $("#Machinetest").html(computerScores);
+                        $("#zongfen").html(TotalScore);
+                    }
+
+
+                });
+            }
+
+            //点击学员加载答卷，加载学员的考试分数
+            //显示选择题解答题机试题分数及总分
+
+            $(document).off("click", ".stuBtn").on("click", '.stuBtn', function () {
+                var studetnnumber = $(this).attr("stuNumber");
+                $("#stulist a").removeClass("currentstudent");
+                $(this).addClass("currentstudent");
+                Sheetindex = ($(this).index()) + 1;
+                loadAnswerSheet(Examid, ExamRoom, Sheetindex, studetnnumber);
+
+                
+            })
+            })
+    </script>
+}
