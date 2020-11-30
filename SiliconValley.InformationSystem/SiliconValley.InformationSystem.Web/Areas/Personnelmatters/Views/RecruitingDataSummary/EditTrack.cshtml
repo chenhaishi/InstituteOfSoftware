@@ -317,39 +317,50 @@
                 data.field.Id = $("#F_Id").val();
                 var Tracklist = GetFirstTrack();
                 var loadindex = layer.load(1);
-                $.post("/Personnelmatters/RecruitingDataSummary/EditTrack", { mydata: data.field, Tracklist: Tracklist }, function (data) {
-                    layer.close(loadindex);
-                    console.log(data.field);
-                    if (data.Success) {
-                        layer.alert("编辑成功!", { icon: 1 }, function () {
-                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                            parent.layui.table.reload('myrptData');
-                            parent.layui.table.reload('myRecruitData');
-                            parent.layer.close(index);
+                $.ajax({
+                    url: "/Personnelmatters/RecruitingDataSummary/DuplicateData",
+                    type: "post",
+                    data: JSON.stringify({ "name": data.field.Name, "phone": data.field.PhoneNumber }),
+                    dataType: "json",
+                    contentType: "Application/json",
+                    success: function (da) {
+                        var count = da.ErrorCode;
+                        if (da.Success) {
+                            if (count > 0) {
+                                layer.alert(da.Msg, { icon: 2 });
+                            } else {
+                                EditTrack(data.field, Tracklist);
+                            }
 
-                        });
-                    } else {
-                        layer.alert("编辑失败!");
+                        }
                     }
-                });
+
+                })
                 return false;
             });
          
             $("#subbtn").click(function () {
                 var Tracklist = GetFirstTrack();
-                $.post("/Personnelmatters/RecruitingDataSummary/EditTracks", {  Tracklist: Tracklist }, function (data) {
-                    if (data.Success) {
-                        layer.alert("编辑成功!", { icon: 1 }, function () {
-                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                            parent.layui.table.reload('myrptData');
-                            parent.layui.table.reload('myRecruitData');
-                            parent.layer.close(index);
+                $.ajax({
+                    url: "/Personnelmatters/RecruitingDataSummary/DuplicateData",
+                    type: "post",
+                    data: JSON.stringify({ "name": $("#Name").val(), "phone": $("#PhoneNumber").val() }),
+                    dataType: "json",
+                    contentType: "Application/json",
+                    success: function (da) {
+                        var count = da.ErrorCode;
+                        if (da.Success) {
+                            if (count > 0) {
+                                layer.alert(da.Msg, { icon: 2 });
+                            } else {
+                                EditTracks( Tracklist);
+                            }
 
-                        });
-                    } else {
-                        layer.alert("编辑失败!");
+                        }
                     }
-                });
+
+                })
+               
             });
 
        
@@ -361,7 +372,38 @@
 
         });
 
+        function EditTrack(mydata, Tracklist) {
+            $.post("/Personnelmatters/RecruitingDataSummary/EditTrack", { mydata: mydata, Tracklist: Tracklist }, function (data) {
+                layer.close(loadindex);
+                console.log(data.field);
+                if (data.Success) {
+                    layer.alert("编辑成功!", { icon: 1 }, function () {
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layui.table.reload('myrptData');
+                        parent.layui.table.reload('myRecruitData');
+                        parent.layer.close(index);
 
+                    });
+                } else {
+                    layer.alert("编辑失败!");
+                }
+            });
+        }
+        function EditTracks(Tracklist) {
+            $.post("/Personnelmatters/RecruitingDataSummary/EditTracks", { Tracklist: Tracklist }, function (data) {
+                if (data.Success) {
+                    layer.alert("编辑成功!", { icon: 1 }, function () {
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layui.table.reload('myrptData');
+                        parent.layui.table.reload('myRecruitData');
+                        parent.layer.close(index);
+
+                    });
+                } else {
+                    layer.alert("编辑失败!");
+                }
+            });
+        }
         //时间格式转换
         function changeDateTimeFormat(cellval) {
             if (cellval != null) {

@@ -133,17 +133,16 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             return mcobj;
         }
         //工资表生成的方法
-        public bool CreateSalTab(string time)
+        public AjaxResult CreateSalTab(string time)
         {
-            bool result = false;
-           var sssss = "";
+            AjaxResult result = new AjaxResult();
+           
             try
             {
-                
                 var msrlist = this.GetEmpMsrData().Where(s => s.IsDel == false).ToList();
-                // EmployeesInfoManage empmanage = new EmployeesInfoManage();
+                EmployeesInfoManage empmanage = new EmployeesInfoManage();
                 EmplSalaryEmbodyManage esemanage = new EmplSalaryEmbodyManage();
-                var emplist = esemanage.GetEmpESEData().Where(s => s.IsDel == false).ToList();
+                var emplist = esemanage.GetEmpESEData().Where(s => s.IsDel == false).OrderBy(i=>i.Id).ToList();
                 //    var emplist = empmanage.GetEmpInfoData();
                 var nowtime = DateTime.Parse(time);
 
@@ -153,56 +152,53 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 if (matchlist.Count() <= 0)//表示月度工资表中无该月的数据
                 {
                     //找到已禁用的或者该月份的员工集合 
-                    if (this.GetEmpMsrData().Count>0)
-                        {
                     var forbiddenlist = this.GetEmpMsrData().Where(s => s.IsDel == true || (DateTime.Parse(s.YearAndMonth.ToString()).Year == nowtime.Year && DateTime.Parse(s.YearAndMonth.ToString()).Month == nowtime.Month)).ToList();
                         for (int i = 0; i < forbiddenlist.Count(); i++)
                         {//将月度工资表中已禁用的员工去员工工资体系表中去除
-
                             emplist.Remove(emplist.Where(e => e.EmployeeId == forbiddenlist[i].EmployeeId).FirstOrDefault());
-
-
                         }
-                    }
-                    
+                   
                     foreach (var item in emplist)
                     {//再将未禁用的员工添加到月度工资表中
+                        
                         AttendanceInfo attendance = GetAttendanceInfoByEmpid(item.EmployeeId,Convert.ToDateTime(time));
                         MeritsCheck merits = GetMCByEmpid(item.EmployeeId,Convert.ToDateTime(time));
                         MonthlySalaryRecord msr = new MonthlySalaryRecord();
-                        msr.EmployeeId = item.EmployeeId;
-                        msr.YearAndMonth = Convert.ToDateTime(time);
-                        msr.FinalGrade = merits.FinalGrade;
-                        msr.BaseSalary = item.BaseSalary;
-                        msr.PositionSalary = item.PositionSalary;
-                        msr.PerformancePay = item.PerformancePay;
-                        msr.PersonalSocialSecurity = item.PersonalSocialSecurity;
-                        msr.SocialSecuritySubsidy = item.SocialSecuritySubsidy;
-                        msr.NetbookSubsidy = item.NetbookSubsidy;
-                        msr.ContributionBase = item.ContributionBase;
-                        msr.PersonalIncomeTax = item.PersonalIncomeTax;
-                        msr.OvertimeCharges = attendance.OvertimeCharges;
-                        msr.TardyAndLeaveWithhold = attendance.TardyAndLeaveWithhold;
-                        msr.AbsenteeismWithhold = attendance.AbsenteeismWithhold;
-                        msr.AbsentNumWithhold = attendance.AbsentNumWithhold;
-                        msr.MonthPerformancePay = GetempPerformanceSalary(merits.FinalGrade,item.PerformancePay);
-                        msr.IsDel = false;
-                        msr.IsApproval = false;
-                        msr.IsFinancialAudit = 0;
-                        this.Insert(msr);
-                        rc.RemoveCache("InRedisMSRData");
+                      
+                            msr.EmployeeId = item.EmployeeId;
+                            msr.YearAndMonth = Convert.ToDateTime(time);
+                            msr.FinalGrade = merits.FinalGrade;
+                            msr.BaseSalary = item.BaseSalary;
+                            msr.PositionSalary = item.PositionSalary;
+                            msr.PerformancePay = item.PerformancePay;
+                            msr.PersonalSocialSecurity = item.PersonalSocialSecurity;
+                            msr.SocialSecuritySubsidy = item.SocialSecuritySubsidy;
+                            msr.NetbookSubsidy = item.NetbookSubsidy;
+                            msr.ContributionBase = item.ContributionBase;
+                            msr.PersonalIncomeTax = item.PersonalIncomeTax;
+                            msr.OvertimeCharges = attendance.OvertimeCharges;
+                            msr.TardyAndLeaveWithhold = attendance.TardyAndLeaveWithhold;
+                            msr.AbsenteeismWithhold = attendance.AbsenteeismWithhold;
+                            msr.AbsentNumWithhold = attendance.AbsentNumWithhold;
+                            msr.MonthPerformancePay = GetempPerformanceSalary(merits.FinalGrade, item.PerformancePay);
+                            msr.IsDel = false;
+                            msr.IsApproval = false;
+                            msr.IsFinancialAudit = 0;
+                            this.Insert(msr);
+                            rc.RemoveCache("InRedisMSRData");
+                        }
+                           
                     }
-                }
+                
+               
+                result.Success = true;
+                result.Msg = "生成成功！" ;
 
-                result = true;
             }
 
             catch (Exception ex)
             {
-                sssss = ex.Message;
-                result = false;
-                
-
+                    result = Error(ex.Message);
             }
             return result;
         }

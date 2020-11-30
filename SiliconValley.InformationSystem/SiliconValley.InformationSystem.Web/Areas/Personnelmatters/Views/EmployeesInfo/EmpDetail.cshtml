@@ -75,6 +75,7 @@
                     <td>所属部门</td>
                     <td>
                         <input type="text" id="dname" name="dname" readonly class="layui-input" style="border:0px;" />
+                        </td>
                     <td>所属岗位</td>
                     <td>
                         <input type="text" id="pname" name="pname" readonly class="layui-input" style="border:0px;" />
@@ -84,6 +85,7 @@
                     <td>年龄</td>
                     <td>
                         @Html.TextBoxFor(a => a.Age, new Dictionary<string, object>() { { "style", "border:0px" }, { "readonly", "true" }, { "class", "layui-input" } })
+                        </td>
                     <td>民族</td>
                     <td>
                         @Html.TextBoxFor(a => a.Nation, new Dictionary<string, object>() { { "style", "border:0px" }, { "readonly", "true" }, { "class", "layui-input" } })
@@ -95,15 +97,25 @@
                     <td>
                         @Html.TextBoxFor(a => a.Phone, new Dictionary<string, object>() { { "style", "border:0px" }, { "readonly", "true" }, { "class", "layui-input" } })
                     </td>
-                    <td>身份证号</td>
+                    <td>紧急联系电话</td>
                     <td colspan="2">
-                        @Html.TextBoxFor(a => a.IdCardNum, new Dictionary<string, object>() { { "style", "border:0px" }, { "readonly", "true" }, { "class", "layui-input " } })
+                        @Html.TextBoxFor(a => a.UrgentPhone, new Dictionary<string, object>() { { "style", "border:0px" }, { "readonly", "true" }, { "class", "layui-input" } })
                     </td>
                 </tr>
                 <tr>
-                    <td>身份证有效期</td>
-                    <td>
+                    <td>身份证号</td>
+                    <td >
+                        @Html.TextBoxFor(a => a.IdCardNum, new Dictionary<string, object>() { { "style", "border:0px" }, { "readonly", "true" }, { "class", "layui-input " } })
+                    </td>
+                    <td >身份证有效期</td>
+                    <td colspan="2">
                         @Html.TextBoxFor(a => a.IdCardIndate, new Dictionary<string, object>() { { "style", "border:0px" }, { "readonly", "true" }, { "class", "layui-input" } })
+                    </td>
+                </tr>
+                <tr>
+                    <td>试用期工资</td>
+                    <td >
+                        @Html.TextBoxFor(a => a.ProbationSalary, new Dictionary<string, object>() { { "style", "border:0px" }, { "readonly", "true" }, { "class", "layui-input salary" } })
                     </td>
                     <td>转正后工资</td>
                     <td colspan="2">
@@ -143,10 +155,10 @@
                     <td>学历</td>
                     <td>
                         <input type="text" id="Education" name="Education" readonly class="layui-input" style="border:0px;" />
-
-                    <td>紧急联系电话</td>
+                    </td>
+                    <td>政治面貌</td>
                     <td colspan="2">
-                        @Html.TextBoxFor(a => a.UrgentPhone, new Dictionary<string, object>() { { "style", "border:0px" }, { "readonly", "true" }, { "class", "layui-input" } })
+                        <input type="text" id="PoliticsStatus" name="PoliticsStatus" readonly class="layui-input" style="border:0px;" />
                     </td>
                 </tr>
                 <tr>
@@ -155,23 +167,11 @@
                         <input type="radio" name="MaritalStatus" id="MaritalStatus" value="false" title="未婚" readonly>
                         <input type="radio" name="MaritalStatus" value="true" title="已婚" readonly>
                     </td>
-                    <td>政治面貌</td>
-                    <td colspan="2">
-                        <input type="text" id="PoliticsStatus" name="PoliticsStatus" readonly class="layui-input" style="border:0px;" />
-                    </td>
-
-                </tr>
-                <tr>
                     <td>社保起始月份</td>
-                    <td>
+                    <td colspan="2">
                         @Html.TextBoxFor(a => a.SSStartMonth, new Dictionary<string, object>() { { "style", "border:0px" }, { "readonly", "true" }, { "class", "layui-input" } })
                     </td>
-                    <td>试用期工资</td>
-                    <td colspan="2">
-                        @Html.TextBoxFor(a => a.ProbationSalary, new Dictionary<string, object>() { { "style", "border:0px" }, { "readonly", "true" }, { "class", "layui-input salary" } })
-                    </td>
                 </tr>
-
                 <tr>
                     <td>户籍地址</td>
                     <td colspan="4">

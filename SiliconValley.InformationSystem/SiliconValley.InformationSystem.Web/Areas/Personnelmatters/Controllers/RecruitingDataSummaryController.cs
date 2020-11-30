@@ -216,14 +216,19 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         public ActionResult Addrpt(RecruitPhoneTrace rpt)
         {
             RecruitPhoneTraceManage rmanage = new RecruitPhoneTraceManage();
+            var count = 0;
             var AjaxResultxx = new AjaxResult();
             try
             {
                 rpt.IsEntry = false;
                 rpt.IsDel = false;
                 rpt.PhoneCommunicateResult = false;
-                rmanage.Insert(rpt);
-                AjaxResultxx = rmanage.Success();
+
+               count = rmanage.GetList().Where(i=>i.Name==rpt.Name&&i.PhoneNumber==rpt.PhoneNumber).Count();
+               
+                    rmanage.Insert(rpt);
+                    AjaxResultxx = rmanage.Success();
+               
 
             }
             catch (Exception ex)
@@ -233,8 +238,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             }
             if (AjaxResultxx.Success)
             {
-                rpt.SonId = rpt.Id;
-                rmanage.Update(rpt);
+                    rpt.SonId = rpt.Id;
+                    rmanage.Update(rpt);
+                    AjaxResultxx = rmanage.Success();
+
                 AjaxResultxx = rmanage.Success();
             }
             if (AjaxResultxx.Success)
@@ -470,7 +477,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             RecruitingDataSummaryManage rdsmanage = new RecruitingDataSummaryManage();
             EmployeesInfoManage empmanage = new EmployeesInfoManage();
             var rdslist = rdsmanage.GetList();
-            var myrdslist = rdslist.OrderBy(r => r.Id).Skip((page - 1) * limit).Take(limit).ToList();
+            var myrdslist = rdslist.OrderByDescending(r => r.Id).Skip((page - 1) * limit).Take(limit).ToList();
             if (!string.IsNullOrEmpty(AppCondition))
             {
                 string[] str = AppCondition.Split(',');
@@ -529,8 +536,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             };
             return Json(newobj, JsonRequestBehavior.AllowGet);
         }
-
-
         public string Condition(DateTime date, string type)
         {
             if (type == "day")
@@ -707,7 +712,34 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             }
             return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
         }
-
-
+        public ActionResult DuplicateData(string name,string phone)
+        {
+            RecruitPhoneTraceManage recruit = new RecruitPhoneTraceManage();
+            AjaxResult result = new AjaxResult();
+            int count=0;
+            try
+            {
+                if (!string.IsNullOrEmpty(phone))
+                {
+                     count= recruit.GetList().Where(i => i.Name == name && i.PhoneNumber == phone&&i.IsDel==false).Count();
+                }
+                if (count>0)
+                {
+                    result.Success = true;
+                    result.ErrorCode = count;
+                    result.Msg= "已有此人，请确认姓名或手机号正确";
+                }
+                else
+                {
+                    result = recruit.Success();
+                }
+               
+            }
+            catch (Exception e)
+            {
+                result = recruit.Error(e.Message);
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
     }
 }
