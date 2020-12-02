@@ -1154,6 +1154,7 @@
     <Content Include="assets\Assets_L1\assets\libs\jquery-knob\jquery.knob.min.js" />
     <Content Include="assets\Assets_L1\assets\libs\jquery-mask-plugin\jquery.mask.min.js" />
     <Content Include="assets\Assets_L1\assets\libs\jquery-slimscroll\jquery.slimscroll.min.js" />
+    <Content Include="assets\Assets_L1\assets\libs\jquery-steps\build\jQuery.Steps.1.1.0.nupkg" />
     <Content Include="assets\Assets_L1\assets\libs\jquery-steps\build\jquery.steps.min.js" />
     <Content Include="assets\Assets_L1\assets\libs\jquery-steps\lib\jquery-1.10.2.min.js" />
     <Content Include="assets\Assets_L1\assets\libs\jquery-steps\lib\jquery-1.11.1.min.js" />
@@ -3608,7 +3609,6 @@
     <Content Include="assets\Assets_L1\assets\libs\gmaps\jsdoc.json" />
     <Content Include="assets\Assets_L1\assets\libs\gmaps\umd.hbs" />
     <Content Include="assets\Assets_L1\assets\libs\jquery-steps\build\jquery.steps-1.1.0.zip" />
-    <Content Include="assets\Assets_L1\assets\libs\jquery-steps\build\jQuery.Steps.1.1.0.nupkg" />
     <Content Include="assets\Assets_L1\assets\libs\jquery-steps\nuget\jQuery.Steps.nuspec" />
     <Content Include="assets\Assets_L1\assets\libs\jquery-steps\steps.jquery.json" />
     <Content Include="assets\Assets_L1\assets\libs\jquery-ui\component.json" />
