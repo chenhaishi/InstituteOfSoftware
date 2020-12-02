@@ -479,7 +479,23 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             ViewBag.Passornot = Request.QueryString["Passornot"];
             ViewBag.paymentmethod= Request.QueryString["paymentmethod"];
             List<StudentFeeRecord> stulist = StudentFeeRecord.GetList().Where(d => d.StudenID == studentid).ToList();
-
+            List<StudentFeeRecord> studentFeeRecordslist = new List<StudentFeeRecord>();
+            BaseBusiness<StudentFeeRecord> StudentRZ = new BaseBusiness<StudentFeeRecord>();
+            StudentFeeRecord result = null;
+            var contrast = StudentRZ.GetList().Where(d => d.StudenID == studentid).ToList();
+            
+            foreach (var item in contrast)
+            {
+                result = StudentRZ.GetList().Where(d => d.ID == item.ID).SingleOrDefault();
+            }
+            if (result == null)
+            {
+                ViewBag.result = "请选择入账日期";
+            }
+            else
+            {
+              ViewBag.result = result.AddDate;
+            }
             StringBuilder sb = new StringBuilder();
 
             for (int i = 0; i < stulist.Count(); i++)
@@ -502,7 +518,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             //岗位数据
             var positon = employeesInfoManage.GetPositionByEmpid(user.EmpNumber);
            ViewBag.postName=   positon.PositionName.Contains("会计") == true ? 1 : 0;
-       
+           
             return View();
         }
         /// <summary>
@@ -512,9 +528,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
         /// <param name="whether">是否入账</param>
         /// <param name="OddNumbers">单号</param>
         /// <returns></returns>
-        public ActionResult Tuitionentry(int id, string whether, string OddNumbers,string paymentmethod)
+        public ActionResult Tuitionentry(int id, string whether, string OddNumbers,string paymentmethod,DateTime time)
         {
-            return Json(dbtext.Tuitionentry(id, whether, OddNumbers, paymentmethod), JsonRequestBehavior.AllowGet);
+            return Json(dbtext.Tuitionentry(id, whether, OddNumbers, paymentmethod, time), JsonRequestBehavior.AllowGet);
         }
         StudentDataKeepAndRecordBusiness stuDataKeepAndRecordBusiness = new StudentDataKeepAndRecordBusiness();
         /// <summary>
