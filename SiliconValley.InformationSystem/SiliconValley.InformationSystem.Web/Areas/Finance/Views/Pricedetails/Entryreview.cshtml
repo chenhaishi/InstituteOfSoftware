@@ -156,6 +156,13 @@
 
             </tr>
             <tr>
+                <td>入账时间修改：</td>
+       
+                <td> <input type="text" name="date1" id="date1" lay-verify="date" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input" value="@ViewBag.result.ToString("yyyy-MM-dd")"></td>
+                
+
+            </tr>
+            <tr>
                 <td>备注:</td>
                 <td>@ViewBag.StudentFeeRecord</td>
             </tr>
@@ -188,19 +195,29 @@
 </html>
 
 <script>
-    layui.use(['table', 'layer', 'tree', 'form'], function () {
+
+    layui.use(['table', 'layer', 'tree', 'form','laydate'], function () {
         var table = layui.table;
                     var layer = layui.layer;
-                    var form = layui.form;
+        var form = layui.form
+            , layer = layui.layer
+            , layedit = layui.layedit
+            , laydate = layui.laydate;
+        //日期
+    
+        laydate.render({
+            elem: '#date1',
+            trigger:'click'
+        });
         //同意
         $("#Yess").click(function () {
-           
+            var time = $("#date1").val();
                  var Dabse = {
                 id: $("#ids").val(),
                 whether: 1,
                      OddNumbers: $("#OddNumbers").val(),
-                     paymentmethod: $("#paymentmethod").val()
-
+                     paymentmethod: $("#paymentmethod").val(),
+                     time:time
             }
             if (Dabse.paymentmethod != "" && Dabse.OddNumbers != "") {
                 TransactionAdd("/Finance/Pricedetails/Tuitionentry", Dabse);
@@ -239,8 +256,6 @@
             } else {
                 layer.msg("当前登录账号无权限操作！");
             }
-           
-
         });
         //关闭
         $("#Ceno").click(function () {
