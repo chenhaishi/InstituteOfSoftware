@@ -1339,7 +1339,10 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                         {
                             var view = PayviewBusiness.GetEntity(item.Payviewid);
                             StudentFeeRecord studentFeeRecord = new StudentFeeRecord();
-                            studentFeeRecord.AddDate = time==null?view.AddDate:time;
+                        if (item.Paymentver == id)
+                        {
+                            studentFeeRecord.AddDate = time == null ? view.AddDate : time;
+                        }
                             studentFeeRecord.Amountofmoney = view.Amountofmoney;
                             studentFeeRecord.Costitemsid = view.Costitemsid;
                             studentFeeRecord.FinanceModelid = view.FinanceModelid;

@@ -494,7 +494,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             }
             else
             {
-              ViewBag.result = result.AddDate;
+              ViewBag.result = result.AddDate.Value.Year+"-"+result.AddDate.Value.Month+"-"+result.AddDate.Value.Day;
             }
             StringBuilder sb = new StringBuilder();
 
