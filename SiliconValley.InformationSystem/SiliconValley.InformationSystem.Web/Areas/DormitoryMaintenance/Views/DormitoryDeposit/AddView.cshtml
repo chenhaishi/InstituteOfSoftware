@@ -41,7 +41,7 @@
             <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
                 <label class="LableCss1">维修日期:</label>
                 <div class="layui-input-block">
-                    <input id="mantinDate" name="mantinDate" type="tel" class="layui-input" lay-verify="required"/>
+                    <input id="mantinDate" name="mantinDate" type="tel" class="layui-input" lay-verify="required" />
                 </div>
             </div>
             <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
@@ -70,7 +70,7 @@
                         }
                     </div>
                 </div>
-                
+
             </div>
             <div class="layui-row layui-form-item">
                 <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
@@ -98,8 +98,8 @@
                         </select>
                     </div>
                 </div>
-
             </div>
+
             <div id="dorManDiv" class="layui-row layui-form-item DisplayCss1">
                 <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
                     <label class="LableCss1">寝室人员:</label>
@@ -108,6 +108,33 @@
                     </div>
                 </div>
 
+            </div>
+
+            @*维修内容*@
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                    <label class="LableCss1">维修内容:</label>
+                    <div class="layui-input-block">
+                        <textarea name="RepairContent" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            @*解决措施*@
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                    <label class="LableCss1">解决措施:</label>
+                    <div class="layui-input-block">
+                        <textarea name="Solutions" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                <label class="LableCss1">完成时间:</label>
+                <div class="layui-input-block">
+                    <input id="CompleteTime" name="CompleteTime" class="layui-input" lay-verify="required" />
+                </div>
             </div>
 
             <div class="layui-row layui-form-item">
@@ -145,6 +172,11 @@
                         });//类型初始化
 
                     }
+                });
+
+                laydate.render({
+                    elem: '#CompleteTime',
+                    trigger:'click'
                 });
 
 
