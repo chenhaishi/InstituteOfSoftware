@@ -1822,7 +1822,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
         public ActionResult EmpSurveyData(int page)
         {
             // 筛选条件员工 日期降序排序
-
             List<SatisfactionSurveyDetailView> configlist = new List<SatisfactionSurveyDetailView>();
             List<SurveyGroupByDateView> resultlist = new List<SurveyGroupByDateView>();
             int TotalCount = 0;
