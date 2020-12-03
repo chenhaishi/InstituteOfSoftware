@@ -3627,7 +3627,6 @@
     <Content Include="Areas\DormitoryMaintenance\Views\DormitoryDeposit\StuNameDefileView.cshtml" />
     <Content Include="Areas\Educational\Views\Staff_Cost_Statistics\Search_PersonClass.cshtml" />
     <Content Include="obj\Release\Package\PackageTmp\assets\Assets_L1\assets\libs\jquery-steps\build\jQuery.Steps.1.1.0.nupkg" />
-    <Content Include="assets\Assets_L1\assets\libs\jquery-steps\build\jQuery.Steps.1.1.0.nupkg" />
     <Content Include="Areas\Personnelmatters\Views\SocialSecurityDetail\EditPaySicknessInsurance.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\SocialSecurityDetail\EditSupplementaryPayment.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\SocialSecurityDetail\Index.cshtml" />
