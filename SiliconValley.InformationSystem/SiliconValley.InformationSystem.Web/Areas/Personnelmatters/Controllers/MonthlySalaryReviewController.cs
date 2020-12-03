@@ -1,4 +1,5 @@
-﻿using SiliconValley.InformationSystem.Business.EmployeesBusiness;
+﻿using SiliconValley.InformationSystem.Business.Base_SysManage;
+using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 using SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness;
 using SiliconValley.InformationSystem.Entity.MyEntity;
 using SiliconValley.InformationSystem.Entity.ViewEntity.SalaryView;
@@ -45,11 +46,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             List<MonthlySalaryRecord> eselist = new List<MonthlySalaryRecord>();
             List<MySalaryObjView> result = new List<MySalaryObjView>();
             EmployeesInfoManage empmanage = new EmployeesInfoManage();//员工信息表
+            var type = msrmanage.type();
             eselist = msrmanage.GetEmpMsrData().Where(s => s.IsDel == false).ToList();
             if (!string.IsNullOrEmpty(ymtime))
             {
                 var time = DateTime.Parse(ymtime);
-                eselist = eselist.Where(s => DateTime.Parse(s.YearAndMonth.ToString()).Year == time.Year && DateTime.Parse(s.YearAndMonth.ToString()).Month == time.Month && s.IsFinancialAudit == 0).ToList();
+                eselist = eselist.Where(s => DateTime.Parse(s.YearAndMonth.ToString()).Year == time.Year && DateTime.Parse(s.YearAndMonth.ToString()).Month == time.Month && s.IsFinancialAudit == 2).ToList();
             }
             if (!string.IsNullOrEmpty(AppCondition))
             {
@@ -173,34 +175,14 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
 
             return Json(newobj, JsonRequestBehavior.AllowGet);
         }
-        public ActionResult IsConfirmApproval(string time)
-        {
-            MonthlySalaryRecordManage msrmanage = new MonthlySalaryRecordManage();//员工月度工资
-            var AjaxResultxx = new AjaxResult();
-            try
-            {
-                var curtime = DateTime.Parse(time);
-                var monthlies = msrmanage.GetEmpMsrData().Where(s => DateTime.Parse(s.YearAndMonth.ToString()).Year == curtime.Year && DateTime.Parse(s.YearAndMonth.ToString()).Month == curtime.Month&&s.IsFinancialAudit==0).ToList();
-                foreach (var item in monthlies)
-                {
-                    item.IsFinancialAudit = 1;
-                    msrmanage.Update(item);
-                    rc.RemoveCache("InRedisMSRData");
-                }
-                AjaxResultxx = msrmanage.Success();
-                AjaxResultxx.ErrorCode = 200;
-                
-            }
-            catch (Exception ex)
-            {
-                AjaxResultxx = msrmanage.Error(ex.Message);
-            }
-            return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
-        }
+        
         public ActionResult SalaryApproval(int id)
         {
             MonthlySalaryRecordManage msrmanage = new MonthlySalaryRecordManage();//员工月度工资
             EmployeesInfoManage manage = new EmployeesInfoManage();
+            var type = msrmanage.type();
+            var list = msrmanage.GetEmpMsrData().Where(i=>i.IsDel==false&&Convert.ToDateTime(i.YearAndMonth).Year==Convert.ToDateTime(FirstTime).Year&& Convert.ToDateTime(i.YearAndMonth).Month == Convert.ToDateTime(FirstTime).Month&&i.IsFinancialAudit==type-1).ToList();
+            ViewBag.list = list;
             var s = msrmanage.GetEntity(id);
             ViewBag.EmpName = manage.GetEntity(s.EmployeeId).EmpName;
             ViewBag.yearandmonth = FirstTime;
@@ -277,6 +259,86 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 result = monthly.Error(ex.Message);
             }
             return Json(result, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public ActionResult IsConfirmApproval(string time)
+        {
+            MonthlySalaryRecordManage msrmanage = new MonthlySalaryRecordManage();
+            EmployeesInfoManage empmanage = new EmployeesInfoManage();
+            var AjaxResultxx = new AjaxResult();
+            try
+            {
+                var UserName = Base_UserBusiness.GetCurrentUser();//获取当前登录人
+                var ddid = empmanage.GetInfoByEmpID(UserName.EmpNumber).DDAppId;
+                
+                var type = 0;
+                switch (ddid)
+                {
+                    case 145:
+                        type = 3;
+                        break;
+                    case 147:
+                        type = 4;
+                        break;
+                    case 190:
+                        type = 5;
+                        break;
+                    case 2:
+                        type = 6;
+                        break;
+                    case 1:
+                        type = 7;
+                        break;
+                    default:
+                        break;
+                }
+
+                var curtime = DateTime.Parse(time);
+                var monthlies = msrmanage.GetEmpMsrData().Where(s => DateTime.Parse(s.YearAndMonth.ToString()).Year == curtime.Year && DateTime.Parse(s.YearAndMonth.ToString()).Month == curtime.Month && s.IsFinancialAudit == 0).ToList();
+                if (monthlies.FirstOrDefault().IsFinancialAudit == type)
+                {
+                    AjaxResultxx.Data = "该月份员工月度工资已确认审批！";
+                    AjaxResultxx.Success = false;
+                }
+                else
+                {
+                    AjaxResultxx.Success = true;
+                }
+                AjaxResultxx.ErrorCode = 200;
+            }
+            catch (Exception ex)
+            {
+                AjaxResultxx.ErrorCode = 500;
+                AjaxResultxx = msrmanage.Error(ex.Message);
+            }
+            return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult ConfirmApproval(string time)
+        {
+            MonthlySalaryRecordManage msrmanage = new MonthlySalaryRecordManage();//员工月度工资
+            EmployeesInfoManage empmanage = new EmployeesInfoManage();
+
+            var AjaxResultxx = new AjaxResult();
+            try
+            {
+                var type = msrmanage.type();
+                var curtime = DateTime.Parse(time);
+                var monthlies = msrmanage.GetEmpMsrData().Where(s => DateTime.Parse(s.YearAndMonth.ToString()).Year == curtime.Year && DateTime.Parse(s.YearAndMonth.ToString()).Month == curtime.Month&&s.IsFinancialAudit==0).ToList();
+                foreach (var item in monthlies)
+                {
+                    item.IsFinancialAudit = type;
+                    msrmanage.Update(item);
+                    rc.RemoveCache("InRedisMSRData");
+                }
+                AjaxResultxx = msrmanage.Success();
+                AjaxResultxx.ErrorCode = 200;
+                
+            }
+            catch (Exception ex)
+            {
+                AjaxResultxx = msrmanage.Error(ex.Message);
+            }
+            return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
         }
     }
 }

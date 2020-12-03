@@ -26,6 +26,8 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity
         public Nullable<int> SonId { get; set; }//子级
         public Nullable<System.DateTime> forwardDate { get; set; }//（用于显示的最新）预面试时间
         public Nullable<bool> result { get; set; }//用于显示的最新）联系结果
+        public string NewesRemark { get; set; }//用于显示的最新）备注
+        public Nullable<bool> NewesIsEntry { get; set; }//用于显示的最新）入职状态
 
     }
 }
