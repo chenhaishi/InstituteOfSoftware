@@ -135,7 +135,7 @@
                                 </div>
                             </div>
 
-                            <div class="layui-inline" style="margin-left:-50px;">
+                            <div class="layui-inline" style="margin-left:50px;">
                                 <label class="layui-form-label">至:</label>
                                 <div class="layui-input-inline">
                                     <input type="text" id="end_TraceTime" name="end_TraceTime" lay-verify="end_TraceTime" autocomplete="off" class="layui-input">
@@ -144,13 +144,14 @@
                         </div>
 
                         <div class="layui-inline">
-                            <label class="layui-form-label" style="width:120px;margin-left:120px;">预面试时间:</label>
+                            <label class="layui-form-label" style="width:120px;margin-left:-20px;">预面试时间:</label>
                             <div class="layui-inline" style="margin-left:-40px;">
                                 <label class="layui-form-label">从:</label>
                                 <div class="layui-input-inline">
                                     <input type="text" id="start_ForwardDate" name="start_ForwardDate" lay-verify="start_ForwardDate" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
+
                             <div class="layui-inline" style="margin-left:-50px;">
                                 <label class="layui-form-label">至:</label>
                                 <div class="layui-input-inline">
@@ -159,17 +160,17 @@
                             </div>
                         </div>
                         </div>
-                    <div class="layui-row layui-form-item">
-                        <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
-                            <label class="layui-form-label" style="width:120px;">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-                            <div class="layui-input-inline" style="margin-left:10px;">
-                                <input type="text" id="remarks" name="remarks" autocomplete="off" class="layui-input">
+                        <div class="layui-row layui-form-item">
+                            <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
+                                <label class="layui-form-label" style="width:120px;">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                                <div class="layui-input-inline" style="margin-left:10px;">
+                                    <input type="text" id="remarks" name="remarks" autocomplete="off" class="layui-input">
+                                </div>
                             </div>
+                            <button class="layui-btn" type="button" id="Conditionselect1" style="margin-left:20px;"><i class="layui-icon layui-icon-search"></i>查询</button>
                         </div>
-                        <button class="layui-btn" type="button" id="Conditionselect1" style="margin-left:20px;"><i class="layui-icon layui-icon-search"></i>查询</button>
-                    </div>
 
-                </form>
+</form>
             </fieldset>
 
             <table id="rptTab" lay-filter="rptTab"></table>
