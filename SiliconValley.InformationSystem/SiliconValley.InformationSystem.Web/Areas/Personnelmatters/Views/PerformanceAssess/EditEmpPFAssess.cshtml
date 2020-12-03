@@ -39,7 +39,7 @@
 </head>
 <body>
     <div>
-        <form class="layui-form" action="" id="Positive" lay-filter="Positive">
+        @*<form class="layui-form" action="" id="Positive" lay-filter="Positive">
             <input type="hidden" value="@ViewBag.id" id="Id" name="Id" />
             <div class="layui-container">
                 <div class="layui-form-item" style="margin-top:20px;">
@@ -62,7 +62,7 @@
                 <div class="layui-form-item" style="margin-top:20px;">
 
                     <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
-                        <label class="layui-form-label" @*style="width:150px;margin-left:-60px;"*@>日常工作内容:</label>
+                        <label class="layui-form-label" style="width:150px;margin-left:-60px;">日常工作内容:</label>
                         <div class="layui-input-block">
                             @Html.TextAreaFor(a => a.RoutineWork, new Dictionary<string, object>() { { "class", "layui-input linu" } })
                         </div>
@@ -71,14 +71,14 @@
 
                 <div class="layui-form-item">
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                        <label class="layui-form-label" @*style="width:150px;margin-left:-30px;"*@>日常工作权重占比:</label>
+                        <label class="layui-form-label" style="width:150px;margin-left:-30px;">日常工作权重占比:</label>
                         <div class="layui-input-block">
                             @Html.TextBoxFor(a => a.RoutineWorkPropotion, new Dictionary<string, object>() { { "class", "layui-input rate" } })
                         </div>
                     </div>
 
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                        <label class="layui-form-label" @*style="width:150px;margin-left:-30px;"*@>日常工作完成率:</label>
+                        <label class="layui-form-label" style="width:150px;margin-left:-30px;">日常工作完成率:</label>
                         <div class="layui-input-block">
                             @Html.TextBoxFor(a => a.RoutineWorkFillRate, new Dictionary<string, object>() { { "class", "layui-input rate" } })
                         </div>
@@ -87,7 +87,7 @@
 
                 <div class="layui-form-item">
                     <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
-                        <label class="layui-form-label" @*style="width:160px;margin-left:-30px;"*@>其他或领导临时指派任务:</label>
+                        <label class="layui-form-label" style="width:160px;margin-left:-30px;">其他或领导临时指派任务:</label>
                         <div class="layui-input-block">
                             @Html.TextAreaFor(a => a.OtherWork, new Dictionary<string, object>() { { "class", "layui-input linu" } })
                         </div>
@@ -96,14 +96,14 @@
 
                 <div class="layui-form-item">
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                        <label class="layui-form-label" @*style="width:150px;margin-left:-30px;"*@>其他工作权重占比:</label>
+                        <label class="layui-form-label" style="width:150px;margin-left:-30px;">其他工作权重占比:</label>
                         <div class="layui-input-block">
                             @Html.TextBoxFor(a => a.OtherWorkPropotion, new Dictionary<string, object>() { { "class", "layui-input rate" } })
                         </div>
                     </div>
 
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                        <label class="layui-form-label" @*style="width:150px;margin-left:-30px;"*@>其他工作完成率:</label>
+                        <label class="layui-form-label" style="width:150px;margin-left:-30px;">其他工作完成率:</label>
                         <div class="layui-input-block">
                             @Html.TextBoxFor(a => a.OtherWorkFillRate, new Dictionary<string, object>() { { "class", "layui-input rate" } })
                         </div>
@@ -112,14 +112,14 @@
 
                 <div class="layui-form-item">
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                        <label class="layui-form-label" @*style="width:150px;margin-left:-30px;"*@>自评得分:</label>
+                        <label class="layui-form-label" style="width:150px;margin-left:-30px;">自评得分:</label>
                         <div class="layui-input-block">
                             @Html.TextBoxFor(a => a.SelfReportedScore, new Dictionary<string, object>() { { "class", "layui-input salary" } })
                         </div>
                     </div>
 
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                        <label class="layui-form-label" @*style="width:150px;margin-left:-30px;"*@>上级评分:</label>
+                        <label class="layui-form-label" style="width:150px;margin-left:-30px;">上级评分:</label>
                         <div class="layui-input-block">
                             @Html.TextBoxFor(a => a.SuperiorGrade, new Dictionary<string, object>() { { "class", "layui-input salary" } })
                         </div>
@@ -144,7 +144,25 @@
                     <button class="layui-btn " id="btnclose1">关闭</button>
                 </div>
             </div>
+        </form>*@
+        <form class="layui-form" action="" id="Positive" lay-filter="Positive">
+            <input name="Id" value="@ViewBag.id" class="layui-hide" />
+            <div class="layui-container" style="margin-top:60px">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">最终绩效分:</label>
+                    <div class="layui-input-inline" style="width:200px;">
+                        @Html.TextBoxFor(a => a.FinalGrade, new Dictionary<string, object>() { { "class", "layui-input salary" } })
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item" style="margin-left:20px;margin-top:50px;">
+                <div class="layui-input-block">
+                    <button class="layui-btn " lay-submit="" type="button" lay-filter="demo1">立即提交</button>
+                    <button class="layui-btn " id="btnclose1">关闭</button>
+                </div>
+            </div>
         </form>
+
     </div>
 
     <script>
@@ -211,29 +229,29 @@
 
             //提交
             form.on('submit(demo1)', function (data) {
-                var str1 = data.field.RoutineWorkPropotion;
-                var str2 = data.field.RoutineWorkFillRate;
-                var str3 = data.field.OtherWorkPropotion;
-                var str4 = data.field.OtherWorkFillRate;
-                if (str1.indexOf('%') != -1) {
-                    var strs = new Array();
-                    strs = str1.split('%');
-                    data.field.RoutineWorkPropotion = strs[0];
-                } else if (str2.indexOf('%') != -1) {
-                    var strs = new Array();
-                    strs = str2.split('%');
-                    data.field.RoutineWorkFillRate = strs[0];
-                } else if (str3.indexOf('%') != -1) {
-                    var strs = new Array();
-                    strs = str3.split('%');
-                    data.field.OtherWorkPropotion = strs[0];
-                } else if (str4.indexOf('%')!=-1) {
-                    var strs = new Array();
-                    strs = str4.split('%');
-                    data.field.OtherWorkFillRate = strs[0];
-                }
+                //var str1 = data.field.RoutineWorkPropotion;
+                //var str2 = data.field.RoutineWorkFillRate;
+                //var str3 = data.field.OtherWorkPropotion;
+                //var str4 = data.field.OtherWorkFillRate;
+                //if (str1.indexOf('%') != -1) {
+                //    var strs = new Array();
+                //    strs = str1.split('%');
+                //    data.field.RoutineWorkPropotion = strs[0];
+                //} else if (str2.indexOf('%') != -1) {
+                //    var strs = new Array();
+                //    strs = str2.split('%');
+                //    data.field.RoutineWorkFillRate = strs[0];
+                //} else if (str3.indexOf('%') != -1) {
+                //    var strs = new Array();
+                //    strs = str3.split('%');
+                //    data.field.OtherWorkPropotion = strs[0];
+                //} else if (str4.indexOf('%')!=-1) {
+                //    var strs = new Array();
+                //    strs = str4.split('%');
+                //    data.field.OtherWorkFillRate = strs[0];
+                //}
                
-               console.log("提交：" + data.field.RoutineWorkPropotion );
+               //console.log("提交：" + data.field.RoutineWorkPropotion );
                 $.post("/Personnelmatters/PerformanceAssess/EditEmpPFAssess", data.field, function (data) {
                     if (data.Success) {
                         layer.alert("编辑成功!", { icon: 1 }, function () {

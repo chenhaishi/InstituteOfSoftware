@@ -199,6 +199,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
 
             DateTime mantinDate = Convert.ToDateTime(Request.Form["mantinDate"]);//维修的日期
 
+            DateTime CompleteTime = Convert.ToDateTime(Request.Form["CompleteTime"]);//完成时间
+
+            string RepairContent = Request.Form["RepairContent"];//维修内容
+
+            string Solutions = Request.Form["Solutions"];//解决措施
+                
             int weixiugood = Convert.ToInt32(Request.Form["weixiugood"]);//维修物品
 
             int dorname = Convert.ToInt32(Request.Form["dorname"]);//宿舍编号
@@ -238,6 +244,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
                         dormitory.ID = Guid.NewGuid().ToSequentialGuid();
                         dormitory.CreaDate = DateTime.Now;
                         dormitory.DormId = dorname;
+                        dormitory.RepairContent = RepairContent;
+                        dormitory.Solutions = Solutions;
+                        dormitory.CompleteTime = CompleteTime;
                         dormitory.EntryPersonnel = UserName.EmpNumber;
                         dormitory.GoodPrice = goods.Reentry / studentlist.Count;
                         dormitory.Maintain = mantinDate;
@@ -279,6 +288,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
                 dormitory.GoodPrice = goods.Reentry;
                 dormitory.Maintain = mantinDate;
                 dormitory.MaintainGood = weixiugood;
+                dormitory.CompleteTime = CompleteTime;
+                dormitory.Solutions = Solutions;
+                dormitory.RepairContent = RepairContent;
                 dormitory.MaintainState = 1;
                 dormitory.StuNumber = sturadi;
 

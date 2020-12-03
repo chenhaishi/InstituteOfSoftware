@@ -19,7 +19,7 @@
                 <form class="layui-form" action="" lay-filter="formtrace">
                     <div class="layui-row layui-form-item">
                         <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
-                            <label class="layui-form-label">姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名:</label>
+                            <label class="layui-form-label" style="width:120px;">姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
                             <div class="layui-input-inline" style="margin-left:10px;">
                                 <input type="text" id="Name" name="Name" autocomplete="off" class="layui-input">
                             </div>
@@ -52,7 +52,7 @@
                     </div>
                     <div class="layui-row layui-form-item">
                         <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
-                            <label class="layui-form-label">渠&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;道:</label>
+                            <label class="layui-form-label" style="width:120px;">渠&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;道:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
                             <div class="layui-input-inline" style="margin-left:10px;">
                                 <input type="text" id="Channel" name="Channel" autocomplete="off" class="layui-input">
                             </div>
@@ -90,6 +90,41 @@
 
 
                     </div>
+                    @*<div class="layui-row layui-form-item">
+            <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
+                <label class="layui-form-label" style="width:100px;">联系时间:</label>
+                <div class="layui-inline">
+                    <div class="layui-input-inline">
+                        <input style="width:320px" type="text" id="TraceTime" name="TraceTime" lay-verify="TraceTime" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
+                <label class="layui-form-label" style="width:100px;">预面试时间:</label>
+                <div class="layui-inline">
+                    <div class="layui-input-inline">
+                        <input type="text" id="ForwardDate" name="ForwardDate" lay-verify="ForwardDate" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
+                <label class="layui-form-label" style="width:100px;">备注:</label>
+                <div class="layui-inline">
+                    <div class="layui-input-inline">
+                        <input type="text" id="remarks" name="remarks" lay-verify="remarks" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+                        <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
+                <div class="layui-inline">
+                    <div class="layui-input-inline">
+                        <button class="layui-btn" type="button" id="Conditionselect1" style="margin-left:20px;"><i class="layui-icon layui-icon-search"></i>查询</button>
+                    </div>
+                </div>
+            </div>
+        </div>*@
                     <div class="layui-row layui-form-item">
                         <div class="layui-inline" style="margin-left:-13px;">
                             <label class="layui-form-label" style="width:100px;margin-left:10px;">联系时间:</label>
@@ -100,7 +135,7 @@
                                 </div>
                             </div>
 
-                            <div class="layui-inline" style="margin-left:-50px;">
+                            <div class="layui-inline" style="margin-left:50px;">
                                 <label class="layui-form-label">至:</label>
                                 <div class="layui-input-inline">
                                     <input type="text" id="end_TraceTime" name="end_TraceTime" lay-verify="end_TraceTime" autocomplete="off" class="layui-input">
@@ -124,9 +159,18 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="layui-btn" type="button" id="Conditionselect1" style="margin-left:40px;"><i class="layui-icon layui-icon-search"></i>查询</button>
-                    </div>
-                </form>
+                        </div>
+                        <div class="layui-row layui-form-item">
+                            <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
+                                <label class="layui-form-label" style="width:120px;">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                                <div class="layui-input-inline" style="margin-left:10px;">
+                                    <input type="text" id="remarks" name="remarks" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <button class="layui-btn" type="button" id="Conditionselect1" style="margin-left:20px;"><i class="layui-icon layui-icon-search"></i>查询</button>
+                        </div>
+
+</form>
             </fieldset>
 
             <table id="rptTab" lay-filter="rptTab"></table>
@@ -181,6 +225,7 @@
                             </div>
                         </div>
                     </div>
+                   
                     <button class="layui-btn" type="button" id="Conditionselect" style="margin-left:160px;"><i class="layui-icon layui-icon-search"></i>查询</button>
                 </div>
             </form>
@@ -237,8 +282,8 @@
                     , { field: 'ResumeType', title: '简历类型', sort: true, width: 110 }
                     , { field: 'forwardDate', title: '预面试时间', width: 170, sort: true, templet: function (d) { return changeDateTimeFormat(d.forwardDate); } }
                     , { field: 'result', title: '面试结果', width: 100, templet: '#faceresult' }
-                    , { field: 'IsEntry', title: '是否入职', width: 100, templet: '#switchTp2' }
-                    , { field: 'Remark', title: '备注', sort: true, width: 90 }
+                    , { field: 'NewesIsEntry', title: '是否入职', width: 100, templet: '#switchTp2' }
+                    , { field: 'NewesRemark', title: '备注', sort: true, width: 90 }
                     , { fixed: 'right', title: '操作', toolbar: '#barDemo' }
                 ]]
                 , page: true
@@ -255,7 +300,7 @@
                 var ResumeType = $("#ResumeType").val();
                 var result = $("#result").val();
                 var IsEntry = $("#IsEntry").val();
-                var Remark = $("#Remark").val();
+                var remarks = $("#remarks").val();
                 var start_TraceTime = $("#start_TraceTime").val();//起始联系时间
                 var end_TraceTime = $("#end_TraceTime").val();//终止联系时间
                 var start_ForwardDate = $("#start_ForwardDate").val();//起始预面试时间
@@ -266,7 +311,7 @@
                         page: {
                             curr: 1 //重新从第 1 页开始
                         }, where: {
-                            AppCondition: name + "," + deptid + "," + pid + "," + PhoneNumber + "," + Channel + "," + ResumeType + "," + result + "," + IsEntry + "," + start_TraceTime + "," + end_TraceTime + "," + start_ForwardDate + "," + end_ForwardDate
+                            AppCondition: name + "," + deptid + "," + pid + "," + PhoneNumber + "," + Channel + "," + ResumeType + "," + result + "," + IsEntry + "," + start_TraceTime + "," + end_TraceTime + "," + start_ForwardDate + "," + end_ForwardDate + "," + remarks
                         }
                     });
                 });
@@ -281,7 +326,8 @@
                 done: function (value, date) {
                     end_TraceTime.config.min = {
                         year: date.year,
-                        month: date.month - 1//关键
+                        month: date.month - 1,//关键,
+                        date: date.date
 
                     }
                 }
@@ -292,18 +338,30 @@
                 done: function (value, date) {
                     start_TraceTime.config.max = {
                         year: date.year,
-                        month: date.month - 1//关键
+                        month: date.month - 1,//关键
+                        date: date.date
 
                     }
                 }
             });
+           // laydate.render({
+           //     elem: '#TraceTime',
+           //     type: 'datetime',
+           //     range: true
+           // });
+           //laydate.render({
+           //     elem: '#ForwardDate',
+           //    type: 'datetime',
+           //      range: true
+           // });
             var start_ForwardDate = laydate.render({
                 elem: '#start_ForwardDate',
                 type: 'datetime',
                 done: function (value, date) {
                     end_ForwardDate.config.min = {
                         year: date.year,
-                        month: date.month - 1//关键
+                        month: date.month,//关键
+                        date: date.date
 
                     }
                 }
@@ -314,8 +372,8 @@
                 done: function (value, date) {
                     start_ForwardDate.config.max = {
                         year: date.year,
-                        month: date.month - 1//关键
-
+                        month: date.month ,//关键
+                        date: date.date
                     }
                 }
             });
@@ -377,7 +435,7 @@
                     }
                 });
             });
-            formtrace
+            
         });
 
         //月度招聘数据汇总

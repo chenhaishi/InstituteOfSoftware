@@ -49,11 +49,11 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         public Nullable<decimal> AbsenteeismWithhold { get; set; }//旷工扣费
         public Nullable<decimal> AbsentNumWithhold { get; set; }//缺卡扣费
         /// <summary>
-        /// 财务审核状态 0-未审核 1-已审核 2-已驳回
+        /// 审核状态 0-未审核 1-已驳回 2-提交审核 3-苏 4-周 5-刘 6-杨 7-黄 
         /// </summary>
         public int IsFinancialAudit { get; set; }
         /// <summary>
-        /// 财务备注
+        /// 备注
         /// </summary>
         public string FinancialRemarks  {get; set; }
         /// <summary>

@@ -1154,6 +1154,14 @@
     <Content Include="assets\Assets_L1\assets\libs\jquery-knob\jquery.knob.min.js" />
     <Content Include="assets\Assets_L1\assets\libs\jquery-mask-plugin\jquery.mask.min.js" />
     <Content Include="assets\Assets_L1\assets\libs\jquery-slimscroll\jquery.slimscroll.min.js" />
+    <Content Include="assets\Assets_L1\assets\libs\jquery-steps\build\jquery.steps.min.js" />
+    <Content Include="assets\Assets_L1\assets\libs\jquery-steps\lib\jquery-1.10.2.min.js" />
+    <Content Include="assets\Assets_L1\assets\libs\jquery-steps\lib\jquery-1.11.1.min.js" />
+    <Content Include="assets\Assets_L1\assets\libs\jquery-steps\lib\jquery-1.9.1.min.js" />
+    <Content Include="assets\Assets_L1\assets\libs\jquery-steps\lib\jquery.cookie-1.3.1.js" />
+    <Content Include="assets\Assets_L1\assets\libs\jquery-steps\lib\modernizr-2.6.2.min.js" />
+    <Content Include="assets\Assets_L1\assets\libs\jquery-steps\LICENSE.txt" />
+    <Content Include="assets\Assets_L1\assets\libs\jquery-steps\nuget\NuGet.exe" />
     <Content Include="assets\Assets_L1\assets\libs\jquery-toast-plugin\jquery.toast.min.css" />
     <Content Include="assets\Assets_L1\assets\libs\jquery-toast-plugin\jquery.toast.min.js" />
     <Content Include="assets\Assets_L1\assets\libs\jquery-ui\AUTHORS.txt" />
@@ -3599,6 +3607,9 @@
     <Content Include="assets\Assets_L1\assets\libs\flot\Makefile" />
     <Content Include="assets\Assets_L1\assets\libs\gmaps\jsdoc.json" />
     <Content Include="assets\Assets_L1\assets\libs\gmaps\umd.hbs" />
+    <Content Include="assets\Assets_L1\assets\libs\jquery-steps\build\jquery.steps-1.1.0.zip" />
+    <Content Include="assets\Assets_L1\assets\libs\jquery-steps\nuget\jQuery.Steps.nuspec" />
+    <Content Include="assets\Assets_L1\assets\libs\jquery-steps\steps.jquery.json" />
     <Content Include="assets\Assets_L1\assets\libs\jquery-ui\component.json" />
     <Content Include="assets\Assets_L1\assets\libs\mdi\font\fonts\materialdesignicons-webfont.eot" />
     <Content Include="assets\Assets_L1\assets\libs\mdi\font\fonts\materialdesignicons-webfont.ttf" />
@@ -3615,6 +3626,16 @@
     <Content Include="Areas\Educational\Views\Staff_Cost_Statistics\teaching_hour.cshtml" />
     <Content Include="Areas\DormitoryMaintenance\Views\DormitoryDeposit\StuNameDefileView.cshtml" />
     <Content Include="Areas\Educational\Views\Staff_Cost_Statistics\Search_PersonClass.cshtml" />
+    <Content Include="obj\Release\Package\PackageTmp\assets\Assets_L1\assets\libs\jquery-steps\build\jQuery.Steps.1.1.0.nupkg" />
+    <Content Include="Areas\Personnelmatters\Views\SocialSecurityDetail\EditPaySicknessInsurance.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\SocialSecurityDetail\EditSupplementaryPayment.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\SocialSecurityDetail\Index.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\SocialSecurityDetail\MultipleSocialSecurity.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\SocialSecurityDetail\PaySicknessInsurance.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\SocialSecurityDetail\SocialSecProportionEdit.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\SocialSecurityDetail\SupplementaryPayment.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\SocialSecurityDetail\UpdateTime.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\PerformanceAssess\AssessmentTimePeriodQuery.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
@@ -5316,6 +5337,7 @@
     <Content Include="uploadXLSXfile\Template\AttendenceTemplate.xlsx" />
     <Content Include="uploadXLSXfile\Template\班主任值班模板.xlsx" />
     <Content Include="uploadXLSXfile\Template\OvertimeTemplate.xlsx" />
+    <Content Include="uploadXLSXfile\Template\绩效模板.xlsx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -5366,7 +5388,6 @@
     <Folder Include="Areas\OrThert\Views\TMorther\" />
     <Folder Include="Areas\Personnelmatters\Models\" />
     <Folder Include="Areas\Personnelmatters\Views\Shared\" />
-    <Folder Include="Areas\Personnelmatters\Views\SocialSecurityDetail\" />
     <Folder Include="Areas\ReportForm\Models\" />
     <Folder Include="Areas\ReportForm\Views\Shared\" />
     <Folder Include="Areas\Studenteducation\Models\" />
@@ -5379,6 +5400,7 @@
     <Folder Include="Areas\Teaching\Views\StudentHomeWork\" />
     <Folder Include="assets\Assets_L1\assets\fonts\" />
     <Folder Include="assets\Assets_L1\assets\libs\chartist\scss\settings\" />
+    <Folder Include="assets\Assets_L1\assets\libs\jquery-steps\demo\" />
     <Folder Include="assets\Assets_L1\assets\libs\mdi\font\scss\" />
     <Folder Include="assets\Assets_L1\assets\libs\simple-line-icons\less\" />
     <Folder Include="assets\Assets_L1\assets\libs\simple-line-icons\scss\" />

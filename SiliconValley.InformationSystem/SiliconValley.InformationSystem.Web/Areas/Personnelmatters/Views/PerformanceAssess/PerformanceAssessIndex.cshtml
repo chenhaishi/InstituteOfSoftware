@@ -57,10 +57,11 @@
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
         @*<button class="layui-btn layui-btn-sm" lay-event="MCadd"><i class="layui-icon layui-icon-addition"></i>考核人员添加</button>*@
-        <button class="layui-btn layui-btn-sm" lay-event="PutPermission"><i class="layui-icon layui-icon-addition"></i>权限赋予</button>
+        @* <button class="layui-btn layui-btn-sm" lay-event="PutPermission"><i class="layui-icon layui-icon-addition"></i>权限赋予</button>*@
         <button class="layui-btn layui-btn-sm" lay-event="timeChange"><i class="layui-icon layui-icon-edit"></i>年月份改变</button>
         <button class="layui-btn layui-btn-sm" lay-event="Approved"><i class="layui-icon layui-icon-edit"></i>确认审批</button>
         <button class="layui-btn layui-btn-sm" lay-event="Upload"><i class="layui-icon layui-icon-upload"></i>导入Excel文档</button>
+        <button class="layui-btn layui-btn-sm" lay-event="select"><i class="layui-icon layui-icon-search"></i>查看</button>
     </div>
 </script>
 
@@ -101,6 +102,8 @@
                 , limits: [5, 10, 15, 20, 25, 30]
                 , limit: 10
                 , cols: [[
+                    { type: 'checkbox', width: 28, },
+                    { field: 'EmployeeId', hide:true},
                     { field: 'empName', title: '姓名', width: 100, sort: true }
                     , { field: 'empDept', title: '所属部门', width: 130, sort: true }
                     , { field: 'empPosition', title: '所属岗位', width: 110, sort: true }
@@ -178,9 +181,32 @@
                         layer.open({
                             type: 2,
                             title: "上传Excel文档",
-                            area: ["330px", "230px"],
+                            area: ["350px", "300px"],
                             content: "/Personnelmatters/PerformanceAssess/AssessmentUpload"
                         })
+                        break;
+                    case 'select':
+                        var data = checkStatus.data;
+                        var id = null;
+                        for (var i = 0; i < data.length; i++) {
+                                if (i == 0) {
+                                    id =data[i].EmployeeId + ",";
+                                } else {
+                                    id +=data[i].EmployeeId + ",";
+                                }
+                        }
+                        console.log(id);
+                        if (id!=null) {
+                            layer.open({
+                                type: 2,
+                                title: "查看员工",
+                                area: ["900px", "700px"],
+                                content: "/Personnelmatters/PerformanceAssess/AssessmentTimePeriodQuery?empid=" + id
+                            })
+                        } else {
+                            layer.alert("请至少选择一个员工");
+                        }
+                        
                         break;
                 };
             });
@@ -191,8 +217,8 @@
                 if (obj.event === 'edit') {
                     layer.open({
                         type: 2,
-                        content: '/Personnelmatters/PerformanceAssess/EditEmpPFAssess/?id=' + data.Id
-                        , area: ["900px", "760px"]
+                        content: '/Personnelmatters/PerformanceAssess/EditEmpPFAssess/?id=' + data.Id,
+                        area: ["400px", "300px"]
                         , title: '员工绩效考核编辑'
                         , shade: 0.8
                         , anim: 4

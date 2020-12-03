@@ -52,13 +52,15 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 rptview.TraceTime = item.TraceTime;
                 rptview.Channel = item.Channel;
                 rptview.ResumeType = item.ResumeType;
-                rptview.PhoneCommunicateResult = rptmanage.GetNewest((int)item.SonId).PhoneCommunicateResult;
+                rptview.PhoneCommunicateResult = item.PhoneCommunicateResult;
                 rptview.IsEntry = rptmanage.GetNewest((int)item.SonId).IsEntry;
                 rptview.Remark = item.Remark;
                 rptview.IsDel = item.IsDel;
                 rptview.SonId = item.SonId;
                 rptview.forwardDate = rptmanage.GetNewestForwardDate((int)item.SonId);
                 rptview.result = rptmanage.GetPhoneCommunicateResult((int)item.SonId);
+                rptview.NewesRemark = rptmanage.GetNewest((int)item.SonId).Remark;
+                rptview.NewesIsEntry = rptmanage.GetNewest((int)item.SonId).IsEntry;
                 #endregion
                 rptviewlist.Add(rptview);
             }
@@ -89,7 +91,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 {
                     rptviewlist = rptviewlist.Where(e => e.Pid == int.Parse(pid)).ToList();
                 }
-                rptviewlist = rptviewlist.Where(e => e.PhoneNumber.Contains(PhoneNumber)).ToList();
+                if (!string.IsNullOrEmpty(PhoneNumber))
+                {
+                    rptviewlist = rptviewlist.Where(e => e.PhoneNumber.Contains(PhoneNumber)).ToList();
+                }
+                
                 if (!string.IsNullOrEmpty(Channel))
                 {
                     rptviewlist = rptviewlist.Where(e =>e.Channel.Contains(Channel)).ToList();
@@ -128,7 +134,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 }
                 if (!string.IsNullOrEmpty(remarks))
                 {
-                    rptviewlist = rptviewlist.Where(e => e.Remark!=null&& e.Remark.Contains(remarks)).ToList();
+                    rptviewlist = rptviewlist.Where(e => e.NewesRemark != null&& e.NewesRemark.Contains(remarks)).ToList();
                 }
 
             }
@@ -216,14 +222,19 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         public ActionResult Addrpt(RecruitPhoneTrace rpt)
         {
             RecruitPhoneTraceManage rmanage = new RecruitPhoneTraceManage();
+            var count = 0;
             var AjaxResultxx = new AjaxResult();
             try
             {
                 rpt.IsEntry = false;
                 rpt.IsDel = false;
                 rpt.PhoneCommunicateResult = false;
-                rmanage.Insert(rpt);
-                AjaxResultxx = rmanage.Success();
+
+               count = rmanage.GetList().Where(i=>i.Name==rpt.Name&&i.PhoneNumber==rpt.PhoneNumber).Count();
+               
+                    rmanage.Insert(rpt);
+                    AjaxResultxx = rmanage.Success();
+               
 
             }
             catch (Exception ex)
@@ -233,8 +244,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             }
             if (AjaxResultxx.Success)
             {
-                rpt.SonId = rpt.Id;
-                rmanage.Update(rpt);
+                    rpt.SonId = rpt.Id;
+                    rmanage.Update(rpt);
+                    AjaxResultxx = rmanage.Success();
+
                 AjaxResultxx = rmanage.Success();
             }
             if (AjaxResultxx.Success)
@@ -392,6 +405,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                     string ForwardDate = str[7];
                     // string result = str[6];
                     string remark = str[6];
+                    rptmanage.UpdNewestForwardDate(int.Parse(id), ForwardDate);
                     var rpt2 = rptmanage.GetEntity(int.Parse(id));
                     rpt2.Pid = int.Parse(pid);
                     rpt2.TraceTime = Convert.ToDateTime(time);
@@ -402,7 +416,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                     rpt2.Remark = remark;
                     rpt2.PhoneCommunicateResult = rpt1.PhoneCommunicateResult;
                     rptmanage.Update(rpt2);
-                   var s= rptmanage.UpdNewestForwardDate(int.Parse(id), ForwardDate);
+
                     AjaxResultxx = rptmanage.Success();
 
                 }
@@ -470,7 +484,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             RecruitingDataSummaryManage rdsmanage = new RecruitingDataSummaryManage();
             EmployeesInfoManage empmanage = new EmployeesInfoManage();
             var rdslist = rdsmanage.GetList();
-            var myrdslist = rdslist.OrderBy(r => r.Id).Skip((page - 1) * limit).Take(limit).ToList();
+            var myrdslist = rdslist.OrderByDescending(r => r.Id).Skip((page - 1) * limit).Take(limit).ToList();
             if (!string.IsNullOrEmpty(AppCondition))
             {
                 string[] str = AppCondition.Split(',');
@@ -529,8 +543,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             };
             return Json(newobj, JsonRequestBehavior.AllowGet);
         }
-
-
         public string Condition(DateTime date, string type)
         {
             if (type == "day")
@@ -707,7 +719,34 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             }
             return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
         }
-
-
+        public ActionResult DuplicateData(string name,string phone)
+        {
+            RecruitPhoneTraceManage recruit = new RecruitPhoneTraceManage();
+            AjaxResult result = new AjaxResult();
+            int count=0;
+            try
+            {
+                if (!string.IsNullOrEmpty(phone))
+                {
+                     count= recruit.GetList().Where(i => i.Name == name && i.PhoneNumber == phone&&i.IsDel==false).Count();
+                }
+                if (count>0)
+                {
+                    result.Success = true;
+                    result.ErrorCode = count;
+                    result.Msg= "已有此人，请确认姓名或手机号正确";
+                }
+                else
+                {
+                    result = recruit.Success();
+                }
+               
+            }
+            catch (Exception e)
+            {
+                result = recruit.Error(e.Message);
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
     }
 }

@@ -37,55 +37,117 @@
 
 
 <div>
-    <h2 style="text-align:center;">湖南硅谷云教育科技有限公司--@ViewBag.yearandmonth--月考勤统计表</h2>
+    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">月度考勤统计</li>
+            <li>月度全勤统计</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <h2 style="text-align:center;">湖南硅谷云教育科技有限公司--@ViewBag.yearandmonth--月考勤统计表</h2>
 
-    @*模糊查询*@
-    <fieldset>
-        <legend>条件查询</legend>
-        <form class="layui-form" action="" lay-filter="formtest">
-            <div class="layui-row layui-form-item">
-                <div>
-                    <label class="layui-form-label">姓名：</label>
-                    <div class="layui-input-inline">
-                        <input type="text" id="EmpName" name="EmpName" autocomplete="off" class="layui-input">
-                    </div>
-                </div>
+                @*模糊查询*@
+                <fieldset>
+                    <legend>条件查询</legend>
+                    <form class="layui-form" action="" lay-filter="formtest">
+                        <div class="layui-row layui-form-item">
+                            <div>
+                                <label class="layui-form-label">姓名：</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" id="EmpName" name="EmpName" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
 
-                <div>
-                    <label class="layui-form-label" style="width:100px;">所属部门:</label>
-                    <div class="layui-input-inline">
-                        <select name="deptid" id="deptid" style="width:130px;" lay-filter="deptidfilter" lay-search="">
-                            <option value="">请选择所属部门</option>
-                        </select>
-                    </div>
-                </div>
+                            <div>
+                                <label class="layui-form-label" style="width:100px;">所属部门:</label>
+                                <div class="layui-input-inline">
+                                    <select name="deptid" id="deptid" style="width:130px;" lay-filter="deptidfilter" lay-search="">
+                                        <option value="">请选择所属部门</option>
+                                    </select>
+                                </div>
+                            </div>
 
-                <div>
-                    <label class="layui-form-label" style="width:100px;">所属岗位:</label>
-                    <div class="layui-input-inline">
-                        <select name="PositionId" id="PositionId" lay-search="" style="width:130px;">
-                            <option value="">--请选择--</option>
-                        </select>
-                    </div>
-                </div>
+                            <div>
+                                <label class="layui-form-label" style="width:100px;">所属岗位:</label>
+                                <div class="layui-input-inline">
+                                    <select name="PositionId" id="PositionId" lay-search="" style="width:130px;">
+                                        <option value="">--请选择--</option>
+                                    </select>
+                                </div>
+                            </div>
 
-                <div>
-                    <label class="layui-form-label" style="width:100px;">员工状态:</label>
-                    <div class="layui-input-inline">
-                        <select name="empIsDel" id="empIsDel">
-                            <option value="">--请选择--</option>
-                            <option value="False">在职</option>
-                            <option value="True">离职</option>
-                        </select>
-                    </div>
-                </div>
+                            <div>
+                                <label class="layui-form-label" style="width:100px;">员工状态:</label>
+                                <div class="layui-input-inline">
+                                    <select name="empIsDel" id="empIsDel">
+                                        <option value="">--请选择--</option>
+                                        <option value="False">在职</option>
+                                        <option value="True">离职</option>
+                                    </select>
+                                </div>
+                            </div>
 
-                <button class="layui-btn " type="button" id="Conditionselect" style="margin-left:50px;"><i class="layui-icon layui-icon-search"></i>查询</button>
+                            <button class="layui-btn " type="button" id="Conditionselect" style="margin-left:50px;"><i class="layui-icon layui-icon-search"></i>查询</button>
+                        </div>
+                    </form>
+                </fieldset>
+
+                <table id="CheckingIntab" lay-filter="CheckingIntab"></table>
             </div>
-        </form>
-    </fieldset>
+            <div class="layui-tab-item">
+                <h2 style="text-align:center;">湖南硅谷云教育科技有限公司--@ViewBag.yearandmonth--月全勤统计表</h2>
 
-    <table id="CheckingIntab" lay-filter="CheckingIntab"></table>
+                @*模糊查询*@
+                <fieldset>
+                    <legend>条件查询</legend>
+                    <form class="layui-form" action="" lay-filter="formtest">
+                        <div class="layui-row layui-form-item">
+                            <div>
+                                <label class="layui-form-label">姓名：</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" id="EmpName" name="EmpName" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="layui-form-label" style="width:100px;">所属部门:</label>
+                                <div class="layui-input-inline">
+                                    <select name="deptid" id="deptid" style="width:130px;" lay-filter="deptidfilter" lay-search="">
+                                        <option value="">请选择所属部门</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="layui-form-label" style="width:100px;">所属岗位:</label>
+                                <div class="layui-input-inline">
+                                    <select name="PositionId" id="PositionId" lay-search="" style="width:130px;">
+                                        <option value="">--请选择--</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="layui-form-label" style="width:100px;">员工状态:</label>
+                                <div class="layui-input-inline">
+                                    <select name="empIsDel" id="empIsDel">
+                                        <option value="">--请选择--</option>
+                                        <option value="False">在职</option>
+                                        <option value="True">离职</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button class="layui-btn " type="button" id="Conditionselect" style="margin-left:50px;"><i class="layui-icon layui-icon-search"></i>查询</button>
+                        </div>
+                    </form>
+                </fieldset>
+
+                <table id="FullCheckingIntab" lay-filter="CheckingIntab"></table>
+            </div>
+        </div>
+    </div>
+    
 </div>
 
 
@@ -392,8 +454,109 @@
             }
         }
     </script>
+    @*考勤统计*@
+    <script>
+        layui.use(['table', 'layer', 'form', 'laydate', 'element'], function () {
+            var table = layui.table;
+            var layer = layui.layer;
+            var form = layui.form;
+            var laydate = layui.laydate;
+            var element = layui.element;
+
+            table.render({
+                elem: '#FullCheckingIntab'
+                , url: '/Personnelmatters/AttendanceStatistics/GetFullCheckingInData'
+                , id: "myFullAttendanceinfo"
+                , limits: [5, 10, 15, 20, 25, 30]
+                , limit: 10
+                , cols: [@*[{ title: "应到勤天数：" + "@ViewBag.DeserveToRegularDays" + "天", colspan: 20 }],*@
+                    [
+                      { type: 'checkbox', width: 28, rowspan: 2}
+                    , { field: 'empName', title: '姓名', width: 100, sort: true }
+                    , { field: 'empDept', title: '所属部门', width: 110, sort: true }
+                    , { field: 'empPosition', title: '所属岗位', width: 110, sort: true }
+                    , { field: 'DeserveToRegularDays', title: '应到勤天数', sort: true, width: 120 }
+                    , { field: 'ToRegularDays', title: '到勤天数',  width: 95 }
+                    , { field: 'LeaveDays', title: '请假天数', width: 95 }
+                    , { field: 'LeaveRecord', title: '请假记录', width: 95 }
+                    , { field: 'NoClockTotalNum', title: '总缺卡次数', width: 110}
+                    , { field: 'WorkAbsentNum', title: '上班缺卡次数',width: 120}
+                    , { field: 'WorkAbsentRecord', title: '上班缺卡记录', width: 120 }
+                    , { field: 'NoonAbsentNum', title: '中午缺卡次数', width: 120 }
+                    , { field: 'NoonAbsentRecord', title: '中午缺卡记录', width: 120 }
+                    , { field: 'OffDutyAbsentNum', title: '下班缺卡次数', width: 120 }
+                    , { field: 'OffDutyAbsentRecord', title: '下班缺卡记录', width: 120 }
+                    , { field: 'AbsentNumWithhold', title: '缺卡扣款', width: 100 }
+                    , { field: 'TardyNum', title: '迟到次数', width: 100 }
+                    , { field: 'TardyRecord', title: '迟到记录', width: 100 }
+                    , { field: 'LeaveEarlyNum', title: '早退次数', width: 100 }
+                    , { field: 'LeaveEarlyRecord', title: '早退记录', width: 100 }
+                    , { field: 'TardyAndLeaveWithhold', title: '迟到/早退扣款', width: 140 }
+                    , { field: 'AbsenteeismRecord', title: '旷工记录', width: 100 }
+                    , { field: 'AbsenteeismDays', title: '旷工天数', width: 100 }
+                    , { field: 'AbsenteeismWithhold', title: '旷工扣费', width: 100 }
+                    , { field: 'OvertimeCharges', title: '加班费用', width: 100 }
+                    , { field: 'DaysoffRecord', title: '调休记录', width: 100 }
+                    , { field: 'DaysoffDuration', title: '调休时长(h)', width: 110 }
+                    , { field: 'Remark', title: '备注', width: 140 }
+                    , { field: 'empIsDel', title: '员工状态', sort: true, width: 110, templet: '#empstate' }
+                ]]
+                , page: true
+
+            });
+
+            
+            //模糊查询点击事件
+            $("#Conditionselect").click(function () {
+                var ename = $("#EmpName").val();//员工姓名
+                var deptname = $("#deptid").val();//员工所属部门
+                var pname = $("#PositionId").val();//员工所属岗位
+                var empstate = $("#empIsDel").val();//性别
+                console.log("员工状态" + empstate);
+                layui.use(['table'], function () {
+                    var table = layui.table;
+                    table.reload('myFullAttendanceinfo', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        }, where: {
+                            AppCondition: ename + "," + deptname + "," + pname + "," + empstate
+                        }
+                    });
+                });
 
 
+
+            });
+
+        });
+        
+      
+        
+
+
+        //格式化时间
+        function GetYearAndMonth(cellval) {
+            if (cellval != null) {
+                var date;
+                if (cellval.indexOf("/Date(") >= 0) {
+                    date = new Date(parseInt(cellval.replace("/Date(", "").replace(")/", ""), 10));
+                }
+                else {
+                    date = new Date(cellval);
+                }
+
+                var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+                var currentDate = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+                var hour = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+                var minute = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+                var ss = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+
+                return date.getFullYear() + "-" + month;
+            } else {
+                return "";
+            }
+        }
+    </script>
     @*部门与岗位的下拉框动态赋值及下拉框二级联动*@
     <script>
         layui.use(['form', 'upload', 'layer'], function () {

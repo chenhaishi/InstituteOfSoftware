@@ -5,6 +5,7 @@ using SiliconValley.InformationSystem.Entity.ViewEntity.SalaryView;
 using SiliconValley.InformationSystem.Util;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 
@@ -244,16 +245,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         public ActionResult SalarytableRefresh(string time)
         {
             MonthlySalaryRecordManage msrmanage = new MonthlySalaryRecordManage();
-            bool result = true;
-            if (msrmanage.CreateSalTab(time))
-            {
-                result = true;
-            }
-            else
-            {
-                result = false;
-            }
+
+            AjaxResult result = new AjaxResult();
+            result = msrmanage.CreateSalTab(time);
+
             FirstTime = time;
+
             return Json(result, JsonRequestBehavior.AllowGet);
 
         }
@@ -552,5 +549,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         {
             return View();
         }
+       
     } 
 }

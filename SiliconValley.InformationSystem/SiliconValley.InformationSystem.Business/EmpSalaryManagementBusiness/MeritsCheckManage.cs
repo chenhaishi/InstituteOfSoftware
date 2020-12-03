@@ -8,6 +8,7 @@ using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using SiliconValley.InformationSystem.Business.Common;
+using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 using SiliconValley.InformationSystem.Entity.MyEntity;
 using SiliconValley.InformationSystem.Entity.ViewEntity;
 using SiliconValley.InformationSystem.Util;
@@ -131,6 +132,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
         public List<MeritsCheckView> ExcelView(ISheet sheet)
         {
             List<MeritsCheckView> meritsCheck = new List<MeritsCheckView>();
+            EmployeesInfoManage emanage = new EmployeesInfoManage();
             int num = 2;
             AjaxResult ajaxResult = new AjaxResult();
             try
@@ -147,11 +149,12 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     }
                     string Year = string.IsNullOrEmpty(Convert.ToString(sheet.GetRow(1).GetCell(0))) ? null : sheet.GetRow(1).GetCell(0).ToString();
                     string name = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(0))) ? null : getrow.GetCell(0).ToString();
-                    string employeeId = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(1))) ? null : getrow.GetCell(1).ToString();
+                    string ddid = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(1))) ? null : getrow.GetCell(1).ToString();
                     string finalgrade = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(2))) ? null : getrow.GetCell(2).ToString();
 
-
-                    merits.EmployeeId = employeeId;
+                    var empid=  emanage.GetList().Where(i=>i.DDAppId==int.Parse(ddid)).FirstOrDefault().EmployeeId;
+                    merits.EmployeeId = empid;
+                    
                     if (!string.IsNullOrEmpty(Year))
                     {
                         string year = Year.Substring(0, 4);

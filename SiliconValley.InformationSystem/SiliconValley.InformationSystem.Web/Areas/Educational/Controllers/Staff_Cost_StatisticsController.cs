@@ -18,6 +18,7 @@ using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using SiliconValley.InformationSystem.Business.ClassSchedule_Business;
 using SiliconValley.InformationSystem.Business.ClassesBusiness;
+using SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data;
 
 namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 {
@@ -44,6 +45,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         public GrandBusiness Grand_Entity = new GrandBusiness();
 
         public ScheduleForTraineesBusiness ScheduleForTrainees_Entity = new ScheduleForTraineesBusiness();
+
+        public BaseBusiness<TeacherAddorBeonDutyView> teacherAddorBeonDutyView_Entity = new BaseBusiness<TeacherAddorBeonDutyView>();
 
         public Staff_Cost_StatisticsController()
         {
@@ -282,7 +285,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
         }
 
-
         /// <summary>
         /// 个人费用统计
         /// </summary>
@@ -332,7 +334,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             return View();
         }
 
-        public ActionResult UpExcel_Bos(string deptid,string date)
+        public ActionResult UpExcel_Bos(string deptid, string date)
         {
             AjaxResult ajaxResult = new AjaxResult();
             List<Staff_CostView> list = SessionHelper.Session["Cost_Emp_list"] as List<Staff_CostView>;
@@ -367,19 +369,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 HSSFRow Header = (HSSFRow)sheet.CreateRow(0);
                 Header.HeightInPoints = 40;
 
-                CreateCell(Header, HeadercellStyle, 0, "员工编号");
-
-                CreateCell(Header, HeadercellStyle, 1, "员工姓名");
-                CreateCell(Header, HeadercellStyle, 2, "S1,S2课时");
-                CreateCell(Header, HeadercellStyle, 3, "S3,S4课时");
-                CreateCell(Header, HeadercellStyle, 4, "其他课时(语文,职素...)");
-
-                // CreateCell(Header, HeadercellStyle, 2, "总金额");
-
-                CreateCell(Header, HeadercellStyle, 5, "总课时");
-
-                CreateCell(Header, HeadercellStyle, 6, "教课数量");
-                CreateCell(Header, HeadercellStyle, 7, "底课时");
+                CreateCell(Header, HeadercellStyle, 0, "姓名");
+                CreateCell(Header, HeadercellStyle, 1, "职务");
+                CreateCell(Header, HeadercellStyle, 2, "课时费");
+                CreateCell(Header, HeadercellStyle, 3, "值班费");
+                CreateCell(Header, HeadercellStyle, 4, "监考费");
+                CreateCell(Header, HeadercellStyle, 5, "阅卷费");
+                CreateCell(Header, HeadercellStyle, 6, "超带班");
+                CreateCell(Header, HeadercellStyle, 7, "内训费");
+                CreateCell(Header, HeadercellStyle, 8, "研发费");
+                CreateCell(Header, HeadercellStyle, 9, "合计");
                 #endregion
 
                 int num = 1;
@@ -387,16 +386,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 {
                     var row = (HSSFRow)sheet.CreateRow(num);
 
-                    CreateCell(row, ContentcellStyle, 0, d.Emp_ID);//员工编号
-                    CreateCell(row, ContentcellStyle, 1, d.Emp_Name);//姓名
-                    CreateCell(row, ContentcellStyle, 2, d.FirstCount.ToString());//S1S2
-                    CreateCell(row, ContentcellStyle, 3, d.SecondCount.ToString());//S3S4
-                    CreateCell(row, ContentcellStyle, 4, d.OtherCount.ToString());//其他课程
-                    CreateCell(row, ContentcellStyle, 5, d.summoney.ToString());//总金额
-
-                    //CreateCell(row, ContentcellStyle, 3, d.totalClass.ToString());//总课时
-                    CreateCell(row, ContentcellStyle, 6, d.ClassCount.ToString());//教课数量
-                    CreateCell(row, ContentcellStyle, 7, d.EndCostTime.ToString());//底课时
+                    CreateCell(row, ContentcellStyle, 0, d.Emp_Name);
+                    CreateCell(row, ContentcellStyle, 1, d.RoleName);
+                    CreateCell(row, ContentcellStyle, 2, d.Cost_fee.ToString());
+                    CreateCell(row, ContentcellStyle, 3, d.Duty_fee.ToString());
+                    CreateCell(row, ContentcellStyle, 4, d.Invigilation_fee.ToString());
+                    CreateCell(row, ContentcellStyle, 5, d.Marking_fee.ToString());
+                    CreateCell(row, ContentcellStyle, 6, d.Super_class.ToString());
+                    CreateCell(row, ContentcellStyle, 7, d.Internal_training_fee.ToString());
+                    CreateCell(row, ContentcellStyle, 8, d.RD_fee.ToString());
+                    CreateCell(row, ContentcellStyle, 9, d.totalmoney.ToString());
                     num++;
 
                 });
@@ -416,10 +415,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                     department = Department_Entity.GetEntity(deptid);
                     filename = DateTime.Parse(date).Year + "-" + DateTime.Parse(date).Month + department.DeptName + "课时费统计表";
                 }
-                else {
+                else
+                {
                     filename = DateTime.Parse(date).Year + "-" + DateTime.Parse(date).Month + "课时费统计表";
                 }
-                
+
                 string LOACpathName = System.Web.HttpContext.Current.Server.MapPath("/Areas/Educational/CostHistoryFiles/" + filename + ".xls");
 
                 string pathName = $"/CostHistoryFiles/{filename}.xls";
@@ -444,7 +444,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 ajaxResult.Msg = "上传成功！";
 
             }
-            else {
+            else
+            {
                 ajaxResult.ErrorCode = 404;
                 ajaxResult.Msg = "网络异常";
             }
@@ -508,14 +509,32 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         /// <summary>
         /// 计算课时费
         /// </summary>
-        /// <param name="date">时间</param>
+        /// <param name="date">日期</param>
         /// <param name="DeptID">部门</param>
+        /// <param name="IsDanxiu">单休 --> 0   双休-->1  </param>
+        /// <param name="jiejiari">节假日天数</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult TempFunction(string date, int DeptID, int WorkDay)
+        public ActionResult TempFunction(string date, int DeptID, string IsDanxiu,int jiejiari)
         {
             string datetime = date.Substring(0, 4);
-            DateTime dt = Convert.ToDateTime(date.Substring(0, 4) + "-" + date.Substring(5, 2) + "-" + date.Substring(8, 2));
+            DateTime dt = Convert.ToDateTime(date.Substring(0, 4) + "-" + date.Substring(5, 2));
+
+            int WorkDay = 0;
+            if (IsDanxiu == "0")
+            {
+                WorkDay = WorkDaysOfyearmonth(dt.Year, dt.Month, true);
+            }
+            else {
+                WorkDay = WorkDaysOfyearmonth(dt.Year, dt.Month, false);
+            }
+
+            //节假日天数 >0  用工作日天数减去节假日天数
+            if (jiejiari >0) {
+                WorkDay = WorkDay - jiejiari;
+            }
+            
+            
             List<EmployeesInfo> Emp_List = null;
             if (DeptID == 0)
             {
@@ -528,15 +547,27 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
             List<Staff_CostView> staff_list = new List<Staff_CostView>();
 
-            decimal? summoney = 0;
+            decimal? Cost_fee = 0;
             int QuanDay = 0;//全天课天数
-            int ClassTime = 0;//底课时
+            int ClassTime = 50;//底课时
+            int Duty_fee = 0;//值班费
+            int Invigilation_fee = 0;//监考费
+            int Marking_fee = 0;//阅卷费
+            int Super_class = 0;//超带班
+            int Internal_training_fee = 0;//内训费
+            int RD_fee = 0;//研发费
+
             for (int i = 0; i < Emp_List.Count; i++)
             {
                 Staff_CostView staff = new Staff_CostView();
 
-                staff.Emp_ID = Emp_List[i].EmployeeId;
+                DateTime NowTime = DateTime.Now;
 
+                if ((NowTime.Year - Emp_List[i].EntryTime.Year)>=2) {
+                    ClassTime = 40;
+                }
+
+                
                 string sqlstr = $"select * from Reconcile  where Year(AnPaiDate)={dt.Year} and Month(AnPaiDate) = {dt.Month} and EmployeesInfo_Id ={ Emp_List[i].EmployeeId }";
                 List<Reconcile> mydata = Reconcile_Entity.GetListBySql<Reconcile>(sqlstr).ToList();
 
@@ -555,22 +586,38 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                     group m by m.Curriculum_Id into list
                     select list).ToList();
 
-                //根据班级id分组
+                //根据班级id分组   作用：前预科：根据班级iD看班级有多少人
                 var ClassScheduleGroup = (
                     from m in qianyuke
                     group m by m.ClassSchedule_Id into list
                     select list).ToList();
 
+                //班级id分组   带班数量
+                var ClassScheduleCount = (
+                    from m in mydata
+                    group m by m.ClassSchedule_Id into list
+                    select list).ToList();
+
+                
                 var ClassGroup = ClassGroup1.Where
-                    (a => a.Key != "复习" && a.Key != "项目答辩"
-                        && !a.Key.Contains("职素") && !a.Key.Contains("班")).ToList();
+                    (a => a.Key != "复习" ).ToList();//&& a.Key != "项目答辩"&& !a.Key.Contains("职素") && !a.Key.Contains("班")
+                        
 
                 //计算全天课天数&& a.Curriculum_Id != "项目答辩"
                 for (int k = 0; k < AnPaiGroup.Count; k++)
                 {
                     QuanDay += Cost_EndClass(AnPaiGroup[k].Key, Emp_List[i].EmployeeId);
                 }
-                ClassTime = 40 * QuanDay / WorkDay;//底课时   40*全天课天数/工作日天数
+                //ClassTime = 40 * QuanDay / WorkDay;//底课时   40*全天课天数/工作日天数
+
+                if (EmployeesInfoManage_Entity.GetPositionByEmpid(Emp_List[i].EmployeeId).PositionName == "教学主任")
+                {
+                    ClassTime = ClassTime * QuanDay / WorkDay;
+                }
+
+                if (!EmployeesInfoManage_Entity.GetDeptByEmpid(Emp_List[i].EmployeeId).DeptName.Contains("s1、s2教学部")) {
+                    ClassTime = 0;
+                }
 
                 int FirstStage = 0;//第一阶段  预科，S1,S2
                 int SecondStage = 0;//第二阶段 S3,S4
@@ -616,11 +663,18 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                         if (curriculum.CourseName.Contains("语文") ||
                             curriculum.CourseName.Contains("数学") ||
                             curriculum.CourseName.Contains("英语") ||
-                            curriculum.CourseName.Contains("职素") ||
                             curriculum.CourseName.Contains("班会") ||
-                            curriculum.CourseName.Contains("军事"))
+                            curriculum.CourseName.Contains("军事") ||
+                            curriculum.CourseName.Contains("职素"))
                         {
                             OtherStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
+                        }
+                        else if (curriculum.CourseName.Contains("职素"))
+                        {
+
+                            int zhisuClassTime = Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
+                            int totalClassTime = (zhisuClassTime / 4) + zhisuClassTime;
+                            OtherStage += zhisuClassTime;
                         }
                         else
                         {
@@ -637,45 +691,66 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                     }
 
                 }
+                //课时费计算总额
+                if (FirstStage > 0)
+                {
+                    Cost_fee += FirstStage * 55;
+                }
 
-                //if (FirstStage > 0)
-                //{
-                //    FirstStage = FirstStage - ClassTime;
-                //    if (FirstStage < 0) {
-                //        if (SecondStage != 0)
-                //        {
-                //            SecondStage = SecondStage + FirstStage;
-                //            if (SecondStage < 0)
-                //            {
-                //                OtherStage = OtherStage + FirstStage;
-                //            }
-                //        }
-                //        else {
-                //            OtherStage = OtherStage + FirstStage;
-                //        }
-                //    }
-                //} else {
-                //    SecondStage = SecondStage - ClassTime;
-                //    if (SecondStage<0) {
-                //        OtherStage = OtherStage + SecondStage;
-                //    }
-                //}
+                if (SecondStage>0)
+                {
+                    Cost_fee += SecondStage * 65;
+                }
+
+                if (OtherStage>0)
+                {
+                    Cost_fee += OtherStage * 30;
+                }
+
+                
+                //计算值班费
+                //查询当年 年月的值班数据
+                string TeacherAddsql = @"select * from TeacherAddorBeonDutyView  where YEAR(Anpaidate)=" + dt.Year + "" +
+                    " and Month(Anpaidate)=" + dt.Month + "";
+                List<TeacherAddorBeonDutyView> TearcherAdd_List = teacherAddorBeonDutyView_Entity.GetListBySql<TeacherAddorBeonDutyView>(TeacherAddsql);
+                //根据时间分组
+                var TeacherAddGroup = (
+                    from m in TearcherAdd_List
+                    group m by m.Anpaidate into list
+                    select list).ToList();
+
+                //一节  50    两节   80
+                for (int g = 0; g < TeacherAddGroup.Count; g++)
+                {
+                    string sql = @"select * from TeacherAddorBeonDutyView  where YEAR(Anpaidate)=" + TeacherAddGroup[g].Key.Year + "" +
+                    " and Month(Anpaidate)=" + TeacherAddGroup[g].Key.Month + " and Day(Anpaidate)="+ TeacherAddGroup[g].Key.Day + " and Tearcher_Id="+Emp_List[i].EmployeeId+"";
+                    List<TeacherAddorBeonDutyView> TearcherAdd = teacherAddorBeonDutyView_Entity.GetListBySql<TeacherAddorBeonDutyView>(sql);
+                    if (TearcherAdd.Count == 1) {
+                        Duty_fee += 50;
+                    } else if (TearcherAdd.Count==2) {
+                        Duty_fee += 80;
+                    }
+                }
+                
 
 
-                staff.FirstCount = FirstStage;
-                staff.EndCostTime = ClassTime;
-                staff.SecondCount = SecondStage;
-                staff.OtherCount = OtherStage;
-                summoney = FirstStage * 55 + SecondStage * 65 + OtherStage * 30;
-                //staff.totalClass = FirstStage + SecondStage + OtherStage;
-                staff.summoney = summoney;
-                staff.Emp_Name = Emp_List[i].EmpName;
-                staff.ClassCount = ClassGroup.Count();
+                staff.totalmoney =Convert.ToInt32(Cost_fee) + Duty_fee + Invigilation_fee + Marking_fee + Super_class + Internal_training_fee + RD_fee;
+                staff.Cost_fee = Cost_fee;
+                staff.Duty_fee = Duty_fee;
+                staff.Emp_Name = Emp_List[i].EmpName; 
+                staff.RoleName = EmployeesInfoManage_Entity.GetPositionByEmpid(Emp_List[i].EmployeeId).PositionName;
                 staff_list.Add(staff);
 
-                summoney = 0;
+                Cost_fee = 0;
                 QuanDay = 0;
-                ClassTime = 0;
+                ClassTime = 50;
+                Duty_fee = 0;//值班费
+                Invigilation_fee = 0;//监考费
+                Marking_fee = 0;//阅卷费
+                Super_class = 0;//超带班
+                Internal_training_fee = 0;//内训费
+                RD_fee = 0;//研发费
+
             }
 
             AjaxResult ajaxResult = new AjaxResult();
@@ -727,16 +802,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             {
                 var row = (HSSFRow)sheet.CreateRow(num);
 
-                CreateCell(row, ContentcellStyle, 0, d.Emp_ID);//员工编号
-                CreateCell(row, ContentcellStyle, 1, d.Emp_Name);//姓名
-                CreateCell(row, ContentcellStyle, 2, d.FirstCount.ToString());//S1S2
-                CreateCell(row, ContentcellStyle, 3, d.SecondCount.ToString());//S3S4
-                CreateCell(row, ContentcellStyle, 4, d.OtherCount.ToString());//其他课程
-                CreateCell(row, ContentcellStyle, 5, d.summoney.ToString());//总金额
-
-                //CreateCell(row, ContentcellStyle, 3, d.totalClass.ToString());//总课时
-                CreateCell(row, ContentcellStyle, 6, d.ClassCount.ToString());//教课数量
-                CreateCell(row, ContentcellStyle, 7, d.EndCostTime.ToString());//底课时
+                CreateCell(row, ContentcellStyle, 0, d.Emp_Name);
+                CreateCell(row, ContentcellStyle, 1, d.RoleName);
+                CreateCell(row, ContentcellStyle, 2, d.Cost_fee.ToString());
+                CreateCell(row, ContentcellStyle, 3, d.Duty_fee.ToString());
+                CreateCell(row, ContentcellStyle, 4, d.Invigilation_fee.ToString());
+                CreateCell(row, ContentcellStyle, 5, d.Marking_fee.ToString());
+                CreateCell(row, ContentcellStyle, 6, d.Super_class.ToString());
+                CreateCell(row, ContentcellStyle, 7, d.Internal_training_fee.ToString());
+                CreateCell(row, ContentcellStyle, 8, d.RD_fee.ToString());
+                CreateCell(row, ContentcellStyle, 9, d.totalmoney.ToString());
                 num++;
 
             });
@@ -769,19 +844,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 HSSFRow Header = (HSSFRow)sheet.CreateRow(0);
                 Header.HeightInPoints = 40;
 
-                CreateCell(Header, HeadercellStyle, 0, "员工编号");
-
-                CreateCell(Header, HeadercellStyle, 1, "员工姓名");
-                CreateCell(Header, HeadercellStyle, 2, "S1,S2课时");
-                CreateCell(Header, HeadercellStyle, 3, "S3,S4课时");
-                CreateCell(Header, HeadercellStyle, 4, "其他课时(语文,职素...)");
-
-                // CreateCell(Header, HeadercellStyle, 2, "总金额");
-
-                CreateCell(Header, HeadercellStyle, 5, "总课时");
-
-                CreateCell(Header, HeadercellStyle, 6, "教课数量");
-                CreateCell(Header, HeadercellStyle, 7, "底课时");
+                CreateCell(Header, HeadercellStyle, 0, "姓名");
+                CreateCell(Header, HeadercellStyle, 1, "职务");
+                CreateCell(Header, HeadercellStyle, 2, "课时费");
+                CreateCell(Header, HeadercellStyle, 3, "值班费");
+                CreateCell(Header, HeadercellStyle, 4, "监考费");
+                CreateCell(Header, HeadercellStyle, 5, "阅卷费");
+                CreateCell(Header, HeadercellStyle, 6, "超带班");
+                CreateCell(Header, HeadercellStyle, 7, "内训费");
+                CreateCell(Header, HeadercellStyle, 8, "研发费");
+                CreateCell(Header, HeadercellStyle, 9, "合计");
             }
 
             void CreateCell(HSSFRow row, HSSFCellStyle TcellStyle, int index, string value)
@@ -882,6 +954,43 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
 
             return count;
+        }
+
+        /// <summary>
+        /// 计算当月工作日天数
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="month"></param>
+        /// <param name="IsDanxiu">是否为单休  true 是   false 否</param>
+        /// <returns></returns>
+        private int WorkDaysOfyearmonth(int year, int month, bool IsDanxiu)
+        {
+            int alldays = DateTime.DaysInMonth(year, month);
+
+            int workday = alldays;
+            DateTime indata;
+            for (int i = 1; i <= alldays; i++)
+            {
+                if (IsDanxiu)
+                {
+                    indata = Convert.ToDateTime(year.ToString() + "/" + month.ToString() + "/" + i.ToString());
+                    if (indata.DayOfWeek == DayOfWeek.Sunday)
+                    {
+                        workday--;
+                    }
+                }
+                else {
+                    indata = Convert.ToDateTime(year.ToString() + "/" + month.ToString() + "/" + i.ToString());
+                    if (indata.DayOfWeek == DayOfWeek.Sunday || indata.DayOfWeek == DayOfWeek.Saturday)
+                    {
+                        workday--;
+                    }
+                }
+
+
+            }
+            return workday;
+
         }
     }
 }
