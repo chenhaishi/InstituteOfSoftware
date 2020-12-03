@@ -15,6 +15,7 @@ using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 using System.Drawing.Imaging;
 using Spire.Xls;
 using NPOI.SS.Util;
+using SiliconValley.InformationSystem.Business.Base_SysManage;
 
 namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
 {
@@ -962,6 +963,35 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 Header_Name.CellStyle = TcellStyle;
             }
         }
+        public int type()
+        {
+            EmployeesInfoManage manage = new EmployeesInfoManage();
+            var UserName = Base_UserBusiness.GetCurrentUser();//获取当前登录人
+            var ddid = manage.GetInfoByEmpID(UserName.EmpNumber).DDAppId;
+            var type = 0;
+            switch (ddid)
+            {
+                case 145:
+                    type = 3;
+                    break;
+                case 147:
+                    type = 4;
+                    break;
+                case 190:
+                    type = 5;
+                    break;
+                case 2:
+                    type = 6;
+                    break;
+                case 1:
+                    type = 7;
+                    break;
+                default:
+                    break;
+            }
+            return type;
+        }
+        
     } 
     }
 

@@ -366,7 +366,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         public ActionResult TimePeriodQuery(int page, int limit, string time,string empid)
         {
             EmployeesInfoManage emanage = new EmployeesInfoManage();
-            var mclist = mcmanage.GetEmpMCData().Where(s => s.IsDel == false&& s.EmployeeId == empid).ToList();
+            var mclist = mcmanage.GetEmpMCData().Where(s => s.IsDel == false&& s.EmployeeId == empid).OrderByDescending(i=>i.YearAndMonth).ToList();
 
             if (!string.IsNullOrEmpty(time))
             {

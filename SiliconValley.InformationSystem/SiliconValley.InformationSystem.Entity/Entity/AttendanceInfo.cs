@@ -28,28 +28,21 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         public string WorkAbsentRecord { get; set; }//上班缺卡记录
         public Nullable<int> OffDutyAbsentNum { get; set; }//下班缺卡次数
         public string OffDutyAbsentRecord { get; set; }//下班缺卡记录
-
         public Nullable<int> TardyNum { get; set; }//迟到次数
         public string TardyRecord { get; set; }//迟到记录
-      
         public Nullable<int> LeaveEarlyNum { get; set; }//早退次数
         public string LeaveEarlyRecord { get; set; }//早退记录
-     
         public Nullable<decimal> TardyAndLeaveWithhold { get; set; }//迟到/早退扣费
-
         public string Remark { get; set; }//备注
         public Nullable<bool> IsDel { get; set; }
         public Nullable<bool> IsApproval { get; set; }
-
         public string LeaveRecord { get; set; }//请假记录（事假）
-
         public Nullable<decimal> OvertimeCharges { get; set; }//加班费用
         public Nullable<decimal> DaysoffDuration { get; set; }//调休时长
         public string DaysoffRecord { get; set; }//调休记录
         public Nullable<decimal> AbsenteeismDays { get; set; }//旷工天数
         public string AbsenteeismRecord { get; set; }//旷工记录
         public Nullable<decimal> AbsenteeismWithhold { get; set; }//旷工扣费
-
         public Nullable<int> NoonAbsentNum { get; set; }//中午缺卡次数
         public string NoonAbsentRecord { get; set; }//中午缺卡记录
         public Nullable<int> GoOutNum { get; set; }//外出次数
