@@ -128,7 +128,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
         {
             bool flag = false;
             List<Pricedormitoryarticles> price_list = PricedorGood_Entity.GetList();
-            var temp = price_list.Where(s=>s.Nameofarticle == name).Count();
+            var temp = price_list.Where(s=>s.Nameofarticle == name && s.Dateofregistration==true).Count();
             if (temp>0)
             {
                 flag = true;
