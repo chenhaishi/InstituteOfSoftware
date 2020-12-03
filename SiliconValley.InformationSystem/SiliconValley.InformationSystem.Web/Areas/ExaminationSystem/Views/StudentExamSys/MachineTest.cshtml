@@ -49,7 +49,7 @@
             <hr />
             <div class="detail">
                 <ul>
-                    <li><label>答题人-- </label><span>@ViewBag.AnswerSheetInfo.AnswerPerson.Name</span></li>
+                    <li><label>答题人-- </label><span id="mingzi">@ViewBag.AnswerSheetInfo.AnswerPerson.Name</span></li>
                     <li><label>考室-- </label><span>@ViewBag.AnswerSheetInfo.Classroom.ClassroomName</span></li>
                     @*<li><label>开始时间-- </label><span>@ViewBag.AnswerSheetInfo.BeginDate</span></li>*@
                     <li><label>时限-- </label><span>@ViewBag.AnswerSheetInfo.TimeLimit (小时)</span></li>
@@ -68,7 +68,7 @@
             <br />
             <a class="layui-btn layui-btn-warm" href="/ExaminationSystem/StudentExamSys/ComputerQuestionUpload?examid=@ViewBag.EXAMVIEW.ID">机试题下载</a>
             <input class="layui-btn layui-btn-primary" id="Upload" type="file" name="computerQuestion" />
-            <button type="button" class="layui-btn layui-btn-warm" id="COMMIT">提交机试</button><text style="color:red">（请把项目打成压缩包提交）</text>
+            <button type="button" class="layui-btn layui-btn-warm" id="COMMIT">提交机试</button><text style="color:red">（请把项目打成压缩包并写上自己的名字）</text>
         </div>
     </div>
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
@@ -215,12 +215,15 @@
                 //上传条件 1.文件必须是压缩包(rar)
                 var index = file.name.lastIndexOf(".");
                 var suffix = file.name.substr(index + 1); //文件拓展名
-
+                var mingzi = $("#mingzi").text();
+                var wenjianming = file.name;
+                var panduan = wenjianming.search(mingzi) != -1;
+                console.log(panduan);
                 if (suffix == "rar" || suffix == "zip") {
-
                     formData.append("rarfile", file);
+                } else if (panduan == -1) {
+                    layer.msg("压缩名请包含自己的名字");
                 } else {
-
                     layer.msg("请将文件压缩后再上产 (rar,zip)");
                 }
 

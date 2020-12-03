@@ -169,7 +169,7 @@
     </table>
 
 
-    <div style="width:748px;margin-left:390px;margin-top:-950px">
+    <div style="width:748px;margin-left:390px;margin-top:-950px;OVERFLOW: scroll; scrollbar-face-color: #DBEBFE; scrollbar-shadow-color: #B8D6FA; scrollbar-highlight-color:#FFFFFF; scrollbar-3dlight-color: #DBEBFE; scrollbar-darkshadow-color:#458CE4;scrollbar-track-color: #FFFFFF; scrollbar-arrow-color: #458CE4">
         <div style="margin-top:10px">
             <div class="mb-3">
 
@@ -191,9 +191,6 @@
         <br />
         
     </div>
-
-
-
 
 </div>
 
@@ -484,7 +481,7 @@
                             var layerthtml = _.template($("#moban2").html());
 
                             var label = $("<label></label>");
-                            var labels = $("<label style=' font-size:18px;'></label>");
+                            var labels = $("<label style='font-size:18px;'></label>");
                             label.text(result.Data[i].questionTitle.Title);
                             labels.text(result.Data[i].questionTitle.ReferenceAnswer);
                             var layerdata = layerthtml({ index: i + 1, question: document.HTMLDOMtoString(label[0]), scores: result.Data[i].question.questionScores, answer: result.Data[i].question.answer, referenceanswer: document.HTMLDOMtoString(labels[0]) });

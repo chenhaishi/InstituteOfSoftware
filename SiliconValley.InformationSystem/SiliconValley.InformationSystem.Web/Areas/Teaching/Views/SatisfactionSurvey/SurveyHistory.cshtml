@@ -149,9 +149,9 @@
                         }
                     }
                     , { field: 'TotalScore', width: 150, title: '总分' }
-                    , { field: 'ClassNumber', width:100 ,title: '班级',  templet: '<div>{{d.investigationClass.ClassNumber}}</div>' }
+                    , { field: 'ClassNumber', width:130 ,title: '班级',  templet: '<div>{{d.investigationClass.ClassNumber}}</div>' }
                     , {
-                        field: 'CourseName', width: 150, title: '课程', templet: function (cel) {
+                        field: 'CourseName', width: 120, title: '课程', templet: function (cel) {
 
 
                             '<div>{{d.Curriculum.CourseName}}</div>' 
@@ -167,7 +167,7 @@
 
                         }
                     }
-                    , , { field: 'Average', width: 80, title: '平均分', sort: true }
+                    , { field: 'Average', width: 120, title: '平均分', sort: true }
                    
                 ]]
                 , page: true
@@ -219,8 +219,7 @@
                 });
 
                 //如果点击的是 
-               
-               
+                             
             });
 
             //表格行双击事件
