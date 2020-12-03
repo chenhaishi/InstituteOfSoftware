@@ -3626,6 +3626,7 @@
     <Content Include="Areas\Educational\Views\Staff_Cost_Statistics\teaching_hour.cshtml" />
     <Content Include="Areas\DormitoryMaintenance\Views\DormitoryDeposit\StuNameDefileView.cshtml" />
     <Content Include="Areas\Educational\Views\Staff_Cost_Statistics\Search_PersonClass.cshtml" />
+    <Content Include="assets\Assets_L1\assets\libs\jquery-steps\build\jQuery.Steps.1.1.0.nupkg" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
