@@ -219,7 +219,8 @@
                     var form = layui.form;
                     data.TraceTime1 = changeDateTimeFormat(data.TraceTime);
                     data.ForwardDate = changeDateTimeFormat($("#ForwardDate").val());
-                   // data.deptid = data.Deptid;
+                    data.Deptid = data.Deptid;
+                    data.Pid = data.Pid;
                     data.PhoneCommunicateResult1 = data.PhoneCommunicateResult;
                     data.Remark1 = data.Remark;
                     form.val("formtest", data);
@@ -474,7 +475,7 @@
                     }
                 });
             })
-            layui.form.render("select");
+            //layui.form.render("select");
 
         });
     </script>

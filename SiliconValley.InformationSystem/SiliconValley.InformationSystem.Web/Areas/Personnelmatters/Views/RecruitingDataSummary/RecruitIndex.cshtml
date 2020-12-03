@@ -87,44 +87,7 @@
 
                             </div>
                         </div>
-
-
                     </div>
-                    @*<div class="layui-row layui-form-item">
-            <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
-                <label class="layui-form-label" style="width:100px;">联系时间:</label>
-                <div class="layui-inline">
-                    <div class="layui-input-inline">
-                        <input style="width:320px" type="text" id="TraceTime" name="TraceTime" lay-verify="TraceTime" autocomplete="off" class="layui-input">
-                    </div>
-                </div>
-            </div>
-
-            <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
-                <label class="layui-form-label" style="width:100px;">预面试时间:</label>
-                <div class="layui-inline">
-                    <div class="layui-input-inline">
-                        <input type="text" id="ForwardDate" name="ForwardDate" lay-verify="ForwardDate" autocomplete="off" class="layui-input">
-                    </div>
-                </div>
-            </div>
-
-            <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
-                <label class="layui-form-label" style="width:100px;">备注:</label>
-                <div class="layui-inline">
-                    <div class="layui-input-inline">
-                        <input type="text" id="remarks" name="remarks" lay-verify="remarks" autocomplete="off" class="layui-input">
-                    </div>
-                </div>
-            </div>
-                        <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
-                <div class="layui-inline">
-                    <div class="layui-input-inline">
-                        <button class="layui-btn" type="button" id="Conditionselect1" style="margin-left:20px;"><i class="layui-icon layui-icon-search"></i>查询</button>
-                    </div>
-                </div>
-            </div>
-        </div>*@
                     <div class="layui-row layui-form-item">
                         <div class="layui-inline" style="margin-left:-13px;">
                             <label class="layui-form-label" style="width:100px;margin-left:10px;">联系时间:</label>
@@ -314,9 +277,6 @@
                         }
                     });
                 });
-
-
-
             });
             //日期
             var start_TraceTime = laydate.render({
@@ -343,23 +303,13 @@
                     }
                 }
             });
-           // laydate.render({
-           //     elem: '#TraceTime',
-           //     type: 'datetime',
-           //     range: true
-           // });
-           //laydate.render({
-           //     elem: '#ForwardDate',
-           //    type: 'datetime',
-           //      range: true
-           // });
             var start_ForwardDate = laydate.render({
                 elem: '#start_ForwardDate',
                 type: 'datetime',
                 done: function (value, date) {
                     end_ForwardDate.config.min = {
                         year: date.year,
-                        month: date.month,//关键
+                        month: date.month-1,//关键
                         date: date.date
 
                     }
@@ -371,7 +321,7 @@
                 done: function (value, date) {
                     start_ForwardDate.config.max = {
                         year: date.year,
-                        month: date.month ,//关键
+                        month: date.month-1 ,//关键
                         date: date.date
                     }
                 }
@@ -499,7 +449,7 @@
 
             //动态绑定岗位属性的下拉框的值
             $.ajax({
-                url: '/Personnelmatters/RecruitingDataSummary/BindPidSelect',
+                url: '/Personnelmatters/EmployeesInfo/BindPositionSelect',
                 dataType: 'json',
                 type: 'get',
                 success: function (data) {
@@ -540,11 +490,8 @@
                 done: function (value, date) {
                     endTime.config.min = {
                         year: date.year,
-                        month: date.month - 1//关键
-                        //date: date.date,
-                        //hours: date.hours,
-                        //minutes: date.minutes,
-                        //seconds: date.seconds
+                        month: date.month - 1,//关键
+                        date: date.date
                     }
                 }
             });
@@ -554,11 +501,8 @@
                 done: function (value, date) {
                     startTime.config.max = {
                         year: date.year,
-                        month: date.month - 1//关键
-                        //date: date.date,
-                        //hours: date.hours,
-                        //minutes: date.minutes,
-                        //seconds: date.seconds
+                        month: date.month - 1,//关键
+                        date: date.date
                     }
                 }
             });
