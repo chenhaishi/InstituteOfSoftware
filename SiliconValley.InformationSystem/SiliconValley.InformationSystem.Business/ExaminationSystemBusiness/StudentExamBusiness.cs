@@ -217,7 +217,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
 
 
             //抽取题目
-            var temp1list = questionlist.Where(d => d.Level.LevelID == 1).ToList();
+            var temp1list = questionlist.Where(d => d.Level.LevelID == 1 && d.IsUsing == true).ToList();
             
             try
             {
@@ -229,10 +229,10 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
                 string str = ex.Message;
             }
 
-            var temp1list1 = questionlist.Where(d => d.Level.LevelID == 2).ToList();
+            var temp1list1 = questionlist.Where(d => d.Level.LevelID == 2 && d.IsUsing == true).ToList();
             resultlist.AddRange(this.extracChoicequestion(temp1list1, (int)putong));
 
-            var temp1list2 = questionlist.Where(d => d.Level.LevelID == 3).ToList();
+            var temp1list2 = questionlist.Where(d => d.Level.LevelID == 3 && d.IsUsing == true).ToList();
             resultlist.AddRange(this.extracChoicequestion(temp1list2, (int)kunnan));
 
             List<ChoiceQuestionTableView> returnlist = new List<ChoiceQuestionTableView>();
@@ -395,13 +395,13 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
                 }
             }
             List<AnswerQuestionView> resultlist = new List<AnswerQuestionView>();
-            var temp1list = questionlist.Where(d => d.Level.LevelID == 1).ToList();
+            var temp1list = questionlist.Where(d => d.Level.LevelID == 1 && d.IsUsing == true).ToList();
             resultlist.AddRange(this.extracAnswerQuestion(temp1list, (int)jiandan));
 
-            var temp1list1 = questionlist.Where(d => d.Level.LevelID == 2).ToList();
+            var temp1list1 = questionlist.Where(d => d.Level.LevelID == 2 && d.IsUsing == true).ToList();
             resultlist.AddRange(this.extracAnswerQuestion(temp1list1, (int)putong));
 
-            var temp1list2 = questionlist.Where(d => d.Level.LevelID == 3).ToList();
+            var temp1list2 = questionlist.Where(d => d.Level.LevelID == 3 && d.IsUsing == true).ToList();
             resultlist.AddRange(this.extracAnswerQuestion(temp1list2, (int)kunnan));
             List<AnswerQuestionView> returnlist = new List<AnswerQuestionView>();
 
@@ -503,7 +503,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
            
             Random rendom = new Random();
            
-            var reslist = questionlist.Where(d => d.Level.LevelID == examview.PaperLevel.LevelID).ToList();
+            var reslist = questionlist.Where(d => d.Level.LevelID == examview.PaperLevel.LevelID && d.IsUsing == true).ToList();
             int rdom = rendom.Next(0, reslist.Count);
             return reslist[rdom];
 
