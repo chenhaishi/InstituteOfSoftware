@@ -47,15 +47,13 @@
         background-color: #ffd800;
     }
 </style>
-<div class="row" style=" border: 1px solid #dcdcdc; display:block;box-sizing: border-box; height:1000px">
+<div class="row" style=" border: 1px solid #dcdcdc; display:block;box-sizing: border-box;">
     <div style="background-color: #f3f7fd; padding: 10px 10px 10px 15px; border-bottom: 1px solid #ebeef5; display: block; font-size: 20px;">试卷区</div>
     <div style="width:50%;">
         <div class="box" style=" display: block;text-align: center;border-bottom:solid 5px green">
             <div style="position: relative;font-size:26px;color: #ec661a;line-height:100px;"></div>
             <div id="stayMarkingArea" style="font-size: 22px;line-height: 30px;margin-right:50px">
-                <ul class="tayMarkinglist">
-                    
-                </ul>
+                <ul class="tayMarkinglist"></ul>
             </div>
         </div>
         <div class="box" style=" display: block;text-align: center; margin-top:-120px;margin-left:710px;border-bottom:solid 5px green">
@@ -68,7 +66,6 @@
                 <div style="margin-right:100px;margin-bottom:30px;">
                     <label class="infoitem totalPaper" style="color:black;margin-right:200px">试卷总数:<span id="fenliang" style="color:#009688!important"></span></label>
                     <label class="infoitem filshPaper" style="color:black">已阅卷数量:<span style="color:#009688!important"></span></label>
-
                 </div>
 
                 <a id="YiJian" class="layui-btn layui-btn-danger" style="text-decoration: none;margin-top:-55px;margin-right:300px;width:200px;color:white">一键下载所有机试</a>
@@ -76,9 +73,10 @@
         </div>
     </div>
 
-
+</div>
+<div style="height:1500px">
     <div style="width:380px">
-        <table class="layui-table" style="width:380px;float:left;">
+        <table class="layui-table" style="width:380px;float:left;margin-left:30px">
             <colgroup>
                 <col width="120">
 
@@ -89,15 +87,12 @@
 
                 </tr>
             </thead>
-            <tbody id="stulist">
-
-
-            </tbody>
+            <tbody id="stulist"></tbody>
         </table>
     </div>
 
 
-    <table class="table table-hover table-bordered" style="width:280px;margin-left:80.3%;margin-top:10px;float:none">
+    <table class="table table-hover table-bordered" style="width:280px;margin-left:1178px;margin-top:00px;float:none">
         <tbody>
             <tr>
                 <td colspan="2">
@@ -167,9 +162,7 @@
         </tbody>
 
     </table>
-
-
-    <div style="width:748px;margin-left:390px;margin-top:-950px;OVERFLOW: scroll; scrollbar-face-color: #DBEBFE; scrollbar-shadow-color: #B8D6FA; scrollbar-highlight-color:#FFFFFF; scrollbar-3dlight-color: #DBEBFE; scrollbar-darkshadow-color:#458CE4;scrollbar-track-color: #FFFFFF; scrollbar-arrow-color: #458CE4">
+    <div style="width:748px;margin-left:420px;margin-top:-950px;OVERFLOW: scroll; scrollbar-face-color: #DBEBFE; scrollbar-shadow-color: #B8D6FA; scrollbar-highlight-color:#FFFFFF; scrollbar-3dlight-color: #DBEBFE; scrollbar-darkshadow-color:#458CE4;scrollbar-track-color: #FFFFFF; scrollbar-arrow-color: #458CE4">
         <div style="margin-top:10px">
             <div class="mb-3">
 
@@ -183,16 +176,18 @@
         <div id="computerBtn">
 
         </div>
-        <br />
+        @*<br />
 
-        @*<a class="layui-btn" id="preBtn" style="color:black;width:50%;float:none;margin-top:10px">上一个</a>
+            @*<a class="layui-btn" id="preBtn" style="color:black;width:50%;float:none;margin-top:10px">上一个</a>
 
-        <a class="layui-btn" id="nextBtn" style="color:black;width:50%;margin-top:-60px;margin-left:376px">下一个</a>*@
-        <br />
-        
+            <a class="layui-btn" id="nextBtn" style="color:black;width:50%;margin-top:-60px;margin-left:376px">下一个</a>*@
+        @*<br />*@
+
     </div>
 
 </div>
+
+
 
 <!--模板-->
 <script type="text/template" id="moban1">
@@ -207,7 +202,7 @@
         <div>
             <span class="questionIndex">{{=index}}</span> <code style="margin-left:5px; font-size:18px;">{{=question}}</code>&nbsp;&nbsp;(<span class="listScores">{{=scores}}</span>分)
             <input class="scoreitem" type="number" value="0" max="{{=scores}}" placeholder="输入分数" style="margin-left:10px; border-top:0px solid white;border-left:0px solid white;border-right:0px solid white;border-bottom:1px solid black;" />
-            <label style=" color:black;font-size:18px;">参考答案:</label>{{=referenceanswer}}
+            <label style=" color:black;font-size:20px;">参考答案:</label>{{=referenceanswer}}
             <div class="Questionanswer" style="display:block; margin-left:50px; background-color:white; margin-top:20px; color:black; font-size:16px; padding:30px;">
 
                 {{=answer}}
