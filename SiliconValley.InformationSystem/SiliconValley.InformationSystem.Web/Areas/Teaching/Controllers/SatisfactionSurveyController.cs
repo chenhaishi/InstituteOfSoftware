@@ -46,6 +46,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
         //学员班级
         ClassScheduleBusiness classScheduleBusiness = new ClassScheduleBusiness();
 
+        public EmployeesInfoManage EmployeesInfoManage_Entity = new EmployeesInfoManage();
+
         private readonly TeacherBusiness db_teacher;
 
         public SatisfactionSurveyController()
@@ -1449,18 +1451,43 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                //获取班级
 
                var classlist = db_teacherclass.AllClassSchedule().Where(d=>d.IsDelete==false).ToList().Where(d=>d.ClassstatusID == null).ToList();
-            
+            //获取部门
+            var getdepartments = db_dep.GetList().Where(s => s.DeptName.Contains("教学")|| s.DeptName.Contains("教质")).ToList();
+            ViewBag.getdepartments = getdepartments;
             ViewBag.classlist = classlist;
 
             return View();
         }
+        /// <summary>
+        /// 根据部门获取员工
+        /// </summary>
+        /// <param name="bumeng"></param>
+        /// <returns></returns>
+        public ActionResult DepartmentTeacher(int bumeng)
+        {
+            AjaxResult result = new AjaxResult();
+            List<EmployeesInfo> db_info = null;
+            try
+            {
+                db_info = EmployeesInfoManage_Entity.GetEmpsByDeptid(bumeng);
 
-     /// <summary>
-     /// 获取教员在班级上过的课程
-       
-     /// </summary>
-     /// <param name="classnumber"></param>
-     /// <returns></returns>
+                result.ErrorCode = 200;
+                result.Data = db_info;
+                result.Msg = "成功";
+            }
+            catch (Exception ex)
+            {
+                result.ErrorCode = 500;
+                result.Data = db_info;
+                result.Msg = ex.Message;
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
+        /// 获取教员在班级上过的课程      
+        /// </summary>
+        /// <param name="classnumber"></param>
+        /// <returns></returns>
         public ActionResult GetCorsueOnReconile(string classnumber)
         {
 
@@ -1469,10 +1496,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
             List<Curriculum> resultlist = new List<Curriculum>();
             try
             {
-
-             
-
-
                 //排课业务类
                 BaseBusiness<Reconcile> db_reconile = new BaseBusiness<Reconcile>();
 
@@ -1530,7 +1553,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
 
 
         [HttpPost]
-        public ActionResult CreateTeacherSurveyConfig(int classnumber, int Curriculum)
+        public ActionResult CreateTeacherSurveyConfig(int classnumber, int Curriculum,string laoshi)
         {
 
             AjaxResult result = new AjaxResult();
@@ -1544,11 +1567,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 //查出评价班级
                 var classlisttemp = classdb.GetList().Where(d => d.IsDelete == false && d.id == classnumber).FirstOrDefault().ClassNumber;
                 //根据班级查出老师
-                BaseBusiness<Reconcile> reconcile = new BaseBusiness<Reconcile>();
-                var LaoShi = reconcile.GetList().Where(d=>d.ClassSchedule_Id == classnumber).FirstOrDefault().EmployeesInfo_Id;
+                //BaseBusiness<Reconcile> reconcile = new BaseBusiness<Reconcile>();
+                //var LaoShi = reconcile.GetList().Where(d=>d.ClassSchedule_Id == classnumber).FirstOrDefault().EmployeesInfo_Id;
                 //首先判断是否已经存在
 
-                var templist = db_survey.satisficingConfigs().Where(d => d.IsDel == false && d.EmployeeId == LaoShi && d.ClassNumber == classnumber).ToList();
+                var templist = db_survey.satisficingConfigs().Where(d => d.IsDel == false && d.EmployeeId == laoshi && d.ClassNumber == classnumber).ToList();
 
 
                  if (templist.Count !=0)
@@ -1567,7 +1590,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 satisficingConfig.ClassNumber = classnumber;
                 satisficingConfig.CreateTime = DateTime.Now;
                 satisficingConfig.CurriculumID = Curriculum;
-                satisficingConfig.EmployeeId = LaoShi;
+                satisficingConfig.EmployeeId = laoshi;
                 satisficingConfig.IsDel = false;
                 satisficingConfig.IsPastDue = false;
 
