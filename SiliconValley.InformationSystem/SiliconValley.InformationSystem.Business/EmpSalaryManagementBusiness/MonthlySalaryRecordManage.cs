@@ -137,7 +137,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
         public AjaxResult CreateSalTab(string time)
         {
             AjaxResult result = new AjaxResult();
-           
+            int id =0;
             try
             {
                 var msrlist = this.GetEmpMsrData().Where(s => s.IsDel == false).ToList();
@@ -165,8 +165,8 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                         AttendanceInfo attendance = GetAttendanceInfoByEmpid(item.EmployeeId,Convert.ToDateTime(time));
                         MeritsCheck merits = GetMCByEmpid(item.EmployeeId,Convert.ToDateTime(time));
                         MonthlySalaryRecord msr = new MonthlySalaryRecord();
-                      
-                            msr.EmployeeId = item.EmployeeId;
+                        id = (int)empmanage.GetEntity(item.EmployeeId).DDAppId;
+                        msr.EmployeeId = item.EmployeeId;
                             msr.YearAndMonth = Convert.ToDateTime(time);
                             msr.FinalGrade = merits.FinalGrade;
                             msr.BaseSalary = item.BaseSalary;
@@ -199,7 +199,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
 
             catch (Exception ex)
             {
-                    result = Error(ex.Message);
+                    result = Error("生成失败！自工号为"+id+"的员工起截至，请查看绩效考核，考勤是否有数据。");
             }
             return result;
         }

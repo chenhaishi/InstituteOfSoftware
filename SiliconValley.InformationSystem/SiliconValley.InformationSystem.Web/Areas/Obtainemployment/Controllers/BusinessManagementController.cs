@@ -52,7 +52,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Obtainemployment.Controllers
         /// <returns></returns>
         public bool Existence(string EntId, int SpeeID)
         {
-
             EntSpeeBus = new EntSpeeBusiness();
             int newEntId = int.Parse(EntId);
             var EntSpeeList = EntSpeeBus.GetIQueryable().Where(a => a.IsDel == false).ToList();

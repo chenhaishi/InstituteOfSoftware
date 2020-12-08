@@ -75,6 +75,12 @@
                         @Html.TextBoxFor(a => a.OtherDeductions, new Dictionary<string, object>() { { "class", "layui-input salary" } })
                     </div>
                 </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">备注:</label>
+                    <div class="layui-input-inline" style="width:300px;">
+                       @* @Html.TextArea(a => a.OtherDeductions, new Dictionary<string, object>() { { "class", "layui-input salary" } })*@
+                    </div>
+                </div>
             </div>
 
             <div class="layui-form-item" style="margin-left:50px;margin-top:70px;">

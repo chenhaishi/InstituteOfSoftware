@@ -37,6 +37,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             EmployeesInfoManage empmanage = new EmployeesInfoManage();
             var rdslist = rptmanage.GetRptFromSql()/*.Where(s => s.IsDel == false).ToList()*/;
             List<RecruitPhoneTraceView> rptviewlist = new List<RecruitPhoneTraceView>();
+            //rptviewlist.Capacity=rdslist.Count();
             foreach (var item in rdslist)
             {
                 RecruitPhoneTraceView rptview = new RecruitPhoneTraceView();
@@ -53,14 +54,14 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 rptview.Channel = item.Channel;
                 rptview.ResumeType = item.ResumeType;
                 rptview.PhoneCommunicateResult = item.PhoneCommunicateResult;
-                rptview.IsEntry = rptmanage.GetNewest((int)item.SonId).IsEntry;
+                rptview.IsEntry = item.IsEntry;
                 rptview.Remark = item.Remark;
                 rptview.IsDel = item.IsDel;
                 rptview.SonId = item.SonId;
                 rptview.forwardDate = rptmanage.GetNewestForwardDate((int)item.SonId);
                 rptview.result = rptmanage.GetPhoneCommunicateResult((int)item.SonId);
-                rptview.NewesRemark = rptmanage.GetNewest((int)item.SonId).Remark;
-                rptview.NewesIsEntry = rptmanage.GetNewest((int)item.SonId).IsEntry;
+                rptview.NewesRemark = rptmanage.GetNewesRemark((int)item.SonId);
+                rptview.NewesIsEntry = rptmanage.GetNewesIsEntry((int)item.SonId);
                 #endregion
                 rptviewlist.Add(rptview);
             }

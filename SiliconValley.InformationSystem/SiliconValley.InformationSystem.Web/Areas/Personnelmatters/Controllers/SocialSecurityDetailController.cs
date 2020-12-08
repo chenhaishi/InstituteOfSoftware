@@ -102,6 +102,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 soc.Position = manage.GetPositionByEmpid(item.EmployeeId).PositionName;
                 soc.Type = manage.GetEntity(item.EmployeeId).IsDel==false?"在职":"离职";
                 soc.CurrentYearAndMonth = item.CurrentYearAndMonth;
+                soc.YearAndMonth =Convert.ToDateTime(item.CurrentYearAndMonth).ToString("yyyy年MM月");
                 soc.PaymentBase = item.PaymentBase;
                 soc.SeriousIllnessInsurance = item.SeriousIllnessInsurance;
                 soc.OverPayMonthNum = item.OverPayMonthNum;

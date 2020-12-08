@@ -23,7 +23,7 @@
                 <input type="hidden" id="SonId" name="SonId" />
                 <input type="hidden" id="Pname" name="Pname" value="@ViewBag.pname" />
                 <input type="hidden" id="mypid" name="mypid" value="@ViewBag.pid" />
-
+                <input type="hidden" id="mydeptid" name="mydeptid" />
                 <div class="layui-row layui-form-item">
                     <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
                         <label class="layui-form-label">姓名:</label>
@@ -205,7 +205,7 @@
         });
         function loadnetinfo() {
            // $("#TraceTime").val(changeDateTimeFormat($("#TraceTime").val()));
-          
+
             //if (result) {
             //    $("[name='PhoneCommunicateResult'][value=" + result + "]").prop('checked', true);
             //}
@@ -219,8 +219,7 @@
                     var form = layui.form;
                     data.TraceTime1 = changeDateTimeFormat(data.TraceTime);
                     data.ForwardDate = changeDateTimeFormat($("#ForwardDate").val());
-                    data.Deptid = data.Deptid;
-                    data.Pid = data.Pid;
+                    $("#mydeptid").val(data.Deptid);
                     data.PhoneCommunicateResult1 = data.PhoneCommunicateResult;
                     data.Remark1 = data.Remark;
                     form.val("formtest", data);
@@ -229,6 +228,7 @@
                     }
                 });
             })
+
             $.get("/Personnelmatters/RecruitingDataSummary/GetRPTById/" + result, function (data) {
                 layui.use(['layer', 'form', 'table'], function () {
                     var form = layui.form;
@@ -236,7 +236,7 @@
                     var ss = data.PhoneCommunicateResult;
 
                     $("input[name=PhoneCommunicateResult][value=" + ss + "]").attr("checked", true);
-                  
+
                     form.val("myform", data);
                 });
             })
@@ -296,7 +296,7 @@
                 elem: '#ForwardDate',
                 type: 'datetime',
                 format: 'yyyy-MM-dd HH:mm:ss'
-            });  
+            });
 
             //获取招聘基本数据
             function GetFirstTrack() {
@@ -353,7 +353,7 @@
                 })
                 return false;
             });
-         
+
             $("#subbtn").click(function () {
                 var Tracklist = GetFirstTrack();
                 $.ajax({
@@ -387,10 +387,10 @@
                     }
 
                 })
-               
+
             });
 
-       
+
             //关闭添加页面
             $("#btnclose").click(function () {
                 var index = parent.layer.getFrameIndex(window.name);
@@ -399,7 +399,7 @@
 
         });
 
- 
+
         //时间格式转换
         function changeDateTimeFormat(cellval) {
             if (cellval != null) {
@@ -436,15 +436,15 @@
                 success: function (resultData) {
                     $("#Deptid").empty();
                     if (resultData.code == 0) {
-
                         $("#Pid").append(new Option($("#Pname").val(), $("#mypid").val()));
                         $.each(resultData.data, function (index, item) {
                             $('#Deptid').append(new Option(item.DeptName, item.DeptId));
                         });
+                        $('#Deptid').val($('#mydeptid').val());
                     } else {
                         $("#Deptid").append(new Option("暂无数据", ""));
                     }
-
+                        
                     layui.form.render("select");
                 }
             });

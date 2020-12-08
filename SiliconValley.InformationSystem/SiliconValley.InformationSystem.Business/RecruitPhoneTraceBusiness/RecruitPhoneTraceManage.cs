@@ -123,5 +123,17 @@ namespace SiliconValley.InformationSystem.Business.RecruitPhoneTraceBusiness
             bool result = (bool)rptlist.LastOrDefault().PhoneCommunicateResult;
             return result;
         }
+        public string GetNewesRemark(int sonid)
+        {
+            var rptlist = this.GetListBySql<RecruitPhoneTrace>("select * from RecruitPhoneTrace where SonId=" + sonid);
+            string  result = rptlist.LastOrDefault().Remark;
+            return result;
+        }
+        public bool GetNewesIsEntry(int sonid)
+        {
+            var rptlist = this.GetListBySql<RecruitPhoneTrace>("select * from RecruitPhoneTrace where SonId=" + sonid);
+            bool result = (bool)rptlist.LastOrDefault().IsEntry;
+            return result;
+        }
     }
 }
