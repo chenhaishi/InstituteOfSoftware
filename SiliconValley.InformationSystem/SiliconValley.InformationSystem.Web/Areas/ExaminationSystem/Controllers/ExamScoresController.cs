@@ -159,7 +159,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         {
             return View();
         }
-
+        [HttpPost]
         /// <summary>
         /// 阅卷数据
         /// </summary>
