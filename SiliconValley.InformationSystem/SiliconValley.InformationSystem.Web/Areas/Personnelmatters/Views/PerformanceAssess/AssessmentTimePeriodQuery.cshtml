@@ -51,11 +51,11 @@
                 <button class="layui-btn" type="button" id="Conditionselect" style="margin-left:100px;"><i class="layui-icon layui-icon-search"></i>查询</button>
             </div>
         </form>
-        <div class="layui-tab layui-tab-brief" lay-allowClose="true" lay-filter="tabper" >
+        <div class="layui-tab layui-tab-brief" lay-allowClose="true" lay-filter="tabper">
             <ul class="layui-tab-title">
                 @{
                     string[] name = ViewBag.name.Split(',');
-                    for (int i = 0; i < name.Length-1; i++)
+                    for (int i = 0; i < name.Length - 1; i++)
                     {
                         if (i == 0)
                         {
@@ -68,10 +68,8 @@
                     }
                 }
             </ul>
-            <div class="layui-tab-content">
-                <div class="layui-tab-item layui-show">
-                    <table id="PerAsstab" lay-filter="PerAsstab"></table>
-                </div>
+            <div class="layui-tab-item layui-show">
+                <table id="PerAsstab" lay-filter="PerAsstab"></table>
             </div>
         </div>
 
@@ -85,6 +83,7 @@
             var element = layui.element;
             var empid = $("#empid").val();
             arr = empid.split(",");
+
             element.render()
             laydate.render({
                 elem: '#start_time',
@@ -98,7 +97,21 @@
                 format: 'yyyy-MM',
 
             });
-
+            element.on('tabDelete(tabper)', function (data) {
+                var index = data.index;
+                arr.splice(index,1) 
+                var start_time = $("#start_time").val();
+                var end_time = $("#end_time").val();
+                table.reload('myPerAss', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }, where: {
+                        empid: arr[index],
+                        time: start_time + "," + end_time
+                    }
+                });
+               
+            });
             element.on('tab(tabper)', function (data) {
 
                 var index = data.index;

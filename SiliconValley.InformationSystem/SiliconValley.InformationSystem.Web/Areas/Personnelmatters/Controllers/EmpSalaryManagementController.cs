@@ -162,7 +162,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 view.Total = item.Total;//合计
                 view.PayCardSalary = msrmanage.GetPaycardSalary(view.Id, view.Total, view.PersonalSocialSecurity, eseobj.ContributionBase);//工资卡工资
                 view.CashSalary = msrmanage.GetCashSalary(view.Id, view.Total, view.PayCardSalary);//现金工资
-                view.IsFinancialAudit = item.IsFinancialAudit;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
                 result.Add(view);
             }
 

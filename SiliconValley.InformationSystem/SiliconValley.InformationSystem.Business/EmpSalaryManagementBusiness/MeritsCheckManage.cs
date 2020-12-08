@@ -147,6 +147,10 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     {
                         break;
                     }
+                    if (!string.IsNullOrEmpty(getrow.GetCell(1).ToString())|| !string.IsNullOrEmpty(getrow.GetCell(0).ToString())|| !string.IsNullOrEmpty(getrow.GetCell(2).ToString()))
+                    {
+
+                    
                     string Year = string.IsNullOrEmpty(Convert.ToString(sheet.GetRow(1).GetCell(0))) ? null : sheet.GetRow(1).GetCell(0).ToString();
                     string name = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(0))) ? null : getrow.GetCell(0).ToString();
                     string ddid = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(1))) ? null : getrow.GetCell(1).ToString();
@@ -166,11 +170,15 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     {
                         merits.FinalGrade = decimal.Parse(finalgrade);
                     }
-                    meritsCheck.Add(merits);
+                    
+                         meritsCheck.Add(merits);                 
+                    }
+
                 }
             }
             catch (Exception e)
             {
+                var s = e.Message;
                 return null;
             }
             return meritsCheck;

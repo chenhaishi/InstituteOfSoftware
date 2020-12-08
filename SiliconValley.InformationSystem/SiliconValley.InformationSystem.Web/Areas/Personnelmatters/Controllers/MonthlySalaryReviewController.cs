@@ -51,7 +51,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             if (!string.IsNullOrEmpty(ymtime))
             {
                 var time = DateTime.Parse(ymtime);
-                eselist = eselist.Where(s => DateTime.Parse(s.YearAndMonth.ToString()).Year == time.Year && DateTime.Parse(s.YearAndMonth.ToString()).Month == time.Month && s.IsFinancialAudit == 2).ToList();
+                eselist = eselist.Where(s => DateTime.Parse(s.YearAndMonth.ToString()).Year == time.Year && DateTime.Parse(s.YearAndMonth.ToString()).Month == time.Month).ToList();
             }
             if (!string.IsNullOrEmpty(AppCondition))
             {
@@ -181,7 +181,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             MonthlySalaryRecordManage msrmanage = new MonthlySalaryRecordManage();//员工月度工资
             EmployeesInfoManage manage = new EmployeesInfoManage();
             var type = msrmanage.type();
-            var list = msrmanage.GetEmpMsrData().Where(i=>i.IsDel==false&&Convert.ToDateTime(i.YearAndMonth).Year==Convert.ToDateTime(FirstTime).Year&& Convert.ToDateTime(i.YearAndMonth).Month == Convert.ToDateTime(FirstTime).Month&&i.IsFinancialAudit==type-1).ToList();
+            var list = msrmanage.GetEmpMsrData().Where(i=>i.IsDel==false&&Convert.ToDateTime(i.YearAndMonth).Year==Convert.ToDateTime(FirstTime).Year&& Convert.ToDateTime(i.YearAndMonth).Month == Convert.ToDateTime(FirstTime).Month).ToList();
             ViewBag.list = list;
             var s = msrmanage.GetEntity(id);
             ViewBag.EmpName = manage.GetEntity(s.EmployeeId).EmpName;

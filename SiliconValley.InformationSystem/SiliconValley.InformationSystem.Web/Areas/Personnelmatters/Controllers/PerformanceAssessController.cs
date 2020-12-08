@@ -181,20 +181,20 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 mc.Id,
                 mc.EmployeeId,
                 empName = empmanage.GetInfoByEmpID(mc.EmployeeId).EmpName,
-                empmanage.GetInfoByEmpID(mc.EmployeeId).Sex,
-                mc.YearAndMonth,
-                mc.RoutineWork,
-                mc.RoutineWorkPropotion,
-                mc.RoutineWorkFillRate,
-                mc.OtherWork,
-                mc.OtherWorkPropotion,
-                mc.OtherWorkFillRate,
-                mc.SelfReportedScore,
-                mc.SuperiorGrade,
+                //empmanage.GetInfoByEmpID(mc.EmployeeId).Sex,
+                //mc.YearAndMonth,
+                //mc.RoutineWork,
+                //mc.RoutineWorkPropotion,
+                //mc.RoutineWorkFillRate,
+                //mc.OtherWork,
+                //mc.OtherWorkPropotion,
+                //mc.OtherWorkFillRate,
+                //mc.SelfReportedScore,
+                //mc.SuperiorGrade,
                 mc.FinalGrade,
-                mc.Remark,
-                mc.IsDel,
-                mc.IsApproval
+                //mc.Remark,
+                //mc.IsDel,
+                //mc.IsApproval
             };
             return Json(mcobj, JsonRequestBehavior.AllowGet);
         }
