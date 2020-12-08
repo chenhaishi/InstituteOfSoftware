@@ -399,7 +399,14 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             return Json(result, JsonRequestBehavior.AllowGet);
 
         }
+        /// <summary>
+        /// 测试模块下载机试
+        /// </summary> 
+        /// <returns></returns>
+        //public ActionResult ComputerQuestion()
+        //{
 
+        //}
         /// <summary>
         /// 机试题下载
         /// </summary>
