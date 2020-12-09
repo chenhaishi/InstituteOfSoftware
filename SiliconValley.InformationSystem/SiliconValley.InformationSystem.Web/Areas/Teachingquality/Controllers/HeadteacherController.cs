@@ -52,8 +52,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
                 //employeesInfoManage.GetDeptByEmpid(user.EmpNumber).DeptId;//部门
                 list= dbtext.GetList().Where(a =>  employeesInfoManage.GetDeptByEmpid(a.informatiees_Id).DeptId == employeesInfoManage.GetDeptByEmpid(user.EmpNumber).DeptId).ToList();
             }
-
-           
                 //    List<EmployeesInfo> EmployeesInfoList = new List<EmployeesInfo>();
                 var emp=   employeesInfoManage.GetList();
         var dataList = list.Select(c=>new { c.informatiees_Id, informatiees_Name = employeesInfoManage.GetEntity(c.informatiees_Id).EmpName,
