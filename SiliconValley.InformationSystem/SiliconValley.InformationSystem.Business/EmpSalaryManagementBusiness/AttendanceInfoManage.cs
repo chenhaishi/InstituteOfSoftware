@@ -727,24 +727,49 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
         /// <returns></returns>
         public string GetAbsentTime(string tardyrecord,string leaveearlyrecord)
         {
-            string resultrecordtime ="";
-            if (!string.IsNullOrEmpty(tardyrecord)) {
-                string []str= tardyrecord.Split(';');
-                foreach (var item in str)
+            string resultrecordtime = "";
+            AjaxResult result = new AjaxResult();
+
+                if (!string.IsNullOrEmpty(tardyrecord))
                 {
-                    string[] sArray = Regex.Split(item, "迟到", RegexOptions.IgnoreCase);
-                    resultrecordtime += sArray[1] + ";";
+                    string[] str = tardyrecord.Split(';');
+                    foreach (var item in str)
+                    {
+                        if (!string.IsNullOrEmpty(item))
+                        {
+                            string[] sArray = Regex.Split(item, "迟到", RegexOptions.IgnoreCase);
+                        if (sArray.Length==2&&!string.IsNullOrEmpty(sArray[1]))
+                        {
+                            resultrecordtime += sArray[1] + ";";
+                        }
+                        else
+                        {
+                            resultrecordtime += sArray[0] + ";";
+                        }
+                        }
+                       
+                      
+                    }
                 }
-            }
-            if (!string.IsNullOrEmpty(leaveearlyrecord))
-            {
-                string[] str = leaveearlyrecord.Split(';');
-                foreach (var item in str)
+                if (!string.IsNullOrEmpty(leaveearlyrecord))
                 {
-                    string[] sArray = Regex.Split(item, "早退", RegexOptions.IgnoreCase);
-                    resultrecordtime += sArray[1] + ";";
+                    string[] str = leaveearlyrecord.Split(';');
+                    foreach (var item in str)
+                    {
+                        if (!string.IsNullOrEmpty(item))
+                        {
+                            string[] sArray = Regex.Split(item, "早退", RegexOptions.IgnoreCase);
+                            if (sArray.Length == 2 && !string.IsNullOrEmpty(sArray[1]))
+                            {
+                                resultrecordtime += sArray[1] + ";";
+                            }
+                            else
+                            {
+                                resultrecordtime += sArray[0] + ";";
+                            }
+                        }
+                    }
                 }
-            }
             return resultrecordtime;
         }
 
@@ -759,85 +784,93 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
         {
             Nullable<decimal> result = null;
             EmployeesInfoManage empmanage = new EmployeesInfoManage();
+
             var emprank = empmanage.JudgeEmpType(empid);//1代表校长；2代表副校长；3代表主任；4代表普通员工
-            string absenttime = GetAbsentTime(tardyrecord,leaveearlyrecord);
-            if (!string.IsNullOrEmpty(absenttime)) {
-                foreach (var item in absenttime.Split(';'))
+                string absenttime = GetAbsentTime(tardyrecord, leaveearlyrecord);
+                if (!string.IsNullOrEmpty(absenttime))
                 {
                     result = 0;
-                    //迟到或早退30分钟以内扣费
-                    if (item.Contains("分钟") && !item.Contains("小时"))
+                    foreach (var item in absenttime.Split(';'))
                     {
-                        int time = int.Parse(System.Text.RegularExpressions.Regex.Replace(item, @"[^0-9]+", ""));
-                        if (time <= 10)//迟到/早退10分钟以内
+                        //迟到或早退30分钟以内扣费
+                        if (!string.IsNullOrEmpty(item))
+                        {
+                            var str = item.Split('号');
+                        string late = str[1];
+                        if (late.Contains("分钟") && !late.Contains("小时"))
+                        {
+                            int time = int.Parse(System.Text.RegularExpressions.Regex.Replace(late, @"[^0-9]+", ""));
+                            if (time <= 10)//迟到/早退10分钟以内
+                            {
+                                if (emprank == 1)
+                                {
+                                    result += 50;
+                                }
+                                else if (emprank == 2)
+                                {
+                                    result += 30;
+                                }
+                                else if (emprank == 3)
+                                {
+                                    result += 20;
+                                }
+                                else if (emprank == 4)
+                                {
+                                    result += 10;
+                                }
+
+                            }
+                            else if (time > 10 && time <= 30)//迟到/早退10分钟以上30分钟以内
+                            {
+                                if (emprank == 1)
+                                {
+                                    result += 100;
+                                }
+                                else if (emprank == 2)
+                                {
+                                    result += 80;
+                                }
+                                else if (emprank == 3)
+                                {
+                                    result += 50;
+                                }
+                                else if (emprank == 4)
+                                {
+                                    result += 20;
+                                }
+
+                            }
+                        }
+                        //迟到或早退30分钟以上扣费
+                        else
                         {
                             if (emprank == 1)
                             {
-                                result += 50;
+                                result += 200;
                             }
                             else if (emprank == 2)
                             {
-                                result += 30;
+                                result += 150;
                             }
                             else if (emprank == 3)
-                            {
-                                result += 20;
-                            }
-                            else if (emprank == 4)
-                            {
-                                result += 10;
-                            }
-
-                        }
-                        else if (time > 10 && time <= 30)//迟到/早退10分钟以上30分钟以内
-                        {
-                            if (emprank == 1)
                             {
                                 result += 100;
                             }
-                            else if (emprank == 2)
-                            {
-                                result += 80;
-                            }
-                            else if (emprank == 3)
+                            else if (emprank == 4)
                             {
                                 result += 50;
                             }
-                            else if (emprank == 4)
-                            {
-                                result += 20;
-                            }
-
                         }
+                        }
+                        
                     }
-                    //迟到或早退30分钟以上扣费
-                    else
+                    if (absentnum > 3)
                     {
-                        if (emprank == 1)
-                        {
-                            result += 200;
-                        }
-                        else if (emprank == 2)
-                        {
-                            result += 150;
-                        }
-                        else if (emprank == 3)
-                        {
-                            result += 100;
-                        }
-                        else if (emprank == 4)
-                        {
-                            result += 50;
-                        }
+                        var num = absentnum - 3;
+                        result += num * 100;
                     }
                 }
-                if (absentnum > 3)
-                {
-                    var num = absentnum - 3;
-                    result += num * 100;
-                }
-            }
-
+           
             return result;
         }
 

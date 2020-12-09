@@ -489,7 +489,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         public ActionResult GetOvertimeData(int id,int page, int limit) {
             OvertimeRecordManage otrmanage = new OvertimeRecordManage();
             MonthlySalaryRecordManage monthly = new MonthlySalaryRecordManage();
-            var otrlist = otrmanage.GetOTRDataByAtdid(id);
+            var otrlist = otrmanage.GetOTRDataByAtdid(id).Where(i=>i.IsPass==false);
             var mylist = from e in otrlist
                          select new
                          {
