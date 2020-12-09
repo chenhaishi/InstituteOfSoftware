@@ -19,6 +19,6 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.XYK_Data
         //单号
         public string OddNumbers { get; set; }
         //入账时间
-        public Nullable<System.DateTime> AddDateStuTime { get; set; }
+        public Nullable<System.DateTime> AddTime { get; set; }
     }
 }

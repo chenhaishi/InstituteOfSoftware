@@ -1097,8 +1097,6 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
             List<DetailedcostView> listdetailedcs = new List<DetailedcostView>();//欠费实体类
             BaseBusiness<Grand> Grand = new BaseBusiness<Grand>();//阶段类型
             BaseBusiness<Costitems> Costitems = new BaseBusiness<Costitems>();//阶段类型详情
-          
-           
             var Class_id = classschedu.GetList().Where(d => d.id == ClassID).SingleOrDefault();//查询班级
             var student = ScheduleForTrainees.GetList().Where(d => d.ClassID == Class_id.ClassNumber&&d.CurrentClass==true).ToList();//查询班级里所有的学生
             foreach (var item in student)
@@ -1247,13 +1245,12 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                 costlist = costlist.Where(a => a.OddNumbers == OddNumbers).ToList();
             }
             var dataList = costlist.OrderByDescending(a => a.id).Skip((page - 1) * limit).Take(limit).ToList();
-            //  var x = dbtext.GetList();
             var data = new
             {
                 code = "",
                 msg = "",
                 count = costlist.Count,
-                data = dataList
+                data = dataList,
             };
             return data;
         }
@@ -1339,10 +1336,8 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                         {
                             var view = PayviewBusiness.GetEntity(item.Payviewid);
                             StudentFeeRecord studentFeeRecord = new StudentFeeRecord();
-                        if (item.Paymentver == id)
-                        {
-                            studentFeeRecord.AddDate = time == null ? view.AddDate : time;
-                        }
+                            studentFeeRecord.AddDate =view.AddDate;
+                            studentFeeRecord.AddTime = time;
                             studentFeeRecord.Amountofmoney = view.Amountofmoney;
                             studentFeeRecord.Costitemsid = view.Costitemsid;
                             studentFeeRecord.FinanceModelid = view.FinanceModelid;
