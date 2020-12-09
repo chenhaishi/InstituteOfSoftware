@@ -422,14 +422,44 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
 
 
         }
+        /// <summary>
+        /// 获取我的满意度查询
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Mysatisfaction(int limit, int page)
+        {
+            //获取当前账号
+            Base_UserModel user = Base_UserBusiness.GetCurrentUser();
+            var xinxi = db_survey.satisficingConfigs().OrderByDescending(t=>t.CreateTime).Where(d => d.EmployeeId == user.EmpNumber).ToList();
+            List<SatisficingConfig> skiplist = xinxi.Skip((page - 1) * limit).Take(limit).ToList();
+            List<SatisficingConfigDataView> resultlist = new List<SatisficingConfigDataView>();
 
+            foreach (var item in skiplist)
+            {
+                var tempobj = db_survey.ConvertToSatisficingConfigDataView(item);
+
+                resultlist.Add(tempobj);
+            }
+            var obj = new
+            {
+
+                code = 0,
+                msg = "",
+                count = xinxi.Count,
+                data = resultlist
+
+
+            };
+
+            return Json(obj, JsonRequestBehavior.AllowGet);
+        }
 
         /// <summary>
         /// 获取员工的满意度调查记录
         /// </summary>
         /// <param name="empid"></param>
         /// <returns></returns>
-        
+
         public ActionResult SurveyHistoryData(int limit, int page)
         {
             Base_UserModel user = Base_UserBusiness.GetCurrentUser();
