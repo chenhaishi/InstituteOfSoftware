@@ -1311,7 +1311,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
         /// <param name="OddNumbers">单号</param>
         /// <param name="paymentmethod">收款方式</param>
         /// <returns></returns>
-        public AjaxResult Tuitionentry(int id,string whether,string OddNumbers,string paymentmethod,DateTime time)
+        public AjaxResult Tuitionentry(int id,string whether,string OddNumbers,string paymentmethod,DateTime? time)
         {
             AjaxResult retus = null;
             try

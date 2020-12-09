@@ -58,7 +58,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             //阶段
             ViewBag.grade_Id = Grandcontext.GetList().Select(a => new SelectListItem { Text = a.GrandName, Value = a.Id.ToString() });
             //商品类别
-            ViewBag.Typex = costitemssX.GetList().Where(a=>a.IsDelete==false&&a.id!= costitemssX.GetList().Where(z => z.Name == "其它" && z.IsDelete == false).FirstOrDefault().id).Select(a => new SelectListItem { Text = a.Name, Value = a.id.ToString() });
+            ViewBag.Typex = costitemssX.GetList().Where(a=>a.IsDelete==false&&a.id!= costitemssX.GetList().Where(z => z.Name == "重修费" && z.IsDelete == false).FirstOrDefault().id).Select(a => new SelectListItem { Text = a.Name, Value = a.id.ToString() });
             return View();
         }
     
@@ -646,7 +646,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
         /// <param name="whether">是否入账</param>
         /// <param name="OddNumbers">单号</param>
         /// <returns></returns>
-        public ActionResult Tuitionentry(int id, string whether, string OddNumbers,string paymentmethod,DateTime time)
+        public ActionResult Tuitionentry(int id, string whether, string OddNumbers,string paymentmethod,DateTime? time)
         {
             return Json(dbtext.Tuitionentry(id, whether, OddNumbers, paymentmethod, time), JsonRequestBehavior.AllowGet);
         }
