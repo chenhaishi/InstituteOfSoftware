@@ -756,6 +756,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             AjaxResult ajaxResult = new AjaxResult();
             ajaxResult.Msg = "统计完成";
             SessionHelper.Session["Cost_Emp_list"] = staff_list;
+            
             return Json(ajaxResult, JsonRequestBehavior.AllowGet);
 
         }
