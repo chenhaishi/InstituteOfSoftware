@@ -26,6 +26,10 @@
     {
         margin-top: 50px;
     }
+
+    .layui-form-select dl {
+        max-height: 170px;
+    }
 </style>
 <form class="layui-form" lay-filter="sercherform">
     <div class="layui-row layui-form-item">
@@ -89,7 +93,7 @@
             else if (ViewBag.number == 2)
             {
 
-                @*<button class="layui-btn layui-btn-sm" lay-event="AddSafe">保险柜费用录入</button>*@
+                <button class="layui-btn layui-btn-sm" lay-event="AddSafe">保险柜费用录入</button>
             }
         }
 
@@ -143,7 +147,7 @@
                         type: 2,
                         title: '维修详情',
                         content: '/DormitoryMaintenance/DormitoryDeposit/MantainDefileView/' + data.StuNumber,
-                        area: ['1000px', '600px']
+                        area: ['1200px', '600px']
                     });
                 } else if (obj.event=== "StuDefault") {
                     layer.open({

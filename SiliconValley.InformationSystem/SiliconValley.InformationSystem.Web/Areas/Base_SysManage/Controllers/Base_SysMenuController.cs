@@ -1,4 +1,7 @@
-﻿using System;
+﻿using SiliconValley.InformationSystem.Business.Base_SysManage;
+using SiliconValley.InformationSystem.Business.EmployeesBusiness;
+using SiliconValley.InformationSystem.Entity.MyEntity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,9 +11,19 @@ namespace SiliconValley.InformationSystem.Web.Areas.Base_SysManage.Controllers
 {
     public class Base_SysMenuController : BaseMvcController
     {
+
+        //员工业务类
+        public EmployeesInfoManage EmployeesInfoManage_Entity = new EmployeesInfoManage();
+
+
         // GET: Base_SysManage/Base_SysMenu
         public ActionResult Index()
         {
+            
+            Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();
+            Department department =  EmployeesInfoManage_Entity.GetDeptByEmpid(UserName.EmpNumber);
+            ViewBag.Dept = department.DeptId;
+
             return View();
         }
 
@@ -19,7 +32,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Base_SysManage.Controllers
 
             //加入登陆的用户是Admin
 
-            //Base_UserBusiness userdb = new Base_UserBusiness();
+            
             //Base_User user = userdb.GetList().Where(u => u.UserId == "Admin").FirstOrDefault();
 
             //SessionHelper._Session session = new SessionHelper._Session();
@@ -31,6 +44,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Base_SysManage.Controllers
 
             return Json(menus, JsonRequestBehavior.AllowGet);
         }
+
         /// <summary>
         /// 获取登陆人信息
         /// </summary>
@@ -41,5 +55,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Base_SysManage.Controllers
             //session["UserId"] = user.UserId;
          return Json(SystemMenuManage.UserClass(), JsonRequestBehavior.AllowGet);
         }
+
+        
     }
 }
