@@ -468,6 +468,7 @@
                                 //赋值
                                 $('#Pid').append(new Option(item.PositionName, item.Pid));
                             });
+                            $('#Pid').val($('#mypid').val());
                         } else {
                             $("#Pid").append(new Option("暂无数据", ""));
                         }

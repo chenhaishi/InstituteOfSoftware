@@ -16,6 +16,7 @@ using System.Drawing.Imaging;
 using Spire.Xls;
 using NPOI.SS.Util;
 using SiliconValley.InformationSystem.Business.Base_SysManage;
+using System.Diagnostics;
 
 namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
 {
@@ -168,7 +169,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                         id = (int)empmanage.GetEntity(item.EmployeeId).DDAppId;
                         msr.EmployeeId = item.EmployeeId;
                             msr.YearAndMonth = Convert.ToDateTime(time);
-                            msr.FinalGrade = merits.FinalGrade;
+                        msr.FinalGrade = string.IsNullOrEmpty(merits.FinalGrade.ToString()) == true ? 0 : merits.FinalGrade;
                             msr.BaseSalary = item.BaseSalary;
                             msr.PositionSalary = item.PositionSalary;
                             msr.PerformancePay = item.PerformancePay;
@@ -901,6 +902,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 workbook.Close();  //关闭
                 ajaxresult.ErrorCode = 200;
                 ajaxresult.Msg = "导入成功！文件地址：" + saveFileName;
+                //Process.Start(saveFileName);
                 // ajaxresult.Data = list;
 
             }

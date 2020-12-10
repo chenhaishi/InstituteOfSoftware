@@ -28,7 +28,7 @@
                             <input type="text" readonly class="layui-input" style="border:0px;" value="@ViewBag.EmpName" />
                         </div>
                     </div>
-                    </div>
+                </div>
                 <div class="layui-row layui-form-item">
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label" style="width:120px;margin-left:-40px;">开始时间:</label>
@@ -42,33 +42,24 @@
                             <input type="text" name="EndTime" id="EndTime" class="layui-input" value="@overtime.EndTime" />
                         </div>
                     </div>
-                    </div>
+                </div>
                 <div class="layui-row layui-form-item">
-                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                            <label class="layui-form-label" style="width:120px;margin-left:-40px;">加班类型:</label>
-                            <div class="layui-input-inline" style="width:190px;">
-                                <select name="OvertimeTypeId" id="OvertimeTypeId" lay-filter="OvertimeTypeId" class="layui-input">
-                                </select>
-                                <input type="hidden" id="type" value="@overtime.OvertimeTypeId"   />
-                            </div>
-                        </div>
-                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                            <label class="layui-form-label" style="width:120px;margin-left:-40px;">加班时长:</label>
-                            <div class="layui-input-block" style="width:190px;">
-                                @*<select name="Duration" id="Duration" class="layui-input"></select>*@
-                                <input type="text" name="Duration" class="layui-input" value="@overtime.Duration" />
-                                <input type="hidden" id="Dur" value="@overtime.Duration" />
-                            </div>
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                        <label class="layui-form-label" style="width:120px;margin-left:-40px;">加班类型:</label>
+                        <div class="layui-input-inline" style="width:190px;">
+                            <select name="OvertimeTypeId" id="OvertimeTypeId" lay-filter="OvertimeTypeId" class="layui-input"></select>
+                            <input type="hidden" id="type" value="@overtime.OvertimeTypeId" />
                         </div>
                     </div>
-                <div class="layui-row layui-form-item">
-                        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
-                            <label class="layui-form-label" style="width:120px;margin-left:-40px;">加班原因:</label>
-                            <div class="layui-input-block" >
-                                <textarea name="OvertimeReason" style="height:70px"   class="layui-input">@overtime.OvertimeReason</textarea>
-                            </div>
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                        <label class="layui-form-label" style="width:120px;margin-left:-40px;">加班时长:</label>
+                        <div class="layui-input-block" style="width:190px;">
+                            @*<select name="Duration" id="Duration" class="layui-input"></select>*@
+                            <input type="text" name="Duration" class="layui-input" value="@overtime.Duration" />
+                            <input type="hidden" id="Dur" value="@overtime.Duration" />
                         </div>
                     </div>
+                </div>
                 <div class="layui-row layui-form-item">
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label" style="width:120px;margin-left:-40px;">是否调休:</label>
@@ -76,14 +67,15 @@
                             @{
                                 if (@overtime.IsNoDaysOff == true)
                                 {
-                                    <input type="radio" name="IsNoDaysOff" value="true" title="不调休" >
+
                                     <input type="radio" name="IsNoDaysOff" value="false" title="调休" checked>
+                                    <input type="radio" name="IsNoDaysOff" value="true" title="不调休">
                                 }
                                 else
                                 {
-
-                                    <input type="radio" name="IsNoDaysOff" value="true" title="不调休" checked>
                                     <input type="radio" name="IsNoDaysOff" value="false" title="调休">
+                                    <input type="radio" name="IsNoDaysOff" value="true" title="不调休" checked>
+
                                 }
                             }
                             <input type="hidden" name="NoDaysOff" value="@overtime.IsNoDaysOff" />
@@ -107,16 +99,26 @@
                             <input type="hidden" name="Pass" value="@overtime.IsPass" />
                         </div>
                     </div>
-                    <div class="layui-row layui-form-item">
-                        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
-                            <label class="layui-form-label" style="width:120px;margin-left:-40px;">备注:</label>
-                            <div class="layui-input-block">
-                                <textarea name="Remark" style="height:70px" class="layui-input">@overtime.Remark</textarea>
-                            </div>
+
+                </div>
+                <div class="layui-row layui-form-item">
+                    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                        <label class="layui-form-label" style="width:120px;margin-left:-40px;">加班原因:</label>
+                        <div class="layui-input-block">
+                            <textarea name="OvertimeReason" style="height:70px" class="layui-input">@overtime.OvertimeReason</textarea>
                         </div>
                     </div>
                 </div>
+
+                <div class="layui-row layui-form-item">
+                    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                        <label class="layui-form-label" style="width:120px;margin-left:-40px;">备注:</label>
+                        <div class="layui-input-block">
+                            <textarea name="Remark" style="height:70px" class="layui-input">@overtime.Remark</textarea>
+                        </div>
+                    </div>
                 </div>
+            </div>
 
             <div class="layui-form-item" style="margin-left:200px;margin-top:20px;">
                 <div class="layui-input-block">

@@ -544,7 +544,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         /// <param name="Duration"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult OvertimeEdit(OvertimeRecord over, int type,string Duration)
+        public ActionResult OvertimeEdit(OvertimeRecord over)
         {
             AjaxResult result = new AjaxResult();
             OvertimeRecordManage overtime = new OvertimeRecordManage();
@@ -555,9 +555,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             var s = overtime.GetEntity(over.Id);
             over.EmployeeId = s.EmployeeId;
             over.YearAndMonth = s.YearAndMonth;
-          
-            overtime.Update(over);
 
+            var oldOvertime = overtime.OvertimeWithhold(s.OvertimeTypeId, Convert.ToDecimal(s.Duration));
+            
          var att=monthly.GetAttendanceInfoByEmpid(over.EmployeeId,Convert.ToDateTime(over.YearAndMonth));
             var OvertimeWithhold= overtime.OvertimeWithhold(over.OvertimeTypeId, (dynamic)over.Duration);
             if ((bool)over.IsNoDaysOff|| (bool)over.IsPass)
@@ -565,11 +565,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 OvertimeWithhold = 0;
             }
 
-            var oldOvertime= overtime.OvertimeWithhold(type,Convert.ToDecimal(Duration));
-
             att.OvertimeCharges = (att.OvertimeCharges - oldOvertime )+ OvertimeWithhold;
             attendance.Update(att);
-            
+            overtime.Update(over);
             var month = monthly.GetEmpMsrData().Where(i => i.EmployeeId == over.EmployeeId && DateTime.Parse(i.YearAndMonth.ToString()).Year == DateTime.Parse(over.YearAndMonth.ToString()).Year&& DateTime.Parse(i.YearAndMonth.ToString()).Month == DateTime.Parse(over.YearAndMonth.ToString()).Month&& i.IsApproval==false).FirstOrDefault();
             if (!month.IsNullOrEmpty())
             {

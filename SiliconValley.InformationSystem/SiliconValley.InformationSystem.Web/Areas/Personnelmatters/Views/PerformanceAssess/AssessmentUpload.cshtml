@@ -84,45 +84,61 @@
                     SetErrorMsg("请选择文件");
                     return;
                 }
-                $.ajax({
-                    url: "/Personnelmatters/PerformanceAssess/AssessmentUpload",
-                    type: 'POST',
-                    data: formdata,
-                    dataType: 'JSON',
-                    contentType: false,
-                    processData: false,
-                    success: function (data) {
-                        if (data.Success) {
-                            if (data.ErrorCode == 100) {
-                                var msg="录入成功！录入数量："+ data.Msg;
-                                layer.alert(msg, { icon: 1 }, function () {
-                                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                                    parent.layer.close(index);
-                                });
-                                parent.layui.table.reload('myPerAss');
-                            } else if (data.ErrorCode==200) {
-                                var errdata = data.Data;//录入错误的数据
-                                var detailerrdata = "";
-                                for (var i = 0; i < errdata.length; i++) {
-                                    console.log("员工工号:" + errdata[i].ddid);
-                                    detailerrdata += "序号为" + errdata[i].excelId + "的员工录入出错，" + errdata[i].errorExplain + "<br/>";
-
-                                    console.log("错误分析：" + detailerrdata);
-                                };
-                                console.log("失败数据详细：" + detailerrdata);
-                                var msg = "成功录入" + data.Msg + "条数据" + errdata.length +
-                                    "条数据录入失败。失败数据分析如下：</br>" + detailerrdata;
-                                layer.alert(msg, { icon: 1 }, function () {
-                                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                                    parent.layer.close(index);
-                                });
-                                parent.layui.table.reload('myPerAss');
+                var isQuery = false;
+                if (!isQuery) {
+                    $.ajax({
+                        url: "/Personnelmatters/PerformanceAssess/AssessmentUpload",
+                        type: 'POST',
+                        data: formdata,
+                        dataType: 'JSON',
+                        contentType: false,
+                        processData: false,
+                        beforeSend: function () {
+                            isQuery = true;
+                            layer.msg("正在执行", { icon: 16, shade: 0.6 });
+                            console.log("dengdeng");
+                        },
+                        success: function (data) {
+                            if (data.Success) {
+                                console.log("ok");
+                                if (data.ErrorCode == 100) {
+                                    var msg = "录入成功！录入数量：" + data.Msg;
+                                    layer.alert(msg, { icon: 1 }, function () {
+                                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                        parent.layer.close(index);
+                                    });
+                                    parent.layui.table.reload('myPerAss');
+                                } else if (data.ErrorCode == 200) {
+                                    var errdata = data.Data;//录入错误的数据
+                                    var detailerrdata = "";
+                                    for (var i = 0; i < errdata.length; i++) {
+                                        console.log("员工工号:" + errdata[i].ddid);
+                                        detailerrdata += "序号为" + errdata[i].excelId + "的员工录入出错，" + errdata[i].errorExplain + "<br/>";
+                                        console.log("错误分析：" + detailerrdata);
+                                    };
+                                    console.log("失败数据详细：" + detailerrdata);
+                                    var msg = "成功录入" + data.Msg + "条数据" + errdata.length +
+                                        "条数据录入失败。失败数据分析如下：</br>" + detailerrdata;
+                                    layer.alert(msg, { icon: 1 }, function () {
+                                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                        parent.layer.close(index);
+                                    });
+                                    parent.layui.table.reload('myPerAss');
+                                }
                             }
+                            isQuery = false;
+                        }, error: function (e) {
+                            isQuery = false;
+                            console.log(e.responseText);
                         }
-                    }, error: function (e) {
-                        console.log(e.responseText);
-                    }
-                })
+                    })
+                } else {
+                    console.log("请不要重复点击");
+                }
+                if (!isQuery) {
+                    
+                }
+              
                 return false;
             })
         })

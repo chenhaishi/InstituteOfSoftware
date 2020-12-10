@@ -144,6 +144,9 @@ namespace SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBus
                                 else
                                 {
                                     otr.IsNoDaysOff = false;
+                                    var att = monthly.GetAttendanceInfoByEmpid(otr.EmployeeId, Convert.ToDateTime(otr.YearAndMonth));
+                                    att.OvertimeCharges += attendance.GetOvertimeWithhold(otr.EmployeeId, (DateTime)otr.YearAndMonth);
+                                    attendance.Update(att);
                                 }
                                 if (overtimetype!="1" && overtimetype!= "2" && overtimetype != "3" && overtimetype != "4")
                                 {
@@ -155,10 +158,7 @@ namespace SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBus
                                 otr.IsPass = false;
                                 this.Insert(otr);
 
-                                var att = monthly.GetAttendanceInfoByEmpid(otr.EmployeeId, Convert.ToDateTime(otr.YearAndMonth));
-                                att.OvertimeCharges = attendance.GetOvertimeWithhold(otr.EmployeeId, (DateTime)otr.YearAndMonth);
-
-                                attendance.Update(att);
+                                
                             }
                         }
 
