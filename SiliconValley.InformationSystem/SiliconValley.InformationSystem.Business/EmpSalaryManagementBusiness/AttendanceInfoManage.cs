@@ -423,9 +423,9 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     //姓名[1]
                     string name = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(1))) ? null : getrow.GetCell(1).ToString();
                     //应到勤天数[2]
-                    string deserveToRegularDays = getrow.GetCell(2).ToString();
+                    string deserveToRegularDays = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(2))) ? null : getrow.GetCell(2).ToString();
                     //到勤天数[3]
-                    string workeddays = getrow.GetCell(3).ToString();
+                    string workeddays = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(3))) ? null : getrow.GetCell(3).ToString();
                     //请假天数[4](事假)
                     string leaveddays = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(4))) ? null : getrow.GetCell(4).ToString();
                     //请假记录[5]
