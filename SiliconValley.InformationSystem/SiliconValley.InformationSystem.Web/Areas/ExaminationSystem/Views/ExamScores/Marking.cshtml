@@ -199,7 +199,7 @@
                 <button type="button" id="preBtn" class="layui-btn layui-btn-primary">上一个</button>
                 <button type="button" id="nextBtn" class="layui-btn layui-btn-primary">下一个</button>
                 <button type="button" id="recordScoresBtn" class="layui-btn layui-btn-primary">记录分数</button>
-
+                <button type="button" id="Markingornot" class="layui-btn layui-btn-primary">阅卷完毕</button>
             </div>
 
             <!--记录分数Div-->
@@ -747,7 +747,21 @@
                 });
 
             });
+            //点击阅卷完毕
+            $(document).off("click", "#Markingornot").on("click", '#Markingornot', function () {
+                layer.confirm('是否确定阅卷完毕,完毕之后将不能继续阅卷！', function (index) {
+                    $.post("/ExaminationSystem/ExamScores/Endofmarking", { examid: Examid, examroom: ExamRoom }, function (date) {
+                        if (date.ErrorCode == 200) {
+                            layer.msg("阅卷成功！");
+                            location.href = "/ExaminationSystem/ExamScores/Marking";
+                        } else {
+                            layer.msg("阅卷失败！");
+                        }
+                    })
+                    layer.close(index);
+                })
 
+            });
 
             ///考生按钮点击事件
             $(document).off("click", ".stuBtn").on("click", ".stuBtn", function () {
