@@ -491,7 +491,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             }
            
             CostDataToExcel(PriceDCList);
-            return Json(new { code = 0 });
+            return Json(new { code = 0,data= PriceDCList });
         }
         /// <summary>
         /// 课时费统计    写入Excel
@@ -543,7 +543,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
                 CreateCell(row, ContentcellStyle, 6, d.OddNumbers);
                 CreateCell(row, ContentcellStyle, 7, d.Paymentmethod);
                 CreateCell(row, ContentcellStyle, 8, d.FinanceModelName);
-                CreateCell(row, ContentcellStyle, 9, d.AddDate.ToString());
+                CreateCell(row, ContentcellStyle, 9, d.AddDate.ToString("yyyy-MM-dd"));
                 CreateCell(row, ContentcellStyle, 10, d.AddTime.ToString());
                 num++;
 
