@@ -14,6 +14,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
     using BaiduBce.Services.Bos.Model;
     using SiliconValley.InformationSystem.Business.Base_SysManage;
     using SiliconValley.InformationSystem.Business.Cloudstorage_Business;
+    using SiliconValley.InformationSystem.Business.CourseSchedulingSysBusiness;
     using SiliconValley.InformationSystem.Business.CourseSyllabusBusiness;
     using SiliconValley.InformationSystem.Business.StudentBusiness;
     using SiliconValley.InformationSystem.Business.TeachingDepBusiness;
@@ -32,6 +33,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         private readonly AnswerQuestionBusiness db_answerQuestion;
         private readonly CandidateInfoBusiness db_candidateinfo;
         private readonly ComputerTestQuestionsBusiness db_computerTestQuestion;
+        private readonly GrandBusiness db_grand;
+        private readonly ExamTypeBusiness db_examtype;
+        private readonly CurriculumBusiness db_curriculum;
 
         public StudentExamSysController()
         {
@@ -42,6 +46,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             db_answerQuestion = new AnswerQuestionBusiness();
             db_candidateinfo =new CandidateInfoBusiness();
             db_computerTestQuestion = new ComputerTestQuestionsBusiness();
+            db_grand = new GrandBusiness();
+            db_examtype = new ExamTypeBusiness();
+           db_curriculum = new CurriculumBusiness();
         }
         // GET: ExaminationSystem/StudentExamSys
         public ActionResult StuExamIndex()
@@ -141,7 +148,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         //    {
         //        //查出所有未结束的考试,判断离今日最近的未结束考试,这堂考试时间来了之后就不能让他们访问，这堂考试结束之后才能结束访问
         //        var list = db_exam.AllExamination().OrderByDescending(d => d.BeginDate).ToList();      
-                
+                 //获取当前时间
         //        var resultlist = new List<ExaminationView>();
                 
         //        foreach (var item in list)
@@ -254,14 +261,14 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             var exam = db_exam.AllExamination().Where(d => d.ID == examid).FirstOrDefault();
             var EXAMVIEW = db_exam.ConvertToExaminationView(exam);
             ViewBag.EXAMVIEW = EXAMVIEW;
-                //~获取答卷信息.
-                var studentNumber = SessionHelper.Session["studentnumber"].ToString();
+            //~获取答卷信息.
+            var studentNumber = SessionHelper.Session["studentnumber"].ToString();
             //获取当前登录学员
             var answerSheetInfo = db_stuExam.AnswerSheetInfos(examid, studentNumber);
             
             ViewBag.AnswerSheetInfo = answerSheetInfo;
             
-                return View();
+            return View();
         }
     
         /// <summary>
@@ -405,8 +412,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         /// <returns></returns>
         //public ActionResult ComputerQuestion()
         //{
-
         //}
+
         /// <summary>
         /// 机试题下载
         /// </summary>
@@ -424,14 +431,21 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             var candidateInfo = db_exam.AllCandidateInfo(examid).Where(d => d.StudentID == studentNumber).FirstOrDefault();
             ComputerTestQuestionsView computer = null;
+            //如果examview.ExamType.ExamTypeID == 1那么就是升学考试，然后获取什么阶段的考试，然后获取这个阶段的最后最后一门课程
+            var examtype = db_examtype.GetList().Where(d => d.ID == exam.ExamType).FirstOrDefault();
+            var grand = db_grand.AllGrand().Where(d => d.Id == examtype.GrandID).FirstOrDefault();
+            var curriculum = db_curriculum.GetList().Where(d => d.Grand_Id == grand.Id && d.IsEndCurr == true).FirstOrDefault();
+
             if (candidateInfo.ComputerPaper == "1")
             {
                 //第一次
-
+                 
                 //判断考试类型
                 if (examview.ExamType.ExamTypeID == 1)
                 {
-                    computer = db_stuExam.productComputerQuestion(exam, 0);
+
+
+                    computer = db_stuExam.productComputerQuestion(exam, curriculum.CurriculumID);
 
                     candidateInfo.ComputerPaper = computer.ID.ToString() + ",";
 
@@ -457,9 +471,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 
                 var client = Bos.BosClient();
 
-            //var ar = candidateInfo.ComputerPaper.Split(',');.Where(d => d.ID == int.Parse(ar[0]))
-
-            var com = db_exam.AllComputerTestQuestion(PaperLevel, courseid,IsNeedProposition: false);
+                //var ar = candidateInfo.ComputerPaper.Split(',');.Where(d => d.ID == int.Parse(ar[0]))
+                
+                var com = db_exam.AllComputerTestQuestion(PaperLevel, courseid,IsNeedProposition: false);
                 
                 var filename = Path.GetFileName(com.SaveURL);
               
@@ -951,18 +965,15 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         public ActionResult GetExamEndDate(string examid)
         {
             AjaxResult result = new AjaxResult();
-
             try
             {
                 var exam = db_exam.GetEntity(int.Parse(examid));
-
                 result.Data = exam.BeginDate.AddHours(exam.TimeLimit);
                 result.ErrorCode = 200;
                 result.Msg = "成功";
             }
             catch (Exception ex)
             {
-
                 result.Data = null;
                 result.ErrorCode = 500;
                 result.Msg = "失败";

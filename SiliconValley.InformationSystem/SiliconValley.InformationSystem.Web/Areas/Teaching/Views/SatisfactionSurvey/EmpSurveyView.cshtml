@@ -63,8 +63,9 @@
 @section script{
 <script src="~/Areas/Teaching/Scripts/util.js"></script>
     <script>
-        layui.use('table', function () {
-            var table = layui.table;
+        layui.use(['table','laydate'], function () {
+            var table = layui.table; 
+            var laydate = layui.laydate;
             //渲染表格
             table.render({
                 elem: '#dataTable'
@@ -114,7 +115,7 @@
                 , change: function (value, date, endDate) {
 
                     table.reload('dataTable', {
-                        url: ''
+                        url: '/Teaching/SatisfactionSurvey/SurveyData_filter'
                         , where: {
                             empnumber: "",
                             date: value
@@ -124,6 +125,19 @@
                     });
 
                 }
+            });
+            //表格行双击事件
+            //监听行双击事件
+            table.on('rowDouble(dataTable_filter)', function (obj) {
+                //obj 同上
+                console.log(obj);
+
+                layer.open({
+                    type: 2,
+                    title: "详细",
+                    area: [window.innerWidth / 1 + 'px', window.innerHeight / 1 + 'px'],
+                    content: "/Teaching/SatisfactionSurvey/checkSurveyView?surveyResultID=" + obj.data.SatisficingConfigId
+                });
             });
         })
     </script>

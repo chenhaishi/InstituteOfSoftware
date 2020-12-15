@@ -163,8 +163,6 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
 
             var d = (float)(nowdate - datetime1).TotalHours;
 
-
-
             if (d > examination.TimeLimit)
             {
                 return true;
