@@ -1,6 +1,7 @@
 ﻿using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 using SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness;
 using SiliconValley.InformationSystem.Entity.MyEntity;
+using SiliconValley.InformationSystem.Entity.ViewEntity;
 using SiliconValley.InformationSystem.Entity.ViewEntity.SalaryView;
 using SiliconValley.InformationSystem.Util;
 using System;
@@ -14,6 +15,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
     public class EmpSalaryManagementController : Controller
     {
         RedisCache rc = new RedisCache();
+
         //第一次进入月度工资表页面时加载的年月份的方法
         static string GetFirstTime()
         {
@@ -416,7 +418,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             try
             {
                 var curtime = DateTime.Parse(time);
-                var curlist = msrmanage.GetEmpMsrData().Where(s => DateTime.Parse(s.YearAndMonth.ToString()).Year == curtime.Year && DateTime.Parse(s.YearAndMonth.ToString()).Month == curtime.Month).ToList();
+                var curlist = msrmanage.GetList().Where(s => DateTime.Parse(s.YearAndMonth.ToString()).Year == curtime.Year && DateTime.Parse(s.YearAndMonth.ToString()).Month == curtime.Month).ToList();
                 foreach (var item in curlist)
                 {
                     item.IsApproval = true;
@@ -431,6 +433,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             }
             return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
         }
+        [HttpPost]
         public decimal GetPerformancePay(DateTime year_month, string dname, string pname) {
             var resultsalary = 0;
             EmplSalaryEmbodyManage esemanage = new EmplSalaryEmbodyManage();
@@ -459,23 +462,67 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             }
             return resultsalary;
         }
+        [HttpPost]
         public ActionResult PaySlipExcel(string time)
         {
             AjaxResult result = new AjaxResult();
             MonthlySalaryRecordManage monthly = new MonthlySalaryRecordManage();
-            List<MonthlySalaryRecord> salary = monthly.GetEmpMsrData().Where(i => i.IsDel == false && i.IsApproval == true && Convert.ToDateTime(i.YearAndMonth.ToString().Substring(0, 7)) ==Convert.ToDateTime(time)).ToList();
-            EmployeesInfoManage manage = new EmployeesInfoManage();
-
-            //发件人邮箱
-            string FromMail = "2651396164@qq.com";
-            //发件人邮箱授权码
-            string AuthorizationCode = "xuobhcbwwnewecde";
-
-            foreach (var i in salary)
+            try
             {
+                List<MonthlySalaryRecord> salary = monthly.GetEmpMsrData().Where(i => i.IsDel == false && Convert.ToDateTime(i.YearAndMonth.ToString().Substring(0, 7)) == Convert.ToDateTime(time.Substring(0, 7))).ToList();
+                EmployeesInfoManage manage = new EmployeesInfoManage();
+                List<PaySlipExcelError> error = new List<PaySlipExcelError>();
+                //发件人邮箱
+                string FromMail = "2651396164@qq.com";
+                //发件人邮箱授权码
+                string AuthorizationCode = "xuobhcbwwnewecde";
+                int num = 0;
+                foreach (var i in salary)
+                {
+                    PaySlipExcelError paySlip = new PaySlipExcelError();
+                    if (!(bool)i.IsApproval)
+                    {
+                        paySlip.empname = manage.GetInfoByEmpID(i.EmployeeId).EmpName;
+                        paySlip.errorExplain = "工资未审核";
+                        error.Add(paySlip);
+                    }
+                    else
+                    {
+                        result = monthly.WagesDataToEmail(FromMail, "3330616589@qq.com", AuthorizationCode, i);
+                        if (!result.Success)
+                        {
+                           
+                            paySlip.empname = manage.GetInfoByEmpID(i.EmployeeId).EmpName;
+                            paySlip.errorExplain = result.Msg;
+                            error.Add(paySlip);
+                        }
+                        else
+                        {
+                            num++;
+                        }
+                    }
 
-                result = monthly.WagesDataToEmail(FromMail,"", AuthorizationCode, i);
+                }
+                
+                if (error.Count()!=0)
+                {
+                    result.Success = true;
+                    result.Msg = "总共"+ salary.Count()+"条数据。"+ num+ "条数据发送成功," + (salary.Count()- num) + "条数据发送失败。";
+                    result.Data = error;
+                    result.ErrorCode = 200;
+                }
+                else
+                {
+                    result.ErrorCode = 100;
+                    result.Success = true;
+                }
             }
+            catch (Exception e)
+            {
+                result.Success = false;
+                result.Data = e.Message;
+            }
+           
             return Json(result, JsonRequestBehavior.AllowGet);
             
         }

@@ -539,12 +539,13 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 mail.IsBodyHtml = true;
                 
                 //邮件标题。
-                mail.Subject = "您好！这是您"+Convert.ToDateTime(m.YearAndMonth).ToString("yyyy年MM月") + "的工资条";
+                mail.Subject = "您好！这是您"+Convert.ToDateTime(m.YearAndMonth).ToString("yyyy年MM月") + "的工资详情";
                 //邮件内容。
 
                 #region 邮件正文
-                mail.Body ="<div>工资详情<br/>";
-                mail.Body += "<table border='1' cellspacing='0' style='text-align:center'>";
+
+                mail.Body = "<div style='margin:5px;'><div style='width:100%' ><h3>工资详情</h3><br/>";
+                mail.Body += "<table border='1' cellspacing='0' style='text-align:center;white-space: nowrap;'>";
 
                 mail.Body += @"<tr><th rowspan='2'>姓名</th>
                 <th rowspan='2'>所属部门</th>
@@ -566,7 +567,8 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 <th rowspan='2'>应发工资2</th>
                 <th rowspan='2'>个人社保</th>
                 <th rowspan='2'>个税</th>
-                <th rowspan='2'>实发工资</th>
+                <th rowspan='2'>实发工资(工资卡)</th>
+                <th rowspan='2'>实发工资(现金)</th>
             </tr>
             <tr>
                 <th>迟到/早退扣款</th>
@@ -579,7 +581,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 mail.Body += "<tr><td>" + manage.GetEntity(m.EmployeeId).EmpName + "</td>" +
                         "<td>" + manage.GetDeptByEmpid(m.EmployeeId).DeptName + "</td>" +
                         "<td>" + manage.GetPositionByEmpid(m.EmployeeId).PositionName + "</td>" +
-                        "<td>" + att.ToRegularDays + "</td>" +
+                        "<td>" + att.ToRegularDays.ToString() + "</td>" +
                         "<td>" + m.BaseSalary + "</td>" +
                         "<td>" + m.PositionSalary + "</td>" +
                         "<td>" + m.FinalGrade + "</td>" +
@@ -598,7 +600,8 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                         "<td>" + SalaryTwo + "</td>" +
                         "<td>" + m.PersonalSocialSecurity + "</td>" +
                         "<td>" + m.PersonalIncomeTax + "</td>" +
-                        "<td>" + m.Total + "</td>" +
+                        "<td>" + m.PayCardSalary + "</td>" +
+                        "<td>" + m.CashSalary + "</td>" +
 
                    "</tr></table></div>";
                 #region
@@ -633,7 +636,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
 
 
 
-                mail.Body += "<div>考勤详情<br/><table border='1' cellspacing='0' style='text-align:center'>";
+                mail.Body += "<div><h3>考勤详情</h3><br/><h4>迟到早退</h4><table border='1' cellspacing='0' style='text-align:center'>";
 
                 mail.Body += @"<tr><th>详情</th>
                          <th>内容</th>
@@ -745,7 +748,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                      "</td><td></td></tr>";
                 }
 
-                mail.Body += "</table></div>";
+                mail.Body += "</table></div></div>";
 
                 #endregion
                 //实例化一个SmtpClient类。
@@ -801,13 +804,13 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 client.Send(mail);
 
                 result.Success = true;
-                result.ErrorCode = 200;
+                //result.ErrorCode = 200;
                 result.Msg = "邮件发送成功";
             }
             catch (Exception e)
             {
                 result.Success = false;
-                result.ErrorCode = 100;
+                //result.ErrorCode = 100;
                 result.Msg =e.Message;
 
             }
@@ -965,34 +968,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 Header_Name.CellStyle = TcellStyle;
             }
         }
-        public int type()
-        {
-            EmployeesInfoManage manage = new EmployeesInfoManage();
-            var UserName = Base_UserBusiness.GetCurrentUser();//获取当前登录人
-            var ddid = manage.GetInfoByEmpID(UserName.EmpNumber).DDAppId;
-            var type = 0;
-            switch (ddid)
-            {
-                case 145:
-                    type = 3;
-                    break;
-                case 147:
-                    type = 4;
-                    break;
-                case 190:
-                    type = 5;
-                    break;
-                case 2:
-                    type = 6;
-                    break;
-                case 1:
-                    type = 7;
-                    break;
-                default:
-                    break;
-            }
-            return type;
-        }
+
         
     } 
     }

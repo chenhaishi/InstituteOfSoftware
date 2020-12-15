@@ -87,14 +87,14 @@
     {{# } }}
 
 </script>
-<div class="layui-hide" id="datamonth">
+@*<div class="layui-hide" id="datamonth">
     <div class="layui-form-item">
         <label class="layui-form-label">请选择日期</label>
         <div class="layui-input-inline">
             <input type="text" class="layui-input" id="month" placeholder="yyyy-MM">
         </div>
     </div>
-</div>
+</div>*@
     @section script{
         <script>
 
@@ -206,48 +206,73 @@
                         }
                         break;
                     case 'Email':
-                        laydate.render({
-                            elem: "#month",
-                            type: 'month'
-                        })
-                      var open= layer.open({
-                          type: 1,
-                          closeBtn: 0,
-                          content: $("#datamonth").removeClass("layui-hide"),
-                          btn: ['确定', '取消'], 
-                          yes: function () {
-                                layer.close(open);
-                                $("#datamonth").addClass("layui-hide");
-                                var year = $("#month").val().substring(0, 4);
-                                var month = $("#month").val().substring(5);
+                        //laydate.render({
+                        //    elem: "#month",
+                        //    type: 'month'
+                        //})
+                      //var open= layer.open({
+                      //    type: 1,
+                      //    closeBtn: 0,
+                      //    content: $("#datamonth").removeClass("layui-hide"),
+                      //    btn: ['确定', '取消'], 
+                      //    yes: function () {
+                      //          layer.close(open);
+                      //        $("#datamonth").addClass("layui-hide");
+                              var time='@ViewBag.yearandmonth';
+                                var year = time.substring(0, 4);
+                                var month = time.substring(5,7);
                                 layer.confirm('是否要向所有员工发送' + year + "年" + month + '月的工资条', { icon: 3, title: '提示' }, function (index) {
                                     layer.close(index);
                                     var index = layer.msg("正在发送邮件", { icon: 16, shade: 0.6 });
                                     $.ajax({
                                         url: "/Personnelmatters/EmpSalaryManagement/PaySlipExcel",
                                         type: "post",
-                                        data: JSON.stringify({ "time": $("#month").val()}),
+                                        data: JSON.stringify({ "time": time }),
                                         dataType: "json",
                                         contentType: "Application/json",
                                         success: function (data) {
-                                            console.log(data);
+                                            console.log(data); 
                                             if (data.Success) {
-                                                layer.close(index)
-                                                layer.alert(data.Msg, { icon: 1 });
-                                            } else {
-                                                layer.close(index)
-                                                layer.alert("邮件发送失败", { icon: 2 });
+                                                var msg = "";
+                                                if (data.ErrorCode == 100) {//没有一条数据出错
+                                                    msg = "" + data.Msg;
+                                                } else if (data.ErrorCode == 200) {
+                                                    var errdata = data.Data;//录入错误的数据
+                                                    var detailerrdata = "";
+                                                    for (var i = 0; i < errdata.length; i++) {
+                                                        detailerrdata += errdata[i].empname + "的工资详情发送出错，原因是：" + errdata[i].errorExplain + "<br/>";
+                                                    };
+                                                    //msg = "成功发送" + data.Msg + "条数据" + errdata.length +
+                                                    //    "条数据发送失败。失败数据分析如下：</br>" + detailerrdata;
+                                                    msg = data.Msg+"失败数据分析如下：</br>" + detailerrdata;
+                                                }
+                                                layer.alert(msg, { icon: 1 }, function () {
+                                                    // window.document.location.reload();
+                                                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                                    window.parent.location.reload();
+                                                    parent.layer.close(index);
+
+                                                });
+
                                             }
+                                           
+                                            //if (data.Success) {
+                                            //    layer.close(index)
+                                            //    layer.alert(data.Msg, { icon: 1 });
+                                            //} else {
+                                            //    layer.close(index)
+                                            //    layer.alert("邮件发送失败" + data.Data, { icon: 2 });
+                                            //}
                                         }
                                     })
                                 });
-                          },
-                          btn2: function () {
-                              $("#datamonth").addClass("layui-hide");
-                          }
+                        //  },
+                        //  btn2: function () {
+                        //      $("#datamonth").addClass("layui-hide");
+                        //  }
                             
 
-                        })
+                        //})
                         break;
                     case 'Salary':
                         layer.open({
