@@ -568,13 +568,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             att.OvertimeCharges = (att.OvertimeCharges - oldOvertime )+ OvertimeWithhold;
             attendance.Update(att);
             overtime.Update(over);
-            var month = monthly.GetEmpMsrData().Where(i => i.EmployeeId == over.EmployeeId && DateTime.Parse(i.YearAndMonth.ToString()).Year == DateTime.Parse(over.YearAndMonth.ToString()).Year&& DateTime.Parse(i.YearAndMonth.ToString()).Month == DateTime.Parse(over.YearAndMonth.ToString()).Month&& i.IsApproval==false).FirstOrDefault();
-            if (!month.IsNullOrEmpty())
-            {
-                month.OvertimeCharges = (month.OvertimeCharges-oldOvertime)+ OvertimeWithhold;
-                monthly.Update(month);
-            }
-
 
 
             try

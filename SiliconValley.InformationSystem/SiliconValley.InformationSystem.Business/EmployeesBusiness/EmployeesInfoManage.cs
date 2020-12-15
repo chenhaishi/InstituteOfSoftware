@@ -1216,7 +1216,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
         {
             bool result = false;
 
-            var emp = this.GetEmpInfoData().Where(s => s.DDAppId == ddid).FirstOrDefault();
+            var emp = this.GetListBySql<EmployeesInfo>("select top 1 * from EmployeesInfo where DDAppId="+ddid);
             if (emp != null)
             {
                 result = true;//表示存在该钉钉号
