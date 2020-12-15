@@ -32,7 +32,7 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.ExaminationSystemVie
         /// <summary>
         /// 考试时限 单位 h
         /// </summary>
-        public int TimeLimit { get; set; }
+        public decimal TimeLimit { get; set; }
 
 
         /// <summary>

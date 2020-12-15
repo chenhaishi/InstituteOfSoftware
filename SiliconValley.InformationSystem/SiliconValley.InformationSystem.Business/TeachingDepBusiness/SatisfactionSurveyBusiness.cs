@@ -254,10 +254,16 @@ namespace SiliconValley.InformationSystem.Business.TeachingDepBusiness
             });
 
             view.TotalScore = total;
-
-            view.Average = total / staresultlist.Count;
-
+            if (staresultlist.Count == 0)
+            {
+                view.Average = total / 1;
+            }
+            else {
+                view.Average = total / staresultlist.Count;
+            }
             return view;
+
+
 
         } 
         public SatisfactionSurveyDetailView ConvertToViewModel(SatisficingResult satisficingResult)

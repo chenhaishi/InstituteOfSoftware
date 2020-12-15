@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+  <choicequestion>
+    <total>10</total>
+    <level levelId="1">
+      <name>简单</name>
+
+      <count levelId="1" name="简单" Percentage="80"></count>
+      <count levelId="2" name="普通" Percentage="10"></count>
+      <count levelId="3" name="困难" Percentage="10"></count>
+    </level>
+
+    <level levelId="2">
+      <name>普通</name>
+
+      <count levelId="1" name="简单" Percentage="40"></count>
+      <count levelId="2" name="普通" Percentage="40"></count>
+      <count levelId="3" name="困难" Percentage="20"></count>
+    </level>
+
+    <level levelId="3">
+      <name>困难</name>
+
+      <count levelId="1" name="简单" Percentage="10"></count>
+      <count levelId="2" name="普通" Percentage="10"></count>
+      <count levelId="3" name="困难" Percentage="80"></count>
+    </level>
+  </choicequestion>
+
+  <answerQuestion>
+    <total>10</total>
+    <level levelId="1">
+      <name>简单</name>
+      <count levelId="1" name="简单" Percentage="80"></count>
+      <count levelId="2" name="普通" Percentage="10"></count>
+      <count levelId="3" name="困难" Percentage="10"></count>
+    </level>
+
+    <level levelId="2">
+      <name>普通</name>
+
+      <count levelId="1" name="简单" Percentage="40"></count>
+      <count levelId="2" name="普通" Percentage="40"></count>
+      <count levelId="3" name="困难" Percentage="20"></count>
+    </level>
+
+    <level levelId="3">
+      <name>困难</name>
+      <count levelId="1" name="简单" Percentage="10"></count>
+      <count levelId="2" name="普通" Percentage="10"></count>
+      <count levelId="3" name="困难" Percentage="80"></count>
+    </level>
+  </answerQuestion>
+
+  <scores>
+    <!--选择题分数-->
+    <choiceQuestionScores>
+      <total>10</total>
+      <!--题目类型所占分数比重-->
+      <questionLevel levelid="1" Percentage="50"></questionLevel>
+      <questionLevel levelid="2" Percentage="30"></questionLevel>
+      <questionLevel levelid="3" Percentage="20"></questionLevel>
+    </choiceQuestionScores>
+
+
+
+    <!--问答题-->
+    <anwserQuestionScores>
+      <total>30</total>
+      <!--题目类型所占分数比重-->
+      <questionLevel levelid="1" Percentage="50"></questionLevel>
+      <questionLevel levelid="2" Percentage="30"></questionLevel>
+      <questionLevel levelid="3" Percentage="20"></questionLevel>
+    </anwserQuestionScores>
+
+    <computerQuestionScores>
+      <total>60</total>
+    </computerQuestionScores>
+  </scores>
+
+</root>

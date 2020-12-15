@@ -1475,14 +1475,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
         [HttpGet]
         public ActionResult CreateTeacherSurveyConfig()
         {
-           
-
-
                //获取班级
-
                var classlist = db_teacherclass.AllClassSchedule().Where(d=>d.IsDelete==false).ToList().Where(d=>d.ClassstatusID == null).ToList();
             //获取部门
-            var getdepartments = db_dep.GetList().Where(s => s.DeptName.Contains("教学")|| s.DeptName.Contains("教质")).ToList();
+            var getdepartments = db_dep.GetList().Where(s => s.DeptName.Contains("教学")).ToList();
             ViewBag.getdepartments = getdepartments;
             ViewBag.classlist = classlist;
 

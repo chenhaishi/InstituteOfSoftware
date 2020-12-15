@@ -99,11 +99,9 @@
             laydate.render({
                 elem: '#begindate' //指定元素
             });
-
+            
             form.on('select(classnumber)', function (data) {
                
-              
-
                 $.post("/CourseSyllabus/Course/GetClassNextCourse", { classid: data.value }, function (result) {
 
                     $("#course").val(result.CurriculumID);
