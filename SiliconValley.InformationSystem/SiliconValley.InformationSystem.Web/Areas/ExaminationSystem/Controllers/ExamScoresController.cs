@@ -759,7 +759,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             AjaxResult result = new AjaxResult();
             string[] ary1 = FenShu.Split(',');
 
-
             var list = ary1.ToList();
 
             list.RemoveAt(ary1.Length - 1);
@@ -794,6 +793,46 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 result.Data = null;
             }
             
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
+        /// 学生名单数据
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult StudentList(int examid,int examroom)
+        {
+            AjaxResult result = new AjaxResult();
+            //首先考场考生
+            var tempstulist = db_examScores.CandidateinfosByExamroom(examid, examroom);
+
+                List<object> stulist = new List<object>();
+                //转换为学员
+                foreach (var item in tempstulist)
+                {
+                    var tempstu = db_student.GetList().Where(d => d.StudentNumber == item.StudentID).FirstOrDefault();
+                    
+                    //查看这个学员的成绩是否已经被录入
+
+                    var stuscore = db_examScores.StuExamScores(examid, tempstu.StudentNumber);
+
+                    var IsMark = true;
+
+                    if (stuscore.TextQuestionScore == null || stuscore.OnBoard == null)
+                    {
+                        IsMark = false;
+                    }
+
+                    var obj = new
+                    {
+
+                        student = tempstu,
+                        IsMark = IsMark
+
+
+                    };
+                    stulist.Add(obj);
+                }
+
             return Json(result, JsonRequestBehavior.AllowGet);
         }
         /// <summary>

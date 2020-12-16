@@ -41,8 +41,6 @@
                         <div class="layui-input-inline">
                             @Html.DropDownListFor(d => d.MajorID, ViewBag.majors as IEnumerable<SelectListItem>, "----无----")
 
-
-
                         </div>
                     </div>
                 </div>
@@ -65,8 +63,9 @@
                         <label class="layui-form-label">考试笔试比率：</label>
                         <div class="layui-input-inline">
 
-
+                            @Html.TextBoxFor(c => c.ratio, new Dictionary<string, object> { { "lay-verify", "required" }, { "class", "layui-input" }, { "type", "number" }, { "Min", 0 } })
                         </div>
+                        <label style="color:gray;" class="layui-form-label">单位:%</label>
                     </div>
                 </div>
 

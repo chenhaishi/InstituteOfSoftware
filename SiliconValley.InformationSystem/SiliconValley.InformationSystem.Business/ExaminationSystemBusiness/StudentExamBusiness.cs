@@ -115,6 +115,8 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
             if (examview.ExamType.ExamTypeID == 1)
             {
                 //&& d.Course == 0
+                //查询升学考试的课程题目比率
+
                 var tempqulist = list.Where(d => d.Grand == examview.ExamType.GrandID ).ToList();
                 tempqulist.ForEach(d=>
                 {
