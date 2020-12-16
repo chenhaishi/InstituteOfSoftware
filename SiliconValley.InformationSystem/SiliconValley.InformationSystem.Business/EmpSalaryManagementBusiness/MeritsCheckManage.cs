@@ -219,7 +219,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                         MeritsCheck merits1 = new MeritsCheck();
                         if (!emanage.DDidIsExist(int.Parse(ddid)))
                         {
-                            errorDataView.excelId = ddid;
+                            errorDataView.excelId = name;
                             errorDataView.errorExplain = "原因是该员工钉钉号不存在！";
                             error.Add(errorDataView);
                         }
@@ -229,7 +229,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                             merits.EmployeeId = empid;
                             if (string.IsNullOrEmpty(empid))
                         {
-                            errorDataView.excelId = ddid;
+                            errorDataView.excelId = name;
                             errorDataView.errorExplain = "原因是该员工工号为空！";
                             error.Add(errorDataView);
                         }
@@ -237,7 +237,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                         {
                             if (string.IsNullOrEmpty(finalgrade))
                             {
-                                errorDataView.excelId = ddid;
+                                errorDataView.excelId = name;
                                 errorDataView.errorExplain = "原因是该员工绩效分为空！";
                                 error.Add(errorDataView);
                             }
