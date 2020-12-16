@@ -56,5 +56,9 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         /// 是否是最后一门课
         /// </summary>
         public Nullable<bool> IsEndCurr { get; set; }
+        /// <summary>
+        /// 笔试出题比率
+        /// </summary>
+        public int ratio { get; set; }
     }
 }

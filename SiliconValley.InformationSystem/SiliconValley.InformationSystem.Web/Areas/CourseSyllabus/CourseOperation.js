@@ -6,10 +6,7 @@
 function DoAdd(courseFiled, successcallback, errorcallback) {
 
     console.log(courseFiled);
-
     Ajax("/CourseSyllabus/Course/DoOperation", courseFiled, "post", function (data) {
-
-
 
         successcallback(data);
     }, function (error) {
@@ -266,7 +263,7 @@ layui.use(['table', 'layer','form'], function () {
                 title: "编辑课程 (" + CourseName + ")",
                 skin: "demo-class",
                 type: 2,
-                area: ["900px", "420px"],
+                area: ["900px", "500px"],
                 content: '/CourseSyllabus/Course/OperationView/' + id,
                 end: function () {
                     table.reload('Courselist', {
