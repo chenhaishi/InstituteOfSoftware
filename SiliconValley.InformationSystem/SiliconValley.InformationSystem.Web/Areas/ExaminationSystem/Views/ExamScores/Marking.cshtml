@@ -199,7 +199,7 @@
                 <button type="button" id="preBtn" class="layui-btn layui-btn-primary">上一个</button>
                 <button type="button" id="nextBtn" class="layui-btn layui-btn-primary">下一个</button>
                 <button type="button" id="recordScoresBtn" class="layui-btn layui-btn-primary">记录分数</button>
-
+                <button type="button" id="Markingornot" class="layui-btn layui-btn-primary">阅卷完毕</button>
             </div>
 
             <!--记录分数Div-->
@@ -259,9 +259,10 @@
 
         <div>
             <span class="questionIndex">{{=index}}</span> <code style="margin-left:5px; font-size:18px;">{{=question}}</code>&nbsp;&nbsp;(<span class="listScores">{{=scores}}</span>分)
-            <input class="scoreitem" type="number" value="0" max="{{=scores}}" placeholder="输入分数" style="margin-left:10px; border-top:0px solid white;border-left:0px solid white;border-right:0px solid white;border-bottom:1px solid black;"/>
+            <input class="scoreitem" type="number" value="0" max="{{=scores}}" placeholder="输入分数" style="margin-left:10px; border-top:0px solid white;border-left:0px solid white;border-right:0px solid white;border-bottom:1px solid black;" />
+            <label style=" color:black;font-size:20px;">参考答案:</label>{{=referenceanswer}}
             <div class="Questionanswer" style="display:block; width:1000px; margin-left:50px; background-color:white; margin-top:20px; color:black; font-size:16px; padding:30px;">
-               
+
                 {{=answer}}
 
             </div>
@@ -280,6 +281,7 @@
 
 <script src="~/Scripts/underscore.js"></script>
     <script>
+        
         var Sheetindex = 0;
         var StuExamNumber; //学员考号
         var TopstudentNumber;
@@ -320,44 +322,10 @@
         }
 
         layui.use(['layer'], function () {
-
             var layer = layui.layer;
-
-
-            //加载阅卷信息
-            function loadMarkInfo(examid, examroom) {
-                $.post("/ExaminationSystem/ExamScores/MarkeDatax", { examid: examid, examroom: examroom }, function (data) {
-
-                 
-                    $("#MarkingInfoArea .examName").find("span").text(data.Data.exam.Title);
-
-                    var examdate = data.Data.exam.BeginDate;
-
-
-
-                    var dateutc = examdate.substr(examdate.indexOf("(") + 1, 13);
-                    var date = new Date(parseInt(dateutc));
-
-                    var year = date.getFullYear(); var month = date.getMonth(); var day = date.getDate(); var hours = date.getHours(); var minus = date.getMinutes();
-
-                    $("#MarkingInfoArea .examDate").find("span").text(year + '年' + month + '月' + day + '日--' + hours + '时' + minus + '分');
-
-                    $("#MarkingInfoArea .totalPaper").find("span").text(data.Data.total.length);
-
-                    $("#MarkingInfoArea .filshPaper").find("span").text(parseInt(data.Data.total.length) - data.Data.NoScoresCount.length);
-                });
-            }
-
             //加载待阅卷区
-
             $.post('/ExaminationSystem/ExamScores/MarkeData', {}, function (result) {
-
-               
-
                 if (result.ErrorCode == 200) {
-
-                   
-
                     for (var i = 0; i < result.Data.length; i++) {
 
                         var layerthtml = _.template($("#moban1").html());
@@ -374,9 +342,9 @@
                             styleClass = "layui-badge layui-bg-black";
                             text = "考试未结束";
                         }
-                        
-                       
-                        var layerdata = layerthtml({ ExamTitle: ExamTitle, ExamRoom: ExamRoom, styleClass: styleClass, text: text, examid: result.Data[i].markingView.ExamID.ID, examroomid: result.Data[i].markingView.ExamRoom.Classroom_Id  });
+
+
+                        var layerdata = layerthtml({ ExamTitle: ExamTitle, ExamRoom: ExamRoom, styleClass: styleClass, text: text, examid: result.Data[i].markingView.ExamID.ID, examroomid: result.Data[i].markingView.ExamRoom.Classroom_Id });
 
                         $("#stayMarkingArea .tayMarkinglist").append(layerdata);
                     }
@@ -385,8 +353,24 @@
                 }
 
             });
+            //加载阅卷信息
+            function loadMarkInfo(examid, examroom) {
+                $.post("/ExaminationSystem/ExamScores/MarkeDatax", { examid: examid, examroom: examroom }, function (data) {                
+                    $("#MarkingInfoArea .examName").find("span").text(data.Data.exam.Title);
+                    var examdate = data.Data.exam.BeginDate;
+                    var dateutc = examdate.substr(examdate.indexOf("(") + 1, 13);
+                    var date = new Date(parseInt(dateutc));
 
-                
+                    var year = date.getFullYear(); var month = date.getMonth()+1; var day = date.getDate(); var hours = date.getHours(); var minus = date.getMinutes();
+
+                    $("#MarkingInfoArea .examDate").find("span").text(year + '年' + month + '月' + day + '日--' + hours + '时' + minus + '分');
+
+                    $("#MarkingInfoArea .totalPaper").find("span").text(data.Data.total.length);
+
+                    $("#MarkingInfoArea .filshPaper").find("span").text(parseInt(data.Data.total.length) - data.Data.NoScoresCount.length);
+                });
+            }
+
             //加载学生名单
 
             function loadStuData(examid, examroom) {
@@ -400,7 +384,7 @@
                         for (var i = 0; i < data.Data.length; i++) {
 
                             var studentName = data.Data[i].student.Name;
-                            var studentNumber = data.Data[i].student.StudentNumber;
+                            var studentNumber  = data.Data[i].student.StudentNumber;
                             var isMarke = data.Data[i].IsMark == true? "已阅":"未阅";
                             var layerthtml = _.template($("#stulistmoban").html());
                             var classStyle = isMarke == "已阅" ? "layui-badge layui-bg-gray" : "layui-badge";
@@ -542,10 +526,10 @@
                             var layerthtml = _.template($("#moban2").html());
 
                               var label = $("<label></label>");
-
+                            var labels = $("<label style='font-size:18px;'></label>");
                               label.text(result.Data[i].questionTitle.Title);
-
-                            var layerdata = layerthtml({ index: i + 1, question: document.HTMLDOMtoString(label[0]), scores: result.Data[i].question.questionScores, answer: result.Data[i].question.answer });
+                            labels.text(result.Data[i].questionTitle.ReferenceAnswer);
+                            var layerdata = layerthtml({ index: i + 1, question: document.HTMLDOMtoString(label[0]), scores: result.Data[i].question.questionScores, answer: result.Data[i].question.answer, referenceanswer: document.HTMLDOMtoString(labels[0]) });
 
                             $("#itemlist").append(layerdata);
                         } 
@@ -562,6 +546,7 @@
                     //首先发送请求 查看是否有机试题
 
                     checkHaveComputerPaper(Examid, StuExamNumber, function (data) {
+                        console.log(data);
                         if (data == "1") {
                             button[0].href = "/ExaminationSystem/ExamScores/DownloadComputerSheet?examid=" + Examid + "&kaohao=" + StuExamNumber;
                             button.text("机试题下载");
@@ -762,7 +747,21 @@
                 });
 
             });
+            //点击阅卷完毕
+            $(document).off("click", "#Markingornot").on("click", '#Markingornot', function () {
+                layer.confirm('是否确定阅卷完毕,完毕之后将不能继续阅卷！', function (index) {
+                    $.post("/ExaminationSystem/ExamScores/Endofmarking", { examid: Examid, examroom: ExamRoom }, function (date) {
+                        if (date.ErrorCode == 200) {
+                            layer.msg("阅卷成功！");
+                            location.href = "/ExaminationSystem/ExamScores/Marking";
+                        } else {
+                            layer.msg("阅卷失败！");
+                        }
+                    })
+                    layer.close(index);
+                })
 
+            });
 
             ///考生按钮点击事件
             $(document).off("click", ".stuBtn").on("click", ".stuBtn", function () {
@@ -770,6 +769,7 @@
                 var studetnnumber = $(this).attr("stuNumber");
 
                 $(this).siblings().removeClass("currentstudent");
+
 
                 $(this).addClass("currentstudent");
 

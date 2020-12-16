@@ -2201,6 +2201,7 @@
     <Content Include="assets\Assets_L1\assets\libs\sweetalert2\sweetalert2.min.css" />
     <Content Include="assets\Assets_L1\assets\libs\sweetalert2\sweetalert2.min.js" />
     <Content Include="ClientRequestInfo.txt" />
+    <Content Include="Config\ChoosetheAnswer.xml" />
     <Content Include="Config\Cost.xml" />
     <Content Include="Config\ExamCourseconfig.xml">
       <SubType>Designer</SubType>

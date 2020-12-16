@@ -8,479 +8,238 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>ExamquestionExplanation</title>
+    <title>考试讲解模块</title>
     <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
     <link href="~/Areas/ExaminationSystem/js/trumbowyg/design/css/trumbowyg.css" rel="stylesheet" />
     <style>
 
-        #curwarp {
+        #mypaper {
+            width: 80%;
+            margin: 50px auto;
         }
 
-        .option {
-            font-size: 14px;
-            color: black;
-            margin-top: 10px;
+        #examinfo {
+            width: 100%;
+            height: 150px;
         }
 
-        .choiceItem {
-            margin-top: 30px;
+            #examinfo .detail ul {
+                list-style-type: none;
+            }
+
+        .detail ul li {
+            float: left;
+            width: 200px;
         }
 
-        #answerquestionlist {
+            .detail ul li span {
+                color: green;
+            }
+
+        #choicequestion {
+            width: 100%;
+        }
+
+            #choicequestion .questionItem {
+                font-size: 16px;
+                margin-top: 60px;
+            }
+
+        .layui-form-checkbox {
+            margin-left: 20px;
+        }
+
+        .layui-input-block {
+            margin-top: 5px;
+        }
+
+        #AnswerQuestion textarea {
+            margin-top: 20px;
+        }
+
+        #AnswerQuestion .questionItem {
+            margin-top: 20px;
+        }
+
+        #ComputerQuestion {
+            text-align: center;
             margin-top: 50px;
+        }
+
+        .detail label {
+            font-size: 20px;
         }
     </style>
 </head>
-<body>
-    <div id="curwarp" class="layui-container">
-
-        <div style="margin-top:20px;">
-            <button style="width:150px;height:40px; text-align:center;" id="searchbtn" class="layui-btn layui-btn-radius layui-btn-primary">
-                搜索
-                <i style="font-size:20px;" class="icon layui-icon-search"></i>
-
-            </button>
-
-            <button style="width:150px;height:40px; text-align:center;" id="download" class="layui-btn layui-btn-radius layui-btn-primary">
-                下载机试题
-
-
-            </button>
-        </div>
-        <hr />
-        <div id="questionlist">
-
-            <div id="choicequestionlist">
-
-
-            </div>
-
-            <div id="answerquestionlist">
-
-
-
-            </div>
-        </div>
-
-
-    </div>
-    <script type="text/template" id="chiosequestionTemplate">
-        <div class="choiceItem">
-            <input type="hidden" class="answer" value="{{=answer}}" />
-            <label class="choicetitle" style="font-size:16px; color: gray;">{{=title}}<span style="margin-left:10px;"></span></label>
-
-            <div style="margin-left:20px;">
-                <div class="option"><label>A<input type="checkbox" value="A" /></label> <label style="margin-left:10px;">{{=A}}</label></div>
-                <div class="option"><label>B<input type="checkbox" value="B" /></label> <label style="margin-left:10px;">{{=B}}</label> </div>
-                <div class="option"><label>C<input type="checkbox" value="C" /></label> <label style="margin-left:10px;">{{=C}}</label>  </div>
-                <div class="option"><label>D<input type="checkbox" value="D" /></label> <label style="margin-left:10px;">{{=D}}</label> </div>
-            </div>
-
-        </div>
-    </script>
-
-    <script type="text/template" id="answerquestionTemplate">
-        <div class="answerItem" questionid="{{=questionid}}">
-            <label style="font-size:16px; color: gray;">{{=title}} <span style="color:blue; display:none; margin-left:10px; cursor:pointer;" class="refanswer">参考答案</span></label>
-
-            <div class="simple-editor" style="margin-left:20px;">
-
-                <span style="font-size:14px; color:gray;">写下你的答案吧</span>
-
-            </div>
-        </div>
-    </script>
-
-    <script type="text/template" id="searchTemplate">
-
-        <form class="layui-form">
-
-            <div class="layui-form-item">
-
-                <label class="layui-form-label">题目类型:</label>
-                <div class="layui-input-block">
-                    <select class="formitem" lay-filter="examtype" name="examtype" id="examtype">
-                        @{
-                            foreach (var item in ViewBag.examtypelist)
-                            {
-                                <option grandid="@item.GrandID.Id" typeid="@item.TypeName.ID" value="@item.ID">@item.TypeName.TypeName (@item.GrandID.GrandName)</option>
-                            }
-                        }
-                    </select>
-
-                </div>
-
-            </div>
-
-            <div class="layui-form-item">
-                <label class="layui-form-label">级别:</label>
-                <div class="layui-input-block">
-                    <select class="formitem" name="level" id="level">
-                        @{
-                            foreach (var item in ViewBag.levellist)
-                            {
-                                <option value="@item.LevelID">@item.LevelName</option>
-                            }
-                        }
-                    </select>
-
-                </div>
-
-
-
-            </div>
-
-            <div class="layui-form-item">
-                <div class="layui-block" id="courseDiv">
-                    <label class="layui-form-label">请选择课程</label>
-                    <div class="layui-input-block">
-                        <select class="formitem" name="course" id="course" disabled>
-                            <option value="0" selected>--请选择--</option>
-                            @{
-                                foreach (var item in ViewBag.Courselist)
-                                {
-                                    <option value="@item.CurriculumID">@item.CourseName</option>
-                                }
-                            }
-                        </select>
-                    </div>
-
-                </div>
-
-
-
-
-            </div>
-
-
-            <div style="">
-                <button type="button" id="search" style="width:100%;" class="layui-btn layui-btn-primary">搜索</button>
-            </div>
-
-        </form>
-
-    </script>
-
-    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
-    <script src="~/Scripts/layui/layui.js"></script>
-    <script src="~/Scripts/underscore.js"></script>
-    <script src="~/Areas/ExaminationSystem/js/trumbowyg/trumbowyg.min.js"></script>
-    <script src="~/Areas/ExaminationSystem/js/trumbowyg/langs/fr.js"></script>
-    <script src="~/Areas/ExaminationSystem/js/trumbowyg/plugins/upload/trumbowyg.upload.min.js"></script>
-    <script src="~/Areas/ExaminationSystem/js/trumbowyg/plugins/base64/trumbowyg.base64.min.js"></script>
-    <script src="~/Areas/ExaminationSystem/js/jiami.js"></script>
-    <script>
-        if (!document.HTMLDOMtoString) {
-            document.HTMLDOMtoString = function (HTMLDOM) {
-                const div = document.createElement("div")
-                div.appendChild(HTMLDOM)
-                return div.innerHTML
-            }
-        }
-        function initTextarea() {
-            $('.simple-editor').trumbowyg();
-            $.trumbowyg.btnsGrps.test = ['bold', 'link'];
-            $.extend(true, $.trumbowyg.langs, {
-
-                fr: {
-
-                    align: 'Alignement',
-
-                    image: 'Image'
-
-                }
-
-            });
-            $('#customized-buttonpane').trumbowyg({
-
-                lang: 'fr',
-
-                closable: true,
-
-                fixedBtnPane: true,
-
-                btnsDef: {
-
-                    // Customizables dropdowns
-
-                    align: {
-
-                        dropdown: ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
-
-                        ico: 'justifyLeft'
-
-                    },
-
-                    image: {
-
-                        dropdown: ['insertImage', 'upload', 'base64'],
-
-                        ico: 'insertImage'
-
-                    }
-
-                },
-
-                btns: ['viewHTML',
-
-                    '|', 'formatting',
-
-                    '|', 'btnGrp-test',
-
-                    '|', 'align',
-
-                    '|', 'btnGrp-lists',
-
-                    '|', 'image']
-
-            });
-            $('#form-content').trumbowyg({
-
-                lang: 'fr',
-
-                closable: true,
-
-                mobile: true,
-
-                fixedBtnPane: true,
-
-                fixedFullWidth: true,
-
-                semantic: true,
-
-                resetCss: true,
-
-                autoAjustHeight: true,
-
-                autogrow: true
-
-            });
-            $('.editor').on('dblclick', function (e) {
-
-                $(this).trumbowyg({
-
-                    lang: 'fr',
-
-                    closable: true,
-
-                    fixedBtnPane: true
-
-                });
-
-            });
-        }
-
-        var answerquestion = new Array();
-
-        layui.use(['form', 'layer'], function () {
-
-            var form = layui.form;
-
-            var layer = layui.layer;
-
-            var level = undefined;
-            var kecheng = undefined;
-            var examtype = undefined;
-
-            function loadchoicequestiondata(examtype, level, kecheng = "0") {
-
-                var index = layer.load(2); //又换了种风格，并且设定最长等待10秒
-
-                $.post("/ExaminationSystem/StudentExamSys/MockChoiceqestiondata", { examType: examtype, kecheng: kecheng, level }, function (result) {
-                    layer.close(index);
-                    if (result.ErrorCode == 200) {
-
-                        for (var i = 0; i < result.Data.data.length; i++) {
-
-                            var a = $("<label></label>");
-                            a.text(result.Data.data[i].OptionA);
-
-                            var b = $("<label></label>");
-                            b.text(result.Data.data[i].OptionB);
-
-                            var c = $("<label></label>");
-                            c.text(result.Data.data[i].OptionC);
-
-                            var d = $("<label></label>");
-                            d.text(result.Data.data[i].OptionD);
-
-                            var title = $("<label></label>");
-                            title.text(result.Data.data[i].Title);
-
-                            var html = _.template($("#chiosequestionTemplate").html());
-
-                            var htmldata = html({ answer: result.Data.data[i].Answer, title: document.HTMLDOMtoString(title[0]), A: document.HTMLDOMtoString(a[0]), B: document.HTMLDOMtoString(b[0]), C: document.HTMLDOMtoString(c[0]), D: document.HTMLDOMtoString(d[0]) });
-
-                            $("#choicequestionlist").append($(htmldata));
-                        }
-
-                    }
-
-                });
-
-            }
-
-            function loadanswerquestiondata(examtype, level, kecheng = "0") {
-                var index = layer.load(2); //又换了种风格，并且设定最长等待10秒
-                $.post("/ExaminationSystem/StudentExamSys/MockAnswerquestiondata", { examType: examtype, kecheng: kecheng, level }, function (result) {
-                    layer.close(index);
-                    if (result.ErrorCode == 200) {
-
-                        for (var i = 0; i < result.Data.data.length; i++) {
-
-
-                            var ref = $("<label></label>");
-                            ref.text(result.Data.data[i].ReferenceAnswer);
-
-                            result.Data.data[i].ReferenceAnswer = document.HTMLDOMtoString(ref[0]);
-
-                            answerquestion.push(result.Data.data[i]);
-
-
-                            var title = $("<label></label>");
-                            title.text(result.Data.data[i].Title);
-
-                            var html = _.template($("#answerquestionTemplate").html());
-                            var htmldata = html({ title: document.HTMLDOMtoString(title[0]), questionid: result.Data.data[i].ID });
-
-                            $("#answerquestionlist").append($(htmldata));
-                        }
-                        //渲染富文本框
-                        initTextarea();
-
-                    }
-
-                });
-
-            }
-
-            function downloadquestion(examtype, level, kecheng = "0") {
-
-                window.open("/ExaminationSystem/StudentExamSys/MockComputerquestion?examType=" + examtype + "&kecheng=" + kecheng + "&level=" + level);
-
-            }
-            var type;
-            form.on('select(examtype)', function (data) {
-
-
-                var grandid;
-
-                $(data.elem).children().each(function (index, elem) {
-
-                    var value = $(elem).val();
-
-                    if (value == data.value) {
-                        type = $(elem).attr("typeid");
-                        type = $(elem).attr("typeid");
-                        grandid = $(elem).attr("grandid")
-                    }
-
-                });
-
-
-                if (type == "2") {
-
-
-                    $.ajax({
-                        url: "/ExaminationSystem/ExamArrangement/GetCourseByGrand",
-                        data: { grandid: grandid },
-                        dataType: "json",
-                        success: function (resultData) {
-
-                            console.log(resultData);
-
-                            if (resultData.ErrorCode == 200) {
-                                //清空赋值
-                                $("#course").empty();
-
-                                $("#course").append(new Option("课程", ""));
-                                $.each(resultData.Data, function (index, item) {
-                                    //赋值
-                                    console.log(item.ClassNumber);
-                                    $('#course').append(new Option(item.CourseName, item.CurriculumID));
-                                });
-                            } else {
-                                layer.msg("数据加载错误！", { icon: 2 });
-                                $("#course").append(new Option("暂无数据", ""));
-                            }
-                            layui.form.render("select");
-                        }
-                    });
-
-                    $("#course").removeAttr("disabled");
-                    layui.form.render("select");
-
-                }
-                else {
-                    $("#course").attr("disabled", "disabled");
-                    layui.form.render("select");
-                }
-
-
-
-            });
-
-            $(document).off("click", ".option").on("click", ".option", function () {
-
-                $(this).find("input").click();
-
-            });
-            function search() {
-
-                layer.open({
-
-                    type: 1,
-                    area: ['30%', '30%'],
-                    content: $("#searchTemplate").html()
-
-                });
-                form.render();
-            }
-
-            $("#searchbtn").click(function () {
-
-                search();
-            });
-
-            $("#searchbtn").click();
-
-            $("#download").click(function () {
-
-
-                if (level == undefined || kecheng == undefined || kecheng == undefined) {
-
-
-                    layer.msg("请先选择 阶段，课程！");
-
-                    return;
-                }
-
-                downloadquestion(examtype, level, kecheng);
-            });
-
-            $(document).off("click", "#search").on("click", "#search", function () {
-
-
-                level = $("#level").val();
-                kecheng = "0";
-
-                if (type == "2") {
-                    kecheng = $("#course").val();
-                }
-
-                examtype = $("#examtype").val();
-
-                $("#choicequestionlist").html("");
-                $("#answerquestionlist").html("");
-                loadchoicequestiondata(examtype, level, kecheng);
-                loadanswerquestiondata(examtype, level, kecheng);
-
-                var index = parent.layer.getFrameIndex(window.name);
-                parent.layer.close(index);
-            });
-
-        });
-
-    </script>
-</body>
+       <body>
+           <div id="mypaper" style="background:#ffffff">
+               <input type="hidden" id="examid" value="考试模板" />
+               <input type="hidden" id="BeginDate" value="2020-2-2" />
+               <input type="hidden" id="limit" value="2020-2-2" />
+               <div id="examinfo">
+                   <h2 style="text-align:center;"></h2><h2>笔试</h2>
+
+                   <hr />
+                   <div class="detail">
+                       <ul>
+                           <li><label>答题人-- </label><span></span>某某某</li>
+                           <li><label>考室-- </label><span></span>某教室</li>
+                           <li><label>时限-- </label><span>(小时)</span>2（小时）</li>
+                           <li><label>选择题得分-- </label><span class="choiceQuestionScoreshuode">10</span></li>
+                           <li><label>笔试题总分-- </label><span></span>30</li>
+                           <li><label>机试题总分-- </label><span></span>60</li>
+                       </ul>
+                       <br />
+
+
+                   </div>
+
+               </div>
+
+               <div id="choicequestion">
+                   <h3 style="text-align:center; font-size:18px;">选择题</h3>
+                   <div questionid="questionid" class="questionItem">
+                       <div class="title">
+                           <span class="questionIndex">1：</span> <code style="margin-left:5px;color:#000000">题目</code>&nbsp;&nbsp;(<span class="listScores">2</span>分)<input type="hidden" class="hidescore" value="{{=score}}" />
+                       </div>
+                       <div class="option">
+                           <form>
+                               <div class="optiond"><label>选项A：</label><input name="1" value="A" type="radio" /><code></code>答案</div>
+                               <br />
+                               <div class="optiond"><label>选项B：</label><input name="1" value="B" type="radio" /><code name="OptionA"></code>答案</div>
+                               <br />
+                               <div class="optiond"><label>选项C：</label><input name="1" value="C" type="radio" /><code name="OptionA"></code>答案</div>
+                               <br />
+                               <div class="optiond"><label>选项D：</label><input name="1" value="D" type="radio" /><code name="OptionA"></code>答案</div>
+                           </form>
+                       </div>
+                   </div>
+                   <div questionid="questionid" class="questionItem">
+                       <div class="title">
+                           <span class="questionIndex">2：</span> <code style="margin-left:5px;color:#000000">题目</code>&nbsp;&nbsp;(<span class="listScores">2</span>分)<input type="hidden" class="hidescore" value="{{=score}}" />
+                       </div>
+                       <div class="option">
+                           <form>
+                               <div class="optiond"><label>选项A：</label><input name="1" value="A" type="radio" /><code></code>答案</div>
+                               <br />
+                               <div class="optiond"><label>选项B：</label><input name="1" value="B" type="radio" /><code name="OptionA"></code>答案</div>
+                               <br />
+                               <div class="optiond"><label>选项C：</label><input name="1" value="C" type="radio" /><code name="OptionA"></code>答案</div>
+                               <br />
+                               <div class="optiond"><label>选项D：</label><input name="1" value="D" type="radio" /><code name="OptionA"></code>答案</div>
+                           </form>
+                       </div>
+                   </div>
+                   <div questionid="questionid" class="questionItem">
+                       <div class="title">
+                           <span class="questionIndex">3：</span> <code style="margin-left:5px;color:#000000">题目</code>&nbsp;&nbsp;(<span class="listScores">2</span>分)<input type="hidden" class="hidescore" value="{{=score}}" />
+                       </div>
+                       <div class="option">
+                           <form>
+                               <div class="optiond"><label>选项A：</label><input name="1" value="A" type="radio" /><code></code>答案</div>
+                               <br />
+                               <div class="optiond"><label>选项B：</label><input name="1" value="B" type="radio" /><code name="OptionA"></code>答案</div>
+                               <br />
+                               <div class="optiond"><label>选项C：</label><input name="1" value="C" type="radio" /><code name="OptionA"></code>答案</div>
+                               <br />
+                               <div class="optiond"><label>选项D：</label><input name="1" value="D" type="radio" /><code name="OptionA"></code>答案</div>
+                           </form>
+                       </div>
+                   </div>
+                   <div questionid="questionid" class="questionItem">
+                       <div class="title">
+                           <span class="questionIndex">4：</span> <code style="margin-left:5px;color:#000000">题目</code>&nbsp;&nbsp;(<span class="listScores">2</span>分)<input type="hidden" class="hidescore" value="{{=score}}" />
+                       </div>
+                       <div class="option">
+                           <form>
+                               <div class="optiond"><label>选项A：</label><input name="1" value="A" type="radio" /><code></code>答案</div>
+                               <br />
+                               <div class="optiond"><label>选项B：</label><input name="1" value="B" type="radio" /><code name="OptionA"></code>答案</div>
+                               <br />
+                               <div class="optiond"><label>选项C：</label><input name="1" value="C" type="radio" /><code name="OptionA"></code>答案</div>
+                               <br />
+                               <div class="optiond"><label>选项D：</label><input name="1" value="D" type="radio" /><code name="OptionA"></code>答案</div>
+                           </form>
+                       </div>
+                   </div>
+                   <div questionid="questionid" class="questionItem">
+                       <div class="title">
+                           <span class="questionIndex">5：</span> <code style="margin-left:5px;color:#000000">题目</code>&nbsp;&nbsp;(<span class="listScores">2</span>分)<input type="hidden" class="hidescore" value="{{=score}}" />
+                       </div>
+                       <div class="option">
+                           <form>
+                               <div class="optiond"><label>选项A：</label><input name="1" value="A" type="radio" /><code></code>答案</div>
+                               <br />
+                               <div class="optiond"><label>选项B：</label><input name="1" value="B" type="radio" /><code name="OptionA"></code>答案</div>
+                               <br />
+                               <div class="optiond"><label>选项C：</label><input name="1" value="C" type="radio" /><code name="OptionA"></code>答案</div>
+                               <br />
+                               <div class="optiond"><label>选项D：</label><input name="1" value="D" type="radio" /><code name="OptionA"></code>答案</div>
+                           </form>
+                       </div>
+                   </div>
+               </div>
+               <div id="AnswerQuestion">
+                   <h3 style="text-align:center; font-size:18px;">解答题</h3>
+                   <div questionid="questionids" class="questionItem">
+                       <label class="questionIndex">1:</label><label style="margin-left:5px;color:#000000">题目</label>&nbsp;&nbsp;(<span class="listScores">6</span>分)<input type="hidden" value="{{=score}}" class="hidescore" />
+                       <div style="position:relative;right:109px;" class="layui-input-block">
+                           <textarea style="height:250px" placeholder="请填写你的内容" class="layui-textarea desc"></textarea>
+                       </div>
+                   </div>
+                   <div questionid="questionids" class="questionItem">
+                       <label class="questionIndex">2:</label><label style="margin-left:5px;color:#000000">题目</label>&nbsp;&nbsp;(<span class="listScores">6</span>分)<input type="hidden" value="{{=score}}" class="hidescore" />
+                       <div style="position:relative;right:109px;" class="layui-input-block">
+                           <textarea style="height:250px" placeholder="请填写你的内容" class="layui-textarea desc"></textarea>
+                       </div>
+                   </div>
+                   <div questionid="questionids" class="questionItem">
+                       <label class="questionIndex">3:</label><label style="margin-left:5px;color:#000000">题目</label>&nbsp;&nbsp;(<span class="listScores">6</span>分)<input type="hidden" value="{{=score}}" class="hidescore" />
+                       <div style="position:relative;right:109px;" class="layui-input-block">
+                           <textarea style="height:250px" placeholder="请填写你的内容" class="layui-textarea desc"></textarea>
+                       </div>
+                   </div>
+                   <div questionid="questionids" class="questionItem">
+                       <label class="questionIndex">4:</label><label style="margin-left:5px;color:#000000">题目</label>&nbsp;&nbsp;(<span class="listScores">6</span>分)<input type="hidden" value="{{=score}}" class="hidescore" />
+                       <div style="position:relative;right:109px;" class="layui-input-block">
+                           <textarea style="height:250px" placeholder="请填写你的内容" class="layui-textarea desc"></textarea>
+                       </div>
+                   </div>
+                   <div questionid="questionids" class="questionItem">
+                       <label class="questionIndex">5:</label><label style="margin-left:5px;color:#000000">题目</label>&nbsp;&nbsp;(<span class="listScores">6</span>分)<input type="hidden" value="{{=score}}" class="hidescore" />
+                       <div style="position:relative;right:109px;" class="layui-input-block">
+                           <textarea style="height:250px" placeholder="请填写你的内容" class="layui-textarea desc"></textarea>
+                       </div>
+                   </div>
+               </div>
+               <div style="text-align:center">
+                   <button type="button" style="" class="layui-btn layui-btn-warm" id="COMMIT">提交笔试</button>
+               </div>
+           </div>
+           <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+           <script src="~/Scripts/layui/layui.js"></script>
+           <script src="~/Scripts/underscore.js"></script>
+           <script src="~/Areas/ExaminationSystem/js/trumbowyg/trumbowyg.min.js"></script>
+           <script src="~/Areas/ExaminationSystem/js/trumbowyg/langs/fr.js"></script>
+           <script src="~/Areas/ExaminationSystem/js/trumbowyg/plugins/upload/trumbowyg.upload.min.js"></script>
+           <script src="~/Areas/ExaminationSystem/js/trumbowyg/plugins/base64/trumbowyg.base64.min.js"></script>
+           <script src="~/Areas/ExaminationSystem/js/jiami.js"></script>
+           <script>
+               $("#COMMIT").click(function () {
+                   layui.use(['form', 'layer'], function () {
+                       layer.open({
+                           type: 1
+                           , content: '<div style="padding: 20px 100px;">确认提交嘛？</div>'
+                           , btn: ['确认', '取消']
+                           , yes: function () {
+                               location.href = "/teaching/exam/ExaminationModule";
+                           }, btn2: function () {
+                               layer.closeAll();
+                           }
+                       });
+                   });
+
+               })
+           </script>
+       </body>
 </html>

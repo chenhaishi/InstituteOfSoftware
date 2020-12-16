@@ -57,7 +57,49 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         {
             return View();
         }
+        /// <summary>
+        /// 加载这个学生的选择题解答题及机试题和总分
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult LoadingScore()
+        {
+            return null;
+        }
+        /// <summary>
+        /// 手动确认阅卷完毕
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Endofmarking(int examid, int examroom)
+        {
+            AjaxResult result = new AjaxResult();
 
+            try
+            {
+
+                var examroomobj = db_exam.AllExaminationRoom().Where(d => d.Classroom_Id == examroom && d.Examination == examid).FirstOrDefault();
+
+
+                Base_UserModel user = Base_UserBusiness.GetCurrentUser();
+                var markingArrange = db_examScores.AllMarkingArrange().Where(d => d.MarkingTeacher == user.EmpNumber && examid == d.ExamID && d.ExamRoom == examroomobj.ID).FirstOrDefault();
+
+                markingArrange.IsFinsh = true;
+                db_examScores.UpdateMarkingArrange(markingArrange);
+
+                result.ErrorCode = 200;
+                result.Msg = "成功";
+                result.Data = null;
+            }
+            catch (Exception ex)
+            {
+
+                result.ErrorCode = 500;
+                result.Msg = "失败";
+                result.Data = null;
+
+            }
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
 
         /// <summary>
         /// 学生个人成绩查询页面
@@ -117,13 +159,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         {
             return View();
         }
-
+        [HttpPost]
         /// <summary>
         /// 阅卷数据
         /// </summary>
         /// <returns></returns>
         public ActionResult MarkeData()
-         {
+       {
             AjaxResult result = new AjaxResult();
 
             try
@@ -282,7 +324,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         {
 
             AjaxResult result = new AjaxResult();
-
             try
             {
 
@@ -297,8 +338,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 {
                     candidateInfo = candidinfolist.Skip(index - 1).Take(1).FirstOrDefault();
                 }
-
-
                 //·········获取这个考生的考卷···················
 
                 // 1. 获取文件夹名称   文件夹名称为 学号_考试ID   解答题文件名称为 AnswerSheet文本文件   机试题文件名为 computerfielnaem.rar 压缩包
@@ -354,7 +393,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
                         var obj = new
                         {
-
                             question = item,
                             questionTitle = question,
                             candidinfo = candidateInfo,
@@ -391,9 +429,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         /// 考生机试题答卷下载
         /// </summary>
         /// <param name="kaohao">学员考号</param>
-        /// <returns></returns>
-        /// 
-        
+        /// <returns></returns>       
         public ActionResult DownloadComputerSheet(string kaohao, int examid)
         {
             CloudstorageBusiness Bos = new CloudstorageBusiness();

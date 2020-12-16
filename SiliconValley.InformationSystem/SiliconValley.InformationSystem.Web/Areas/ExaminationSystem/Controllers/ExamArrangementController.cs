@@ -290,26 +290,15 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 var list = db_examination.AllExamination().OrderByDescending(d => d.ID == id).FirstOrDefault();
                 //获取考试是否结束
                 bool Isend = db_examination.IsEnd(db_examination.AllExamination().Where(d => d.ID == id).FirstOrDefault());
-                //获取考试的监考员
-                var JianKaoYuan = db_examinationRoom.GetList().Where(d => d.Examination == id).FirstOrDefault();
                 //判断考试是否结束，结束就不能删除这趟考试 true结束 flase未结束（进行中）
-                //并且判断这场考试如果安排了监控员就不能删除
                 if (Isend == true)
                 {
                     result.ErrorCode = 300;
                 }
                 else
                 {
-                    if (JianKaoYuan.Invigilator1 != null || JianKaoYuan.Invigilator2 != null)
-                    {
-                        result.ErrorCode = 400;
-                    }
-                    else {
-                        db_examination.Delete(list);
-                        result.ErrorCode = 200;
-                        
-                    }
-                   
+                    db_examination.Delete(list);
+                    result.ErrorCode = 200;
                 }   
             }
             catch (Exception ex)
@@ -452,9 +441,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         /// </summary>
         /// <param name="examination"></param>
         /// <returns></returns>
-        /// 
         [HttpPost]
-        public ActionResult ReleaseExamination(Examination examination, int course)
+        public ActionResult ReleaseExamination(Examination examination,int course)
         {
 
             AjaxResult result = new AjaxResult();
@@ -466,11 +454,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 var examview = db_examination.ConvertToExaminationView(examination);
 
                 db_examination.Insert(examination);
-
+                //2是阶段，1是升学
                 if (examview.ExamType.ExamTypeID == 2)
                 {
                     //记录课程
                     db_examination.ExamCouresConfigAdd(examination.ID, course);
+
+                } else if (examview.ExamType.ExamTypeID == 1) {
+
+                    //记录课程
+                    db_examination.ExamCouresConfigAdd(examination.ID, 0);
                 }
 
                 //将考试 题目存储到redis缓存

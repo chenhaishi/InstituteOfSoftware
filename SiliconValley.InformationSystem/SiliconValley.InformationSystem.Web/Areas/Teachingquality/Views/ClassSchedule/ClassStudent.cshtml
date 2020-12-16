@@ -316,7 +316,7 @@
                     if (ViewBag.Stage == "S1" || ViewBag.Stage == "Y1")
                     {
                         <div>
-                            <button type="button" id="Shiftchange" cla/ss="layui-btn layui-btn-fluid mybut">换班</button>
+                            <button type="button" id="Shiftchange" class="layui-btn layui-btn-fluid mybut">换班</button>
                         </div>
                     }
                 }
@@ -621,16 +621,18 @@
             return "";
         var date = new Date(parseInt(newtime.slice(6)));
         var year = date.getFullYear();
-        var month = date.getMonth();
-        if (month < 10) {
-            month = "0" + (parseInt(month) + 1);
+        var month = date.getMonth()+1;
+        if (month > 10) {
+            month = "0" + (parseInt(month)+1);
         }
         var day = date.getDate();
-        if (day < 10) {
+        if (day > 10) {
             day = "0" + day;
         }
         var result = year + '-' + month + '-' + day;
+        
         return result;
+        
     }
     layui.use(['element', 'form', 'table', 'laydate', 'layer','excel'], function () {
         var element = layui.element;
@@ -718,7 +720,8 @@
 
             };
         });
-      
+      //时间
+  
         //班会表格渲染
         table.render({
             elem: '#test'
@@ -735,7 +738,20 @@
 
                 , {
                     field: 'Classmeetingdate', title: '班会日期', templet: function (c) {
-                        return TimeChange(c.Classmeetingdate);
+
+
+                        var utc = c.Classmeetingdate.substr(c.Classmeetingdate.indexOf('(') + 1, 13);
+
+                        var date = new Date(parseInt(utc));
+
+                        var year = date.getFullYear();
+
+                        var mouth = date.getMonth() + 1;
+
+                        var day = date.getDate();
+
+                        return year + '年 ' + mouth + "月 " + day + '日';
+                        
                     }
                 }
                 , { field: 'Remarks', title: '备注 ' }

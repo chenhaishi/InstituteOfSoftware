@@ -46,6 +46,30 @@
                         <select name="skill" id="skill" lay-verify="required" lay-search=""></select>
                     </div>
                 </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">选择部门</label>
+                    <div class="layui-input-inline">
+                        <select name="bumeng" id="bumeng" lay-filter="bumeng" lay-search="">
+                            <option value="0">请选择部门</option>
+                            @{
+                                foreach (var item in ViewBag.getdepartments as List<Department>)
+                                {
+                                    <option value="@item.DeptId">@item.DeptName</option>
+                                }
+                            }
+
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">选择老师</label>
+                    <div class="layui-input-inline">
+                        <select name="laoshi" id="laoshi" lay-verify="required" lay-search="">
+
+                            
+                        </select>
+                    </div>
+                </div>
             </div>
 
             <div style="width:100%;">
@@ -96,10 +120,35 @@
                     }
                 });
             })
+            form.on('select(bumeng)', function (data) {
+                var value = data.value;  //select选中的值
+                console.log("选中值" + value);
+                $.ajax({
+                    url: "/Teaching/SatisfactionSurvey/DepartmentTeacher",
+                    data: { bumeng: value },
+                    dataType: "json",
+                    success: function (resultData) {
+
+                        console.log(resultData);
+
+                        if (resultData.ErrorCode == 200) {
+                            //清空赋值
+                            $("#laoshi").empty();
+
+                            $("#laoshi").append(new Option("请选择老师", ""));
+                            $.each(resultData.Data, function (index, item) {
+                                //赋值
+
+                                $('#laoshi').append(new Option(item.EmpName, item.EmployeeId));
+                            });
+                        } else {
+                            $("#laoshi").append(new Option("暂无数据", ""));
+                        }
+                        layui.form.render("select");
+                    }
+                });
+            })
             layui.form.render("select");
-
-
-
 
             //生成
             $("#commit").click(function () {
@@ -110,7 +159,10 @@
                 //获取课程
                 var skill = $("#skill").val();
 
-                if (classnumber == 0 || skill == "") {
+                //获取教学老师
+                var laoshi = $("#laoshi").val();
+
+                if (classnumber == 0 || skill == "" || laoshi == "") {
                     layer.msg("请选择");
 
                     return;
@@ -120,7 +172,7 @@
 
                     //发送请求
 
-                    $.post('/Teaching/SatisfactionSurvey/CreateTeacherSurveyConfig', { classnumber: classnumber, Curriculum: skill }, function (data) {
+                    $.post('/Teaching/SatisfactionSurvey/CreateTeacherSurveyConfig', { classnumber: classnumber, Curriculum: skill,laoshi:laoshi }, function (data) {
 
                         if (data.ErrorCode == 200) {
 

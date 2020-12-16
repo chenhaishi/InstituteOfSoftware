@@ -80,11 +80,15 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
       
             List<ChoiceQuestionTableView> questionlist = new List<ChoiceQuestionTableView>();
 
+
             //获取考试类型
             var examType = examination.ExamType;
             var examview = db_exam.ConvertToExaminationView(examination);
 
-
+            //筛选难度
+            //读取配置文件
+            XmlDocument xmlDocument = new XmlDocument();
+            
             //从缓存中获取数据
             RedisCache redisCache = new RedisCache();
 
@@ -110,12 +114,14 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
             List<Curriculum> sourchlist = new List<Curriculum>();
             if (examview.ExamType.ExamTypeID == 1)
             {
-                var tempqulist = list.Where(d => d.Grand == examview.ExamType.GrandID && d.Course == 0).ToList();
+                //&& d.Course == 0
+                var tempqulist = list.Where(d => d.Grand == examview.ExamType.GrandID ).ToList();
                 tempqulist.ForEach(d=>
                 {
                     var tempobj = db_choiceQuestion.ConvertToChoiceQuestionTableView(d, false);
                     if (tempobj != null) questionlist.Add(tempobj);
                 });
+                xmlDocument.Load(System.Web.HttpContext.Current.Server.MapPath("/Config/ChoosetheAnswer.xml"));
             }
 
             if (examview.ExamType.ExamTypeID == 2)
@@ -151,19 +157,13 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
                 //    }
                 //}
 
-
+                xmlDocument.Load(System.Web.HttpContext.Current.Server.MapPath("/Config/questionLevelConfig.xml"));
             }
       
-            //筛选难度
-            //读取配置文件
-            XmlDocument xmlDocument = new XmlDocument();
-            xmlDocument.Load(System.Web.HttpContext.Current.Server.MapPath("/Config/questionLevelConfig.xml"));
 
             var xmlRoot = xmlDocument.DocumentElement;
 
             //获取我需要的配置		foreach	error CS1525: 表达式项“foreach”无效	
-
-            //
 
             var choxml = (XmlElement)xmlRoot.GetElementsByTagName("choicequestion")[0];
 
@@ -217,7 +217,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
 
 
             //抽取题目
-            var temp1list = questionlist.Where(d => d.Level.LevelID == 1).ToList();
+            var temp1list = questionlist.Where(d => d.Level.LevelID == 1 && d.IsUsing == true).ToList();
             
             try
             {
@@ -229,10 +229,10 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
                 string str = ex.Message;
             }
 
-            var temp1list1 = questionlist.Where(d => d.Level.LevelID == 2).ToList();
+            var temp1list1 = questionlist.Where(d => d.Level.LevelID == 2 && d.IsUsing == true).ToList();
             resultlist.AddRange(this.extracChoicequestion(temp1list1, (int)putong));
 
-            var temp1list2 = questionlist.Where(d => d.Level.LevelID == 3).ToList();
+            var temp1list2 = questionlist.Where(d => d.Level.LevelID == 3 && d.IsUsing == true).ToList();
             resultlist.AddRange(this.extracChoicequestion(temp1list2, (int)kunnan));
 
             List<ChoiceQuestionTableView> returnlist = new List<ChoiceQuestionTableView>();
@@ -267,6 +267,9 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
           
             var examview = db_exam.ConvertToExaminationView(examination);
 
+            //读取配置文件
+            XmlDocument xmlDocument = new XmlDocument();
+
             //从缓存中获取数据
 
             RedisCache redisCache = new RedisCache();
@@ -297,14 +300,15 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
             List<Curriculum> sourchlist = new List<Curriculum>();
             if (examview.ExamType.ExamTypeID == 1)
             {
-
-                var tempqulist = list.Where(d => d.Grand == examview.ExamType.GrandID && d.Course ==0).ToList();
+                //&& d.Course == 0
+                var tempqulist = list.Where(d => d.Grand == examview.ExamType.GrandID).ToList();
                 tempqulist.ForEach(d=>
                 {
                     var tempobj = db_answerQuextion.ConvertToAnswerQuestionView(d, false);
 
                     if (tempobj != null) questionlist.Add(tempobj);
                 });
+                xmlDocument.Load(System.Web.HttpContext.Current.Server.MapPath("/Config/ChoosetheAnswer.xml"));
             }
 
             if (examview.ExamType.ExamTypeID == 2)
@@ -340,13 +344,12 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
 
                 //    }
                 //}
-
+                xmlDocument.Load(System.Web.HttpContext.Current.Server.MapPath("/Config/questionLevelConfig.xml"));
             }
 
       
-            //读取配置文件
-            XmlDocument xmlDocument = new XmlDocument();
-            xmlDocument.Load(System.Web.HttpContext.Current.Server.MapPath("/Config/questionLevelConfig.xml"));
+            
+            
 
             var xmlRoot = xmlDocument.DocumentElement;
 
@@ -395,13 +398,13 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
                 }
             }
             List<AnswerQuestionView> resultlist = new List<AnswerQuestionView>();
-            var temp1list = questionlist.Where(d => d.Level.LevelID == 1).ToList();
+            var temp1list = questionlist.Where(d => d.Level.LevelID == 1 && d.IsUsing == true).ToList();
             resultlist.AddRange(this.extracAnswerQuestion(temp1list, (int)jiandan));
 
-            var temp1list1 = questionlist.Where(d => d.Level.LevelID == 2).ToList();
+            var temp1list1 = questionlist.Where(d => d.Level.LevelID == 2 && d.IsUsing == true).ToList();
             resultlist.AddRange(this.extracAnswerQuestion(temp1list1, (int)putong));
 
-            var temp1list2 = questionlist.Where(d => d.Level.LevelID == 3).ToList();
+            var temp1list2 = questionlist.Where(d => d.Level.LevelID == 3 && d.IsUsing == true).ToList();
             resultlist.AddRange(this.extracAnswerQuestion(temp1list2, (int)kunnan));
             List<AnswerQuestionView> returnlist = new List<AnswerQuestionView>();
 
@@ -454,7 +457,8 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
 
             if (examview.ExamType.ExamTypeID == 1)
             {
-                var tempqulist  = list.Where(d => d.Grand == examview.ExamType.GrandID && d.Course == 0).ToList();
+                //d.Grand == examview.ExamType.GrandID &&
+               var tempqulist  = list.Where(d => d.Course == kecheng && d.IsUsing == true).ToList();
 
                 tempqulist.ForEach(d=> {
 
@@ -470,7 +474,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
 
                 //var course = db_Course.GetList().Where(d => d.IsDelete == false && d.CurriculumID == kecheng).FirstOrDefault();
 
-                list = list.Where(d => d.Course !=0 && d.Course == kecheng).ToList();
+                list = list.Where(d => d.Course != 0 && d.Course == kecheng && d.IsUsing == true).ToList();
 
                 list.ForEach(d=> {
 
@@ -503,7 +507,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
            
             Random rendom = new Random();
            
-            var reslist = questionlist.Where(d => d.Level.LevelID == examview.PaperLevel.LevelID).ToList();
+            var reslist = questionlist.Where(d => d.Level.LevelID == examview.PaperLevel.LevelID && d.IsUsing == true).ToList();
             int rdom = rendom.Next(0, reslist.Count);
             return reslist[rdom];
 

@@ -3,190 +3,142 @@
     ViewBag.Title = "EmpSurveyView";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@section style {
+@section style{
 
     <style>
-
         #mywarp {
-            width: 1000px;
-            margin: 0 auto;
+            width: 100%;
+            height: 600px;
         }
 
-        .item_title {
-            position: relative;
-            height: 40px;
-        }
-
-        .pos {
-            position: absolute;
-            left: 45%;
-            top: -13px;
-            font-size: 20px;
-        }
-
-        .classNumber {
+        #emplist {
+            float: left;
+            width: 20%;
             margin-top: 50px;
         }
 
-        #list li {
-            height:500px;
+        #surveytabel {
+            float: left;
+            width: 60%;
+        }
+
+        #optiores {
+            width: 100%;
+            height: 60px;
+        }
+
+        #Imagearea {
+            float: left;
+            width: 20%;
         }
     </style>
+
+    <link href="~/Scripts/dtree2.5.4/layui_ext/dtree/dtree.css" rel="stylesheet" />
+    <link href="~/Scripts/dtree2.5.4/layui_ext/dtree/font/dtreefont.css" rel="stylesheet" />
 
 }
 
 <div id="mywarp">
+    <div id="title">
+        <h3 style="color:darkgray; text-align:center;">我的满意度调查历史记录册</h3>
+    </div>
+    <hr />
+    <div id="surveytabel">
+        <div id="optiores">
+            <label style="color:gray;">时间：</label> <input type="text" style="width:200px;display:inline-block;" class="layui-input" id="date1">
+        </div>
 
-    <ul id="list">
-        
-    </ul>
+        <!--数据表格-->
 
+        <table class="layui-hide" id="dataTable" lay-filter="dataTable_filter"></table>
+
+
+    </div>
+
+    <div id="Imagearea">
+
+    </div>
 
 </div>
-
 @section script{
-<script src="~/Scripts/underscore.js"></script>
 <script src="~/Areas/Teaching/Scripts/util.js"></script>
-    <!--模板1-->
-    <script type="text/template" id="moban1">
-        <li>
-            <div class="item">
-                <div class="item_title">
-                    <div class="pos">{{=date}}</div>
-                    <hr class="layui-bg-black">
-
-                    <div class="classNumber">
-
-                    </div>
-                </div>
-            </div>
-        </li>
-    </script>
-    <!--模板2-->
-    <script type="text/template" id="moban2">
-        <h3 style="text-align:center;"><i style="font-size:25px;" class="layui-icon layui-icon-chart"></i>{{=classnumber}}<span class="layui-btn layui-btn-primary checkMore" style="font-size:13px; border:0px solid white; margin-left:100px;" configResultId="{{=configResultId}}">查看更多</span></h3>
-
-        <div class="table">
-
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>项目</th>
-
-                        <th>分数</th>
-
-
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                    
-                </tbody>
-            </table>
-
-           
-        </div>
-    </script>
-    <!--模板3-->
-    <script type="text/template" id="moban3">
-        <tr>
-            <td>{{=ItemName}}</td>
-            <td>{{=Scores}}</td>
-        </tr>
-    </script>
-
-
-    <script id="save">
-
-    </script>
-
     <script>
-        layui.use(['layer', 'flow'], function () {
+        layui.use(['table','laydate'], function () {
+            var table = layui.table; 
+            var laydate = layui.laydate;
+            //渲染表格
+            table.render({
+                elem: '#dataTable'
+                , id: "dataTable"
+                , url: '/Teaching/SatisfactionSurvey/Mysatisfaction'
+                , cols: [[
+                    { type: 'checkbox' }
+                    , { field: 'SatisficingConfigId', width: 100, title: 'ID', sort: true }
+                    , {
+                        field: 'investigationDate', width: 230, title: '调查时间', sort: true, templet: function (cel) {
 
-            var layer = layui.layer;
-            var flow = layui.flow;
+                            var cudate = cel.investigationDate;
 
-            flow.load({
-                elem: '#list' //指定列表容器
-                , done: function (page, next) { //到达临界点（默认滚动触发），触发下一页
-                    var lis = [];
-                    //以jQuery的Ajax请求为例，请求下一页数据（注意：page是从2开始返回）
-                    $.get('/Teaching/SatisfactionSurvey/EmpSurveyData?page=' + page, function (res) {
-                        //假设你的列表返回在data集合中
-                        console.log(res);
-                        
-                       
+                            var dateUtc = cudate.substr(cudate.indexOf('(') + 1, 13);
 
-                        layui.each(res.data, function (index, item) {
-                            $("#save").html("");
-                            console.log(item);
-                            var dateutc = item.date.substr(item.date.indexOf('(') + 1, 13);
+                            return formaDateUtc(dateUtc);
 
-                            var dated = new Date(parseInt(dateutc));
+                        }
+                    }
+                    , { field: 'TotalScore', width: 170, title: '总分' }
+                    , { field: 'ClassNumber', width: 150, title: '班级', templet: '<div>{{d.investigationClass.ClassNumber}}</div>' }
+                    , {
+                        field: 'CourseName', width: 150, title: '课程', templet: function (cel) {
 
-                            //第一层
-                            var html = _.template($("#moban1").html());
-                            var htmldate = html({ date: dated.getFullYear() + '年' + dated.getMonth()+'月' });
 
-                            $("#save").html($(htmldate));
-                            
-                            //第二层 
-                            for (var i = 0; i < item.data.length; i++) {
-                                
-                                var html2 = _.template($("#moban2").html());
-                                var htmldate2 = html2({ classnumber: item.data[i].investigationClass.ClassNumber, configResultId: item.data[i].SurveyResultID });
-                               
-                                //追加到第一层
-                                var temp1 =  $(htmldate).find(".classNumber").append(htmldate2);
+                            '<div>{{d.Curriculum.CourseName}}</div>'
 
-                                //组装第三次
-                                for (var j = 0; j < item.data[i].detailitem.length; j++) {
+                            if (cel.Curriculum == null) {
 
-                                    var html3 = _.template($("#moban3").html());
-                                    var htmldate3 = html3({ ItemName: item.data[i].detailitem[j].SatisficingItem.ItemContent, Scores: item.data[i].detailitem[j].Scores });
-
-                                    //追加到第二层
-                                    temp1.find(".table tbody").append(htmldate3);
-                                }
-
-                                $("#save").find(".classNumber").append(temp1.html());
-                               
+                                return "无"
+                            }
+                            else {
+                                return cel.Curriculum.CourseName
                             }
 
-                            
 
-                          
+                        }
+                    }
+                    , { field: 'Average', width: 180, title: '平均分', sort: true }
 
-                          
-                            $("#list").append($("#save").html());
-
-
-                        });
-
-                        //执行下一页渲染，第二参数为：满足“加载更多”的条件，即后面仍有分页
-                        //pages为Ajax返回的总页数，只有当前页小于总页数的情况下，才会继续出现加载更多
-                        next(lis.join(''), page < res.total);
-                       
-                    });
-                }
+                ]]
+                , page: true
             });
 
-            $(document).off("click", ".checkMore").on("click", ".checkMore", function () {
+            laydate.render({
+                elem: '#date1' //指定元素
+                , change: function (value, date, endDate) {
 
-                var resultid = $(this).attr('configResultId');
+                    table.reload('dataTable', {
+                        url: '/Teaching/SatisfactionSurvey/SurveyData_filter'
+                        , where: {
+                            empnumber: "",
+                            date: value
+
+                        } //设定异步数据接口的额外参数
+                        //,height: 300
+                    });
+
+                }
+            });
+            //表格行双击事件
+            //监听行双击事件
+            table.on('rowDouble(dataTable_filter)', function (obj) {
+                //obj 同上
+                console.log(obj);
 
                 layer.open({
                     type: 2,
                     title: "详细",
-                    area: [window.innerWidth / 2 + 'px', window.innerHeight / 2 + 'px'],
-                    content: "/Teaching/SatisfactionSurvey/checkSurveyView?surveyResultID=" + resultid
+                    area: [window.innerWidth / 1 + 'px', window.innerHeight / 1 + 'px'],
+                    content: "/Teaching/SatisfactionSurvey/checkSurveyView?surveyResultID=" + obj.data.SatisficingConfigId
                 });
-
             });
-
-        });
+        })
     </script>
-
 }
-

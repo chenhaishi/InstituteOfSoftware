@@ -46,6 +46,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
         //学员班级
         ClassScheduleBusiness classScheduleBusiness = new ClassScheduleBusiness();
 
+        public EmployeesInfoManage EmployeesInfoManage_Entity = new EmployeesInfoManage();
+
         private readonly TeacherBusiness db_teacher;
 
         public SatisfactionSurveyController()
@@ -420,14 +422,44 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
 
 
         }
+        /// <summary>
+        /// 获取我的满意度查询
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Mysatisfaction(int limit, int page)
+        {
+            //获取当前账号
+            Base_UserModel user = Base_UserBusiness.GetCurrentUser();
+            var xinxi = db_survey.satisficingConfigs().OrderByDescending(t=>t.CreateTime).Where(d => d.EmployeeId == user.EmpNumber).ToList();
+            List<SatisficingConfig> skiplist = xinxi.Skip((page - 1) * limit).Take(limit).ToList();
+            List<SatisficingConfigDataView> resultlist = new List<SatisficingConfigDataView>();
 
+            foreach (var item in skiplist)
+            {
+                var tempobj = db_survey.ConvertToSatisficingConfigDataView(item);
+
+                resultlist.Add(tempobj);
+            }
+            var obj = new
+            {
+
+                code = 0,
+                msg = "",
+                count = xinxi.Count,
+                data = resultlist
+
+
+            };
+
+            return Json(obj, JsonRequestBehavior.AllowGet);
+        }
 
         /// <summary>
         /// 获取员工的满意度调查记录
         /// </summary>
         /// <param name="empid"></param>
         /// <returns></returns>
-        
+
         public ActionResult SurveyHistoryData(int limit, int page)
         {
             Base_UserModel user = Base_UserBusiness.GetCurrentUser();
@@ -1443,24 +1475,45 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
         [HttpGet]
         public ActionResult CreateTeacherSurveyConfig()
         {
-           
-
-
                //获取班级
-
                var classlist = db_teacherclass.AllClassSchedule().Where(d=>d.IsDelete==false).ToList().Where(d=>d.ClassstatusID == null).ToList();
-            
+            //获取部门
+            var getdepartments = db_dep.GetList().Where(s => s.DeptName.Contains("教学")).ToList();
+            ViewBag.getdepartments = getdepartments;
             ViewBag.classlist = classlist;
 
             return View();
         }
+        /// <summary>
+        /// 根据部门获取员工
+        /// </summary>
+        /// <param name="bumeng"></param>
+        /// <returns></returns>
+        public ActionResult DepartmentTeacher(int bumeng)
+        {
+            AjaxResult result = new AjaxResult();
+            List<EmployeesInfo> db_info = null;
+            try
+            {
+                db_info = EmployeesInfoManage_Entity.GetEmpsByDeptid(bumeng);
 
-     /// <summary>
-     /// 获取教员在班级上过的课程
-       
-     /// </summary>
-     /// <param name="classnumber"></param>
-     /// <returns></returns>
+                result.ErrorCode = 200;
+                result.Data = db_info;
+                result.Msg = "成功";
+            }
+            catch (Exception ex)
+            {
+                result.ErrorCode = 500;
+                result.Data = db_info;
+                result.Msg = ex.Message;
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
+        /// 获取教员在班级上过的课程      
+        /// </summary>
+        /// <param name="classnumber"></param>
+        /// <returns></returns>
         public ActionResult GetCorsueOnReconile(string classnumber)
         {
 
@@ -1469,10 +1522,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
             List<Curriculum> resultlist = new List<Curriculum>();
             try
             {
-
-             
-
-
                 //排课业务类
                 BaseBusiness<Reconcile> db_reconile = new BaseBusiness<Reconcile>();
 
@@ -1530,7 +1579,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
 
 
         [HttpPost]
-        public ActionResult CreateTeacherSurveyConfig(int classnumber, int Curriculum)
+        public ActionResult CreateTeacherSurveyConfig(int classnumber, int Curriculum,string laoshi)
         {
 
             AjaxResult result = new AjaxResult();
@@ -1544,11 +1593,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 //查出评价班级
                 var classlisttemp = classdb.GetList().Where(d => d.IsDelete == false && d.id == classnumber).FirstOrDefault().ClassNumber;
                 //根据班级查出老师
-                BaseBusiness<Reconcile> reconcile = new BaseBusiness<Reconcile>();
-                var LaoShi = reconcile.GetList().Where(d=>d.ClassSchedule_Id == classnumber).FirstOrDefault().EmployeesInfo_Id;
+                //BaseBusiness<Reconcile> reconcile = new BaseBusiness<Reconcile>();
+                //var LaoShi = reconcile.GetList().Where(d=>d.ClassSchedule_Id == classnumber).FirstOrDefault().EmployeesInfo_Id;
                 //首先判断是否已经存在
 
-                var templist = db_survey.satisficingConfigs().Where(d => d.IsDel == false && d.EmployeeId == LaoShi && d.ClassNumber == classnumber).ToList();
+                var templist = db_survey.satisficingConfigs().Where(d => d.IsDel == false && d.EmployeeId == laoshi && d.ClassNumber == classnumber).ToList();
 
 
                  if (templist.Count !=0)
@@ -1567,7 +1616,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 satisficingConfig.ClassNumber = classnumber;
                 satisficingConfig.CreateTime = DateTime.Now;
                 satisficingConfig.CurriculumID = Curriculum;
-                satisficingConfig.EmployeeId = LaoShi;
+                satisficingConfig.EmployeeId = laoshi;
                 satisficingConfig.IsDel = false;
                 satisficingConfig.IsPastDue = false;
 
@@ -1822,7 +1871,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
         public ActionResult EmpSurveyData(int page)
         {
             // 筛选条件员工 日期降序排序
-
             List<SatisfactionSurveyDetailView> configlist = new List<SatisfactionSurveyDetailView>();
             List<SurveyGroupByDateView> resultlist = new List<SurveyGroupByDateView>();
             int TotalCount = 0;

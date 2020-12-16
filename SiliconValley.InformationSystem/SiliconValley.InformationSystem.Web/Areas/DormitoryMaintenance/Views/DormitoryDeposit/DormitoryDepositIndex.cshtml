@@ -111,7 +111,7 @@
                 , trigger: 'click'
             });
  
-                table.render({
+            table.render({
                     elem: '#DormitoryDeposit_table'
                     , url: '/DormitoryMaintenance/DormitoryDeposit/GetData'
                     , toolbar: '#DormitoryDeposit_toolbarDemo'
@@ -149,9 +149,6 @@
                     , limit: 20
                 });
              
-
-            
-
             //头工具栏事件
             table.on('toolbar(DormitoryDeposit_table)', function (obj) {
                 var checkStatus = table.checkStatus(obj.config.id);
@@ -161,7 +158,7 @@
                         layer.open({
                             type: 2,
                             content: '/DormitoryMaintenance/DormitoryDeposit/AddView',
-                            area: ['1000px', '600px']
+                            area: ['1000px', '800px']
                         });
                         break;
 

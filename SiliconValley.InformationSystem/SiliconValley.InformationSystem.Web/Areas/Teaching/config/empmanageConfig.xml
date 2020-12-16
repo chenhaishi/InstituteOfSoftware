@@ -2,7 +2,7 @@
 <root>
  <!--满意度调查单配置-->
 
-  <defaultCutOffDate value="3"></defaultCutOffDate> <!--设置满意度调查单的填写截止时长 默认 3 小时 -->
+  <defaultCutOffDate value="5"></defaultCutOffDate> <!--设置满意度调查单的填写截止时长 默认 5 小时 -->
   
   <!--权限配置-->
   <permissions>
@@ -13,7 +13,7 @@
     <permission permissionid="s3MasterDirector_SearchSurveyHistory" depIds="1008"></permission>
     <permission permissionid="s4TeacherDirector_SearchSurveyHistory" depIds="1010"></permission>
     <permission permissionid="Y1TeacherDirector_SearchSurveyHistory" depIds="1010"></permission>
-    
+     
   </permissions>
 
   <grandteacherPermissions>
