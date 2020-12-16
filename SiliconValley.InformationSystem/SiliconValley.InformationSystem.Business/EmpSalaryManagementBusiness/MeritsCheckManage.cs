@@ -191,13 +191,12 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 EmployeesInfoManage emanage = new EmployeesInfoManage();
                 int num = 2;
                 AjaxResult ajaxResult = new AjaxResult();
-                string sql = "insert into MeritsCheck values";
+                //string sql = "insert into MeritsCheck values";
                 while (true)
                 {
                     MeritsCheckView merits = new MeritsCheckView();
                     num++;
                     var getrow = sheet.GetRow(num);
-
                     if (string.IsNullOrEmpty(Convert.ToString(getrow)))
                     {
                         break;
@@ -214,15 +213,23 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                             string month = Year.Substring(5, 2);
                             Year = year + "-" + month + "-" + 01;
                         }
-                        var empid = emanage.GetList().Where(i => i.DDAppId == int.Parse(ddid)).FirstOrDefault().EmployeeId;
-                        merits.EmployeeId = empid;
+
 
                         MeritsCheckErrorDataView errorDataView = new MeritsCheckErrorDataView();
                         MeritsCheck merits1 = new MeritsCheck();
-                       
-                        if (string.IsNullOrEmpty(empid))
+                        if (!emanage.DDidIsExist(int.Parse(ddid)))
                         {
-                            errorDataView.excelId = empid;
+                            errorDataView.excelId = ddid;
+                            errorDataView.errorExplain = "原因是该员工钉钉号不存在！";
+                            error.Add(errorDataView);
+                        }
+                        else
+                        {
+                          var  empid = emanage.GetList().Where(i => i.DDAppId == int.Parse(ddid)).FirstOrDefault().EmployeeId;
+                            merits.EmployeeId = empid;
+                            if (string.IsNullOrEmpty(empid))
+                        {
+                            errorDataView.excelId = ddid;
                             errorDataView.errorExplain = "原因是该员工工号为空！";
                             error.Add(errorDataView);
                         }
@@ -230,7 +237,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                         {
                             if (string.IsNullOrEmpty(finalgrade))
                             {
-                                errorDataView.excelId = empid;
+                                errorDataView.excelId = ddid;
                                 errorDataView.errorExplain = "原因是该员工绩效分为空！";
                                 error.Add(errorDataView);
                             }
@@ -242,17 +249,21 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                                 //merits1.IsDel = false;
                                 //merits1.IsApproval = false;
                                 //this.Insert(merits1);
-                                sql += "(" + empid + ",'" + Year + "',null,null,null,null,null,null,null,null," + finalgrade + ",null,0,0,null,null),";
+                                ExecuteSql("insert into MeritsCheck (EmployeeId,YearAndMonth,FinalGrade,IsDel,IsApproval)values(" + empid + ",'" + Year + "'," + finalgrade + ",0,0)");
+                                //sql += "insert into MeritsCheck value(" + empid + ",'" + Year + "',null,null,null,null,null,null,null,null," + finalgrade + ",null,0,0,null,null),";
+                                BusHelper.WriteSysLog("Excel文件导入成功", Entity.Base_SysManage.EnumType.LogType.Excle文件导入);
+                                rc.RemoveCache("InRedisEmpInfoData");
                             }
                         }
+                        }
+                        
 
                       
                     }
                 }
-                sql = sql.Substring(0, sql.Length - 1);
-                ExecuteSql(sql);
-                BusHelper.WriteSysLog("Excel文件导入成功", Entity.Base_SysManage.EnumType.LogType.Excle文件导入);
-                rc.RemoveCache("InRedisEmpInfoData");
+                //sql = sql.Substring(0, sql.Length - 1);
+                //ExecuteSql(sql);
+
 
                 int sum = num - 3;
                 if (sum - error.Count() == sum)
