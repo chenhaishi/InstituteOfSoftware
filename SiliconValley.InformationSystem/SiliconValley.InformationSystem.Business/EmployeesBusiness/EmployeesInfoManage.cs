@@ -1216,8 +1216,8 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
         {
             bool result = false;
 
-            var emp = this.GetListBySql<EmployeesInfo>("select top 1 * from EmployeesInfo where DDAppId="+ddid);
-            if (emp != null)
+            var emp = this.GetListBySql<EmployeesInfo>("select top 1* from EmployeesInfo where DDAppId=" + ddid).Count();
+            if (emp != 0)
             {
                 result = true;//表示存在该钉钉号
             }

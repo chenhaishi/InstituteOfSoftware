@@ -240,7 +240,7 @@
                                                     var errdata = data.Data;//录入错误的数据
                                                     var detailerrdata = "";
                                                     for (var i = 0; i < errdata.length; i++) {
-                                                        detailerrdata += errdata[i].empname + "的工资详情发送出错，原因是：" + errdata[i].errorExplain + "<br/>";
+                                                        detailerrdata += "姓名为"+errdata[i].empname + "的工资详情发送出错，原因是：" + errdata[i].errorExplain + "<br/>";
                                                     };
                                                     //msg = "成功发送" + data.Msg + "条数据" + errdata.length +
                                                     //    "条数据发送失败。失败数据分析如下：</br>" + detailerrdata;
