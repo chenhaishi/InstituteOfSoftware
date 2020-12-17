@@ -504,6 +504,7 @@
     <Compile Include="ViewEntity\StartingYear.cs" />
     <Compile Include="ViewEntity\StudentData.cs" />
     <Compile Include="ViewEntity\StudentDetailView.cs" />
+    <Compile Include="ViewEntity\StudentFeeRecordListView.cs" />
     <Compile Include="ViewEntity\StudentFeeRecordView.cs" />
     <Compile Include="ViewEntity\StudentpaymentView.cs" />
     <Compile Include="ViewEntity\StudentUnionDepartmentView.cs" />

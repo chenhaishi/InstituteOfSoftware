@@ -444,8 +444,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 if (examview.ExamType.ExamTypeID == 1)
                 {
 
-
-                    computer = db_stuExam.productComputerQuestion(exam, curriculum.CurriculumID);
+                    courseid = curriculum.CurriculumID;
+                    computer = db_stuExam.productComputerQuestion(exam, courseid);
 
                     candidateInfo.ComputerPaper = computer.ID.ToString() + ",";
 

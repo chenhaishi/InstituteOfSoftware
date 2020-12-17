@@ -24,6 +24,7 @@ using System.Text;
 using NPOI.HSSF.UserModel;
 using System.IO;
 using NPOI.SS.UserModel;
+using SiliconValley.InformationSystem.Entity.ViewEntity.XYK_Data;
 
 namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
 {
@@ -462,21 +463,49 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
         {
             return Json(dbtext.Expenseentry(page, limit, StudentID,Name,IsaDopt,OddNumbers), JsonRequestBehavior.AllowGet);
         }
-
+        /// <summary>
+        /// 入账数据查询导出
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Entrydataexport_List()
+        {
+            BaseBusiness<StudentFeeRecordListView> StudentFeeRecordListView = new BaseBusiness<StudentFeeRecordListView>();
+            
+            List<PriceDC> PriceDCList = new List<PriceDC>();
+            var ListView = StudentFeeRecordListView.GetList().Where(d => d.Passornot == "1").ToList();
+            foreach (var item in ListView)
+            {
+                PriceDC priceDC = new PriceDC();
+                priceDC.studentID = item.StudenID;
+                priceDC.className = item.Name;
+                priceDC.identity = item.identitydocument;
+                priceDC.Amountofmoney = item.Amountofmoney;
+                priceDC.CostitemsName = item.CostitemsName;
+                priceDC.OddNumbers = item.OddNumbers;
+                priceDC.GrandName = item.StageName;
+                priceDC.Paymentmethod = item.Paymentmethod;
+                priceDC.AddTime = item.AddTime;
+                priceDC.AddDate = item.AddDate;
+                priceDC.FinanceModelName = item.FinancialstaffName;
+                PriceDCList.Add(priceDC);
+            }
+           
+            CostDataToExcel(PriceDCList);
+            return Json(new { code = 0,data= PriceDCList });
+        }
         /// <summary>
         /// 课时费统计    写入Excel
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult CostDataToExcel()
+        public ActionResult CostDataToExcel(List<PriceDC> list)
         {
             var ajaxresult = new AjaxResult();
-            List<Staff_CostView> list = new List<Staff_CostView>();
 
             var workbook = new HSSFWorkbook();
 
             //创建工作区
-            var sheet = workbook.CreateSheet("课时费统计");
+            var sheet = workbook.CreateSheet("入账统计表");
 
             #region 表头样式
 
@@ -505,16 +534,17 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             {
                 var row = (HSSFRow)sheet.CreateRow(num);
 
-                CreateCell(row, ContentcellStyle, 0, d.Emp_Name);
-                CreateCell(row, ContentcellStyle, 1, d.RoleName);
-                CreateCell(row, ContentcellStyle, 2, d.Cost_fee.ToString());
-                CreateCell(row, ContentcellStyle, 3, d.Duty_fee.ToString());
-                CreateCell(row, ContentcellStyle, 4, d.Invigilation_fee.ToString());
-                CreateCell(row, ContentcellStyle, 5, d.Marking_fee.ToString());
-                CreateCell(row, ContentcellStyle, 6, d.Super_class.ToString());
-                CreateCell(row, ContentcellStyle, 7, d.Internal_training_fee.ToString());
-                CreateCell(row, ContentcellStyle, 8, d.RD_fee.ToString());
-                CreateCell(row, ContentcellStyle, 9, d.totalmoney.ToString());
+                CreateCell(row, ContentcellStyle, 0, d.studentID.ToString());
+                CreateCell(row, ContentcellStyle, 1, d.className);
+                CreateCell(row, ContentcellStyle, 2, d.identity);
+                CreateCell(row, ContentcellStyle, 3, d.Amountofmoney.ToString());
+                CreateCell(row, ContentcellStyle, 4, d.CostitemsName.ToString());
+                CreateCell(row, ContentcellStyle, 5, d.GrandName);
+                CreateCell(row, ContentcellStyle, 6, d.OddNumbers);
+                CreateCell(row, ContentcellStyle, 7, d.Paymentmethod);
+                CreateCell(row, ContentcellStyle, 8, d.FinanceModelName);
+                CreateCell(row, ContentcellStyle, 9, d.AddDate.ToString("yyyy-MM-dd"));
+                CreateCell(row, ContentcellStyle, 10, d.AddTime.ToString());
                 num++;
 
             });
@@ -523,7 +553,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             var Path = System.IO.Path.Combine(path1, "\\XinxihuaData\\Excel");
             if (!System.IO.Directory.Exists(Path))     //判断是否有该文件夹
                 System.IO.Directory.CreateDirectory(Path); //如果没有在Uploads文件夹下创建文件夹Excel
-            string saveFileName = Path + "\\" + "课时费统计" + ".xlsx"; //路径+表名+文件类型
+            string saveFileName = Path + "\\" + "入账统计" + ".xlsx"; //路径+表名+文件类型
             try
             {
                 FileStream fs = new FileStream(saveFileName, FileMode.Create, FileAccess.Write);
@@ -547,16 +577,17 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
                 HSSFRow Header = (HSSFRow)sheet.CreateRow(0);
                 Header.HeightInPoints = 40;
 
-                CreateCell(Header, HeadercellStyle, 0, "姓名");
-                CreateCell(Header, HeadercellStyle, 1, "职务");
-                CreateCell(Header, HeadercellStyle, 2, "课时费");
-                CreateCell(Header, HeadercellStyle, 3, "值班费");
-                CreateCell(Header, HeadercellStyle, 4, "监考费");
-                CreateCell(Header, HeadercellStyle, 5, "阅卷费");
-                CreateCell(Header, HeadercellStyle, 6, "超带班");
-                CreateCell(Header, HeadercellStyle, 7, "内训费");
-                CreateCell(Header, HeadercellStyle, 8, "研发费");
-                CreateCell(Header, HeadercellStyle, 9, "合计");
+                CreateCell(Header, HeadercellStyle, 0, "学生学号");
+                CreateCell(Header, HeadercellStyle, 1, "学生名字");
+                CreateCell(Header, HeadercellStyle, 2, "学生身份证号");
+                CreateCell(Header, HeadercellStyle, 3, "缴费金额");
+                CreateCell(Header, HeadercellStyle, 4, "缴费名目");
+                CreateCell(Header, HeadercellStyle, 5, "缴费阶段");
+                CreateCell(Header, HeadercellStyle, 6, "缴费单号");
+                CreateCell(Header, HeadercellStyle, 7, "收款方式");
+                CreateCell(Header, HeadercellStyle, 8, "经办人");
+                CreateCell(Header, HeadercellStyle, 9, "缴费时间");
+                CreateCell(Header, HeadercellStyle, 10, "入账时间");
             }
 
             void CreateCell(HSSFRow row, HSSFCellStyle TcellStyle, int index, string value)

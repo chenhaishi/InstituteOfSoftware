@@ -75,24 +75,7 @@
 
 </div>
 <div style="height:1500px">
-    <div style="width:380px">
-        <table class="layui-table" style="width:380px;float:left;margin-left:30px">
-            <colgroup>
-                <col width="120">
-
-            </colgroup>
-            <thead>
-                <tr>
-                    <th colspan="6" style="font-weight:bold">学生考试名单</th>
-
-                </tr>
-            </thead>
-            <tbody id="stulist"></tbody>
-        </table>
-    </div>
-
-
-    <table class="table table-hover table-bordered" style="width:280px;margin-left:1178px;margin-top:00px;float:none">
+    <table class="table table-hover table-bordered" style="width:280px;margin-left:1180px;margin-top:00px;float:none">
         <tbody>
             <tr>
                 <td colspan="2">
@@ -162,55 +145,21 @@
         </tbody>
 
     </table>
-    <div style="width:748px;margin-left:420px;margin-top:-950px;OVERFLOW: scroll; scrollbar-face-color: #DBEBFE; scrollbar-shadow-color: #B8D6FA; scrollbar-highlight-color:#FFFFFF; scrollbar-3dlight-color: #DBEBFE; scrollbar-darkshadow-color:#458CE4;scrollbar-track-color: #FFFFFF; scrollbar-arrow-color: #458CE4">
-        <div style="margin-top:10px">
-            <div class="mb-3">
-
-                <div id="itemlist" class="card">
-
-                </div>
-
-
-            </div>
-        </div>
-        <div id="computerBtn">
-
-        </div>
-        @*<br />
-
-            @*<a class="layui-btn" id="preBtn" style="color:black;width:50%;float:none;margin-top:10px">上一个</a>
-
-            <a class="layui-btn" id="nextBtn" style="color:black;width:50%;margin-top:-60px;margin-left:376px">下一个</a>*@
-        @*<br />*@
-
+    <div style="margin-left:31px;margin-top:-940px;float:none;width:1120px">
+        <table class="layui-hide" lay-filter="ExamScores" id="ExamScores"></table>
     </div>
-
 </div>
-
-
 
 <!--模板-->
 <script type="text/template" id="moban1">
     @*<li examid="{{=examid}}" examroom="{{=examroomid}}" class="tayMarkingitem"><span>{{=ExamTitle}}</span> --- <span>{{=ExamRoom}}</span> <span class="{{=styleClass}}" style="margin-left:5px;">{{=text}}</span></li>*@
     <li />
-    <a examid="{{=examid}}" examroom="{{=examroomid}}" style="text-decoration: none;" class="tayMarkingitem"><span>{{=ExamTitle}}</span> - <span>{{=ExamRoom}}</span><span class="{{=styleClass}}">{{=text}}</span></a>
+    @*<a lay-filter="search" examid="{{=examid}}" examroom="{{=examroomid}}" style="text-decoration: none;" class="tayMarkingitem"><span>{{=ExamTitle}}</span> - <span>{{=ExamRoom}}</span><span class="{{=styleClass}}">{{=text}}</span></a>*@
+    <button lay-filter="search" examid="{{=examid}}" examroom="{{=examroomid}}" style="text-decoration: none;" class="tayMarkingitem"><span>{{=ExamTitle}}</span> - <span>{{=ExamRoom}}</span><span class="{{=styleClass}}">{{=text}}</span></button>
     </li>
 </script>
-<!--模板-->
-<script type="text/template" id="moban2">
-    <div class="answerSheetItem">
-        <div>
-            <span class="questionIndex">{{=index}}</span> <code style="margin-left:5px; font-size:18px;">{{=question}}</code>&nbsp;&nbsp;(<span class="listScores">{{=scores}}</span>分)
-            <input class="scoreitem" type="number" value="0" max="{{=scores}}" placeholder="输入分数" style="margin-left:10px; border-top:0px solid white;border-left:0px solid white;border-right:0px solid white;border-bottom:1px solid black;" />
-            <label style=" color:black;font-size:20px;">参考答案:</label>{{=referenceanswer}}
-            <div class="Questionanswer" style="display:block; margin-left:50px; background-color:white; margin-top:20px; color:black; font-size:16px; padding:30px;">
-
-                {{=answer}}
-
-            </div>
-
-        </div>
-    </div>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="download">下载</a>
 </script>
 @section script{
     <script src="~/Scripts/underscore.js"></script>
@@ -248,8 +197,43 @@
 
             });
         }
-        layui.use(['layer'], function () {
+        layui.use(['layer', 'table', 'form'], function () {
+            var form = layui.form;
+            var table = layui.table;
             var layer = layui.layer;
+            table.render({
+                elem: '#ExamScores'
+                , url: '/ExaminationSystem/ExamScores/ExamScoreData'
+                , title: '学生名单'
+                , cols: [[
+                    , { field: 'id', title: '序号', width: "20%", sort: true}
+                    , { field: 'StudentName', title: '学员名称', width: "32%"}
+                    , { field: 'IsReExam', title: '是否已阅', width: "32%" }
+                    , { field: 'right', title: '操作', width: "27%", toolbar: '#barDemo' }
+                ]]
+            });
+            layui.form.render("select");
+
+            form.on('submit(search)', function (data) {
+                console.log(Examid);
+                console.log(ExamRoom);
+                table.reload('ExamScores', {
+                    url: '/ExaminationSystem/ExamScores/ExamScoreData'
+                    , where: {
+                        examid: Examid,
+                        examroom: ExamRoom
+                    } //设定异步数据接口的额外参数
+                    //,height: 300
+                });
+                return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+            })
+             //监听行工具事件
+            table.on('tool(ExamScores)', function(obj){
+                  var data = obj.data;
+                if (obj.event === 'download') {
+                    console.log("下载中！！！");
+                  }
+                });
             //加载待阅卷试卷
             $.post('/ExaminationSystem/ExamScores/MarkeData', {}, function (result) {
                 if (result.ErrorCode == 200) {
@@ -277,87 +261,7 @@
                     }
                 }
             });
-            // 点击试卷1：加载试卷信息2： 加载参加考试人员名单
-            //2： 加载参加考试人员名单
-            function loadStuData(examid, examroom) {
 
-                $("#stulist").html("");
-                $.post('/ExaminationSystem/ExamScores/MakeStuData', { examid: examid, examroom: examroom }, function (data) {
-
-                    
-                    if (data.ErrorCode == 200) {
-                        var a = 1;
-                        $("#stulist").empty();
-                        var cols = data.Data.length % 2 == 0 ? (data.Data.length-2)/2 : (data.Data.length - 1)/2;
-                        
-                        for (var i = 0; i <= cols; i++) {
-
-                            //var studentNumber = data.Data[i].student.StudentNumber;
-
-                            var isMarke = "";
-                            var noMarke = "";
-
-                            var classStyle = isMarke == "已阅" ? "layui-badge layui-bg-green" : "layui-badge layui-bg-orange";
-                            var Styleclass = isMarke == "已阅" ? "layui-badge layui-bg-green" : "layui-badge layui-bg-orange";
-                            
-                            if (i == 0) {
-                                //   0/1
-                                if (data.Data.length % 2 != 0 && i == cols) {   
-
-                                    isMarke = data.Data[i].IsMark == true ? "已阅" : "未阅";
-                                    classStyle = isMarke == "已阅" ? "layui-badge layui-bg-green" : "layui-badge layui-bg-orange";
-                                    $("#stulist").append("<tr style='height: 50px'><td colspan='2'><a stuNumber='" + data.Data[i].student.StudentNumber + "' style='text-decoration: none; color: #008DE7' class='layui-btn layui-btn-primary stuBtn'>" + data.Data[i].student.Name + "<span class='" + classStyle + "'>" + isMarke + "</span></a></td>");
-                                    
-                                } else {
-                                    isMarke = data.Data[i].IsMark == true ? "已阅" : "未阅";
-                                    noMarke = data.Data[a].IsMark == true ? "已阅" : "未阅";
-                                    classStyle = isMarke == "已阅" ? "layui-badge layui-bg-green" : "layui-badge layui-bg-orange";
-                                    Styleclass = noMarke == "已阅" ? "layui-badge layui-bg-green" : "layui-badge layui-bg-orange";
-                                    $("#stulist").append("<tr style='height: 50px'><td colspan='2'><a stuNumber='" + data.Data[i].student.StudentNumber + "' style='text-decoration: none; color: #008DE7' class='layui-btn layui-btn-primary stuBtn'>" + data.Data[i].student.Name + "<span class='" + classStyle + "'>" + isMarke + "</span></a></td>" +
-                                        "<td colspan='2'><a stuNumber='" + data.Data[a].student.StudentNumber + "' style='text-decoration: none; color: #008DE7' class='layui-btn layui-btn-primary stuBtn'>" + data.Data[a].student.Name + "<span class='" + Styleclass + "'>" + noMarke + "</span></a></td>");
-                                }
-
-                            } else if (i == 1) {
-                                //   2/3
-                                if (data.Data.length % 2 != 0 && i == cols) {
-                                   
-                                    isMarke = data.Data[i + 1].IsMark == true ? "已阅" : "未阅";
-                                    classStyle = isMarke == "已阅" ? "layui-badge layui-bg-green" : "layui-badge layui-bg-orange";
-                                    $("#stulist").append("<tr style='height: 50px'><td colspan='2'><a stuNumber='" + data.Data[i + 1].student.StudentNumber + "'  style='text-decoration: none; color: #008DE7' class='layui-btn layui-btn-primary stuBtn'>" + data.Data[i + 1].student.Name + "<span class='" + classStyle + "'>" + isMarke + "</span></a></td>");
-                                    
-                                } else {
-                                    isMarke = data.Data[i + 1].IsMark == true ? "已阅" : "未阅";
-                                    noMarke = data.Data[a].IsMark == true ? "已阅" : "未阅";
-                                    classStyle = isMarke == "已阅" ? "layui-badge layui-bg-green" : "layui-badge layui-bg-orange";
-                                    Styleclass = noMarke == "已阅" ? "layui-badge layui-bg-green" : "layui-badge layui-bg-orange";
-                                    $("#stulist").append("<tr style='height: 50px'><td colspan='2'><a stuNumber='" + data.Data[i + 1].student.StudentNumber + "'  style='text-decoration: none; color: #008DE7' class='layui-btn layui-btn-primary stuBtn'>" + data.Data[i + 1].student.Name + "<span class='" + classStyle + "'>" + isMarke + "</span></a></td>" +
-                                        "<td colspan='2'><a stuNumber='" + data.Data[a].student.StudentNumber + "' style='text-decoration: none; color: #008DE7' class='layui-btn layui-btn-primary stuBtn'>" + data.Data[a].student.Name + "<span class='" + Styleclass + "'>" + noMarke + "</span></a></td>");
-                                }
-                            } else if (i >= 2) {
-                                //  4/5
-                                if (data.Data.length % 2 != 0 && i == cols) {
-                                    isMarke = data.Data[i * 2].IsMark == true ? "已阅" : "未阅";
-                                    classStyle = isMarke == "已阅" ? "layui-badge layui-bg-green" : "layui-badge layui-bg-orange"; 
-                                    $("#stulist").append("<tr style='height: 50px'><td colspan='2'><a stuNumber='" + data.Data[i * 2].student.StudentNumber + "' style='text-decoration: none; color: #008DE7' class='layui-btn layui-btn-primary stuBtn'>" + data.Data[i * 2].student.Name + "<span class='" + classStyle + "'>" + isMarke + "</span></a></td>");
-                                } else { 
-                                isMarke = data.Data[i*2].IsMark == true ? "已阅" : "未阅";
-                                noMarke = data.Data[a].IsMark == true ? "已阅" : "未阅";
-                                classStyle = isMarke == "已阅" ? "layui-badge layui-bg-green" : "layui-badge layui-bg-orange";
-                                Styleclass = noMarke == "已阅" ? "layui-badge layui-bg-green" : "layui-badge layui-bg-orange";
-                                $("#stulist").append("<tr style='height: 50px'><td colspan='2'><a stuNumber='" + data.Data[i * 2].student.StudentNumber + "' style='text-decoration: none; color: #008DE7' class='layui-btn layui-btn-primary stuBtn'>" + data.Data[i * 2].student.Name + "<span class='" + classStyle + "'>" + isMarke + "</span></a></td>" +
-                                "<td colspan='2'><a stuNumber='" + data.Data[a].student.StudentNumber + "' style='text-decoration: none; color: #008DE7' class='layui-btn layui-btn-primary stuBtn'>" + data.Data[a].student.Name + "<span class='" + Styleclass + "'>" + noMarke + "</span></a></td>");
-                                }
-                            }
-                            a += 2;
-                        }
-                        
-                            
-                    }
-                    else {
-                        layer.msg('服务器错误。。', { icon: 2 });
-                    }
-                });
-            }
             
             //3:点击加载阅卷信息及人员名单
             $(document).off("click", ".tayMarkinglist .tayMarkingitem").on("click", '.tayMarkinglist .tayMarkingitem', function () {
@@ -400,12 +304,9 @@
 
                                 $("#MarkingInfoArea .filshPaper").find("span").text(parseInt(data.Data.total.length) - data.Data.NoScoresCount.length);
 
-
-                                Sheetindex++;
                                 
-                                loadAnswerSheet(examid, examroom, Sheetindex);
 
-                                loadStuData(Examid, ExamRoom);
+                                //loadStuData(Examid, ExamRoom);
 
                                 //TotalScore(Examid, StuExamNumber);
                                 
@@ -445,132 +346,9 @@
                      });
                  
                  }
-                //加载答卷
-                function loadAnswerSheet(examid, examroom, index, studentnumber) {
-                    
-                    
-                    //清空分数
-                    $("#answerScores").val(0);
-                    $("#computerScores").val(0);
-                    var lodindex = layer.load(1); //换了种风格
-               
-                    $.post("/ExaminationSystem/ExamScores/MarkeAnswerSheetData", { examid: examid, examroom: examroom, index: index, studentnumber: studentnumber }, function (result) {
-                    layer.close(lodindex);
-                    $("#itemlist").html("");
-                    $("#download").remove();
-                        if (result.Data.length > 0) {
-                            StuExamNumber = result.Data[0].candidinfo.CandidateNumber;
-                            TotalScore(Examid, StuExamNumber);
-                            TopstudentNumber = result.Data[0].candidinfo.StudentID;
-                        if (result.Data[0].isEnd == true) {
 
-                            IsEndSheet = true;
-
-                        }
-                    }
-
-                    for (var i = 0; i < result.Data.length; i++) {
-
-                        if (result.Data[0].question != "") {
-                            var layerthtml = _.template($("#moban2").html());
-
-                            var label = $("<label></label>");
-                            var labels = $("<label style='font-size:18px;'></label>");
-                            label.text(result.Data[i].questionTitle.Title);
-                            labels.text(result.Data[i].questionTitle.ReferenceAnswer);
-                            var layerdata = layerthtml({ index: i + 1, question: document.HTMLDOMtoString(label[0]), scores: result.Data[i].question.questionScores, answer: result.Data[i].question.answer, referenceanswer: document.HTMLDOMtoString(labels[0]) });
-                            $("#itemlist").append(layerdata);
-                        }
-
-                        if (result.Data[0].question == "") {
-
-                            $("#itemlist").append("<h2 style='text-align:center;'>空</h2>");
-
-                        }
-
-                    }
-                    var button = $('<a id="download" class="layui-btn layui-btn-fluid layui-btn-primary"></a>');
-
-                    //首先发送请求 查看是否有机试题
-
-                    checkHaveComputerPaper(Examid, StuExamNumber, function (data) {
-
-                        if (data == "1") {
-                            button[0].href = "/ExaminationSystem/ExamScores/DownloadComputerSheet?examid=" + Examid + "&kaohao=" + StuExamNumber;
-                            button.text("机试题下载");
-                            $("#computerBtn").append(button);
-                        }
-                        else {
-                            button[0].href = "javascript:void(0);";
-                            button.text("该考生无机试题答卷");
-                            button.attr("Nohave", "Nohave");
-                            $("#computerBtn").append(button);
-                        }
-
-                    }, function () {
-
-
-                    });
-
-
-
-                    layer.close(lodindex);
-
-
-                });
-
-                    
-                }
-                //下载机试
-                $(document).off("click", "#download").on("click", "#download", function () {
-
-                var status = $(this).attr("Nohave");
-
-                if (status != undefined) {
-                    layer.msg("该考生并未提交机试题答卷");
-
-                };
             })
-                ///上一个                
-                //$(document).off("click", "#preBtn").on("click", '#preBtn',function () {
 
-
-                //    if (Sheetindex == 1) {
-                //        layer.msg('当前是第一份哦。。', { icon: 2 }, function () {
-                //            layer.close(index);
-                //        });
-                //        return;
-                //    }
-
-
-                //    var cure = $("#stulist a");
-                //    cure.removeClass("currentstudent");
-                //    cure.addClass("currentstudent");
-
-                //    Sheetindex--;
-
-                //    loadAnswerSheet(Examid, ExamRoom, Sheetindex);
-
-                //});
-                ///下一个            
-            //    $(document).off("click", "#nextBtn").on("click", '#nextBtn',function () {
-
-            //        var fenliang = $("#fenliang").text();
-            //        if (Sheetindex == fenliang) {
-            //            layer.msg('当前是最后一份', { icon: 2 }, function () {
-            //                layer.close(index);
-            //            });
-            //            return;
-            //        }
-            //        var cure = $("#stulist a");
-            //        cure.removeClass("currentstudent");
-            //        cure.addClass("currentstudent");
-
-            //        Sheetindex++;
-
-            //        loadAnswerSheet(Examid, ExamRoom, Sheetindex);
-
-            //});
                 //解答题一键评分
                  $(document).off("click", "#caclAnswerScore").on("click", "#caclAnswerScore", function () {
                  
@@ -606,7 +384,7 @@
 
                             layer.msg('记录成功', { icon: 1 }, function () {
                                 layer.close(index);
-                                loadStuData(Examid, ExamRoom);
+                                //loadStuData(Examid, ExamRoom);
                             });
                             
                             flushStuStatu(StuExamNumber);
@@ -649,7 +427,7 @@
 
             });
 
-               function TotalScore(Examid, StuExamNumber) {
+                function TotalScore(Examid, StuExamNumber) {
                 $.post("/ExaminationSystem/ExamScores/StuScores", { examid: Examid, StuExamNumber: StuExamNumber }, function (data) {
                     //初始化分数
                     if (data.ErrorCode == 200) {
@@ -672,18 +450,5 @@
                 });
             }
 
-            //点击学员加载答卷，加载学员的考试分数
-            //显示选择题解答题机试题分数及总分
-
-            $(document).off("click", ".stuBtn").on("click", '.stuBtn', function () {
-                var studetnnumber = $(this).attr("stuNumber");
-                $("#stulist a").removeClass("currentstudent");
-                $(this).addClass("currentstudent");
-                Sheetindex = ($(this).index()) + 1;
-                loadAnswerSheet(Examid, ExamRoom, Sheetindex, studetnnumber);
-
-                
-            })
-            })
     </script>
 }

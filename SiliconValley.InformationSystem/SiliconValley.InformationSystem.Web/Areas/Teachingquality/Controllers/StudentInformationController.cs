@@ -301,7 +301,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
                 WeChat=s.WeChat,
                 Familyaddress=s.Familyaddress,
                 className= SutdentCLassNameList.SutdentCLassName(s.StudentNumber).ClassID
-
             }).ToList();
             //  var x = dbtext.GetList();
             var data = new
