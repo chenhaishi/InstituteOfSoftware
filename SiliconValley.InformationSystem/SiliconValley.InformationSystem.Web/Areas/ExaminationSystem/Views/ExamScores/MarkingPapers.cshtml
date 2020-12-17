@@ -153,14 +153,20 @@
 <!--模板-->
 <script type="text/template" id="moban1">
     @*<li examid="{{=examid}}" examroom="{{=examroomid}}" class="tayMarkingitem"><span>{{=ExamTitle}}</span> --- <span>{{=ExamRoom}}</span> <span class="{{=styleClass}}" style="margin-left:5px;">{{=text}}</span></li>*@
-    <li />
-    @*<a lay-filter="search" examid="{{=examid}}" examroom="{{=examroomid}}" style="text-decoration: none;" class="tayMarkingitem"><span>{{=ExamTitle}}</span> - <span>{{=ExamRoom}}</span><span class="{{=styleClass}}">{{=text}}</span></a>*@
-    <button lay-filter="search" examid="{{=examid}}" examroom="{{=examroomid}}" style="text-decoration: none;" class="tayMarkingitem"><span>{{=ExamTitle}}</span> - <span>{{=ExamRoom}}</span><span class="{{=styleClass}}">{{=text}}</span></button>
+    <li>
+    <a name="search" examid="{{=examid}}" examroom="{{=examroomid}}" style="text-decoration: none;" class="tayMarkingitem"><span>{{=ExamTitle}}</span> - <span>{{=ExamRoom}}</span><span class="{{=styleClass}}">{{=text}}</span></a>
+    @*<button name="search" examid="{{=examid}}" examroom="{{=examroomid}}" style="text-decoration: none;" class="tayMarkingitem"><span>{{=ExamTitle}}</span> - <span>{{=ExamRoom}}</span><span class="{{=styleClass}}">{{=text}}</span></button>*@
     </li>
 </script>
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="download">下载</a>
+    <a class="layui-btn layui-btn-danger" lay-event="download">下载</a>
 </script>
+<div id="TeacherDiv" style="display:none">
+    <form class="layui-form">
+        <div class="layui-form-item">
+        </div>
+    </form>
+</div>
 @section script{
     <script src="~/Scripts/underscore.js"></script>
     <script>
@@ -203,37 +209,77 @@
             var layer = layui.layer;
             table.render({
                 elem: '#ExamScores'
-                , url: '/ExaminationSystem/ExamScores/ExamScoreData'
+                , url: '/ExaminationSystem/ExamScores/StudentList'
                 , title: '学生名单'
                 , cols: [[
-                    , { field: 'id', title: '序号', width: "20%", sort: true}
-                    , { field: 'StudentName', title: '学员名称', width: "32%"}
-                    , { field: 'IsReExam', title: '是否已阅', width: "32%" }
+                    , { field: 'StudentID', title: '序号', width: "20%", sort: true }
+                    , { field: 'StudentName', title: '学员名称', width: "22%"}
+                    , {
+                        field: 'IsReExam', title: '是否已阅', width: "22%", templet: function (data) {
+                            
+                            if (data.IsReExam == false) {
+                               
+                                return "未阅";
+                            }
+                            else {
+                                
+                                return "已阅";
+                            }
+
+                        } }
+                    , {
+                        field: 'Paper', title: '笔试', width: "12%", templet: function (data) {
+
+                            if (data.Paper == "" || data.Paper == null) {
+
+                                return "没有";
+                            }
+                            else {
+                                return "有";
+                            }
+
+                        }}
+                    , {
+                        field: 'ComputerPaper', title: '机试', width: "12%", templet: function (data) {
+
+                            if (data.ComputerPaper == "" || data.ComputerPaper == "1" || data.ComputerPaper == null) {
+
+                                return "没有";
+                            }
+                            else {
+                                return "有";
+                            }
+
+                        }
+                    } 
                     , { field: 'right', title: '操作', width: "27%", toolbar: '#barDemo' }
                 ]]
             });
             layui.form.render("select");
 
-            form.on('submit(search)', function (data) {
-                console.log(Examid);
-                console.log(ExamRoom);
-                table.reload('ExamScores', {
-                    url: '/ExaminationSystem/ExamScores/ExamScoreData'
-                    , where: {
-                        examid: Examid,
-                        examroom: ExamRoom
-                    } //设定异步数据接口的额外参数
-                    //,height: 300
-                });
-                return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
-            })
+            
              //监听行工具事件
             table.on('tool(ExamScores)', function(obj){
                   var data = obj.data;
                 if (obj.event === 'download') {
-                    console.log("下载中！！！");
+                    layer.open({
+                        type: 1,
+                        title: "下载",
+                        area: ["700px", "400px"],
+                        content: $('#TeacherDiv'),
+                        success: function () {
+
+                        }
+                        
+                    });
                   }
-                });
+            });
+            //监听行双击事件
+            table.on('rowDouble(ExamScores)', function (obj) {
+                console.log(obj.data);
+                console.log(obj.data.StudentID);
+                TotalScore(Examid, obj.data.StudentID);
+            });
             //加载待阅卷试卷
             $.post('/ExaminationSystem/ExamScores/MarkeData', {}, function (result) {
                 if (result.ErrorCode == 200) {
@@ -271,7 +317,17 @@
                 
                 var examid = $(this).attr("examid");
                 var examroom = $(this).attr("examroom");
-                
+                //classiD: examroom
+                table.reload('ExamScores', {
+                    url: '/ExaminationSystem/ExamScores/StudentList'
+                    , where: {
+                        examid: examid,
+                        
+                    } //设定异步数据接口的额外参数
+                    //,height: 300
+                });
+                //return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+
                 $.post("/ExaminationSystem/ExamScores/ExamIsEnd", { examid: examid }, function (result) {
 
                     if (result.ErrorCode == 200) {
@@ -331,21 +387,21 @@
             });
 
                 //加载答卷方法及选择题解答题总分
-                 function checkHaveComputerPaper(examid, kaohao, callback, errorcallback) {
-                     $.post('/ExaminationSystem/ExamScores/checkHaveComputerPaper', { examid: examid, kaohao: kaohao }, function (result) {
+                 //function checkHaveComputerPaper(examid, kaohao, callback, errorcallback) {
+                 //    $.post('/ExaminationSystem/ExamScores/checkHaveComputerPaper', { examid: examid, kaohao: kaohao }, function (result) {
                  
-                         if (result.ErrorCode == 200) {
+                 //        if (result.ErrorCode == 200) {
                  
-                             callback(result.Data)
-                         }
-                         else {
+                 //            callback(result.Data)
+                 //        }
+                 //        else {
                  
-                             errorcallback();
-                         }
+                 //            errorcallback();
+                 //        }
                  
-                     });
+                 //    });
                  
-                 }
+                 //}
 
             })
 
@@ -364,9 +420,7 @@
                  });
                 //一键下载机试题
                 $(document).off("click", "#YiJian").on("click", "#YiJian", function () {
-                    //$.post("/ExaminationSystem/ExamScores/OneClickDownload?examid=" + Examid, {}, function (data) {
-                    //    console.log(data);
-                    //})
+                   
                     layer.msg("功能优化中");
                 })
                 //提交分数               
@@ -384,19 +438,10 @@
 
                             layer.msg('记录成功', { icon: 1 }, function () {
                                 layer.close(index);
-                                //loadStuData(Examid, ExamRoom);
+                                
                             });
                             
-                            flushStuStatu(StuExamNumber);
-                            //刷新考生
-                            //$("#Stulist button").remove();
-                            //loadStuData(Examid, ExamRoom);
-
-                            //刷新信息
-                            loadMarkInfo(Examid, ExamRoom);
-
-                            //检查是否全部阅完毕
-                            IsMarkeFinsh(Examid, ExamRoom);
+                            
 
                         }
 
@@ -426,7 +471,7 @@
                     })
 
             });
-
+                //加载右边表格的数据
                 function TotalScore(Examid, StuExamNumber) {
                 $.post("/ExaminationSystem/ExamScores/StuScores", { examid: Examid, StuExamNumber: StuExamNumber }, function (data) {
                     //初始化分数
