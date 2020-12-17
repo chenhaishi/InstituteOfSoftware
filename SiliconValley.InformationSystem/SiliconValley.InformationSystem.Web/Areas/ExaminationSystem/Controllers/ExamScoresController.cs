@@ -42,6 +42,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
         private readonly StudentInformationBusiness db_student;
         private readonly CourseBusiness db_course;
+        private readonly CandidateInfoBusiness db_candidate;
 
         public ExamScoresController()
         {
@@ -51,6 +52,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             db_answerQuestion = new AnswerQuestionBusiness();
             db_student = new StudentInformationBusiness();
             db_course =  new CourseBusiness();
+            db_candidate =  new CandidateInfoBusiness();
         }
 
         public ActionResult Index()
@@ -795,46 +797,43 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             
             return Json(result, JsonRequestBehavior.AllowGet);
         }
+
+
         /// <summary>
-        /// 学生名单数据
+        /// 学生名单数据, string classiD
         /// </summary>
         /// <returns></returns>
-        public ActionResult StudentList(int examid,int examroom)
+        public ActionResult StudentList(int examid)
         {
-            AjaxResult result = new AjaxResult();
-            //首先考场考生
-            var tempstulist = db_examScores.CandidateinfosByExamroom(examid, examroom);
+            List<StudentExamView> scorelist = new List<StudentExamView>();
+            List<CandidateInfo> multipleChoicelist = db_candidate.GetList().Where(d =>d.Examination==examid).ToList();
 
-                List<object> stulist = new List<object>();
-                //转换为学员
-                foreach (var item in tempstulist)
-                {
-                    var tempstu = db_student.GetList().Where(d => d.StudentNumber == item.StudentID).FirstOrDefault();
-                    
-                    //查看这个学员的成绩是否已经被录入
+            for (int i = 0; i < multipleChoicelist.Count; i++)
+            {
+                StudentExamView examView = new StudentExamView();
+                examView.StudentID = multipleChoicelist[i].StudentID;
+                examView.StudentName = db_student.GetEntity(multipleChoicelist[i].StudentID).Name;
+                examView.IsReExam = multipleChoicelist[i].IsReExam;
+                examView.Paper = multipleChoicelist[i].Paper;
+                examView.ComputerPaper = multipleChoicelist[i].ComputerPaper;
+                scorelist.Add(examView);
+            }
+            
+            var obj = new
+            {
 
-                    var stuscore = db_examScores.StuExamScores(examid, tempstu.StudentNumber);
-
-                    var IsMark = true;
-
-                    if (stuscore.TextQuestionScore == null || stuscore.OnBoard == null)
-                    {
-                        IsMark = false;
-                    }
-
-                    var obj = new
-                    {
-
-                        student = tempstu,
-                        IsMark = IsMark
+                code = 0,
+                msg = "",
+                count = scorelist.Count,
+                data = scorelist
 
 
-                    };
-                    stulist.Add(obj);
-                }
+            };
 
-            return Json(result, JsonRequestBehavior.AllowGet);
+            return Json(obj, JsonRequestBehavior.AllowGet);
         }
+
+        
         /// <summary>
         /// 成绩数据
         /// </summary>
