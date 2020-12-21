@@ -58,8 +58,9 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
         BaseBusiness<PayviewPaymentver> PayviewPaymentverBusiness = new BaseBusiness<PayviewPaymentver>();
         //预入费退费业务类
         BaseBusiness<Refund> RefundBusiness = new BaseBusiness<Refund>();
-       
-       
+        BaseBusiness<StudentFeeRecord> StudentFeeRecord_list_add = new BaseBusiness<StudentFeeRecord>();
+
+
         //退费业务类
         BaseBusiness<Tuitionrefund> TuitionrefundBusiness = new BaseBusiness<Tuitionrefund>();
         /// <summary>
@@ -205,6 +206,8 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                     studentFee.Amountofmoney = costitemsBusiness.GetEntity(int.Parse(item)).Amountofmoney;
                     studentFee.Remarks = Remarks;
                     listFeeRecord.Add(studentFee);
+                    Enrollment Enrollment = new Enrollment();
+
                  //   this.Studentpayment(studentFee.StudenID, fine.id, 1);
                 }
               
@@ -425,6 +428,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
             int Costitemsid = 0;
             AjaxResult retus = null;
             List<Payview> listFeeRecord = new List<Payview>();
+            List<StudentFeeRecord> StudentFeeRecordss = new List<StudentFeeRecord>();
             //当前登陆人
             Base_UserModel user = Base_UserBusiness.GetCurrentUser();
             var fine = finacemo.GetList().Where(a => a.Financialstaff == user.EmpNumber).FirstOrDefault();
@@ -450,12 +454,27 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                     studentFeeRecord.Amountofmoney = item.Amountofmoney;
                     studentFeeRecord.StudenID = item.StudenID;
                     studentFeeRecord.Remarks = Remarks+Help;
+                   
                     listFeeRecord.Add(studentFeeRecord);
                 }
                 try
                 {
                     SessionHelper.Session["person"] = listFeeRecord;
                     PayviewBusiness.Insert(listFeeRecord);
+                    foreach (var item in listFeeRecord)
+                    {
+                        StudentFeeRecord pay = new StudentFeeRecord();
+                        pay.Amountofmoney = item.Amountofmoney;
+                        pay.AddTime = null;
+                        pay.Costitemsid = item.Costitemsid;
+                        pay.AddDate = item.AddDate;
+                        pay.StudenID = item.StudenID;
+                        pay.FinanceModelid = item.FinanceModelid;
+                        pay.Remarks = item.Remarks;
+                        pay.IsDelete = item.IsDelete;
+                        StudentFeeRecordss.Add(pay);
+                    }
+                    StudentFeeRecord_list_add.Insert(StudentFeeRecordss);
                     //添加核对表
                     Paymentverification paymentverification = new Paymentverification();
                     paymentverification.Passornot = null;
@@ -463,7 +482,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                     paymentverification.AddDate = null;
                     PaymentverificationBusiness.Insert(paymentverification);
                     List<PayviewPaymentver> payviewPaymentverslist = new List<PayviewPaymentver>();
-                    //
+                  
                  var FeeRecordlist=  PayviewBusiness.GetList().Where(a => a.StudenID == studentid && a.FinanceModelid == Costitemsid).OrderByDescending(a => a.ID).Take(listFeeRecord.Count()).ToList();
                     foreach (var item in FeeRecordlist)
                     {
@@ -571,6 +590,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
             return listvier;
 
         }
+
 
         public List<vierprice> FienTuitionrefund(List<vierprice> vierprices2)
         {
