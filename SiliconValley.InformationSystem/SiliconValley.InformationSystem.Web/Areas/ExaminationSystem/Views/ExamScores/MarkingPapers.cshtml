@@ -67,8 +67,10 @@
                     <label class="infoitem totalPaper" style="color:black;margin-right:200px">试卷总数:<span id="fenliang" style="color:#009688!important"></span></label>
                     <label class="infoitem filshPaper" style="color:black">已阅卷数量:<span style="color:#009688!important"></span></label>
                 </div>
-
-                <a id="YiJian" class="layui-btn layui-btn-danger" style="text-decoration: none;margin-top:-55px;margin-right:300px;width:200px;color:white">一键下载所有机试</a>
+                <div>
+                    <a id="YiJian" class="layui-btn layui-btn-danger" style="text-decoration: none;margin-top:-55px;margin-right:300px;width:180px;color:white">一键下载机试</a>
+                    <a id="YiJianjd" class="layui-btn layui-btn-danger" style="text-decoration: none;margin-top:-110px;margin-right:-40px;width:180px;color:white">一键下载解答题</a>
+                </div>
             </div>
         </div>
     </div>
@@ -159,14 +161,12 @@
     </li>
 </script>
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-danger" lay-event="download">下载</a>
+    {{#if(d.ComputerPaper==null||d.ComputerPaper=="1"||d.ComputerPaper==""){}}
+    <a class="layui-btn layui-btn-warm">空</a>
+    {{#}else{}}
+    <a class="layui-btn layui-btn-danger download" lay-event="download">下载机试</a>
+    {{#}}}
 </script>
-<div id="TeacherDiv" style="display:none">
-    <form class="layui-form">
-        <div class="layui-form-item">
-        </div>
-    </form>
-</div>
 @section script{
     <script src="~/Scripts/underscore.js"></script>
     <script>
@@ -260,24 +260,20 @@
             
              //监听行工具事件
             table.on('tool(ExamScores)', function(obj){
-                  var data = obj.data;
+                var data = obj.data;
+                StuExamNumber = obj.data.StudentID;
                 if (obj.event === 'download') {
-                    layer.open({
-                        type: 1,
-                        title: "下载",
-                        area: ["700px", "400px"],
-                        content: $('#TeacherDiv'),
-                        success: function () {
+                    $('.download').attr('href', "/ExaminationSystem/ExamScores/DownloadComputerSheet?examid="+ Examid + "&kaohao=" + StuExamNumber); 
 
-                        }
-                        
-                    });
                   }
             });
             //监听行双击事件
             table.on('rowDouble(ExamScores)', function (obj) {
                 console.log(obj.data);
                 console.log(obj.data.StudentID);
+                StuExamNumber = obj.data.StudentID;
+                $("#answerScores").val("0");
+                $("#computerScores").val("0");
                 TotalScore(Examid, obj.data.StudentID);
             });
             //加载待阅卷试卷
@@ -386,23 +382,6 @@
                 });
             });
 
-                //加载答卷方法及选择题解答题总分
-                 //function checkHaveComputerPaper(examid, kaohao, callback, errorcallback) {
-                 //    $.post('/ExaminationSystem/ExamScores/checkHaveComputerPaper', { examid: examid, kaohao: kaohao }, function (result) {
-                 
-                 //        if (result.ErrorCode == 200) {
-                 
-                 //            callback(result.Data)
-                 //        }
-                 //        else {
-                 
-                 //            errorcallback();
-                 //        }
-                 
-                 //    });
-                 
-                 //}
-
             })
 
                 //解答题一键评分
@@ -422,6 +401,13 @@
                 $(document).off("click", "#YiJian").on("click", "#YiJian", function () {
                    
                     layer.msg("功能优化中");
+        })
+                //一键下载解答题
+                    $(document).off("click", "#YiJianjd").on("click", "#YiJianjd", function () {
+                        $.post("/ExaminationSystem/ExamScores/Exporter", { examid: Examid }, function () {
+                        layer.msg("前去C盘查收！");
+                    })
+                    
                 })
                 //提交分数               
                 $(document).off("click", "#recordScoresBtn").on("click", '#recordScoresBtn',function () {
@@ -438,7 +424,7 @@
 
                             layer.msg('记录成功', { icon: 1 }, function () {
                                 layer.close(index);
-                                
+                                TotalScore(Examid, StuExamNumber)
                             });
                             
                             
@@ -447,10 +433,12 @@
 
                     });
 
-                });
+                }
+                );
                 //解答题一键满分           
                 $(document).off("click", "#manfen").on("click", '#manfen',function () {
                     $("#answerScores").val("30");
+
                 })
                 //机试题一键满分                     
                 $(document).off("click", "#jsmanfen").on("click", '#jsmanfen',function () {
