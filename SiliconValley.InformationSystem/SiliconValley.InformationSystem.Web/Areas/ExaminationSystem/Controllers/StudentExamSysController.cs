@@ -447,9 +447,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                     courseid = curriculum.CurriculumID;
                     computer = db_stuExam.productComputerQuestion(exam, courseid);
 
-                    candidateInfo.ComputerPaper = computer.ID.ToString() + ",";
+                    //candidateInfo.ComputerPaper = computer.ID.ToString() + ",";
 
-                    db_exam.UpdateCandidateInfo(candidateInfo);
+                    //db_exam.UpdateCandidateInfo(candidateInfo);
                 }
 
                 if (examview.ExamType.ExamTypeID == 2)
