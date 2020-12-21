@@ -11,15 +11,19 @@ using System.Web.Mvc;
 
 namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controllers
 {
+    using System.Drawing;
     using System.IO;
     using System.Text;
     using System.Xml;
     using Newtonsoft.Json;
+    using NPOI.SS.UserModel;
     using SiliconValley.InformationSystem.Business.Cloudstorage_Business;
     using SiliconValley.InformationSystem.Business.CourseSyllabusBusiness;
     using SiliconValley.InformationSystem.Business.StudentBusiness;
     using SiliconValley.InformationSystem.Business.TeachingDepBusiness;
     using SiliconValley.InformationSystem.Entity.ViewEntity.zhongyike;
+    using Spire.Doc;
+    using Spire.Doc.Documents;
 
     /// <summary>
     /// 学员成绩控制器
@@ -42,6 +46,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
         private readonly StudentInformationBusiness db_student;
         private readonly CourseBusiness db_course;
+        private readonly CandidateInfoBusiness db_candidate;
 
         public ExamScoresController()
         {
@@ -51,6 +56,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             db_answerQuestion = new AnswerQuestionBusiness();
             db_student = new StudentInformationBusiness();
             db_course =  new CourseBusiness();
+            db_candidate =  new CandidateInfoBusiness();
         }
 
         public ActionResult Index()
@@ -423,8 +429,92 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
 
         }
+        /// <summary>
+        /// 一键下载解答题
+        /// </summary>
+        /// <param name="examid"></param>
+        /// <returns></returns>
+        public Document Exporter(int examid)
+        {
+            Document doc = new Document();
 
+            //添加section
+            Section s = doc.AddSection();
 
+            //查询这堂考试学生的解答题地址
+            var cand = db_candidate.GetList().Where(d => d.Examination == examid).ToList();
+            
+            //添加段落
+            Paragraph para1 = s.AddParagraph();
+            para1.AppendText("解答题");
+            Paragraph para2 = s.AddParagraph();
+
+            CloudstorageBusiness Bos = new CloudstorageBusiness();
+
+            var client = Bos.BosClient();
+
+            foreach (var item in cand)
+            {
+                if (item.Paper == null)
+                {
+                    continue;
+                }
+                var filedata = client.GetObject("xinxihua",item.Paper);
+
+                MemoryStream stream = new MemoryStream();
+                filedata.ObjectContent.CopyTo(stream);
+
+                string SheetStr = Encoding.UTF8.GetString(stream.ReadToBytes());
+
+                var list = JsonConvert.DeserializeObject<List<AnswerSheetHelp>>(SheetStr);
+               
+                foreach (var itemes in list)
+                {
+                    //根据问题ID 获取题目
+                    var name = db_student.GetList().Where(d => d.StudentNumber == item.StudentID).FirstOrDefault().Name;
+                    var question = db_answerQuestion.AllAnswerQuestion().Where(d => d.ID == itemes.questionid).FirstOrDefault().Title;
+                    var questiones = db_answerQuestion.AllAnswerQuestion().Where(d => d.ID == itemes.questionid).FirstOrDefault().ReferenceAnswer;
+                    para2.AppendText(name+ "--" + question +""+itemes.questionScores+"分"+"答案："+ questiones+ "\r\n" + itemes.answer + "\r\n");
+                }
+
+            }
+            
+            //创建段落样式1
+            ParagraphStyle style1 = new ParagraphStyle(doc);
+            style1.Name = "titleStyle";
+            style1.CharacterFormat.Bold = true;
+            style1.CharacterFormat.TextColor = Color.Purple;
+            style1.CharacterFormat.FontName = "宋体";
+            style1.CharacterFormat.FontSize = 12;
+            doc.Styles.Add(style1);
+            para1.ApplyStyle("titleStyle");
+
+            //创建段落样式2
+            ParagraphStyle style2 = new ParagraphStyle(doc);
+            style2.Name = "paraStyle";
+            style2.CharacterFormat.FontName = "宋体";
+            style2.CharacterFormat.FontSize = 11;
+
+            doc.Styles.Add(style2);
+            para2.ApplyStyle("paraStyle");
+            //para3.ApplyStyle("paraStyle");
+
+            //设置段落对齐方式
+            para1.Format.HorizontalAlignment = Spire.Doc.Documents.HorizontalAlignment.Center;
+            para2.Format.HorizontalAlignment = Spire.Doc.Documents.HorizontalAlignment.Justify;
+            //para3.Format.HorizontalAlignment = HorizontalAlignment.Justify;
+
+            //设置段落缩进
+            para2.Format.FirstLineIndent = 30;
+            //para3.Format.FirstLineIndent = 30;
+            para1.Format.AfterSpacing = 15;
+            para2.Format.AfterSpacing = 10;
+
+            //保存文档
+            doc.SaveToFile("C:\\解答题" + examid + ".docx", FileFormat.Docx2013);
+
+            return doc;
+        }
         /// <summary>
         /// 考生机试题答卷下载
         /// </summary>
@@ -436,7 +526,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             var client = Bos.BosClient();
 
-            var candidateinfo = db_exam.AllCandidateInfo(examid).Where(d=>d.CandidateNumber == kaohao).FirstOrDefault();
+            var candidateinfo = db_exam.AllCandidateInfo(examid).Where(d=>d.StudentID == kaohao).FirstOrDefault();
 
             //获取答卷路径
 
@@ -505,8 +595,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             try
             {
-               var score = db_examScores.AllExamScores().Where(d => d.Examination == examid && d.CandidateInfo == StuExamNumber).FirstOrDefault();
-
+                var candiInfo = db_candidate.GetList().Where(d => d.StudentID == StuExamNumber && d.Examination == examid).FirstOrDefault().CandidateNumber;
+                var score = db_examScores.AllExamScores().Where(d => d.Examination == examid && d.CandidateInfo == candiInfo).FirstOrDefault();
+                var candiInfoes = db_candidate.GetList().Where(d => d.StudentID == StuExamNumber && d.Examination == examid).FirstOrDefault();
                 //修改 解答题分数 机试题分数
                 if (answerScores == "")
 
@@ -531,6 +622,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 score.CreateTime = DateTime.Now;
                 score.Remark = remark;
 
+                candiInfoes.IsReExam = true;
+                db_candidate.Update(candiInfoes);
                 db_examScores.Update(score);
 
                 result.ErrorCode = 200;
@@ -563,7 +656,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             try
             {
-                var candidInfo = db_exam.AllCandidateInfo(examid).Where(d => d.CandidateNumber == StuExamNumber).FirstOrDefault();
+                var candidInfo = db_exam.AllCandidateInfo(examid).Where(d => d.StudentID == StuExamNumber).FirstOrDefault();
 
                 var testscore = db_examScores.StuExamScores(examid, candidInfo.StudentID);
 
@@ -795,46 +888,43 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             
             return Json(result, JsonRequestBehavior.AllowGet);
         }
+
+
         /// <summary>
-        /// 学生名单数据
+        /// 学生名单数据, string classiD
         /// </summary>
         /// <returns></returns>
-        public ActionResult StudentList(int examid,int examroom)
+        public ActionResult StudentList(int examid)
         {
-            AjaxResult result = new AjaxResult();
-            //首先考场考生
-            var tempstulist = db_examScores.CandidateinfosByExamroom(examid, examroom);
+            List<StudentExamView> scorelist = new List<StudentExamView>();
+            List<CandidateInfo> multipleChoicelist = db_candidate.GetList().Where(d =>d.Examination==examid).ToList();
 
-                List<object> stulist = new List<object>();
-                //转换为学员
-                foreach (var item in tempstulist)
-                {
-                    var tempstu = db_student.GetList().Where(d => d.StudentNumber == item.StudentID).FirstOrDefault();
-                    
-                    //查看这个学员的成绩是否已经被录入
+            for (int i = 0; i < multipleChoicelist.Count; i++)
+            {
+                StudentExamView examView = new StudentExamView();
+                examView.StudentID = multipleChoicelist[i].StudentID;
+                examView.StudentName = db_student.GetEntity(multipleChoicelist[i].StudentID).Name;
+                examView.IsReExam = multipleChoicelist[i].IsReExam;
+                examView.Paper = multipleChoicelist[i].Paper;
+                examView.ComputerPaper = multipleChoicelist[i].ComputerPaper;
+                scorelist.Add(examView);
+            }
+            
+            var obj = new
+            {
 
-                    var stuscore = db_examScores.StuExamScores(examid, tempstu.StudentNumber);
-
-                    var IsMark = true;
-
-                    if (stuscore.TextQuestionScore == null || stuscore.OnBoard == null)
-                    {
-                        IsMark = false;
-                    }
-
-                    var obj = new
-                    {
-
-                        student = tempstu,
-                        IsMark = IsMark
+                code = 0,
+                msg = "",
+                count = scorelist.Count,
+                data = scorelist
 
 
-                    };
-                    stulist.Add(obj);
-                }
+            };
 
-            return Json(result, JsonRequestBehavior.AllowGet);
+            return Json(obj, JsonRequestBehavior.AllowGet);
         }
+
+        
         /// <summary>
         /// 成绩数据
         /// </summary>

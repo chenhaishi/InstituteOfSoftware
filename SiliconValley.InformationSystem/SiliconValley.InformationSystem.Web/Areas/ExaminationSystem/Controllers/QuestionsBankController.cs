@@ -220,7 +220,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             var jieda = db_answerQuestion.AllAnswerQuestion().Where(d => d.Course == kecheng).ToList();
             //添加段落
             Paragraph para1 = s.AddParagraph();
-            para1.AppendText("考前复习题");
+            para1.AppendText("解答题");
             Paragraph para2 = s.AddParagraph();
             int a = 1;
             foreach (var item in xuanze)
