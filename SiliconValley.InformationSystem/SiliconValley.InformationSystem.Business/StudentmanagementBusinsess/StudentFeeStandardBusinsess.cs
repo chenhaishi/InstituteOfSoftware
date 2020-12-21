@@ -187,9 +187,11 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
         {
             //tring StudenID,string Remarks,string Costitemsid
             List<Payview> listFeeRecord = new List<Payview>();
-
+            BaseBusiness<Enrollment> Enrollment = new BaseBusiness<Enrollment>();
+            List<Enrollment> ENlist = new List<Enrollment>();
             //当前登陆人
             Base_UserModel user = Base_UserBusiness.GetCurrentUser();
+            
             var fine = finacemo.GetList().Where(a => a.Financialstaff == user.EmpNumber).FirstOrDefault();
             AjaxResult retus = null;
             try
@@ -206,16 +208,20 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                     studentFee.Amountofmoney = costitemsBusiness.GetEntity(int.Parse(item)).Amountofmoney;
                     studentFee.Remarks = Remarks;
                     listFeeRecord.Add(studentFee);
-                    Enrollment Enrollment = new Enrollment();
-
+                    Enrollment listEnrollment = new Enrollment();
+                    listEnrollment.PassNumber = null;
+                    listEnrollment.Datestration = null;
+                    listEnrollment.School = null;
+                    listEnrollment.StudentNumber = StudenID;
+                    listEnrollment.Remarks = null;
+                    listEnrollment.IsDelete = false;
+                    listEnrollment.MajorID = null;
+                    listEnrollment.Registeredbatch = null;
+                    ENlist.Add(listEnrollment);
                  //   this.Studentpayment(studentFee.StudenID, fine.id, 1);
                 }
-              
-                
+                Enrollment.Insert(ENlist);
                 SessionHelper.Session["person"] = listFeeRecord;
-
-               
-
                 PayviewBusiness.Insert(listFeeRecord);
                 //添加核对表
                 Paymentverification paymentverification = new Paymentverification();
