@@ -71,5 +71,10 @@ namespace SiliconValley.InformationSystem.Entity.Entity
         /// 完成时间
         /// </summary>
         public DateTime CompleteTime { get; set; }
+
+        /// <summary>
+        /// 图片路径
+        /// </summary>
+        public string Image { get; set; }
     }
 }

@@ -648,8 +648,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
             AjaxResult result = new AjaxResult();
             try
             {
-                
-
                 var fien = Request.Files[0];
                 string filename = fien.FileName;
                 string Extension = Path.GetExtension(filename);
@@ -678,8 +676,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
                 result = new SuccessResult();
                 result.ErrorCode = 300;
             }
-
-
+            
             return Json(result, JsonRequestBehavior.AllowGet);
         }
         //验证图片是否已经有了

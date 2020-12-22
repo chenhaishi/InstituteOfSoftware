@@ -52,11 +52,12 @@
 
                         foreach (var item in list2)
                         {
-                            <input type="radio" name="weixiugood" value="@item.Value" title="@item.Text" />
+                            <input type="radio" name="weixiugood" value="@item.Value" lay-filter="GoodRadio" title="@item.Text" />
                         }
                     }
                 </div>
             </div>
+
             <div class="layui-row layui-form-item">
                 <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
                     <label class="LableCss1">宿舍地址:</label>
@@ -98,6 +99,19 @@
                         </select>
                     </div>
                 </div>
+            </div>
+            <div id="Goodfujiandiv" style="margin-top:10px" class="layui-row layui-form-item DisplayCss1">
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                    <label class="LableCss1">学生签字附件:</label>
+                    <div id="" class="layui-input-block">
+                        <input type="file" id="Image" name="Image" />
+                        <div style="border:1px solid #808080;width:200px;height:200px;margin-top:20px;">
+
+                            <img id="showimg" style="width:200px;height:200px;" src="" />
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             <div id="dorManDiv" class="layui-row layui-form-item DisplayCss1">
@@ -147,6 +161,26 @@
     </div>
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/layui/layui.js"></script>
+
+    <script>
+        document.querySelector("#Image").onchange = function () {
+            //1.0获取选择的文件
+            var f = this.files[0];
+            //创建文件读取器
+            var file = new FileReader();
+            //读取文件,参数代表要读取的文件
+            file.readAsDataURL(f);
+            //开始读取文件
+            //file.start();
+            //注意文件的读取时异步读取的
+            //要在file.onload事件中才能获取到文件的内容
+            file.onload = function (e) {
+                document.querySelector("#showimg").src = e.target.result;
+            };
+            //最后通过file.result属性返回读取文件的内容
+            document.querySelector("#showimg").src = file.result;
+        } 
+    </script>
     <script>
         $(function () {
             var mydate = null;
@@ -178,8 +212,7 @@
                     elem: '#CompleteTime',
                     trigger:'click'
                 });
-
-
+                
                 ///加载宿舍楼层
                 form.on('radio(Addree)', function (data) {
                     $("#foordiv")[0].innerHTML = "";//清空楼层
@@ -240,7 +273,24 @@
                         //寝室平摊
                         $("#Studiv")[0].innerHTML = "";
                         $("#dorManDiv").addClass("DisplayCss1");
+                        var val = $('input:radio[name="weixiugood"]:checked').val();
+                        console.log(val);
+                        $.ajax({
+                            url: '/DormitoryMaintenance/DormitoryDeposit/GetGoodPriceById',
+                            type: 'post',
+                            data: { "GoodID": val },
+                            success: function (res) {
+                                console.log(res);
+                                if (res.Data >= 200) {
+                                    $("#Goodfujiandiv").removeClass("DisplayCss1");
+                                } else {
+                                    $("#Goodfujiandiv").addClass("DisplayCss1");
+                                }
+                            }
+                        });
+
                     } else {
+                        $("#Goodfujiandiv").removeClass("DisplayCss1");
                         //个人承担
                         $("#dorManDiv").removeClass("DisplayCss1");
                         //获取属于这个寝室的所有学生
@@ -267,8 +317,9 @@
                         }                        
                     }
                     
-                });      
+                });     
 
+               
                 form.on('submit(addbtn)', function (data) { 
                     
                     //console.log(data.field);
@@ -281,29 +332,65 @@
                     } else if (data.field.JieType == "2" && data.field.sturadi == undefined) {
                         layer.msg('请选择学生！', { icon: 2, shade: 0.8 });
                     } else {
-                        $.ajax({
-                            url: '/DormitoryMaintenance/DormitoryDeposit/AddFunction',
-                            data: data.field,
-                            type: 'POST',
-                            success: function (res) {
-                                if (res.Success) {
-                                    layer.msg(res.Msg, { icon: 1, shade: 0.8 }, function () {
-
-                                        window.parent.TableFlush();
-
-                                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                                        parent.layer.close(index); //再执行关闭   
-
-                                    });
-                                } else {
-                                    layer.msg(res.Msg, { icon: 2, shade: 0.8 });
+                        
+                        var word = document.getElementsByName("Image")[0].files[0];
+                        console.log(word);
+                        var filename = word.name;
+                        var index = filename.lastIndexOf(".");
+                        var suffix = filename.substr(index + 1);
+                        if (suffix == "jpg" || suffix == "jpg.png") {
+                            console.log(data.field);
+                            $.ajax({
+                                url: '/DormitoryMaintenance/DormitoryDeposit/AddFunction',
+                                data: data.field,
+                                type: 'POST',
+                                success: function (res) {
+                                    if (res.Success) {
+                                        var fd = new FormData();
+                                        fd.append('Image', word);
+                                        $.ajax({
+                                            url: "/DormitoryMaintenance/DormitoryDeposit/UpdateDormInfoImg",
+                                            type: "post",
+                                            contentType: false,
+                                            processData: false,
+                                            dataType: "json",//返回的数据格式
+                                            data: fd,
+                                            success: function (res) {
+                                                window.parent.TableFlush();
+                                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                                parent.layer.close(index); //再执行关闭   
+                                            }
+                                        });
+                                        
+                                    } else {
+                                        layer.msg(res.Msg, { icon: 2, shade: 0.8 });
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        } else {
+                            layer.alert('请选择照片，当前只支持jpg格式!', { icon: 0 });
+                        }
+                        
                     }
-
-                   
                     return false;  
+                });
+
+                form.on('radio(GoodRadio)', function (data) {
+                    $.ajax({
+                        url: '/DormitoryMaintenance/DormitoryDeposit/GetGoodPriceById',
+                        type: 'post',
+                        data: { "GoodID": data.value },
+                        success: function (res) {
+                            console.log(res);
+                            var jietype = $("#JieType").val();
+                            console.log(jietype);
+                            if (res.Data >= 200 && jietype==1) {
+                                $("#Goodfujiandiv").removeClass("DisplayCss1");
+                            } else {
+                                $("#Goodfujiandiv").addClass("DisplayCss1");
+                            }
+                        }
+                    });
                 });
 
             });

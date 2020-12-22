@@ -55,6 +55,10 @@
 <script type="text/html" id="DormitoryDeposit_toolbarDemo">
     <div class="layui-btn-container">
         <button class="layui-btn layui-btn-sm" lay-event="add">添加数据</button>
+        <button type="button" class="layui-btn layui-btn-sm" lay-event="getFileInto">
+            <i class="layui-icon">&#xe601;</i>
+            Excel文件导入
+        </button>
     </div>
 </script>
 
@@ -158,7 +162,18 @@
                         layer.open({
                             type: 2,
                             content: '/DormitoryMaintenance/DormitoryDeposit/AddView',
-                            area: ['1000px', '700px']
+                            area: ['1200px', '830px']
+                        });
+                        break;
+                    case 'getFileInto':
+                        layer.open({
+                            type: 2,
+                            content: '/DormitoryMaintenance/DormitoryDeposit/ExcelInputView'
+                            , area: ['1000px', '720px'],
+                            title: '导入Excle文件'
+                            , shade: 0.8
+                            , anim: 4
+                            , skin: 'demo-class'
                         });
                         break;
 

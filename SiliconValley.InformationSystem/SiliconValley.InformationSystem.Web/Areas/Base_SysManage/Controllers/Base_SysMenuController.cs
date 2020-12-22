@@ -1,4 +1,5 @@
 ﻿using SiliconValley.InformationSystem.Business.Base_SysManage;
+using SiliconValley.InformationSystem.Business.DormitoryMantainBusiness;
 using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 using SiliconValley.InformationSystem.Entity.MyEntity;
 using System;
@@ -14,7 +15,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Base_SysManage.Controllers
 
         //员工业务类
         public EmployeesInfoManage EmployeesInfoManage_Entity = new EmployeesInfoManage();
-
+        PricedormitoryarticlesManeger PriceManger = new PricedormitoryarticlesManeger();
 
         // GET: Base_SysManage/Base_SysMenu
         public ActionResult Index()
@@ -56,6 +57,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.Base_SysManage.Controllers
          return Json(SystemMenuManage.UserClass(), JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 查看宿舍物品价格表中的保险柜每月扣费是否正常
+        /// </summary>
+        /// <returns></returns>
+        public bool CheckDormState()
+        {
+            string sql = "select * from Pricedormitoryarticles where Nameofarticle='保险柜每月扣费'";
+            Pricedormitoryarticles price = PriceManger.GetListBySql<Pricedormitoryarticles>(sql).FirstOrDefault();
+            return price.Dateofregistration;
+        }
         
     }
 }
