@@ -15,38 +15,41 @@
             margin-top: 20px;
             border: 1px solid #009688;
         }
+
         .legendCssTwo1 {
             border: 1px solid #009688;
-            background-color:#009688;
-            color:#fff;
+            background-color: #009688;
+            color: #fff;
         }
-        .divCssTwo1{           
-            float:right;
-            display:inline-block;
-            margin-top:20px;
-        }              
-        .BtnCssthree
-        {
+
+        .divCssTwo1 {
+            float: right;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        .BtnCssthree {
             margin-top: 40px;
             text-align: center;
         }
-        body .mydemo-class{
 
+        body .mydemo-class {
         }
-        body .mydemo-class .layui-layer-title
-        {
-            background: #c00;
-            color: #fff;
-            border: none;
-        }
-        body .mydemo-class .layui-layer-btn a
-            {
+
+            body .mydemo-class .layui-layer-title {
+                background: #c00;
+                color: #fff;
+                border: none;
+            }
+
+            body .mydemo-class .layui-layer-btn a {
                 background: red;
                 border: 1px solid red;
                 color: #fff;
             }
-        .textColorCss1{
-        color:red
+
+        .textColorCss1 {
+            color: red
         }
     </style>
 </head>
@@ -66,7 +69,7 @@
                 <div id="InputDiv" style="width:60%;text-align:right;margin-top:20px">
                     <input type="button" class="layui-btn" id="Yes" name="Yes" disabled="disabled" value="确定导入">
                     <button type="button" class="layui-btn" id="No" name="No" onclick="myclose()">取消</button>
-                </div>               
+                </div>
             </div>
         </form>
     </div>
@@ -107,14 +110,14 @@
             $.ajax({
                 url: '/Market/StudentDataKeep/IntoServer',
                 dataType: 'json',
-                success: function (successData) {     
+                success: function (successData) {
                     //关闭
-                    layer.close(indexlayer);     
-                    if (successData.result == "okk") {                         
+                    layer.close(indexlayer);
+                    if (successData.result == "okk") {
                         layui.use(['layer', 'table'], function () {
                             var table = layui.table;
                             var layer = layui.layer;
-                            layer.confirm('<h3>'+successData.msg+'</h3>', { title: '系统提示', skin: "mydemo-class", btn: ['确定'], closeBtn:0 }, function (index) {
+                            layer.confirm('<h3>' + successData.msg + '</h3>', { title: '系统提示', skin: "mydemo-class", btn: ['确定'], closeBtn: 0 }, function (index) {
                                 //do something
                                 layer.close(index);
                                 $("#fieldDiv2")[0].innerHTML = "";
@@ -176,18 +179,18 @@
                                     , limit: 3
                                 });
                             });
-                        });                  
-                    } else if (successData.resut == "ok") {                         
-                            layer.msg('没有重复数据，备案成功！！！', {
-                                icon: 1,
-                                time: 2000 //2秒关闭（如果不配置，默认是3秒）
-                            }, function () {
-                                //关闭
-                                myclose();
-                            });                        
+                        });
+                    } else if (successData.resut == "ok") {
+                        layer.msg('没有重复数据，备案成功！！！', {
+                            icon: 1,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            //关闭
+                            myclose();
+                        });
                     } else {
                         TiShi(successData.msg);
-                    }                  
+                    }
                 }
                 , error: function () {
                     TiShi('导入失败!请重试');
@@ -195,18 +198,18 @@
             });
         });
         //取消
-        function myclose() {     
+        function myclose() {
             window.parent.LoadTable();
             var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-            parent.layer.close(index); //再执行关闭 
-            
+            parent.layer.close(index); //再执行关闭
+
         };
-       
-        layui.use(['upload','table'], function () {
+
+        layui.use(['upload', 'table'], function () {
             var $ = layui.jquery
                 , upload = layui.upload;
-             table = layui.table;
-             layer = layui.layer;
+            table = layui.table;
+            layer = layui.layer;
             //指定允许上传的文件类型
             upload.render({
                 elem: '#test3'
@@ -215,21 +218,21 @@
                 , exts: 'xls|xlsx'//只允许上传Excle文件
                 , done: function (res) {
                     var indexss = layer.load(1);
-                    if (res.msg == "ok") {                     
+                    if (res.msg == "ok") {
                         table.render({
                             elem: '#tabletest2'
-                            , data:res.data
+                            , data: res.data
                             , cols: [[
                                 {
                                     field: 'StuName', title: '姓名', templet: function (let) {
-                                        if (let.StuName.trim().length<=0 || let.StuName == undefined) {
+                                        if (let.StuName.trim().length <= 0 || let.StuName == undefined) {
                                             layer.msg('备案的学生姓名不能为空，否则会导入不进去，请修改Excel文件!!!', { icon: 2, time: 4000 });
                                         } else {
                                             return let.StuName;
                                         }
                                     }
                                 }
-                                , {field: 'StuSex', title: '性别'}
+                                , { field: 'StuSex', title: '性别' }
                                 , { field: 'StuPhone', title: '联系电话' }
                                 , { field: 'StuEducational', title: '学历' }
                                 , { field: 'StuAddress', title: '家庭住址' }
@@ -256,7 +259,7 @@
                         layer.close(indexss);
                     }
                 }
-            });               
+            });
         });
     </script>
 </body>
