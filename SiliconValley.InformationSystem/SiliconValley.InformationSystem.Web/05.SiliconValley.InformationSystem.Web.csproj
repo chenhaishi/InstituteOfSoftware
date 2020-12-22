@@ -5330,6 +5330,7 @@
     <Content Include="uploadXLSXfile\Template\AttendenceTemplate.xlsx" />
     <Content Include="uploadXLSXfile\Template\班主任值班模板.xlsx" />
     <Content Include="uploadXLSXfile\Template\OvertimeTemplate.xlsx" />
+    <Content Include="uploadXLSXfile\Template\Scoretemplate.xls" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
