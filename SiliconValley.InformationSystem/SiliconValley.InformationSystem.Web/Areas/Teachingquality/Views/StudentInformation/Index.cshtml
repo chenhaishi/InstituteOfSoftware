@@ -92,7 +92,7 @@
             <button class="layui-btn layui-btn-sm" lay-event="getUpdate"> <i class="layui-icon">&#xe642;</i>编辑学员信息</button>
             <button class="layui-btn layui-btn-sm" lay-event="IDcardphoto"> <i class="layui-icon">&#xe663;</i>身份证照上传</button>
             <button class="layui-btn layui-btn-sm" lay-event="Addimg"> <i class="layui-icon">&#xe64a;</i>录入学员照片</button>
-
+            <button class="layui-btn layui-btn-sm" lay-event="Getout"> <i class="layui-icon">&#xe64a;</i>学员导出Excel</button>
         </div>
     </script>
     <script type="text/html" id="barDemo">
@@ -426,7 +426,9 @@
                             layer.msg("请选择一条数据");
                         }
                         break;
+                    case "Getout":
 
+                        break;
                 };
             });
             //监听工作条
