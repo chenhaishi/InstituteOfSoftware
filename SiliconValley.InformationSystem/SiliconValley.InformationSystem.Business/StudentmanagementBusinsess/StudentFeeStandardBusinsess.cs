@@ -208,6 +208,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                     studentFee.Amountofmoney = costitemsBusiness.GetEntity(int.Parse(item)).Amountofmoney;
                     studentFee.Remarks = Remarks;
                     listFeeRecord.Add(studentFee);
+                    //学历添加
                     Enrollment listEnrollment = new Enrollment();
                     listEnrollment.PassNumber = null;
                     listEnrollment.Datestration = null;
