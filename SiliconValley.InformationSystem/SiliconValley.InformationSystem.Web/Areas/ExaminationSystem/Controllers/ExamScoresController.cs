@@ -430,6 +430,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
         }
         /// <summary>
+        /// 下载模板
+        /// </summary>
+        /// <returns></returns>
+        public FileStreamResult DownloadModule()
+        {
+            string tr = Server.MapPath("/uploadXLSXfile/Template/Scoretemplate.xls");
+            FileStream stream = new FileStream(tr, FileMode.Open);
+            return File(stream, "application/octet-stream", Server.UrlEncode("Template.xls"));
+        }
+        /// <summary>
         /// 一键下载解答题
         /// </summary>
         /// <param name="examid"></param>
@@ -444,9 +454,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             //查询这堂考试学生的解答题地址
             var cand = db_candidate.GetList().Where(d => d.Examination == examid).ToList();
             
-            //添加段落
-            Paragraph para1 = s.AddParagraph();
-            para1.AppendText("解答题");
             Paragraph para2 = s.AddParagraph();
 
             CloudstorageBusiness Bos = new CloudstorageBusiness();
@@ -474,40 +481,26 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                     var name = db_student.GetList().Where(d => d.StudentNumber == item.StudentID).FirstOrDefault().Name;
                     var question = db_answerQuestion.AllAnswerQuestion().Where(d => d.ID == itemes.questionid).FirstOrDefault().Title;
                     var questiones = db_answerQuestion.AllAnswerQuestion().Where(d => d.ID == itemes.questionid).FirstOrDefault().ReferenceAnswer;
-                    para2.AppendText(name+ "--" + question +""+itemes.questionScores+"分"+"答案："+ questiones+ "\r\n" + itemes.answer + "\r\n");
+                    para2.AppendText(name + "---" + question + "(" + itemes.questionScores + "分)" +"正确答案:"+itemes.answer+ "\r\n" + itemes.answer + "\r\n");
+
                 }
 
             }
-            
-            //创建段落样式1
-            ParagraphStyle style1 = new ParagraphStyle(doc);
-            style1.Name = "titleStyle";
-            style1.CharacterFormat.Bold = true;
-            style1.CharacterFormat.TextColor = Color.Purple;
-            style1.CharacterFormat.FontName = "宋体";
-            style1.CharacterFormat.FontSize = 12;
-            doc.Styles.Add(style1);
-            para1.ApplyStyle("titleStyle");
 
             //创建段落样式2
             ParagraphStyle style2 = new ParagraphStyle(doc);
             style2.Name = "paraStyle";
             style2.CharacterFormat.FontName = "宋体";
-            style2.CharacterFormat.FontSize = 11;
+            style2.CharacterFormat.FontSize = 8;
 
             doc.Styles.Add(style2);
             para2.ApplyStyle("paraStyle");
-            //para3.ApplyStyle("paraStyle");
 
             //设置段落对齐方式
-            para1.Format.HorizontalAlignment = Spire.Doc.Documents.HorizontalAlignment.Center;
             para2.Format.HorizontalAlignment = Spire.Doc.Documents.HorizontalAlignment.Justify;
-            //para3.Format.HorizontalAlignment = HorizontalAlignment.Justify;
 
             //设置段落缩进
             para2.Format.FirstLineIndent = 30;
-            //para3.Format.FirstLineIndent = 30;
-            para1.Format.AfterSpacing = 15;
             para2.Format.AfterSpacing = 10;
 
             //保存文档
@@ -621,7 +614,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 score.Reviewer = teacherdb.GetTeachers().Where(d => d.EmployeeId == user.EmpNumber).FirstOrDefault().TeacherID;
                 score.CreateTime = DateTime.Now;
                 score.Remark = remark;
-
                 candiInfoes.IsReExam = true;
                 db_candidate.Update(candiInfoes);
                 db_examScores.Update(score);
@@ -995,7 +987,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             string yys = dt.Year.ToString();
             string mms = dt.Month.ToString();
             string nianyue = yys + "-" + mms;
-            //var list = new List<Examination>();
             List<MyExamCurren> mylist = new List<MyExamCurren>();
             
             try
@@ -1008,30 +999,34 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                    
                    int year= item.BeginDate.Year;
                    int month = item.BeginDate.Month;
-                   //int day = item.BeginDate.Day;
                    XmlElement xmlelm = db_exam.ExamCourseConfigRead(item.ID);
                    int courseid = int.Parse(xmlelm.FirstChild.Attributes["id"].Value);
-                   var KeCheng = db_course.GetCurriculas().Where(d => d.CurriculumID == courseid).SingleOrDefault().CourseName;
-                    //+ "-" + day;
                     string mm = year + "-" + month;
-
-                    if (nianyue == mm)
+                    if (courseid == 0)
                     {
-                        MyExamCurren mydata = new MyExamCurren();
-                        mydata.CurreName = KeCheng;
-                        mydata.Title = item.Title;
-                        mydata.ID = item.ID;
-                        mylist.Add(mydata);
+                        if (nianyue == mm)
+                        {
+                            MyExamCurren mydata = new MyExamCurren();
+                            mydata.CurreName = "升学";
+                            mydata.Title = item.Title;
+                            mydata.ID = item.ID;
+                            mylist.Add(mydata);
+                        }
                     }
+                    else {
+                        var KeCheng = db_course.GetCurriculas().Where(d => d.CurriculumID == courseid).SingleOrDefault().CourseName;
 
-
+                        if (nianyue == mm)
+                        {
+                            MyExamCurren mydata = new MyExamCurren();
+                            mydata.CurreName = KeCheng;
+                            mydata.Title = item.Title;
+                            mydata.ID = item.ID;
+                            mylist.Add(mydata);
+                        }
+                    }
+                    
                 }
-                //foreach (var item in classlist)
-                //{
-                //    if () {
-
-                //    }
-                //}
                 result.ErrorCode = 200;
                 result.Data = mylist;
                 result.Msg = "";
@@ -1041,7 +1036,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
                 result.ErrorCode = 500;
                 result.Data = null;
-                result.Msg = "";
+                result.Msg = ex.Message;
             }
 
             return Json(result, JsonRequestBehavior.AllowGet);

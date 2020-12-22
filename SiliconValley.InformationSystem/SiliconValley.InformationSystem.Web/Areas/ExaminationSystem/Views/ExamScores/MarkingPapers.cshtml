@@ -69,7 +69,7 @@
                 </div>
                 <div>
                     <a id="YiJian" class="layui-btn layui-btn-danger" style="text-decoration: none;margin-top:-55px;margin-right:300px;width:180px;color:white">一键下载机试</a>
-                    <a id="YiJianjd" class="layui-btn layui-btn-danger" style="text-decoration: none;margin-top:-110px;margin-right:-40px;width:180px;color:white">一键下载解答题</a>
+                    
                 </div>
             </div>
         </div>
@@ -79,6 +79,22 @@
 <div style="height:1500px">
     <table class="table table-hover table-bordered" style="width:280px;margin-left:1180px;margin-top:00px;float:none">
         <tbody>
+            <tr>
+                <td colspan="2">
+                    <a id="YiJianjd" class="layui-btn layui-btn-danger" style="width:100%;color:white">一键下载解答题</a>
+                </td>
+            </tr>
+            <tr>
+
+                <td colspan="2">
+                    <a href="\ExaminationSystem\ExamScores\DownloadModule" class="layui-btn" style="color:white;width:100%">下载模板</a>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <a class="layui-btn" style="color:white;width:100%" id="OneClickUploadScore">一键上传分数</a>
+                </td>
+            </tr>
             <tr>
                 <td colspan="2">
                     <a class="layui-btn" style="color:white;width:100%" id="Markingornot">阅卷完毕</a>
@@ -110,28 +126,19 @@
             </tr>
             <tr>
                 <td style="text-align:center;" colspan="2">
-                    <h2 style="color:red">记录分数</h2>
+                    <h3 style="color:red">记录分数</h3>
                 </td>
 
             </tr>
             <tr>
-                <td style="text-align:center;">
+                <td style="text-align:center;" colspan="2">
                     <label style="color:black">解答题分数:</label><input id="answerScores" class="form-control" style="color:red" />
                 </td>
-                <td style="text-align:center;">
-                    <a id="caclAnswerScore" class="layui-btn" style="color:white">解答题一键评分</a>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2"><a id="manfen" class="layui-btn layui-btn-warm" style="width:250px;color:white">解答题一键满分</a></td>
             </tr>
             <tr>
                 <td style="text-align:center;" colspan="2">
                     <label style="color:black">机试题分数:</label><input id="computerScores" class="form-control" style="color:red" />
                 </td>
-            </tr>
-            <tr>
-                <td colspan="2"><a id="jsmanfen" class="layui-btn layui-btn-warm" style="width:250px;color:white">机试题一键满分</a></td>
             </tr>
             <tr>
                 <td colspan="2">
@@ -147,7 +154,7 @@
         </tbody>
 
     </table>
-    <div style="margin-left:31px;margin-top:-940px;float:none;width:1120px">
+    <div style="margin-left:31px;margin-top:-1010px;float:none;width:1140px">
         <table class="layui-hide" lay-filter="ExamScores" id="ExamScores"></table>
     </div>
 </div>
@@ -383,20 +390,6 @@
             });
 
             })
-
-                //解答题一键评分
-                 $(document).off("click", "#caclAnswerScore").on("click", "#caclAnswerScore", function () {
-                 
-                     var score = 0;
-                 
-                     $(".scoreitem").each(function (index, elem) {
-                 
-                         score += parseFloat($(elem).val());
-                 
-                     });
-                     $("#answerScores").val(score);
-                 
-                 });
                 //一键下载机试题
                 $(document).off("click", "#YiJian").on("click", "#YiJian", function () {
                    
@@ -404,10 +397,12 @@
         })
                 //一键下载解答题
                     $(document).off("click", "#YiJianjd").on("click", "#YiJianjd", function () {
+                        var lodindex = layer.load(1);
                         $.post("/ExaminationSystem/ExamScores/Exporter", { examid: Examid }, function () {
-                        layer.msg("前去C盘查收！");
-                    })
-                    
+                            
+                                layer.msg("前去C盘查收！");
+                            })
+                        layer.close(lodindex);
                 })
                 //提交分数               
                 $(document).off("click", "#recordScoresBtn").on("click", '#recordScoresBtn',function () {
@@ -435,15 +430,12 @@
 
                 }
                 );
-                //解答题一键满分           
-                $(document).off("click", "#manfen").on("click", '#manfen',function () {
-                    $("#answerScores").val("30");
+                //一键上传分数
+                  $(document).off("click", "#OneClickUploadScore").on("click", '#OneClickUploadScore', function () {
 
-                })
-                //机试题一键满分                     
-                $(document).off("click", "#jsmanfen").on("click", '#jsmanfen',function () {
-                    $("#computerScores").val("60");
-                })
+                      
+                 
+                 });
                 //点击阅卷完毕
                 $(document).off("click", "#Markingornot").on("click", '#Markingornot', function () {
                     layer.confirm('是否确定阅卷完毕,完毕之后将不能继续阅卷！', function (index) {
