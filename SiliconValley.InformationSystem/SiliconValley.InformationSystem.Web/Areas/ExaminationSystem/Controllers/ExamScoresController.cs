@@ -55,8 +55,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             db_stuExam = new StudentExamBusiness();
             db_answerQuestion = new AnswerQuestionBusiness();
             db_student = new StudentInformationBusiness();
-            db_course =  new CourseBusiness();
-            db_candidate =  new CandidateInfoBusiness();
+            db_course = new CourseBusiness();
+            db_candidate = new CandidateInfoBusiness();
         }
 
         public ActionResult Index()
@@ -128,7 +128,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         public ActionResult StuPersonalScores(int examid)
         {
             AjaxResult result = new AjaxResult();
-            
+
             try
             {
                 var studentNumber = SessionHelper.Session["studentnumber"].ToString();
@@ -156,6 +156,18 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         public ActionResult Marking()
         {
             return View();
+        }
+        /// <summary>
+        /// 选择xls上传分数
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult DocumentUpload(HttpPostedFileBase excelfile,int examid)
+        {
+            Stream filestream = excelfile.InputStream;
+            var textscore = db_examScores.ImportDataFormExcel(filestream, excelfile.ContentType);
+
+            return Json(textscore, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
         /// 阅卷页面2
