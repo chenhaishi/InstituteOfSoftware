@@ -875,7 +875,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
         {
             string rr = Server.MapPath("/uploadXLSXfile/Template/DormitoryDepositTemplate.xlsx");  //获取下载文件的路径         
             FileStream stream = new FileStream(rr, FileMode.Open);
-            return File(stream, "application/octet-stream", Server.UrlEncode("Template.xls"));
+            return File(stream, "application/octet-stream", Server.UrlEncode("Template.xlsx"));
         }
 
         /// <summary>

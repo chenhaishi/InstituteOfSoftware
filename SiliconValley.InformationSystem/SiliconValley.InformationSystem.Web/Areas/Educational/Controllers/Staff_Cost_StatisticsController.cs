@@ -664,8 +664,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                             curriculum.CourseName.Contains("数学") ||
                             curriculum.CourseName.Contains("英语") ||
                             curriculum.CourseName.Contains("班会") ||
-                            curriculum.CourseName.Contains("军事") ||
-                            curriculum.CourseName.Contains("职素"))
+                            curriculum.CourseName.Contains("军事"))
                         {
                             OtherStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
                         }
