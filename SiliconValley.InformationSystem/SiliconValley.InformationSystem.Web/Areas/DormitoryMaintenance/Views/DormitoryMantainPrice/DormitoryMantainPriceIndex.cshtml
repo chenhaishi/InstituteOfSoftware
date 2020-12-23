@@ -26,12 +26,33 @@
     </div>
 </div>
 <table id="PriceGoodform" lay-filter="PriceGoodform"></table>
-
+<input hidden value="@ViewBag.number" id="number"/>
 
 <script type="text/html" id="toolbarDemo">
-    <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-sm" lay-event="adddata">添加物品</button>
-    </div>
+    @{ 
+        if (ViewBag.number == 1006)
+        {
+              <div class="layui-btn-container">
+                  <button class="layui-btn layui-btn-sm" lay-event="adddata">添加物品</button>
+              </div>
+        }
+    }
+    
+</script>
+
+<script type="text/html" id="titleTpl">
+
+    
+    {{#  if($("#number").val() == 1006){}}
+
+    {{#  if(d.Dateofregistration){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">禁用</a>
+    {{#  } else { }}
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">启用</a>
+    {{#  } }}
+    {{#  } }}
 </script>
 
 
@@ -60,16 +81,23 @@
                         field: 'Dateofregistration', title: '状态', templet: function (res) {
                             if (res.Dateofregistration) { return '正常' } else { return '已禁用' }
                         }
-                    }
-                    , {
-                        fixed: 'right', title: '操作', width: 150, templet: function (res) {
-                            if (res.Dateofregistration) {
-                                return '<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a><a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">禁用</a>';
-                            } else {
-                                return '<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a><a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">启用</a>';
-                            }
-                        }
-                    }
+                    }, { fixed: 'right', width: 150, align: 'center', toolbar: '#titleTpl' }
+                    //, {
+                    //    fixed: 'right', title: '操作', width: 150, templet: function (res) {
+
+                    //        if ($("#number").val() == 1006) {
+                    //                if (res.Dateofregistration)
+                    //                {
+                    //                    return '<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a><a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">禁用</a>';
+                    //                }
+                    //                else
+                    //                {
+                    //                    return '<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a><a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">启用</a>';
+                    //                }
+                    //            }
+                            
+                    //    }
+                    //}
                 ]]
                 , page: true
             });
