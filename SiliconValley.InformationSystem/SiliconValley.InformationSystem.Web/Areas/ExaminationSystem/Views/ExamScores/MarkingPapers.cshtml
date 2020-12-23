@@ -46,6 +46,15 @@
     .currentstudent {
         background-color: #ffd800;
     }
+    #tipMsg {
+        width: 90%;
+        height: 40px;
+        text-align: center;
+        color: darkred;
+        font-size: 15px;
+        line-height: 40px;
+        visibility: hidden;
+    }
 </style>
 <div class="row" style=" border: 1px solid #dcdcdc; display:block;box-sizing: border-box;">
     <div style="background-color: #f3f7fd; padding: 10px 10px 10px 15px; border-bottom: 1px solid #ebeef5; display: block; font-size: 20px;">试卷区</div>
@@ -65,11 +74,7 @@
 
                 <div style="margin-right:100px;margin-bottom:30px;">
                     <label class="infoitem totalPaper" style="color:black;margin-right:200px">试卷总数:<span id="fenliang" style="color:#009688!important"></span></label>
-                    <label class="infoitem filshPaper" style="color:black">已阅卷数量:<span style="color:#009688!important"></span></label>
-                </div>
-                <div>
-                    <a id="YiJian" class="layui-btn layui-btn-danger" style="text-decoration: none;margin-top:-55px;margin-right:300px;width:180px;color:white">一键下载机试</a>
-                    
+                    @*<label class="infoitem filshPaper" style="color:black">已阅卷数量:<span style="color:#009688!important"></span></label>*@
                 </div>
             </div>
         </div>
@@ -81,20 +86,15 @@
         <tbody>
             <tr>
                 <td colspan="2">
+                    <a id="YiJian" class="layui-btn layui-btn-danger" style="width:100%;color:white">一键下载机试</a>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
                     <a id="YiJianjd" class="layui-btn layui-btn-danger" style="width:100%;color:white">一键下载解答题</a>
                 </td>
             </tr>
-            <tr>
-
-                <td colspan="2">
-                    <a href="\ExaminationSystem\ExamScores\DownloadModule" class="layui-btn" style="color:white;width:100%">下载模板</a>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <a class="layui-btn" style="color:white;width:100%" id="OneClickUploadScore">一键上传分数</a>
-                </td>
-            </tr>
+            
             <tr>
                 <td colspan="2">
                     <a class="layui-btn" style="color:white;width:100%" id="Markingornot">阅卷完毕</a>
@@ -154,7 +154,7 @@
         </tbody>
 
     </table>
-    <div style="margin-left:31px;margin-top:-1010px;float:none;width:1140px">
+    <div style="margin-left:31px;margin-top:-940px;float:none;width:1140px">
         <table class="layui-hide" lay-filter="ExamScores" id="ExamScores"></table>
     </div>
 </div>
@@ -167,6 +167,8 @@
     @*<button name="search" examid="{{=examid}}" examroom="{{=examroomid}}" style="text-decoration: none;" class="tayMarkingitem"><span>{{=ExamTitle}}</span> - <span>{{=ExamRoom}}</span><span class="{{=styleClass}}">{{=text}}</span></button>*@
     </li>
 </script>
+
+
 <script type="text/html" id="barDemo">
     {{#if(d.ComputerPaper==null||d.ComputerPaper=="1"||d.ComputerPaper==""){}}
     <a class="layui-btn layui-btn-warm">空</a>
@@ -174,10 +176,37 @@
     <a class="layui-btn layui-btn-danger download" lay-event="download">下载机试</a>
     {{#}}}
 </script>
+<div id="yincangDiv" style="display:none">
+    <form class="layui-form" lay-filter="NanDuid">
+        <div class="layui-inline" style="margin-top:30px;">     
+            <div class="layui-input-inline">
+                <input type="file" id="file" name="excelfile" />
+            </div>
+        </div>
+        <hr />
+
+        <div id="tipMsg">
+
+            错误:文件类型错误
+
+        </div>
+        <div style="text-align:center;">
+            <button style="width:80%; margin-top:60px;" type="button" lay-submit="" id="commit" lay-filter="submit" class="layui-btn layui-btn-radius layui-btn-primary">录入</button>
+        </div>
+    </form>
+</div>
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <a href="\ExaminationSystem\ExamScores\DownloadModule" class="layui-btn" style="color:white;width:20%">下载模板</a>
+        <a class="layui-btn" style="color:white;width:20%" lay-event="OneClickUploadScore" id="OneClickUploadScore">一键上传分数</a>
+        <a href="\ExaminationSystem\ExamScores\Marking" class="layui-btn layui-btn-danger" style="color:white;width:20%">跳转查看笔试</a>
+    </div>
+</script>
 @section script{
     <script src="~/Scripts/underscore.js"></script>
     <script>
-        var Sheetindex = 0;``
+        var formdata = new FormData();
+        var Sheetindex = 0;
         var StuExamNumber; //学员考号
         var TopstudentNumber;
         var Examid; //考试ID
@@ -210,13 +239,23 @@
 
             });
         }
+        function SetErrorMsg(msg) {
+
+            $("#tipMsg").text(msg);
+
+            $("#tipMsg").css("visibility", 'visible');
+        }
         layui.use(['layer', 'table', 'form'], function () {
             var form = layui.form;
             var table = layui.table;
             var layer = layui.layer;
+
+
+
             table.render({
                 elem: '#ExamScores'
                 , url: '/ExaminationSystem/ExamScores/StudentList'
+                , toolbar: '#toolbarDemo'
                 , title: '学生名单'
                 , cols: [[
                     , { field: 'StudentID', title: '序号', width: "20%", sort: true }
@@ -226,11 +265,11 @@
                             
                             if (data.IsReExam == false) {
                                
-                                return "未阅";
+                                return "<text style='color:chartreuse'>未阅</text>";
                             }
                             else {
                                 
-                                return "已阅";
+                                return "<text style='color:darkgray'>已阅</text>";
                             }
 
                         } }
@@ -283,6 +322,96 @@
                 $("#computerScores").val("0");
                 TotalScore(Examid, obj.data.StudentID);
             });
+            //头工具栏事件
+            table.on('toolbar(ExamScores)', function (obj) {
+                var checkStatus = table.checkStatus(obj.config.id);
+                switch (obj.event) {
+                    case 'OneClickUploadScore':
+                        layer.open({
+                            type: 1,
+                            title: "上传",
+                            area: ["600px", "400px"],
+                            content: $('#yincangDiv'),
+                            success: function () {
+
+                            }
+                        });
+                        break;
+                };
+            });
+            //选择文件之后的函数
+            $("#file").change(function (data) {
+
+
+                var file = this.files[0];
+
+                if (file == undefined) {
+                    formdata.set("excelfile", undefined);
+                    SetErrorMsg("请选择文件");
+                    return;
+
+                }
+                console.log(file);
+                //判断文件类型  application/vnd.ms-excel 或者 application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+
+                if (file.type != 'application/vnd.ms-excel' && file.type != 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+                    formdata.set("excelfile", undefined);
+                    SetErrorMsg("错误：文件类型错误  提示：文件类型为 xls、xlsx");
+
+                    return;
+                }
+                // 判断文件大小
+
+                var filesize = file.size;
+
+                if (filesize <= 1024 * 3) {
+                    formdata.set("excelfile", undefined);
+                    SetErrorMsg("错误：文件内容过小");
+                    return;
+                }
+
+                formdata.set("excelfile", file);
+
+                $("#tipMsg").css("visibility", 'hidden');
+
+            });
+            //一键提交分数
+            form.on('submit(submit)', function (data) {
+                if (formdata.get("excelfile") == undefined) {
+
+                    formdata.set("excelfile", undefined);
+
+                    SetErrorMsg("请选择文件");
+
+                    return;
+                }
+
+                $("#tipMsg").css("visibility", 'hidden');
+                console.log(formdata);
+                $.ajax({
+                    url: '/ExaminationSystem/ExamScores/DocumentUpload',
+                    type: 'POST',
+                    data: formdata,
+                    dataType: 'JSON',
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        layer.close(loadindex);
+                        if (data.ErrorCode = 200) {
+
+                            var msg = "录入成功!  录入数量：" + data.Data;
+                            layer.msg(msg, {
+                                icon: 1,
+                                time: 3000 //2秒关闭（如果不配置，默认是3秒）
+                            });
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+                        console.log(textStatus);
+                    }
+                });
+            })
             //加载待阅卷试卷
             $.post('/ExaminationSystem/ExamScores/MarkeData', {}, function (result) {
                 if (result.ErrorCode == 200) {
@@ -361,7 +490,7 @@
 
                                 $("#MarkingInfoArea .totalPaper").find("span").text(data.Data.total.length);
 
-                                $("#MarkingInfoArea .filshPaper").find("span").text(parseInt(data.Data.total.length) - data.Data.NoScoresCount.length);
+                                //$("#MarkingInfoArea .filshPaper").find("span").text(parseInt(data.Data.total.length) - data.Data.NoScoresCount.length);
 
                                 
 
@@ -388,6 +517,7 @@
 
                 });
             });
+            
 
             })
                 //一键下载机试题
@@ -429,13 +559,7 @@
                     });
 
                 }
-                );
-                //一键上传分数
-                  $(document).off("click", "#OneClickUploadScore").on("click", '#OneClickUploadScore', function () {
-
-                      
-                 
-                 });
+                );     
                 //点击阅卷完毕
                 $(document).off("click", "#Markingornot").on("click", '#Markingornot', function () {
                     layer.confirm('是否确定阅卷完毕,完毕之后将不能继续阅卷！', function (index) {
