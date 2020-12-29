@@ -61,6 +61,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             return result;
            
         }
+       
         /// <summary>
         /// 判断当前登录人是否是财务
         /// </summary>
