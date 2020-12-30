@@ -292,6 +292,20 @@
 
             });
         }
+        window.onload = function () {
+            //假设这里每个五分钟执行一次test函数 
+            publicBusi();
+        }
+        function publicBusi() {
+            setTimeout(publicBusi, 1000 * 60 * 3); //这里的1000表示1秒有1000毫秒,1分钟有60秒,7表示总共7分钟 
+            $.post('/ExaminationSystem/StudentExamSys/BrushthetopicProhibit', function (result) {
+                if (result.ErrorCode == 200) {
+                    console.log("当前没有已经开考的考试!");
+                } else {
+                    window.location.href = "/Student/Index"
+                }
+            });
+        }
 
         initTextarea();
         layui.use(['form', 'layer'], function () {

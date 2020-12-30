@@ -9,6 +9,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
     using NPOI.HSSF.UserModel;
     using NPOI.SS.UserModel;
     using NPOI.XSSF.UserModel;
+    using SiliconValley.InformationSystem.Business.Base_SysManage;
     using SiliconValley.InformationSystem.Business.CourseSyllabusBusiness;
     using SiliconValley.InformationSystem.Business.EmployeesBusiness;
     using SiliconValley.InformationSystem.Business.TeachingDepBusiness;
@@ -37,13 +38,17 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
         /// 员工业务类实例
         /// </summary>
         private readonly EmployeesInfoManage db_emp;
+        private readonly ExamScoresBusiness db_score;
+        private readonly CandidateInfoBusiness db_cand;
 
         public ExamScoresBusiness()
         {
             db_exam = new ExaminationBusiness();
             db_markingArrange = new BaseBusiness<MarkingArrange>();
             db_emp = new EmployeesInfoManage();
-        }
+            db_score =  new ExamScoresBusiness();
+            db_cand =  new CandidateInfoBusiness();
+        } 
 
         public List<TestScore> AllExamScores()
         {
@@ -82,11 +87,90 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
         private AjaxResult ExcelImportAtdSql(ISheet sheet)
         {
             var ajaxresult = new AjaxResult();
+            int num = 2;
+            List<AttendanceInfoErrorDataView> attdatalist = new List<AttendanceInfoErrorDataView>();
+            Base_UserModel user = Base_UserBusiness.GetCurrentUser();
+
+            TeacherBusiness teacherdb = new TeacherBusiness();
+
+
+
             try
-            {
+            {   //考场id
+                string examid = sheet.GetRow(1).Cells[0].StringCellValue;
                 while (true)
                 {
+                    num++;
+                    var getrow = sheet.GetRow(num);
+                    if (getrow == null)
+                    {
+                        break;
+                    }
+                    //学号[0]
+                    string XueHao = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(0))) ? null : getrow.GetCell(0).ToString();
+                    //学生姓名[1]
+                    string name = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(1))) ? null : getrow.GetCell(0).ToString();
+                    //解答题分数[2]
+                    string JieDaTi = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(2))) ? null : getrow.GetCell(0).ToString();
+                    //机试题分数[3]
+                    string JiShiTi = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(3))) ? null : getrow.GetCell(0).ToString();
+                    //备注[4]
+                    string BeiZhu = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(4))) ? null : getrow.GetCell(0).ToString();
+                    //时间
+                    var date = DateTime.Now;
+                    TestScore atd = new TestScore();
+                    AttendanceInfoErrorDataView attview = new AttendanceInfoErrorDataView();
+                    if (string.IsNullOrEmpty(XueHao))
+                    {//判断学生学号不能为空
+                        attview.empname = name;
+                        attview.errorExplain = "学号为空！";
+                        attdatalist.Add(attview);
+                    }
+                    else
+                    {
+                        if (string.IsNullOrEmpty(examid))
+                        {//判断考场id不能为空
+                            attview.empname = name;
+                            attview.errorExplain = "考场id为空！";
+                            attdatalist.Add(attview);
+                        }
+                        else
+                        {
+                            var cand = db_cand.GetList().Where(d => d.StudentID == XueHao && d.Examination == int.Parse(examid)).FirstOrDefault().CandidateNumber;
+                            var candsf = db_cand.GetList().Where(d => d.StudentID == XueHao && d.Examination == int.Parse(examid)).FirstOrDefault();
+                            var score = db_score.AllExamScores().Where(d => d.CandidateInfo == cand && d.Examination == int.Parse(examid)).FirstOrDefault();
 
+                            score.TextQuestionScore = float.Parse(JieDaTi);
+                            score.OnBoard = float.Parse(JiShiTi);
+                            score.Remark = BeiZhu;
+                            score.CreateTime = date;
+                            score.Reviewer = teacherdb.GetTeachers().Where(d => d.EmployeeId == user.EmpNumber).FirstOrDefault().TeacherID;
+
+                            candsf.IsReExam = true;
+
+                            db_cand.Update(candsf);
+                            db_score.Update(score);
+                        }
+
+
+                    }
+
+
+                }
+                int exceldatasum = num - 3;
+                if (exceldatasum - attdatalist.Count() == exceldatasum)
+                {//说明没有出错数据，导入的数据全部添加成功
+                    ajaxresult.Success = true;
+                    ajaxresult.ErrorCode = 100;
+                    ajaxresult.Msg = exceldatasum.ToString();
+                    ajaxresult.Data = attdatalist;
+                }
+                else
+                {//说明有出错数据，导入的数据条数就是导入的数据总数-错误数据总数
+                    ajaxresult.Success = true;
+                    ajaxresult.ErrorCode = 200;
+                    ajaxresult.Msg = (exceldatasum - attdatalist.Count()).ToString();
+                    ajaxresult.Data = attdatalist;
                 }
             }
             catch (Exception ex)

@@ -162,7 +162,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult DocumentUpload(HttpPostedFileBase excelfile,int examid)
+        public ActionResult DocumentUpload(HttpPostedFileBase excelfile)
         {
             Stream filestream = excelfile.InputStream;
             var textscore = db_examScores.ImportDataFormExcel(filestream, excelfile.ContentType);

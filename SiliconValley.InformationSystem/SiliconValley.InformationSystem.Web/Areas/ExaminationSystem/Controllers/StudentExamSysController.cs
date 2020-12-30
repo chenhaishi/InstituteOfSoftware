@@ -141,59 +141,81 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         /// 当有考试 模拟考试禁止进入
         /// </summary>
         /// <returns></returns>
-        //public ActionResult SimulationProhibit()
-        //{
-        //    AjaxResult result = new AjaxResult();
-        //    try
-        //    {
-        //        //查出所有未结束的考试,判断离今日最近的未结束考试,这堂考试时间来了之后就不能让他们访问，这堂考试结束之后才能结束访问
-        //        var list = db_exam.AllExamination().OrderByDescending(d => d.BeginDate).ToList();      
-                 //获取当前时间
-        //        var resultlist = new List<ExaminationView>();
-                
-        //        foreach (var item in list)
-        //        {
-        //            var tempobj = db_exam.ConvertToExaminationView(item);
+        public ActionResult SimulationProhibit()
+        {
+            AjaxResult result = new AjaxResult();
+            try
+            {
+                var date = DateTime.Now.ToLocalTime();
+                var kaoshi = db_exam.GetList();
 
-        //            if (tempobj != null)
-        //            {
-        //                resultlist.Add(tempobj);
-        //            }
-        //        }
-        //        result.Data = null;
-        //        result.Msg = "成功";
-        //        result.ErrorCode = 200;
+                foreach (var item in kaoshi)
+                {
+                    bool Isend = db_exam.IsEnd(db_exam.AllExamination().Where(d => d.ID == item.ID).FirstOrDefault());
+                    // && item.BeginDate >date
+                    if (Isend == false && item.BeginDate < date)
+                    {
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        result.Data = null;
-        //        result.Msg = "失败";
-        //        result.ErrorCode = 500;
-        //    }
-        //    return Json(result, JsonRequestBehavior.AllowGet);
-        //}
+                        return null;
+
+                    }
+                    else
+                    {
+                        result.Data = null;
+                        result.Msg = "成功";
+                        result.ErrorCode = 200;
+                        
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                result.Data = null;
+                result.Msg = "失败";
+                result.ErrorCode = 500;
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
         /// <summary>
         /// 当有考试 刷题禁止进入
         /// </summary>
         /// <returns></returns>
-        //public ActionResult BrushthetopicProhibit()
-        //{
-        //    AjaxResult result = new AjaxResult();
-        //    try
-        //    {
-        //        result.Data = null;
-        //        result.Msg = "成功";
-        //        result.ErrorCode = 200;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        result.Data = null;
-        //        result.Msg = "失败";
-        //        result.ErrorCode = 500;
-        //    }
-        //    return Json(result, JsonRequestBehavior.AllowGet);
-        //}
+        public ActionResult BrushthetopicProhibit()
+        {
+            AjaxResult result = new AjaxResult();
+            try
+            {
+                var date = DateTime.Now.ToLocalTime();
+                var kaoshi = db_exam.GetList();
+              
+                foreach (var item in kaoshi)
+                {
+                    bool Isend = db_exam.IsEnd(db_exam.AllExamination().Where(d => d.ID == item.ID).FirstOrDefault());
+                    //需求:1:考试不能结束,2:判断考试时间开始之后也不能进入&& item.BeginDate<date
+
+                    if (Isend== false && item.BeginDate<date)
+                    {
+                        return null;
+                        
+                    }
+                    else {
+                        result.Data = null;
+                        result.Msg = "成功";
+                        result.ErrorCode = 200;
+
+                    }
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                result.Data = null;
+                result.Msg = "失败";
+                result.ErrorCode = 500;
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
         /// <summary>
         ///获取学员最近的一次考试
         /// </summary> 

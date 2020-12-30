@@ -482,26 +482,28 @@
             //点击考试模拟 进入考试模拟页
             $("#Mockxamination").click(function () {
             
-                window.location.href = "/ExaminationSystem/StudentExamSys/MockExaminationView"
-                //$.post("/ExaminationSystem/StudentExamSys/SimulationProhibit", {}, function (result) {
-                //    if (result.ErrorCode == 200) {
-                //        layer.msg("当前有考试,为了让他人考试顺利,请你稍作等待!");
-                //    } else {
-                //        window.location.href = "/ExaminationSystem/StudentExamSys/MockExaminationView"
-                //    }
-                //})
+                //window.location.href = "/ExaminationSystem/StudentExamSys/MockExaminationView"
+                $.post("/ExaminationSystem/StudentExamSys/SimulationProhibit", {}, function (result) {
+                    if (result.ErrorCode == 200) {
+                        window.location.href = "/ExaminationSystem/StudentExamSys/MockExaminationView"
+                        
+                    } else {
+                        layer.msg("当前有考试,不能进行此操作!");
+                    }
+                })
                 
             });
             //点击刷题  进入刷题页
             $("#ShuaTi").click(function () {
-                window.location.href = "/ExaminationSystem/StudentExamSys/Brushthetopic"
-                //$.post("/ExaminationSystem/StudentExamSys/BrushthetopicProhibit", {}, function (result){
-                //    if (result.ErrorCode == 200) {
-                //        layer.msg("当前有考试,为了让他人考试顺利,请你稍作等待!");
-                //    } else {
-                //        window.location.href = "/ExaminationSystem/StudentExamSys/Brushthetopic"
-                //    }
-                //})
+                //window.location.href = "/ExaminationSystem/StudentExamSys/Brushthetopic"
+                $.post("/ExaminationSystem/StudentExamSys/BrushthetopicProhibit", {}, function (result){
+                    if (result.ErrorCode == 200) {
+                        window.location.href = "/ExaminationSystem/StudentExamSys/Brushthetopic"
+                    } else {
+                        layer.msg("当前有考试,不能进行此操作!");
+                       
+                    }
+                })
             })
             //点击考试 进入考试页
             $("#KaoShi").click(function () {
