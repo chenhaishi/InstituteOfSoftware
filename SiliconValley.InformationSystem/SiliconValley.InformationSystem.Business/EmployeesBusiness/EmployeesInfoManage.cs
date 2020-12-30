@@ -406,12 +406,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
         public bool AddEmpToCorrespondingDept(EmployeesInfo emp)
         {
             bool result = true;
-            #region 给该员工创建用户账号
-            Base_UserBusiness db_user = new Base_UserBusiness();
-            EnCh ench = new EnCh();
-            var empname = ench.convertCh(emp.EmpName);
-            db_user.createAccount(empname, emp.EmployeeId);
-            #endregion
+           
 
             var dname = this.GetDept(emp.PositionId).DeptName;//获取该员工所属部门名称
             var pname = this.GetPosition(emp.PositionId).PositionName;//获取该员工所属岗位名称
@@ -459,6 +454,12 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
                 result = esemanage.AddEmpToEmpSalary(emp.EmployeeId);//往员工工资体系表添加员工
             }
 
+            #region 给该员工创建用户账号
+            Base_UserBusiness db_user = new Base_UserBusiness();
+            EnCh ench = new EnCh();
+            var empname = ench.convertCh(emp.EmpName);
+            db_user.createAccount(empname, emp.EmployeeId);
+            #endregion
 
             return result;
         }
@@ -701,6 +702,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
         public AjaxResult ExcelImportEmpSql(ISheet sheet)
         {
             var ajaxresult = new AjaxResult();
+            rc = new RedisCache();
             List<EmpErrorDataView> emperrorlist = new List<EmpErrorDataView>();
             try
             {
@@ -811,6 +813,8 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
                                                         emp.DomicileAddress = item.domicileAddress;
                                                         emp.Address = item.address;
                                                         emp.Education = item.education;
+
+
                                                         emp.MaritalStatus = item.maritalStatus;
                                                         emp.IdCardIndate = item.idcardIndate;
                                                         emp.PoliticsStatus = item.politicsStatus;
@@ -826,6 +830,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
                                                         this.Insert(emp);
                                                         rc.RemoveCache("InRedisEmpInfoData");
                                                         AddEmpToCorrespondingDept(emp);
+                                                      
                                                         #endregion
                                                     }
                                                 }
@@ -1216,8 +1221,8 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
         {
             bool result = false;
 
-            var emp = this.GetEmpInfoData().Where(s => s.DDAppId == ddid).FirstOrDefault();
-            if (emp != null)
+            var emp = this.GetListBySql<EmployeesInfo>("select * from EmployeesInfo where DDAppId=" + ddid).ToList().Count();
+            if (emp != 0)
             {
                 result = true;//表示存在该钉钉号
             }

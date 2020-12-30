@@ -71,9 +71,6 @@
             </div>
 
             <script type="text/html" id="barDemo">
-                <a class="layui-btn layui-btn-xs" lay-event="cost_history" title="历史统计数据">
-                    <i class="layui-icon layui-icon-log"></i>
-                </a>
                 <a class="layui-btn layui-btn-xs" lay-event="search_class" title="查看课程">
                     <i class="layui-icon layui-icon-template-1"></i>
                 </a>
@@ -199,8 +196,8 @@
                 layer.open({
                     type: 2,
                     title: "费用统计",
-                    area: ['1100px', '400px'],
-                    content:'/Educational/Staff_Cost_Statistics/teaching_hour'
+                    area: ['1130px', '800px'],
+                    content: '/Educational/Staff_Cost_Statistics/teaching_hour'//teaching_hour
                 });
 
             });
@@ -209,12 +206,12 @@
             table.on('tool(emplist_filter)', function (obj) {
                
                 var data = obj.data;
-                if (obj.event == 'cost_history') {
+                if (obj.event == 'search_class') {
                     layer.open({
                         type: 2,
-                        area: ['400px', '300px'],
+                        area: ['1000px', '850px'],
                         title: "费用统计",
-                        content: '/Educational/Staff_Cost_Statistics/PersonalCostStatics?empid=' + data.EmployeeId
+                        content: '/Educational/Staff_Cost_Statistics/Search_PersonClass?empid=' + data.EmployeeId
                     });
                 } 
                

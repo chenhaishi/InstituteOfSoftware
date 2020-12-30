@@ -57,10 +57,11 @@
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
         @*<button class="layui-btn layui-btn-sm" lay-event="MCadd"><i class="layui-icon layui-icon-addition"></i>考核人员添加</button>*@
-        <button class="layui-btn layui-btn-sm" lay-event="PutPermission"><i class="layui-icon layui-icon-addition"></i>权限赋予</button>
+        @* <button class="layui-btn layui-btn-sm" lay-event="PutPermission"><i class="layui-icon layui-icon-addition"></i>权限赋予</button>*@
         <button class="layui-btn layui-btn-sm" lay-event="timeChange"><i class="layui-icon layui-icon-edit"></i>年月份改变</button>
         <button class="layui-btn layui-btn-sm" lay-event="Approved"><i class="layui-icon layui-icon-edit"></i>确认审批</button>
         <button class="layui-btn layui-btn-sm" lay-event="Upload"><i class="layui-icon layui-icon-upload"></i>导入Excel文档</button>
+        <button class="layui-btn layui-btn-sm" lay-event="select"><i class="layui-icon layui-icon-search"></i>查看</button>
     </div>
 </script>
 
@@ -74,6 +75,13 @@
     {{ d.empIsDel="在职" }}
     {{# }else{ }}
     {{ d.empIsDel="离职" }}
+    {{# } }}
+</script>
+<script type="text/html" id="empApproval">
+    {{# if(d.IsApproval==false){ }}
+    {{ d.IsApproval="未审核" }}
+    {{# }else{ }}
+    {{ d.IsApproval="已审核" }}
     {{# } }}
 </script>
 
@@ -94,6 +102,8 @@
                 , limits: [5, 10, 15, 20, 25, 30]
                 , limit: 10
                 , cols: [[
+                    { type: 'checkbox', width: 28, },
+                    { field: 'EmployeeId', hide:true},
                     { field: 'empName', title: '姓名', width: 100, sort: true }
                     , { field: 'empDept', title: '所属部门', width: 130, sort: true }
                     , { field: 'empPosition', title: '所属岗位', width: 110, sort: true }
@@ -107,6 +117,7 @@
                     , { field: 'SuperiorGrade', title: '上级评分', sort: true, width: 110 }
                     , { field: 'FinalGrade', title: '最终绩效分', sort: true, width: 120 }
                     , { field: 'empIsDel', title: '员工状态', sort: true, width: 110, templet: '#empstate' }
+                    , { field: 'IsApproval', title: '审核状态', sort: true, width: 110, templet: '#empApproval' }
                     , { field: 'Remark', title: '备注', width: 200 }
                     , { title: '操作', toolbar: '#barDemo', width: 110, fixed: 'right' }
                 ]]
@@ -119,7 +130,12 @@
                 var checkStatus = table.checkStatus(obj.config.id);
                 switch (obj.event) {
                     case 'timeChange':
-                        TimeChange();
+                        layer.open({
+                            type: 2,
+                            title:"",
+                            area: ["400px", "400px"],
+                            content: "/Personnelmatters/PerformanceAssess/ChangeMCTime"
+                        })
                         break;
                     case 'MCadd':
                         MCEmpAdd();
@@ -128,17 +144,19 @@
                         PutPermissionManage();
                         break;
                     case 'Approved':
-                          var time = '@ViewBag.yearandmonth';
-                        if (JSON.stringify(time) == "{}") {
+                     var time = '@ViewBag.yearandmonth';
+                        console.log("我的时间：" + JSON.stringify(time));
+                        if (JSON.stringify(time) != "{}") {
                             $.ajax({
                                 type: "post",
                                 dataType: "json",
+                                async: false,
                                 url: "/Personnelmatters/PerformanceAssess/IsConfirmApproval",
-                                data: time,
+                                data: { time:time } ,
                                 //报错请加入以下三行，则ajax提交无问题
-                                cache: false,
-                                processData: false,
-                                contentType: false,
+                                //cache: false,
+                                //processData: false,
+                                //contentType: false,
                                 success: function (data) {
                                     if (data.ErrorCode == 200) {
                                         if (data.Success) {
@@ -157,15 +175,38 @@
                             });
                         } else {
                             layer.msg("没有数据可审批!");
-                        }                       
+                        }
                         break;
                     case 'Upload':
                         layer.open({
                             type: 2,
                             title: "上传Excel文档",
-                            area: ["330px", "230px"],
+                            area: ["350px", "300px"],
                             content: "/Personnelmatters/PerformanceAssess/AssessmentUpload"
                         })
+                        break;
+                    case 'select':
+                        var data = checkStatus.data;
+                        var id = null;
+                        for (var i = 0; i < data.length; i++) {
+                                if (i == 0) {
+                                    id =data[i].EmployeeId + ",";
+                                } else {
+                                    id +=data[i].EmployeeId + ",";
+                                }
+                        }
+                        console.log(id);
+                        if (id!=null) {
+                            layer.open({
+                                type: 2,
+                                title: "查看员工",
+                                area: ["900px", "700px"],
+                                content: "/Personnelmatters/PerformanceAssess/AssessmentTimePeriodQuery?empid=" + id
+                            })
+                        } else {
+                            layer.alert("请至少选择一个员工");
+                        }
+                        
                         break;
                 };
             });
@@ -176,8 +217,8 @@
                 if (obj.event === 'edit') {
                     layer.open({
                         type: 2,
-                        content: '/Personnelmatters/PerformanceAssess/EditEmpPFAssess/?id=' + data.Id
-                        , area: ["900px", "760px"]
+                        content: '/Personnelmatters/PerformanceAssess/EditEmpPFAssess/?id=' + data.Id,
+                        area: ["400px", "300px"]
                         , title: '员工绩效考核编辑'
                         , shade: 0.8
                         , anim: 4

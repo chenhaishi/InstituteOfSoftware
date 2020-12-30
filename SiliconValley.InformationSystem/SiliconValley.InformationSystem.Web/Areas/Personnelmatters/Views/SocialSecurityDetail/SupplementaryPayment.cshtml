@@ -14,41 +14,41 @@
 </head>
 <body>
     <div>
-    <form class="layui-form" action="" id="formtest" lay-filter="formtest">
-        <input name="EmployeeId" value="@ViewBag.empid" class="layui-hide" />
-        <div class="layui-container" style="margin-top:25px">
-            <div class="layui-form-item">
-                <label class="layui-form-label">补缴月份:</label>
-                <div class="layui-input-inline" style="width:300px;">
-                    <input type="text" name="OverPayMonthNum" class="layui-input" />
+        <form class="layui-form" action="" id="formtest" lay-filter="formtest">
+            <input name="EmployeeId" value="@ViewBag.empid" class="layui-hide" />
+            <div class="layui-container" style="margin-top:25px">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">补缴月份:</label>
+                    <div class="layui-input-inline" style="width:300px;">
+                        <input type="text" name="OverPayMonthNum" class="layui-input" />
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">缴费基数:</label>
+                    <div class="layui-input-inline" style="width:300px;">
+                        <input type="text" name="PaymentBase" class="layui-input" />
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">单位部分:</label>
+                    <div class="layui-input-inline" style="width:300px;">
+                        <input type="text" name="UnitTotal" class="layui-input" />
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">个人部分:</label>
+                    <div class="layui-input-inline" style="width:300px;">
+                        <input type="text" name="PersonalTotal" class="layui-input" />
+                    </div>
                 </div>
             </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">缴费基数:</label>
-                <div class="layui-input-inline" style="width:300px;">
-                    <input type="text" name="PaymentBase" class="layui-input" />
+            <div class="layui-form-item" style="margin-left:50px;margin-top:70px;">
+                <div class="layui-input-block">
+                    <button class="layui-btn " lay-submit="" type="button" lay-filter="demo1">立即提交</button>
+                    <button class="layui-btn " id="btnclose1">关闭</button>
                 </div>
             </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">单位部分:</label>
-                <div class="layui-input-inline" style="width:300px;">
-                    <input type="text" name="UnitTotal" class="layui-input" />
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">个人部分:</label>
-                <div class="layui-input-inline" style="width:300px;">
-                    <input type="text" name="PersonalTotal" class="layui-input" />
-                </div>
-            </div>
-        </div>
-        <div class="layui-form-item" style="margin-left:50px;margin-top:70px;">
-            <div class="layui-input-block">
-                <button class="layui-btn " lay-submit="" type="button" lay-filter="demo1">立即提交</button>
-                <button class="layui-btn " id="btnclose1">关闭</button>
-            </div>
-        </div>
-    </form>
+        </form>
     </div>
     <script>
         layui.use(['form', 'layer'], function () {

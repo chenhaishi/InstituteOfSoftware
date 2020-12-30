@@ -139,7 +139,7 @@
                 }
                 else
                 {
-                    <td> <input type="text" id="OddNumbers" lay-verify="required|number" placeholder="单号" class="layui-input" /></td>
+                    <td> <input type="text" id="OddNumbers" lay-verify="required|number" placeholder="单号" class="layui-input" /></td>   
                 }
 
             </tr>
@@ -147,12 +147,19 @@
                 <td>收款方式：</td>
                 @if (ViewBag.paymentmethod != "null")
                 {
-                    <td>@ViewBag.paymentmethod</td>
+                    <td>@ViewBag.paymentmethod</td> 
                 }
                 else
                 {
                     <td> <input type="text" id="paymentmethod" lay-verify="required" placeholder="收款方式" class="layui-input" /></td>
                 }
+
+            </tr>
+            <tr>
+                <td>入账时间：</td>
+       
+                <td> <input type="text" name="date1" id="date1" lay-verify="date" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input" value="@ViewBag.result"></td>
+                
 
             </tr>
             <tr>
@@ -188,19 +195,29 @@
 </html>
 
 <script>
-    layui.use(['table', 'layer', 'tree', 'form'], function () {
+
+    layui.use(['table', 'layer', 'tree', 'form','laydate'], function () {
         var table = layui.table;
                     var layer = layui.layer;
-                    var form = layui.form;
+        var form = layui.form
+            , layer = layui.layer
+            , layedit = layui.layedit
+            , laydate = layui.laydate;
+        //日期
+    
+        laydate.render({
+            elem: '#date1',
+            trigger:'click'
+        });
         //同意
         $("#Yess").click(function () {
-           
+            var time = $("#date1").val();
                  var Dabse = {
                 id: $("#ids").val(),
                 whether: 1,
                      OddNumbers: $("#OddNumbers").val(),
-                     paymentmethod: $("#paymentmethod").val()
-
+                     paymentmethod: $("#paymentmethod").val(),
+                     time:time
             }
             if (Dabse.paymentmethod != "" && Dabse.OddNumbers != "") {
                 TransactionAdd("/Finance/Pricedetails/Tuitionentry", Dabse);
@@ -220,6 +237,7 @@
                 }
                 TransactionAdd("/Finance/Pricedetails/Tuitionentry", Dabse);
                 layer.close(index);
+                console.log(Dabse);
             })
                   
         });
@@ -239,8 +257,6 @@
             } else {
                 layer.msg("当前登录账号无权限操作！");
             }
-           
-
         });
         //关闭
         $("#Ceno").click(function () {

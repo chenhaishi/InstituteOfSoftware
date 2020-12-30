@@ -59,6 +59,7 @@ namespace SiliconValley.InformationSystem.Depository
                 }
             }
             BuildParamters();
+
             res = _dbrepositoryContainer.Resolve<IRepository>(_dbType.ToString(), paramters.ToArray());
             return res;
         }

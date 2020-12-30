@@ -279,10 +279,30 @@ namespace SiliconValley.InformationSystem.Business.ClassesBusiness
         {
 
             var ClassID = scheduleForTraineesBusiness.SutdentCLassName(StudentID);//获取班级
-            var leid =ClassID==null?new HeadClass(): Hoadclass.GetList().Where(c => c.IsDelete == false  && c.ClassID == ClassID.ID_ClassName).FirstOrDefault();//查询带班班主任id
-          var Empid =leid==null?new Headmaster(): this.GetEntity(leid.LeaderID);//员工编号
-         return Empid==null?new EmployeesInfo(): employeesInfoManage.GetEntity(Empid.informatiees_Id);
+            var leid =ClassID==null?new HeadClass(): Hoadclass.GetList().Where
+                (c => c.IsDelete == false  && c.ClassID == ClassID.ID_ClassName).FirstOrDefault();//查询带班班主任id
+
+            var Empid =leid==null?new Headmaster(): this.GetEntity(leid.LeaderID);//员工编号
+            return Empid==null?new EmployeesInfo(): employeesInfoManage.GetEntity(Empid.informatiees_Id);
         }
+
+        /// <summary>
+        /// 根据学员学号获取当前班主任
+        /// </summary>
+        /// <param name="StudentID">学员id</param>
+        /// <returns>员工实体</returns>
+        public EmployeesInfo GetEmployessByStuid(string StudentID)
+        {
+            var ClassID = scheduleForTraineesBusiness.SutdentCLassName(StudentID);//获取班级
+
+            var leid =  Hoadclass.GetList().Where
+                (c => c.IsDelete == false && c.ClassID == ClassID.ID_ClassName).OrderBy(c=>c.EndingTime).FirstOrDefault();//查询带班班主任id
+
+            var Empid = leid == null ? new Headmaster() : this.GetEntity(leid.LeaderID);//员工编号
+            return Empid == null ? new EmployeesInfo() : employeesInfoManage.GetEntity(Empid.informatiees_Id);
+        }
+
+
         /// <summary>
         /// 班主任职业素养培训数据
         /// </summary>

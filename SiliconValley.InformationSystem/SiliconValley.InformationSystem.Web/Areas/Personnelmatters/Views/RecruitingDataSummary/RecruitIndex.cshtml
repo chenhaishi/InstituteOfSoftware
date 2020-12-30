@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "RecruitIndex";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -19,14 +18,14 @@
                 <form class="layui-form" action="" lay-filter="formtrace">
                     <div class="layui-row layui-form-item">
                         <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
-                            <label class="layui-form-label">姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名:</label>
+                            <label class="layui-form-label" style="width:120px;">姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
                             <div class="layui-input-inline" style="margin-left:10px;">
                                 <input type="text" id="Name" name="Name" autocomplete="off" class="layui-input">
                             </div>
                         </div>
 
                         <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
-                            <label class="layui-form-label" style="width:100px;">部&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;门:</label>
+                            <label class="layui-form-label" style="width:100px;margin-left:-20px;">部&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;门:</label>
                             <div class="layui-input-inline">
                                 <select name="deptid1" id="deptid1" style="width:130px;" lay-filter="deptid1filter" lay-search=""></select>
 
@@ -34,7 +33,7 @@
                         </div>
 
                         <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
-                            <label class="layui-form-label" style="width:100px;margin-left:-20px;">岗&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;位:</label>
+                            <label class="layui-form-label" style="width:150px;margin-left:-10px;">岗&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;位:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
                             <div class="layui-input-inline">
                                 <select name="Pid1" id="Pid1" lay-filter="pid1filter" style="width:130px;">
                                     <option value="">请选择应聘的岗位</option>
@@ -52,20 +51,20 @@
                     </div>
                     <div class="layui-row layui-form-item">
                         <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
-                            <label class="layui-form-label">渠&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;道:</label>
+                            <label class="layui-form-label" style="width:120px;">渠&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;道:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
                             <div class="layui-input-inline" style="margin-left:10px;">
                                 <input type="text" id="Channel" name="Channel" autocomplete="off" class="layui-input">
                             </div>
                         </div>
 
                         <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
-                            <label class="layui-form-label" style="width:100px;">简历类型:</label>
+                            <label class="layui-form-label" style="width:100px;margin-left:-20px;">简历类型:</label>
                             <div class="layui-input-inline">
                                 <input type="text" id="ResumeType" name="ResumeType" autocomplete="off" class="layui-input">
                             </div>
                         </div>
-                        <div class="layui-col-xs3 layui-col-sm3 layui-col-md3" style="margin-left:-20px;">
-                            <label class="layui-form-label" style="width:100px;">面试结果:</label>
+                        <div class="layui-col-xs3 layui-col-sm3 layui-col-md3" >
+                            <label class="layui-form-label" style="width:150px;margin-left:-10px;">面&nbsp;&nbsp;&nbsp;&nbsp;试&nbsp;&nbsp;&nbsp;&nbsp;结&nbsp;&nbsp;&nbsp;&nbsp;果:</label>
                             <div class="layui-input-inline">
                                 <select name="result" id="result">
                                     <option value="">--请选择--</option>
@@ -77,7 +76,7 @@
                         </div>
 
                         <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
-                            <label class="layui-form-label" style="width:100px;">是否入职:</label>
+                            <label class="layui-form-label" style="width:100px; margin-left:-20px;">是否入职:</label>
                             <div class="layui-input-inline">
                                 <select name="IsEntry" id="IsEntry">
                                     <option value="">--请选择--</option>
@@ -91,8 +90,8 @@
 
                     </div>
                     <div class="layui-row layui-form-item">
-                        <div class="layui-inline" style="margin-left:-13px;">
-                            <label class="layui-form-label" style="width:100px;margin-left:10px;">联系时间:</label>
+                        <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
+                            <label class="layui-form-label" style="width:100px;">联系时间</label>
                             <div class="layui-inline" style="margin-left:-50px;">
                                 <label class="layui-form-label">从:</label>
                                 <div class="layui-input-inline">
@@ -100,49 +99,50 @@
                                 </div>
                             </div>
 
-                            <div class="layui-inline" style="margin-left:-50px;">
-                                <label class="layui-form-label">至:</label>
-                                <div class="layui-input-inline">
-                                    <input type="text" id="end_TraceTime" name="end_TraceTime" lay-verify="end_TraceTime" autocomplete="off" class="layui-input">
-                                </div>
-                            </div>
                         </div>
 
-                        <div class="layui-inline">
-                            <label class="layui-form-label" style="width:120px;margin-left:-20px;">预面试时间:</label>
-                            <div class="layui-inline" style="margin-left:-40px;">
+                        <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
+                            <label class="layui-form-label" style="width:100px;margin-left:-20px;">至:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="end_TraceTime" name="end_TraceTime" lay-verify="end_TraceTime" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
+                            <label class="layui-form-label" style="width:120px;margin-left:-10px;">预面试时间&nbsp;</label>
+                            <div class="layui-inline" style="margin-left:-50px;">
                                 <label class="layui-form-label">从:</label>
                                 <div class="layui-input-inline">
                                     <input type="text" id="start_ForwardDate" name="start_ForwardDate" lay-verify="start_ForwardDate" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="layui-inline" style="margin-left:-50px;">
-                                <label class="layui-form-label">至:</label>
-                                <div class="layui-input-inline">
-                                    <input type="text" id="end_ForwardDate" name="end_ForwardDate" lay-verify="end_ForwardDate" autocomplete="off" class="layui-input">
-                                </div>
+                        <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
+                            <label class="layui-form-label" style="width:100px; margin-left:-20px;">至:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="end_ForwardDate" name="end_ForwardDate" lay-verify="end_ForwardDate" autocomplete="off" class="layui-input">
                             </div>
                         </div>
-                        <button class="layui-btn" type="button" id="Conditionselect1" style="margin-left:40px;"><i class="layui-icon layui-icon-search"></i>查询</button>
+
                     </div>
+                    <div class="layui-row layui-form-item">
+                        <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
+                            <label class="layui-form-label" style="width:120px;">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                            <div class="layui-input-inline" style="margin-left:10px;">
+                                <input type="text" id="remarks" name="remarks" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
+                            <button class="layui-btn" type="button" id="Conditionselect1" style="margin-left:20px;"><i class="layui-icon layui-icon-search"></i>查询</button>
+                        </div>
+                    </div>
+
                 </form>
             </fieldset>
 
             <table id="rptTab" lay-filter="rptTab"></table>
-            @*头部工具栏*@
-            <script type="text/html" id="toolbarDemo2">
-                <div class="layui-btn-container">
-                    <button class="layui-btn layui-btn-sm" lay-event="addRPT"><i class="layui-icon layui-icon-addition"></i>添加招聘追踪数据</button>
-                </div>
-            </script>
-            @*操作栏*@
-            <script type="text/html" id="barDemo">
-                <a class="layui-btn layui-btn-xs" lay-event="addTrack">添加追踪</a>
-                <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-                <a class="layui-btn layui-btn-xs" lay-event="Entry">入职</a>
-                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="detail">查看详情</a>
-            </script>
+
         </div>
         <div class="layui-tab-item">
             @*月度汇总模糊查询*@
@@ -181,6 +181,7 @@
                             </div>
                         </div>
                     </div>
+
                     <button class="layui-btn" type="button" id="Conditionselect" style="margin-left:160px;"><i class="layui-icon layui-icon-search"></i>查询</button>
                 </div>
             </form>
@@ -191,12 +192,25 @@
     </div>
 </div>
 
+@*头部工具栏*@
+<script type="text/html" id="toolbarDemo2">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="addRPT"><i class="layui-icon layui-icon-addition"></i>添加招聘追踪数据</button>
+    </div>
+</script>
+@*操作栏*@
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="addTrack">添加追踪</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-xs" lay-event="Entry">入职</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="detail">查看详情</a>
+</script>
 @*招聘电话追踪记录的面试结果属性*@
 <script type="text/html" id="switchTp2">
-    {{# if(d.IsEntry==false){ }}
-    {{ d.IsEntry="未入职" }}
+    {{# if(d.NewesIsEntry==false){ }}
+    {{ d.NewesIsEntry="未入职" }}
     {{# }else{ }}
-    {{ d.IsEntry="已入职" }}
+    {{ d.NewesIsEntry="已入职" }}
     {{# } }}
 </script>
 
@@ -212,7 +226,6 @@
 
 @section script{
     <script>
-
         //招聘电话追踪数据
         layui.use(['table', 'layer', 'form', 'laydate', 'element'], function () {
             var table = layui.table;
@@ -236,14 +249,13 @@
                     , { field: 'Channel', title: '渠道', width: 95, sort: true }
                     , { field: 'ResumeType', title: '简历类型', sort: true, width: 110 }
                     , { field: 'forwardDate', title: '预面试时间', width: 170, sort: true, templet: function (d) { return changeDateTimeFormat(d.forwardDate); } }
-                    , { field: 'result', title: '面试结果', width: 100, templet: '#faceresult' }
-                    , { field: 'IsEntry', title: '是否入职', width: 100, templet: '#switchTp2' }
-                    , { field: 'Remark', title: '备注', sort: true, width: 90 }
+                    , { field: 'result', title: '面试结果', width: 100, templet:"#faceresult" }
+                    , { field: 'NewesIsEntry', title: '是否入职', width: 100, templet:"#switchTp2"}
+                    , { field: 'NewesRemark', title: '备注', sort: true, width: 90}
                     , { fixed: 'right', title: '操作', toolbar: '#barDemo' }
                 ]]
                 , page: true
             });
-
             //模糊查询点击事件
             $("#Conditionselect1").click(function () {
                 var name = $("#Name").val();
@@ -255,7 +267,7 @@
                 var ResumeType = $("#ResumeType").val();
                 var result = $("#result").val();
                 var IsEntry = $("#IsEntry").val();
-
+                var remarks = $("#remarks").val();
                 var start_TraceTime = $("#start_TraceTime").val();//起始联系时间
                 var end_TraceTime = $("#end_TraceTime").val();//终止联系时间
                 var start_ForwardDate = $("#start_ForwardDate").val();//起始预面试时间
@@ -266,13 +278,10 @@
                         page: {
                             curr: 1 //重新从第 1 页开始
                         }, where: {
-                            AppCondition: name + "," + deptid + "," + pid + "," + PhoneNumber + "," + Channel + "," + ResumeType + "," + result + "," + IsEntry + "," + start_TraceTime + "," + end_TraceTime + "," + start_ForwardDate + "," + end_ForwardDate
+                            AppCondition: name + "," + deptid + "," + pid + "," + PhoneNumber + "," + Channel + "," + ResumeType + "," + result + "," + IsEntry + "," + start_TraceTime + "," + end_TraceTime + "," + start_ForwardDate + "," + end_ForwardDate + "," + remarks
                         }
                     });
                 });
-
-
-
             });
             //日期
             var start_TraceTime = laydate.render({
@@ -281,8 +290,8 @@
                 done: function (value, date) {
                     end_TraceTime.config.min = {
                         year: date.year,
-                        month: date.month - 1//关键
-
+                        month: date.month-1,
+                        date: date.date
                     }
                 }
             });
@@ -292,8 +301,8 @@
                 done: function (value, date) {
                     start_TraceTime.config.max = {
                         year: date.year,
-                        month: date.month - 1//关键
-
+                        month: date.month - 1,
+                        date: date.date
                     }
                 }
             });
@@ -303,8 +312,8 @@
                 done: function (value, date) {
                     end_ForwardDate.config.min = {
                         year: date.year,
-                        month: date.month - 1//关键
-
+                        month: date.month - 1,//关键
+                        date: date.date
                     }
                 }
             });
@@ -314,12 +323,11 @@
                 done: function (value, date) {
                     start_ForwardDate.config.max = {
                         year: date.year,
-                        month: date.month - 1//关键
-
+                        month: date.month - 1,//关键
+                        date: date.date
                     }
                 }
             });
-
             //头工具栏事件
             table.on('toolbar(rptTab)', function (obj) {
                 //var checkStatus = table.checkStatus(obj.config.id);
@@ -329,7 +337,6 @@
                         break;
                 };
             });
-
             //工具栏事件
             table.on('tool(rptTab)', function (obj) {
                 var data = obj.data;
@@ -347,7 +354,6 @@
                         ConfirmEntry(data.Id);
                 };
             });
-
             //监听是否入职操作
             form.on('switch(entryDemo)', function (obj) {
                 var id = this.value;
@@ -362,7 +368,6 @@
                     }
                 });
             });
-
             //监听是否面试操作
             form.on('switch(IsInterviewDemo)', function (obj) {
                 var id = this.value;
@@ -377,9 +382,7 @@
                     }
                 });
             });
-            formtrace
         });
-
         //月度招聘数据汇总
         layui.use(['table', 'layer', 'form', 'laydate', 'element'], function () {
             var table = layui.table;
@@ -387,7 +390,6 @@
             var form = layui.form;
             var laydate = layui.laydate;
             var element = layui.element;
-
             table.render({
                 elem: '#recruitTab'
                 , url: '/Personnelmatters/RecruitingDataSummary/GetRecruitData'
@@ -412,11 +414,9 @@
                     , { field: 'EntryRate', title: '入职率', width: 90 }
                     , { field: 'RecruitPercentage', title: '招聘完成率', width: 105 }
                     , { field: 'Remark', title: '备注', width: 150, edit: 'text' }
-
                 ]]
                 , page: true
             });
-
             //监听单元格编辑
             table.on('edit(recruitTab)', function (obj) {
                 var value = obj.value //得到修改后的值
@@ -437,31 +437,27 @@
                         }
                     }
                 });
-
             });
-
             //动态绑定岗位属性的下拉框的值
-            $.ajax({
-                url: '/Personnelmatters/RecruitingDataSummary/BindPidSelect',
-                dataType: 'json',
-                type: 'get',
-                success: function (data) {
-                    console.log(data.data);
-                    $.each(data.data, function (index, item) {
-                        $('#Pid').append(new Option(item.PositionName, item.Pid));// 下拉菜单里添加元素
-                    });
-                    layui.form.render("select");
-                    //重新渲染 固定写法
-                }
-            });
-
+            //$.ajax({
+            //    url: '/Personnelmatters/RecruitingDataSummary/BindPidSelect',
+            //    dataType: 'json',
+            //    type: 'get',
+            //    success: function (data) {
+            //        console.log(data.data);
+            //        $.each(data.data, function (index, item) {
+            //            $('#Pid').append(new Option(item.PositionName, item.Pid));// 下拉菜单里添加元素
+            //        });
+            //        layui.form.render("select");
+            //        //重新渲染 固定写法
+            //    }
+            //});
             //模糊查询点击事件
             $("#Conditionselect").click(function () {
                 var deptid = $("#deptid").val();
                 var pname = $("#Pid").val();//员工所属岗位
                 var start_time = $("#start_time").val();//起始时间
                 var end_time = $("#end_time").val();//终止时间
-
                 layui.use(['table'], function () {
                     var table = layui.table;
                     table.reload('myRecruitData', {
@@ -472,9 +468,6 @@
                         }
                     });
                 });
-
-
-
             });
             //日期
             var startTime = laydate.render({
@@ -505,10 +498,7 @@
                     }
                 }
             });
-
         });
-
-
         //添加招聘电话追踪记录
         function AddRPT() {
             layui.use(['layer'], function (args) {
@@ -520,10 +510,8 @@
                     , content: '/Personnelmatters/RecruitingDataSummary/Addrpt'
                     , anim: 2
                 });
-
             })
         }
-
         //添加面试记录
         function AddTrack(id) {
             layui.use(['layer'], function (args) {
@@ -535,10 +523,8 @@
                     , content: '/Personnelmatters/RecruitingDataSummary/AddTrack?id=' + id
                     , anim: 2
                 });
-
             })
         }
-
         //编辑招聘电话追踪
         function EditTrace(id) {
             layui.use(['layer'], function (args) {
@@ -550,10 +536,8 @@
                     , content: '/Personnelmatters/RecruitingDataSummary/EditTrack?id=' + id
                     , anim: 2
                 });
-
             })
         }
-
         //招聘电话追踪详情
         function DetailTrace(id) {
             layui.use(['layer'], function (args) {
@@ -565,10 +549,8 @@
                     , content: '/Personnelmatters/RecruitingDataSummary/TrackDetailInfo?id=' + id
                     , anim: 2
                 });
-
             })
         }
-
         //确认入职
         function ConfirmEntry(id) {
             $.ajax({
@@ -591,9 +573,7 @@
                     }
                 }
             });
-
         }
-
         //格式化时间
         //只显示年月
         function GetYearAndMonth(cellval) {
@@ -605,13 +585,11 @@
                 else {
                     date = new Date(cellval);
                 }
-
                 var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
                 var currentDate = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
                 var hour = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
                 var minute = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
                 var ss = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
-
                 return date.getFullYear() + "-" + month;
             } else {
                 return "";
@@ -627,13 +605,11 @@
                 else {
                     date = new Date(cellval);
                 }
-
                 var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
                 var currentDate = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
                 var hour = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
                 var minute = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
                 var ss = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
-
                 return date.getFullYear() + "-" + month + "-" + currentDate;
             } else {
                 return "";
@@ -649,13 +625,11 @@
                 else {
                     date = new Date(cellval);
                 }
-
                 var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
                 var currentDate = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
                 var hour = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
                 var minute = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
                 var ss = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
-
                 return date.getFullYear() + "-" + month + "-" + currentDate + " " + hour + ":" + minute + ":" + ss;
             } else {
                 return "";
@@ -684,7 +658,6 @@
                     layui.form.render("select");
                 }
             });
-
             //级联子项目
             //select 监听
             form.on('select(deptid1filter)', function (data) {
@@ -698,7 +671,6 @@
                             //清空赋值
                             $("#Pid1").empty();
                             $("#Pid1").append(new Option("请选择岗位", ""));
-
                             $.each(resultData.data, function (index, item) {
                                 //赋值
                                 $("#Pid1").append(new Option(item.PositionName, item.Pid));
@@ -711,10 +683,7 @@
                 });
             })
             layui.form.render("select");
-
         });
-
-
     </script>
 
 
@@ -739,7 +708,6 @@
                     layui.form.render("select");
                 }
             });
-
             //级联子项目
             //select 监听
             form.on('select(deptidfilter)', function (data) {
@@ -753,7 +721,6 @@
                             //清空赋值
                             $("#Pid").empty();
                             $("#Pid").append(new Option("请选择岗位", ""));
-
                             $.each(resultData.data, function (index, item) {
                                 //赋值
                                 $("#Pid").append(new Option(item.PositionName, item.Pid));
@@ -766,13 +733,9 @@
                 });
             })
             layui.form.render("select");
-
         });
-
-
     </script>
 
 
 
 }
-

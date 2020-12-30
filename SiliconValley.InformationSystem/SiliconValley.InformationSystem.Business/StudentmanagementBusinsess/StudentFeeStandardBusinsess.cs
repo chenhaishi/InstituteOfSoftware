@@ -58,8 +58,9 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
         BaseBusiness<PayviewPaymentver> PayviewPaymentverBusiness = new BaseBusiness<PayviewPaymentver>();
         //预入费退费业务类
         BaseBusiness<Refund> RefundBusiness = new BaseBusiness<Refund>();
-       
-       
+        BaseBusiness<StudentFeeRecord> StudentFeeRecord_list_add = new BaseBusiness<StudentFeeRecord>();
+
+
         //退费业务类
         BaseBusiness<Tuitionrefund> TuitionrefundBusiness = new BaseBusiness<Tuitionrefund>();
         /// <summary>
@@ -186,9 +187,11 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
         {
             //tring StudenID,string Remarks,string Costitemsid
             List<Payview> listFeeRecord = new List<Payview>();
-
+            BaseBusiness<Enrollment> Enrollment = new BaseBusiness<Enrollment>();
+            List<Enrollment> ENlist = new List<Enrollment>();
             //当前登陆人
             Base_UserModel user = Base_UserBusiness.GetCurrentUser();
+            
             var fine = finacemo.GetList().Where(a => a.Financialstaff == user.EmpNumber).FirstOrDefault();
             AjaxResult retus = null;
             try
@@ -205,14 +208,21 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                     studentFee.Amountofmoney = costitemsBusiness.GetEntity(int.Parse(item)).Amountofmoney;
                     studentFee.Remarks = Remarks;
                     listFeeRecord.Add(studentFee);
+                    //学历添加
+                    Enrollment listEnrollment = new Enrollment();
+                    listEnrollment.PassNumber = null;
+                    listEnrollment.Datestration = null;
+                    listEnrollment.School = null;
+                    listEnrollment.StudentNumber = StudenID;
+                    listEnrollment.Remarks = null;
+                    listEnrollment.IsDelete = false;
+                    listEnrollment.MajorID = null;
+                    listEnrollment.Registeredbatch = null;
+                    ENlist.Add(listEnrollment);
                  //   this.Studentpayment(studentFee.StudenID, fine.id, 1);
                 }
-              
-                
+                Enrollment.Insert(ENlist);
                 SessionHelper.Session["person"] = listFeeRecord;
-
-               
-
                 PayviewBusiness.Insert(listFeeRecord);
                 //添加核对表
                 Paymentverification paymentverification = new Paymentverification();
@@ -425,6 +435,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
             int Costitemsid = 0;
             AjaxResult retus = null;
             List<Payview> listFeeRecord = new List<Payview>();
+            List<StudentFeeRecord> StudentFeeRecordss = new List<StudentFeeRecord>();
             //当前登陆人
             Base_UserModel user = Base_UserBusiness.GetCurrentUser();
             var fine = finacemo.GetList().Where(a => a.Financialstaff == user.EmpNumber).FirstOrDefault();
@@ -450,12 +461,27 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                     studentFeeRecord.Amountofmoney = item.Amountofmoney;
                     studentFeeRecord.StudenID = item.StudenID;
                     studentFeeRecord.Remarks = Remarks+Help;
+                   
                     listFeeRecord.Add(studentFeeRecord);
                 }
                 try
                 {
                     SessionHelper.Session["person"] = listFeeRecord;
                     PayviewBusiness.Insert(listFeeRecord);
+                    foreach (var item in listFeeRecord)
+                    {
+                        StudentFeeRecord pay = new StudentFeeRecord();
+                        pay.Amountofmoney = item.Amountofmoney;
+                        pay.AddTime = null;
+                        pay.Costitemsid = item.Costitemsid;
+                        pay.AddDate = item.AddDate;
+                        pay.StudenID = item.StudenID;
+                        pay.FinanceModelid = item.FinanceModelid;
+                        pay.Remarks = item.Remarks;
+                        pay.IsDelete = item.IsDelete;
+                        StudentFeeRecordss.Add(pay);
+                    }
+                    StudentFeeRecord_list_add.Insert(StudentFeeRecordss);
                     //添加核对表
                     Paymentverification paymentverification = new Paymentverification();
                     paymentverification.Passornot = null;
@@ -463,7 +489,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                     paymentverification.AddDate = null;
                     PaymentverificationBusiness.Insert(paymentverification);
                     List<PayviewPaymentver> payviewPaymentverslist = new List<PayviewPaymentver>();
-                    //
+                  
                  var FeeRecordlist=  PayviewBusiness.GetList().Where(a => a.StudenID == studentid && a.FinanceModelid == Costitemsid).OrderByDescending(a => a.ID).Take(listFeeRecord.Count()).ToList();
                     foreach (var item in FeeRecordlist)
                     {
@@ -572,6 +598,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
 
         }
 
+
         public List<vierprice> FienTuitionrefund(List<vierprice> vierprices2)
         {
             List<vierprice> vierprices1 = new List<vierprice>();
@@ -634,7 +661,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
         /// <param name="Remarks">备注</param>
         /// <param name="Typeid">名目</param>
         /// <returns></returns>
-        public AjaxResult Otherconsumption(string StudenID, string Consumptionname, decimal Amountofmoney, string Remarks, int Typeid)
+        public AjaxResult Otherconsumption(string StudenID, string Consumptionname, decimal Amountofmoney, string Remarks, int Typeid, string Consumptionname_su, decimal Amountofmoney_su)
         {
             AjaxResult retus = null;
             try
@@ -643,8 +670,20 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                 Base_UserModel user = Base_UserBusiness.GetCurrentUser();
                 var fine = finacemo.GetList().Where(a => a.Financialstaff == user.EmpNumber).FirstOrDefault();
                 var x = costitemsBusiness.GetList().Where(a => a.Name == Consumptionname).FirstOrDefault();
-                if (x == null)
+                var xu = costitemsBusiness.GetList().Where(d => d.Name == Consumptionname_su).FirstOrDefault();
+                if (x == null || xu == null)
                 {
+                    if (Consumptionname_su != null)
+                    {
+                        Costitems costitems_list = new Costitems();
+                        costitems_list.Amountofmoney = Amountofmoney_su;
+                        costitems_list.Name = Consumptionname_su;
+                        costitems_list.IsDelete = false;
+                        costitems_list.Rategory = Typeid;
+                        costitemsBusiness.Insert(costitems_list);
+                        xu = costitemsBusiness.GetList().Where(a => a.Name == Consumptionname_su).OrderByDescending(d => d.id).FirstOrDefault();
+                    }
+
                     Costitems costitems = new Costitems();
                     costitems.Amountofmoney = Amountofmoney;
                     costitems.Name = Consumptionname;
@@ -653,23 +692,86 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                     costitemsBusiness.Insert(costitems);
                     x = costitemsBusiness.GetList().Where(a => a.Name == Consumptionname).OrderByDescending(a => a.id).FirstOrDefault();
                 }
-                List<Payview> liststudents = new List<Payview>();
-                Payview studentFee = new Payview();
-                studentFee.StudenID = StudenID;
-                studentFee.Amountofmoney = Amountofmoney;
-                studentFee.AddDate = DateTime.Now;
-                studentFee.Remarks = Remarks;
-                studentFee.IsDelete = false;
-                studentFee.Costitemsid = x.id;
-                studentFee.FinanceModelid = fine.id;
-                PayviewBusiness.Insert(studentFee);
-                liststudents.Add(studentFee);
-                this.Studentpayment(StudenID, fine.id,1);
-                SessionHelper.Session["person"] = liststudents;
-                retus = new SuccessResult();
-                retus.Success = true;
-                retus.Msg = "缴费成功";
-                BusHelper.WriteSysLog("其它缴费数据", Entity.Base_SysManage.EnumType.LogType.添加数据);
+                List<Payview> liststudents_1 = new List<Payview>();
+                if (Amountofmoney == 0)
+                {
+                    Payview studentFee_2 = new Payview();
+                    studentFee_2.StudenID = StudenID;
+                    studentFee_2.Amountofmoney = Amountofmoney_su;
+                    studentFee_2.AddDate = DateTime.Now;
+                    studentFee_2.Remarks = Remarks;
+                    studentFee_2.IsDelete = false;
+                    studentFee_2.Costitemsid = xu.id;
+                    studentFee_2.FinanceModelid = fine.id;
+                    PayviewBusiness.Insert(studentFee_2);
+                    liststudents_1.Add(studentFee_2);
+                    this.Studentpayment(StudenID, fine.id, 1);
+                    SessionHelper.Session["person"] = liststudents_1;
+                    retus = new SuccessResult();
+                    retus.Success = true;
+                    retus.Msg = "缴费成功";
+                    BusHelper.WriteSysLog("其它缴费数据", Entity.Base_SysManage.EnumType.LogType.添加数据);
+                }
+                else if (Amountofmoney_su == 0)
+                {
+                    Payview studentFee_3 = new Payview();
+                    studentFee_3.StudenID = StudenID;
+                    studentFee_3.Amountofmoney = Amountofmoney;
+                    studentFee_3.AddDate = DateTime.Now;
+                    studentFee_3.Remarks = Remarks;
+                    studentFee_3.IsDelete = false;
+                    studentFee_3.Costitemsid = x.id;
+                    studentFee_3.FinanceModelid = fine.id;
+                    PayviewBusiness.Insert(studentFee_3);
+                    liststudents_1.Add(studentFee_3);
+                    this.Studentpayment(StudenID, fine.id, 1);
+                    SessionHelper.Session["person"] = liststudents_1;
+                    retus = new SuccessResult();
+                    retus.Success = true;
+                    retus.Msg = "缴费成功";
+                    BusHelper.WriteSysLog("其它缴费数据", Entity.Base_SysManage.EnumType.LogType.添加数据);
+                }
+                else
+                {
+                    if (Consumptionname_su != null)
+                    {
+
+                        Payview studentFee_1 = new Payview();
+                        studentFee_1.StudenID = StudenID;
+                        studentFee_1.Amountofmoney = Amountofmoney_su;
+                        studentFee_1.AddDate = DateTime.Now;
+                        studentFee_1.Remarks = Remarks;
+                        studentFee_1.IsDelete = false;
+                        studentFee_1.Costitemsid = xu.id;
+                        studentFee_1.FinanceModelid = fine.id;
+                        PayviewBusiness.Insert(studentFee_1);
+                        liststudents_1.Add(studentFee_1);
+                        this.Studentpayment(StudenID, fine.id, 1);
+                        SessionHelper.Session["person"] = liststudents_1;
+                        retus = new SuccessResult();
+                        retus.Success = true;
+                        retus.Msg = "缴费成功";
+                        BusHelper.WriteSysLog("其它缴费数据", Entity.Base_SysManage.EnumType.LogType.添加数据);
+                    }
+
+                    Payview studentFee = new Payview();
+                    studentFee.StudenID = StudenID;
+                    studentFee.Amountofmoney = Amountofmoney;
+                    studentFee.AddDate = DateTime.Now;
+                    studentFee.Remarks = Remarks;
+                    studentFee.IsDelete = false;
+                    studentFee.Costitemsid = x.id;
+                    studentFee.FinanceModelid = fine.id;
+                    PayviewBusiness.Insert(studentFee);
+                    liststudents_1.Add(studentFee);
+                    this.Studentpayment(StudenID, fine.id, 1);
+                    SessionHelper.Session["person"] = liststudents_1;
+
+                    retus = new SuccessResult();
+                    retus.Success = true;
+                    retus.Msg = "缴费成功";
+                    BusHelper.WriteSysLog("其它缴费数据", Entity.Base_SysManage.EnumType.LogType.添加数据);
+                }
             }
             catch (Exception ex)
             {
@@ -1022,8 +1124,6 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
             List<DetailedcostView> listdetailedcs = new List<DetailedcostView>();//欠费实体类
             BaseBusiness<Grand> Grand = new BaseBusiness<Grand>();//阶段类型
             BaseBusiness<Costitems> Costitems = new BaseBusiness<Costitems>();//阶段类型详情
-          
-           
             var Class_id = classschedu.GetList().Where(d => d.id == ClassID).SingleOrDefault();//查询班级
             var student = ScheduleForTrainees.GetList().Where(d => d.ClassID == Class_id.ClassNumber&&d.CurrentClass==true).ToList();//查询班级里所有的学生
             foreach (var item in student)
@@ -1142,16 +1242,18 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
         /// <param name="Name">姓名</param>
         /// <param name="IsaDopt">状态</param>
         /// <param name="OddNumbers">单号</param>
-        /// <returns></returns>
+        /// <returns></returns> 
+        
         public object Expenseentry(int page, int limit,string StudentID, string Name, string IsaDopt, string OddNumbers)
         {
             BaseBusiness<Feedetails> FeedetailsBusiness = new BaseBusiness<Feedetails>();
-            
-              var costlist=  FeedetailsBusiness.GetList();
+            BaseBusiness<StudentFeeRecord> studentFeeRecordslist = new BaseBusiness<StudentFeeRecord>();
+            var costlist=  FeedetailsBusiness.GetList();
 
             if (!string.IsNullOrEmpty(StudentID))
             {
                 costlist = costlist.Where(a => a.studentid.Contains(StudentID)).ToList();
+
             }
             if (!string.IsNullOrEmpty(Name))
             {
@@ -1170,13 +1272,12 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                 costlist = costlist.Where(a => a.OddNumbers == OddNumbers).ToList();
             }
             var dataList = costlist.OrderByDescending(a => a.id).Skip((page - 1) * limit).Take(limit).ToList();
-            //  var x = dbtext.GetList();
             var data = new
             {
                 code = "",
                 msg = "",
                 count = costlist.Count,
-                data = dataList
+                data = dataList,
             };
             return data;
         }
@@ -1237,7 +1338,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
         /// <param name="OddNumbers">单号</param>
         /// <param name="paymentmethod">收款方式</param>
         /// <returns></returns>
-        public AjaxResult Tuitionentry(int id,string whether,string OddNumbers,string paymentmethod)
+        public AjaxResult Tuitionentry(int id,string whether,string OddNumbers,string paymentmethod,DateTime? time)
         {
             AjaxResult retus = null;
             try
@@ -1245,73 +1346,82 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                 retus = new SuccessResult();
                 retus.Success = true;
                 retus.Msg = "系统故障，请联系开发人员";
-                if (whether=="1")
-                {
-                 
-                    var x = PaymentverificationBusiness.GetEntity(id);
-                    x.Passornot = "1";
-                    x.OddNumbers = OddNumbers;
-                    x.Paymentmethod = paymentmethod;
-                    x.AddDate = DateTime.Now;
-                    PaymentverificationBusiness.Update(x);
-                    var pay = PayviewPaymentverBusiness.GetList().Where(a => a.Paymentver == id).ToList();
-                    List<StudentFeeRecord> studentFeeRecordslist = new List<StudentFeeRecord>();
+              
+                    if (whether == "1")
+                    {
+                   
+                        var x = PaymentverificationBusiness.GetEntity(id);
+                        x.Passornot = "1";
+                        x.OddNumbers = OddNumbers;
+                        x.Paymentmethod = paymentmethod;
+                        x.AddDate = DateTime.Now;
+                        PaymentverificationBusiness.Update(x);
+                        var pay = PayviewPaymentverBusiness.GetList().Where(a => a.Paymentver == id).ToList();
+                        List<StudentFeeRecord> studentFeeRecordslist = new List<StudentFeeRecord>();
+                    //BaseBusiness<Feedetails> FeedetailsBusiness_list = new BaseBusiness<Feedetails>();
                     foreach (var item in pay)
-                    {
-                        var view = PayviewBusiness.GetEntity(item.Payviewid);
-                        StudentFeeRecord studentFeeRecord = new StudentFeeRecord();
-                        studentFeeRecord.AddDate = view.AddDate;
-                        studentFeeRecord.Amountofmoney = view.Amountofmoney;
-                        studentFeeRecord.Costitemsid = view.Costitemsid;
-                        studentFeeRecord.FinanceModelid = view.FinanceModelid;
-                        studentFeeRecord.IsDelete = view.IsDelete;
-                        studentFeeRecord.Remarks = view.Remarks;
-                        studentFeeRecord.StudenID = view.StudenID;
+                        {
+                            var view = PayviewBusiness.GetEntity(item.Payviewid);
+                            StudentFeeRecord studentFeeRecord = new StudentFeeRecord();
+                            studentFeeRecord.AddDate =view.AddDate;
+                            studentFeeRecord.AddTime = time;
+                            studentFeeRecord.Amountofmoney = view.Amountofmoney;
+                            studentFeeRecord.Costitemsid = view.Costitemsid;
+                            studentFeeRecord.FinanceModelid = view.FinanceModelid;
+                            studentFeeRecord.IsDelete = view.IsDelete;
+                            studentFeeRecord.Remarks = view.Remarks;
+                            studentFeeRecord.StudenID = view.StudenID;
+                      
                         studentFeeRecordslist.Add(studentFeeRecord);
-                    }
-                    var x2 = Preentryfeebusenn.GetList().Where(a=>a.keeponrecordid==studentInformationBusiness.GetEntity(PayviewBusiness.GetEntity(pay[1].Payviewid).StudenID).StudentPutOnRecord_Id&&a.Refundornot==null).ToList();
-                    if (x2.Count>0)
-                    {
-                        foreach (var item in x2)
+                        }
+                    
+                        var x2 = Preentryfeebusenn.GetList().Where(a => a.keeponrecordid == studentInformationBusiness.GetEntity(PayviewBusiness.GetEntity(pay[0].Payviewid).StudenID).StudentPutOnRecord_Id && a.Refundornot == null).ToList();
+                        if (x2.Count > 0)
+                        {
+                            foreach (var item in x2)
+                            {
+                                item.Refundornot = true;
+
+                            }
+                            Preentryfeebusenn.Update(x2);
+                        }
+                        studentfee.Insert(studentFeeRecordslist);
+                        if (studentFeeRecordslist.Count < 2)
+                        {
+                            if (costitemssX.GetEntity(costitemsBusiness.GetEntity(studentFeeRecordslist[0].Costitemsid).Rategory).Name == "自考本科费用")
+                            {
+                                var FeeRecords = studentFeeRecordslist[0];
+                                Enrollment enrollment = new Enrollment();
+                                enrollment.StudentNumber = FeeRecords.StudenID;
+                                enrollment.IsDelete = false;
+                                enrollmentBusiness.AddEnro(enrollment, FeeRecords.Costitemsid);
+                            }
+
+                        }
+                        var xz = studentInformationBusiness.GetEntity(studentFeeRecordslist[0].StudenID).StudentPutOnRecord_Id;
+                        studentDataKeepAndRecordBusiness.ChangeStudentState((int)xz);
+                        List<Cancelreceipt> Cancelreceiptlist = new List<Cancelreceipt>();
+                        foreach (var item in studentFeeRecordslist)
+                        {
+                            Cancelreceipt cancelreceipt = new Cancelreceipt();
+                            cancelreceipt.FeeRecordid = studentfee.GetList().Where(a => a.AddDate == item.AddDate && a.Amountofmoney == item.Amountofmoney && a.Costitemsid == item.Costitemsid && a.FinanceModelid == item.FinanceModelid && a.StudenID == item.StudenID).OrderByDescending(a => a.ID).FirstOrDefault().ID;
+                            cancelreceipt.Paymentverid = x.id;
+                            Cancelreceiptlist.Add(cancelreceipt);
+                        }
+                        CancelreceiptBusiness.Insert(Cancelreceiptlist);
+                        var proes = Preentryfeebusenn.GetList().Where(a => a.keeponrecordid == xz && a.IsDit == false && a.Refundornot == null).ToList();
+                        foreach (var item in proes)
                         {
                             item.Refundornot = true;
-                           
                         }
-                        Preentryfeebusenn.Update(x2);
-                    }
-                    studentfee.Insert(studentFeeRecordslist);
-                    if (studentFeeRecordslist.Count<2)
-                    {
-                      if(costitemssX.GetEntity( costitemsBusiness.GetEntity(studentFeeRecordslist[0].Costitemsid).Rategory).Name== "自考本科费用")
-                        {
-                            var FeeRecords = studentFeeRecordslist[0];
-                            Enrollment enrollment = new Enrollment();
-                            enrollment.StudentNumber = FeeRecords.StudenID;
-                            enrollment.IsDelete = false;
-                            enrollmentBusiness.AddEnro(enrollment, FeeRecords.Costitemsid);
-                        }
-                     
-                    }
-                    var xz = studentInformationBusiness.GetEntity(studentFeeRecordslist[0].StudenID).StudentPutOnRecord_Id;
-                    studentDataKeepAndRecordBusiness.ChangeStudentState((int)xz);
-                    List<Cancelreceipt> Cancelreceiptlist = new List<Cancelreceipt>();
-                    foreach (var item in studentFeeRecordslist)
-                    {
-                        Cancelreceipt cancelreceipt = new Cancelreceipt();
-                        cancelreceipt.FeeRecordid= studentfee.GetList().Where(a => a.AddDate == item.AddDate && a.Amountofmoney == item.Amountofmoney && a.Costitemsid == item.Costitemsid && a.FinanceModelid == item.FinanceModelid && a.StudenID == item.StudenID).OrderByDescending(a => a.ID).FirstOrDefault().ID;
-                        cancelreceipt.Paymentverid = x.id;
-                        Cancelreceiptlist.Add(cancelreceipt);
-                    }
-                    CancelreceiptBusiness.Insert(Cancelreceiptlist);
-                    var proes = Preentryfeebusenn.GetList().Where(a => a.keeponrecordid == xz && a.IsDit == false && a.Refundornot == null).ToList();
-                    foreach (var item in proes)
-                    {
-                        item.Refundornot = true;
-                    }
-                    Preentryfeebusenn.Update(proes);
-                    retus.Msg = "入账成功";
+                        Preentryfeebusenn.Update(proes);
+                        retus.Msg = "入账成功";
 
+                    
+                 
                 }
+
+
                 else if (whether == "2")
                 {
                     var x = PaymentverificationBusiness.GetEntity(id);
@@ -1325,8 +1435,8 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                 else
                 {
                     List<StudentFeeRecord> studentFeeRecords = new List<StudentFeeRecord>();
-                  var canList=  CancelreceiptBusiness.GetList().Where(a => a.Paymentverid == id).ToList();
-                    if (canList.Count>0)
+                    var canList = CancelreceiptBusiness.GetList().Where(a => a.Paymentverid == id).ToList();
+                    if (canList.Count > 0)
                     {
                         foreach (var item in canList)
                         {

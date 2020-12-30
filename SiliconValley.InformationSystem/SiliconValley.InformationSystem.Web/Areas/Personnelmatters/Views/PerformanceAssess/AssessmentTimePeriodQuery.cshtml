@@ -1,0 +1,176 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+    <script src="~/Scripts/layui/layui.js"></script>
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
+    <script src="~/Scripts/layui/layui.all.js"></script>
+    <script type="text/html" id="empstate">
+        {{# if(d.empIsDel==false){ }}
+        {{ d.empIsDel="在职" }}
+        {{# }else{ }}
+        {{ d.empIsDel="离职" }}
+        {{# } }}
+    </script>
+    <script type="text/html" id="empApproval">
+        {{# if(d.IsApproval==false){ }}
+        {{ d.IsApproval="未审核" }}
+        {{# }else{ }}
+        {{ d.IsApproval="已审核" }}
+        {{# } }}
+    </script>
+</head>
+<body>
+    <div style="margin:20px">
+        <form class="layui-form" action="" lay-filter="formtest">
+            <input type="text" class="layui-hide" value="@ViewBag.empid" id="empid" name="empid" />
+            <div class="layui-row layui-form-item">
+                <div class="layui-inline">
+                    <div class="layui-inline" style="margin-left:-50px;">
+                        <label class="layui-form-label">从：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="start_time" name="start_time" placeholder="yyyy-MM" lay-verify="start_time" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-inline" style="margin-left:-50px;">
+                        <label class="layui-form-label">至：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="end_time" name="end_time" placeholder="yyyy-MM" lay-verify="end_time" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+
+                <button class="layui-btn" type="button" id="Conditionselect" style="margin-left:100px;"><i class="layui-icon layui-icon-search"></i>查询</button>
+            </div>
+        </form>
+        <div class="layui-tab layui-tab-brief" lay-allowClose="true" lay-filter="tabper">
+            <ul class="layui-tab-title">
+                @{
+                    string[] name = ViewBag.name.Split(',');
+                    for (int i = 0; i < name.Length - 1; i++)
+                    {
+                        if (i == 0)
+                        {
+                            <li class="layui-this">@name[0]</li>
+                        }
+                        else
+                        {
+                            <li>@name[i]</li>
+                        }
+                    }
+                }
+            </ul>
+            <div class="layui-tab-item layui-show">
+                <table id="PerAsstab" lay-filter="PerAsstab"></table>
+            </div>
+        </div>
+
+    </div>
+    <script>
+        layui.use(['table', 'layer', 'form', 'laydate', 'element'], function () {
+            var table = layui.table;
+            var layer = layui.layer;
+            var form = layui.form;
+            var laydate = layui.laydate;
+            var element = layui.element;
+            var empid = $("#empid").val();
+            arr = empid.split(",");
+
+            element.render()
+            laydate.render({
+                elem: '#start_time',
+                type: 'month',
+                format: 'yyyy-MM',
+
+            });
+            laydate.render({
+                elem: '#end_time',
+                type: 'month',
+                format: 'yyyy-MM',
+
+            });
+            element.on('tabDelete(tabper)', function (data) {
+                var index = data.index;
+                arr.splice(index,1) 
+                var start_time = $("#start_time").val();
+                var end_time = $("#end_time").val();
+                table.reload('myPerAss', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }, where: {
+                        empid: arr[index],
+                        time: start_time + "," + end_time
+                    }
+                });
+               
+            });
+            element.on('tab(tabper)', function (data) {
+
+                var index = data.index;
+
+                var start_time = $("#start_time").val();
+                var end_time = $("#end_time").val();
+
+                table.reload('myPerAss', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }, where: {
+                        empid: arr[index],
+                        time: start_time + "," + end_time
+                    }
+                });
+
+            });
+
+
+
+            table.render({
+                elem: '#PerAsstab'
+                , url: '/Personnelmatters/PerformanceAssess/TimePeriodQuery'
+                , id: "myPerAss"
+                , toolbar: '#toolbarDemo'
+                , where: {empid:arr[0]}
+                , limits: [5, 10, 15, 20, 25, 30]
+                , limit: 10
+                , cols: [[
+                    { field: 'empName', title: '姓名', width: 100, sort: true }
+                    , { field: 'empDept', title: '所属部门', width: 130, sort: true }
+                    , { field: 'empPosition', title: '所属岗位', width: 110, sort: true }
+                    , { field: 'YearAndMonth', title: '日期', sort: true, width: 120 }
+                    , { field: 'FinalGrade', title: '最终绩效分', sort: true, width: 120 }
+                    , { field: 'empIsDel', title: '员工状态', sort: true, width: 110, templet: '#empstate' }
+                    , { field: 'IsApproval', title: '审核状态', sort: true, width: 110, templet: '#empApproval' }
+                    , { field: 'Remark', title: '备注', width: 200 }
+                ]]
+                , page: true
+
+            });
+            //模糊查询点击事件
+            $("#Conditionselect").click(function () {
+                var start_time = $("#start_time").val();//起始预面试时间
+                var end_time = $("#end_time").val();//终止预面试时间
+                layui.use(['table'], function () {
+                    var table = layui.table;
+                    table.reload('myPerAss', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        }, where: {
+                            time: start_time + "," + end_time
+                        }
+                    });
+                });
+            });
+
+        })
+
+    </script>
+</body>
+</html>

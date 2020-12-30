@@ -23,7 +23,7 @@
                 <input type="hidden" id="SonId" name="SonId" />
                 <input type="hidden" id="Pname" name="Pname" value="@ViewBag.pname" />
                 <input type="hidden" id="mypid" name="mypid" value="@ViewBag.pid" />
-
+                <input type="hidden" id="mydeptid" name="mydeptid" />
                 <div class="layui-row layui-form-item">
                     <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
                         <label class="layui-form-label">姓名:</label>
@@ -86,7 +86,7 @@
                     <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
                         <label class="layui-form-label" style="margin-left:-40px;width:120px;">预面试时间:</label>
                         <div class="layui-input-block">
-                            <input type="text" name="ForwardDate" id="ForwardDate" class="layui-input">
+                            <input type="text" name="ForwardDate" id="ForwardDate" value="@ViewBag.forwarddate" class="layui-input">
                         </div>
                     </div>
 
@@ -193,7 +193,7 @@
         <div class="layui-form-item" style="margin-top:50px;display:none;" id="formbtn1">
             <div class="layui-input-block">
                 <button class="layui-btn" lay-submit="" id="subbtn"  style="margin-left:300px;">立即提交</button>
-                <button class="layui-btn btnclose">关闭</button>
+                <button class="layui-btn" id="btnclose">关闭</button>
             </div>
         </div>
     </div>
@@ -205,7 +205,7 @@
         });
         function loadnetinfo() {
            // $("#TraceTime").val(changeDateTimeFormat($("#TraceTime").val()));
-          
+
             //if (result) {
             //    $("[name='PhoneCommunicateResult'][value=" + result + "]").prop('checked', true);
             //}
@@ -218,8 +218,8 @@
                 layui.use(['layer', 'form', 'table'], function () {
                     var form = layui.form;
                     data.TraceTime1 = changeDateTimeFormat(data.TraceTime);
-                    data.ForwardDate = changeDateTimeFormat(data.ForwardDate);
-                   // data.deptid = data.Deptid;
+                    data.ForwardDate = changeDateTimeFormat($("#ForwardDate").val());
+                    $("#mydeptid").val(data.Deptid);
                     data.PhoneCommunicateResult1 = data.PhoneCommunicateResult;
                     data.Remark1 = data.Remark;
                     form.val("formtest", data);
@@ -228,6 +228,7 @@
                     }
                 });
             })
+
             $.get("/Personnelmatters/RecruitingDataSummary/GetRPTById/" + result, function (data) {
                 layui.use(['layer', 'form', 'table'], function () {
                     var form = layui.form;
@@ -235,7 +236,7 @@
                     var ss = data.PhoneCommunicateResult;
 
                     $("input[name=PhoneCommunicateResult][value=" + ss + "]").attr("checked", true);
-                  
+
                     form.val("myform", data);
                 });
             })
@@ -295,7 +296,7 @@
                 elem: '#ForwardDate',
                 type: 'datetime',
                 format: 'yyyy-MM-dd HH:mm:ss'
-            });  
+            });
 
             //获取招聘基本数据
             function GetFirstTrack() {
@@ -317,44 +318,81 @@
                 data.field.Id = $("#F_Id").val();
                 var Tracklist = GetFirstTrack();
                 var loadindex = layer.load(1);
-                $.post("/Personnelmatters/RecruitingDataSummary/EditTrack", { mydata: data.field, Tracklist: Tracklist }, function (data) {
-                    layer.close(loadindex);
-                    console.log(data.field);
-                    if (data.Success) {
-                        layer.alert("编辑成功!", { icon: 1 }, function () {
-                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                            parent.layui.table.reload('myrptData');
-                            parent.layui.table.reload('myRecruitData');
-                            parent.layer.close(index);
+                $.ajax({
+                    url: "/Personnelmatters/RecruitingDataSummary/DuplicateData",
+                    type: "post",
+                    data: JSON.stringify({ "name": data.field.Name, "phone": data.field.PhoneNumber }),
+                    dataType: "json",
+                    contentType: "Application/json",
+                    success: function (da) {
+                        var count = da.ErrorCode;
+                        if (da.Success) {
+                            if (count > 0) {
+                                layer.alert(da.Msg, { icon: 2 });
+                            } else {
+                                $.post("/Personnelmatters/RecruitingDataSummary/EditTrack", { mydata: data.field, Tracklist: Tracklist }, function (data) {
+                                    layer.close(loadindex);
+                                    console.log(data.field);
+                                    if (data.Success) {
+                                        layer.alert("编辑成功!", { icon: 1 }, function () {
+                                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                            parent.layui.table.reload('myrptData');
+                                            parent.layui.table.reload('myRecruitData');
+                                            parent.layer.close(index);
 
-                        });
-                    } else {
-                        layer.alert("编辑失败!");
+                                        });
+                                    } else {
+                                        layer.alert("编辑失败!");
+                                    }
+                                });
+                            }
+
+                        }
                     }
-                });
+
+                })
                 return false;
             });
-         
+
             $("#subbtn").click(function () {
                 var Tracklist = GetFirstTrack();
-                $.post("/Personnelmatters/RecruitingDataSummary/EditTracks", {  Tracklist: Tracklist }, function (data) {
-                    if (data.Success) {
-                        layer.alert("编辑成功!", { icon: 1 }, function () {
-                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                            parent.layui.table.reload('myrptData');
-                            parent.layui.table.reload('myRecruitData');
-                            parent.layer.close(index);
+                $.ajax({
+                    url: "/Personnelmatters/RecruitingDataSummary/DuplicateData",
+                    type: "post",
+                    data: JSON.stringify({ "name": $("#Name").val(), "phone": $("#PhoneNumber").val() }),
+                    dataType: "json",
+                    contentType: "Application/json",
+                    success: function (da) {
+                        var count = da.ErrorCode;
+                        if (da.Success) {
+                            if (count > 0) {
+                                layer.alert(da.Msg, { icon: 2 });
+                            } else {
+                                $.post("/Personnelmatters/RecruitingDataSummary/EditTracks", { Tracklist: Tracklist }, function (data) {
+                                    if (data.Success) {
+                                        layer.alert("编辑成功!", { icon: 1 }, function () {
+                                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                            parent.layui.table.reload('myrptData');
+                                            parent.layui.table.reload('myRecruitData');
+                                            parent.layer.close(index);
 
-                        });
-                    } else {
-                        layer.alert("编辑失败!");
+                                        });
+                                    } else {
+                                        layer.alert("编辑失败!");
+                                    }
+                                });
+                            }
+
+                        }
                     }
-                });
+
+                })
+
             });
 
-       
+
             //关闭添加页面
-            $(".btnclose").click(function () {
+            $("#btnclose").click(function () {
                 var index = parent.layer.getFrameIndex(window.name);
                 parent.layer.close(index);
             });
@@ -398,15 +436,15 @@
                 success: function (resultData) {
                     $("#Deptid").empty();
                     if (resultData.code == 0) {
-
                         $("#Pid").append(new Option($("#Pname").val(), $("#mypid").val()));
                         $.each(resultData.data, function (index, item) {
                             $('#Deptid').append(new Option(item.DeptName, item.DeptId));
                         });
+                        $('#Deptid').val($('#mydeptid').val());
                     } else {
                         $("#Deptid").append(new Option("暂无数据", ""));
                     }
-
+                        
                     layui.form.render("select");
                 }
             });
@@ -430,6 +468,7 @@
                                 //赋值
                                 $('#Pid').append(new Option(item.PositionName, item.Pid));
                             });
+                            $('#Pid').val($('#mypid').val());
                         } else {
                             $("#Pid").append(new Option("暂无数据", ""));
                         }
@@ -437,7 +476,7 @@
                     }
                 });
             })
-            layui.form.render("select");
+            //layui.form.render("select");
 
         });
     </script>

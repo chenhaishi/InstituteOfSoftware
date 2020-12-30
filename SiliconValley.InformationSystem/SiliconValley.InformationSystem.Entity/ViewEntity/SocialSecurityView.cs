@@ -29,6 +29,7 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity
         /// 在职状态
         /// </summary>
         public string Type { get; set; }
+        public string YearAndMonth { get; set; }
         /// <summary>
         /// 缴费基数
         /// </summary>
@@ -97,5 +98,6 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity
         /// 个人补缴部分
         /// </summary>
         public Nullable<decimal> PersonalSupplementaryPayment { get; set; }
+        public int Count { get; set; }
     }
 }

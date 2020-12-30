@@ -43,15 +43,9 @@ namespace SiliconValley.InformationSystem.Business.SocialSecurity_Business
 
                 if (matchlist.Count() <= 0)//表示社保明细表中无该月的数据
                 {
-                    //找到已禁用的或者该月份的员工集合
-                    var forbiddenlist = this.GetSocData().Where(s => s.IsDel == true || (DateTime.Parse(s.CurrentYearAndMonth.ToString()).Year == nowtime.Year && DateTime.Parse(s.CurrentYearAndMonth.ToString()).Month == nowtime.Month)).ToList();
-
-                    for (int i = 0; i < forbiddenlist.Count(); i++)
-                    {//将社保明细表中已禁用的员工去员工工资体系表中去除
-                        emplist.Remove(emplist.Where(e => e.EmployeeId == forbiddenlist[i].EmployeeId).FirstOrDefault());
-                    }
+                  
                     foreach (var item in emplist)
-                    {//再将未禁用的员工添加到月度工资表中
+                    {//再将未禁用的员工添加到社保明细表中
                         SocialSecurityDetail soc = new SocialSecurityDetail();
                         var unit = social.GetbyType("单位部分");
                         var personal = social.GetbyType("个人部分");
@@ -64,6 +58,10 @@ namespace SiliconValley.InformationSystem.Business.SocialSecurity_Business
                         soc.CurrentYearAndMonth = Convert.ToDateTime(time);
                         soc.IsDel = false;
                         this.Insert(soc);
+
+                      var emp=  esemanage.GetEseByEmpid(item.EmployeeId);
+                        emp.PersonalSocialSecurity= GetTotal((int)item.ContributionBase, personalindex);
+                        esemanage.Update(emp);
                         rc.RemoveCache("InRedisSocialSecurityData");
                     }
                 }
@@ -103,34 +101,53 @@ namespace SiliconValley.InformationSystem.Business.SocialSecurity_Business
             decimal? num = 0;
             var list = GetSocData().Where(i => Convert.ToDateTime(i.CurrentYearAndMonth).Year == time.Year && Convert.ToDateTime(i.CurrentYearAndMonth).Month == time.Month&&i.EmployeeId==empid);
            
-            var month = list.Where(i=>!string.IsNullOrEmpty(i.OverPayMonthNum.ToString()));
+
             var total = list.FirstOrDefault();
 
-            if (month.Count()>0)
-            {
-                foreach (var i in month)
-                {
                     if (string.IsNullOrEmpty(total.SeriousIllnessInsurance.ToString()))
                     {
                         total.SeriousIllnessInsurance = 0;
                     }
                     num += total.PersonalTotal + total.UnitTotal;
-                    num += i.PersonalTotal + i.UnitTotal;
-                }
 
-            }
-            else
-            {
-                num += total.PersonalTotal + total.UnitTotal;
-            }
             return (decimal)num;
 
         }
+        /// <summary>
+        /// 获取补缴社保详情
+        /// </summary>
+        /// <param name="time"></param>
+        /// <param name="empid"></param>
+        /// <returns></returns>
         public SocialSecurityDetail SupplementaryPayment(DateTime time, string empid)
         {
             var list = GetSocData().Where(i => Convert.ToDateTime(i.CurrentYearAndMonth).Year == time.Year && Convert.ToDateTime(i.CurrentYearAndMonth).Month == time.Month && i.EmployeeId == empid&& !string.IsNullOrEmpty(i.OverPayMonthNum.ToString())).FirstOrDefault();
 
             return list;
+        }
+        public List<SocialSecurityDetail > GetsocialsList(int id)
+        {
+            var soc = GetList().Where(i=>i.Id==id).FirstOrDefault();
+            var list = GetList().Where(i=>i.EmployeeId==soc.EmployeeId&&!string.IsNullOrEmpty(i.OverPayMonthNum.ToString())&&i.CurrentYearAndMonth==soc.CurrentYearAndMonth).ToList();
+
+            return list;
+        }
+        public SocialSecurityDetail GetSocial(DateTime time, string empid)
+        {
+            var list = GetSocData().Where(i => Convert.ToDateTime(i.CurrentYearAndMonth).Year == time.Year && Convert.ToDateTime(i.CurrentYearAndMonth).Month == time.Month && i.EmployeeId == empid && string.IsNullOrEmpty(i.OverPayMonthNum.ToString())).FirstOrDefault();
+            return list;
+        }
+        /// <summary>
+        /// 补缴条数
+        /// </summary>
+        /// <param name="time"></param>
+        /// <param name="empid"></param>
+        /// <returns></returns>
+       public int Count(DateTime time,string empid)
+        {
+            var count = GetSocData().Where(i => Convert.ToDateTime(i.CurrentYearAndMonth).Year == time.Year && Convert.ToDateTime(i.CurrentYearAndMonth).Month == time.Month && i.EmployeeId == empid && !string.IsNullOrEmpty(i.OverPayMonthNum.ToString())).Count();
+
+            return count;
         }
     }
 }

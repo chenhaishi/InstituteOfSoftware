@@ -42,6 +42,21 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data
         public string DeaNameofarticle { get; set; }
 
         /// <summary>
+        /// 维修内容
+        /// </summary>
+        public string RepairContent { get; set; }
+
+        /// <summary>
+        /// 解决措施
+        /// </summary>
+        public string Solutions { get; set; }
+
+        /// <summary>
+        /// 完成时间
+        /// </summary>
+        public DateTime CompleteTime { get; set; }
+
+        /// <summary>
         /// 是否支付
         /// </summary>
         public string Isdelete { get; set; }

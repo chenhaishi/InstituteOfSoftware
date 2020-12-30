@@ -15,6 +15,8 @@ using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 using System.Drawing.Imaging;
 using Spire.Xls;
 using NPOI.SS.Util;
+using SiliconValley.InformationSystem.Business.Base_SysManage;
+using System.Diagnostics;
 
 namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
 {
@@ -133,15 +135,16 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             return mcobj;
         }
         //工资表生成的方法
-        public bool CreateSalTab(string time)
+        public AjaxResult CreateSalTab(string time)
         {
-            bool result = false;
+            AjaxResult result = new AjaxResult();
+            int id =0;
             try
             {
                 var msrlist = this.GetEmpMsrData().Where(s => s.IsDel == false).ToList();
-                // EmployeesInfoManage empmanage = new EmployeesInfoManage();
+                EmployeesInfoManage empmanage = new EmployeesInfoManage();
                 EmplSalaryEmbodyManage esemanage = new EmplSalaryEmbodyManage();
-                var emplist = esemanage.GetEmpESEData().Where(s => s.IsDel == false).ToList();
+                var emplist = esemanage.GetEmpESEData().Where(s => s.IsDel == false).OrderBy(i=>i.Id).ToList();
                 //    var emplist = empmanage.GetEmpInfoData();
                 var nowtime = DateTime.Parse(time);
 
@@ -150,48 +153,54 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
 
                 if (matchlist.Count() <= 0)//表示月度工资表中无该月的数据
                 {
-                    //找到已禁用的或者该月份的员工集合
+                    //找到已禁用的或者该月份的员工集合 
                     var forbiddenlist = this.GetEmpMsrData().Where(s => s.IsDel == true || (DateTime.Parse(s.YearAndMonth.ToString()).Year == nowtime.Year && DateTime.Parse(s.YearAndMonth.ToString()).Month == nowtime.Month)).ToList();
-
-                    for (int i = 0; i < forbiddenlist.Count(); i++)
-                    {//将月度工资表中已禁用的员工去员工工资体系表中去除
-                        emplist.Remove(emplist.Where(e => e.EmployeeId == forbiddenlist[i].EmployeeId).FirstOrDefault());
-                    }
+                        for (int i = 0; i < forbiddenlist.Count(); i++)
+                        {//将月度工资表中已禁用的员工去员工工资体系表中去除
+                            emplist.Remove(emplist.Where(e => e.EmployeeId == forbiddenlist[i].EmployeeId).FirstOrDefault());
+                        }
+                   
                     foreach (var item in emplist)
                     {//再将未禁用的员工添加到月度工资表中
+                        
                         AttendanceInfo attendance = GetAttendanceInfoByEmpid(item.EmployeeId,Convert.ToDateTime(time));
                         MeritsCheck merits = GetMCByEmpid(item.EmployeeId,Convert.ToDateTime(time));
                         MonthlySalaryRecord msr = new MonthlySalaryRecord();
+                        id = (int)empmanage.GetEntity(item.EmployeeId).DDAppId;
                         msr.EmployeeId = item.EmployeeId;
-                        msr.YearAndMonth = Convert.ToDateTime(time);
-                        msr.FinalGrade = merits.FinalGrade;
-                        msr.BaseSalary = item.BaseSalary;
-                        msr.PositionSalary = item.PositionSalary;
-                        msr.PerformancePay = item.PerformancePay;
-                        msr.PersonalSocialSecurity = item.PersonalSocialSecurity;
-                        msr.SocialSecuritySubsidy = item.SocialSecuritySubsidy;
-                        msr.NetbookSubsidy = item.NetbookSubsidy;
-                        msr.ContributionBase = item.ContributionBase;
-                        msr.PersonalIncomeTax = item.PersonalIncomeTax;
-                        msr.OvertimeCharges = attendance.OvertimeCharges;
-                        msr.TardyAndLeaveWithhold = attendance.TardyAndLeaveWithhold;
-                        msr.AbsenteeismWithhold = attendance.AbsenteeismWithhold;
-                        msr.AbsentNumWithhold = attendance.AbsentNumWithhold;
-                        msr.MonthPerformancePay = GetempPerformanceSalary(merits.FinalGrade,item.PerformancePay);
-                        msr.IsDel = false;
-                        msr.IsApproval = false;
-                        msr.IsFinancialAudit = 0;
-                        this.Insert(msr);
-                        rc.RemoveCache("InRedisMSRData");
+                            msr.YearAndMonth = Convert.ToDateTime(time);
+                        msr.FinalGrade = string.IsNullOrEmpty(merits.FinalGrade.ToString()) == true ? 0 : merits.FinalGrade;
+                            msr.BaseSalary = item.BaseSalary;
+                            msr.PositionSalary = item.PositionSalary;
+                            msr.PerformancePay = item.PerformancePay;
+                            msr.PersonalSocialSecurity = item.PersonalSocialSecurity;
+                            msr.SocialSecuritySubsidy = item.SocialSecuritySubsidy;
+                            msr.NetbookSubsidy = item.NetbookSubsidy;
+                            msr.ContributionBase = item.ContributionBase;
+                            msr.PersonalIncomeTax = item.PersonalIncomeTax;
+                            msr.OvertimeCharges = attendance.OvertimeCharges;
+                            msr.TardyAndLeaveWithhold = attendance.TardyAndLeaveWithhold;
+                            msr.AbsenteeismWithhold = attendance.AbsenteeismWithhold;
+                            msr.AbsentNumWithhold = attendance.AbsentNumWithhold;
+                            msr.MonthPerformancePay = GetempPerformanceSalary(merits.FinalGrade, item.PerformancePay);
+                            msr.IsDel = false;
+                            msr.IsApproval = false;
+                            msr.IsFinancialAudit = 0;
+                            this.Insert(msr);
+                            rc.RemoveCache("InRedisMSRData");
+                        }
+                           
                     }
-                }
+                
+               
+                result.Success = true;
+                result.Msg = "生成成功！" ;
 
-                result = true;
             }
+
             catch (Exception ex)
             {
-                result = false;
-
+                    result = Error("生成失败！自工号为"+id+"的员工起截至，请查看绩效考核，考勤是否有数据。");
             }
             return result;
         }
@@ -530,12 +539,13 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 mail.IsBodyHtml = true;
                 
                 //邮件标题。
-                mail.Subject = "您好！这是您"+Convert.ToDateTime(m.YearAndMonth).ToString("yyyy年MM月") + "的工资条";
+                mail.Subject = "您好！这是您"+Convert.ToDateTime(m.YearAndMonth).ToString("yyyy年MM月") + "的工资详情";
                 //邮件内容。
 
                 #region 邮件正文
-                mail.Body ="<div>工资详情<br/>";
-                mail.Body += "<table border='1' cellspacing='0' style='text-align:center'>";
+
+                mail.Body = "<div style='margin:5px;'><div style='width:100%' ><h3>工资详情</h3><br/>";
+                mail.Body += "<table border='1' cellspacing='0' style='text-align:center;white-space: nowrap;'>";
 
                 mail.Body += @"<tr><th rowspan='2'>姓名</th>
                 <th rowspan='2'>所属部门</th>
@@ -557,7 +567,8 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 <th rowspan='2'>应发工资2</th>
                 <th rowspan='2'>个人社保</th>
                 <th rowspan='2'>个税</th>
-                <th rowspan='2'>实发工资</th>
+                <th rowspan='2'>实发工资(工资卡)</th>
+                <th rowspan='2'>实发工资(现金)</th>
             </tr>
             <tr>
                 <th>迟到/早退扣款</th>
@@ -570,7 +581,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 mail.Body += "<tr><td>" + manage.GetEntity(m.EmployeeId).EmpName + "</td>" +
                         "<td>" + manage.GetDeptByEmpid(m.EmployeeId).DeptName + "</td>" +
                         "<td>" + manage.GetPositionByEmpid(m.EmployeeId).PositionName + "</td>" +
-                        "<td>" + att.ToRegularDays + "</td>" +
+                        "<td>" + att.ToRegularDays.ToString() + "</td>" +
                         "<td>" + m.BaseSalary + "</td>" +
                         "<td>" + m.PositionSalary + "</td>" +
                         "<td>" + m.FinalGrade + "</td>" +
@@ -589,7 +600,8 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                         "<td>" + SalaryTwo + "</td>" +
                         "<td>" + m.PersonalSocialSecurity + "</td>" +
                         "<td>" + m.PersonalIncomeTax + "</td>" +
-                        "<td>" + m.Total + "</td>" +
+                        "<td>" + m.PayCardSalary + "</td>" +
+                        "<td>" + m.CashSalary + "</td>" +
 
                    "</tr></table></div>";
                 #region
@@ -624,7 +636,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
 
 
 
-                mail.Body += "<div>考勤详情<br/><table border='1' cellspacing='0' style='text-align:center'>";
+                mail.Body += "<div><h3>考勤详情</h3><br/><h4>迟到早退</h4><table border='1' cellspacing='0' style='text-align:center'>";
 
                 mail.Body += @"<tr><th>详情</th>
                          <th>内容</th>
@@ -736,7 +748,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                      "</td><td></td></tr>";
                 }
 
-                mail.Body += "</table></div>";
+                mail.Body += "</table></div></div>";
 
                 #endregion
                 //实例化一个SmtpClient类。
@@ -792,13 +804,13 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 client.Send(mail);
 
                 result.Success = true;
-                result.ErrorCode = 200;
+                //result.ErrorCode = 200;
                 result.Msg = "邮件发送成功";
             }
             catch (Exception e)
             {
                 result.Success = false;
-                result.ErrorCode = 100;
+                //result.ErrorCode = 100;
                 result.Msg =e.Message;
 
             }
@@ -893,6 +905,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 workbook.Close();  //关闭
                 ajaxresult.ErrorCode = 200;
                 ajaxresult.Msg = "导入成功！文件地址：" + saveFileName;
+                //Process.Start(saveFileName);
                 // ajaxresult.Data = list;
 
             }
@@ -955,6 +968,8 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 Header_Name.CellStyle = TcellStyle;
             }
         }
+
+        
     } 
     }
 

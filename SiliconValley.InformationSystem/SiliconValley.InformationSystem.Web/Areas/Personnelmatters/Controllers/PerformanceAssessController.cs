@@ -51,6 +51,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         /// <returns></returns>
         public ActionResult PerformanceAssessShow(int page, int limit, string AppCondition, string time)
         {
+            time = FirstTime;
             //var UserName = Base_UserBusiness.GetCurrentUser();//获取当前登录人
             //string eid = UserName.EmpNumber;//为测试，暂时设置的死数据
              
@@ -142,14 +143,15 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             var AjaxResultxx = new AjaxResult();
             try
             {
-                var attlist = mcmanage.GetEmpMCData().Where(s => s.IsDel == false).ToList();
-                for (int i = 0; i < attlist.Count(); i++)
-                {
-                    attlist[i].YearAndMonth = Convert.ToDateTime(CurrentTime);
-                    mcmanage.Update(attlist[i]);
-                    rc.RemoveCache("InRedisMCData");
-                    AjaxResultxx = mcmanage.Success();
-                }
+                FirstTime = CurrentTime;
+                //var attlist = mcmanage.GetEmpMCData().Where(s => s.IsDel == false).ToList();
+                //for (int i = 0; i < attlist.Count(); i++)
+                //{
+                //    attlist[i].YearAndMonth = Convert.ToDateTime(CurrentTime);
+                //    mcmanage.Update(attlist[i]);
+                //    rc.RemoveCache("InRedisMCData");
+                AjaxResultxx = mcmanage.Success();
+                //}
             }
             catch (Exception ex)
             {
@@ -179,20 +181,20 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 mc.Id,
                 mc.EmployeeId,
                 empName = empmanage.GetInfoByEmpID(mc.EmployeeId).EmpName,
-                empmanage.GetInfoByEmpID(mc.EmployeeId).Sex,
-                mc.YearAndMonth,
-                mc.RoutineWork,
-                mc.RoutineWorkPropotion,
-                mc.RoutineWorkFillRate,
-                mc.OtherWork,
-                mc.OtherWorkPropotion,
-                mc.OtherWorkFillRate,
-                mc.SelfReportedScore,
-                mc.SuperiorGrade,
+                //empmanage.GetInfoByEmpID(mc.EmployeeId).Sex,
+                //mc.YearAndMonth,
+                //mc.RoutineWork,
+                //mc.RoutineWorkPropotion,
+                //mc.RoutineWorkFillRate,
+                //mc.OtherWork,
+                //mc.OtherWorkPropotion,
+                //mc.OtherWorkFillRate,
+                //mc.SelfReportedScore,
+                //mc.SuperiorGrade,
                 mc.FinalGrade,
-                mc.Remark,
-                mc.IsDel,
-                mc.IsApproval
+                //mc.Remark,
+                //mc.IsDel,
+                //mc.IsApproval
             };
             return Json(mcobj, JsonRequestBehavior.AllowGet);
         }
@@ -203,11 +205,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             try
             {
                 var m = mcmanage.GetEntity(mc.Id);
-                mc.EmployeeId = m.EmployeeId;
-                mc.YearAndMonth = m.YearAndMonth;
-                mc.IsDel = m.IsDel;
-                mc.IsApproval = m.IsApproval;
-                mcmanage.Update(mc);
+                m.FinalGrade = mc.FinalGrade;
+                //mc.EmployeeId = m.EmployeeId;
+                //mc.YearAndMonth = m.YearAndMonth;
+                //mc.IsDel = m.IsDel;
+                //mc.IsApproval = m.IsApproval;
+                mcmanage.Update(m);
                 rc.RemoveCache("InRedisMCData");
                 AjaxResultxx = mcmanage.Success();
             }
@@ -217,8 +220,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             }
             return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
         }
-
-
+        
         /// <summary>
         /// 批量添加绩效数据
         /// </summary>
@@ -261,8 +263,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             FirstTime = time;
             return Json(AjaxResultxx, JsonRequestBehavior.AllowGet);
         }
-
-
+        
         /// <summary>
         /// 判断某月份员工工资是否已确认审批
         /// </summary>
@@ -337,6 +338,83 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             var result = meritsCheckManage.ImportDataFormExcel(filestream, excelfile.ContentType);
 
             return Json(result, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
+        /// 绩效模板下载
+        /// </summary>
+        /// <returns></returns>
+        public FileStreamResult AssessmentDownFile()
+        {
+            string rr = Server.MapPath("/uploadXLSXfile/Template/绩效模板.xlsx");  //获取下载文件的路径         
+            FileStream stream = new FileStream(rr, FileMode.Open);
+            return File(stream, "application/octet-stream", Server.UrlEncode("绩效模板.xls"));
+        }
+        public ActionResult AssessmentTimePeriodQuery(string  empid)
+        {
+            EmployeesInfoManage manage = new EmployeesInfoManage();
+            ViewBag.empid = empid;
+            string[] str = empid.Split(',');
+            string name = "";
+            for (int i = 0; i < str.Length-1; i++)
+            {
+               name+= manage.GetInfoByEmpID(str[i]).EmpName+",";
+            }
+            ViewBag.name = name;
+            return View();
+        }
+        [HttpGet]
+        public ActionResult TimePeriodQuery(int page, int limit, string time,string empid)
+        {
+            EmployeesInfoManage emanage = new EmployeesInfoManage();
+            var mclist = mcmanage.GetEmpMCData().Where(s => s.IsDel == false&& s.EmployeeId == empid).OrderByDescending(i=>i.YearAndMonth).ToList();
+
+            if (!string.IsNullOrEmpty(time))
+            {
+                string[] str = time.Split(',');
+                string time1 = str[0];
+                string time2 = str[1];
+                if (!string.IsNullOrEmpty(time1)&& string.IsNullOrEmpty(time2))
+                {
+                    mclist = mclist.Where(e =>e.YearAndMonth>=Convert.ToDateTime(time1)).ToList();
+                }
+                if (!string.IsNullOrEmpty(time2) && string.IsNullOrEmpty(time1))
+                {
+                    mclist = mclist.Where(e => e.YearAndMonth<= Convert.ToDateTime(time2)).ToList();
+                }
+                if (!string.IsNullOrEmpty(time1) && !string.IsNullOrEmpty(time2))
+                {
+                    mclist = mclist.Where(e => e.YearAndMonth >= Convert.ToDateTime(time1)&&e.YearAndMonth <= Convert.ToDateTime(time2)).ToList();
+                }
+
+            }
+            var newlist = mclist.Skip((page - 1) * limit).Take(limit).ToList();
+            var etlist = from e in newlist
+                         select new
+                         {
+                             #region 获取属性值 
+                             e.Id,
+                             e.EmployeeId,
+                             empName = emanage.GetInfoByEmpID(e.EmployeeId).EmpName,
+                             empDept = emanage.GetDept(emanage.GetInfoByEmpID(e.EmployeeId).PositionId).DeptName,
+                             empPosition = emanage.GetPositionByEmpid(e.EmployeeId).PositionName,
+                             empIsDel = emanage.GetInfoByEmpID(e.EmployeeId).IsDel,
+                             YearAndMonth=Convert.ToDateTime(e.YearAndMonth.ToString()).ToString("yyyy年MM月"),
+                             e.FinalGrade,
+                             e.Remark,
+                             e.IsDel,
+                             e.IsApproval
+                             #endregion
+                         };
+
+            var newobj = new
+            {
+                code = 0,
+                msg = "",
+                count = mclist.Count(),
+                data = etlist
+            };
+
+            return Json(newobj, JsonRequestBehavior.AllowGet);
         }
     }
 }

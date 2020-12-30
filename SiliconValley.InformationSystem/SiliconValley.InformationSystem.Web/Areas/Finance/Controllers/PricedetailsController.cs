@@ -21,6 +21,10 @@ using SiliconValley.InformationSystem.Business.ClassesBusiness;
 using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 using SiliconValley.InformationSystem.Business.Base_SysManage;
 using System.Text;
+using NPOI.HSSF.UserModel;
+using System.IO;
+using NPOI.SS.UserModel;
+using SiliconValley.InformationSystem.Entity.ViewEntity.XYK_Data;
 
 namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
 {
@@ -55,7 +59,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             //阶段
             ViewBag.grade_Id = Grandcontext.GetList().Select(a => new SelectListItem { Text = a.GrandName, Value = a.Id.ToString() });
             //商品类别
-            ViewBag.Typex = costitemssX.GetList().Where(a=>a.IsDelete==false&&a.id!= costitemssX.GetList().Where(z => z.Name == "其它" && z.IsDelete == false).FirstOrDefault().id).Select(a => new SelectListItem { Text = a.Name, Value = a.id.ToString() });
+            ViewBag.Typex = costitemssX.GetList().Where(a=>a.IsDelete==false&&a.id!= costitemssX.GetList().Where(z => z.Name == "重修费" && z.IsDelete == false).FirstOrDefault().id).Select(a => new SelectListItem { Text = a.Name, Value = a.id.ToString() });
             return View();
         }
     
@@ -373,9 +377,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
         /// <param name="Remarks">备注</param>
         /// <param name="Typeid">名目</param>
         /// <returns></returns>
-        public ActionResult Otherconsumption(string StudenID, string Consumptionname, decimal Amountofmoney, string Remarks, int Typeid)
+        public ActionResult Otherconsumption(string StudenID, string Consumptionname, decimal Amountofmoney, string Remarks, int Typeid, string Consumptionname_su, decimal Amountofmoney_su)
         {
-            return Json(dbtext.Otherconsumption(StudenID, Consumptionname, Amountofmoney, Remarks, Typeid), JsonRequestBehavior.AllowGet);
+            return Json(dbtext.Otherconsumption(StudenID, Consumptionname, Amountofmoney, Remarks, Typeid,Consumptionname_su,Amountofmoney_su), JsonRequestBehavior.AllowGet);
         }
         /// <summary>
         /// 费用报表
@@ -460,6 +464,143 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             return Json(dbtext.Expenseentry(page, limit, StudentID,Name,IsaDopt,OddNumbers), JsonRequestBehavior.AllowGet);
         }
         /// <summary>
+        /// 入账数据查询导出
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Entrydataexport_List()
+        {
+            BaseBusiness<StudentFeeRecordListView> StudentFeeRecordListView = new BaseBusiness<StudentFeeRecordListView>();
+            
+            List<PriceDC> PriceDCList = new List<PriceDC>();
+            var ListView = StudentFeeRecordListView.GetList().Where(d => d.Passornot == "1").ToList();
+            foreach (var item in ListView)
+            {
+                PriceDC priceDC = new PriceDC();
+                priceDC.studentID = item.StudenID;
+                priceDC.className = item.Name;
+                priceDC.identity = item.identitydocument;
+                priceDC.Amountofmoney = item.Amountofmoney;
+                priceDC.CostitemsName = item.CostitemsName;
+                priceDC.OddNumbers = item.OddNumbers;
+                priceDC.GrandName = item.StageName;
+                priceDC.Paymentmethod = item.Paymentmethod;
+                priceDC.AddTime = item.AddTime;
+                priceDC.AddDate = item.AddDate;
+                priceDC.FinanceModelName = item.FinancialstaffName;
+                PriceDCList.Add(priceDC);
+            }
+           
+            CostDataToExcel(PriceDCList);
+            return Json(new { code = 0,data= PriceDCList });
+        }
+        /// <summary>
+        /// 课时费统计    写入Excel
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult CostDataToExcel(List<PriceDC> list)
+        {
+            var ajaxresult = new AjaxResult();
+
+            var workbook = new HSSFWorkbook();
+
+            //创建工作区
+            var sheet = workbook.CreateSheet("入账统计表");
+
+            #region 表头样式
+
+            HSSFCellStyle HeadercellStyle = (HSSFCellStyle)workbook.CreateCellStyle();
+            HSSFFont HeadercellFont = (HSSFFont)workbook.CreateFont();
+
+            HeadercellStyle.Alignment = HorizontalAlignment.Center;
+            HeadercellFont.IsBold = true;
+
+            HeadercellStyle.SetFont(HeadercellFont);
+
+            #endregion
+
+            HSSFCellStyle ContentcellStyle = (HSSFCellStyle)workbook.CreateCellStyle();
+            HSSFFont ContentcellFont = (HSSFFont)workbook.CreateFont();
+
+            ContentcellStyle.Alignment = HorizontalAlignment.Center;
+
+            CreateHeader();
+
+            int num = 1;
+
+            GrandBusiness dbgrand = new GrandBusiness();
+
+            list.ForEach(d =>
+            {
+                var row = (HSSFRow)sheet.CreateRow(num);
+
+                CreateCell(row, ContentcellStyle, 0, d.studentID.ToString());
+                CreateCell(row, ContentcellStyle, 1, d.className);
+                CreateCell(row, ContentcellStyle, 2, d.identity);
+                CreateCell(row, ContentcellStyle, 3, d.Amountofmoney.ToString());
+                CreateCell(row, ContentcellStyle, 4, d.CostitemsName.ToString());
+                CreateCell(row, ContentcellStyle, 5, d.GrandName);
+                CreateCell(row, ContentcellStyle, 6, d.OddNumbers);
+                CreateCell(row, ContentcellStyle, 7, d.Paymentmethod);
+                CreateCell(row, ContentcellStyle, 8, d.FinanceModelName);
+                CreateCell(row, ContentcellStyle, 9, d.AddDate.ToString("yyyy-MM-dd"));
+                CreateCell(row, ContentcellStyle, 10, d.AddTime.ToString());
+                num++;
+
+            });
+
+            string path1 = System.AppDomain.CurrentDomain.BaseDirectory.Split('\\')[0];    //获得项目的基目录
+            var Path = System.IO.Path.Combine(path1, "\\XinxihuaData\\Excel");
+            if (!System.IO.Directory.Exists(Path))     //判断是否有该文件夹
+                System.IO.Directory.CreateDirectory(Path); //如果没有在Uploads文件夹下创建文件夹Excel
+            string saveFileName = Path + "\\" + "入账统计" + ".xlsx"; //路径+表名+文件类型
+            try
+            {
+                FileStream fs = new FileStream(saveFileName, FileMode.Create, FileAccess.Write);
+                workbook.Write(fs);  //写入文件
+                workbook.Close();  //关闭
+                ajaxresult.ErrorCode = 200;
+                ajaxresult.Msg = "导入成功！文件地址：" + saveFileName;
+                // ajaxresult.Data = list;
+
+            }
+            catch (Exception ex)
+            {
+                ajaxresult.ErrorCode = 100;
+                ajaxresult.Msg = "导入失败，" + ex.Message;
+
+            }
+            return Json(ajaxresult, JsonRequestBehavior.AllowGet);
+
+            void CreateHeader()
+            {
+                HSSFRow Header = (HSSFRow)sheet.CreateRow(0);
+                Header.HeightInPoints = 40;
+
+                CreateCell(Header, HeadercellStyle, 0, "学生学号");
+                CreateCell(Header, HeadercellStyle, 1, "学生名字");
+                CreateCell(Header, HeadercellStyle, 2, "学生身份证号");
+                CreateCell(Header, HeadercellStyle, 3, "缴费金额");
+                CreateCell(Header, HeadercellStyle, 4, "缴费名目");
+                CreateCell(Header, HeadercellStyle, 5, "缴费阶段");
+                CreateCell(Header, HeadercellStyle, 6, "缴费单号");
+                CreateCell(Header, HeadercellStyle, 7, "收款方式");
+                CreateCell(Header, HeadercellStyle, 8, "经办人");
+                CreateCell(Header, HeadercellStyle, 9, "缴费时间");
+                CreateCell(Header, HeadercellStyle, 10, "入账时间");
+            }
+
+            void CreateCell(HSSFRow row, HSSFCellStyle TcellStyle, int index, string value)
+            {
+                HSSFCell Header_Name = (HSSFCell)row.CreateCell(index);
+
+                Header_Name.SetCellValue(value);
+
+                Header_Name.CellStyle = TcellStyle;
+            }
+
+        }
+        /// <summary>
         /// 审核是否入账页面
         /// </summary>
         /// <param name="id"></param>
@@ -479,7 +620,31 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             ViewBag.Passornot = Request.QueryString["Passornot"];
             ViewBag.paymentmethod= Request.QueryString["paymentmethod"];
             List<StudentFeeRecord> stulist = StudentFeeRecord.GetList().Where(d => d.StudenID == studentid).ToList();
-
+            List<StudentFeeRecord> studentFeeRecordslist = new List<StudentFeeRecord>();
+            BaseBusiness<StudentFeeRecord> StudentRZ = new BaseBusiness<StudentFeeRecord>();
+            StudentFeeRecord result = null;
+            var contrast = StudentRZ.GetList().Where(d => d.StudenID == studentid).ToList();
+            
+            foreach (var item in contrast)
+            {
+                result = StudentRZ.GetList().Where(d => d.ID == item.ID).SingleOrDefault();
+            }
+            if (result == null)
+            {
+                ViewBag.result = "请选择入账日期";
+            }
+            else
+            {
+                if (result.AddTime == null)
+                {
+                    ViewBag.result = "请选择入账日期";
+                }
+                else
+                {
+                     ViewBag.result = result.AddTime.Value.Year+"-"+result.AddTime.Value.Month+"-"+result.AddTime.Value.Day;
+                }
+              
+            }
             StringBuilder sb = new StringBuilder();
 
             for (int i = 0; i < stulist.Count(); i++)
@@ -502,7 +667,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             //岗位数据
             var positon = employeesInfoManage.GetPositionByEmpid(user.EmpNumber);
            ViewBag.postName=   positon.PositionName.Contains("会计") == true ? 1 : 0;
-       
+           
             return View();
         }
         /// <summary>
@@ -512,9 +677,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
         /// <param name="whether">是否入账</param>
         /// <param name="OddNumbers">单号</param>
         /// <returns></returns>
-        public ActionResult Tuitionentry(int id, string whether, string OddNumbers,string paymentmethod)
+        public ActionResult Tuitionentry(int id, string whether, string OddNumbers,string paymentmethod,DateTime? time)
         {
-            return Json(dbtext.Tuitionentry(id, whether, OddNumbers, paymentmethod), JsonRequestBehavior.AllowGet);
+            return Json(dbtext.Tuitionentry(id, whether, OddNumbers, paymentmethod, time), JsonRequestBehavior.AllowGet);
         }
         StudentDataKeepAndRecordBusiness stuDataKeepAndRecordBusiness = new StudentDataKeepAndRecordBusiness();
         /// <summary>

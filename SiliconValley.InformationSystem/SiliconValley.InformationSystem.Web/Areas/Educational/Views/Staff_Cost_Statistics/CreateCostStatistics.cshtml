@@ -199,31 +199,32 @@
 
                 var num = 0;
 
-                var test = setInterval(function () {
+                //var test = setInterval(function () {
 
-                    if (num >= 90) {
+                //    if (num >= 90) {
 
-                        clearInterval(test);
-                    }
+                //        clearInterval(test);
+                //    }
 
-                    num += 1;
+                //    num += 1;
 
-                    element.progress('demo', num + '%');
+                //    element.progress('demo', num + '%');
 
-                }, 1000);
+                //}, 1000);
+                var days = $("#dayNumber").val();
 
                 $("#tipMSg").text("统计中.......");
 
                 $.post('/Educational/Staff_Cost_Statistics/CostStatistics', { date: date, workingDays: days }, function (result) {
                     
                     if (result.ErrorCode == 200) {
-                        clearInterval(test);
+                        //clearInterval(test);
                         element.progress('demo', '100%');
 
                         $("#tipMSg").text("统计完成！");
                     }
                     else {
-                        clearInterval(test);
+                       // clearInterval(test);
                         element.progress('demo', '100%');
                         $("#tipMSg").text("统计失败！");
                         layer.msg('统计失败！', {
@@ -243,8 +244,6 @@
                 downloadFile(href);
 
             });
-
-
         });
     </script>
 </body>

@@ -26,6 +26,10 @@
     {
         margin-top: 50px;
     }
+
+    .layui-form-select dl {
+        max-height: 170px;
+    }
 </style>
 <form class="layui-form" lay-filter="sercherform">
     <div class="layui-row layui-form-item">
@@ -89,7 +93,7 @@
             else if (ViewBag.number == 2)
             {
 
-                @*<button class="layui-btn layui-btn-sm" lay-event="AddSafe">保险柜费用录入</button>*@
+                <button class="layui-btn layui-btn-sm" lay-event="AddSafe">保险柜费用录入</button>
             }
         }
 
@@ -115,7 +119,9 @@
                     , { field: 'StuName', title: '学生姓名' }
                     , { field: 'PayMoney', title: '宿舍押金' }
                     , { field: 'BaoxianguiMoney', title: '保险柜总费用' }
-                    , { field: 'MantainMoney', title: '维修费用' }                    
+                    , { field: 'MantainMoney', title: '维修费用' }  
+                    //, { field: 'RepairContent', title: '维修内容' }
+                    //, { field: 'Solutions', title: '解决措施'}
                     , {
                         field: 'SumMoney', title: '应退费用', templet: function (res) {
 
@@ -143,7 +149,7 @@
                         type: 2,
                         title: '维修详情',
                         content: '/DormitoryMaintenance/DormitoryDeposit/MantainDefileView/' + data.StuNumber,
-                        area: ['1000px', '600px']
+                        area: ['1200px', '600px']
                     });
                 } else if (obj.event=== "StuDefault") {
                     layer.open({

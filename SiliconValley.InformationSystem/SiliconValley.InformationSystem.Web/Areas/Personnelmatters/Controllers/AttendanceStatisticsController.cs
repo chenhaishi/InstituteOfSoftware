@@ -47,9 +47,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             return View();
         }
         //获取考勤数据
-        public ActionResult GetCheckingInData(int page, int limit, string AppCondition,string ymtime)
-        {          
-            ymtime = FirstTime;
+        public ActionResult GetCheckingInData(int page, int limit, string AppCondition)
+        {
+          
+          string   ymtime = FirstTime;
             var attlist = atdmanage.GetADInfoData().Where(s => s.IsDel == false).ToList();
             if (!string.IsNullOrEmpty( ymtime)) {
             var time = DateTime.Parse(ymtime);
@@ -127,7 +128,93 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             }; 
             return Json(newobj, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// 月度全勤统计
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <param name="AppCondition"></param>
+        /// <returns></returns>
+        public ActionResult GetFullCheckingInData(int page, int limit, string AppCondition)
+        {
+            string ymtime = FirstTime;
+            var attlist = atdmanage.GetListBySql<AttendanceInfo>("select *from  AttendanceInfo where DeserveToRegularDays=ToRegularDays and (TardyNum is null or TardyNum = 0)  and(LeaveEarlyNum is null or LeaveEarlyNum = 0)  and(AbsenteeismDays is null or AbsenteeismDays = 0) ");
+             attlist = attlist.Where(s => s.IsDel == false).ToList();
+            if (!string.IsNullOrEmpty(ymtime))
+            {
+                var time = DateTime.Parse(ymtime);
+                attlist = attlist.Where(s => DateTime.Parse(s.YearAndMonth.ToString()).Year == time.Year && DateTime.Parse(s.YearAndMonth.ToString()).Month == time.Month).ToList();
+                
+            }
+            if (!string.IsNullOrEmpty(AppCondition))
+            {
+                string[] str = AppCondition.Split(',');
+                string ename = str[0];
+                string deptname = str[1];
+                string pname = str[2];
+                string empstate = str[3];
+                attlist = attlist.Where(e => empmanage.GetInfoByEmpID(e.EmployeeId).EmpName.Contains(ename)).ToList();
+                if (!string.IsNullOrEmpty(deptname))
+                {
+                    attlist = attlist.Where(e => empmanage.GetDeptByEmpid(e.EmployeeId).DeptId == int.Parse(deptname)).ToList();
+                }
+                if (!string.IsNullOrEmpty(pname))
+                {
+                    attlist = attlist.Where(e => empmanage.GetInfoByEmpID(e.EmployeeId).PositionId == int.Parse(pname)).ToList();
+                }
+                if (!string.IsNullOrEmpty(empstate))
+                {
+                    attlist = attlist.Where(e => empmanage.GetInfoByEmpID(e.EmployeeId).IsDel == bool.Parse(empstate)).ToList();
+                }
 
+            }
+            var newlist = attlist.OrderBy(s => s.AttendanceId).Skip((page - 1) * limit).Take(limit).ToList();
+            var mylist = from e in newlist
+                         select new
+                         {
+                             #region 获取值
+                             e.AttendanceId,
+                             e.EmployeeId,
+                             empName = empmanage.GetInfoByEmpID(e.EmployeeId).EmpName,
+                             empDept = empmanage.GetDeptByEmpid(e.EmployeeId).DeptName,
+                             empPosition = empmanage.GetPositionByEmpid(e.EmployeeId).PositionName,
+                             empIsDel = empmanage.GetInfoByEmpID(e.EmployeeId).IsDel,
+                             e.YearAndMonth,
+                             e.DeserveToRegularDays,
+                             e.ToRegularDays,
+                             e.LeaveDays,
+                             e.LeaveRecord,
+                             e.WorkAbsentNum,
+                             e.WorkAbsentRecord,
+                             e.OffDutyAbsentNum,
+                             e.OffDutyAbsentRecord,
+                             NoClockTotalNum = e.WorkAbsentNum + e.OffDutyAbsentNum + e.NoonAbsentNum,
+                             e.TardyNum,
+                             e.TardyRecord,
+                             e.LeaveEarlyNum,
+                             e.LeaveEarlyRecord,
+                             e.Remark,
+                             e.IsDel,
+                             e.IsApproval,
+                             e.TardyAndLeaveWithhold,
+                             e.OvertimeCharges,
+                             e.DaysoffDuration,
+                             e.DaysoffRecord,
+                             e.AbsenteeismDays,
+                             e.AbsenteeismRecord,
+                             e.AbsenteeismWithhold
+                             #endregion
+                         };
+
+            var newobj = new
+            {
+                code = 0,
+                msg = "",
+                count = attlist.Count(),
+                data = mylist
+            };
+            return Json(newobj, JsonRequestBehavior.AllowGet);
+        }
 
         /// <summary>
         /// 年月份及应到勤天数的改变（查看记录）
@@ -392,10 +479,17 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             return View();
         }
 
+       /// <summary>
+       /// 加班详情
+       /// </summary>
+       /// <param name="id"></param>
+       /// <param name="page"></param>
+       /// <param name="limit"></param>
+       /// <returns></returns>
         public ActionResult GetOvertimeData(int id,int page, int limit) {
             OvertimeRecordManage otrmanage = new OvertimeRecordManage();
             MonthlySalaryRecordManage monthly = new MonthlySalaryRecordManage();
-            var otrlist = otrmanage.GetOTRDataByAtdid(id);
+            var otrlist = otrmanage.GetOTRDataByAtdid(id).Where(i=>i.IsPass==false);
             var mylist = from e in otrlist
                          select new
                          {
@@ -428,7 +522,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             };
             return Json(newobj, JsonRequestBehavior.AllowGet);
         }
-
+        /// <summary>
+        /// 加班详情修改页面
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult OvertimeEdit(int  id)
         {
             OvertimeRecordManage overtime = new OvertimeRecordManage();
@@ -438,8 +536,15 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             ViewBag.EmpName = manage.GetEntity(s.EmployeeId).EmpName;
             return View(s);
         }
+        /// <summary>
+        /// 加班详情修改
+        /// </summary>
+        /// <param name="over"></param>
+        /// <param name="type"></param>
+        /// <param name="Duration"></param>
+        /// <returns></returns>
         [HttpPost]
-        public ActionResult OvertimeEdit(OvertimeRecord over, int type,string Duration)
+        public ActionResult OvertimeEdit(OvertimeRecord over)
         {
             AjaxResult result = new AjaxResult();
             OvertimeRecordManage overtime = new OvertimeRecordManage();
@@ -450,28 +555,19 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             var s = overtime.GetEntity(over.Id);
             over.EmployeeId = s.EmployeeId;
             over.YearAndMonth = s.YearAndMonth;
-          
-            overtime.Update(over);
 
+            var oldOvertime = overtime.OvertimeWithhold(s.OvertimeTypeId, Convert.ToDecimal(s.Duration));
+            
          var att=monthly.GetAttendanceInfoByEmpid(over.EmployeeId,Convert.ToDateTime(over.YearAndMonth));
             var OvertimeWithhold= overtime.OvertimeWithhold(over.OvertimeTypeId, (dynamic)over.Duration);
-            if (!(bool)over.IsNoDaysOff|| (bool)over.IsPass)
+            if ((bool)over.IsNoDaysOff|| (bool)over.IsPass)
             {
                 OvertimeWithhold = 0;
             }
 
-            var oldOvertime= overtime.OvertimeWithhold(type,Convert.ToDecimal(Duration));
-
             att.OvertimeCharges = (att.OvertimeCharges - oldOvertime )+ OvertimeWithhold;
             attendance.Update(att);
-            
-            var month = monthly.GetEmpMsrData().Where(i => i.EmployeeId == over.EmployeeId && DateTime.Parse(i.YearAndMonth.ToString()).Year == DateTime.Parse(over.YearAndMonth.ToString()).Year&& DateTime.Parse(i.YearAndMonth.ToString()).Month == DateTime.Parse(over.YearAndMonth.ToString()).Month&& i.IsApproval==false).FirstOrDefault();
-            if (!month.IsNullOrEmpty())
-            {
-                month.OvertimeCharges = (month.OvertimeCharges-oldOvertime)+ OvertimeWithhold;
-                monthly.Update(month);
-            }
-
+            overtime.Update(over);
 
 
             try

@@ -53,6 +53,8 @@ namespace SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBus
         public AjaxResult ExcelImportAtdSql(ISheet sheet)
         {
             EmployeesInfoManage empmanage = new EmployeesInfoManage();
+            AttendanceInfoManage attendance = new AttendanceInfoManage();
+            MonthlySalaryRecordManage monthly = new MonthlySalaryRecordManage();
             var ajaxresult = new AjaxResult();
             int num = 2;
             List<OvertimeRecordErrorDataView> otratalist = new List<OvertimeRecordErrorDataView>();
@@ -61,7 +63,14 @@ namespace SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBus
                 //获取第二行数据（年月份）
                 string time1 = sheet.GetRow(1).Cells[0].StringCellValue;
                 string[] str = time1.Split('-');
-                var time = str[1];
+                string time = null;
+                if (!string.IsNullOrEmpty(time1))
+                {
+                    time = str[1];
+                }
+
+
+                
 
                 while (true)
                 {
@@ -96,7 +105,7 @@ namespace SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBus
                     OvertimeRecordErrorDataView otrview = new OvertimeRecordErrorDataView();
                     if (string.IsNullOrEmpty(year_month))
                     {
-                        //otrview.empname = name;
+                        otrview.empname = name;
                         otrview.errorExplain = "第二行的时间为空！";
                         otratalist.Add(otrview);
                     }
@@ -122,12 +131,13 @@ namespace SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBus
                                 var emp = empmanage.GetEmpByDDid(Convert.ToInt32(ddid));
 
                                 otr.EmployeeId = emp.EmployeeId;
-                                if (!string.IsNullOrEmpty(year_month))
+                                //if (!string.IsNullOrEmpty(year_month))
+                                //{
+                                otr.YearAndMonth = Convert.ToDateTime(year_month);
+                                //}
+                                if (!string.IsNullOrEmpty(begintime))
                                 {
-                                    otr.YearAndMonth = Convert.ToDateTime(year_month);
-                                }
-                                if(!string.IsNullOrEmpty(begintime)){
-                                    otr.StartTime= Convert.ToDateTime(begintime);
+                                    otr.StartTime = Convert.ToDateTime(begintime);
                                 }
                                 if (!string.IsNullOrEmpty(endtime))
                                 {
@@ -135,6 +145,14 @@ namespace SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBus
                                 }
                                 otr.Duration = Convert.ToDecimal(duration);
                                 otr.OvertimeReason = overtimereason;
+                                if (overtimetype != "1" && overtimetype != "2" && overtimetype != "3" && overtimetype != "4")
+                                {
+                                    otr.OvertimeTypeId = 1;
+                                }
+                                else
+                                {
+                                    otr.OvertimeTypeId = Convert.ToInt32(overtimetype);
+                                }
                                 if (Isdayoff == "是")
                                 {
                                     otr.IsNoDaysOff = true;
@@ -142,16 +160,19 @@ namespace SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBus
                                 else
                                 {
                                     otr.IsNoDaysOff = false;
+                                    //var att = monthly.GetAttendanceInfoByEmpid(otr.EmployeeId, Convert.ToDateTime(otr.YearAndMonth));
+                                    //if (string.IsNullOrEmpty(att.OvertimeCharges.ToString()))
+                                    //{
+                                    //    att.OvertimeCharges = 0;
+                                    //}
+                                    var  OvertimeCharges = OvertimeWithhold(otr.OvertimeTypeId, (decimal)otr.Duration);
+                                    //attendance.Update(att);
+                                    ExecuteSql("execute To_AddOvertimeCharges '" + otr.YearAndMonth + "'," + otr.EmployeeId + "," + OvertimeCharges + "");
                                 }
-                                if (overtimetype!="1" && overtimetype!= "2" && overtimetype != "3" && overtimetype != "4")
-                                {
-                                    otr.OvertimeTypeId = 1;
-                                }
-                                else {
-                                    otr.OvertimeTypeId = Convert.ToInt32(overtimetype);
-                                }
+
                                 otr.IsPass = false;
                                 this.Insert(otr);
+
 
                             }
                         }

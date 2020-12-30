@@ -6,17 +6,23 @@ using System.Web.Mvc;
 
 namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Controllers
 {
+    using SiliconValley.InformationSystem.Business.Base_SysManage;
     using SiliconValley.InformationSystem.Business.DormitoryMantainBusiness;
+    using SiliconValley.InformationSystem.Business.EmployeesBusiness;
     using SiliconValley.InformationSystem.Entity.MyEntity;
     using SiliconValley.InformationSystem.Util;
     [CheckLogin]
     public class DormitoryMantainPriceController : Controller
     {
         PricedormitoryarticlesManeger PricedorGood_Entity = new PricedormitoryarticlesManeger();
+        EmployeesInfoManage Employess_Entity = new EmployeesInfoManage();
 
         // GET: /DormitoryMaintenance/DormitoryMantainPrice/DormitoryMantainPriceIndex
         public ActionResult DormitoryMantainPriceIndex()
         {
+            Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
+            int number = Employess_Entity.GetDeptByEmpid(UserName.EmpNumber).DeptId;
+            ViewBag.number = number;
             return View();
         }
 
@@ -34,7 +40,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
 
             var jsondata = new { count = list.Count, code = 0, msg = "", data = data };
 
-            return Json(jsondata, JsonRequestBehavior.AllowGet); ;
+            return Json(jsondata, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -128,7 +134,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
         {
             bool flag = false;
             List<Pricedormitoryarticles> price_list = PricedorGood_Entity.GetList();
-            var temp = price_list.Where(s=>s.Nameofarticle == name).Count();
+            var temp = price_list.Where(s=>s.Nameofarticle == name && s.Dateofregistration==true).Count();
             if (temp>0)
             {
                 flag = true;

@@ -127,6 +127,7 @@
                     success: function (data) {
                         layer.close(loadindex);
                         if (data.Success) {
+                            
                             var msg = "";
                             if (data.ErrorCode == 100) {//没有一条数据出错
                                  msg = "录入成功!  录入数量：" + data.Msg;
@@ -140,15 +141,18 @@
                                     "条数据录入失败。失败数据分析如下：</br>" + detailerrdata;
                             }
                             //098
+                            layer.alert(msg, { icon: 1 }, function () {
+                                // window.document.location.reload();
+                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                window.parent.location.reload();
+                                parent.layer.close(index);
+
+                            });
+                        } else {
+                            layer.alert(data.Msg, { icon: 2 });
                         }
 
-                        layer.alert(msg, { icon: 1 }, function () {
-                           // window.document.location.reload();
-                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                            window.parent.location.reload();
-                            parent.layer.close(index);
-
-                        });
+                       
                        
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {

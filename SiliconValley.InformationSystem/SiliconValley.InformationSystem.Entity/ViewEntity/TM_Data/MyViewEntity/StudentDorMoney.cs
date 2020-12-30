@@ -40,5 +40,15 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data.MyViewEntity
         /// 保险柜费用
         /// </summary>
         public decimal BaoxianguiMoney { get; set; }
+
+        /// <summary>
+        /// 维修内容
+        /// </summary>
+        public string RepairContent { get; set; }
+
+        /// <summary>
+        /// 解决措施
+        /// </summary>
+        public string Solutions { get; set; }
     }
 }

@@ -348,6 +348,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Registerforexamination.cs" />
     <Compile Include="SqlDate.cs" />
+    <Compile Include="ViewEntity\DormitoryInputError.cs" />
     <Compile Include="ViewEntity\AccdationView.cs" />
     <Compile Include="ViewEntity\AchievementView.cs" />
     <Compile Include="ViewEntity\AddCourseView.cs" />
@@ -430,6 +431,7 @@
     <Compile Include="ViewEntity\MessagenotificationView.cs" />
     <Compile Include="ViewEntity\NetClientRecordView.cs" />
     <Compile Include="ViewEntity\OvertimeRecordErrorDataView.cs" />
+    <Compile Include="ViewEntity\PaySlipExcelError.cs" />
     <Compile Include="ViewEntity\PutStudentDataView.cs" />
     <Compile Include="ViewEntity\RecruitPhoneTraceView.cs" />
     <Compile Include="ViewEntity\Refunditemsview.cs" />
@@ -504,6 +506,7 @@
     <Compile Include="ViewEntity\StartingYear.cs" />
     <Compile Include="ViewEntity\StudentData.cs" />
     <Compile Include="ViewEntity\StudentDetailView.cs" />
+    <Compile Include="ViewEntity\StudentFeeRecordListView.cs" />
     <Compile Include="ViewEntity\StudentFeeRecordView.cs" />
     <Compile Include="ViewEntity\StudentpaymentView.cs" />
     <Compile Include="ViewEntity\StudentUnionDepartmentView.cs" />
@@ -548,7 +551,9 @@
     <Compile Include="ViewEntity\T_ConsultTeacherData.cs" />
     <Compile Include="ViewEntity\UninhabitedList.cs" />
     <Compile Include="ViewEntity\vierprice.cs" />
+    <Compile Include="ViewEntity\XYK_Data\FeedStudent.cs" />
     <Compile Include="ViewEntity\XYK_Data\Grand_SUM.cs" />
+    <Compile Include="ViewEntity\XYK_Data\PriceDC.cs" />
     <Compile Include="ViewEntity\XYK_Data\Student .cs" />
     <Compile Include="ViewEntity\zhongyike\MyExamCurren.cs" />
     <Compile Include="ViewEntity\ZhuanghuanluData.cs" />

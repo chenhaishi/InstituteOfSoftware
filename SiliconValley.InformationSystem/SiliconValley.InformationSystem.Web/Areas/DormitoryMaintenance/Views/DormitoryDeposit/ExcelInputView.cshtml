@@ -1,0 +1,159 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ExcelInputView</title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+    <script src="~/Scripts/layui/layui.js"></script>
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <style>
+        #tipMsg {
+            width: 90%;
+            height: 40px;
+            text-align: center;
+            color: darkred;
+            font-size: 15px;
+            line-height: 40px;
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <form class="layui-form">
+            <div class="layui-inline" style="margin-top:30px;">
+                <label class="layui-form-label">选择文件：</label>
+                <div class="layui-input-inline">
+                    <input type="file" id="file" name="excelfile" />
+                </div>
+            </div>
+            <a href="/DormitoryMaintenance/DormitoryDeposit/DownFile" style="margin-left:30px;" class="layui-btn"><i class="layui-icon">&#xe601;</i>模板下载</a>
+            <hr />
+            <div id="tipMsg">
+                错误:文件类型错误
+            </div>
+            <div style="text-align:center;">
+                <button style="width:80%; margin-top:60px;margin-top:30px;" type="button" lay-submit lay-filter="Btn_Input" class="layui-btn layui-btn-radius layui-btn-primary">导入</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+
+        var formdata = new FormData();
+
+        formdata.append("excelfile", undefined);
+        formdata.append("course", undefined);
+
+        function SetErrorMsg(msg) {
+
+            $("#tipMsg").text(msg);
+
+            $("#tipMsg").css("visibility", 'visible');
+        }
+
+        layui.use(['form', 'layer'], function () {
+            var form = layui.form;
+            var layer = layui.layer;
+
+            //选择文件之后的函数
+            $("#file").change(function (data) {
+                var file = this.files[0];
+
+                if (file == undefined) {
+                    formdata.set("excelfile", undefined);
+                    SetErrorMsg("请选择文件");
+                    return;
+                }
+                console.log(file);
+                //判断文件类型  application/vnd.ms-excel 或者 application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+                if (file.type != 'application/vnd.ms-excel' && file.type != 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+                    formdata.set("excelfile", undefined);
+                    SetErrorMsg("错误：文件类型错误  提示：文件类型为 xls、xlsx");
+
+                    return;
+                }
+                // 判断文件大小
+
+                var filesize = file.size;
+
+                if (filesize <= 1024 * 3) {
+                    formdata.set("excelfile", undefined);
+                    SetErrorMsg("错误：文件内容过小");
+                    return;
+                }
+
+                formdata.set("excelfile", file);
+
+                $("#tipMsg").css("visibility", 'hidden');
+                console.log(formdata);
+            });
+        
+            //点击提交
+            form.on('submit(Btn_Input)', function (data) {
+                console.log("Btn_Input");
+                var loadindex = layer.load(1);
+
+                if (formdata.get("excelfile") == undefined) {
+                    formdata.set("excelfile", undefined);
+                    SetErrorMsg("请选择文件");
+                    return;
+                }
+
+                $("#tipMsg").css("visibility", 'hidden');
+                
+                $.ajax({
+                    url: '/DormitoryMaintenance/DormitoryDeposit/BatchImport',
+                    type: 'POST',
+                    data: formdata,
+                    dataType: 'JSON',
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        layer.close(loadindex);
+                        var msg = ""; console.log(data);
+                        if (data.Success) {
+                            
+                            if (data.ErrorCode == 100) {//没有一条数据出错
+                                msg = "录入成功!  录入数量：" + data.Msg;
+                            } else if (data.ErrorCode == 200) {
+                                var errdata = data.Data;//录入错误的数据
+                                var detailerrdata = "";
+                                for (var i = 0; i < errdata.length; i++) {
+                                    detailerrdata += errdata[i].StuName + "的维修数据录入出错，原因是：" + errdata[i].ErrorInfo + "<br/>";
+                                };
+                                msg = "成功录入" + data.Msg + "条数据" + errdata.length +
+                                    "条数据录入失败。失败数据分析如下：</br>" + detailerrdata;
+                            }
+                        }
+
+                        layer.alert(msg, { icon: 1 }, function () {
+                            // window.document.location.reload();
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            window.parent.location.reload();
+                            parent.layer.close(index);
+
+                        });
+
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        layer.close(loadindex);
+                        console.log(textStatus);
+
+                    }
+                });
+                return false;
+            });
+        });
+    </script>
+</body>
+</html>
+
+
+

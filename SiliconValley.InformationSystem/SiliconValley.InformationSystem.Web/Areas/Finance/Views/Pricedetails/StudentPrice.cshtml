@@ -16,7 +16,7 @@
     <style>
         .mysql {
             margin-top: 13px;
-        }
+        }   
 
         .textar {
             width: 80%;
@@ -142,7 +142,7 @@
             合计   <label style="color:red;" id="Totalsum">0</label>元
         </div>
     </form>
-
+    
 </body>
 </html>
 <script src="~/Areas/Teachingquality/js/AjaxAddupdate.js"></script>
@@ -158,7 +158,7 @@
     $("#classa").text(student.classa);
     $("#Name").text(student.Name);
     $("#Sex").text(student.Sex == false?"女":"男");
-    layui.use(['table', 'layer', 'tree','element', 'form'], function () {
+    layui.use(['table', 'layer', 'tree','element', 'form'], function () {  
         var table = layui.table;
         var layer = layui.layer;
         var form = layui.form;

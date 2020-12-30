@@ -15,112 +15,212 @@
 </head>
 <body>
     <div>
-        <div id="title" style="text-align:center;">
+            <div id="title" style="text-align:center;">
             <div class="line-title"></div>
             <i class="layui-icon layui-icon-chart" style="font-size:35px;"><i style="font-size:18px;">员工费用统计</i> </i>
             <div class="line-title"></div>
-        </div>
+            </div>
 
-        <div style="height:40px; line-height:40px; text-align:center;margin-top:30px;">
-            <form class="layui-form">
-                <div class="layui-form-item">
-                    <div class="layui-inline">
-                        <label class="layui-form-label">部门：</label>
-                        <div class="layui-input-inline">
-                            <select name="dep" id="dep_select" lay-filter="dep_select" lay-search="">
-                                <option value="0">所有</option>
-                                @{
-                                    foreach (var item in ViewBag.deps as List<Department>)
-                                    {
-                                        <option value="@item.DeptId">@item.DeptName</option>
-                                    }
-                                }
-                            </select>
+            <div class="layui-collapse" lay-accordion>
+                <div class="layui-colla-item">
+                    <h2 class="layui-colla-title">
+                        无法定节假日
+                        <i class="layui-icon layui-colla-icon"></i>
+                    </h2>
+                    <div class="layui-colla-content layui-show">
+                        <div class="layui-form" action="">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">部门</label>
+                                <div class="layui-input-inline">
+                                    <select name="DeptID" id="dep_select" style="width:400px" lay-filter="dep_select" lay-search="">
+                                        <option value="0">所有</option>
+                                        @{
+                                            foreach (var item in ViewBag.deps as List<Department>)
+                                            {
+                                                <option value="@item.DeptId">@item.DeptName</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">日期</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" class="layui-input" name="date" style="width:400px" id="test11" placeholder="yyyy年MM月">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">单休双休</label>
+                                <div class="layui-input-inline">
+                                    <input type="radio" name="IsDanxiu1" value="0" title="单休">
+                                    <input type="radio" name="IsDanxiu1" value="1" title="双休" checked>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item" style="display:none">
+                                <label class="layui-form-label">节假日天数</label>
+                                <div class="layui-input-inline">
+                                    <input type="number"  name="jiejiari" value="0" style="width:400px" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <button class="layui-btn layui-btn-radius" lay-submit lay-filter="Btn_Cost1">开始统计</button>&emsp;
+                                    <button class="layui-btn layui-btn-radius layui-btn-normal" lay-submit lay-filter="Btn_SaveExcel1">下载文件</button>&emsp;
+                                    <button class="layui-btn layui-btn-radius layui-btn-warm" lay-submit lay-filter="Btn_UpExcel1">上传保存文件</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="layui-inline">
-                        <label class="layui-form-label">时间：</label>
-                        <div class="layui-input-inline">
-                            <input type="text" class="layui-input" id="test11" placeholder="yyyy年MM月dd日">
-                        </div>
-                    </div>
+                </div>
+            </div>
 
-                    <div class="layui-inline">
-                        <label class="layui-form-label">工作日天数：</label>
-                        <div class="layui-input-inline">
-                            <input type="number" id="WorkDay" class="layui-input">
-                        </div>
-                    </div>
+            <div class="layui-collapse" lay-accordion>
+                <div class="layui-colla-item">
+                    <h2 class="layui-colla-title">
+                        有法定节假日
+                        <i class="layui-icon layui-colla-icon"></i>
+                    </h2>
+                    <div class="layui-colla-content layui-show">
+                        <div class="layui-form" action="">
 
-                    <div class="layui-inline" style=" width:40px;">
-                        <label style="width:50px; color:blue;" id="flush" class="layui-form-label">
-                            <i class="layui-icon layui-icon-refresh"></i>
-                        </label>
-                        <div class="layui-input-inline">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">部门</label>
+                                <div class="layui-input-inline">
+                                    <select name="DeptID" id="dep_select" style="width:400px" lay-filter="dep_select" lay-search="">
+                                        <option value="0">所有</option>
+                                        @{
+                                            foreach (var item in ViewBag.deps as List<Department>)
+                                            {
+                                                <option value="@item.DeptId">@item.DeptName</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">日期</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" class="layui-input" name="date" style="width:400px" id="test12" placeholder="yyyy年MM月">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">节假日天数</label>
+                                <div class="layui-input-inline">
+                                    <input type="number" name="jiejiari" class="layui-input" style="width:400px">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">单休双休</label>
+                                <div class="layui-input-inline">
+                                    <input type="radio" name="IsDanxiu" value="0" title="单休">
+                                    <input type="radio" name="IsDanxiu" value="1" title="双休" checked>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <button class="layui-btn layui-btn-radius" lay-submit lay-filter="Btn_Cost">开始统计</button>&emsp;
+                                    <button class="layui-btn layui-btn-radius layui-btn-normal" lay-submit lay-filter="Btn_SaveExcel">下载文件</button>&emsp;
+                                    <button class="layui-btn layui-btn-radius layui-btn-warm" lay-submit lay-filter="Btn_UpExcel">上传保存文件</button>
+                                </div>
+                            </div>
 
                         </div>
                     </div>
                 </div>
-            </form>
-        </div>
-
-        
-        <div style="margin-top:50px;text-align:center">
-            <button class="layui-btn layui-btn-radius layui-btn-primary" id="Btn_Cost">开始统计</button>&emsp;
-            <button class="layui-btn layui-btn-radius layui-btn-primary" id="Btn_SaveExcel">保存文件</button>
-        </div>
+            </div>
 
     </div>
 </body>
 </html>
 
 <script>
-    layui.use(['layer', 'table', 'laydate','element'], function () {
+    layui.use(['layer', 'laydate','form'], function () {
         var laydate = layui.laydate;
         var layer = layui.layer;
-        var table = layui.table;
-        var element = layui.element;
+        var form = layui.form;
 
         var obj = new Date();
 
         var start = obj.getFullYear() + "-" + obj.getMonth() + "-" + 30;
         laydate.render({
             elem: '#test11'
-            , format: 'yyyy年MM月dd日'
-            , max: start
+            , format: 'yyyy年MM月'
+            , type: 'month'
+            , trigger: 'click'
         });
 
-        $("#Btn_Cost").click(function () {
-           
-            if ($("#test11").val() == "") {
-                layer.msg('请选择时间', { icon: 2, time: 500 });
-            } else {
-                $("#Cost_tab tr:not(:first)").html("");
-                
-                        $.ajax({
-                            url: "/Educational/Staff_Cost_Statistics/TempFunction",
-                            type: "POST",
-                            data: {
-                                date: $("#test11").val(),
-                                DeptID: $("#dep_select").val(),
-                                WorkDay: $("#WorkDay").val()
-                            },
-                            success: function (res) {
-                                
-                            }
-                        });
-                layer.msg('数据统计中', { icon: 1, time: 8000 });
-            }
-            
+        laydate.render({
+            elem: '#test12'
+            , format: 'yyyy年MM月'
+            , type: 'month'
+            , trigger: 'click'
         });
         
-        $("#flush").click(function () {
-            layer.msg('刷新中', { icon: 1, time: 100 });
-            location.reload();
+        form.on('submit(Btn_Cost)', function (data) {
+            var value = data.field;
             
+            if (value.DeptID == "0") {
+                layer.msg('请选择部门', { icon: 2, time: 500 });
+            } else if (value.date == "") {
+                layer.msg('请选择时间', { icon: 2, time: 500 });
+            } else {
+                $.ajax({
+                    url: "/Educational/Staff_Cost_Statistics/TempFunction",
+                    type: "POST",
+                    data: {
+                        date: value.date,
+                        DeptID: value.DeptID,
+                        IsDanxiu: value.IsDanxiu,
+                        jiejiari: value.jiejiari
+                    },
+                    success: function (res) {
+                       
+                        layer.alert(res.Msg, {
+                            skin: 'layui-layer-molv' //样式类名
+                            , closeBtn: 0
+                        });
+                    }
+                });
+            }
+            return false;
         });
 
-        $("#Btn_SaveExcel").click(function () {
+        form.on('submit(Btn_Cost1)', function (data) {
+            var value = data.field;
+            if (value.DeptID == "0") {
+                layer.msg('请选择部门', { icon: 2, time: 500 });
+            } else if (value.date == "") {
+                layer.msg('请选择时间', { icon: 2, time: 500 });
+            } else {
+                $.ajax({
+                    url: "/Educational/Staff_Cost_Statistics/TempFunction",
+                    type: "POST",
+                    data: {
+                        date: value.date,
+                        DeptID: value.DeptID,
+                        IsDanxiu: value.IsDanxiu1,
+                        jiejiari: value.jiejiari
+                    },
+                    success: function (res) {
+                        layer.alert(res.Msg, {
+                            skin: 'layui-layer-molv' //样式类名
+                            , closeBtn: 0
+                        });
+                    }
+                });
+            }
+            return false; 
+        });
+
+        form.on('submit(Btn_SaveExcel)', function (data) {
             $.ajax({
                 url: "/Educational/Staff_Cost_Statistics/CostDataToExcel",
                 type: "post",
@@ -128,11 +228,79 @@
                     console.log(res);
                     if (res.ErrorCode == "200") {
                         
-                        layer.msg(res.Msg, { icon: 1, time: 4000 });
+                        layer.alert(res.Msg, {
+                            skin: 'layui-layer-molv' //样式类名
+                            , closeBtn: 0
+                        });
                     } else {
-                        layer.msg(res.Msg, { icon: 1, time: 4000 });
+                        layer.alert(res.Msg, {
+                            skin: 'layui-layer-molv' //样式类名
+                            , closeBtn: 0
+                        });
                     }
                 }
+            });
+        });
+
+        form.on('submit(Btn_SaveExcel1)', function (data) {
+            $.ajax({
+                url: "/Educational/Staff_Cost_Statistics/CostDataToExcel",
+                type: "post",
+                success: function (res) {
+                    console.log(res);
+                    if (res.ErrorCode == "200") {
+
+                        layer.alert(res.Msg, {
+                            skin: 'layui-layer-molv' //样式类名
+                            , closeBtn: 0
+                        });
+                    } else {
+                        layer.alert(res.Msg, {
+                            skin: 'layui-layer-molv' //样式类名
+                            , closeBtn: 0
+                        });
+                    }
+                }
+            });
+        });
+        //上传将文件保存到百度云对象储存
+        form.on('submit(Btn_UpExcel)', function (data) {
+            $.ajax({
+                url: "/Educational/Staff_Cost_Statistics/UpExcel_Bos",
+                type: "post",
+                data: {
+                    deptid: $("#dep_select").val(),
+                    date: $("#test11").val()
+                },
+                success: function (res) {
+                    layer.alert(res.Msg, {
+                        skin: 'layui-layer-molv' //样式类名
+                        , closeBtn: 0
+                    });
+                }
+            });
+        });
+        //上传将文件保存到百度云对象储存
+        form.on('submit(Btn_UpExcel1)', function (data) {
+            $.ajax({
+                url: "/Educational/Staff_Cost_Statistics/UpExcel_Bos",
+                type: "post",
+                data: {
+                    deptid: $("#dep_select").val(),
+                    date: $("#test11").val()
+                },
+                success: function (res) {
+                    layer.alert(res.Msg, {
+                        skin: 'layui-layer-molv' //样式类名
+                        , closeBtn: 0
+                    });
+                }
+
+            });
+            
+            layer.alert(res.Msg, {
+                skin: 'layui-layer-molv' //样式类名
+                , closeBtn: 0
             });
         });
     });

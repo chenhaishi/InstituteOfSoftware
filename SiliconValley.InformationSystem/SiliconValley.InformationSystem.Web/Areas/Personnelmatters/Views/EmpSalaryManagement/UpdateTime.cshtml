@@ -95,18 +95,38 @@
                        
                     } else {
                         layer.confirm('确认生成' + time + '月份的工资表吗？', function (index) {
-                            $.post('/Personnelmatters/EmpSalaryManagement/SalarytableRefresh', {  'time': time }, function (da) {
-                                if (da) {
-                                    layer.alert("生成成功!",  { icon: 1 }, function (index) {
-                                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                                        window.parent.location.reload();
-                                        parent.layer.close(index);
-                                    });
-                                }
-                                else {
-                                    layer.alert("生成失败!");
-                                }
-                            })
+                            var isQuery = false;
+                            if (!isQuery) {
+                                $.ajax({
+                                    url: "/Personnelmatters/EmpSalaryManagement/SalarytableRefresh",
+                                    type: "post",
+                                    data: JSON.stringify({ 'time': time }),
+                                    dataType: "json",
+                                    contentType: "Application/json",
+                                    beforeSend: function () {
+                                        isQuery = true;
+                                        layer.msg("正在执行", { icon: 16, shade: 0.6 });
+                                    }, success: function (data) {
+                                        isQuery = false;
+                                        console.log(data);
+                                        if (data.Success) {
+                                            layer.alert(data.Msg, { icon: 1 }, function (index) {
+                                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                                window.parent.location.reload();
+                                                parent.layer.close(index);
+                                            });
+                                        }
+                                        else {
+                                            layer.alert("生成失败!" + data.Msg);
+                                        }
+                                    }, error: function (e) {
+                                        isQuery = false;
+                                        console.log("生成失败");
+                                    }
+                                })
+                            } else {
+                                console.log("请不要重复点击");
+                            }
                         });
                     }
                 });

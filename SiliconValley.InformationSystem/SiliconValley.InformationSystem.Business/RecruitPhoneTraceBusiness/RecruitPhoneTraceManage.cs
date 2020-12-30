@@ -82,7 +82,36 @@ namespace SiliconValley.InformationSystem.Business.RecruitPhoneTraceBusiness
             DateTime? time = rptlist.LastOrDefault().ForwardDate;
             return time;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sonid"></param>
+        /// <returns></returns>
+        public RecruitPhoneTrace GetNewest(int sonid)
+        {
+            var rptlist = this.GetListBySql<RecruitPhoneTrace>("select * from RecruitPhoneTrace where SonId=" + sonid).LastOrDefault();
+            return rptlist;
+        }
+        public AjaxResult UpdNewestForwardDate(int sonid, string forwarddate)
+        {
+            AjaxResult result = new AjaxResult();
+            try
+            {
+                var list = this.GetList().Where(i => i.SonId == sonid);
+                int id = list.LastOrDefault().Id;
+                var recruit = this.GetEntity(id);
+                recruit.ForwardDate = Convert.ToDateTime(forwarddate);
+                this.Update(recruit);   
+               result= this.Success();
+            }
+            catch (Exception e)
+            {
+                result = this.Error(e.Message);
+            }
 
+            return result;
+           
+        }
         /// <summary>
         /// 获取最新面试结果
         /// </summary>
@@ -92,6 +121,18 @@ namespace SiliconValley.InformationSystem.Business.RecruitPhoneTraceBusiness
         {
             var rptlist = this.GetListBySql<RecruitPhoneTrace>("select * from RecruitPhoneTrace where SonId="+sonid);
             bool result = (bool)rptlist.LastOrDefault().PhoneCommunicateResult;
+            return result;
+        }
+        public string GetNewesRemark(int sonid)
+        {
+            var rptlist = this.GetListBySql<RecruitPhoneTrace>("select * from RecruitPhoneTrace where SonId=" + sonid);
+            string  result = rptlist.LastOrDefault().Remark;
+            return result;
+        }
+        public bool GetNewesIsEntry(int sonid)
+        {
+            var rptlist = this.GetListBySql<RecruitPhoneTrace>("select * from RecruitPhoneTrace where SonId=" + sonid);
+            bool result = (bool)rptlist.LastOrDefault().IsEntry;
             return result;
         }
     }

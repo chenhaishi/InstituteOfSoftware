@@ -43,9 +43,9 @@
                         <label class="layui-form-label">商品名称</label>
                         <div class="layui-input-inline">
                             @*<input type="text" lay-verify="required|Name" class="layui-input" name="Consumptionname" />*@
-                            <select name="Consumptionname" lay-verify="required|Name" lay-search="" @*lay-filter="consuselet"*@>
+                            <select name="Consumptionname" @*lay-verify="required|Name" lay-search=""*@ @*lay-filter="consuselet"*@>
                                 <option value="">请选择</option>
-                                <option value="重修食宿费">重修食宿费</option>
+
                                 <option value="重修S1">重修S1</option>
                                 <option value="重修S2">重修S2</option>
                                 <option value="重修S3">重修S3</option>
@@ -58,8 +58,29 @@
                     <div class="layui-col-xs12 layui-col-sm12 layui-col-md12 mysql">
                         <label class="layui-form-label">费用</label>
                         <div class="layui-input-inline">
-                            <input type="text" lay-verify="required|Amountofmoney" class="layui-input" name="Amountofmoney" />
-                           </div>
+                            <input type="text" @*lay-verify="required|Amountofmoney"*@ class="layui-input" name="Amountofmoney" />
+                        </div>
+                    </div>
+                    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12 mysql">
+                        <label class="layui-form-label">商品名称</label>
+                        <div class="layui-input-inline">
+                            @*<input type="text" lay-verify="required|Name" class="layui-input" name="Consumptionname" />*@
+                            <select name="Consumptionname_su" @*lay-verify="required|Name" lay-search=""*@ @*lay-filter="consuselet"*@>
+                                <option value="">请选择</option>
+                                <option value="重修食宿费S1">重修食宿费S1</option>
+                                <option value="重修食宿费S2">重修食宿费S2</option>
+                                <option value="重修食宿费S3">重修食宿费S3</option>
+                                <option value="重修食宿费S4">重修食宿费S4</option>
+                                <option value="重修食宿费Y1">重修食宿费Y1</option>
+                                <option value="重修食宿费Y2">重修食宿费Y2</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12 mysql">
+                        <label class="layui-form-label">费用</label>
+                        <div class="layui-input-inline">
+                            <input type="text" @*lay-verify="required|Amountofmoney"*@ class="layui-input" name="Amountofmoney_su" />
+                        </div>
                     </div>
                     <div class="layui-col-xs12 layui-col-sm12 layui-col-md12 mysql">
                         <label class="layui-form-label">备注</label>
@@ -99,6 +120,14 @@
         //监听提交
         form.on('submit(demo1)', function (data) {
             var db = data.field;
+            if (db.Amountofmoney == "") {
+                db.Amountofmoney = 0;
+            }
+            else if (db.Amountofmoney_su == "") {
+                db.Amountofmoney_su = 0;
+            }
+           
+            
             console.log(db);
             ajaxprice("/Finance/Pricedetails/Otherconsumption", db, function () {
                 var index = parent.layer.getFrameIndex(window.name);
