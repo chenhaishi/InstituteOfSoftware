@@ -12,10 +12,13 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.XYK_Data
     {
         //学生学号
         public string studentID { get; set; }
+       
         //学生名字
         public string className { get; set; }
         //学生身份证
         public string identity { get; set; }
+        //班级
+        public string class_id { get; set; }
         //缴费金额
         public decimal Amountofmoney { get; set; }
         //缴费名目
@@ -27,9 +30,9 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.XYK_Data
         //收费方式
         public string Paymentmethod { get; set; }
         //入账时间
-        public Nullable<System.DateTime> AddTime { get; set; }
+        public string AddTime { get; set; }
         //缴费时间
-        public DateTime AddDate { get; set; }
+        public string AddDate { get; set; }
         //经办人
         public string FinanceModelName { get; set; }
 
