@@ -342,9 +342,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                     Remark = item.Remark,
                     IsEnd = Isend,
                     //== true ? "结束" : "未结束"
-
-
-
+                    
                 };
                 returnlist.Add(temobj1);
 
