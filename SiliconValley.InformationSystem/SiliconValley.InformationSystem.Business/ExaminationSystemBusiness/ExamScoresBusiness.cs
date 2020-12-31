@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
 {
+    using NPOI.HSSF.UserModel;
+    using NPOI.SS.UserModel;
+    using NPOI.XSSF.UserModel;
     using SiliconValley.InformationSystem.Business.CourseSyllabusBusiness;
     using SiliconValley.InformationSystem.Business.EmployeesBusiness;
     using SiliconValley.InformationSystem.Business.TeachingDepBusiness;
@@ -14,6 +17,8 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
     using SiliconValley.InformationSystem.Entity.MyEntity;
     using SiliconValley.InformationSystem.Entity.ViewEntity;
     using SiliconValley.InformationSystem.Entity.ViewEntity.ExaminationSystemView;
+    using SiliconValley.InformationSystem.Util;
+    using System.IO;
 
     //考试成绩业务类
     public class ExamScoresBusiness : BaseBusiness<TestScore>
@@ -45,6 +50,54 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
             return this.GetList().ToList();
         }
 
+        /// <summary>
+        /// 拿到考勤excel表中的第一个单元
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="contentType"></param>
+        /// <returns></returns>
+        public AjaxResult ImportDataFormExcel(Stream stream, string contentType)
+        {
+            IWorkbook workbook = null;
+
+            if (contentType == "application/vnd.ms-excel")
+            {
+                workbook = new HSSFWorkbook(stream);
+            }
+
+            if (contentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            {
+                workbook = new XSSFWorkbook(stream);
+            }
+
+            ISheet sheet = workbook.GetSheetAt(0);
+            var result = ExcelImportAtdSql(sheet);
+            stream.Close();
+            stream.Dispose();
+            workbook.Close();
+
+            return result;
+        }
+
+        private AjaxResult ExcelImportAtdSql(ISheet sheet)
+        {
+            var ajaxresult = new AjaxResult();
+            try
+            {
+                while (true)
+                {
+
+                }
+            }
+            catch (Exception ex)
+            {
+                ajaxresult.Success = false;
+                ajaxresult.ErrorCode = 500;
+                ajaxresult.Msg = ex.Message;
+                ajaxresult.Data = "0";
+            }
+            return ajaxresult;
+        }
 
         /// <summary>
         /// 获取考试成绩

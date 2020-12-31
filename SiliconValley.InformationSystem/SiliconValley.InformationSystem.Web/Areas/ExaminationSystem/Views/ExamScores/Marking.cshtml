@@ -170,7 +170,7 @@
 
                 <div class="infoitem totalPaper">试卷总数量--<span></span></div>
                 <div class="infoitem filshPaper">已阅卷数量--<span></span></div>
-                <a class="btn btn-danger" id="YiJian">一键下载机试</a>
+                @*<a class="btn btn-danger" id="YiJian">一键下载机试</a>*@
             </div>
         </div>
     </div>
@@ -186,9 +186,9 @@
 
             <hr />
             <hr />
-            <div id="computerBtn">
+            @*<div id="computerBtn">
 
-            </div>
+            </div>*@
 
             <div id="Stulist">
 
@@ -198,12 +198,12 @@
 
                 <button type="button" id="preBtn" class="layui-btn layui-btn-primary">上一个</button>
                 <button type="button" id="nextBtn" class="layui-btn layui-btn-primary">下一个</button>
-                <button type="button" id="recordScoresBtn" class="layui-btn layui-btn-primary">记录分数</button>
-                <button type="button" id="Markingornot" class="layui-btn layui-btn-primary">阅卷完毕</button>
+                @*<button type="button" id="recordScoresBtn" class="layui-btn layui-btn-primary">记录分数</button>*@
+
             </div>
 
             <!--记录分数Div-->
-            <div id="RecordScoreFloadDiv">
+            @*<div id="RecordScoreFloadDiv">
 
                 <form style="margin:0 auto; display:block; width:70%; margin-top:30px;" class="layui-form">
                     <div class="layui-form-item">
@@ -241,7 +241,7 @@
 
 
 
-            </div>
+            </div>*@
 
         </div>
 
@@ -473,22 +473,22 @@
 
             });
 
-            function checkHaveComputerPaper(examid,kaohao,callback, errorcallback) {
+            //function checkHaveComputerPaper(examid,kaohao,callback, errorcallback) {
 
-                $.post('/ExaminationSystem/ExamScores/checkHaveComputerPaper', { examid: examid, kaohao: kaohao }, function (result) {
+            //    $.post('/ExaminationSystem/ExamScores/checkHaveComputerPaper', { examid: examid, kaohao: kaohao }, function (result) {
 
-                    if (result.ErrorCode == 200) {
+            //        if (result.ErrorCode == 200) {
 
-                        callback(result.Data)
-                    }
-                    else {
+            //            callback(result.Data)
+            //        }
+            //        else {
 
-                        errorcallback();
-                    }
+            //            errorcallback();
+            //        }
 
-                });
+            //    });
 
-            }
+            //}
 
             //加载答卷
 
@@ -541,28 +541,28 @@
                         }
 
                     }
-                    var button = $('<a id="download" class="layui-btn layui-btn-fluid layui-btn-primary"></a>');
+                    //var button = $('<a id="download" class="layui-btn layui-btn-fluid layui-btn-primary"></a>');
 
                     //首先发送请求 查看是否有机试题
 
-                    checkHaveComputerPaper(Examid, StuExamNumber, function (data) {
-                        console.log(data);
-                        if (data == "1") {
-                            button[0].href = "/ExaminationSystem/ExamScores/DownloadComputerSheet?examid=" + Examid + "&kaohao=" + StuExamNumber;
-                            button.text("机试题下载");
-                            $("#computerBtn").append(button);
-                        }
-                        else {
-                            button[0].href ="javascript:void(0);";
-                            button.text("该考生无机试题答卷");
-                            button.attr("Nohave","Nohave");
-                            $("#computerBtn").append(button);
-                        }
+                    //checkHaveComputerPaper(Examid, StuExamNumber, function (data) {
+                    //    console.log(data);
+                    //    if (data == "1") {
+                    //        button[0].href = "/ExaminationSystem/ExamScores/DownloadComputerSheet?examid=" + Examid + "&kaohao=" + StuExamNumber;
+                    //        button.text("机试题下载");
+                    //        $("#computerBtn").append(button);
+                    //    }
+                    //    else {
+                    //        button[0].href ="javascript:void(0);";
+                    //        button.text("该考生无机试题答卷");
+                    //        button.attr("Nohave","Nohave");
+                    //        $("#computerBtn").append(button);
+                    //    }
 
-                    }, function () {
+                    //}, function () {
 
 
-                        });
+                    //    });
 
 
 
@@ -625,49 +625,49 @@
             });
 
             //记录分数
-            $("#recordScoresBtn").click(function () {
+            //$("#recordScoresBtn").click(function () {
 
-                //加载分数
+            //    //加载分数
 
-                $.post("/ExaminationSystem/ExamScores/StuScores", { examid: Examid, StuExamNumber: StuExamNumber }, function (data) {
+            //    $.post("/ExaminationSystem/ExamScores/StuScores", { examid: Examid, StuExamNumber: StuExamNumber }, function (data) {
 
 
-                    //初始化分数
-                    if (data.ErrorCode == 200) {
+            //        //初始化分数
+            //        if (data.ErrorCode == 200) {
 
-                        var answerScoress = data.Data.TextQuestionScore;
-                        var computerScores = data.Data.OnBoard;
-                        var remark = data.Data.Remark;
-                        if (answerScoress != null) {
-                            $("#answerScores").val(answerScoress);
-                        }
+            //            var answerScoress = data.Data.TextQuestionScore;
+            //            var computerScores = data.Data.OnBoard;
+            //            var remark = data.Data.Remark;
+            //            if (answerScoress != null) {
+            //                $("#answerScores").val(answerScoress);
+            //            }
 
-                        if (computerScores != null)
-                            $("#computerScores").val(computerScores);
+            //            if (computerScores != null)
+            //                $("#computerScores").val(computerScores);
 
-                        $("#scoreRemark").val(remark);
+            //            $("#scoreRemark").val(remark);
                         
 
-                    }
+            //        }
                    
 
-                });
+            //    });
 
 
-                //显示 （#RecordScoreFloadDiv） div
+            //    //显示 （#RecordScoreFloadDiv） div
 
-                $("#RecordScoreFloadDiv").slideDown();
+            //    $("#RecordScoreFloadDiv").slideDown();
 
                 
 
-            });
+            //});
 
             //关闭提交分数窗口
 
-            $(".closefloat").click(function () {
-                $("#RecordScoreFloadDiv").slideUp();
+            //$(".closefloat").click(function () {
+            //    $("#RecordScoreFloadDiv").slideUp();
 
-            });
+            //});
 
 
             //检查是否全部阅卷完毕
@@ -747,21 +747,7 @@
                 });
 
             });
-            //点击阅卷完毕
-            $(document).off("click", "#Markingornot").on("click", '#Markingornot', function () {
-                layer.confirm('是否确定阅卷完毕,完毕之后将不能继续阅卷！', function (index) {
-                    $.post("/ExaminationSystem/ExamScores/Endofmarking", { examid: Examid, examroom: ExamRoom }, function (date) {
-                        if (date.ErrorCode == 200) {
-                            layer.msg("阅卷成功！");
-                            location.href = "/ExaminationSystem/ExamScores/Marking";
-                        } else {
-                            layer.msg("阅卷失败！");
-                        }
-                    })
-                    layer.close(index);
-                })
 
-            });
 
             ///考生按钮点击事件
             $(document).off("click", ".stuBtn").on("click", ".stuBtn", function () {
@@ -824,12 +810,12 @@
 
                 }
             });
-            $(document).off("click", "#YiJian").on("click", "#YiJian", function () {             
+            //$(document).off("click", "#YiJian").on("click", "#YiJian", function () {             
                 //$.post("/ExaminationSystem/ExamScores/OneClickDownload?examid=" + Examid, {}, function (data) {
                 //    console.log(data);
                 //})
-                layer.msg("功能优化中");
-            })
+                //layer.msg("功能优化中");
+            //})
         });
 
     </script>   

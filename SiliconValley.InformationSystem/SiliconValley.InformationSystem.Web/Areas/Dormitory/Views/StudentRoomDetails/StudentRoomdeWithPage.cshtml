@@ -268,7 +268,6 @@
 
             //请求拿床位数据
             function loadbedandaccdation() {
-                //layer.msg("肉肉的提示");
                 $.ajax({
                     url: '/Dormitory/DormitoryInfo/LoadBedAndAccdation',
                     type: 'GET',
@@ -373,10 +372,7 @@
 
                 }
             }
-
-
-
-
+            
             //请求学生基本数据
             function loadformdata(studentnumber) {
                 $.ajax({
@@ -385,6 +381,7 @@
                     data: { Studentnumber: studentnumber },
                     success: function (SuccessData) {
                         if (SuccessData.Success) {
+                            console.log(SuccessData.Data);
                             bindformdata(SuccessData.Data);
                         } else {
                             layer.msg("GG");
@@ -444,8 +441,6 @@
                         if ($(this).attr("studentnumber") == clickstudentnumber) {
                             $(this).addClass("layui-btn-danger");
                         }
-
-
                 });
             }
 

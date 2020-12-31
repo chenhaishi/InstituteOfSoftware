@@ -302,7 +302,6 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             #endregion
 
             
-
             #region 阅卷份数
             int MarkingNumber()
             {
@@ -1191,8 +1190,6 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
         public float EachingHourCost(List<TeachingItem> teachingItems, float bottomTeacherHours, float SurveyScores)
         {
-
-
             float result = 0;
 
             //得到课时

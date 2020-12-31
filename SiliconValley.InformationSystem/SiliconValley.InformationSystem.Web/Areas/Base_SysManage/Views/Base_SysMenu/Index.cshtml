@@ -14,39 +14,40 @@
         if (dept == "6") {
             layui.use('layer', function () {
                 var layer = layui.layer;
-
                 $.ajax({
-                    url: "/DormitoryMaintenance/DormitoryDeposit/AddSafeFuntion",
-                    type: "POST",
+                    url: "/Base_SysManage/Base_SysMenu/CheckDormState",
                     success: function (res) {
-
-                        if (res.Success != false || res.Msg !='这个班的这个月的保险费已录入了，请操作其他班级的！') {
-                            layer.open({
-                                content: '是否结算当月的保险柜押金'
-                                , btn: ['扣除', '取消']
-                                , yes: function (index, layero) {
-                                    //按钮【按钮一】的回调
-                                    $.ajax({
-                                        url: "/DormitoryMaintenance/DormitoryDeposit/AddSafeFuntion",
-                                        type: "POST",
-                                        success: function (res) {
-                                            layer.alert(res.Msg, function (index) {
-                                                layer.close(index);
-                                            });
-                                        }
-                                    });
+                        if (res) {
+                            $.ajax({
+                                url: "/DormitoryMaintenance/DormitoryDeposit/AddSafeFuntion",
+                                type: "POST",
+                                success: function (res) {
+                                    if (res.Success != false || res.Msg != '这个班的这个月的保险费已录入了，请操作其他班级的！') {
+                                        layer.open({
+                                            content: '是否结算当月的保险柜押金'
+                                            , btn: ['扣除', '取消']
+                                            , yes: function (index, layero) {
+                                                //按钮【按钮一】的回调
+                                                $.ajax({
+                                                    url: "/DormitoryMaintenance/DormitoryDeposit/AddSafeFuntion",
+                                                    type: "POST",
+                                                    success: function (res) {
+                                                        layer.alert(res.Msg, function (index) {
+                                                            layer.close(index);
+                                                        });
+                                                    }
+                                                });
+                                            }
+                                            , btn2: function (index, layero) {
+                                            }
+                                        });
+                                    }
                                 }
-                                , btn2: function (index, layero) {
-                                    //按钮【按钮二】的回调
-
-                                    //return false 开启该代码可禁止点击该按钮关闭
-                                }
-                            });
+                            }); 
                         }
+                        
                     }
                 });
-
-                
             });
         }
         

@@ -19,6 +19,9 @@ using NPOI.SS.UserModel;
 using SiliconValley.InformationSystem.Business.ClassSchedule_Business;
 using SiliconValley.InformationSystem.Business.ClassesBusiness;
 using SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data;
+using SiliconValley.InformationSystem.Business.ExaminationSystemBusiness;
+using SiliconValley.InformationSystem.Entity.Entity;
+using System.Xml;
 
 namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 {
@@ -47,6 +50,14 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         public ScheduleForTraineesBusiness ScheduleForTrainees_Entity = new ScheduleForTraineesBusiness();
 
         public BaseBusiness<TeacherAddorBeonDutyView> teacherAddorBeonDutyView_Entity = new BaseBusiness<TeacherAddorBeonDutyView>();
+
+        public ExaminationBusiness Examination_Entity = new ExaminationBusiness();
+
+        public ExaminationRoomBusiness ExaminationRoom_Entity = new ExaminationRoomBusiness();
+
+        public BaseBusiness<MarkingArrange> Marking_Entity = new BaseBusiness<MarkingArrange>();
+
+        public CandidateInfoBusiness Candi_Entity = new CandidateInfoBusiness();
 
         public Staff_Cost_StatisticsController()
         {
@@ -499,8 +510,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             return Json(obj, JsonRequestBehavior.AllowGet);
 
         }
-
-
+        
         public ActionResult Emp_Cost_Statististics(string data)
         {
             return View();
@@ -664,8 +674,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                             curriculum.CourseName.Contains("数学") ||
                             curriculum.CourseName.Contains("英语") ||
                             curriculum.CourseName.Contains("班会") ||
-                            curriculum.CourseName.Contains("军事") ||
-                            curriculum.CourseName.Contains("职素"))
+                            curriculum.CourseName.Contains("军事"))
                         {
                             OtherStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
                         }
@@ -731,8 +740,45 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                         Duty_fee += 80;
                     }
                 }
-                
 
+                //计算监考费
+                int InvigilationCount = 0;
+                string ExaminationRoomSql = "select * from ExaminationRoom where Invigilator1 = '"+Emp_List[i].EmployeeId+ "' or Invigilator2='" + Emp_List[i].EmployeeId + "'";
+                List<ExaminationRoom> ExamRoomList = ExaminationRoom_Entity.GetListBySql<ExaminationRoom>(ExaminationRoomSql);
+                for (int t = 0; t < ExamRoomList.Count; t++)
+                {
+                    string ExamDateSql = "select * from Examination where year(BeginDate) = '" + dt.Year + "' and Month(BeginDate)='" + dt.Month + "' and ID ="+ExamRoomList[i].Examination+"";
+                    
+                    if (Examination_Entity.GetListBySql<Examination>(ExamDateSql).FirstOrDefault()!=null) {
+                        InvigilationCount += 1;
+                    }
+                }
+                Invigilation_fee += InvigilationCount * 20;
+
+                //计算阅卷费
+                int StuCount = 0;
+                string MarkingSql = "select * from MarkingArrange where MarkingTeacher="+Emp_List[i].EmployeeId+"";
+                List<MarkingArrange> MarkingList = Marking_Entity.GetListBySql<MarkingArrange>(MarkingSql);
+                for (int k = 0; k < MarkingList.Count; k++)
+                {
+                    string ExaminationSql = "select * from Examination where year(BeginDate) = '"+dt.Year+"' and Month(BeginDate)='"+dt.Month+"' and ID ="+ MarkingList[k].ExamID + "";
+                    List<Examination> ExamList = Examination_Entity.GetListBySql<Examination>(ExaminationSql);
+                    if (ExamList.Count > 0) {
+                        string CandiSql = "select * from CandidateInfo where Examination ="+ExamList[0].ID+"";
+                        List<CandidateInfo> CandiList = Candi_Entity.GetListBySql<CandidateInfo>(CandiSql);
+                        StuCount += CandiList.Count;
+                    }
+                }
+                //读取配置文件
+                XmlDocument xmlDocument = new XmlDocument();
+                xmlDocument.Load(System.Web.HttpContext.Current.Server.MapPath("/Config/Cost.xml"));
+
+                //根节点
+                var xmlRoot = xmlDocument.DocumentElement;
+
+                //获取标准费用
+                var cost = xmlRoot.GetElementsByTagName("MarkingCost")[0].InnerText;
+                Marking_fee = int.Parse(cost) * StuCount;
 
                 staff.totalmoney =Convert.ToInt32(Cost_fee) + Duty_fee + Invigilation_fee + Marking_fee + Super_class + Internal_training_fee + RD_fee;
                 staff.Cost_fee = Cost_fee;
@@ -818,7 +864,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             });
 
             string path1 = System.AppDomain.CurrentDomain.BaseDirectory.Split('\\')[0];    //获得项目的基目录
-            var Path = System.IO.Path.Combine(path1, "\\XinxihuaData\\Excel");
+            var Path = System.IO.Path.Combine(path1, "XinxihuaData\\Excel");
             if (!System.IO.Directory.Exists(Path))     //判断是否有该文件夹
                 System.IO.Directory.CreateDirectory(Path); //如果没有在Uploads文件夹下创建文件夹Excel
             string saveFileName = Path + "\\" + "课时费统计" + ".xlsx"; //路径+表名+文件类型

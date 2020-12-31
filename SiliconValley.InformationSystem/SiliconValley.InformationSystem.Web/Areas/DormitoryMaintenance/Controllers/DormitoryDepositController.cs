@@ -7,14 +7,21 @@ using System.Web.Mvc;
 
 namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Controllers
 {
+    using SiliconValley.InformationSystem.Business;
     using SiliconValley.InformationSystem.Business.Base_SysManage;
     using SiliconValley.InformationSystem.Business.ClassesBusiness;
+    using SiliconValley.InformationSystem.Business.Cloudstorage_Business;
+    using SiliconValley.InformationSystem.Business.Common;
+    using SiliconValley.InformationSystem.Entity.Base_SysManage;
     using SiliconValley.InformationSystem.Entity.Entity;
     using SiliconValley.InformationSystem.Entity.ViewEntity;
     using SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data;
     using SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data.MyViewEntity;
     using SiliconValley.InformationSystem.Util;
+    using System.IO;
     using System.Text;
+    using System.Web;
+
     [CheckLogin]
     public class DormitoryDepositController : Controller
     {
@@ -22,7 +29,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
         // GET: /DormitoryMaintenance/DormitoryDeposit/StuNameDefileFuntion
         HeadmasterBusiness HeadmasterBusiness = new HeadmasterBusiness();
         PricedormitoryarticlesManeger PriceManger = new PricedormitoryarticlesManeger();
-
+        CloudstorageBusiness cloudstorage_Business = new CloudstorageBusiness();
+        BaseBusiness<HeadClass> HeadClassManeger = new BaseBusiness<HeadClass>();
+        ScheduleForTraineesBusiness ScheduleManeger = new ScheduleForTraineesBusiness();
         #region 登记人操作
 
         public ActionResult DormitoryDepositIndex()
@@ -45,7 +54,30 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
             string sql = "select * from DormitoryDeposit";
 
             List<DormitoryDeposit> listall = Dormitory_Entity.GetListBySql<DormitoryDeposit>(sql);
-            var data = listall.OrderByDescending(l => l.CreaDate).Skip((page - 1) * limit).Take(limit).Select(l => new
+            Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
+            string Headmastersql = "select * from Headmaster where informatiees_Id="+UserName.EmpNumber+"";
+            Headmaster HeadMas = HeadmasterBusiness.GetListBySql<Headmaster>(Headmastersql).FirstOrDefault();
+            string HeadClassSql = "select * from HeadClass where LeaderID = "+HeadMas.ID+" and EndingTime is null";
+            List<HeadClass> HeadClassList = HeadClassManeger.GetListBySql<HeadClass>(HeadClassSql);
+            List<ScheduleForTrainees> ScheduleList = new List<ScheduleForTrainees>();
+            for (int i = 0; i < HeadClassList.Count; i++)
+            {
+                string ScheduleSql = "select * from ScheduleForTrainees where  ID_ClassName="+HeadClassList[i].ClassID+"";
+                ScheduleList = ScheduleManeger.GetListBySql<ScheduleForTrainees>(ScheduleSql);
+            }
+            List<DormitoryDeposit> DormDepositList = new List<DormitoryDeposit>();
+            for (int i = 0; i < listall.Count; i++)
+            {
+                for (int j = 0; j < ScheduleList.Count; j++)
+                {
+                    if (listall[i].StuNumber == ScheduleList[j].StudentID) {
+                        DormDepositList.Add(listall[i]);
+                     }
+                }
+                
+            }
+            
+            var data = DormDepositList.OrderByDescending(l => l.CreaDate).Skip((page - 1) * limit).Take(limit).Select(l => new
             {
                 ID = l.ID,
                 Maintain = l.Maintain,//维修日期
@@ -59,7 +91,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
                 ClassName = Dormitory_Entity.GetClass(l.StuNumber)
             }).ToList();
 
-            var jsondata = new { count = listall.Count, code = 0, data = data };
+            var jsondata = new { count = DormDepositList.Count, code = 0, data = data };
 
             return Json(jsondata, JsonRequestBehavior.AllowGet);
         }
@@ -71,21 +103,58 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
             string startime = Request.QueryString["starTime"];
             string endtime = Request.QueryString["endTime"];
 
-            StringBuilder sql = new StringBuilder("select * from DormitoryDeposit where 1=1");
+            //StringBuilder sql = new StringBuilder("select * from DormitoryDeposit where 1=1");
+
+            //if (!string.IsNullOrEmpty(startime))
+            //{
+            //    sql.Append(" and Maintain>= '" + startime + "'");
+            //}
+
+            //if (!string.IsNullOrEmpty(endtime))
+            //{
+            //    sql.Append(" and Maintain<= '" + endtime + "'");
+            //}
+
+            //List<DormitoryDeposit> listall = Dormitory_Entity.GetListBySql<DormitoryDeposit>(sql.ToString());
+
+            string sql = "select * from DormitoryDeposit";
+
+            List<DormitoryDeposit> listall = Dormitory_Entity.GetListBySql<DormitoryDeposit>(sql);
+            Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
+            string Headmastersql = "select * from Headmaster where informatiees_Id=" + UserName.EmpNumber + "";
+            Headmaster HeadMas = HeadmasterBusiness.GetListBySql<Headmaster>(Headmastersql).FirstOrDefault();
+            string HeadClassSql = "select * from HeadClass where LeaderID = " + HeadMas.ID + " and EndingTime is null";
+            List<HeadClass> HeadClassList = HeadClassManeger.GetListBySql<HeadClass>(HeadClassSql);
+            List<ScheduleForTrainees> ScheduleList = new List<ScheduleForTrainees>();
+            for (int i = 0; i < HeadClassList.Count; i++)
+            {
+                string ScheduleSql = "select * from ScheduleForTrainees where  ID_ClassName=" + HeadClassList[i].ClassID + "";
+                ScheduleList = ScheduleManeger.GetListBySql<ScheduleForTrainees>(ScheduleSql);
+            }
+            List<DormitoryDeposit> DormDepositList = new List<DormitoryDeposit>();
+            for (int i = 0; i < listall.Count; i++)
+            {
+                for (int j = 0; j < ScheduleList.Count; j++)
+                {
+                    if (listall[i].StuNumber == ScheduleList[j].StudentID)
+                    {
+                        DormDepositList.Add(listall[i]);
+                    }
+                }
+
+            }
+
 
             if (!string.IsNullOrEmpty(startime))
             {
-                sql.Append(" and Maintain>= '" + startime + "'");
+                DormDepositList = DormDepositList.Where(s=>s.Maintain>=Convert.ToDateTime(startime)).ToList();
             }
-
-
             if (!string.IsNullOrEmpty(endtime))
             {
-                sql.Append(" and Maintain<= '" + endtime + "'");
+                DormDepositList = DormDepositList.Where(s => s.Maintain <= Convert.ToDateTime(endtime)).ToList();
             }
 
-            List<DormitoryDeposit> listall = Dormitory_Entity.GetListBySql<DormitoryDeposit>(sql.ToString());
-            var data = listall.OrderByDescending(l => l.CreaDate).Skip((page - 1) * limit).Take(limit).Select(l => new
+            var data = DormDepositList.OrderByDescending(l => l.CreaDate).Skip((page - 1) * limit).Take(limit).Select(l => new
             {
                 ID = l.ID,
                 Maintain = l.Maintain,//维修日期
@@ -105,7 +174,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
                 data = data.Where(d => d.stuName.Contains(stuname)).ToList();
             }
 
-            var jsondata = new { count = listall.Count, code = 0, data = data };
+            var jsondata = new { count = DormDepositList.Count, code = 0, data = data };
 
             return Json(jsondata, JsonRequestBehavior.AllowGet);
 
@@ -196,8 +265,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
         {
 
             AjaxResult result = new AjaxResult() { Success = true, Msg = "登记成功！" };
-
-
+            
             Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
 
             DateTime mantinDate = Convert.ToDateTime(Request.Form["mantinDate"]);//维修的日期
@@ -207,6 +275,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
             string RepairContent = Request.Form["RepairContent"];//维修内容
 
             string Solutions = Request.Form["Solutions"];//解决措施
+
 
             int weixiugood = Convert.ToInt32(Request.Form["weixiugood"]);//维修物品
 
@@ -220,15 +289,15 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
 
             string sturadi = Request.Form["sturadi"];//学生编号
 
+            List<string> list_dormid = new List<string>();
             if (JieType == 1)
             {
 
                 //寝室平摊
-                List<Accdationinformation> list = Dormitory_Entity.GetStudentSushe(mantinDate, dorname); //获取属于这个寝室的学生
+                List<Accdationinformation> list = Dormitory_Entity.GetStudentSushe(Convert.ToDateTime(mantinDate), dorname); //获取属于这个寝室的学生
 
                 List<StudentInformation> studentlist = new List<StudentInformation>();
-
-
+                
                 list.ForEach(l =>
                 {
                     StudentInformation student = Dormitory_Entity.StudentInformation_Entity.GetEntity(l.Studentnumber);
@@ -249,14 +318,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
                         dormitory.DormId = dorname;
                         dormitory.RepairContent = RepairContent;
                         dormitory.Solutions = Solutions;
-                        dormitory.CompleteTime = CompleteTime;
+                        dormitory.CompleteTime =Convert.ToDateTime(CompleteTime);
                         dormitory.EntryPersonnel = UserName.EmpNumber;
                         dormitory.GoodPrice = goods.Reentry / studentlist.Count;
-                        dormitory.Maintain = mantinDate;
+                        dormitory.Maintain =Convert.ToDateTime(mantinDate);
                         dormitory.MaintainGood = weixiugood;
+                        
                         dormitory.MaintainState = 1;
                         dormitory.StuNumber = stu.StudentNumber;
                         dormitory.ChuangNumber = list.Where(l => l.Studentnumber == stu.StudentNumber).FirstOrDefault().BedId;
+                        list_dormid.Add(dormitory.ID);
                         Dormlist.Add(dormitory);
                     }
 
@@ -273,12 +344,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
                     result.Msg = "该寝室没有学生入住！";
                     result.Success = false;
                 }
-
-
-
-
-
-
             }
             else if (JieType == 2)
             {
@@ -296,7 +361,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
                 dormitory.RepairContent = RepairContent;
                 dormitory.MaintainState = 1;
                 dormitory.StuNumber = sturadi;
-
+                list_dormid.Add(dormitory.ID);
                 bool s = Dormitory_Entity.AddData(dormitory);
 
                 if (s == false)
@@ -304,13 +369,54 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
                     result.Msg = "网络异常，请刷新重试！";
                     result.Success = false;
                 }
+                result.Data = list_dormid;
+            }
+
+            SessionHelper.Session["list_dormid"] = list_dormid;
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 根据维修id修改上传附件
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult UpdateDormInfoImg()
+        {
+            AjaxResult result = new AjaxResult();
+            List<string> id = SessionHelper.Session["list_dormid"] as List<string>;
+            try
+            {
+                for (int i = 0; i < id.Count; i++)
+                {
+                var fien = Request.Files[0];
+                string filename = fien.FileName;
+                string Extension = Path.GetExtension(filename);
+                string newfilename = id[i] + Extension;
+
+                    if (Dormitory_Entity.UpdateImgUrl(id[i], newfilename) == true)
+                    {
+                        result = new SuccessResult();
+                        result.ErrorCode = 200;
+
+                        var client = cloudstorage_Business.BosClient();
+                       
+                        cloudstorage_Business.PutObject("xinxihua", "DormitoryDepositImage", newfilename, fien.InputStream);
+                    }
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                result = new SuccessResult();
+                result.ErrorCode = 300;
             }
 
             return Json(result, JsonRequestBehavior.AllowGet);
         }
-
-
         #endregion
+        
 
         #region 班主任操作
         /// <summary>
@@ -351,6 +457,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
         /// <returns></returns>
         public ActionResult OneData()
         {
+            //,RepairContent="",Solutions=""
             List<StudentDorMoney> list = new List<StudentDorMoney>() { new StudentDorMoney() { StuName = "请查询", PayMoney = 0, MantainMoney = 0, SumMoney = 0, BaoxianguiMoney = 0 } };
             var jsondata = new { code = 0, count = 0, data = list };
             return Json(jsondata, JsonRequestBehavior.AllowGet);
@@ -380,6 +487,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
                     MantainMoney = Dormitory_Entity.GetMantainMoney(s.StudentID),
                     BaoxianguiMoney = Dormitory_Entity.BaoxianguiStu(s.StudentID),
                     SumMoney = Dormitory_Entity.GetStudentMoney(s.StudentID) - Dormitory_Entity.GetMantainMoney(s.StudentID) - Dormitory_Entity.BaoxianguiStu(s.StudentID)
+                    
                 };
                 stumoneylist.Add(data);
             });
@@ -739,5 +847,50 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
 
         #endregion
 
+        //维修记录excel导入页面
+        public ActionResult ExcelInputView()
+        {
+            return View();
+        }
+        
+        /// <summary>
+        /// 根据物品价格id查询价格
+        /// </summary>
+        /// <param name="GoodID"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult GetGoodPriceById(int GoodID)
+        {
+            AjaxResult result = new AjaxResult();
+            Pricedormitoryarticles pricee = PriceManger.GetEntity(GoodID);
+            result.Data = pricee.Reentry;
+            return Json(result,JsonRequestBehavior.AllowGet) ;
+        }
+        
+        /// <summary>
+        /// 宿舍维修   下载模板
+        /// </summary>
+        /// <returns></returns>
+        public FileStreamResult DownFile()
+        {
+            string rr = Server.MapPath("/uploadXLSXfile/Template/DormitoryDepositTemplate.xlsx");  //获取下载文件的路径         
+            FileStream stream = new FileStream(rr, FileMode.Open);
+            return File(stream, "application/octet-stream", Server.UrlEncode("Template.xlsx"));
+        }
+
+        /// <summary>
+        /// 批量录入(excel导入)宿舍维修数据
+        /// </summary>
+        /// <param name="excelfile"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult BatchImport(HttpPostedFileBase excelfile)
+        {
+            Stream filestream = excelfile.InputStream;
+            DormitoryDepositManeger depositManeger = new DormitoryDepositManeger();
+            var result = depositManeger.ImportDataFormExcel(filestream, excelfile.ContentType);
+            
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
     }
 }
