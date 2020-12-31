@@ -465,7 +465,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
             foreach (EmployeesInfo item in emplist)
             {
-                var find = Tb_Entity.AttendSqlGetData(" select * from TeacherAddorBeonDutyView where YEAR(Anpaidate)='" + date[0] + "' and MONTH(Anpaidate)='" + date[1] + "' and  Tearcher_Id='" + item.EmployeeId + "'  and IsDels=1");
+                var find = Tb_Entity.AttendSqlGetData("select * from TeacherAddorBeonDutyView where YEAR(Anpaidate)='" + date[0] + "' and MONTH(Anpaidate)='" + date[1] + "' and  Tearcher_Id='" + item.EmployeeId + "'  and IsDels=1");
 
                 beonduty_list.AddRange(find);
             }

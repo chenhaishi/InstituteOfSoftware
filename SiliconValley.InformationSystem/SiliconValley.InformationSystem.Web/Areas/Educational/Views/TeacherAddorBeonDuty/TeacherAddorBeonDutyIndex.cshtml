@@ -666,7 +666,6 @@
 
         //数据导出
         form.on('submit(handBtn)', function (data) {
-            // console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
             if (data.field.date_Anpaidate == null) {
                 layer.msg('选择日期！');
             } else if (data.field.dep == null) {
@@ -706,7 +705,6 @@
                     }
                 });
             }
-
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
 

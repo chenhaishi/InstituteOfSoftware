@@ -1096,7 +1096,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
 
                     //有重复的值                                
                     //获取当前年月日
-                    string filename = DateTime.Now.ToString("yyyyMMddhhmmss") + equally_list[1].EmployeesInfo_Id + ".xls";
+                    string filename = DateTime.Now.ToString("yyyyMMddhhmmss") + equally_list[0].EmployeesInfo_Id + ".xls";
                     string path = "~/uploadXLSXfile/ConsultUploadfile/ConflictExcel/" + filename;
                     SessionHelper.Session["filename2"] = path;
                     //获取表头数据
