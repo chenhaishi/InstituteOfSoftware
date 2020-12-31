@@ -240,6 +240,40 @@
                     }
                 }
             });
+
+            $.ajax({
+                url: '/Educational/TeacherAddorBeonDuty/OutData',
+                data: data.field,
+                type: 'post',
+                success: function (res) {
+
+                    //列标题，逗号隔开，每一个逗号就是隔开一个单元格
+                    let str = res.titile + `\n`;
+                    //增加\t为了不让表格显示科学计数法或者其他格式
+                    for (let i = -1; i < res.data.length; i++) {
+                        if (i == -1) {
+                            str += `值班日期\t,值班内容\t`;
+                        } else {
+                            var mm = TimeChange(res.data[i].time);
+                            var mydate = new Date(mm)
+                            var da = (Number(mydate.getMonth()) + 1) + "月" + mydate.getDate() + "日"
+                            str += '' + da + '\t,' + res.data[i].Content + '\t';
+                        }
+
+                        str += '\n';
+                    }
+                    //encodeURIComponent解决中文乱码
+                    let uri = 'data:text/csv;charset=utf-8,\ufeff' + encodeURIComponent(str);
+                    //通过创建a标签实现
+                    var link = document.createElement("a");
+                    link.href = uri;
+                    //对下载的文件命名
+                    link.download = "课时费.xls";
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+            });
         });
 
         form.on('submit(Btn_SaveExcel1)', function (data) {
