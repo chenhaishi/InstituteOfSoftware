@@ -470,29 +470,37 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
         public ActionResult Entrydataexport_List()
         {
             BaseBusiness<StudentFeeRecordListView> StudentFeeRecordListView = new BaseBusiness<StudentFeeRecordListView>();
-            
+            BaseBusiness<ScheduleForTrainees> ScheduleForTrainees = new BaseBusiness<ScheduleForTrainees>();
             List<PriceDC> PriceDCList = new List<PriceDC>();
             var ListView = StudentFeeRecordListView.GetList().Where(d => d.Passornot == "1").ToList();
+            
             foreach (var item in ListView)
             {
-                PriceDC priceDC = new PriceDC();
-                priceDC.studentID = item.StudenID;
-                priceDC.className = item.Name;
-                priceDC.identity = item.identitydocument;
-                priceDC.Amountofmoney = item.Amountofmoney;
-                priceDC.CostitemsName = item.CostitemsName;
-                priceDC.OddNumbers = item.OddNumbers;
-                priceDC.GrandName = item.StageName;
-                priceDC.Paymentmethod = item.Paymentmethod;
-                priceDC.AddTime = item.AddTime;
-                priceDC.AddDate = item.AddDate;
-                priceDC.FinanceModelName = item.FinancialstaffName;
-                PriceDCList.Add(priceDC);
+                var List_class = ScheduleForTrainees.GetList().Where(d => d.StudentID == item.StudenID && d.CurrentClass == true).ToList();
+                foreach (var a in List_class)
+                {
+                    PriceDC priceDC = new PriceDC();
+                    priceDC.studentID = item.StudenID;
+                    priceDC.className = item.Name;
+                    priceDC.identity = item.identitydocument;
+                    priceDC.Amountofmoney = item.Amountofmoney;
+                    priceDC.CostitemsName = item.CostitemsName;
+                    priceDC.OddNumbers = item.OddNumbers;
+                    priceDC.GrandName = item.StageName;
+                    priceDC.Paymentmethod = item.Paymentmethod;
+                    priceDC.AddTime = item.AddTime.ToString();
+                    priceDC.AddDate = item.AddDate.ToString();
+                    priceDC.FinanceModelName = item.FinancialstaffName;
+                    priceDC.class_id = a.ClassID;
+                    PriceDCList.Add(priceDC);
+                }
+               
             }
            
             CostDataToExcel(PriceDCList);
             return Json(new { code = 0,data= PriceDCList });
         }
+
         /// <summary>
         /// 课时费统计    写入Excel
         /// </summary>
@@ -537,14 +545,15 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
                 CreateCell(row, ContentcellStyle, 0, d.studentID.ToString());
                 CreateCell(row, ContentcellStyle, 1, d.className);
                 CreateCell(row, ContentcellStyle, 2, d.identity);
-                CreateCell(row, ContentcellStyle, 3, d.Amountofmoney.ToString());
-                CreateCell(row, ContentcellStyle, 4, d.CostitemsName.ToString());
-                CreateCell(row, ContentcellStyle, 5, d.GrandName);
-                CreateCell(row, ContentcellStyle, 6, d.OddNumbers);
-                CreateCell(row, ContentcellStyle, 7, d.Paymentmethod);
-                CreateCell(row, ContentcellStyle, 8, d.FinanceModelName);
-                CreateCell(row, ContentcellStyle, 9, d.AddDate.ToString("yyyy-MM-dd"));
-                CreateCell(row, ContentcellStyle, 10, d.AddTime.ToString());
+                CreateCell(row, ContentcellStyle, 3, d.class_id);
+                CreateCell(row, ContentcellStyle, 4, d.Amountofmoney.ToString());
+                CreateCell(row, ContentcellStyle, 5, d.CostitemsName.ToString());
+                CreateCell(row, ContentcellStyle, 6, d.GrandName);
+                CreateCell(row, ContentcellStyle, 7, d.OddNumbers);
+                CreateCell(row, ContentcellStyle, 8, d.Paymentmethod);
+                CreateCell(row, ContentcellStyle, 9, d.FinanceModelName);
+                CreateCell(row, ContentcellStyle, 10, d.AddDate.ToString());
+                CreateCell(row, ContentcellStyle, 11, d.AddTime.ToString());
                 num++;
 
             });
@@ -559,9 +568,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
                 FileStream fs = new FileStream(saveFileName, FileMode.Create, FileAccess.Write);
                 workbook.Write(fs);  //写入文件
                 workbook.Close();  //关闭
+                
                 ajaxresult.ErrorCode = 200;
                 ajaxresult.Msg = "导入成功！文件地址：" + saveFileName;
                 // ajaxresult.Data = list;
+
 
             }
             catch (Exception ex)
@@ -576,18 +587,19 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             {
                 HSSFRow Header = (HSSFRow)sheet.CreateRow(0);
                 Header.HeightInPoints = 40;
-
+                
                 CreateCell(Header, HeadercellStyle, 0, "学生学号");
                 CreateCell(Header, HeadercellStyle, 1, "学生名字");
                 CreateCell(Header, HeadercellStyle, 2, "学生身份证号");
-                CreateCell(Header, HeadercellStyle, 3, "缴费金额");
-                CreateCell(Header, HeadercellStyle, 4, "缴费名目");
-                CreateCell(Header, HeadercellStyle, 5, "缴费阶段");
-                CreateCell(Header, HeadercellStyle, 6, "缴费单号");
-                CreateCell(Header, HeadercellStyle, 7, "收款方式");
-                CreateCell(Header, HeadercellStyle, 8, "经办人");
-                CreateCell(Header, HeadercellStyle, 9, "缴费时间");
-                CreateCell(Header, HeadercellStyle, 10, "入账时间");
+                CreateCell(Header, HeadercellStyle, 3, "学生班级");
+                CreateCell(Header, HeadercellStyle, 4, "缴费金额");
+                CreateCell(Header, HeadercellStyle, 5, "缴费名目");
+                CreateCell(Header, HeadercellStyle, 6, "缴费阶段");
+                CreateCell(Header, HeadercellStyle, 7, "缴费单号");
+                CreateCell(Header, HeadercellStyle, 8, "收款方式");
+                CreateCell(Header, HeadercellStyle, 9, "经办人");
+                CreateCell(Header, HeadercellStyle, 10, "缴费时间");
+                CreateCell(Header, HeadercellStyle, 11, "入账时间");
             }
 
             void CreateCell(HSSFRow row, HSSFCellStyle TcellStyle, int index, string value)
@@ -597,7 +609,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
                 Header_Name.SetCellValue(value);
 
                 Header_Name.CellStyle = TcellStyle;
+
+                
             }
+  
 
         }
         /// <summary>
