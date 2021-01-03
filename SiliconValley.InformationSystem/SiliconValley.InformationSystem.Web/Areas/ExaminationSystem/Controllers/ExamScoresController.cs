@@ -329,7 +329,42 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             return Json(result, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// 弹出层解答题答卷页面显示学生的答卷
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult AnswerPage(int examid,string kaohao)
+        {
+            var answerSheet = db_exam.AllCandidateInfo(examid).Where(d => d.StudentID == kaohao).FirstOrDefault().Paper;
+            List<object> objlist = new List<object>(); 
+            CloudstorageBusiness Bos = new CloudstorageBusiness();
 
+            var client = Bos.BosClient();
+            var filedata = client.GetObject("xinxihua", answerSheet);
+            //解答题答卷
+            MemoryStream stream = new MemoryStream();
+            filedata.ObjectContent.CopyTo(stream);
+
+            string SheetStr = Encoding.UTF8.GetString(stream.ReadToBytes());
+
+            var list = JsonConvert.DeserializeObject<List<AnswerSheetHelp>>(SheetStr);
+
+            foreach (var item in list)
+            {
+                //根据问题ID 获取题目
+                var question = db_answerQuestion.AllAnswerQuestion().Where(d => d.ID == item.questionid).FirstOrDefault();
+
+                var obj = new
+                {
+                    question = item,
+                    questionTitle = question,
+                };
+
+                objlist.Add(obj);
+            }
+             ViewBag.Data = objlist;
+            return View();
+        }
 
         /// <summary>
         /// 提供阅卷的答卷数据

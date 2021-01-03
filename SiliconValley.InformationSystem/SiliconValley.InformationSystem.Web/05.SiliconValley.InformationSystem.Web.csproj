@@ -68,7 +68,7 @@
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework6.Npgsql">
-      <HintPath>..\packages\EntityFramework6.Npgsql.3.2.0\lib\net45\EntityFramework6.Npgsql.dll</HintPath>
+      <HintPath>.\EntityFramework6.Npgsql.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
@@ -90,7 +90,7 @@
     </Reference>
     <Reference Include="Npgsql, Version=4.0.6.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Npgsql.4.0.6\lib\net451\Npgsql.dll</HintPath>
+      <HintPath>.\Npgsql.dll</HintPath>
     </Reference>
     <Reference Include="NPOI">
       <HintPath>..\packages\NPOI.2.5.1\lib\net40\NPOI.dll</HintPath>
@@ -2578,6 +2578,7 @@
     <Content Include="Images\562108.jpg" />
     <Content Include="Images\58c84f57.jpg" />
     <Content Include="IPIntercept.txt" />
+    <Content Include="Npgsql.dll" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
@@ -3637,6 +3638,7 @@
     <Content Include="Areas\Personnelmatters\Views\SocialSecurityDetail\SupplementaryPayment.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\SocialSecurityDetail\UpdateTime.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\PerformanceAssess\AssessmentTimePeriodQuery.cshtml" />
+    <Content Include="Areas\ExaminationSystem\Views\ExamScores\AnswerPage.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />

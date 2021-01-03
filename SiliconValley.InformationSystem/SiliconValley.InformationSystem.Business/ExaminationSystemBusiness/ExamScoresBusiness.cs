@@ -9,7 +9,6 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
     using NPOI.HSSF.UserModel;
     using NPOI.SS.UserModel;
     using NPOI.XSSF.UserModel;
-    using SiliconValley.InformationSystem.Business.Base_SysManage;
     using SiliconValley.InformationSystem.Business.CourseSyllabusBusiness;
     using SiliconValley.InformationSystem.Business.EmployeesBusiness;
     using SiliconValley.InformationSystem.Business.TeachingDepBusiness;
@@ -38,17 +37,13 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
         /// 员工业务类实例
         /// </summary>
         private readonly EmployeesInfoManage db_emp;
-        private readonly ExamScoresBusiness db_score;
-        private readonly CandidateInfoBusiness db_cand;
 
         public ExamScoresBusiness()
         {
             db_exam = new ExaminationBusiness();
             db_markingArrange = new BaseBusiness<MarkingArrange>();
             db_emp = new EmployeesInfoManage();
-            db_score =  new ExamScoresBusiness();
-            db_cand =  new CandidateInfoBusiness();
-        } 
+        }
 
         public List<TestScore> AllExamScores()
         {
@@ -87,90 +82,11 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
         private AjaxResult ExcelImportAtdSql(ISheet sheet)
         {
             var ajaxresult = new AjaxResult();
-            int num = 2;
-            List<AttendanceInfoErrorDataView> attdatalist = new List<AttendanceInfoErrorDataView>();
-            Base_UserModel user = Base_UserBusiness.GetCurrentUser();
-
-            TeacherBusiness teacherdb = new TeacherBusiness();
-
-
-
             try
-            {   //考场id
-                string examid = sheet.GetRow(1).Cells[0].StringCellValue;
+            {
                 while (true)
                 {
-                    num++;
-                    var getrow = sheet.GetRow(num);
-                    if (getrow == null)
-                    {
-                        break;
-                    }
-                    //学号[0]
-                    string XueHao = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(0))) ? null : getrow.GetCell(0).ToString();
-                    //学生姓名[1]
-                    string name = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(1))) ? null : getrow.GetCell(0).ToString();
-                    //解答题分数[2]
-                    string JieDaTi = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(2))) ? null : getrow.GetCell(0).ToString();
-                    //机试题分数[3]
-                    string JiShiTi = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(3))) ? null : getrow.GetCell(0).ToString();
-                    //备注[4]
-                    string BeiZhu = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(4))) ? null : getrow.GetCell(0).ToString();
-                    //时间
-                    var date = DateTime.Now;
-                    TestScore atd = new TestScore();
-                    AttendanceInfoErrorDataView attview = new AttendanceInfoErrorDataView();
-                    if (string.IsNullOrEmpty(XueHao))
-                    {//判断学生学号不能为空
-                        attview.empname = name;
-                        attview.errorExplain = "学号为空！";
-                        attdatalist.Add(attview);
-                    }
-                    else
-                    {
-                        if (string.IsNullOrEmpty(examid))
-                        {//判断考场id不能为空
-                            attview.empname = name;
-                            attview.errorExplain = "考场id为空！";
-                            attdatalist.Add(attview);
-                        }
-                        else
-                        {
-                            var cand = db_cand.GetList().Where(d => d.StudentID == XueHao && d.Examination == int.Parse(examid)).FirstOrDefault().CandidateNumber;
-                            var candsf = db_cand.GetList().Where(d => d.StudentID == XueHao && d.Examination == int.Parse(examid)).FirstOrDefault();
-                            var score = db_score.AllExamScores().Where(d => d.CandidateInfo == cand && d.Examination == int.Parse(examid)).FirstOrDefault();
 
-                            score.TextQuestionScore = float.Parse(JieDaTi);
-                            score.OnBoard = float.Parse(JiShiTi);
-                            score.Remark = BeiZhu;
-                            score.CreateTime = date;
-                            score.Reviewer = teacherdb.GetTeachers().Where(d => d.EmployeeId == user.EmpNumber).FirstOrDefault().TeacherID;
-
-                            candsf.IsReExam = true;
-
-                            db_cand.Update(candsf);
-                            db_score.Update(score);
-                        }
-
-
-                    }
-
-
-                }
-                int exceldatasum = num - 3;
-                if (exceldatasum - attdatalist.Count() == exceldatasum)
-                {//说明没有出错数据，导入的数据全部添加成功
-                    ajaxresult.Success = true;
-                    ajaxresult.ErrorCode = 100;
-                    ajaxresult.Msg = exceldatasum.ToString();
-                    ajaxresult.Data = attdatalist;
-                }
-                else
-                {//说明有出错数据，导入的数据条数就是导入的数据总数-错误数据总数
-                    ajaxresult.Success = true;
-                    ajaxresult.ErrorCode = 200;
-                    ajaxresult.Msg = (exceldatasum - attdatalist.Count()).ToString();
-                    ajaxresult.Data = attdatalist;
                 }
             }
             catch (Exception ex)
@@ -223,19 +139,19 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
         /// <returns></returns>
         public MarkingArrangeView ConvertToMarkingArrangeView(MarkingArrange markingArrange)
         {
-             
+
             BaseBusiness<Classroom> dbclassroom = new BaseBusiness<Classroom>();
-           
+
             MarkingArrangeView view = new MarkingArrangeView();
 
-           var examroom = db_exam.AllExaminationRoom().Where(d => d.ID == markingArrange.ExamRoom).FirstOrDefault();
-            List<Examination> list= db_exam.AllExamination();
+            var examroom = db_exam.AllExaminationRoom().Where(d => d.ID == markingArrange.ExamRoom).FirstOrDefault();
+            List<Examination> list = db_exam.AllExamination();
             view.ExamID = db_exam.AllExamination().Where(d => d.ID == markingArrange.ExamID).FirstOrDefault();
             view.ExamRoom = db_exam.AllExaminationRoom().Where(d => d.ID == markingArrange.ExamRoom).FirstOrDefault();
             view.ID = markingArrange.ID;
             view.IsFinsh = markingArrange.IsFinsh;
             view.MarkingTeacher = db_emp.GetInfoByEmpID(markingArrange.MarkingTeacher);
-            
+
             view.classroom = dbclassroom.GetList().Where(d => d.Id == examroom.Classroom_Id).FirstOrDefault();
 
             return view;
@@ -406,7 +322,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
         public void SetMarkingTeacher(int examid, int examroomid, string empid)
         {
             var emp = db_emp.GetInfoByEmpID(empid);
-            var temp = this.AllMarkingArrange().Where(d => d.ExamID == examid && d.ExamRoom == examroomid &&d.MarkingTeacher == empid).FirstOrDefault();
+            var temp = this.AllMarkingArrange().Where(d => d.ExamID == examid && d.ExamRoom == examroomid && d.MarkingTeacher == empid).FirstOrDefault();
 
             if (temp == null)
             {
@@ -456,7 +372,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
                 var markingteacher = db_emp.GetInfoByEmpID(dbteacher.GetTeacherByID(testScore.Reviewer).EmployeeId);
                 view.MarkingTeacherName = markingteacher.EmpName;
             }
-          
+
             view.Score = testScore;
             BaseBusiness<ClassSchedule> dbclass = new BaseBusiness<ClassSchedule>();
             view.StudentClass = dbclass.GetIQueryable().Where(d => d.id == candidInfo.ClassId).FirstOrDefault().ClassNumber;
@@ -480,7 +396,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
             {
                 // 去获取课程ID
 
-               var curxml = db_exam.ExamCourseConfigRead((int)testScore.Examination);
+                var curxml = db_exam.ExamCourseConfigRead((int)testScore.Examination);
                 var coursexml = curxml.GetElementsByTagName("course")[0];
 
                 var couserid = coursexml.Attributes["id"].Value;
@@ -506,11 +422,11 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
             TeachingDepBusiness.TeacherClassBusiness dbteacherclass = new TeachingDepBusiness.TeacherClassBusiness();
             List<ClassSchedule> classlist = new List<ClassSchedule>();
 
-           var lsit = db_exam.AllCandidateInfo(examid);
+            var lsit = db_exam.AllCandidateInfo(examid);
 
             foreach (var item in lsit)
             {
-               var tempclass = dbteacherclass.AllClassSchedule().Where(d => d.id == item.ClassId).FirstOrDefault();
+                var tempclass = dbteacherclass.AllClassSchedule().Where(d => d.id == item.ClassId).FirstOrDefault();
 
                 if (!dbteacherclass.IsContains(classlist, tempclass))
                 {
@@ -533,7 +449,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
         public List<StudentExamScoreView> ClassScores(int classid, int grandId)
         {
 
-            var list =db_exam.AllExamination();
+            var list = db_exam.AllExamination();
 
             //筛选出 升学考试
             List<ExaminationView> examviewlist = new List<ExaminationView>();
@@ -549,7 +465,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
 
                     examviewlist.Add(examview);
                 }
-               
+
             }
 
             ///筛选出班级学生
@@ -559,7 +475,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
 
             foreach (var item in examviewlist)
             {
-               var candidlist = db_exam.AllCandidateInfo(item.ID).Where(d=>d.ClassId == classid).ToList();
+                var candidlist = db_exam.AllCandidateInfo(item.ID).Where(d => d.ClassId == classid).ToList();
 
                 if (candidlist != null)
                 {
@@ -572,11 +488,11 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
 
             foreach (var item in candidateifnolist)
             {
-                var score = this.AllExamScores().Where(d=>d.CandidateInfo == item.CandidateNumber).FirstOrDefault();
+                var score = this.AllExamScores().Where(d => d.CandidateInfo == item.CandidateNumber).FirstOrDefault();
 
                 if (score != null)
                 {
-                   var tempobj = this.ConvertToStudentExamScoreView(score);
+                    var tempobj = this.ConvertToStudentExamScoreView(score);
 
                     if (tempobj != null)
                     {
@@ -607,16 +523,16 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
 
             var didInfolist = allCadidateInfo.Where(x => x.StudentID == studentNumber).ToList();
 
-            didInfolist.ForEach(d=>
+            didInfolist.ForEach(d =>
             {
-               var templist = allScores.Where(t => t.CandidateInfo == d.CandidateNumber).ToList();
+                var templist = allScores.Where(t => t.CandidateInfo == d.CandidateNumber).ToList();
                 if (templist != null)
                 {
                     resultlist.AddRange(templist);
                 }
             });
 
-            resultlist.ForEach(d=> {
+            resultlist.ForEach(d => {
 
                 StudentExamScoreView examScoreView = ConvertToStudentExamScoreView(d);
 
