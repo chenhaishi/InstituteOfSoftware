@@ -204,4 +204,10 @@
   <exam id="27040">
     <course id="16" />
   </exam>
+  <exam id="4065">
+    <course id="17" />
+  </exam>
+  <exam id="5065">
+    <course id="16" />
+  </exam>
 </root>

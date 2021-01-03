@@ -12,6 +12,7 @@ using SiliconValley.InformationSystem.Business.Cloudstorage_Business;
 namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controllers
 {
     using BaiduBce.Services.Bos.Model;
+    using SiliconValley.InformationSystem.Business;
     using SiliconValley.InformationSystem.Business.Base_SysManage;
     using SiliconValley.InformationSystem.Business.Cloudstorage_Business;
     using SiliconValley.InformationSystem.Business.CourseSchedulingSysBusiness;
@@ -141,59 +142,81 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         /// 当有考试 模拟考试禁止进入
         /// </summary>
         /// <returns></returns>
-        //public ActionResult SimulationProhibit()
-        //{
-        //    AjaxResult result = new AjaxResult();
-        //    try
-        //    {
-        //        //查出所有未结束的考试,判断离今日最近的未结束考试,这堂考试时间来了之后就不能让他们访问，这堂考试结束之后才能结束访问
-        //        var list = db_exam.AllExamination().OrderByDescending(d => d.BeginDate).ToList();      
-                 //获取当前时间
-        //        var resultlist = new List<ExaminationView>();
-                
-        //        foreach (var item in list)
-        //        {
-        //            var tempobj = db_exam.ConvertToExaminationView(item);
+        public ActionResult SimulationProhibit()
+        {
+            AjaxResult result = new AjaxResult();
+            try
+            {
+                var date = DateTime.Now.ToLocalTime();
+                var kaoshi = db_exam.GetList();
 
-        //            if (tempobj != null)
-        //            {
-        //                resultlist.Add(tempobj);
-        //            }
-        //        }
-        //        result.Data = null;
-        //        result.Msg = "成功";
-        //        result.ErrorCode = 200;
+                foreach (var item in kaoshi)
+                {
+                    bool Isend = db_exam.IsEnd(db_exam.AllExamination().Where(d => d.ID == item.ID).FirstOrDefault());
+                    // && item.BeginDate >date
+                    if (Isend == false && item.BeginDate < date)
+                    {
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        result.Data = null;
-        //        result.Msg = "失败";
-        //        result.ErrorCode = 500;
-        //    }
-        //    return Json(result, JsonRequestBehavior.AllowGet);
-        //}
+                        return null;
+
+                    }
+                    else
+                    {
+                        result.Data = null;
+                        result.Msg = "成功";
+                        result.ErrorCode = 200;
+                        
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                result.Data = null;
+                result.Msg = "失败";
+                result.ErrorCode = 500;
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
         /// <summary>
         /// 当有考试 刷题禁止进入
         /// </summary>
         /// <returns></returns>
-        //public ActionResult BrushthetopicProhibit()
-        //{
-        //    AjaxResult result = new AjaxResult();
-        //    try
-        //    {
-        //        result.Data = null;
-        //        result.Msg = "成功";
-        //        result.ErrorCode = 200;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        result.Data = null;
-        //        result.Msg = "失败";
-        //        result.ErrorCode = 500;
-        //    }
-        //    return Json(result, JsonRequestBehavior.AllowGet);
-        //}
+        public ActionResult BrushthetopicProhibit()
+        {
+            AjaxResult result = new AjaxResult();
+            try
+            {
+                var date = DateTime.Now.ToLocalTime();
+                var kaoshi = db_exam.GetList();
+              
+                foreach (var item in kaoshi)
+                {
+                    bool Isend = db_exam.IsEnd(db_exam.AllExamination().Where(d => d.ID == item.ID).FirstOrDefault());
+                    //需求:1:考试不能结束,2:判断考试时间开始之后也不能进入&& item.BeginDate<date
+
+                    if (Isend== false && item.BeginDate<date)
+                    {
+                        return null;
+                        
+                    }
+                    else {
+                        result.Data = null;
+                        result.Msg = "成功";
+                        result.ErrorCode = 200;
+
+                    }
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                result.Data = null;
+                result.Msg = "失败";
+                result.ErrorCode = 500;
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
         /// <summary>
         ///获取学员最近的一次考试
         /// </summary> 
@@ -309,10 +332,32 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 var examveiw  = db_exam.ConvertToExaminationView(exam);
 
                 List<ChoiceQuestionTableView> data = new List<ChoiceQuestionTableView>();
-                //判断考试类型
+                //获取当前用户
+                var studentNumber = SessionHelper.Session["studentnumber"].ToString();
+                BaseBusiness<ScheduleForTrainees> schedul = new BaseBusiness<ScheduleForTrainees>();
+                //根据当前用户查出所在班级
+                var classname = schedul.GetList().Where(d => d.StudentID == studentNumber).FirstOrDefault().ClassID;
+                //截取这个学生是什么阶段的比如s2的分阶段 .net java
+                var classnamees = classname.Substring(classname.Length - 2, 2);
+                //如果examview.ExamType.ExamTypeID == 1那么就是升学考试，然后获取什么阶段的考试，然后获取这个阶段的最后最后一门课程
+                var examtype = db_examtype.GetList().Where(d => d.ID == exam.ExamType).FirstOrDefault();
+                var grand = db_grand.AllGrand().Where(d => d.Id == examtype.GrandID).FirstOrDefault();
                 if (examveiw.ExamType.ExamTypeID == 1)
                 {
-                    data = db_stuExam.ProductChoiceQuestion(exam, 0);
+                    if (grand.Id == 2 && classnamees == "NA")
+                    {
+                        var curriculumes = db_curriculum.GetList().Where(d => d.Grand_Id == 29 && d.IsEndCurr == true).FirstOrDefault();
+                        data = db_stuExam.ProductChoiceQuestion(exam, curriculumes.CurriculumID);
+                    }
+                    else if (grand.Id == 2 && classnamees == "JA")
+                    {
+                        var curriculumeses = db_curriculum.GetList().Where(d => d.Grand_Id == 28 && d.IsEndCurr == true).FirstOrDefault();
+                        data = db_stuExam.ProductChoiceQuestion(exam, curriculumeses.CurriculumID);
+                    }
+                    else {
+                        data = db_stuExam.ProductChoiceQuestion(exam, 0);
+                    }
+                    
                 }
 
                 if (examveiw.ExamType.ExamTypeID == 2)
@@ -363,10 +408,33 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 var exam = db_exam.AllExamination().Where(d => d.ID == examid).FirstOrDefault();
                 var examveiw = db_exam.ConvertToExaminationView(exam);
                 List<AnswerQuestionView> data = new List<AnswerQuestionView>();
+                //获取当前用户
+                var studentNumber = SessionHelper.Session["studentnumber"].ToString();
+                BaseBusiness<ScheduleForTrainees> schedul = new BaseBusiness<ScheduleForTrainees>();
+                //根据当前用户查出所在班级
+                var classname = schedul.GetList().Where(d => d.StudentID == studentNumber).FirstOrDefault().ClassID;
+                //截取这个学生是什么阶段的比如s2的分阶段 .net java
+                var classnamees = classname.Substring(classname.Length - 2, 2);
+                //如果examview.ExamType.ExamTypeID == 1那么就是升学考试，然后获取什么阶段的考试，然后获取这个阶段的最后最后一门课程
+                var examtype = db_examtype.GetList().Where(d => d.ID == exam.ExamType).FirstOrDefault();
+                var grand = db_grand.AllGrand().Where(d => d.Id == examtype.GrandID).FirstOrDefault();
                 //判断考试类型
                 if (examveiw.ExamType.ExamTypeID == 1)
                 {
-                    data = db_stuExam.productAnswerQuestion(exam, 0);
+                    if (grand.Id == 2 && classnamees == "NA")
+                    {
+                        var curriculumes = db_curriculum.GetList().Where(d => d.Grand_Id == 29 && d.IsEndCurr == true).FirstOrDefault();
+                        data = db_stuExam.productAnswerQuestion(exam, curriculumes.CurriculumID);
+                    }
+                    else if (grand.Id == 2 && classnamees == "JA")
+                    {
+                        var curriculumeses = db_curriculum.GetList().Where(d => d.Grand_Id == 28 && d.IsEndCurr == true).FirstOrDefault();
+                        data = db_stuExam.productAnswerQuestion(exam, curriculumeses.CurriculumID);
+                    }
+                    else
+                    {
+                        data = db_stuExam.productAnswerQuestion(exam, 0);
+                    }
                 }
 
                 if (examveiw.ExamType.ExamTypeID == 2)
@@ -426,11 +494,18 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             var examview = db_exam.ConvertToExaminationView(exam);
             var PaperLevel = examview.PaperLevel.LevelID;
             //随机选择一个机试题
+            //获取当前用户
             var studentNumber = SessionHelper.Session["studentnumber"].ToString();
             //首先查看是否已经随机获取到了一个
 
             var candidateInfo = db_exam.AllCandidateInfo(examid).Where(d => d.StudentID == studentNumber).FirstOrDefault();
             ComputerTestQuestionsView computer = null;
+
+            BaseBusiness<ScheduleForTrainees> schedul = new BaseBusiness<ScheduleForTrainees>();
+            //根据当前用户查出所在班级
+            var classname = schedul.GetList().Where(d => d.StudentID == studentNumber).FirstOrDefault().ClassID;
+            //截取这个学生是什么阶段的比如s2的分阶段 .net java
+           var classnamees =  classname.Substring(classname.Length - 2, 2);
             //如果examview.ExamType.ExamTypeID == 1那么就是升学考试，然后获取什么阶段的考试，然后获取这个阶段的最后最后一门课程
             var examtype = db_examtype.GetList().Where(d => d.ID == exam.ExamType).FirstOrDefault();
             var grand = db_grand.AllGrand().Where(d => d.Id == examtype.GrandID).FirstOrDefault();
@@ -443,13 +518,24 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 //判断考试类型
                 if (examview.ExamType.ExamTypeID == 1)
                 {
+                    if (grand.Id == 2 && classnamees == "NA")
+                    {
+                        var curriculumes = db_curriculum.GetList().Where(d => d.Grand_Id == 29  && d.IsEndCurr == true).FirstOrDefault();
+                        courseid = curriculumes.CurriculumID;
+                        computer = db_stuExam.productComputerQuestion(exam, courseid);
+                    }
+                    else if (grand.Id == 2 && classnamees == "JA")
+                    {
+                        var curriculumeses = db_curriculum.GetList().Where(d => d.Grand_Id == 28  && d.IsEndCurr == true).FirstOrDefault();
+                        courseid = curriculumeses.CurriculumID;
+                        computer = db_stuExam.productComputerQuestion(exam, courseid);
+                    }
+                    else {
+                        courseid = curriculum.CurriculumID;
+                        computer = db_stuExam.productComputerQuestion(exam, courseid);
+                    }
+                    
 
-                    courseid = curriculum.CurriculumID;
-                    computer = db_stuExam.productComputerQuestion(exam, courseid);
-
-                    //candidateInfo.ComputerPaper = computer.ID.ToString() + ",";
-
-                    //db_exam.UpdateCandidateInfo(candidateInfo);
                 }
 
                 if (examview.ExamType.ExamTypeID == 2)
