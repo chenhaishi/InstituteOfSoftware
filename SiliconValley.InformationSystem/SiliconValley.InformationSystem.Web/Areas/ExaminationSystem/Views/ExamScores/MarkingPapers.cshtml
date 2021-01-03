@@ -170,10 +170,17 @@
 
 
 <script type="text/html" id="barDemo">
-    {{#if(d.ComputerPaper==null||d.ComputerPaper=="1"||d.ComputerPaper==""){}}
-    <a class="layui-btn layui-btn-warm">空</a>
+    {{#if(d.ComputerPaper==null||d.ComputerPaper=="1"||d.ComputerPaper==""||d.Paper==""||d.Paper==null){}}
+    <a class="layui-btn layui-btn-warm" style="color:white">空</a>
     {{#}else{}}
-    <a class="layui-btn layui-btn-danger download" lay-event="download">下载机试</a>
+    <a class="layui-btn layui-btn-danger download" lay-event="download" style="color:white">下载机试</a>
+    {{#}}}
+</script>
+<script type="text/html" id="barDemoes">
+    {{#if(d.Paper==null||d.Paper==""){}}
+    <a class="layui-btn layui-btn-warm" style="color:white">空</a>
+    {{#}else{}}
+    <a class="layui-btn layui-btn-danger download" lay-event="downloades" style="color:white">查看解答题</a>
     {{#}}}
 </script>
 <div id="yincangDiv" style="display:none">
@@ -258,60 +265,45 @@
                 , toolbar: '#toolbarDemo'
                 , title: '学生名单'
                 , cols: [[
-                    , { field: 'StudentID', title: '序号', width: "20%", sort: true }
-                    , { field: 'StudentName', title: '学员名称', width: "22%"}
+                    , { field: 'StudentID', title: '序号', width: "25%", sort: true }
+                    , { field: 'StudentName', title: '学员名称', width: "15%"}
                     , {
-                        field: 'IsReExam', title: '是否已阅', width: "22%", templet: function (data) {
-                            
+                        field: 'IsReExam', title: '是否已阅', width: "12%", templet: function (data) {
+
                             if (data.IsReExam == false) {
-                               
+
                                 return "<text style='color:chartreuse'>未阅</text>";
                             }
                             else {
-                                
+
                                 return "<text style='color:darkgray'>已阅</text>";
                             }
 
                         } }
-                    , {
-                        field: 'Paper', title: '笔试', width: "12%", templet: function (data) {
-
-                            if (data.Paper == "" || data.Paper == null) {
-
-                                return "没有";
-                            }
-                            else {
-                                return "有";
-                            }
-
-                        }}
-                    , {
-                        field: 'ComputerPaper', title: '机试', width: "12%", templet: function (data) {
-
-                            if (data.ComputerPaper == "" || data.ComputerPaper == "1" || data.ComputerPaper == null) {
-
-                                return "没有";
-                            }
-                            else {
-                                return "有";
-                            }
-
-                        }
-                    } 
-                    , { field: 'right', title: '操作', width: "27%", toolbar: '#barDemo' }
+                    , { field: 'Paper', title: '笔试', width: "24%", toolbar: '#barDemoes'}
+                    , { field: 'ComputerPaper', title: '机试', width: "24%", toolbar: '#barDemo'} 
+                    //, { field: 'right', title: '操作', width: "33%", toolbar: '#barDemo' }
                 ]]
             });
             layui.form.render("select");
-
             
              //监听行工具事件
             table.on('tool(ExamScores)', function(obj){
                 var data = obj.data;
                 StuExamNumber = obj.data.StudentID;
+                console.log(Examid);
                 if (obj.event === 'download') {
-                    $('.download').attr('href', "/ExaminationSystem/ExamScores/DownloadComputerSheet?examid="+ Examid + "&kaohao=" + StuExamNumber); 
+                    $('.download').attr('href', "/ExaminationSystem/ExamScores/DownloadComputerSheet?examid=" + Examid + "&kaohao=" + StuExamNumber);
 
-                  }
+                } else if (obj.event === 'downloades') {
+                    //传学号及考场id
+                    layer.open({
+                        type: 2,
+                        title: "解答题",
+                        area: ["700px", "800px"],
+                        content: '/ExaminationSystem/ExamScores/AnswerPage?kaohao=' + StuExamNumber + '&examid=' + Examid,
+                    });
+                }
             });
             //监听行双击事件
             table.on('rowDouble(ExamScores)', function (obj) {
@@ -377,13 +369,14 @@
             });
             //一键提交分数
             form.on('submit(submit)', function (data) {
+                var loadindex = layer.load(1);
                 if (formdata.get("excelfile") == undefined) {
 
                     formdata.set("excelfile", undefined);
-
+                    
                     SetErrorMsg("请选择文件");
 
-                    return;
+                    return; 
                 }
 
                 $("#tipMsg").css("visibility", 'hidden');
@@ -397,17 +390,33 @@
                     processData: false,
                     success: function (data) {
                         layer.close(loadindex);
-                        if (data.ErrorCode = 200) {
+                        if (data.Success) {
+                            var msg = "";
+                            if (data.ErrorCode == 100) {//没有一条数据出错
+                                msg = "录入成功!  录入数量：" + data.Msg;
+                            } else if (data.ErrorCode == 200) {
+                                var errdata = data.Data;//录入错误的数据
+                                var detailerrdata = "";
+                                for (var i = 0; i < errdata.length; i++) {
+                                    detailerrdata += errdata[i].empname + "的成绩数据录入出错，原因是：" + errdata[i].errorExplain + "<br/>";
+                                };
+                                msg = "成功录入" + data.Msg + "条数据" + errdata.length +
+                                    "条数据录入失败。失败数据分析如下：</br>" + detailerrdata;
+                            }
+                            //098
+                            layer.alert(msg, { icon: 1 }, function () {
+                                // window.document.location.reload();
+                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                window.parent.location.reload();
+                                parent.layer.close(index);
 
-                            var msg = "录入成功!  录入数量：" + data.Data;
-                            layer.msg(msg, {
-                                icon: 1,
-                                time: 3000 //2秒关闭（如果不配置，默认是3秒）
                             });
+                        } else {
+                            layer.alert(data.Msg, { icon: 2 });
                         }
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
-
+                        layer.close(loadindex);
                         console.log(textStatus);
                     }
                 });
@@ -479,8 +488,6 @@
 
                                 var examdate = data.Data.exam.BeginDate;
 
-
-
                                 var dateutc = examdate.substr(examdate.indexOf("(") + 1, 13);
                                 var date = new Date(parseInt(dateutc));
 
@@ -488,16 +495,7 @@
 
                                 $("#MarkingInfoArea .examDate").find("span").text(year + '年' + month + '月' + day + '日--' + hours + '时' + minus + '分');
 
-                                $("#MarkingInfoArea .totalPaper").find("span").text(data.Data.total.length);
-
-                                //$("#MarkingInfoArea .filshPaper").find("span").text(parseInt(data.Data.total.length) - data.Data.NoScoresCount.length);
-
-                                
-
-                                //loadStuData(Examid, ExamRoom);
-
-                                //TotalScore(Examid, StuExamNumber);
-                                
+                                $("#MarkingInfoArea .totalPaper").find("span").text(data.Data.total.length);                                
 
                                 $("#stulist").show();
 

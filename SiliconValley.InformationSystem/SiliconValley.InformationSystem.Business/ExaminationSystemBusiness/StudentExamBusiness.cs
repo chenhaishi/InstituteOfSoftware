@@ -116,13 +116,24 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
             {
                 //&& d.Course == 0
                 //查询升学考试的课程题目比率
-
-                var tempqulist = list.Where(d => d.Grand == examview.ExamType.GrandID ).ToList();
-                tempqulist.ForEach(d=>
+                if (kecheng == 0)
                 {
-                    var tempobj = db_choiceQuestion.ConvertToChoiceQuestionTableView(d, false);
-                    if (tempobj != null) questionlist.Add(tempobj);
-                });
+                    var tempqulistes = list.Where(d => d.Grand == examview.ExamType.GrandID).ToList();
+                    tempqulistes.ForEach(d =>
+                    {
+                        var tempobj = db_choiceQuestion.ConvertToChoiceQuestionTableView(d, false);
+                        if (tempobj != null) questionlist.Add(tempobj);
+                    });
+                }
+                else {
+                    var tempqulist = list.Where(d => d.Grand == examview.ExamType.GrandID && d.Course == kecheng).ToList();
+                    tempqulist.ForEach(d =>
+                    {
+                        var tempobj = db_choiceQuestion.ConvertToChoiceQuestionTableView(d, false);
+                        if (tempobj != null) questionlist.Add(tempobj);
+                    });
+                }
+                
                 xmlDocument.Load(System.Web.HttpContext.Current.Server.MapPath("/Config/ChoosetheAnswer.xml"));
             }
 
@@ -302,14 +313,27 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
             List<Curriculum> sourchlist = new List<Curriculum>();
             if (examview.ExamType.ExamTypeID == 1)
             {
-                //&& d.Course == 0
-                var tempqulist = list.Where(d => d.Grand == examview.ExamType.GrandID).ToList();
-                tempqulist.ForEach(d=>
+                if (kecheng == 0)
                 {
-                    var tempobj = db_answerQuextion.ConvertToAnswerQuestionView(d, false);
+                    var tempqulistes = list.Where(d => d.Grand == examview.ExamType.GrandID ).ToList();
+                    tempqulistes.ForEach(d =>
+                    {
+                        var tempobj = db_answerQuextion.ConvertToAnswerQuestionView(d, false);
 
-                    if (tempobj != null) questionlist.Add(tempobj);
-                });
+                        if (tempobj != null) questionlist.Add(tempobj);
+                    });
+                }
+                else {
+                    var tempqulist = list.Where(d => d.Grand == examview.ExamType.GrandID && d.Course == kecheng).ToList();
+                    tempqulist.ForEach(d =>
+                    {
+                        var tempobj = db_answerQuextion.ConvertToAnswerQuestionView(d, false);
+
+                        if (tempobj != null) questionlist.Add(tempobj);
+                    });
+                }
+                //&& d.Course == 0
+                
                 xmlDocument.Load(System.Web.HttpContext.Current.Server.MapPath("/Config/ChoosetheAnswer.xml"));
             }
 

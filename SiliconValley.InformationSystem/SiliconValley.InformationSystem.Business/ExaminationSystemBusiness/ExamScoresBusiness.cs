@@ -139,19 +139,19 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
         /// <returns></returns>
         public MarkingArrangeView ConvertToMarkingArrangeView(MarkingArrange markingArrange)
         {
-             
+
             BaseBusiness<Classroom> dbclassroom = new BaseBusiness<Classroom>();
-           
+
             MarkingArrangeView view = new MarkingArrangeView();
 
-           var examroom = db_exam.AllExaminationRoom().Where(d => d.ID == markingArrange.ExamRoom).FirstOrDefault();
-            List<Examination> list= db_exam.AllExamination();
+            var examroom = db_exam.AllExaminationRoom().Where(d => d.ID == markingArrange.ExamRoom).FirstOrDefault();
+            List<Examination> list = db_exam.AllExamination();
             view.ExamID = db_exam.AllExamination().Where(d => d.ID == markingArrange.ExamID).FirstOrDefault();
             view.ExamRoom = db_exam.AllExaminationRoom().Where(d => d.ID == markingArrange.ExamRoom).FirstOrDefault();
             view.ID = markingArrange.ID;
             view.IsFinsh = markingArrange.IsFinsh;
             view.MarkingTeacher = db_emp.GetInfoByEmpID(markingArrange.MarkingTeacher);
-            
+
             view.classroom = dbclassroom.GetList().Where(d => d.Id == examroom.Classroom_Id).FirstOrDefault();
 
             return view;
@@ -322,7 +322,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
         public void SetMarkingTeacher(int examid, int examroomid, string empid)
         {
             var emp = db_emp.GetInfoByEmpID(empid);
-            var temp = this.AllMarkingArrange().Where(d => d.ExamID == examid && d.ExamRoom == examroomid &&d.MarkingTeacher == empid).FirstOrDefault();
+            var temp = this.AllMarkingArrange().Where(d => d.ExamID == examid && d.ExamRoom == examroomid && d.MarkingTeacher == empid).FirstOrDefault();
 
             if (temp == null)
             {
@@ -372,7 +372,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
                 var markingteacher = db_emp.GetInfoByEmpID(dbteacher.GetTeacherByID(testScore.Reviewer).EmployeeId);
                 view.MarkingTeacherName = markingteacher.EmpName;
             }
-          
+
             view.Score = testScore;
             BaseBusiness<ClassSchedule> dbclass = new BaseBusiness<ClassSchedule>();
             view.StudentClass = dbclass.GetIQueryable().Where(d => d.id == candidInfo.ClassId).FirstOrDefault().ClassNumber;
@@ -396,7 +396,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
             {
                 // 去获取课程ID
 
-               var curxml = db_exam.ExamCourseConfigRead((int)testScore.Examination);
+                var curxml = db_exam.ExamCourseConfigRead((int)testScore.Examination);
                 var coursexml = curxml.GetElementsByTagName("course")[0];
 
                 var couserid = coursexml.Attributes["id"].Value;
@@ -422,11 +422,11 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
             TeachingDepBusiness.TeacherClassBusiness dbteacherclass = new TeachingDepBusiness.TeacherClassBusiness();
             List<ClassSchedule> classlist = new List<ClassSchedule>();
 
-           var lsit = db_exam.AllCandidateInfo(examid);
+            var lsit = db_exam.AllCandidateInfo(examid);
 
             foreach (var item in lsit)
             {
-               var tempclass = dbteacherclass.AllClassSchedule().Where(d => d.id == item.ClassId).FirstOrDefault();
+                var tempclass = dbteacherclass.AllClassSchedule().Where(d => d.id == item.ClassId).FirstOrDefault();
 
                 if (!dbteacherclass.IsContains(classlist, tempclass))
                 {
@@ -449,7 +449,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
         public List<StudentExamScoreView> ClassScores(int classid, int grandId)
         {
 
-            var list =db_exam.AllExamination();
+            var list = db_exam.AllExamination();
 
             //筛选出 升学考试
             List<ExaminationView> examviewlist = new List<ExaminationView>();
@@ -465,7 +465,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
 
                     examviewlist.Add(examview);
                 }
-               
+
             }
 
             ///筛选出班级学生
@@ -475,7 +475,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
 
             foreach (var item in examviewlist)
             {
-               var candidlist = db_exam.AllCandidateInfo(item.ID).Where(d=>d.ClassId == classid).ToList();
+                var candidlist = db_exam.AllCandidateInfo(item.ID).Where(d => d.ClassId == classid).ToList();
 
                 if (candidlist != null)
                 {
@@ -488,11 +488,11 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
 
             foreach (var item in candidateifnolist)
             {
-                var score = this.AllExamScores().Where(d=>d.CandidateInfo == item.CandidateNumber).FirstOrDefault();
+                var score = this.AllExamScores().Where(d => d.CandidateInfo == item.CandidateNumber).FirstOrDefault();
 
                 if (score != null)
                 {
-                   var tempobj = this.ConvertToStudentExamScoreView(score);
+                    var tempobj = this.ConvertToStudentExamScoreView(score);
 
                     if (tempobj != null)
                     {
@@ -523,16 +523,16 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
 
             var didInfolist = allCadidateInfo.Where(x => x.StudentID == studentNumber).ToList();
 
-            didInfolist.ForEach(d=>
+            didInfolist.ForEach(d =>
             {
-               var templist = allScores.Where(t => t.CandidateInfo == d.CandidateNumber).ToList();
+                var templist = allScores.Where(t => t.CandidateInfo == d.CandidateNumber).ToList();
                 if (templist != null)
                 {
                     resultlist.AddRange(templist);
                 }
             });
 
-            resultlist.ForEach(d=> {
+            resultlist.ForEach(d => {
 
                 StudentExamScoreView examScoreView = ConvertToStudentExamScoreView(d);
 

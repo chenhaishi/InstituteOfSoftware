@@ -345,7 +345,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             return View();
         }
 
-        public ActionResult UpExcel_Bos(string deptid, string date)
+        public ActionResult UpExcel_Bos(int deptid, string date)
         {
             AjaxResult ajaxResult = new AjaxResult();
             List<Staff_CostView> list = SessionHelper.Session["Cost_Emp_list"] as List<Staff_CostView>;
@@ -421,7 +421,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 }
                 Department department = null;
                 string filename = null;
-                if (deptid != "0")
+                if (deptid != 0)
                 {
                     department = Department_Entity.GetEntity(deptid);
                     filename = DateTime.Parse(date).Year + "-" + DateTime.Parse(date).Month + department.DeptName + "课时费统计表";
@@ -814,104 +814,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         [HttpPost]
         public ActionResult CostDataToExcel()
         {
-            var ajaxresult = new AjaxResult();
+            
             List<Staff_CostView> list = SessionHelper.Session["Cost_Emp_list"] as List<Staff_CostView>;
 
-            var workbook = new HSSFWorkbook();
-
-            //创建工作区
-            var sheet = workbook.CreateSheet("课时费统计");
-
-            #region 表头样式
-
-            HSSFCellStyle HeadercellStyle = (HSSFCellStyle)workbook.CreateCellStyle();
-            HSSFFont HeadercellFont = (HSSFFont)workbook.CreateFont();
-
-            HeadercellStyle.Alignment = HorizontalAlignment.Center;
-            HeadercellFont.IsBold = true;
-
-            HeadercellStyle.SetFont(HeadercellFont);
-
-            #endregion
-
-            HSSFCellStyle ContentcellStyle = (HSSFCellStyle)workbook.CreateCellStyle();
-            HSSFFont ContentcellFont = (HSSFFont)workbook.CreateFont();
-
-            ContentcellStyle.Alignment = HorizontalAlignment.Center;
-
-            CreateHeader();
-
-            int num = 1;
-
-            GrandBusiness dbgrand = new GrandBusiness();
-
-            list.ForEach(d =>
-            {
-                var row = (HSSFRow)sheet.CreateRow(num);
-
-                CreateCell(row, ContentcellStyle, 0, d.Emp_Name);
-                CreateCell(row, ContentcellStyle, 1, d.RoleName);
-                CreateCell(row, ContentcellStyle, 2, d.Cost_fee.ToString());
-                CreateCell(row, ContentcellStyle, 3, d.Duty_fee.ToString());
-                CreateCell(row, ContentcellStyle, 4, d.Invigilation_fee.ToString());
-                CreateCell(row, ContentcellStyle, 5, d.Marking_fee.ToString());
-                CreateCell(row, ContentcellStyle, 6, d.Super_class.ToString());
-                CreateCell(row, ContentcellStyle, 7, d.Internal_training_fee.ToString());
-                CreateCell(row, ContentcellStyle, 8, d.RD_fee.ToString());
-                CreateCell(row, ContentcellStyle, 9, d.totalmoney.ToString());
-                num++;
-
-            });
-
-            string path1 = System.AppDomain.CurrentDomain.BaseDirectory.Split('\\')[0];    //获得项目的基目录
-            var Path = System.IO.Path.Combine(path1, "XinxihuaData\\Excel");
-            if (!System.IO.Directory.Exists(Path))     //判断是否有该文件夹
-                System.IO.Directory.CreateDirectory(Path); //如果没有在Uploads文件夹下创建文件夹Excel
-            string saveFileName = Path + "\\" + "课时费统计" + ".xlsx"; //路径+表名+文件类型
-            try
-            {
-                FileStream fs = new FileStream(saveFileName, FileMode.Create, FileAccess.Write);
-                workbook.Write(fs);  //写入文件
-                workbook.Close();  //关闭
-                ajaxresult.ErrorCode = 200;
-                ajaxresult.Msg = "导入成功！文件地址：" + saveFileName;
-                // ajaxresult.Data = list;
-
-            }
-            catch (Exception ex)
-            {
-                ajaxresult.ErrorCode = 100;
-                ajaxresult.Msg = "导入失败，" + ex.Message;
-
-            }
+            var ajaxresult = new { data = list };
             return Json(ajaxresult, JsonRequestBehavior.AllowGet);
-
-            void CreateHeader()
-            {
-                HSSFRow Header = (HSSFRow)sheet.CreateRow(0);
-                Header.HeightInPoints = 40;
-
-                CreateCell(Header, HeadercellStyle, 0, "姓名");
-                CreateCell(Header, HeadercellStyle, 1, "职务");
-                CreateCell(Header, HeadercellStyle, 2, "课时费");
-                CreateCell(Header, HeadercellStyle, 3, "值班费");
-                CreateCell(Header, HeadercellStyle, 4, "监考费");
-                CreateCell(Header, HeadercellStyle, 5, "阅卷费");
-                CreateCell(Header, HeadercellStyle, 6, "超带班");
-                CreateCell(Header, HeadercellStyle, 7, "内训费");
-                CreateCell(Header, HeadercellStyle, 8, "研发费");
-                CreateCell(Header, HeadercellStyle, 9, "合计");
-            }
-
-            void CreateCell(HSSFRow row, HSSFCellStyle TcellStyle, int index, string value)
-            {
-                HSSFCell Header_Name = (HSSFCell)row.CreateCell(index);
-
-                Header_Name.SetCellValue(value);
-
-                Header_Name.CellStyle = TcellStyle;
-            }
-
+            
         }
 
         /// <summary>

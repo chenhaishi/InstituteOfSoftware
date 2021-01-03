@@ -112,6 +112,7 @@
                 dataType: 'json',
                 success: function (successData) {
                     //关闭
+                    console.log(successData);
                     layer.close(indexlayer);
                     if (successData.result == "okk") {
                         layui.use(['layer', 'table'], function () {
@@ -180,6 +181,9 @@
                                 });
                             });
                         });
+                                //增加\t为了不让表格显示科学计数法或者其他格式
+                        
+                         
                     } else if (successData.resut == "ok") {
                         layer.msg('没有重复数据，备案成功！！！', {
                             icon: 1,

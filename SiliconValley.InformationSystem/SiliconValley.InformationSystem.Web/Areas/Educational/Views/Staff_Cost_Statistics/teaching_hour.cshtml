@@ -221,43 +221,26 @@
         });
 
         form.on('submit(Btn_SaveExcel)', function (data) {
+            
             $.ajax({
-                url: "/Educational/Staff_Cost_Statistics/CostDataToExcel",
-                type: "post",
-                success: function (res) {
-                    console.log(res);
-                    if (res.ErrorCode == "200") {
-                        
-                        layer.alert(res.Msg, {
-                            skin: 'layui-layer-molv' //样式类名
-                            , closeBtn: 0
-                        });
-                    } else {
-                        layer.alert(res.Msg, {
-                            skin: 'layui-layer-molv' //样式类名
-                            , closeBtn: 0
-                        });
-                    }
-                }
-            });
-
-            $.ajax({
-                url: '/Educational/TeacherAddorBeonDuty/OutData',
+                url: '/Educational/Staff_Cost_Statistics/CostDataToExcel',
                 data: data.field,
                 type: 'post',
                 success: function (res) {
-
+                    console.log(res);
                     //列标题，逗号隔开，每一个逗号就是隔开一个单元格
                     let str = res.titile + `\n`;
                     //增加\t为了不让表格显示科学计数法或者其他格式
-                    for (let i = -1; i < res.data.length; i++) {
-                        if (i == -1) {
-                            str += `值班日期\t,值班内容\t`;
+                    for (let i = 0; i < res.data.length; i++) {
+                        if (i == 0) {
+                            str += `姓名\t,职务\t,课时费\t,值班费\t,监考费\t,阅卷费\t,超带班\t,内训费\t,研发费\t,合计`;
+                            //姓名	职务	课时费	值班费	监考费	阅卷费	超带班	内训费	研发费	合计
                         } else {
-                            var mm = TimeChange(res.data[i].time);
-                            var mydate = new Date(mm)
-                            var da = (Number(mydate.getMonth()) + 1) + "月" + mydate.getDate() + "日"
-                            str += '' + da + '\t,' + res.data[i].Content + '\t';
+                            //var mm = TimeChange(res.data[i].time);
+                            //var mydate = new Date(mm)
+                            //var da = (Number(mydate.getMonth()) + 1) + "月" + mydate.getDate() + "日"
+                            str += res.data[i].Emp_Name + '\t,' + res.data[i].RoleName + '\t,' + res.data[i].Cost_fee + '\t,' + res.data[i].Duty_fee + '\t,' +
+                                res.data[i].Invigilation_fee + '\t,' + res.data[i].Marking_fee + '\t,' + res.data[i].Super_class + '\t,' + res.data[i].Internal_training_fee + '\t,' + res.data[i].RD_fee + '\t,' + res.data[i].totalmoney;
                         }
 
                         str += '\n';
@@ -332,10 +315,10 @@
 
             });
             
-            layer.alert(res.Msg, {
-                skin: 'layui-layer-molv' //样式类名
-                , closeBtn: 0
-            });
+            //layer.alert(res.Msg, {
+            //    skin: 'layui-layer-molv' //样式类名
+            //    , closeBtn: 0
+            //});
         });
     });
 

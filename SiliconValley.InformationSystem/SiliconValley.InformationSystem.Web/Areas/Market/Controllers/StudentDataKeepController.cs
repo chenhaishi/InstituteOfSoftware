@@ -1096,29 +1096,29 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
 
                     //有重复的值                                
                     //获取当前年月日
-                    string filename = DateTime.Now.ToString("yyyyMMddhhmmss") + equally_list[0].EmployeesInfo_Id + ".xls";
-                    string path = "~/uploadXLSXfile/ConsultUploadfile/ConflictExcel/" + filename;
-                    SessionHelper.Session["filename2"] = path;
-                    //获取表头数据
-                    string jsonfile = Server.MapPath("/Config/MyExcelClass.json");
-                    System.IO.StreamReader file = System.IO.File.OpenText(jsonfile);
-                    JsonTextReader reader = new JsonTextReader(file);
-                    //转化为JObject
-                    JObject ojb = (JObject)JToken.ReadFrom(reader);
+                    //string filename = DateTime.Now.ToString("yyyyMMddhhmmss") + equally_list[0].EmployeesInfo_Id + ".xls";
+                    //string path = "~/uploadXLSXfile/ConsultUploadfile/ConflictExcel/" + filename;
+                    //SessionHelper.Session["filename2"] = path;
+                    ////获取表头数据
+                    //string jsonfile = Server.MapPath("/Config/MyExcelClass.json");
+                    //System.IO.StreamReader file = System.IO.File.OpenText(jsonfile);
+                    //JsonTextReader reader = new JsonTextReader(file);
+                    ////转化为JObject
+                    //JObject ojb = (JObject)JToken.ReadFrom(reader);
 
-                    var jj = ojb["MyExcelClass"].ToString();
+                    //var jj = ojb["MyExcelClass"].ToString();
 
-                    JObject jo = (JObject)JsonConvert.DeserializeObject(jj);
-                    DataTable user = equally_list.ToDataTable<MyExcelClass>();
-                    //生成字段名称 
-                    List<string> Head = new List<string>();
-                    foreach (DataColumn col in user.Columns)
-                    {
-                        Head.Add(jo[col.ColumnName].ToString());
-                    }
-                    bool s = Excel_Entity.DaoruExcel(equally_list, Server.MapPath(path), Head);//将有重复的数据写入Excel表格中
-                    if (s)
-                    {
+                    //JObject jo = (JObject)JsonConvert.DeserializeObject(jj);
+                    //DataTable user = equally_list.ToDataTable<MyExcelClass>();
+                    ////生成字段名称 
+                    //List<string> Head = new List<string>();
+                    //foreach (DataColumn col in user.Columns)
+                    //{
+                    //    Head.Add(jo[col.ColumnName].ToString());
+                    //}
+                    //bool s = Excel_Entity.DaoruExcel(equally_list, Server.MapPath(path), Head);//将有重复的数据写入Excel表格中
+                    //if (s)
+                    //{
                         //获取已备案的数据集合
                         var data = new
                         {
@@ -1129,12 +1129,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
                         };
                          
                         return Json(data, JsonRequestBehavior.AllowGet);
-                    }
-                    else
-                    {
-                        //写入出错
-                        DeleteFile();
-                    }
+                    //}
+                    //else
+                    //{
+                    //    //写入出错
+                    //    DeleteFile();
+                    //}
                 }
                 else if(equally_list2.Count>0)
                 {
