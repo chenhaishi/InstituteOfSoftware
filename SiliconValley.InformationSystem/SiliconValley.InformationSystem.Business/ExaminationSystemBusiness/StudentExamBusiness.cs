@@ -80,7 +80,8 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
       
             List<ChoiceQuestionTableView> questionlist = new List<ChoiceQuestionTableView>();
 
-
+            BaseBusiness<Curriculum> curr = new BaseBusiness<Curriculum>();
+                 
             //获取考试类型
             var examType = examination.ExamType;
             var examview = db_exam.ConvertToExaminationView(examination);
@@ -91,6 +92,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
             
             //从缓存中获取数据
             RedisCache redisCache = new RedisCache();
+
 
             var list = new List<MultipleChoiceQuestion>();
 
@@ -126,12 +128,35 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
                     });
                 }
                 else {
-                    var tempqulist = list.Where(d => d.Grand == examview.ExamType.GrandID && d.Course == kecheng).ToList();
-                    tempqulist.ForEach(d =>
+                    //29.net的最后一门课程ASP.NET
+                    if (kecheng == 29)
                     {
-                        var tempobj = db_choiceQuestion.ConvertToChoiceQuestionTableView(d, false);
-                        if (tempobj != null) questionlist.Add(tempobj);
-                    });
+                        var kcs = curr.GetList().Where(d => d.MajorID == 3011).ToList();
+                        foreach (var item in kcs)
+                        {
+                            var tempqulist = list.Where(d => d.Grand == examview.ExamType.GrandID && d.Course == item.CurriculumID).ToList();
+                            tempqulist.ForEach(d =>
+                            {
+                                var tempobj = db_choiceQuestion.ConvertToChoiceQuestionTableView(d, false);
+                                if (tempobj != null) questionlist.Add(tempobj);
+                            });
+                        }
+                    }
+                    //28java的最后一门课程JSP
+                    else if (kecheng == 28)
+                    {
+                        var kcs = curr.GetList().Where(d => d.MajorID == 3010).ToList();
+                        foreach (var item in kcs)
+                        {
+                            var tempqulist = list.Where(d => d.Grand == examview.ExamType.GrandID && d.Course == item.CurriculumID).ToList();
+                            tempqulist.ForEach(d =>
+                            {
+                                var tempobj = db_choiceQuestion.ConvertToChoiceQuestionTableView(d, false);
+                                if (tempobj != null) questionlist.Add(tempobj);
+                            });
+                        }
+                    }
+
                 }
                 
                 xmlDocument.Load(System.Web.HttpContext.Current.Server.MapPath("/Config/ChoosetheAnswer.xml"));
@@ -277,7 +302,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
 
          
             TeacherClassBusiness dbteacheraclass = new TeacherClassBusiness();
-          
+            BaseBusiness<Curriculum> curr = new BaseBusiness<Curriculum>();
             var examview = db_exam.ConvertToExaminationView(examination);
 
             //读取配置文件
@@ -315,7 +340,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
             {
                 if (kecheng == 0)
                 {
-                    var tempqulistes = list.Where(d => d.Grand == examview.ExamType.GrandID ).ToList();
+                    var tempqulistes = list.Where(d => d.Grand == examview.ExamType.GrandID).ToList();
                     tempqulistes.ForEach(d =>
                     {
                         var tempobj = db_answerQuextion.ConvertToAnswerQuestionView(d, false);
@@ -324,13 +349,35 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
                     });
                 }
                 else {
-                    var tempqulist = list.Where(d => d.Grand == examview.ExamType.GrandID && d.Course == kecheng).ToList();
-                    tempqulist.ForEach(d =>
+                    if (kecheng == 29)
                     {
-                        var tempobj = db_answerQuextion.ConvertToAnswerQuestionView(d, false);
+                        var kcs = curr.GetList().Where(d => d.MajorID == 3011).ToList();
+                        foreach (var item in kcs)
+                        {
+                            var tempqulist = list.Where(d => d.Grand == examview.ExamType.GrandID && d.Course == item.CurriculumID).ToList();
+                            tempqulist.ForEach(d =>
+                            {
+                                var tempobj = db_answerQuextion.ConvertToAnswerQuestionView(d, false);
 
-                        if (tempobj != null) questionlist.Add(tempobj);
-                    });
+                                if (tempobj != null) questionlist.Add(tempobj);
+                            });
+                        }
+                    }
+                    else if (kecheng == 28)
+                    {
+                        var kcs = curr.GetList().Where(d => d.MajorID == 3010).ToList();
+                        foreach (var item in kcs)
+                        {
+                            var tempqulist = list.Where(d => d.Grand == examview.ExamType.GrandID && d.Course == item.CurriculumID).ToList();
+                            tempqulist.ForEach(d =>
+                            {
+                                var tempobj = db_answerQuextion.ConvertToAnswerQuestionView(d, false);
+
+                                if (tempobj != null) questionlist.Add(tempobj);
+                            });
+                        }
+                    }
+                    
                 }
                 //&& d.Course == 0
                 

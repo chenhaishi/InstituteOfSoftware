@@ -336,7 +336,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 var studentNumber = SessionHelper.Session["studentnumber"].ToString();
                 BaseBusiness<ScheduleForTrainees> schedul = new BaseBusiness<ScheduleForTrainees>();
                 //根据当前用户查出所在班级
-                var classname = schedul.GetList().Where(d => d.StudentID == studentNumber).FirstOrDefault().ClassID;
+                var classname = schedul.GetList().Where(d => d.StudentID == studentNumber && d.CurrentClass == true).FirstOrDefault().ClassID;
                 //截取这个学生是什么阶段的比如s2的分阶段 .net java
                 var classnamees = classname.Substring(classname.Length - 2, 2);
                 //如果examview.ExamType.ExamTypeID == 1那么就是升学考试，然后获取什么阶段的考试，然后获取这个阶段的最后最后一门课程
@@ -346,13 +346,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 {
                     if (grand.Id == 2 && classnamees == "NA")
                     {
-                        var curriculumes = db_curriculum.GetList().Where(d => d.Grand_Id == 29 && d.IsEndCurr == true).FirstOrDefault();
-                        data = db_stuExam.ProductChoiceQuestion(exam, curriculumes.CurriculumID);
+                        //var curriculumes = db_curriculum.GetList().Where(d => d.Grand_Id == 29 && d.IsEndCurr == true).FirstOrDefault();
+                        data = db_stuExam.ProductChoiceQuestion(exam,29);
                     }
                     else if (grand.Id == 2 && classnamees == "JA")
                     {
-                        var curriculumeses = db_curriculum.GetList().Where(d => d.Grand_Id == 28 && d.IsEndCurr == true).FirstOrDefault();
-                        data = db_stuExam.ProductChoiceQuestion(exam, curriculumeses.CurriculumID);
+                        //var curriculumeses = db_curriculum.GetList().Where(d => d.Grand_Id == 28 && d.IsEndCurr == true).FirstOrDefault();
+                        data = db_stuExam.ProductChoiceQuestion(exam,28);
                     }
                     else {
                         data = db_stuExam.ProductChoiceQuestion(exam, 0);
@@ -412,7 +412,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 var studentNumber = SessionHelper.Session["studentnumber"].ToString();
                 BaseBusiness<ScheduleForTrainees> schedul = new BaseBusiness<ScheduleForTrainees>();
                 //根据当前用户查出所在班级
-                var classname = schedul.GetList().Where(d => d.StudentID == studentNumber).FirstOrDefault().ClassID;
+                var classname = schedul.GetList().Where(d => d.StudentID == studentNumber && d.CurrentClass == true).FirstOrDefault().ClassID;
                 //截取这个学生是什么阶段的比如s2的分阶段 .net java
                 var classnamees = classname.Substring(classname.Length - 2, 2);
                 //如果examview.ExamType.ExamTypeID == 1那么就是升学考试，然后获取什么阶段的考试，然后获取这个阶段的最后最后一门课程
@@ -423,13 +423,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 {
                     if (grand.Id == 2 && classnamees == "NA")
                     {
-                        var curriculumes = db_curriculum.GetList().Where(d => d.Grand_Id == 29 && d.IsEndCurr == true).FirstOrDefault();
-                        data = db_stuExam.productAnswerQuestion(exam, curriculumes.CurriculumID);
+                        //var curriculumes = db_curriculum.GetList().Where(d => d.Grand_Id == 29 && d.IsEndCurr == true).FirstOrDefault();
+                        data = db_stuExam.productAnswerQuestion(exam, 29);
                     }
                     else if (grand.Id == 2 && classnamees == "JA")
                     {
-                        var curriculumeses = db_curriculum.GetList().Where(d => d.Grand_Id == 28 && d.IsEndCurr == true).FirstOrDefault();
-                        data = db_stuExam.productAnswerQuestion(exam, curriculumeses.CurriculumID);
+                        //var curriculumeses = db_curriculum.GetList().Where(d => d.Grand_Id == 28 && d.IsEndCurr == true).FirstOrDefault();
+                        data = db_stuExam.productAnswerQuestion(exam, 28);
                     }
                     else
                     {
@@ -498,12 +498,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             var studentNumber = SessionHelper.Session["studentnumber"].ToString();
             //首先查看是否已经随机获取到了一个
 
-            var candidateInfo = db_exam.AllCandidateInfo(examid).Where(d => d.StudentID == studentNumber).FirstOrDefault();
+            var candidateInfo = db_exam.AllCandidateInfo(examid).Where(d => d.StudentID == studentNumber ).FirstOrDefault();
             ComputerTestQuestionsView computer = null;
 
             BaseBusiness<ScheduleForTrainees> schedul = new BaseBusiness<ScheduleForTrainees>();
             //根据当前用户查出所在班级
-            var classname = schedul.GetList().Where(d => d.StudentID == studentNumber).FirstOrDefault().ClassID;
+            var classname = schedul.GetList().Where(d => d.StudentID == studentNumber && d.CurrentClass == true).FirstOrDefault().ClassID;
             //截取这个学生是什么阶段的比如s2的分阶段 .net java
            var classnamees =  classname.Substring(classname.Length - 2, 2);
             //如果examview.ExamType.ExamTypeID == 1那么就是升学考试，然后获取什么阶段的考试，然后获取这个阶段的最后最后一门课程
@@ -520,15 +520,15 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 {
                     if (grand.Id == 2 && classnamees == "NA")
                     {
-                        var curriculumes = db_curriculum.GetList().Where(d => d.Grand_Id == 29  && d.IsEndCurr == true).FirstOrDefault();
-                        courseid = curriculumes.CurriculumID;
-                        computer = db_stuExam.productComputerQuestion(exam, courseid);
+                        //var curriculumes = db_curriculum.GetList().Where(d => d.Grand_Id == 29  && d.IsEndCurr == true).FirstOrDefault();
+                        //courseid = curriculumes.CurriculumID;
+                        computer = db_stuExam.productComputerQuestion(exam, 29);
                     }
                     else if (grand.Id == 2 && classnamees == "JA")
                     {
-                        var curriculumeses = db_curriculum.GetList().Where(d => d.Grand_Id == 28  && d.IsEndCurr == true).FirstOrDefault();
-                        courseid = curriculumeses.CurriculumID;
-                        computer = db_stuExam.productComputerQuestion(exam, courseid);
+                        //var curriculumeses = db_curriculum.GetList().Where(d => d.Grand_Id == 28  && d.IsEndCurr == true).FirstOrDefault();
+                        //courseid = curriculumeses.CurriculumID;
+                        computer = db_stuExam.productComputerQuestion(exam, 28);
                     }
                     else {
                         courseid = curriculum.CurriculumID;
