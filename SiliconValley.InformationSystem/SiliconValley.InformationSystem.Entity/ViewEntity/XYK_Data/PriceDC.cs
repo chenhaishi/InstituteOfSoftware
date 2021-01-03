@@ -18,7 +18,7 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.XYK_Data
         //学生身份证
         public string identity { get; set; }
         //班级
-        public string class_id { get; set; }
+        //public string class_id { get; set; }
         //缴费金额
         public decimal Amountofmoney { get; set; }
         //缴费名目
