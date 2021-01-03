@@ -334,7 +334,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         /// </summary>
         /// <returns></returns>
         public ActionResult AnswerPage(int examid,string kaohao)
-        {
+        {   
             var answerSheet = db_exam.AllCandidateInfo(examid).Where(d => d.StudentID == kaohao).FirstOrDefault().Paper;
             List<object> objlist = new List<object>(); 
             CloudstorageBusiness Bos = new CloudstorageBusiness();
