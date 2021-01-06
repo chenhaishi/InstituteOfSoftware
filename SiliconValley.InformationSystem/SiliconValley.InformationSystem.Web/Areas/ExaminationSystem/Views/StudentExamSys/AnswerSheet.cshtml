@@ -597,6 +597,13 @@
                                     window.location.href = '/ExaminationSystem/StudentExamSys/MachineTest?examid=' + examid + '&choiceQuestionScoreshuode=' + choiceQuestionScoreshuode;
                                 });
                                 layui.form.render();
+                            } else if (result.ErrorCode == 500)
+                            {
+                                layer.msg('失败。。', { icon: 1 }, function () {
+
+                                    
+                                });
+                                layui.form.render();
                             }
                         },
                         error: function () {
@@ -651,13 +658,18 @@
 
                 var EndDate = new Date(parseInt(ExamEndDateUTC));
 
+                var a = new Date()
+                a = a.getFullYear() + "-" + (a.getMonth() + 1) + "-" + a.getDate() + " " + a.getHours() + ":" + a.getMinutes();
 
-                if (currentDate > EndDate) {
+                if (a > EndDate) {
 
                     //自动点击提交
                     Commit(true);
                 }
                 else {
+                    console.log(a);
+                    console.log(currentDate);
+                    console.log(EndDate);
                     console.log("考试中......");
                 }
 
