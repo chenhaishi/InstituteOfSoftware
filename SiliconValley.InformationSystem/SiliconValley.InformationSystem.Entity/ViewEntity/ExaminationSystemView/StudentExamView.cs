@@ -12,7 +12,7 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.ExaminationSystemVie
         public string StudentID { get; set; }
 
         public string StudentName { get; set; }
-
+        public string DownloadContent { get; set; }
         public bool IsReExam { get; set; }
         public string Paper { get; set; }
         public string ComputerPaper { get; set; }

@@ -234,6 +234,7 @@
     <Compile Include="ExaminationSystemBusiness\ExaminationPaperBusiness.cs" />
     <Compile Include="ExaminationSystemBusiness\ExaminationRoomBusiness.cs" />
     <Compile Include="ExaminationSystemBusiness\ExamScoresBusiness.cs" />
+    <Compile Include="ExaminationSystemBusiness\MachTestQuesBankBusiness.cs" />
     <Compile Include="ExaminationSystemBusiness\QuestionLevelBusiness.cs" />
     <Compile Include="ExaminationSystemBusiness\StudentExamBusiness.cs" />
     <Compile Include="FinaceBusines\CostitemsBusiness.cs" />
