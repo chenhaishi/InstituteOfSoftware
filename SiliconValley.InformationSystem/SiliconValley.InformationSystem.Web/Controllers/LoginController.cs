@@ -179,7 +179,10 @@ namespace SiliconValley.InformationSystem.Web.Controllers
                     err.Success = true;
                     err.Msg = "登陆成功!";
                     err.Data = "/student/index";
+                    HttpCookie cookie = new HttpCookie("StudentNumber");
+                    cookie.Value = student.StudentNumber;
 
+                    Response.AppendCookie(cookie);
                     return Json(err, JsonRequestBehavior.AllowGet);
                 }
                 else

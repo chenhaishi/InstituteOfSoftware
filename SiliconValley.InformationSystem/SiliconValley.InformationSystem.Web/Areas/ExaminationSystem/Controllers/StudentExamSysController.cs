@@ -474,13 +474,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             return Json(result, JsonRequestBehavior.AllowGet);
 
         }
-        /// <summary>
-        /// 测试模块下载机试
-        /// </summary> 
-        /// <returns></returns>
-        //public ActionResult ComputerQuestion()
-        //{
-        //}
 
         /// <summary>
         /// 机试题下载
@@ -557,9 +550,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 
                 var client = Bos.BosClient();
 
+                //Onlyonce字段的值改变成下载下要来的文件id。并且之后将不能下载机试题
+
                 //var ar = candidateInfo.ComputerPaper.Split(',');.Where(d => d.ID == int.Parse(ar[0]))
-                
-                var com = db_exam.AllComputerTestQuestion(PaperLevel, courseid,IsNeedProposition: false);
+
+               var com = db_exam.AllComputerTestQuestion(PaperLevel, courseid,IsNeedProposition: false);
                 
                 var filename = Path.GetFileName(com.SaveURL);
               
@@ -728,8 +723,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 CloudstorageBusiness Bos = new CloudstorageBusiness();
 
                 var client = Bos.BosClient();
-
-                var studentNumber = SessionHelper.Session["studentnumber"].ToString();
+                //获取当前登陆学生的学号
+                var studentNumber = Request.Cookies["StudentNumber"].Value.ToString();
+                //var studentNumber = SessionHelper.Session["studentnumber"].ToString();
+                //var studentNumber = Request.Cookies["studentnumber"].Value.ToString();
                 //1.将解答题答案存入文件
                 //2 将机试题文件放入AnswerSheet文件夹
                 //3.修改数据库值（选择题分数,解答题答案路径,机试题路径）

@@ -178,8 +178,11 @@
                     //setCountdown(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds());
 
                     $("#indicator").attr("examid", result.Data.ID);
-                    var serverTime = new Date().getTime()
-                    timeinit(date, serverTime);
+                        var serverTime = new Date().getTime();
+                        var a = new Date()
+                        a = a.getFullYear() + "-" + (a.getMonth() + 1) + "-" + a.getDate() + " " + a.getHours() + ":" + a.getMinutes();
+                        console.log(a);
+                        timeinit(date, a);
 
                    }
                     else {

@@ -266,7 +266,8 @@
                 , title: '学生名单'
                 , cols: [[
                     , { field: 'StudentID', title: '序号', width: "25%", sort: true }
-                    , { field: 'StudentName', title: '学员名称', width: "15%"}
+                    , { field: 'StudentName', title: '学员名称', width: "15%" }
+                    , { field: '', title: '所考的机试题', width: "20%" }
                     , {
                         field: 'IsReExam', title: '是否已阅', width: "12%", templet: function (data) {
 
@@ -280,8 +281,8 @@
                             }
 
                         } }
-                    , { field: 'Paper', title: '笔试', width: "24%", toolbar: '#barDemoes'}
-                    , { field: 'ComputerPaper', title: '机试', width: "24%", toolbar: '#barDemo'} 
+                    , { field: 'Paper', title: '笔试', width: "20%", toolbar: '#barDemoes'}
+                    , { field: 'ComputerPaper', title: '机试', width: "20%", toolbar: '#barDemo'} 
                     //, { field: 'right', title: '操作', width: "33%", toolbar: '#barDemo' }
                 ]]
             });
