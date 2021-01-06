@@ -257,17 +257,16 @@
             var table = layui.table;
             var layer = layui.layer;
 
-
-
             table.render({
                 elem: '#ExamScores'
                 , url: '/ExaminationSystem/ExamScores/StudentList'
                 , toolbar: '#toolbarDemo'
                 , title: '学生名单'
                 , cols: [[
-                    , { field: 'StudentID', title: '序号', width: "25%", sort: true }
+                    , { field: 'StudentID', title: '序号', width: "18%", sort: true }
                     , { field: 'StudentName', title: '学员名称', width: "15%" }
-                    , { field: '', title: '所考的机试题', width: "20%" }
+                    , {
+                        field: 'DownloadContent', title: '所考的机试题', width: "20%" }
                     , {
                         field: 'IsReExam', title: '是否已阅', width: "12%", templet: function (data) {
 

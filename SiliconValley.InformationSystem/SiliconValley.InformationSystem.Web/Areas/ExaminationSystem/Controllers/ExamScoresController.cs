@@ -47,6 +47,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         private readonly StudentInformationBusiness db_student;
         private readonly CourseBusiness db_course;
         private readonly CandidateInfoBusiness db_candidate;
+        private readonly MachTestQuesBankBusiness db_machtest;
 
         public ExamScoresController()
         {
@@ -57,6 +58,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             db_student = new StudentInformationBusiness();
             db_course = new CourseBusiness();
             db_candidate = new CandidateInfoBusiness();
+           db_machtest =  new MachTestQuesBankBusiness();
         }
 
         public ActionResult Index()
@@ -937,12 +939,14 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         {
             List<StudentExamView> scorelist = new List<StudentExamView>();
             List<CandidateInfo> multipleChoicelist = db_candidate.GetList().Where(d =>d.Examination==examid).ToList();
-
+            
             for (int i = 0; i < multipleChoicelist.Count; i++)
             {
                 StudentExamView examView = new StudentExamView();
                 examView.StudentID = multipleChoicelist[i].StudentID;
                 examView.StudentName = db_student.GetEntity(multipleChoicelist[i].StudentID).Name;
+                var jishi =multipleChoicelist[i].DownloadContent.ToInt();
+                examView.DownloadContent = db_machtest.GetList().Where(d => d.ID == jishi).FirstOrDefault().Title;
                 examView.IsReExam = multipleChoicelist[i].IsReExam;
                 examView.Paper = multipleChoicelist[i].Paper;
                 examView.ComputerPaper = multipleChoicelist[i].ComputerPaper;

@@ -17,10 +17,12 @@
             width: 80%;
             margin: 50px auto;
         }
+
         #examinfo {
             width: 100%;
             height: 150px;
         }
+
         .detail ul li {
             float: left;
             width: 200px;
@@ -29,9 +31,11 @@
             .detail ul li span {
                 color: green;
             }
-            #examinfo .detail ul {
-                list-style-type: none;
-            }
+
+        #examinfo .detail ul {
+            list-style-type: none;
+        }
+
         #ComputerQuestion {
             text-align: center;
             margin-top: 50px;
@@ -63,12 +67,20 @@
 
         </div>
         <div id="ComputerQuestion">
-            <h3 style="text-align:center; font-size:18px;">机试题下载区</h3>
+            @*<h3 style="text-align:center; font-size:18px;">机试题下载区</h3>*@
             <br />
             <br />
-            <a class="layui-btn layui-btn-warm" href="/ExaminationSystem/StudentExamSys/ComputerQuestionUpload?examid=@ViewBag.EXAMVIEW.ID">机试题下载</a>
+            @if(@ViewBag.Downloadcontent != null)
+            {
+                <a class="layui-btn layui-btn-warm" href="#" >已下载</a>
+            }
+            else
+            {
+                <a class="layui-btn layui-btn-warm" href="/ExaminationSystem/StudentExamSys/ComputerQuestionUpload?examid=@ViewBag.EXAMVIEW.ID">机试题下载</a>
+            }
             <input class="layui-btn layui-btn-primary" id="Upload" type="file" name="computerQuestion" />
-            <button type="button" class="layui-btn layui-btn-warm" id="COMMIT">提交机试</button><text style="color:red">（请把项目打成压缩包并写上自己的名字）</text>
+            <button type="button" class="layui-btn layui-btn-warm" id="COMMIT">提交机试</button><hr />
+            <text style="color:red">（机试题只能下载一套,就不能再下载第二套了,下载下来的内容如果找不到可以去浏览器下载内容中查看,请将项目写上自己的姓名）</text>
         </div>
     </div>
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
@@ -87,6 +99,7 @@
                 return div.innerHTML
             }
         }
+
         var ExamEndDateUTC;
         ///获取考试的结束时间
         function getEndTime() {
@@ -114,7 +127,7 @@
         }
         var formData = new FormData();  //点击提交时将要提交的数据
         layui.use(['form', 'layer'], function () {
-            
+
             var form = layui.form;
             var layer = layui.layer;
             //点击提交
@@ -123,7 +136,7 @@
                 Commit(false);
             });
             function CommitAnswerSheet() {
-                //var index = layer.load(2, { time: 10 * 1000 }); 
+                //var index = layer.load(2, { time: 10 * 1000 });
                 //需要先清空AnswerCommit 表单数据
                 //clearformData(formData, ["AnswerCommit"]);
                 var loadindex = layer.load(1, {
@@ -152,7 +165,7 @@
 
                             layui.form.render();
                         }
-                        
+
                         else {
                             layer.msg('请下载机试题目', { icon: 2 });
                         }
@@ -178,7 +191,7 @@
                     CommitAnswerSheet();
                 }
                 else {
-                    var msg = "正在上传机试,请耐心等待,别疯狂点击!";
+                    var msg = "点击确认之后,在上传机试,请耐心等待,别疯狂点击!";
 
                     if (formData.get("rarfile") == undefined) {
                         msg = "机试未上传,是否继续提交";
@@ -244,7 +257,7 @@
                 var currentDate = new Date();
 
                 var EndDate = new Date(parseInt(ExamEndDateUTC));
-                
+
                 var a = new Date()
                 a = a.getFullYear() + "-" + (a.getMonth() + 1) + "-" + a.getDate() + " " + a.getHours() + ":" + a.getMinutes();
 

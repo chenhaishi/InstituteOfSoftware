@@ -290,7 +290,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             var answerSheetInfo = db_stuExam.AnswerSheetInfos(examid, studentNumber);
             
             ViewBag.AnswerSheetInfo = answerSheetInfo;
-            
+            //获取是否下载过机试题
+            var downloadcontent = db_candidateinfo.GetList().Where(d => d.Examination == examid && d.StudentID == studentNumber).FirstOrDefault().DownloadContent;
+
+            ViewBag.Downloadcontent = downloadcontent;
+
             return View();
         }
     
@@ -490,7 +494,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             //获取当前用户
             var studentNumber = SessionHelper.Session["studentnumber"].ToString();
             //首先查看是否已经随机获取到了一个
-
+            var info = db_candidateinfo.GetList().Where(d => d.StudentID == studentNumber && d.Examination == examid).FirstOrDefault();
+            if (info.DownloadContent!=null) {
+                return null;
+            }
             var candidateInfo = db_exam.AllCandidateInfo(examid).Where(d => d.StudentID == studentNumber ).FirstOrDefault();
             ComputerTestQuestionsView computer = null;
 
@@ -561,7 +568,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 //var path = Server.MapPath("/uploadXLSXfile/ComputerTestQuestionsWord/" + filename);
               
                 var fileData = client.GetObject("xinxihua", $"/ExaminationSystem/ComputerTestQuestionsWord/{filename}");
-              
+                //当返回了一套机试题就把下载下来的机试题id给到DownloadContent
+                info.DownloadContent = computer.ID.ToString();
+                db_candidateinfo.Update(info);
+                
                 //FileStream fileStream = new FileStream(path, FileMode.Open);
               
                 return File(fileData.ObjectContent, "application/octet-stream", Server.UrlEncode(filename));
@@ -653,8 +663,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             {
                 CloudstorageBusiness Bos = new CloudstorageBusiness();
                 var client = Bos.BosClient();
-
-                var studentNumber = SessionHelper.Session["studentnumber"].ToString();
+                var studentNumber = Request.Cookies["StudentNumber"].Value.ToString();
+                //var studentNumber = SessionHelper.Session["studentnumber"].ToString();
                 string direName = $"/ExaminationSystem/AnswerSheet/{studentNumber + examid}/";
                 //2 将机试题保存到文件夹 
                 string computerfielnaem = "computerfielnaem";
