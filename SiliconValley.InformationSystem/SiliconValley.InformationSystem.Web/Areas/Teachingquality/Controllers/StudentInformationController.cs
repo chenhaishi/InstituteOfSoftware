@@ -192,6 +192,15 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
 
         }
         RedisCache redis = new RedisCache();
+
+
+        //获取学生宿舍访谈和详细信息
+        //public ActionResult GetDateList(string className)
+        //{
+        //    List<StudentInformation> StudentInformation = new List<StudentInformation>();
+
+        //}
+        
         //获取所有数据
         public ActionResult GetDate(int page, int limit, string Name, string Sex, string StudentNumber, string identitydocument,string Stu,string ClassName)
         {

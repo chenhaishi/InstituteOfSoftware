@@ -173,15 +173,24 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             decimal Amountofmoney = 0;
             //学员信息
             StudentInformationBusiness studentInformationBusiness = new StudentInformationBusiness();
+           BaseBusiness< StudentFeeRecordView> studentFeeRecord = new BaseBusiness<StudentFeeRecordView> ();
+            BaseBusiness<ScheduleForTrainees> ScheduleForTrainees = new BaseBusiness<ScheduleForTrainees>();
+            BaseBusiness<ClassSchedule> ClassSchedule = new BaseBusiness<ClassSchedule>();
+            BaseBusiness<Grand> Grand = new BaseBusiness<Grand>();
             var Student = dbtext.StudentFind(id);
             //阶段
             ViewBag.Stage = Grandcontext.GetList().Where(a => a.IsDelete == false).Select(a => new SelectListItem { Value = a.Id.ToString(), Text = a.GrandName }).ToList();
+            //当前阶段
+            var list = ScheduleForTrainees.GetList().Where(d => d.StudentID == id && d.CurrentClass == true).SingleOrDefault();
+            var schlist = ClassSchedule.GetList().Where(d => d.id == list.ID_ClassName).SingleOrDefault();
+            var Grandlist = Grand.GetList().Where(d => d.Id == schlist.grade_Id).SingleOrDefault();
+            ViewBag.StuName = Grandlist.GrandName;
             ViewBag.student = JsonConvert.SerializeObject(Student);
             var Preentry= Preentryfeebusenn.GetList().Where(a => a.identitydocument == studentInformationBusiness.GetEntity(id).identitydocument && a.Refundornot == null).ToList();
 
             ViewBag.Amountofmoney = dbtext.PreentryfeeFinet(id);
             BaseBusiness<Preferential> Preferential = new BaseBusiness<Preferential>();
-            var Preferential_List = Preferential.GetList().ToList();
+            var Preferential_List = Preferential.GetList().ToList(); 
             ViewBag.Preferential_List = Preferential_List;
             return View();
         }
