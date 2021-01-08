@@ -3639,6 +3639,7 @@
     <Content Include="Areas\Personnelmatters\Views\SocialSecurityDetail\UpdateTime.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\PerformanceAssess\AssessmentTimePeriodQuery.cshtml" />
     <Content Include="Areas\ExaminationSystem\Views\ExamScores\AnswerPage.cshtml" />
+    <Content Include="Areas\ExaminationSystem\Views\ExamArrangement\Examinationroomoperation.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />

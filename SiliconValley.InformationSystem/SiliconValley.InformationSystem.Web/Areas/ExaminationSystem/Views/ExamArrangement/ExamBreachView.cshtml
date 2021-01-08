@@ -42,7 +42,16 @@
 
                     <div class="layui-inline">
                         <label class="layui-form-label"></label>
-                        <button type="button" class="layui-btn layui-btn-primary"  id="AddBreach"><i class="layui-icon layui-icon-add-1"></i>记录违纪情况</button>
+                        <button type="button" class="layui-btn layui-btn-primary" id="AddBreach"><i class="layui-icon layui-icon-add-1"></i>记录违纪情况</button>
+                    </div>
+
+
+                </div>
+                <div class="layui-inline">
+
+                    <div class="layui-inline">
+                        <label class="layui-form-label"></label>
+                        <button type="button" class="layui-btn layui-btn-primary" id="operation"><i class="layui-icon layui-icon-add-1"></i>操作考场信息</button>
                     </div>
 
 
@@ -196,7 +205,16 @@
 
                 });
             });
+            $("#operation").click(function () {
 
+                layer.open({
+                    type: 2,
+                    area: ['100%','100%'],
+                    title: "操作考场信息",
+                    content: "/ExaminationSystem/ExamArrangement/Examinationroomoperation",
+
+                });
+            });
         });
     </script>
 

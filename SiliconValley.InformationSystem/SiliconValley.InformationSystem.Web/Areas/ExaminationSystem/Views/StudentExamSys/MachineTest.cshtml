@@ -76,7 +76,7 @@
             }
             else
             {
-                <a class="layui-btn layui-btn-warm" href="/ExaminationSystem/StudentExamSys/ComputerQuestionUpload?examid=@ViewBag.EXAMVIEW.ID">机试题下载</a>
+                <a class="layui-btn layui-btn-warm" id="xz" href="/ExaminationSystem/StudentExamSys/ComputerQuestionUpload?examid=@ViewBag.EXAMVIEW.ID">机试题下载</a>
             }
             <input class="layui-btn layui-btn-primary" id="Upload" type="file" name="computerQuestion" />
             <button type="button" class="layui-btn layui-btn-warm" id="COMMIT">提交机试</button><hr />
@@ -99,7 +99,6 @@
                 return div.innerHTML
             }
         }
-
         var ExamEndDateUTC;
         ///获取考试的结束时间
         function getEndTime() {

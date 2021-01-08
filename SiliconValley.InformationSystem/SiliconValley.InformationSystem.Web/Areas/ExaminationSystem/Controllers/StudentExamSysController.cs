@@ -496,7 +496,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             //首先查看是否已经随机获取到了一个
             var info = db_candidateinfo.GetList().Where(d => d.StudentID == studentNumber && d.Examination == examid).FirstOrDefault();
             if (info.DownloadContent!=null) {
-                return null;
+                return new FilePathResult("/ExaminationSystem/StudentExamSys/MachineTest.cshtml", "text/html");
             }
             var candidateInfo = db_exam.AllCandidateInfo(examid).Where(d => d.StudentID == studentNumber ).FirstOrDefault();
             ComputerTestQuestionsView computer = null;
@@ -741,7 +741,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 //2 将机试题文件放入AnswerSheet文件夹
                 //3.修改数据库值（选择题分数,解答题答案路径,机试题路径）
                 //4.记录选择题分数
-
                 //1 将解答题答案存入文件 首先新建学生答卷文件夹 名称规则 学号加上考试ID
 
                 string direName = $"/ExaminationSystem/AnswerSheet/{studentNumber + examid}/";
@@ -750,44 +749,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
                 PutObjectResponse putObjectResponseFromString = client.PutObject("xinxihua",$"{direName}{answerfilename}", AnswerCommit);
 
-                //2 将机试题保存到文件夹 
-                //string computerfielnaem = "computerfielnaem";
-                //var computerfile = Request.Files["rarfile"];
-
-                //保存的机试题路径
-                //string computerUrl = "";
-                //if (computerfile != null)
-                //{
-                //获取文件拓展名称 
-                //var exait = Path.GetExtension(computerfile.FileName);
-                //computerUrl = Server.MapPath("/Areas/ExaminationSystem/Files/AnswerSheet/" + direName + "/" + computerfielnaem + exait);
-                //computerUrl = $"{direName}{computerfielnaem + exait}";
-                //computerfile.SaveAs(computerUrl);
-                //Bos.Savefile("xinxihua", direName, computerfielnaem + exait, computerfile.InputStream);
-                //}
-
-                //3.修改数据库值（选择题分数，解答题答案路径，机试题路径）
                 db_exam.AllExamination().Where(d => d.ID == examid).FirstOrDefault();
                 var Candidateinfo = db_exam.AllCandidateInfo(examid).Where(d => d.Examination == examid && d.StudentID == studentNumber).FirstOrDefault();
                 //Candidateinfo.Paper = Server.MapPath("/Areas/ExaminationSystem/Files/AnswerSheet/" + direName + "/" + answerfilename);
                 Candidateinfo.Paper = $"{direName}{answerfilename}";
                 Candidateinfo.ComputerPaper = "1";
-                //获取需要替换的字符串路径
 
-                //if (Candidateinfo.ComputerPaper != null)
-                //{
-                //    var old = Candidateinfo.ComputerPaper.Substring(Candidateinfo.ComputerPaper.IndexOf(',') + 1);
-
-                //    if (old.Length == 0)
-                //    {
-                //        Candidateinfo.ComputerPaper = Candidateinfo.ComputerPaper + computerUrl;
-                //    }
-                //    else
-
-                //    {
-                //        Candidateinfo.ComputerPaper = Candidateinfo.ComputerPaper.Replace(old, computerUrl);
-                //    }
-                //}
 
                 db_exam.UpdateCandidateInfo(Candidateinfo);
 
