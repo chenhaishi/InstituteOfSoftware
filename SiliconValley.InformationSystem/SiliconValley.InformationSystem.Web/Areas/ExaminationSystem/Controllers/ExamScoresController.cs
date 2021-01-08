@@ -945,8 +945,15 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 StudentExamView examView = new StudentExamView();
                 examView.StudentID = multipleChoicelist[i].StudentID;
                 examView.StudentName = db_student.GetEntity(multipleChoicelist[i].StudentID).Name;
-                var jishi =multipleChoicelist[i].DownloadContent.ToInt();
-                examView.DownloadContent = db_machtest.GetList().Where(d => d.ID == jishi).FirstOrDefault().Title;
+                if (multipleChoicelist[i].DownloadContent != null)
+                {
+                    var jishi = multipleChoicelist[i].DownloadContent.ToInt();
+                    examView.DownloadContent = db_machtest.GetList().Where(d => d.ID == jishi).FirstOrDefault().Title;
+                }
+                else if(multipleChoicelist[i].DownloadContent == null)
+                {
+                    examView.DownloadContent = "没有下载";
+                }
                 examView.IsReExam = multipleChoicelist[i].IsReExam;
                 examView.Paper = multipleChoicelist[i].Paper;
                 examView.ComputerPaper = multipleChoicelist[i].ComputerPaper;

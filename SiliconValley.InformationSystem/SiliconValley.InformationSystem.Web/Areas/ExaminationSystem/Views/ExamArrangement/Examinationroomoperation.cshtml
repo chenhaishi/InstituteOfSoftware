@@ -1,0 +1,87 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Examinationroomoperation</title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+</head>
+<body>
+    <div id="toor">
+
+        <form class="layui-form">
+            <div class="layui-inline">
+
+                <div class="layui-inline">
+                    <label class="layui-form-label"></label>
+                    <button type="button" class="layui-btn layui-btn-primary" id="selectExam"><i class="layui-icon layui-icon-add-1"></i>选择考场</button>
+                </div>
+
+
+            </div>
+        </form>
+
+    </div>
+    <table class="layui-hide" lay-filter="ExamScores" id="ExamScores"></table>
+</body>
+</html>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-danger download" lay-event="" style="color:white">笔试为空</a>
+</script>
+<script type="text/html" id="barDemoes">
+    <a class="layui-btn layui-btn-danger download" lay-event="" style="color:white">机试为空</a>
+</script>
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/layui/layui.js"></script>
+<script src="~/Scripts/underscore.js"></script>
+<script src="~/Areas/Teaching/Scripts/util.js"></script>
+<script type="text/template" id="muban2">
+    <button>hsdfkhj</button>
+</script>
+<script>
+    var examid;
+    var stuNumber;
+    layui.use(['layer', 'table', 'form'], function () {
+        var form = layui.form;
+        var table = layui.table;
+        var layer = layui.layer;
+        table.render({
+            elem: '#ExamScores'
+            , url: ''
+            , toolbar: '#toolbarDemo'
+            , title: '学生名单'
+            , cols: [[
+                , { field: '', title: '学号', width: "18%", sort: true }
+                , { field: '', title: '学员名称', width: "15%" }
+                , { field: '', title: '笔试', width: "15%"}
+                , { field: '', title: '操作', width: "15%", toolbar: '#barDemo' }
+                , { field: '', title: '机试', width: "15%"}
+                , { field: '', title: '操作', width: "15%", toolbar: '#barDemoes' }
+            ]]
+        });
+        $("#selectExam").click(function () {
+
+            window.parent.selectExamWindow(function () {
+
+                //获取考试数据
+                var examData = window.parent.getexamData();
+
+                if (examData != undefined) {
+
+                    $("#examData").html("");
+
+                    $("#stuData").html("");
+                    stuNumber = undefined;
+
+                    examid = examData.ID;
+                    console.log(examid);
+                }
+            });
+        });
+    });
+</script>

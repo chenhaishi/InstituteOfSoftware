@@ -75,6 +75,14 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             return View();
         }
         /// <summary>
+        /// 考场学生操作
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Examinationroomoperation()
+        {
+            return View();
+        }
+        /// <summary>
         /// 考试发布编辑页面
         /// </summary>
         /// <param name="id"></param>
