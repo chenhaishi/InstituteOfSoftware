@@ -275,15 +275,17 @@
                         //})
                         break;
                     case 'Salary':
-                        layer.open({
-                            type: 2,
-                            area: ["400px", "350px"],
-                            content: '/Personnelmatters/EmpSalaryManagement/MonthlySalaryExport'
-                            , title: '月度工资导出'
-                            , shade: 0.8
-                            , anim: 4
-                            , skin: 'demo-class'
-                        });
+                        var time = '@ViewBag.yearandmonth';
+                        //layer.open({
+                        //    type: 2,
+                        //    area: ["400px", "350px"],
+                        //    content: '/Personnelmatters/EmpSalaryManagement/MonthlySalaryExport'
+                        //    , title: '月度工资导出'
+                        //    , shade: 0.8
+                        //    , anim: 4
+                        //    , skin: 'demo-class'
+                        //});
+                        window.open("/Personnelmatters/EmpSalaryManagement/MonthlySalaryExport?time=" + time);
                         break;
                 };
             });

@@ -289,6 +289,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         {
             AjaxResult result = new AjaxResult();
             SocialSecurityDetailManage social = new SocialSecurityDetailManage();
+
             try
             {
                 var so = social.GetEntity(soc.Id);
@@ -317,6 +318,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 so.IsDel = soc.IsDel;
                 social.Update(so);
                 rc.RemoveCache("InRedisSocialSecurityData");
+
+                EmplSalaryEmbodyManage esemanage = new EmplSalaryEmbodyManage();
+                var emplSalary=  esemanage.GetEseByEmpid(so.EmployeeId);
+                emplSalary.PersonalSocialSecurity = soc.PersonalTotal;
+                esemanage.Update(emplSalary);
+
                 result = social.Success();
             }
             catch (Exception e)

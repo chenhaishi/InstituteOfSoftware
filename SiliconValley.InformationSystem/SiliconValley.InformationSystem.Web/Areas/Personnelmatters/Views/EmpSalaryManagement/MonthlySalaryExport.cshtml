@@ -37,21 +37,22 @@
                 type: 'month'
             })
             form.on("submit(demo1)", function () {
-                $.ajax({
-                    url: "/Personnelmatters/EmpSalaryManagement/MonthlySalaryExport",
-                    type: "post",
-                    data: JSON.stringify({ "time": $("#month").val() }),
-                    dataType: "json",
-                    contentType: "Application/json",
-                    success: function (data) {
-                        layer.alert(data.Msg, function myfunction() {
-                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                            window.parent.location.reload();
-                            parent.layer.close(index);
-                        });
+                window.open("/Personnelmatters/EmpSalaryManagement/MonthlySalaryExport?time=" + $("#month").val());
+                //$.ajax({
+                //    url: "/Personnelmatters/EmpSalaryManagement/MonthlySalaryExport",
+                //    type: "post",
+                //    data: JSON.stringify({ "time": $("#month").val() }),
+                //    dataType: "json",
+                //    contentType: "Application/json",
+                //    success: function (data) {
+                //        layer.alert(data.Msg, function myfunction() {
+                //            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                //            window.parent.location.reload();
+                //            parent.layer.close(index);
+                //        });
 
-                    }
-                })
+                //    }
+                //})
             })
 
         })
