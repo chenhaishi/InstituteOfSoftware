@@ -495,9 +495,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             var studentNumber = SessionHelper.Session["studentnumber"].ToString();
             //首先查看是否已经随机获取到了一个
             var info = db_candidateinfo.GetList().Where(d => d.StudentID == studentNumber && d.Examination == examid).FirstOrDefault();
-            if (info.DownloadContent!=null) {
-                return new FilePathResult("/ExaminationSystem/StudentExamSys/MachineTest.cshtml", "text/html");
-            }
             var candidateInfo = db_exam.AllCandidateInfo(examid).Where(d => d.StudentID == studentNumber ).FirstOrDefault();
             ComputerTestQuestionsView computer = null;
 
@@ -513,8 +510,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             if (candidateInfo.ComputerPaper == "1")
             {
-                //第一次
-                 
+                if (info.DownloadContent != null)
+                {
+                    computer = db_stuExam.productComputerQuestion(exam,0,info.DownloadContent.ToInt());
+                }
+                else
+                { 
                 //判断考试类型
                 if (examview.ExamType.ExamTypeID == 1)
                 {
@@ -522,17 +523,17 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                     {
                         //var curriculumes = db_curriculum.GetList().Where(d => d.Grand_Id == 29  && d.IsEndCurr == true).FirstOrDefault();
                         //courseid = curriculumes.CurriculumID;
-                        computer = db_stuExam.productComputerQuestion(exam, 29);
+                        computer = db_stuExam.productComputerQuestion(exam, 29,0);
                     }
                     else if (grand.Id == 2 && classnamees == "JA")
                     {
                         //var curriculumeses = db_curriculum.GetList().Where(d => d.Grand_Id == 28  && d.IsEndCurr == true).FirstOrDefault();
                         //courseid = curriculumeses.CurriculumID;
-                        computer = db_stuExam.productComputerQuestion(exam, 28);
+                        computer = db_stuExam.productComputerQuestion(exam, 28,0);
                     }
                     else {
                         courseid = curriculum.CurriculumID;
-                        computer = db_stuExam.productComputerQuestion(exam, courseid);
+                        computer = db_stuExam.productComputerQuestion(exam, courseid,0);
                     }
                     
 
@@ -546,11 +547,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                     XmlElement xmlelm = db_exam.ExamCourseConfigRead(examid);
 
                     courseid = int.Parse(xmlelm.FirstChild.Attributes["id"].Value);
-                    computer = db_stuExam.productComputerQuestion(exam, courseid);
+                    computer = db_stuExam.productComputerQuestion(exam, courseid,0);
 
                     //candidateInfo.ComputerPaper = computer.ID.ToString() + ",";
 
                     //db_exam.UpdateCandidateInfo(candidateInfo);
+                }
                 }
             }
                 CloudstorageBusiness Bos = new CloudstorageBusiness();
@@ -561,9 +563,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
                 //var ar = candidateInfo.ComputerPaper.Split(',');.Where(d => d.ID == int.Parse(ar[0]))
 
-               var com = db_exam.AllComputerTestQuestion(PaperLevel, courseid,IsNeedProposition: false);
+               //var com = db_exam.AllComputerTestQuestion(PaperLevel, courseid,IsNeedProposition: false);
                 
-                var filename = Path.GetFileName(com.SaveURL);
+                var filename = Path.GetFileName(computer.SaveURL);
               
                 //var path = Server.MapPath("/uploadXLSXfile/ComputerTestQuestionsWord/" + filename);
               
@@ -746,6 +748,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 string direName = $"/ExaminationSystem/AnswerSheet/{studentNumber + examid}/";
                 //写文件
                  string answerfilename = "AnswerSheet.txt";
+
 
                 PutObjectResponse putObjectResponseFromString = client.PutObject("xinxihua",$"{direName}{answerfilename}", AnswerCommit);
 
@@ -1007,7 +1010,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             var client = Bos.BosClient();
 
-            var questiondata = db_stuExam.productComputerQuestion(examination, int.Parse(kecheng));
+            var questiondata = db_stuExam.productComputerQuestion(examination, int.Parse(kecheng),0);
 
                 var filename = Path.GetFileName(questiondata.SaveURL);
 
