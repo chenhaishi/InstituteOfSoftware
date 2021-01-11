@@ -7,8 +7,8 @@
     <div class="layui-btn-container">
         <button class="layui-btn layui-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>修改社保比例</button>
         <button class="layui-btn layui-btn-sm" lay-event="year"><i class="layui-icon layui-icon-edit"></i>更改年月份</button>
-        <button class="layui-btn layui-btn-sm" lay-event="payment"><i class="layui-icon layui-icon-edit"></i>缴纳大病保险</button>
-        <button class="layui-btn layui-btn-sm" lay-event="Multiple"><i class="layui-icon layui-icon-edit"></i>补缴社保</button>
+        @*<button class="layui-btn layui-btn-sm" lay-event="payment"><i class="layui-icon layui-icon-edit"></i>缴纳大病保险</button>*@
+        @*<button class="layui-btn layui-btn-sm" lay-event="Multiple"><i class="layui-icon layui-icon-edit"></i>补缴社保</button>*@
     </div>
 </script>
 <script type="text/html" id="barDemo">
@@ -71,7 +71,10 @@
 
         </form>
     </fieldset>
-    <table id="Soctab" lay-filter="Soctab"></table>
+    <div id="Refresh">
+        <table id="Soctab" lay-filter="Soctab"></table>
+    </div>
+    
 </div>
 @{
     SocialSecProportion social = Model as SocialSecProportion;
@@ -104,7 +107,7 @@
                 , { field: 'Total', title: '合计', width: 110, sort: true, rowspan: 2 },
                 { title: '操作', toolbar: '#barDemo', width: 280, fixed: 'right', rowspan: 2 }
             ]
-                , [
+                , [ 
                 { field: 'EndowmentInsurance', title: '养老保险(@social.EndowmentInsurance%)', width: 115 },
                 { field: 'MedicalInsurance', title: '医疗保险(@social.MedicalInsurance%)', width: 115 },
                 { field: 'WorkInjuryInsurance', title: '工伤保险(@social.WorkInjuryInsurance%)', width: 115 },

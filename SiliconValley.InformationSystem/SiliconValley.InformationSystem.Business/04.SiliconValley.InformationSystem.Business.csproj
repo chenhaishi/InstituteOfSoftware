@@ -258,6 +258,7 @@
     <Compile Include="Psychro\ProStudentAndTeacherBussiness.cs" />
     <Compile Include="Psychro\RegionBusiness.cs" />
     <Compile Include="Psychro\SchoolYearPlanBusiness.cs" />
+    <Compile Include="RecruitingDataSummaryBusiness\DeptRecruitingDataSummaryViewManage.cs" />
     <Compile Include="RecruitingDataSummaryBusiness\RecruitingDataSummaryManage.cs" />
     <Compile Include="RecruitPhoneTraceBusiness\RecruitPhoneTraceManage.cs" />
     <Compile Include="RegionManage\RegionManeges.cs" />

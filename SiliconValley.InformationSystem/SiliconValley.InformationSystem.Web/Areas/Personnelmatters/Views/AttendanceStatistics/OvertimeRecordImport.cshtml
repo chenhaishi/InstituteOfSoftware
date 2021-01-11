@@ -130,10 +130,10 @@
                                 var errdata = data.Data;//录入错误的数据
                                 var detailerrdata = "";
                                 for (var i = 0; i < errdata.length; i++) {
-                                    detailerrdata += errdata[i].empname + "的考勤数据录入出错，原因是：" + errdata[i].errorExplain + "<br/>";
+                                    detailerrdata += "姓名为" + errdata[i].empname + "的考勤数据录入出错，原因是：" + errdata[i].errorExplain + "<br/>";
                                 };
                                  msg = "成功录入" + data.Msg + "条数据" + errdata.length +
-                                    "条数据录入失败。失败数据分析如下：</br>" + detailerrdata;
+                                     "条数据录入失败。失败数据分析如下：</br>" +detailerrdata;
                             }
                             layer.alert(msg, { icon: 1 }, function () {
                                 // window.document.location.reload();
