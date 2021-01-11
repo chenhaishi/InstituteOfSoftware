@@ -123,7 +123,10 @@
             });
             $("#btnclose1").click(function () {
                 var index = parent.layer.getFrameIndex(window.name);
-                parent.layui.table.reload('Soctab');
+                //parent.layui.table.reload('Soctab'); 
+                //parent.layui.reload('#Refresh');
+                //$("#Refresh").load(location.href + "#Refresh"); 
+                parent.$("#Soctab").load(window.parent.location.href + " #Soctab");
                 parent.layer.close(index);
             });
         });

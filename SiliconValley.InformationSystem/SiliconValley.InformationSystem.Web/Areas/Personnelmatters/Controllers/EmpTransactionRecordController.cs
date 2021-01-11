@@ -419,7 +419,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                                 if (etr.PreviousDept!=etr.PresentDept) {
                                     ajaxresult.Success = empmanage.DelEmpToCorrespondingDept(emp);
                                     if (ajaxresult.Success) {
-                                        ajaxresult.Success = empmanage.AddEmpToCorrespondingDept(emp2);
+                                        ajaxresult.Success = empmanage.AddEmpToCorrespondingDept(emp2).Success;
                                     }
                                 }
                             }

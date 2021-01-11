@@ -8,6 +8,7 @@
     <ul class="layui-tab-title">
         <li class="layui-this">招聘追踪记录</li>
         <li>月度招聘数据汇总</li>
+        <li>部门月度招聘数据汇总</li>
     </ul>
 
     <div class="layui-tab-content">
@@ -63,7 +64,7 @@
                                 <input type="text" id="ResumeType" name="ResumeType" autocomplete="off" class="layui-input">
                             </div>
                         </div>
-                        <div class="layui-col-xs3 layui-col-sm3 layui-col-md3" >
+                        <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
                             <label class="layui-form-label" style="width:150px;margin-left:-10px;">面&nbsp;&nbsp;&nbsp;&nbsp;试&nbsp;&nbsp;&nbsp;&nbsp;结&nbsp;&nbsp;&nbsp;&nbsp;果:</label>
                             <div class="layui-input-inline">
                                 <select name="result" id="result">
@@ -188,7 +189,50 @@
 
             <table id="recruitTab" lay-filter="recruitTab"></table>
         </div>
+        <div class="layui-tab-item">
+            @*月度部门汇总模糊查询*@
+            <form class="layui-form" action="" lay-filter="formtest">
+                <div class="layui-row layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width:100px;margin-left:-20px;">部门:</label>
+                        <div class="layui-input-inline">
+                            <select name="deptid" id="deptid" style="width:130px;" lay-filter="deptidfilter" lay-search=""></select>
 
+                        </div>
+                    </div>
+
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width:100px;">岗位</label>
+                        <div class="layui-input-block">
+                            <select name="Pid" id="Pid" lay-filter="pidfilter">
+                                <option value="">请选择应聘的岗位</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width:100px;">年月份：</label>
+                        <div class="layui-inline" style="margin-left:-50px;">
+                            <label class="layui-form-label">从：</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="start_time" name="start_time" placeholder="yyyy-MM" lay-verify="start_time" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-inline" style="margin-left:-50px;">
+                            <label class="layui-form-label">至：</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="end_time" name="start_time" placeholder="yyyy-MM" lay-verify="end_time" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="layui-btn" type="button" id="Conditionselect" style="margin-left:160px;"><i class="layui-icon layui-icon-search"></i>查询</button>
+                </div>
+            </form>
+
+            <table id="DeptRecruitTab" lay-filter="DeptRecruitTab"></table>
+        </div>
     </div>
 </div>
 
@@ -736,6 +780,42 @@
         });
     </script>
 
-
+    @*部门月度招聘*@
+    <script>
+        layui.use(['table', 'layer', 'form', 'laydate', 'element'], function () {
+            var table = layui.table;
+            var layer = layui.layer;
+            var form = layui.form;
+            var laydate = layui.laydate;
+            var element = layui.element;
+            table.render({
+                elem: '#DeptRecruitTab'
+                , url: '/Personnelmatters/RecruitingDataSummary/GetDeptRecruitData'
+                , id: "myDeptRecruitData"
+                , toolbar: '#toolbarDemo3'
+                , limits: [1, 5,15,20,25,50,100]
+                , limit: 5
+                , cols: [[
+                    , { field: 'YearAndMonth', title: '月份', sort: true, width: 82, templet: function (d) { return GetYearAndMonth(d.YearAndMonth); } }
+                    , { field: 'DeptName', title: '部门', width: 100}
+                    , { field: 'PlanRecruitNum', title: '计划招聘人数'}
+                    , { field: 'ResumeSum', title: '简历总数', width: 100 }
+                    , { field: 'OutboundCallSum', title: '电话呼出总数', width: 115 }
+                    , { field: 'InstantInviteSum', title: '当月邀约总数', width: 115 }
+                    , { field: 'InstantToFacesSum', title: '当月到面总数', width: 115 }
+                    , { field: 'InstantRetestSum', title: '当月复试总数', width: 115 }
+                    , { field: 'InstantRetestPassSum', title: '当月复试通过总数', width: 145 }
+                    , { field: 'InstantEntryNum', title: '当月入职人数', width: 115 }
+                    , { field: 'InstantToFacesRate', title: '当月到面率', width: 105 }
+                    , { field: 'InstantInviteRate', title: '当月邀约率', width: 105 }
+                    , { field: 'InstantRetestPassrate', title: '当月复试通过率', width: 130 }
+                    , { field: 'EntryRate', title: '入职率', width: 90 }
+                    , { field: 'RecruitPercentage', title: '招聘完成率', width: 105 }
+                ]]
+                , page: true
+            });
+           
+        });
+    </script>
 
 }
