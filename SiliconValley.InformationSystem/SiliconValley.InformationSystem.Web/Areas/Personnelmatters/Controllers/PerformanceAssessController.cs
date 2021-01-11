@@ -143,7 +143,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             var AjaxResultxx = new AjaxResult();
             try
             {
-                FirstTime = CurrentTime;
+                //FirstTime = CurrentTime;
                 //var attlist = mcmanage.GetEmpMCData().Where(s => s.IsDel == false).ToList();
                 //for (int i = 0; i < attlist.Count(); i++)
                 //{
@@ -269,13 +269,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult IsConfirmApproval(string time)
+        public ActionResult IsConfirmApproval()
         {
             MeritsCheckManage mcmanage = new MeritsCheckManage();//员工月度工资
             var AjaxResultxx = new AjaxResult();
             try
             {
-                var mtime = DateTime.Parse(time);
+                var mtime = DateTime.Parse(FirstTime);
                 var msrlist = mcmanage.GetEmpMCData().Where(s => DateTime.Parse(s.YearAndMonth.ToString()).Year == mtime.Year && DateTime.Parse(s.YearAndMonth.ToString()).Month == mtime.Month).ToList();
                 if (msrlist.FirstOrDefault().IsApproval == true)
                 {
@@ -304,7 +304,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             var AjaxResultxx = new AjaxResult();
             try
             {
-                var curtime = DateTime.Parse(time);
+                var curtime = DateTime.Parse(FirstTime);
                 var curlist = mcmanage.GetEmpMCData().Where(s => DateTime.Parse(s.YearAndMonth.ToString()).Year == curtime.Year && DateTime.Parse(s.YearAndMonth.ToString()).Month == curtime.Month).ToList();
                 foreach (var item in curlist)
                 {
@@ -347,7 +347,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         {
             string rr = Server.MapPath("/uploadXLSXfile/Template/绩效模板.xlsx");  //获取下载文件的路径         
             FileStream stream = new FileStream(rr, FileMode.Open);
-            return File(stream, "application/octet-stream", Server.UrlEncode("绩效模板.xls"));
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", Server.UrlEncode("绩效模板.xlsx"));
         }
         public ActionResult AssessmentTimePeriodQuery(string  empid)
         {

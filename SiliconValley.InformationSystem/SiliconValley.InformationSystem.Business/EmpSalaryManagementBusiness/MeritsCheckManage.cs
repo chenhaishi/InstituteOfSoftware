@@ -197,12 +197,12 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     //MeritsCheckView merits = new MeritsCheckView();
                     num++;
                     var getrow = sheet.GetRow(num);
-                    if (string.IsNullOrEmpty(Convert.ToString(getrow)))
+                    if (getrow==null)
                     {
                         break;
                     }
-                    if (!string.IsNullOrEmpty(getrow.GetCell(1).ToString()) || !string.IsNullOrEmpty(getrow.GetCell(0).ToString()) || !string.IsNullOrEmpty(getrow.GetCell(2).ToString()))
-                    {
+                    //if (!string.IsNullOrEmpty(getrow.GetCell(1).ToString()) || !string.IsNullOrEmpty(getrow.GetCell(0).ToString()) || !string.IsNullOrEmpty(getrow.GetCell(2).ToString()))
+                    //{
                         string Year = string.IsNullOrEmpty(Convert.ToString(sheet.GetRow(1).GetCell(0))) ? null : sheet.GetRow(1).GetCell(0).ToString();
                         string name = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(0))) ? null : getrow.GetCell(0).ToString();
                         string ddid = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(1))) ? null : getrow.GetCell(1).ToString();
@@ -268,7 +268,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
 
 
                     }
-                }
+                //}
                 //sql = sql.Substring(0, sql.Length - 1);
                 //ExecuteSql(sql);
 

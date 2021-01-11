@@ -25,6 +25,8 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
     using SiliconValley.InformationSystem.Business.EmpTransactionBusiness;
     using SiliconValley.InformationSystem.Business.Base_SysManage;
     using SiliconValley.InformationSystem.Entity;
+    using SiliconValley.InformationSystem.Entity.Base_SysManage;
+
     /// <summary>
     /// 员工业务类
     /// </summary>
@@ -403,63 +405,77 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
         /// </summary>
         /// <param name="emp">员工对象</param>
         /// <returns></returns>
-        public bool AddEmpToCorrespondingDept(EmployeesInfo emp)
+        public AjaxResult AddEmpToCorrespondingDept(EmployeesInfo emp)
         {
-            bool result = true;
-           
+            AjaxResult result = new AjaxResult ();
 
+            #region 给该员工创建用户账号
+            Base_UserBusiness db_user = new Base_UserBusiness();
+            EnCh ench = new EnCh();
+            var empname = ench.convertCh(emp.EmpName);
+            var count =  this.GetListBySql<Base_User>("select *from Base_User where UserName=" + empname).Count();
+            if (count==0)
+            {
+                db_user.createAccount(empname, emp.EmployeeId);
+            }
+            else
+            {
+                //EmpErrorDataView emperror = new EmpErrorDataView();
+                //emperror.excelId = emp.EmpName;
+               //result.Msg= "未能创建账号，原因是已经有该账号了！";
+                result.ErrorCode = 200;
+                //emperrorlist.Add(emperror);
+
+            }
+            
+            #endregion
             var dname = this.GetDept(emp.PositionId).DeptName;//获取该员工所属部门名称
             var pname = this.GetPosition(emp.PositionId).PositionName;//获取该员工所属岗位名称
             if (dname.Equals("就业部"))
             {
                 EmploymentStaffBusiness esmanage = new EmploymentStaffBusiness();
-                result = esmanage.AddEmploystaff(emp.EmployeeId);//给就业部员工表添加员工
+                result.Success = esmanage.AddEmploystaff(emp.EmployeeId);//给就业部员工表添加员工
             }
             if (dname.Equals("市场部"))
             {
                 ChannelStaffBusiness csmanage = new ChannelStaffBusiness();
-                result = csmanage.AddChannelStaff(emp.EmployeeId);
+                result.Success = csmanage.AddChannelStaff(emp.EmployeeId);
             }//给市场部员工表添加员工
             if ((dname.Equals("s1、s2教质部") || dname.Equals("s3教质部")) && !pname.Equals("教官"))
             {
                 HeadmasterBusiness hm = new HeadmasterBusiness();
-                result = hm.AddHeadmaster(emp.EmployeeId);
+                result.Success = hm.AddHeadmaster(emp.EmployeeId);
             }//给两个教质部员工表添加除教官外的员工
             if ((dname.Equals("s1、s2教质部") || dname.Equals("s3教质部")) && pname.Equals("教官") || dname.Equals("教导大队"))
             {
                 InstructorListBusiness itmanage = new InstructorListBusiness();
-                result = itmanage.AddInstructorList(emp.EmployeeId);
+                result.Success = itmanage.AddInstructorList(emp.EmployeeId);
             }//给教官员工表添加教官
             if (pname.Equals("咨询师") || pname.Equals("咨询主任"))
             {
                 ConsultTeacherManeger cmanage = new ConsultTeacherManeger();
-                result = cmanage.AddConsultTeacherData(emp.EmployeeId);
+                result.Success = cmanage.AddConsultTeacherData(emp.EmployeeId);
             }//给咨询部员工表添加除咨询助理外的员工
             if (dname.Equals("s1、s2教学部") || dname.Equals("s3教学部") || dname.Equals("s4教学部"))//给三个教学部员工表添加员工
             {
                 TeacherBusiness teamanage = new TeacherBusiness();
                 Teacher tea = new Teacher();
                 tea.EmployeeId = emp.EmployeeId;
-                result = teamanage.AddTeacher(tea);
+                result.Success = teamanage.AddTeacher(tea);
             }
             if (dname.Equals("财务部"))
             {
                 FinanceModelBusiness fmmanage = new FinanceModelBusiness();
-                result = fmmanage.AddFinancialstaff(emp.EmployeeId);
+                result.Success = fmmanage.AddFinancialstaff(emp.EmployeeId);
             }//给财务部员工表添加员工
 
             EmplSalaryEmbodyManage esemanage = new EmplSalaryEmbodyManage();
             if (!dname.Equals("教导大队"))
             {
-                result = esemanage.AddEmpToEmpSalary(emp.EmployeeId);//往员工工资体系表添加员工
+                result.Success = esemanage.AddEmpToEmpSalary(emp.EmployeeId);//往员工工资体系表添加员工
             }
 
-            #region 给该员工创建用户账号
-            Base_UserBusiness db_user = new Base_UserBusiness();
-            EnCh ench = new EnCh();
-            var empname = ench.convertCh(emp.EmpName);
-            db_user.createAccount(empname, emp.EmployeeId);
-            #endregion
+           
 
             return result;
         }
@@ -694,7 +710,6 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
             return result;
 
         }
-
         /// <summary>
         /// 将excel数据类的数据存入到数据库的员工表中
         /// </summary>
@@ -829,8 +844,13 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
                                                         emp.Image = "guigu.jpg";
                                                         this.Insert(emp);
                                                         rc.RemoveCache("InRedisEmpInfoData");
-                                                        AddEmpToCorrespondingDept(emp);
-                                                      
+                                                      var s=  AddEmpToCorrespondingDept(emp);
+                                                        if (s.ErrorCode==200)
+                                                        {
+                                                            emperror.excelId = emp.EmpName;
+                                                            emperror.errorExplain = "未能创建该账号，原因是该账号已存在！";
+                                                            emperrorlist.Add(emperror);
+                                                        }
                                                         #endregion
                                                     }
                                                 }

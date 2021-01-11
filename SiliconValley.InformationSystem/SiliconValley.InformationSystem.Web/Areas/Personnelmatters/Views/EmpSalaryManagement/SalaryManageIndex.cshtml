@@ -87,16 +87,17 @@
     {{# } }}
 
 </script>
+
 @*<div class="layui-hide" id="datamonth">
-    <div class="layui-form-item">
-        <label class="layui-form-label">请选择日期</label>
-        <div class="layui-input-inline">
-            <input type="text" class="layui-input" id="month" placeholder="yyyy-MM">
+        <div class="layui-form-item">
+            <label class="layui-form-label">请选择日期</label>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" id="month" placeholder="yyyy-MM">
+            </div>
         </div>
-    </div>
-</div>*@
-    @section script{
-        <script>
+    </div>*@
+@section script{
+    <script>
 
         layui.use(['table', 'layer', 'form', 'laydate', 'element'], function () {
             var table = layui.table;
@@ -136,7 +137,7 @@
                     , { field: 'PayCardSalary', title: '实发工资(工资卡)', width: 160, rowspan: 2 }
                     , { field: 'CashSalary', title: '实发工资(现金)', width: 150, rowspan: 2 }
                     , { field: 'EmpState', title: '员工状态', width: 100, rowspan: 2, templet: '#empstate' }
-                    , { field: 'IsFinancialAudit', title: '财务审核状态', sort: true, width: 110, fixed: "right", templet: '#Audit' }
+                    //, { field: 'IsFinancialAudit', title: '财务审核状态', sort: true, width: 110, fixed: "right", templet: '#Audit' }
                     , { title: '操作', toolbar: '#barDemo', width: 100, fixed: 'right', rowspan: 2 }
                     ]
                     ,[
@@ -206,6 +207,38 @@
                         }
                         break;
                     case 'Email':
+                         var time = '@ViewBag.yearandmonth';
+                        console.log("我的时间：" + JSON.stringify(time));
+                        if (JSON.stringify(time) != "{}") {
+                            var load = layer.load(1);
+                            $.ajax({
+                                type: "post",
+                                dataType: "json",
+                                async: false,
+                                url: "/Personnelmatters/EmpSalaryManagement/JudgmentOfSalaryDetails",
+                                data: { time:time } ,
+                                success: function (data) {
+                                    layer.close(load);
+                                    if (data.ErrorCode == 200) {
+                                        if (data.Success) {
+                                            layer.confirm(data.Data, { icon: 3, title: '提示' }, function (index) {
+                                                JudgmentOfSalaryDetails(time);
+                                            })
+                                        } else {
+                                            layer.alert(data.Data, { icon: 1 }, function (index) {
+                                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                                window.parent.location.reload();
+                                                parent.layer.close(index);
+                                            });
+                                        }
+                                    } else {
+                                        layer.msg("系统错误,请联系后台管理员!");
+                                    }
+                                }
+                            });
+                        } else {
+                            layer.msg("没有数据!");
+                        }
                         //laydate.render({
                         //    elem: "#month",
                         //    type: 'month'
@@ -214,76 +247,30 @@
                       //    type: 1,
                       //    closeBtn: 0,
                       //    content: $("#datamonth").removeClass("layui-hide"),
-                      //    btn: ['确定', '取消'], 
+                      //    btn: ['确定', '取消'],
                       //    yes: function () {
                       //          layer.close(open);
                       //        $("#datamonth").addClass("layui-hide");
-                              var time='@ViewBag.yearandmonth';
-                                var year = time.substring(0, 4);
-                                var month = time.substring(5,7);
-                                layer.confirm('是否要向所有员工发送' + year + "年" + month + '月的工资条', { icon: 3, title: '提示' }, function (index) {
-                                    layer.close(index);
-                                    var index = layer.msg("正在发送邮件", { icon: 16, shade: 0.6 });
-                                    $.ajax({
-                                        url: "/Personnelmatters/EmpSalaryManagement/PaySlipExcel",
-                                        type: "post",
-                                        data: JSON.stringify({ "time": time }),
-                                        dataType: "json",
-                                        contentType: "Application/json",
-                                        success: function (data) {
-                                            console.log(data); 
-                                            if (data.Success) {
-                                                var msg = "";
-                                                if (data.ErrorCode == 100) {//没有一条数据出错
-                                                    msg = "" + data.Msg;
-                                                } else if (data.ErrorCode == 200) {
-                                                    var errdata = data.Data;//录入错误的数据
-                                                    var detailerrdata = "";
-                                                    for (var i = 0; i < errdata.length; i++) {
-                                                        detailerrdata += "姓名为"+errdata[i].empname + "的工资详情发送出错，原因是：" + errdata[i].errorExplain + "<br/>";
-                                                    };
-                                                    //msg = "成功发送" + data.Msg + "条数据" + errdata.length +
-                                                    //    "条数据发送失败。失败数据分析如下：</br>" + detailerrdata;
-                                                    msg = data.Msg+"失败数据分析如下：</br>" + detailerrdata;
-                                                }
-                                                layer.alert(msg, { icon: 1 }, function () {
-                                                    // window.document.location.reload();
-                                                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                                                    window.parent.location.reload();
-                                                    parent.layer.close(index);
-
-                                                });
-
-                                            }
-                                           
-                                            //if (data.Success) {
-                                            //    layer.close(index)
-                                            //    layer.alert(data.Msg, { icon: 1 });
-                                            //} else {
-                                            //    layer.close(index)
-                                            //    layer.alert("邮件发送失败" + data.Data, { icon: 2 });
-                                            //}
-                                        }
-                                    })
-                                });
+                       
+                           
                         //  },
                         //  btn2: function () {
                         //      $("#datamonth").addClass("layui-hide");
                         //  }
-                            
-
                         //})
                         break;
                     case 'Salary':
-                        layer.open({
-                            type: 2,
-                            area: ["400px", "350px"],
-                            content: '/Personnelmatters/EmpSalaryManagement/MonthlySalaryExport'
-                            , title: '月度工资导出'
-                            , shade: 0.8
-                            , anim: 4
-                            , skin: 'demo-class'
-                        });
+                        var time = '@ViewBag.yearandmonth';
+                        //layer.open({
+                        //    type: 2,
+                        //    area: ["400px", "350px"],
+                        //    content: '/Personnelmatters/EmpSalaryManagement/MonthlySalaryExport'
+                        //    , title: '月度工资导出'
+                        //    , shade: 0.8
+                        //    , anim: 4
+                        //    , skin: 'demo-class'
+                        //});
+                        window.open("/Personnelmatters/EmpSalaryManagement/MonthlySalaryExport?time=" + time);
                         break;
                 };
             });
@@ -329,7 +316,7 @@
                                         , skin: 'demo-class'
                                     });
                                 }
-                            
+
                             }
                         } else {
                             layer.alert("系统出错，请多次尝试后");
@@ -371,7 +358,7 @@
                 var layer = layui.layer;      //layui对象
                 layer.open({
                     type: 2
-                    , area: ["400px", "300px"]
+                    , area: ["400px", "350px"]
                     , title: ""
                     , content: '/Personnelmatters/EmpSalaryManagement/UpdateTime'
                     , anim: 2
@@ -384,8 +371,10 @@
         //"确认审批"按钮事件
             function ConfirmApproval(time) {
                 layer.confirm('确认已完成该月份月度工资的线下审批，且开始进行线上确认审批？<br/><span style="color:red;">注：一经确认将不可进行任何修改！</span>', function (index) {
+                    var l = layer.load(1);
                     $.post('/Personnelmatters/EmpSalaryManagement/ConfirmApproval', { 'time': time }, function (da) {
                         if (da) {
+                            layer.close(l);
                             layer.alert("操作成功!", { icon: 1 }, function (index) {
                                 var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                                 window.parent.location.reload();
@@ -398,7 +387,53 @@
                     })
                 });
             }
+        function JudgmentOfSalaryDetails(time) {
+            var loadindex = layer.load(1);
+            $.ajax({
+                url: "/Personnelmatters/EmpSalaryManagement/PaySlipExcel",
+                type: "post",
+                data: JSON.stringify({ "time": time }),
+                dataType: "json",
+                contentType: "Application/json",
+                processData: false,
+                success: function (data) {
+                    layer.close(loadindex);
 
+                    if (data.Success) {
+                        var msg = "";
+                        if (data.ErrorCode == 100) {//没有一条数据出错
+                            msg = "发送成功!  发送数量：" + data.Msg;
+                        } else if (data.ErrorCode == 200) {
+                            var errdata = data.Data;//录入错误的数据
+                            var detailerrdata = "";
+                            for (var i = 0; i < errdata.length; i++) {
+                                detailerrdata += "姓名为" + errdata[i].empname + "的工资详情发送出错，原因是：" + errdata[i].errorExplain + "<br/>";
+                            };
+                            msg = "成功" + data.Msg + "条数据" + errdata.length +
+                                "条数据发送失败。失败数据分析如下：</br>" + detailerrdata;
+                        }
+                        layer.alert(msg, { icon: 1 }, function () {
+                            // window.document.location.reload();
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            window.parent.location.reload();
+                            parent.layer.close(index);
+
+                        });
+                    } else {
+                        console.log(data.Data);
+                        layer.alert(data.Data, { icon: 2 });
+                    }
+                    //if (data.Success) {
+                    //    layer.close(index)
+                    //    layer.alert(data.Msg, { icon: 1 });
+                    //} else {
+                    //    layer.close(index)
+                    //    layer.alert("邮件发送失败" + data.Data, { icon: 2 });
+                    //}
+                }
+            })
+       
+        }
         //"禁用"员工的按钮事件
         function delSalaryEmpinfo(data) {
             var list = "";
@@ -426,62 +461,62 @@
 
         }
 
-        </script>
+    </script>
 
-        @*部门与岗位的下拉框动态赋值及下拉框二级联动*@
-        <script>
-            layui.use(['form', 'upload', 'layer'], function () {
+    @*部门与岗位的下拉框动态赋值及下拉框二级联动*@
+    <script>
+        layui.use(['form', 'upload', 'layer'], function () {
 
-                var form = layui.form;
+            var form = layui.form;
+            $.ajax({
+                url: '/Personnelmatters/EmployeesInfo/BindDeptSelect',
+                data: {},
+                dataType: "json",
+                success: function (resultData) {
+                    $("#deptid").empty();
+                    if (resultData.code == 0) {
+
+                        $("#deptid").append(new Option("请选择部门", ""));
+                        $.each(resultData.data, function (index, item) {
+                            $('#deptid').append(new Option(item.DeptName, item.DeptId));
+                        });
+                    } else {
+                        $("#deptid").append(new Option("暂无数据", ""));
+                    }
+
+                    layui.form.render("select");
+                }
+            });
+
+            //级联子项目
+            //select 监听
+            form.on('select(deptidfilter)', function (data) {
+                var value = data.value;  //select选中的值
+                console.log("选中值" + value);
                 $.ajax({
-                    url: '/Personnelmatters/EmployeesInfo/BindDeptSelect',
-                    data: {},
+                    url: "/Personnelmatters/EmployeesInfo/BindPositionSelect",
+                    data: { deptid: value },
                     dataType: "json",
                     success: function (resultData) {
-                        $("#deptid").empty();
                         if (resultData.code == 0) {
-
-                            $("#deptid").append(new Option("请选择部门", ""));
+                            //清空赋值
+                            $("#PositionId").empty();
+                            console.log(resultData.data);
+                            $("#PositionId").append(new Option("请选择岗位", ""));
                             $.each(resultData.data, function (index, item) {
-                                $('#deptid').append(new Option(item.DeptName, item.DeptId));
+                                //赋值
+                                $('#PositionId')
+                                    .append(new Option(item.PositionName, item.Pid));
                             });
                         } else {
-                            $("#deptid").append(new Option("暂无数据", ""));
+                            $("#PositionId").append(new Option("暂无数据", ""));
                         }
-
                         layui.form.render("select");
                     }
                 });
+            })
+            layui.form.render("select");
 
-                //级联子项目
-                //select 监听
-                form.on('select(deptidfilter)', function (data) {
-                    var value = data.value;  //select选中的值
-                    console.log("选中值" + value);
-                    $.ajax({
-                        url: "/Personnelmatters/EmployeesInfo/BindPositionSelect",
-                        data: { deptid: value },
-                        dataType: "json",
-                        success: function (resultData) {
-                            if (resultData.code == 0) {
-                                //清空赋值
-                                $("#PositionId").empty();
-                                console.log(resultData.data);
-                                $("#PositionId").append(new Option("请选择岗位", ""));
-                                $.each(resultData.data, function (index, item) {
-                                    //赋值
-                                    $('#PositionId')
-                                        .append(new Option(item.PositionName, item.Pid));
-                                });
-                            } else {
-                                $("#PositionId").append(new Option("暂无数据", ""));
-                            }
-                            layui.form.render("select");
-                        }
-                    });
-                })
-                layui.form.render("select");
-
-            });
-        </script>
-    }
+        });
+    </script>
+}

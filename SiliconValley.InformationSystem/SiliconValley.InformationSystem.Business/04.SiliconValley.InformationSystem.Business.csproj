@@ -63,9 +63,6 @@
     <Reference Include="NPOI, Version=2.5.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
       <HintPath>..\packages\NPOI.2.5.1\lib\net45\NPOI.dll</HintPath>
     </Reference>
-    <Reference Include="NPOI.OOXML, Version=2.5.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
-      <HintPath>..\packages\NPOI.2.5.1\lib\net45\NPOI.OOXML.dll</HintPath>
-    </Reference>
     <Reference Include="NPOI.OpenXml4Net, Version=2.5.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
       <HintPath>..\packages\NPOI.2.5.1\lib\net45\NPOI.OpenXml4Net.dll</HintPath>
     </Reference>
@@ -257,6 +254,7 @@
     <Compile Include="Psychro\ProStudentAndTeacherBussiness.cs" />
     <Compile Include="Psychro\RegionBusiness.cs" />
     <Compile Include="Psychro\SchoolYearPlanBusiness.cs" />
+    <Compile Include="RecruitingDataSummaryBusiness\DeptRecruitingDataSummaryViewManage.cs" />
     <Compile Include="RecruitingDataSummaryBusiness\RecruitingDataSummaryManage.cs" />
     <Compile Include="RecruitPhoneTraceBusiness\RecruitPhoneTraceManage.cs" />
     <Compile Include="RegionManage\RegionManeges.cs" />

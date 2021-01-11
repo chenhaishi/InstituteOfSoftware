@@ -125,6 +125,7 @@
                             <button class="layui-btn layui-btn-sm headbtn" lay-event="AddEmps"><i class="layui-icon layui-icon-addition"></i>添加员工</button>
                             <button class="layui-btn layui-btn-sm headbtn" lay-event="BatchImport"><i class="layui-icon layui-icon-upload-drag"></i>excel批量导入</button>
                             <button class="layui-btn layui-btn-sm headbtn" lay-event="BatchExport"><i class="layui-icon layui-icon-upload-drag"></i>excel批量导出</button>
+                            @*<a href="/Personnelmatters/EmployeesInfo/EmpInfoToExcel" class="layui-btn"><i class="layui-icon">&#xe601;</i>批量导出</a>*@
                             <button class="layui-btn layui-btn-sm headbtn" lay-event="DeptAndPositionOperation"><i class="layui-icon layui-icon-app"></i>部门及岗位管理</button>
 
                         }
@@ -479,24 +480,29 @@
             function BatchExportEmps() {
                 var mydata = tab1.config.data;
 
-                layer.confirm('确认导出?', { icon: 3, title: '提示' }, function (index) {
+              var close= layer.confirm('确认导出?', { icon: 3, title: '提示' }, function (index) {
                     console.log("条件：" + condition);
                     $.ajax({
-                        type: "POST",
-                        url: "/Personnelmatters/EmployeesInfo/EmpInfoToExcel",
+                        type: "Get",
+                        url: "/Personnelmatters/EmployeesInfo/GetConditionEmpCount",
                         dataType: "json",
-                        data: { "condition": condition }, 
-                        //报错请加入以下三行，则ajax提交无问题
+                        data: { "condition": condition },
                         cache: false,
-                      
                         success: function (data) {
-                                layer.alert(data.Msg);
-     
+                            console.log(data);
+                            if (data.Success) {
+                                if (data.Data<1) {
+                                    layer.alert("没有可导出的数据!");
+                                } else {
+                                    layer.close(close);
+                                    window.open("/Personnelmatters/EmployeesInfo/EmpInfoToExcel?condition=" + condition);
+                                }
+                            }
                         }, error: function () {
                             layer.alert("可能是网络出现了问题，请重复尝试后再联系后台人员!");
                         }
                     });
-                    //layer.close(index);
+                 
                 });
                 
             }

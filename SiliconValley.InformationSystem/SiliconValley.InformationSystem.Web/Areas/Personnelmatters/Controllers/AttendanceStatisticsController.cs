@@ -12,6 +12,7 @@ using System.Text;
 using System.IO;
 using SiliconValley.InformationSystem.Business.Base_SysManage;
 using SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBusiness;
+using SiliconValley.InformationSystem.Entity.ViewEntity;
 
 namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
 {
@@ -63,6 +64,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 string deptname = str[1];
                 string pname = str[2];
                 string empstate = str[3];
+               
                 attlist = attlist.Where(e => empmanage.GetInfoByEmpID(e.EmployeeId).EmpName.Contains(ename)).ToList();
                 if (!string.IsNullOrEmpty(deptname))
                 {
@@ -352,7 +354,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         {
             string rr = Server.MapPath("/uploadXLSXfile/Template/AttendenceTemplate.xlsx");  //获取下载文件的路径         
             FileStream stream = new FileStream(rr, FileMode.Open);
-            return File(stream, "application/octet-stream", Server.UrlEncode("ExcleTemplate.xls"));
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", Server.UrlEncode("ExcleTemplate.xlsx"));
         }
 
         /// <summary>
@@ -379,7 +381,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         {
             string rr = Server.MapPath("/uploadXLSXfile/Template/OvertimeTemplate.xlsx");  //获取下载文件的路径         
             FileStream stream = new FileStream(rr, FileMode.Open);
-            return File(stream, "application/octet-stream", Server.UrlEncode("ExcleTemplate.xls"));
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", Server.UrlEncode("OvertimeTemplate.xlsx"));
         }
 
         #endregion
@@ -490,6 +492,28 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             OvertimeRecordManage otrmanage = new OvertimeRecordManage();
             MonthlySalaryRecordManage monthly = new MonthlySalaryRecordManage();
             var otrlist = otrmanage.GetOTRDataByAtdid(id).Where(i=>i.IsPass==false);
+            //List<OvertimeRecordView> mylist = new List<OvertimeRecordView>();
+            //foreach (var e in otrlist)
+            //{
+            //    OvertimeRecordView item = new OvertimeRecordView();
+            //    item.Id = e.Id;
+            //    item.EmployeeId = e.EmployeeId;
+            //    item.DDAppId = empmanage.GetInfoByEmpID(e.EmployeeId).DDAppId;
+            //    item.empName = empmanage.GetInfoByEmpID(e.EmployeeId).EmpName;
+            //    item.empDept = empmanage.GetDeptByEmpid(e.EmployeeId).DeptName;
+            //    item.empPosition = empmanage.GetPositionByEmpid(e.EmployeeId).PositionName;
+            //    item.IsApproval = monthly.GetAttendanceInfoByEmpid(e.EmployeeId, (DateTime)e.YearAndMonth).IsApproval;
+            //    item.YearAndMonth=e.YearAndMonth;
+            //    item.StartTime = e.StartTime;
+            //    item.EndTime = e.EndTime;
+            //    item.Duration = e.Duration;
+            //    item.Remark = e.Remark;
+            //    item.OvertimeReason = e.OvertimeReason;
+            //    item.IsNoDaysOff = e.IsNoDaysOff;
+            //    item.OvertimeTypeId = e.OvertimeTypeId;
+            //    item.IsPass= e.IsPass;
+            //    mylist.Add(item);
+            //}
             var mylist = from e in otrlist
                          select new
                          {
@@ -500,7 +524,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                              empName = empmanage.GetInfoByEmpID(e.EmployeeId).EmpName,
                              empDept = empmanage.GetDeptByEmpid(e.EmployeeId).DeptName,
                              empPosition = empmanage.GetPositionByEmpid(e.EmployeeId).PositionName,
-                             IsApproval = monthly.GetAttendanceInfoByEmpid(e.EmployeeId,(DateTime)e.YearAndMonth).IsApproval,
+                             IsApproval = monthly.GetAttendanceInfoByEmpid(e.EmployeeId, (DateTime)e.YearAndMonth).IsApproval,
                              e.YearAndMonth,
                              e.StartTime,
                              e.EndTime,
@@ -560,7 +584,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             
          var att=monthly.GetAttendanceInfoByEmpid(over.EmployeeId,Convert.ToDateTime(over.YearAndMonth));
             var OvertimeWithhold= overtime.OvertimeWithhold(over.OvertimeTypeId, (dynamic)over.Duration);
-            if ((bool)over.IsNoDaysOff|| (bool)over.IsPass)
+            if ( (bool)over.IsPass)
             {
                 OvertimeWithhold = 0;
             }

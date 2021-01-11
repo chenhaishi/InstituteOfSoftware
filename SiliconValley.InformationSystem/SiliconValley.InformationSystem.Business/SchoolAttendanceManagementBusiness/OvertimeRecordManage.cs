@@ -12,6 +12,7 @@ using SiliconValley.InformationSystem.Entity.MyEntity;
 using SiliconValley.InformationSystem.Util;
 using SiliconValley.InformationSystem.Entity.ViewEntity;
 using SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness;
+using System.Threading;
 
 namespace SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBusiness
 {
@@ -27,15 +28,15 @@ namespace SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBus
         {
             IWorkbook workbook = null;
 
-            if (contentType == "application/vnd.ms-excel")
-            {
-                workbook = new HSSFWorkbook(stream);
-            }
+            //if (contentType == "application/vnd.ms-excel")
+            //{
+            //    workbook = new HSSFWorkbook(stream);
+            //}
 
-            if (contentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-            {
-                workbook = new XSSFWorkbook(stream);
-            }
+            //if (contentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            //{
+                workbook = new XSSFWorkbook(stream); 
+            //}
 
             ISheet sheet = workbook.GetSheetAt(0); 
             var result = ExcelImportAtdSql(sheet);
@@ -86,9 +87,9 @@ namespace SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBus
                     //加班人[1]
                     string name = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(1))) ? null : getrow.GetCell(1).ToString();
                     //开始时间[2]
-                    string begintime = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(2))) ? null: getrow.GetCell(2).ToString();
+                    var begintime = string.IsNullOrEmpty(Convert.ToString(GetValueType(getrow.GetCell(2)))) ? null : GetValueType(getrow.GetCell(2)).ToString();
                     //结束时间[3]
-                    string endtime = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(3))) ? null : getrow.GetCell(3).ToString();
+                    string endtime = string.IsNullOrEmpty(Convert.ToString(GetValueType(getrow.GetCell(3)))) ? null : GetValueType(getrow.GetCell(3)).ToString();
                     //时长（h）[4]
                     string duration = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(4))) ? null : getrow.GetCell(4).ToString();
                     //加班原因[5]
@@ -97,6 +98,7 @@ namespace SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBus
                     string Isdayoff = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(6))) ? "是" : getrow.GetCell(6).ToString();
                     //加班类型[7]
                     string overtimetype = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(7))) ? "1" : getrow.GetCell(7).ToString();
+
                     #endregion
 
                     string year_month = time;
@@ -111,14 +113,25 @@ namespace SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBus
                     }
                     else
                     {
-                        if (!empmanage.DDidIsExist(Convert.ToInt32(ddid)))
-                        {//判断员工钉钉号是否为空
+                        if (string.IsNullOrEmpty(ddid))
+                        {
                             otrview.empname = name;
                             otrview.errorExplain = "工号为空！";
                             otratalist.Add(otrview);
                         }
                         else
                         {
+                            if (!empmanage.DDidIsExist(Convert.ToInt32(ddid)))
+                        {//判断员工钉钉号是否为空
+                            otrview.empname = name;
+                            otrview.errorExplain = "不存在该工号！";
+                            otratalist.Add(otrview);
+                        }
+                        else
+                        {
+                                var emp = empmanage.GetListBySql<EmployeesInfo>("select *from EmployeesInfo where DDAppId="+ddid).ToList().FirstOrDefault();
+
+                                otr.EmployeeId = emp.EmployeeId;
                             if (string.IsNullOrEmpty(duration))
                             {
                                 otrview.empname = name;
@@ -128,15 +141,15 @@ namespace SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBus
                             else
                             {
 
-                                var emp = empmanage.GetEmpByDDid(Convert.ToInt32(ddid));
-
-                                otr.EmployeeId = emp.EmployeeId;
+                             
                                 //if (!string.IsNullOrEmpty(year_month))
                                 //{
-                                otr.YearAndMonth = Convert.ToDateTime(year_month);
-                                //}
+                               DateTime yearandmonth=Convert.ToDateTime(year_month);
+                                    //}
+                                    otr.YearAndMonth = yearandmonth;
                                 if (!string.IsNullOrEmpty(begintime))
                                 {
+
                                     otr.StartTime = Convert.ToDateTime(begintime);
                                 }
                                 if (!string.IsNullOrEmpty(endtime))
@@ -160,22 +173,38 @@ namespace SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBus
                                 else
                                 {
                                     otr.IsNoDaysOff = false;
-                                    //var att = monthly.GetAttendanceInfoByEmpid(otr.EmployeeId, Convert.ToDateTime(otr.YearAndMonth));
-                                    //if (string.IsNullOrEmpty(att.OvertimeCharges.ToString()))
-                                    //{
-                                    //    att.OvertimeCharges = 0;
-                                    //}
-                                    var  OvertimeCharges = OvertimeWithhold(otr.OvertimeTypeId, (decimal)otr.Duration);
-                                    //attendance.Update(att);
-                                    ExecuteSql("execute To_AddOvertimeCharges '" + otr.YearAndMonth + "'," + otr.EmployeeId + "," + OvertimeCharges + "");
-                                }
+                                    var att =attendance.GetListBySql<AttendanceInfo>("select *from AttendanceInfo  where EmployeeId='" + otr.EmployeeId + "' and '"+yearandmonth.Month+ "'=(select datepart(month, YearAndMonth)) and  '" + yearandmonth.Year + "'=(select datepart(YEAR, YearAndMonth) )").ToList().FirstOrDefault();
 
+                                        if (att != null)
+                                        {
+                                            var OvertimeCharges = OvertimeWithhold(otr.OvertimeTypeId, (decimal)otr.Duration);
+                                            if (string.IsNullOrEmpty(att.OvertimeCharges.ToString()))
+                                            {
+                                                attendance.ExecuteSql("update AttendanceInfo set OvertimeCharges=" + OvertimeCharges + "  where AttendanceId=" + att.AttendanceId);
+                                            }
+                                            else
+                                            {
+                                                attendance.ExecuteSql("update AttendanceInfo set OvertimeCharges+=" + OvertimeCharges + "  where AttendanceId=" + att.AttendanceId);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            otrview.empname = name;
+                                            otrview.errorExplain = "未能将加班费用添加到考勤表，原因是该月份的考勤表没有该员工的数据！";
+                                            otratalist.Add(otrview);
+                                        }
+                                   
+                                    //ExecuteSql("execute To_AddOvertimeCharges '" + otr.YearAndMonth + "'," + otr.EmployeeId + "," + OvertimeCharges + "");
+                                }
+                                
                                 otr.IsPass = false;
                                 this.Insert(otr);
 
 
                             }
                         }
+                        }
+                        
 
                     }
                 }
@@ -193,6 +222,7 @@ namespace SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBus
                     ajaxresult.ErrorCode = 200;
                     ajaxresult.Msg = (exceldatasum - otratalist.Count()).ToString();
                     ajaxresult.Data = otratalist;
+
                 }
             }
             catch (Exception ex)
@@ -202,8 +232,8 @@ namespace SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBus
                 ajaxresult.Msg = ex.Message;
                 ajaxresult.Data = "0";
             }
-            
             return ajaxresult;
+
         }
 
         /// <summary>
@@ -268,6 +298,32 @@ namespace SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBus
             var time = atd.YearAndMonth;
             var otdlist = this.GetOTRData(empid,(DateTime)time);
             return otdlist;
+        }
+        private static object GetValueType(ICell cell)
+        {
+            if (cell == null)
+                return null;
+            switch (cell.CellType)
+            {
+                case CellType.Blank: //BLANK:  
+                    return null;
+                case CellType.Boolean: //BOOLEAN:  
+                    return cell.BooleanCellValue;
+                case CellType.Numeric: //NUMERIC:  
+                    short format = cell.CellStyle.DataFormat;
+                    if (format != 0) {
+                        return Convert.ToDateTime(cell.DateCellValue).ToString("yyyy-MM-dd HH:mm:ss");
+                    } else {
+                        return cell.NumericCellValue;
+                    }
+                case CellType.String: //STRING:  
+                    return cell.StringCellValue;
+                case CellType.Error: //ERROR:  
+                    return cell.ErrorCellValue;
+                case CellType.Formula: //FORMULA:  
+                default:
+                    return cell.CellFormula;
+            }
         }
     }
 }

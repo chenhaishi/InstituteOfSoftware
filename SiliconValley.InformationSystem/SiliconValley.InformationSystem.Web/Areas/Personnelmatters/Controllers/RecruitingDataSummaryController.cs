@@ -749,5 +749,25 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             }
             return Json(result, JsonRequestBehavior.AllowGet);
         }
+        public ActionResult GetDeptRecruitData(int page, int limit, string AppCondition)
+        {
+            RecruitingDataSummaryManage rdsmanage = new RecruitingDataSummaryManage();
+            DeptRecruitingDataSummaryViewManage deptRecruiting = new DeptRecruitingDataSummaryViewManage();
+            EmployeesInfoManage empmanage = new EmployeesInfoManage();
+            //var rdslist = rdsmanage.GetList();
+            var rdslist = deptRecruiting.Getsqlview();
+
+
+            var myrdslist = rdslist.OrderByDescending(r => r.YearAndMonth).Skip((page - 1) * limit).Take(limit).ToList();
+           
+            var newobj = new
+            {
+                code = 0,
+                msg = "",
+                count = rdslist.Count(),
+                data = myrdslist
+            };
+            return Json(newobj, JsonRequestBehavior.AllowGet);
+        }
     }
 }

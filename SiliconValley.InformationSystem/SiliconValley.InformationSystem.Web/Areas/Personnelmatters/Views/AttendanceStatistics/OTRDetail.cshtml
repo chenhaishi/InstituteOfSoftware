@@ -47,7 +47,7 @@
           var tab1=  table.render({
               elem: '#overtimetab'
               , url: '/Personnelmatters/AttendanceStatistics/GetOvertimeData?id=' + atdid
-                , id: "myEmpInfo"
+              , id: "overtimetab"
                 , toolbar: '#toolbarDemo'
                 , limits: [5,10,15,20,25,30]
                 , limit: 5
@@ -98,7 +98,7 @@
                     data: { id: data.EmployeeId, Attrbute: field, endvalue: value },
                     success: function (data) {
                         if (data.Success) {
-                            layui.table.reload('myEmpInfo');
+                            layui.table.reload('overtimetab');
                         } else {
                             layer.msg("修改失败!");
                         }
