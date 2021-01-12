@@ -866,6 +866,45 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
             };
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+
+        /// <summary>
+        /// 获取学员所有欠费
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <returns></returns>
+        public ActionResult Arrearge(int page, int limit, string Stidentid, string Name, string StagesID,string ClassName)
+        {
+            StudentFeeStandardBusinsess studentFeeStandardBusinsess = new StudentFeeStandardBusinsess();
+    
+            var list = studentFeeStandardBusinsess.StudentArreargeList();
+            if (!string.IsNullOrEmpty(Stidentid))
+            {
+                list = list.Where(a => a.Stidentid == Stidentid).ToList();
+            }
+            if (!string.IsNullOrEmpty(Name))
+            {
+                list = list.Where(a => a.Name.Contains(Name)).ToList();
+            }
+            if (!string.IsNullOrEmpty(StagesID))
+            {
+                int staid = int.Parse(StagesID);
+                list = list.Where(a => a.StagesID == staid).ToList();
+            }
+            if (!string.IsNullOrEmpty(ClassName))
+            {
+                list = list.Where(a => a.ClassName == ClassName).ToList();
+            }
+            var Myx = list.OrderBy(a => a.Stidentid).Skip((page - 1) * limit).Take(limit).ToList();
+            var data = new
+            {
+                code = "",
+                msg = "",
+                count = list.Count,
+                data = Myx
+            };
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
         /// <summary>
         /// 升学成绩页面
         /// </summary>
