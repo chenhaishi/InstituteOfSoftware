@@ -186,7 +186,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
 
 
         /// <summary>
-        /// 筛选出部门为教质，教学，信息部
+        /// 筛选出部门为教质，教学，信息部,教导大队
         /// </summary>
         /// <returns></returns>
         public List<EmployeesInfo> GetEmpByDeptName()
