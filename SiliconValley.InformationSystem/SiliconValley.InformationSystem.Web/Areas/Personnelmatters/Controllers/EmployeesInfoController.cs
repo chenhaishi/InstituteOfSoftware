@@ -25,6 +25,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
     using System.IO;
     using System.Globalization;
     using SiliconValley.InformationSystem.Business.Base_SysManage;
+    using NPOI.HSSF.UserModel;
+    using SiliconValley.InformationSystem.Business.TeachingDepBusiness;
+    using NPOI.SS.UserModel;
 
     public class EmployeesInfoController : Controller
     {
@@ -476,47 +479,225 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         {
             string rr = Server.MapPath("/uploadXLSXfile/Template/EmpInfoTemplate.xls");  //获取下载文件的路径         
             FileStream stream = new FileStream(rr, FileMode.Open);
-            return File(stream, "application/octet-stream", Server.UrlEncode("ExcleTemplate.xls"));
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", Server.UrlEncode("ExcleTemplate.xls"));
         }
         #endregion
 
         #region 批量导出
-      [HttpPost]
-        public ActionResult EmpInfoToExcel(string condition)
-        {
-            //string condition = Request.QueryString["condition"];
-            var ajaxresult = new AjaxResult();
+      //[HttpPost]
+        //public ActionResult EmpInfoToExcel(string condition)
+        //{
+        //    //string condition = Request.QueryString["condition"];
+        //    var ajaxresult = new AjaxResult();
          
+        //    try
+        //    {
+        //        //HttpPostedFileBase excelfile
+        //       // string condition= Request.QueryString["condition"];
+
+        //        var list = GetConditionEmplist(condition);
+        //        if (list.Count > 0)
+        //        {
+        //            string Detailfilename = "湖南硅谷云教育科技有限公司员工信息";
+        //            EmployeesInfoManage empmanage = new EmployeesInfoManage();
+
+        //            var result = empmanage.EmpDataToExcel(list, Detailfilename);
+        //            ajaxresult.ErrorCode = result.ErrorCode;
+        //            ajaxresult.Msg = result.Msg;
+
+        //        }
+        //        else {
+        //            ajaxresult.ErrorCode = 300;
+        //            ajaxresult.Msg = "没有可导出的数据!";
+        //            ajaxresult.Data = null;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ajaxresult.ErrorCode = 500;
+        //        ajaxresult.Msg = ex.Message;
+        //        ajaxresult.Data = null;
+        //    }
+
+        //    return Json(ajaxresult, JsonRequestBehavior.AllowGet);
+        //}
+        public FileStreamResult EmpInfoToExcel(string condition)
+        {
+            var ajaxresult = new AjaxResult();
+            
+            EmployeesInfoManage empmanage = new EmployeesInfoManage();
+            MemoryStream bookStream = new MemoryStream();
+            var workbook = new HSSFWorkbook();
+            //表名
+            string Detailfilename = "湖南硅谷云教育科技有限公司员工信息.xls";
+            //创建工作区
+            var sheet = workbook.CreateSheet();
+
+            #region 表头样式
+
+            HSSFCellStyle HeadercellStyle = (HSSFCellStyle)workbook.CreateCellStyle();
+            HSSFFont HeadercellFont = (HSSFFont)workbook.CreateFont();
+
+            HeadercellStyle.Alignment = HorizontalAlignment.Center;
+            HeadercellFont.IsBold = true;
+
+            HeadercellStyle.SetFont(HeadercellFont);
+
+            #endregion
+
+
+            HSSFCellStyle ContentcellStyle = (HSSFCellStyle)workbook.CreateCellStyle();
+            HSSFFont ContentcellFont = (HSSFFont)workbook.CreateFont();
+
+            ContentcellStyle.Alignment = HorizontalAlignment.Center;
+
+            CreateHeader();
+
+            int num = 1;
+
+            GrandBusiness dbgrand = new GrandBusiness();
+            var list = GetConditionEmplist(condition);
+            list.ForEach(d =>
+            {
+                var row = (HSSFRow)sheet.CreateRow(num);
+
+                CreateCell(row, ContentcellStyle, 0, d.EmployeeId);//员工编号
+                CreateCell(row, ContentcellStyle, 1, d.DDAppId.ToString());//钉钉号
+
+                CreateCell(row, ContentcellStyle, 2, d.EmpName);//员工名称
+                CreateCell(row, ContentcellStyle, 3, d.Sex);//性别
+                CreateCell(row, ContentcellStyle, 4, empmanage.GetDeptByPid(d.PositionId).DeptName);//部门名称
+                CreateCell(row, ContentcellStyle, 5, empmanage.GetPobjById(d.PositionId).PositionName);//岗位名称
+
+                CreateCell(row, ContentcellStyle, 6, d.Age.ToString());//年龄
+                CreateCell(row, ContentcellStyle, 7, d.Nation);//民族
+                CreateCell(row, ContentcellStyle, 8, d.Phone);//电话号码
+                CreateCell(row, ContentcellStyle, 9, d.IdCardNum);//身份证号
+                CreateCell(row, ContentcellStyle, 10, d.EntryTime.ToString());//入职时间
+                CreateCell(row, ContentcellStyle, 11, d.PositiveDate.ToString());//转正时间
+
+                CreateCell(row, ContentcellStyle, 12, d.ContractStartTime.ToString());//合同起始时间
+                CreateCell(row, ContentcellStyle, 13, d.ContractEndTime.ToString());//合同终止时间
+                CreateCell(row, ContentcellStyle, 14, d.Birthdate.ToString());//出生日期
+                CreateCell(row, ContentcellStyle, 15, d.Birthday);//生日
+                CreateCell(row, ContentcellStyle, 16, d.ContractStartTime.ToString());//紧急联系电话
+                CreateCell(row, ContentcellStyle, 17, d.DomicileAddress);//户籍地址
+                CreateCell(row, ContentcellStyle, 18, d.Address);//现居地址
+                CreateCell(row, ContentcellStyle, 19, d.Education);//学历
+                CreateCell(row, ContentcellStyle, 20, d.MaritalStatus == true ? "已婚" : "未婚");//婚姻状态
+                CreateCell(row, ContentcellStyle, 21, d.IdCardIndate.ToString());//身份证有效期
+                CreateCell(row, ContentcellStyle, 22, d.PoliticsStatus);//政治面貌
+                CreateCell(row, ContentcellStyle, 23, d.InvitedSource);//招聘来源
+                CreateCell(row, ContentcellStyle, 24, d.ProbationSalary.ToString());//试用期工资
+                CreateCell(row, ContentcellStyle, 25, d.Salary.ToString());//转正后工资
+                CreateCell(row, ContentcellStyle, 26, d.SSStartMonth.ToString());//社保起始月份
+                CreateCell(row, ContentcellStyle, 27, d.BCNum);//银行卡号
+                CreateCell(row, ContentcellStyle, 28, d.Material);//材料
+                CreateCell(row, ContentcellStyle, 29, d.Remark);//备注
+                CreateCell(row, ContentcellStyle, 30, d.IsDel == false ? "在职" : "离职");//员工状态
+
+                num++;
+
+            });
+
+          
             try
             {
-                //HttpPostedFileBase excelfile
-               // string condition= Request.QueryString["condition"];
-
-                var list = GetConditionEmplist(condition);
-                if (list.Count > 0)
-                {
-                    string Detailfilename = "湖南硅谷云教育科技有限公司员工信息";
-                    EmployeesInfoManage empmanage = new EmployeesInfoManage();
-
-                    var result = empmanage.EmpDataToExcel(list, Detailfilename);
-                    ajaxresult.ErrorCode = result.ErrorCode;
-                    ajaxresult.Msg = result.Msg;
-
-                }
-                else {
-                    ajaxresult.ErrorCode = 300;
-                    ajaxresult.Msg = "没有可导出的数据!";
-                    ajaxresult.Data = null;
-                }
+                workbook.Write(bookStream);
+                bookStream.Seek(0, SeekOrigin.Begin);
             }
             catch (Exception ex)
             {
-                ajaxresult.ErrorCode = 500;
-                ajaxresult.Msg = ex.Message;
-                ajaxresult.Data = null;
+                ajaxresult.ErrorCode = 100;
+                ajaxresult.Msg = "导入失败，" + ex.Message;
+
+            }
+                return File(bookStream, "application / vnd.ms - excel", Detailfilename);
+
+            void CreateHeader()
+            {
+                HSSFRow Header = (HSSFRow)sheet.CreateRow(0);
+                Header.HeightInPoints = 40;
+
+                CreateCell(Header, HeadercellStyle, 0, "员工编号");
+
+                CreateCell(Header, HeadercellStyle, 1, "钉钉号");
+
+                CreateCell(Header, HeadercellStyle, 2, "姓名");
+
+                CreateCell(Header, HeadercellStyle, 3, "性别");
+
+                CreateCell(Header, HeadercellStyle, 4, "所属部门");
+
+                CreateCell(Header, HeadercellStyle, 5, "所属岗位");
+
+                CreateCell(Header, HeadercellStyle, 6, "年龄");
+
+                CreateCell(Header, HeadercellStyle, 7, "民族");
+
+                CreateCell(Header, HeadercellStyle, 8, "电话号码");
+
+                CreateCell(Header, HeadercellStyle, 9, "身份证号码");
+
+                CreateCell(Header, HeadercellStyle, 10, "入职时间");
+
+                CreateCell(Header, HeadercellStyle, 11, "转正时间");
+
+                CreateCell(Header, HeadercellStyle, 12, "合同起始时间");
+
+                CreateCell(Header, HeadercellStyle, 13, "合同终止时间");
+
+                CreateCell(Header, HeadercellStyle, 14, "出生日期");
+
+                CreateCell(Header, HeadercellStyle, 15, "生日");
+
+                CreateCell(Header, HeadercellStyle, 16, "紧急联系电话");
+
+                CreateCell(Header, HeadercellStyle, 17, "户籍地址");
+
+                CreateCell(Header, HeadercellStyle, 18, "现居地址");
+
+                CreateCell(Header, HeadercellStyle, 19, "学历");
+                CreateCell(Header, HeadercellStyle, 20, "婚姻状态");
+                CreateCell(Header, HeadercellStyle, 21, "身份证有效期");
+                CreateCell(Header, HeadercellStyle, 22, "政治面貌");
+                CreateCell(Header, HeadercellStyle, 23, "招聘来源");
+                CreateCell(Header, HeadercellStyle, 24, "试用期工资");
+                CreateCell(Header, HeadercellStyle, 25, "转正后工资");
+                CreateCell(Header, HeadercellStyle, 26, "社保起始月份");
+                CreateCell(Header, HeadercellStyle, 27, "银行卡号");
+                CreateCell(Header, HeadercellStyle, 28, "材料");
+                CreateCell(Header, HeadercellStyle, 29, "备注");
+                CreateCell(Header, HeadercellStyle, 30, "员工状态");
+
             }
 
-            return Json(ajaxresult, JsonRequestBehavior.AllowGet);
+            void CreateCell(HSSFRow row, HSSFCellStyle TcellStyle, int index, string value)
+            {
+                HSSFCell Header_Name = (HSSFCell)row.CreateCell(index);
+
+                Header_Name.SetCellValue(value);
+
+                Header_Name.CellStyle = TcellStyle;
+            }
+
+        }
+        [HttpGet]
+        public ActionResult GetConditionEmpCount(string condition)
+        {
+            AjaxResult result = new AjaxResult();
+            try
+            {
+                result.Success = true;
+                result.Data= GetConditionEmplist(condition).Count();
+            }
+            catch (Exception e)
+            {
+                result.Success = false;
+                result.Msg = e.Message;
+            }
+           
+             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         #endregion

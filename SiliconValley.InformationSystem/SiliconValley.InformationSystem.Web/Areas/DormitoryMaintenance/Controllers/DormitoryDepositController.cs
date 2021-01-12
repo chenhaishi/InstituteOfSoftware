@@ -12,6 +12,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
     using SiliconValley.InformationSystem.Business.ClassesBusiness;
     using SiliconValley.InformationSystem.Business.Cloudstorage_Business;
     using SiliconValley.InformationSystem.Business.Common;
+    using SiliconValley.InformationSystem.Business.DormitoryBusiness;
     using SiliconValley.InformationSystem.Entity.Base_SysManage;
     using SiliconValley.InformationSystem.Entity.Entity;
     using SiliconValley.InformationSystem.Entity.ViewEntity;
@@ -32,6 +33,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
         CloudstorageBusiness cloudstorage_Business = new CloudstorageBusiness();
         BaseBusiness<HeadClass> HeadClassManeger = new BaseBusiness<HeadClass>();
         ScheduleForTraineesBusiness ScheduleManeger = new ScheduleForTraineesBusiness();
+        DormInformationBusiness Dorm_Entity = new DormInformationBusiness();
         #region 登记人操作
 
         public ActionResult DormitoryDepositIndex()
@@ -96,6 +98,17 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
             return Json(jsondata, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 根据学生id查询所在宿舍
+        /// </summary>
+        /// <param name="stuid"></param>
+        /// <returns></returns>
+        public DormInformation GetDormInfoName(string stuid)
+        {
+            string sql = "select * from DormInformation where Id= (select DormId from Accdationinformation where Studentnumber = '"+stuid+"')";
+            DormInformation Dorm = Dorm_Entity.GetListBySql<DormInformation>(sql).FirstOrDefault();
+            return Dorm;
+        }
 
         public ActionResult DoubleGetData(int limit, int page)
         {

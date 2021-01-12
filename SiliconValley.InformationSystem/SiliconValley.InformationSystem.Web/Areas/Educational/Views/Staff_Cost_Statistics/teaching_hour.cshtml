@@ -62,7 +62,7 @@
                             <div class="layui-form-item" style="display:none">
                                 <label class="layui-form-label">节假日天数</label>
                                 <div class="layui-input-inline">
-                                    <input type="number"  name="jiejiari" value="0" style="width:400px" class="layui-input">
+                                    <input type="number" name="jiejiari" value="0" style="width:400px" class="layui-input">
                                 </div>
                             </div>
 
@@ -76,9 +76,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="layui-collapse" lay-accordion>
                 <div class="layui-colla-item">
                     <h2 class="layui-colla-title">
                         有法定节假日
@@ -136,16 +133,16 @@
                     </div>
                 </div>
             </div>
-
     </div>
 </body>
 </html>
 
 <script>
-    layui.use(['layer', 'laydate','form'], function () {
+    layui.use(['layer', 'laydate', 'form', 'element'], function () {
         var laydate = layui.laydate;
         var layer = layui.layer;
         var form = layui.form;
+        var element = layui.element;
 
         var obj = new Date();
 
@@ -166,7 +163,7 @@
         
         form.on('submit(Btn_Cost)', function (data) {
             var value = data.field;
-            
+            var index = layer.load();
             if (value.DeptID == "0") {
                 layer.msg('请选择部门', { icon: 2, time: 500 });
             } else if (value.date == "") {
@@ -182,7 +179,7 @@
                         jiejiari: value.jiejiari
                     },
                     success: function (res) {
-                       
+                        layer.close(index);
                         layer.alert(res.Msg, {
                             skin: 'layui-layer-molv' //样式类名
                             , closeBtn: 0
@@ -200,6 +197,7 @@
             } else if (value.date == "") {
                 layer.msg('请选择时间', { icon: 2, time: 500 });
             } else {
+                var index = layer.load();
                 $.ajax({
                     url: "/Educational/Staff_Cost_Statistics/TempFunction",
                     type: "POST",
@@ -210,10 +208,12 @@
                         jiejiari: value.jiejiari
                     },
                     success: function (res) {
+                        layer.close(index);
                         layer.alert(res.Msg, {
                             skin: 'layui-layer-molv' //样式类名
                             , closeBtn: 0
                         });
+
                     }
                 });
             }
@@ -229,10 +229,10 @@
                 success: function (res) {
                     console.log(res);
                     //列标题，逗号隔开，每一个逗号就是隔开一个单元格
-                    let str = res.titile + `\n`;
+                    let str = ``;
                     //增加\t为了不让表格显示科学计数法或者其他格式
-                    for (let i = 0; i < res.data.length; i++) {
-                        if (i == 0) {
+                    for (let i = -1; i < res.data.length; i++) {
+                        if (i == -1) {
                             str += `姓名\t,职务\t,课时费\t,值班费\t,监考费\t,阅卷费\t,超带班\t,内训费\t,研发费\t,合计`;
                             //姓名	职务	课时费	值班费	监考费	阅卷费	超带班	内训费	研发费	合计
                         } else {
@@ -261,22 +261,38 @@
 
         form.on('submit(Btn_SaveExcel1)', function (data) {
             $.ajax({
-                url: "/Educational/Staff_Cost_Statistics/CostDataToExcel",
-                type: "post",
+                url: '/Educational/Staff_Cost_Statistics/CostDataToExcel',
+                data: data.field,
+                type: 'post',
                 success: function (res) {
                     console.log(res);
-                    if (res.ErrorCode == "200") {
+                    //列标题，逗号隔开，每一个逗号就是隔开一个单元格
+                    let str = ``;
+                    //增加\t为了不让表格显示科学计数法或者其他格式
+                    for (let i = -1; i < res.data.length; i++) {
+                        if (i == -1) {
+                            str += `姓名\t,职务\t,课时费\t,值班费\t,监考费\t,阅卷费\t,超带班\t,内训费\t,研发费\t,合计`;
+                            //姓名	职务	课时费	值班费	监考费	阅卷费	超带班	内训费	研发费	合计
+                        } else {
+                            //var mm = TimeChange(res.data[i].time);
+                            //var mydate = new Date(mm)
+                            //var da = (Number(mydate.getMonth()) + 1) + "月" + mydate.getDate() + "日"
+                            str += res.data[i].Emp_Name + '\t,' + res.data[i].RoleName + '\t,' + res.data[i].Cost_fee + '\t,' + res.data[i].Duty_fee + '\t,' +
+                                res.data[i].Invigilation_fee + '\t,' + res.data[i].Marking_fee + '\t,' + res.data[i].Super_class + '\t,' + res.data[i].Internal_training_fee + '\t,' + res.data[i].RD_fee + '\t,' + res.data[i].totalmoney;
+                        }
 
-                        layer.alert(res.Msg, {
-                            skin: 'layui-layer-molv' //样式类名
-                            , closeBtn: 0
-                        });
-                    } else {
-                        layer.alert(res.Msg, {
-                            skin: 'layui-layer-molv' //样式类名
-                            , closeBtn: 0
-                        });
+                        str += '\n';
                     }
+                    //encodeURIComponent解决中文乱码
+                    let uri = 'data:text/csv;charset=utf-8,\ufeff' + encodeURIComponent(str);
+                    //通过创建a标签实现
+                    var link = document.createElement("a");
+                    link.href = uri;
+                    //对下载的文件命名
+                    link.download = "课时费.xls";
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
                 }
             });
         });
@@ -321,6 +337,5 @@
             //});
         });
     });
-
     
 </script>

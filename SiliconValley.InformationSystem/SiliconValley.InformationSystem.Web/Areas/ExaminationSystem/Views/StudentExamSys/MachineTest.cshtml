@@ -70,14 +70,14 @@
             @*<h3 style="text-align:center; font-size:18px;">机试题下载区</h3>*@
             <br />
             <br />
-            @if(@ViewBag.Downloadcontent != null)
+            @*@if(@ViewBag.Downloadcontent != null)
             {
                 <a class="layui-btn layui-btn-warm" href="#" >已下载</a>
             }
             else
-            {
-                <a class="layui-btn layui-btn-warm" href="/ExaminationSystem/StudentExamSys/ComputerQuestionUpload?examid=@ViewBag.EXAMVIEW.ID">机试题下载</a>
-            }
+            {*@
+                <a class="layui-btn layui-btn-warm" id="xz" href="/ExaminationSystem/StudentExamSys/ComputerQuestionUpload?examid=@ViewBag.EXAMVIEW.ID">机试题下载</a>
+            @*}*@
             <input class="layui-btn layui-btn-primary" id="Upload" type="file" name="computerQuestion" />
             <button type="button" class="layui-btn layui-btn-warm" id="COMMIT">提交机试</button><hr />
             <text style="color:red">（机试题只能下载一套,就不能再下载第二套了,下载下来的内容如果找不到可以去浏览器下载内容中查看,请将项目写上自己的姓名）</text>
@@ -99,7 +99,6 @@
                 return div.innerHTML
             }
         }
-
         var ExamEndDateUTC;
         ///获取考试的结束时间
         function getEndTime() {
@@ -167,7 +166,7 @@
                         }
 
                         else {
-                            layer.msg('请下载机试题目', { icon: 2 });
+                            layer.msg('失败', { icon: 2 });
                         }
                     },
                     error: function () {

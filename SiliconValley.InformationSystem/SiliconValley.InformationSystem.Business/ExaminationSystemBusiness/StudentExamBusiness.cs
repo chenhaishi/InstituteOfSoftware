@@ -494,7 +494,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
         }
 
 
-        public ComputerTestQuestionsView productComputerQuestion(Examination examination,int kecheng)
+        public ComputerTestQuestionsView productComputerQuestion(Examination examination,int kecheng,int jishi)
         {
             //获取专业
 
@@ -527,54 +527,60 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
             //}
 
             List<ComputerTestQuestionsView> questionlist = new List<ComputerTestQuestionsView>();
-
+            //升学考试
             if (examview.ExamType.ExamTypeID == 1)
             {
-                //d.Grand == examview.ExamType.GrandID &&
-               var tempqulist  = list.Where(d => d.Course == kecheng && d.IsUsing == true).ToList();
+                if (jishi != 0)
+                {
+                    var tempqulist = list.Where(d =>d.ID == jishi).ToList();
 
-                tempqulist.ForEach(d=> {
+                    tempqulist.ForEach(d => {
 
-                   var tempobj = db_computerQuestion.ConvertToComputerTestQuestionsView(d, false);
+                        var tempobj = db_computerQuestion.ConvertToComputerTestQuestionsView(d, false);
 
-                    if (tempobj != null) questionlist.Add(tempobj);
-                });
+                        if (tempobj != null) questionlist.Add(tempobj);
+                    });
+                }
+                else {
+                    var tempqulist = list.Where(d => d.Course == kecheng && d.IsUsing == true).ToList();
+
+                    tempqulist.ForEach(d => {
+
+                        var tempobj = db_computerQuestion.ConvertToComputerTestQuestionsView(d, false);
+
+                        if (tempobj != null) questionlist.Add(tempobj);
+                    });
+                }
+                
 
             }
-
+            //阶段考试
             if (examview.ExamType.ExamTypeID == 2)
             {
 
                 //var course = db_Course.GetList().Where(d => d.IsDelete == false && d.CurriculumID == kecheng).FirstOrDefault();
+                if (jishi != 0)
+                {
+                    list = list.Where(d =>d.ID == jishi).ToList();
 
-                list = list.Where(d => d.Course != 0 && d.Course == kecheng && d.IsUsing == true).ToList();
+                    list.ForEach(d => {
 
-                list.ForEach(d=> {
+                        var tempobj = db_computerQuestion.ConvertToComputerTestQuestionsView(d, false);
 
-                    var tempobj = db_computerQuestion.ConvertToComputerTestQuestionsView(d, false);
+                        if (tempobj != null) questionlist.Add(tempobj);
+                    });
+                }
+                else {
+                    list = list.Where(d => d.Course != 0 && d.Course == kecheng && d.IsUsing == true).ToList();
 
-                    if (tempobj != null) questionlist.Add(tempobj);
-                });
+                    list.ForEach(d => {
 
+                        var tempobj = db_computerQuestion.ConvertToComputerTestQuestionsView(d, false);
 
-                //if (course != null) sourchlist.Add(course);
-
-
-                ////获取S2的题目
-                //foreach (var item in templist)
-                //{
-                //    foreach (var item1 in sourchlist)
-                //    {
-                //        if (!IsContain(questionlist, item))
-                //        {
-                //            if (item.Course.CurriculumID == item1.CurriculumID)
-                //            {
-                //                questionlist.Add(item);
-                //            }
-                //        }
-                //    }
-                //}
-
+                        if (tempobj != null) questionlist.Add(tempobj);
+                    });
+                }
+                
 
             }
            

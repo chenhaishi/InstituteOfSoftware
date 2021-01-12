@@ -1,4 +1,8 @@
-﻿using SiliconValley.InformationSystem.Business.EmployeesBusiness;
+﻿using NPOI.HSSF.UserModel;
+using NPOI.SS.UserModel;
+using NPOI.SS.Util;
+using NPOI.XSSF.UserModel;
+using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 using SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness;
 using SiliconValley.InformationSystem.Entity.MyEntity;
 using SiliconValley.InformationSystem.Entity.ViewEntity;
@@ -582,20 +586,159 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             }
             return Json(result, JsonRequestBehavior.AllowGet);
         }
-        [HttpPost]
-        public ActionResult MonthlySalaryExport(string time)
-        {
-            MonthlySalaryRecordManage monthly = new MonthlySalaryRecordManage();
-            AjaxResult result = new AjaxResult();
-          var data=  monthly.GetEmpMsrData().Where(i=>Convert.ToDateTime(i.YearAndMonth).Year==Convert.ToDateTime(time).Year&& Convert.ToDateTime(i.YearAndMonth).Month == Convert.ToDateTime(time).Month).ToList();
+        //[HttpPost]
+        //public ActionResult MonthlySalaryExport(string time)
+        //{
+        //    MonthlySalaryRecordManage monthly = new MonthlySalaryRecordManage();
+        //    AjaxResult result = new AjaxResult();
+        //  var data=  monthly.GetEmpMsrData().Where(i=>Convert.ToDateTime(i.YearAndMonth).Year==Convert.ToDateTime(time).Year&& Convert.ToDateTime(i.YearAndMonth).Month == Convert.ToDateTime(time).Month).ToList();
 
-            result = monthly.Month(data);
-            return Json(result, JsonRequestBehavior.AllowGet);
-        }
-        public ActionResult MonthlySalaryExport()
+        //    result = monthly.Month(data);
+        //    return Json(result, JsonRequestBehavior.AllowGet);
+        //}
+        public FileStreamResult MonthlySalaryExport(string time)
         {
-            return View();
+
+            var ajaxresult = new AjaxResult();
+            MemoryStream bookStream = new MemoryStream();
+            var workbook = new HSSFWorkbook();
+            MonthlySalaryRecordManage monthly = new MonthlySalaryRecordManage();
+            EmployeesInfoManage manage = new EmployeesInfoManage();
+            AttendanceInfoManage attendance = new AttendanceInfoManage();
+            var data=  monthly.GetEmpMsrData().Where(i=>Convert.ToDateTime(i.YearAndMonth).Year==Convert.ToDateTime(time).Year&& Convert.ToDateTime(i.YearAndMonth).Month == Convert.ToDateTime(time).Month).ToList();
+            //创建工作区
+            var sheet = workbook.CreateSheet();
+            string Detailfilename = Convert.ToDateTime(time).ToString("yyyy年MM月") + "员工工资" + ".xls"; ;
+            #region 表头样式
+
+            HSSFCellStyle HeadercellStyle = (HSSFCellStyle)workbook.CreateCellStyle();
+            HSSFFont HeadercellFont = (HSSFFont)workbook.CreateFont();
+
+            HeadercellStyle.Alignment = HorizontalAlignment.Center;
+            HeadercellStyle.VerticalAlignment = VerticalAlignment.Center;
+            HeadercellFont.IsBold = true;
+
+            HeadercellStyle.SetFont(HeadercellFont);
+
+            #endregion
+
+
+            HSSFCellStyle ContentcellStyle = (HSSFCellStyle)workbook.CreateCellStyle();
+            HSSFFont ContentcellFont = (HSSFFont)workbook.CreateFont();
+
+            ContentcellStyle.Alignment = HorizontalAlignment.Center;
+
+            CreateHeader();
+
+            int num = 2;
+            var YearAndMonth = "";
+            data.ForEach(d =>
+            {
+                var row = (HSSFRow)sheet.CreateRow(num);
+                YearAndMonth = d.YearAndMonth.ToString();
+
+                var Salaryone = monthly.GetSalaryone(d.BaseSalary + d.PositionSalary, d.MonthPerformancePay, d.NetbookSubsidy, d.SocialSecuritySubsidy);
+                var Salarytwo = monthly.GetSalarytwo(Salaryone, d.OvertimeCharges, d.Bonus, d.LeaveDeductions, d.TardyAndLeaveWithhold, d.AbsentNumWithhold, d.OtherDeductions);
+                var PaycardSalary = monthly.GetPaycardSalary(d.Id, d.Total, d.PersonalSocialSecurity, d.ContributionBase);
+
+                CreateCell(row, ContentcellStyle, 0, d.EmployeeId);//员工编号
+                CreateCell(row, ContentcellStyle, 1, manage.GetEntity(d.EmployeeId).EmpName);//员工姓名
+                CreateCell(row, ContentcellStyle, 2, manage.GetDeptByEmpid(d.EmployeeId).DeptName);//所属部门
+                CreateCell(row, ContentcellStyle, 3, manage.GetPositionByEmpid(d.EmployeeId).PositionName);//所属岗位
+                CreateCell(row, ContentcellStyle, 4, d.BaseSalary.ToString());//基本工资
+                CreateCell(row, ContentcellStyle, 5, d.PositionSalary.ToString());//岗位工资
+                CreateCell(row, ContentcellStyle, 6, d.FinalGrade.ToString());//绩效分
+                CreateCell(row, ContentcellStyle, 7, d.MonthPerformancePay.ToString());//绩效工资
+                CreateCell(row, ContentcellStyle, 8, d.NetbookSubsidy.ToString());//笔记本补助
+                CreateCell(row, ContentcellStyle, 9, d.SocialSecuritySubsidy.ToString());//社保补贴
+                CreateCell(row, ContentcellStyle, 10, Salaryone.ToString());//应发工资1
+                CreateCell(row, ContentcellStyle, 11, d.OvertimeCharges.ToString());//加班费用
+                CreateCell(row, ContentcellStyle, 12, d.Bonus.ToString());//奖金(元)
+                CreateCell(row, ContentcellStyle, 13, monthly.GetAttendanceInfoByEmpid(d.EmployeeId, (DateTime)d.YearAndMonth).LeaveDays.ToString());//请假天数
+                CreateCell(row, ContentcellStyle, 14, d.LeaveDeductions.ToString());//请假扣款(元)
+                CreateCell(row, ContentcellStyle, 15, d.TardyAndLeaveWithhold.ToString());//迟到/早退扣款(元)
+                CreateCell(row, ContentcellStyle, 16, d.AbsentNumWithhold.ToString());//缺卡扣款(元)
+                CreateCell(row, ContentcellStyle, 17, d.AbsenteeismWithhold.ToString());//旷工扣款(元)
+                CreateCell(row, ContentcellStyle, 18, d.OtherDeductions.ToString());//其他扣款(元)
+                CreateCell(row, ContentcellStyle, 19, Salarytwo.ToString());//应发工资2
+                CreateCell(row, ContentcellStyle, 20, d.PersonalSocialSecurity.ToString());//个人社保
+                CreateCell(row, ContentcellStyle, 21, d.PersonalIncomeTax.ToString());//个税
+                CreateCell(row, ContentcellStyle, 22, PaycardSalary.ToString());//实发工资(工资卡)
+                CreateCell(row, ContentcellStyle, 23, monthly.GetCashSalary(d.Id, d.Total, PaycardSalary).ToString());//实发工资(现金)
+                num++;
+
+            });
+
+           
+            try
+            {
+                workbook.Write(bookStream);
+                bookStream.Seek(0, SeekOrigin.Begin);
+
+            }
+            catch (Exception ex)
+            {
+                ajaxresult.ErrorCode = 100;
+                ajaxresult.Msg = "导入失败，" + ex.Message;
+
+            }
+            return File(bookStream, "application / vnd.ms - excel", Detailfilename);
+            void CreateHeader()
+            {
+                HSSFRow Header = (HSSFRow)sheet.CreateRow(0);
+
+                for (int i = 0; i < 24; i++)
+                {
+                    if (i < 15 || i > 17)
+                    {
+                        sheet.AddMergedRegion(new CellRangeAddress(0, 1, i, i));
+                    }
+                }
+                sheet.AddMergedRegion(new CellRangeAddress(0, 0, 15, 17));
+
+                CreateCell(Header, HeadercellStyle, 0, "员工编号");
+                CreateCell(Header, HeadercellStyle, 1, "员工姓名");
+                CreateCell(Header, HeadercellStyle, 2, "所属部门");
+                CreateCell(Header, HeadercellStyle, 3, "所属岗位");
+                CreateCell(Header, HeadercellStyle, 8, "出勤天数");
+                CreateCell(Header, HeadercellStyle, 4, "基本工资");
+                CreateCell(Header, HeadercellStyle, 5, "岗位工资");
+                CreateCell(Header, HeadercellStyle, 6, "绩效分");
+                CreateCell(Header, HeadercellStyle, 7, "绩效工资");
+                CreateCell(Header, HeadercellStyle, 8, "笔记本补助");
+                CreateCell(Header, HeadercellStyle, 9, "社保补贴");
+                CreateCell(Header, HeadercellStyle, 10, "应发工资1");
+                CreateCell(Header, HeadercellStyle, 11, "加班费用");
+                CreateCell(Header, HeadercellStyle, 12, "奖金(元)");
+                CreateCell(Header, HeadercellStyle, 13, "请假天数");
+                CreateCell(Header, HeadercellStyle, 14, "请假扣款(元)");
+                CreateCell(Header, HeadercellStyle, 15, "考勤扣款");
+                CreateCell(Header, HeadercellStyle, 18, "其他扣款(元)");
+                CreateCell(Header, HeadercellStyle, 19, "应发工资2");
+                CreateCell(Header, HeadercellStyle, 20, "个人社保");
+                CreateCell(Header, HeadercellStyle, 21, "个税");
+                CreateCell(Header, HeadercellStyle, 22, "实发工资(工资卡)");
+                CreateCell(Header, HeadercellStyle, 23, "实发工资(现金)");
+                HSSFRow Header2 = (HSSFRow)sheet.CreateRow(1);
+                CreateCell(Header2, HeadercellStyle, 15, "迟到/早退扣款(元)");
+                CreateCell(Header2, HeadercellStyle, 16, "缺卡扣款(元)");
+                CreateCell(Header2, HeadercellStyle, 17, "旷工扣款(元)");
+
+            }
+
+            void CreateCell(HSSFRow row, HSSFCellStyle TcellStyle, int index, string value)
+            {
+                HSSFCell Header_Name = (HSSFCell)row.CreateCell(index);
+
+                Header_Name.SetCellValue(value);
+
+                Header_Name.CellStyle = TcellStyle;
+            }
         }
+        //public ActionResult MonthlySalaryExport()
+        //{
+        //    return View();
+        //}
        
     } 
 }
