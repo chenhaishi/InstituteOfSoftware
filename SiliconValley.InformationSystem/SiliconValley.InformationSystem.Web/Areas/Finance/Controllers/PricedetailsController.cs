@@ -62,7 +62,14 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             ViewBag.Typex = costitemssX.GetList().Where(a=>a.IsDelete==false&&a.id!= costitemssX.GetList().Where(z => z.Name == "重修费" && z.IsDelete == false).FirstOrDefault().id).Select(a => new SelectListItem { Text = a.Name, Value = a.id.ToString() });
             return View();
         }
-    
+
+        public ActionResult Student_arrearage()
+        {
+            ViewBag.Stages = Grandcontext.GetList().Select(a => new SelectListItem { Text = a.GrandName, Value = a.Id.ToString() });
+            
+            return View();
+        }
+
         //所有学生费用录入明目
         [HttpGet]
         public ActionResult Costitems()
