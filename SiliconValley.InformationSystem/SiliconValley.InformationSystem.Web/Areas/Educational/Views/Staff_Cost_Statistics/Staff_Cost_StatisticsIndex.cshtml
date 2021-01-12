@@ -20,6 +20,12 @@
 
     }
 
+    @*<script type="text/html" id="toolbarDemo">
+        <div class="layui-btn-container">
+            <button class="layui-btn layui-btn-sm" lay-event="Single_cost">结算个人课时费</button>
+        </div>
+    </script>*@
+
     <div id="mywarp">
         
         <div id="title" style="text-align:center;">
@@ -71,7 +77,7 @@
             </div>
 
             <script type="text/html" id="barDemo">
-                <a class="layui-btn layui-btn-xs" lay-event="search_class" title="查看课程">
+                <a class="layui-btn layui-btn-xs" lay-event="search_class" title="个人结算">
                     <i class="layui-icon layui-icon-template-1"></i>
                 </a>
             </script>
@@ -157,6 +163,7 @@
                     { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150 }
                 ]]
                 , page: true
+                , toolbar: '#toolbarDemo'
             });
             
             ///部门筛选员工
@@ -203,19 +210,19 @@
             });
             
             //监听行工具事件
-            table.on('tool(emplist_filter)', function (obj) {
+            //table.on('tool(emplist_filter)', function (obj) {
                
-                var data = obj.data;
-                if (obj.event == 'search_class') {
-                    layer.open({
-                        type: 2,
-                        area: ['1000px', '850px'],
-                        title: "费用统计",
-                        content: '/Educational/Staff_Cost_Statistics/Search_PersonClass?empid=' + data.EmployeeId
-                    });
-                } 
+            //    var data = obj.data;
+            //    if (obj.event == 'search_class') {
+            //        layer.open({
+            //            type: 2,
+            //            area: ['1000px', '850px'],
+            //            title: "费用统计",
+            //            content: '/Educational/Staff_Cost_Statistics/Search_PersonClass?empid=' + data.EmployeeId
+            //        });
+            //    } 
                
-            });
+            //});
 
             $("#HistoryCost").click(function () {
                 layer.open({
@@ -227,6 +234,20 @@
                 
             });
 
+            //监听表头事件
+            table.on('toolbar(emplist_filter)', function (obj) {
+                switch (obj.event) {
+                    case 'Single_cost':
+                        layer.open({
+                            type: 2,
+                            area: ['1300px', '800px'],
+                            title: "费用统计",
+                            content: '/Educational/Staff_Cost_Statistics/Search_PersonClass'
+                        });
+                        break;
+                    
+                };
+            });
         });
     </script>    
     

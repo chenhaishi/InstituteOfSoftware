@@ -21,6 +21,9 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
     using NPOI.HSSF.UserModel;
     using NPOI.SS.UserModel;
     using SiliconValley.InformationSystem.Business.Cloudstorage_Business;
+    using SiliconValley.InformationSystem.Business.CourseSchedulingSysBusiness;
+    using SiliconValley.InformationSystem.Business.Coursewaremaking_Business;
+    using SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data;
     using SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data.MyViewEntity;
     using System.IO;
     using System.Net;
@@ -34,6 +37,25 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         /// 员工业务类实例
         /// </summary>
         private EmployeesInfoManage db_emp;
+
+        public BaseBusiness<HeadClass> HeadClass_Entity = new BaseBusiness<HeadClass>();
+
+        public HeadmasterBusiness Headmaster_Entity = new HeadmasterBusiness();
+
+        public ReconcileManeger Reconcile_Entity = new ReconcileManeger();
+
+        public EmployeesInfoManage EmployeesInfoManage_Entity = new EmployeesInfoManage();
+
+        public ClassScheduleBusiness ClassSchedule_Entity = new ClassScheduleBusiness();
+        public ScheduleForTraineesBusiness ScheduleForTrainees_Entity = new ScheduleForTraineesBusiness();
+        public CurriculumBusiness curriculum_Entity = new CurriculumBusiness();
+        public GrandBusiness Grand_Entity = new GrandBusiness();
+        public BaseBusiness<TeacherAddorBeonDutyView> teacherAddorBeonDutyView_Entity = new BaseBusiness<TeacherAddorBeonDutyView>();
+        public ExaminationRoomBusiness ExaminationRoom_Entity = new ExaminationRoomBusiness();
+        public ExaminationBusiness Examination_Entity = new ExaminationBusiness();
+        public BaseBusiness<MarkingArrange> Marking_Entity = new BaseBusiness<MarkingArrange>();
+        public CandidateInfoBusiness Candi_Entity = new CandidateInfoBusiness();
+        public CoursewaremakingBusiness Courseware_Entity = new CoursewaremakingBusiness();
 
         public Staff_Cost_StatisticssBusiness()
         {
@@ -50,6 +72,354 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
         }
 
+        /// <summary>
+        /// 统计课时费
+        /// </summary>
+        /// <param name="Emp_List">员工集合</param>
+        /// <param name="dt">日期</param>
+        /// <param name="WorkDay">工作日</param>
+        /// <returns></returns>
+        public List<Staff_CostView> CostTimeFee(List<EmployeesInfo> Emp_List,DateTime dt, int WorkDay)
+        {
+            List<Staff_CostView> staff_list = new List<Staff_CostView>();
+
+            decimal? Cost_fee = 0;
+            int QuanDay = 0;//全天课天数
+            int ClassTime = 50;//底课时
+            int Duty_fee = 0;//值班费
+            int Invigilation_fee = 0;//监考费
+            int Marking_fee = 0;//阅卷费
+            int Super_class = 0;//超带班
+            int Internal_training_fee = 0;//内训费
+            int RD_fee = 0;//研发费
+
+            for (int i = 0; i < Emp_List.Count; i++)
+            {
+                Staff_CostView staff = new Staff_CostView();
+
+                DateTime NowTime = DateTime.Now;
+
+                if ((NowTime.Year - Emp_List[i].EntryTime.Year) >= 2)
+                {
+                    ClassTime = 40;
+                }
+                
+                string sqlstr = $"select * from Reconcile  where Year(AnPaiDate)={dt.Year} and Month(AnPaiDate) = {dt.Month} and EmployeesInfo_Id ={ Emp_List[i].EmployeeId }";
+                List<Reconcile> mydata = Reconcile_Entity.GetListBySql<Reconcile>(sqlstr).ToList();
+
+                //筛选出前预科的数据
+                var qianyuke = mydata.Where(a => a.Curriculum_Id == "前预科").ToList();
+                //根据时间分组
+                var AnPaiGroup = (
+                    from m in mydata
+                    group m by m.AnPaiDate into list
+                    select list
+                    ).ToList();
+
+                //根据课程分组
+                var ClassGroup1 = (
+                    from m in mydata
+                    group m by m.Curriculum_Id into list
+                    select list).ToList();
+
+                //根据班级id分组   作用：前预科：根据班级iD看班级有多少人
+                var ClassScheduleGroup = (
+                    from m in qianyuke
+                    group m by m.ClassSchedule_Id into list
+                    select list).ToList();
+
+                //班级id分组   带班数量
+                var ClassScheduleCount = (
+                    from m in mydata
+                    group m by m.ClassSchedule_Id into list
+                    select list).ToList();
+
+
+                var ClassGroup = ClassGroup1.Where
+                    (a => a.Key != "复习").ToList();//&& a.Key != "项目答辩"&& !a.Key.Contains("职素") && !a.Key.Contains("班")
+
+
+                //计算全天课天数&& a.Curriculum_Id != "项目答辩"
+                for (int k = 0; k < AnPaiGroup.Count; k++)
+                {
+                    QuanDay += Cost_EndClass(AnPaiGroup[k].Key, Emp_List[i].EmployeeId);
+                }
+
+                if (EmployeesInfoManage_Entity.GetPositionByEmpid(Emp_List[i].EmployeeId).PositionName == "教学主任")
+                {
+                    ClassTime = ClassTime * QuanDay / WorkDay;
+                }
+
+                if (!EmployeesInfoManage_Entity.GetDeptByEmpid(Emp_List[i].EmployeeId).DeptName.Contains("s1、s2教学部"))
+                {
+                    ClassTime = 0;
+                }
+
+                int FirstStage = 0;//第一阶段  预科，S1,S2
+                int SecondStage = 0;//第二阶段 S3,
+                int ThreeStage = 0;//S4
+                int OtherStage = 0;//其他  语，数，英，职素，班会，军事
+                for (int j = 0; j < ClassGroup.Count; j++)
+                {
+                    //判断是否为“前预科”
+                    if (ClassGroup[j].Key == "前预科")
+                    {
+                        for (int q = 0; q < ClassScheduleGroup.Count; q++)
+                        {
+                            ClassSchedule schedule = ClassSchedule_Entity.GetEntity(ClassScheduleGroup[q].Key);
+                            string sql = $"select * from ScheduleForTrainees where ClassID='{schedule.ClassNumber}' and CurrentClass=1";
+                            List<ScheduleForTrainees> Trainees_List = ScheduleForTrainees_Entity.GetListBySql<ScheduleForTrainees>(sql);
+                            if (Trainees_List.Count < 10)
+                            {
+                                FirstStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, "前预科", false);
+                            }
+                            else
+                            {
+                                FirstStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, "前预科", true);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //根据课程名称获取第一条数据 && && a.Curriculum_Id != ""
+                        Reconcile reconcile = mydata.Where(a => a.Curriculum_Id == ClassGroup[j].Key).FirstOrDefault();
+                        //根据班级id查询单条数据
+                        ClassSchedule classSchedule = ClassSchedule_Entity.GetEntity(reconcile.ClassSchedule_Id);
+                        //根据课程名称以及阶段id筛选
+                        Curriculum curriculum = curriculum_Entity.GetList().FirstOrDefault(a => a.CourseName == reconcile.Curriculum_Id && a.Grand_Id == classSchedule.grade_Id);
+                        //去除语文课之类的
+                        Curriculum curriculum1 = curriculum_Entity.GetList()
+                            .Where(a => !a.CourseName.Contains("语文") &&
+                            !a.CourseName.Contains("数学") &&
+                            !a.CourseName.Contains("英语") &&
+                            !a.CourseName.Contains("职素") &&
+                            !a.CourseName.Contains("班会") &&
+                            !a.CourseName.Contains("军事"))
+                            .FirstOrDefault(a => a.CourseName == reconcile.Curriculum_Id && a.Grand_Id == classSchedule.grade_Id);
+
+                        if (curriculum.CourseName.Contains("语文") ||
+                            curriculum.CourseName.Contains("数学") ||
+                            curriculum.CourseName.Contains("英语") ||
+                            curriculum.CourseName.Contains("班会") ||
+                            curriculum.CourseName.Contains("军事"))
+                        {
+                            OtherStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
+                        }
+                        else if (curriculum.CourseName.Contains("职素"))
+                        {
+
+                            int zhisuClassTime = Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
+                            int totalClassTime = (zhisuClassTime / 4) + zhisuClassTime;
+                            OtherStage += zhisuClassTime;
+                        }
+                        else
+                        {
+                            Grand grand = Grand_Entity.GetEntity(curriculum1.Grand_Id);
+                            if (grand.GrandName.Contains("S1") || grand.GrandName.Contains("S2") || grand.GrandName.Contains("Y1"))
+                            {
+                                FirstStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
+                            }
+                            else if (grand.GrandName.Contains("S3"))
+                            {
+                                SecondStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
+                            }
+                            else if (grand.GrandName.Contains("S4"))
+                            {
+                                ThreeStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
+                            }
+                        }
+                    }
+
+                }
+                //课时费计算总额    //底课时
+
+                if (FirstStage > 0)
+                {
+
+                    FirstStage = FirstStage - ClassTime;
+                    Cost_fee += FirstStage * 55;
+                }
+
+                if (SecondStage > 0)
+                {
+                    SecondStage = SecondStage - ClassTime;
+                    Cost_fee += SecondStage * 65;
+                }
+
+                if (ThreeStage > 0)
+                {
+
+                }
+
+                if (OtherStage > 0)
+                {
+                    if (EmployeesInfoManage_Entity.GetDeptByEmpid(Emp_List[i].EmployeeId).DeptName.Contains("教学部"))
+                    {
+                        OtherStage = OtherStage - ClassTime;
+                    }
+
+                    Cost_fee += OtherStage * 30;
+                }
+
+
+                //计算值班费
+                //查询当年 年月的值班数据
+                string TeacherAddsql = @"select * from TeacherAddorBeonDutyView  where YEAR(Anpaidate)=" + dt.Year + "" +
+                    " and Month(Anpaidate)=" + dt.Month + "";
+                List<TeacherAddorBeonDutyView> TearcherAdd_List = teacherAddorBeonDutyView_Entity.GetListBySql<TeacherAddorBeonDutyView>(TeacherAddsql);
+                //根据时间分组
+                var TeacherAddGroup = (
+                    from m in TearcherAdd_List
+                    group m by m.Anpaidate into list
+                    select list).ToList();
+
+                //一节  50    两节   80
+                for (int g = 0; g < TeacherAddGroup.Count; g++)
+                {
+                    string sql = @"select * from TeacherAddorBeonDutyView  where YEAR(Anpaidate)=" + TeacherAddGroup[g].Key.Year + "" +
+                    " and Month(Anpaidate)=" + TeacherAddGroup[g].Key.Month + " and Day(Anpaidate)=" + TeacherAddGroup[g].Key.Day + " and Tearcher_Id=" + Emp_List[i].EmployeeId + "";
+                    List<TeacherAddorBeonDutyView> TearcherAdd = teacherAddorBeonDutyView_Entity.GetListBySql<TeacherAddorBeonDutyView>(sql);
+                    if (TearcherAdd.Count == 1)
+                    {
+                        Duty_fee += 50;
+                    }
+                    else if (TearcherAdd.Count == 2)
+                    {
+                        Duty_fee += 80;
+                    }
+                }
+
+                //计算监考费
+                int InvigilationCount = 0;
+                string ExaminationRoomSql = "select * from ExaminationRoom where Invigilator1 = '" + Emp_List[i].EmployeeId + "' or Invigilator2='" + Emp_List[i].EmployeeId + "'";
+                List<ExaminationRoom> ExamRoomList = ExaminationRoom_Entity.GetListBySql<ExaminationRoom>(ExaminationRoomSql);
+                for (int t = 0; t < ExamRoomList.Count; t++)
+                {
+                    string ExamDateSql = "select * from Examination where year(BeginDate) = '" + dt.Year + "' and Month(BeginDate)='" + dt.Month + "' and ID =" + ExamRoomList[t].Examination + "";
+
+                    if (Examination_Entity.GetListBySql<Examination>(ExamDateSql).FirstOrDefault() != null)
+                    {
+                        InvigilationCount += 1;
+                    }
+                }
+                Invigilation_fee += InvigilationCount * 20;
+
+                //计算阅卷费
+                int StuCount = 0;
+                string MarkingSql = "select * from MarkingArrange where MarkingTeacher=" + Emp_List[i].EmployeeId + "";
+                List<MarkingArrange> MarkingList = Marking_Entity.GetListBySql<MarkingArrange>(MarkingSql);
+                for (int k = 0; k < MarkingList.Count; k++)
+                {
+                    string ExaminationSql = "select * from Examination where year(BeginDate) = '" + dt.Year + "' and Month(BeginDate)='" + dt.Month + "' and ID =" + MarkingList[k].ExamID + "";
+                    List<Examination> ExamList = Examination_Entity.GetListBySql<Examination>(ExaminationSql);
+                    if (ExamList.Count > 0)
+                    {
+                        string CandiSql = "select * from CandidateInfo where Examination =" + ExamList[0].ID + "";
+                        List<CandidateInfo> CandiList = Candi_Entity.GetListBySql<CandidateInfo>(CandiSql);
+                        StuCount += CandiList.Count;
+                    }
+                }
+                //读取配置文件
+                XmlDocument xmlDocument = new XmlDocument();
+                xmlDocument.Load(System.Web.HttpContext.Current.Server.MapPath("/Config/Cost.xml"));
+
+                //根节点
+                var xmlRoot = xmlDocument.DocumentElement;
+
+                //获取标准费用
+                var cost = xmlRoot.GetElementsByTagName("MarkingCost")[0].InnerText;
+                Marking_fee = int.Parse(cost) * StuCount;
+
+                //计算教材研发费用
+                var PPT_NodeCost = xmlRoot.GetElementsByTagName("PPT_NodeCost")[0].InnerText;
+                var TextBook_NodeCost = xmlRoot.GetElementsByTagName("TextBook_NodeCost")[0].InnerText;
+                string CoursewareSql = "select * from Coursewaremaking where year(submissiontime)=" + dt.Year + " and month(submissiontime)=" + dt.Year + " and RampdpersonID =" + Emp_List[i].EmployeeId + "";
+                List<Coursewaremaking> CoursewareList = Courseware_Entity.GetListBySql<Coursewaremaking>(CoursewareSql);
+                for (int h = 0; h < CoursewareList.Count; h++)
+                {
+                    if (CoursewareList[h].MakingType == "Word")
+                    {
+                        RD_fee += Convert.ToInt32(TextBook_NodeCost);
+                    }
+                    else if (CoursewareList[h].MakingType == "PPT")
+                    {
+                        RD_fee += Convert.ToInt32(PPT_NodeCost);
+                    }
+                }
+
+                //计算班主任超带班   7-15天  200    15-30天   300  
+                int jibenban = 3;  //主任带班2个   班主任带班3个
+                if (EmployeesInfoManage_Entity.GetDeptByEmpid(Emp_List[i].EmployeeId).DeptName.Contains("教质部"))
+                {
+
+                    //根据用户id查出班主任带班id
+                    string HeadMasterSql = "select * from Headmaster where informatiees_Id=" + Emp_List[i].EmployeeId + " and IsDelete=0";
+                    Headmaster header = Headmaster_Entity.GetListBySql<Headmaster>(HeadMasterSql).FirstOrDefault();
+
+                    string Super_classSql = @"select * from Headclass where (Year(EndingTime)=" + dt.Year + " " +
+                        "and Month(Endingtime)>=" + dt.Month + " and Year(LeadTime)<=" + dt.Year + " " +
+                        "and Month(LeadTime)<=" + dt.Month + " or (EndingTime is null ))and " +
+                        " LeaderID =" + header.ID + " order by LeadTime";
+                    List<HeadClass> HeadClassList = HeadClass_Entity.GetListBySql<HeadClass>(Super_classSql).ToList();
+                    if (EmployeesInfoManage_Entity.GetPositionByEmpid(Emp_List[i].EmployeeId).PositionName == "教质主任")
+                    {
+                        jibenban = 2;
+                    }
+
+                    if (HeadClassList.Count > jibenban)
+                    {
+                        //根据带班时间分组
+                        for (int y = 0; y < HeadClassList.Count - jibenban; y++)
+                        {
+                            DateTime datetime1 = DateTime.Parse(HeadClassList[HeadClassList.Count - y - 1].LeadTime.ToString());
+                            if (HeadClassList[HeadClassList.Count - y - 1].EndingTime == null)
+                            {
+                                Super_class += 300;
+                            }
+                            else
+                            {
+                                int days = System.Threading.Thread.CurrentThread.CurrentUICulture.Calendar.GetDaysInMonth(dt.Year, dt.Month);
+                                //结束时间中的天
+                                int daibanday = DateTime.Parse(HeadClassList[HeadClassList.Count - y - 1].EndingTime.ToString()).Day;
+                                if (daibanday >= 7 && daibanday <= 15)
+                                {
+                                    Super_class += 200;
+                                }
+                                else if (daibanday >= 15 && daibanday <= days)
+                                {
+                                    Super_class += 300;
+                                }
+                            }
+
+
+                        }
+                    }
+                }
+
+                staff.totalmoney = Convert.ToInt32(Cost_fee) + Duty_fee + Invigilation_fee + Marking_fee + Super_class + Internal_training_fee + RD_fee;
+                staff.Cost_fee = Cost_fee;
+                staff.Duty_fee = Duty_fee;
+                staff.Invigilation_fee = Invigilation_fee;
+                staff.Marking_fee = Marking_fee;
+                staff.RD_fee = RD_fee;
+                staff.Super_class = Super_class;
+                staff.Emp_Name = Emp_List[i].EmpName;
+                staff.RoleName = EmployeesInfoManage_Entity.GetPositionByEmpid(Emp_List[i].EmployeeId).PositionName;
+                staff_list.Add(staff);
+
+                Cost_fee = 0;
+                QuanDay = 0;
+                ClassTime = 50;
+                Duty_fee = 0;//值班费
+                Invigilation_fee = 0;//监考费
+                Marking_fee = 0;//阅卷费
+                Super_class = 0;//超带班
+                Internal_training_fee = 0;//内训费
+                RD_fee = 0;//研发费
+
+            }
+            return staff_list;
+        }
 
         /// <summary>
         /// 筛选员工
@@ -483,9 +853,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             //responseStream.Dispose();
             return isHoliday;
         }
-
-
-
+        
         /// <summary>
         /// 获取工作日的天数
         /// </summary>
@@ -625,8 +993,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
 
         }
-
-
+        
         /// <summary>
         /// 获取上专业课的课时
         /// </summary>
@@ -639,8 +1006,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             var templist = ScreenReconcile(emp.EmployeeId, date, type: type);
 
             return GetteachingNum();
-
-
+            
             List<TeachingItem> GetteachingNum()
             {
                 CourseBusiness tempdb_course = new CourseBusiness();
@@ -705,9 +1071,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
                 return result;
             }
-
-
-
+            
         }
 
         public bool IsContains(List<TeachingItem> teachingItems, int course)
@@ -778,8 +1142,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             return result;
 
         }
-
-
+        
         /// <summary>
         /// 计算底课时
         /// </summary>
@@ -895,8 +1258,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             #endregion
 
         }
-
-
+        
         //保存详细数据
         public void SaveStaff_CostData(List<Staff_Cost_StatisticesDetailView> data, List<Cose_StatisticsItems> Cost, string filename)
         {
@@ -1139,8 +1501,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             }
 
         }
-
-
+        
         /// <summary>
         /// 费用统计
         /// </summary>
@@ -1795,6 +2156,83 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         public List<HeadClass> SuperClass(List<HeadClass> datas)
         {
             return null;
+        }
+
+        /// <summary>
+        /// 计算全天课天数
+        /// </summary>
+        /// <returns></returns>
+        public int Cost_EndClass(DateTime time, string EmpID)
+        {
+            string sql = $"select * from Reconcile where YEAR(AnPaiDate)='{time.Year}' and MONTH(AnPaiDate)='{time.Month}' and Day(AnPaiDate)='{time.Day}' and EmployeesInfo_Id='{EmpID}'";
+            List<Reconcile> mydata = Reconcile_Entity.GetListBySql<Reconcile>(sql).ToList();
+            int count = 0;//一个月上的天数
+
+            if (mydata.Count == 2)
+            {
+                int mycount = 0;
+                for (int i = 0; i < mydata.Count; i++)
+                {
+                    if (mydata[0].Curse_Id == "上午" || mydata[0].Curse_Id == "下午")
+                    {
+                        mycount++;
+                    }
+                }
+                if (mycount == mydata.Count)
+                {
+                    count++;
+                }
+            }
+            else if (mydata.Count == 4)
+            {
+                int mycount = 0;
+                for (int i = 0; i < mydata.Count; i++)
+                {
+                    if (mydata[i].Curse_Id.Contains("12"))
+                    {
+                        mycount += 1;
+                    }
+                    else if (mydata[i].Curse_Id.Contains("34"))
+                    {
+                        mycount += 1;
+                    }
+                }
+
+                if (mycount == mydata.Count)
+                {
+                    count++;
+                }
+            }
+            else if (mydata.Count == 3)
+            {
+                int mycount = 0;
+                for (int i = 0; i < mydata.Count; i++)
+                {
+                    if (mydata[i].Curse_Id.Contains("12"))
+                    {
+                        mycount += 1;
+                    }
+                    else if (mydata[i].Curse_Id.Contains("34"))
+                    {
+                        mycount += 1;
+                    }
+                    else if (mydata[i].Curse_Id.Contains("上午"))
+                    {
+                        mycount += 1;
+                    }
+                    else if (mydata[i].Curse_Id.Contains("下午"))
+                    {
+                        mycount += 1;
+                    }
+                }
+                if (mycount == mydata.Count)
+                {
+                    count++;
+                }
+            }
+
+
+            return count;
         }
     }
 }

@@ -2,7 +2,7 @@
 @{
     Layout = null;
 }
-
+@using SiliconValley.InformationSystem.Entity.MyEntity
 <!DOCTYPE html>
 
 <html>
@@ -14,26 +14,125 @@
     <script src="~/Scripts/layui/layui.js"></script>
 </head>
 <body>
-    <div style="margin-top:30px;">
-        <span style="display:none" id="EmpID">@ViewBag.EmpID</span>
-        <ul class="layui-timeline">
-            <li class="layui-timeline-item">
-                <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
-                <div class="layui-timeline-content layui-text">
-                    <h3 class="layui-timeline-title">8月18日</h3>
-                    <p>
-                        layui 2.0 的一切准备工作似乎都已到位。发布之弦，一触即发。
-                        <br>不枉近百个日日夜夜与之为伴。因小而大，因弱而强。
-                        <br>无论它能走多远，抑或如何支撑？至少我曾倾注全心，无怨无悔 <i class="layui-icon"></i>
-                    </p>
+    <div>
+        <div class="layui-form" action="" style="margin-left:340px">
+            <div class="layui-form-item">
+                <label class="layui-form-label">部门</label>
+                <div class="layui-input-inline" style="width:400px">
+                    <select name="DeptID" id="dep_select" lay-filter="dep_select" lay-search="">
+                        <option value="0">所有</option>
+                        @{
+                            foreach (var item in ViewBag.deps as List<Department>)
+                            {
+                                <option value="@item.DeptId">@item.DeptName</option>
+                            }
+                        }
+                    </select>
                 </div>
-            </li>
-        </ul>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">部门人员</label>
+                <div class="layui-input-inline" style="width:400px">
+                    <select name="dep_per" id="dep_per"></select>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">日期</label>
+                <div class="layui-input-inline" style="width:400px">
+                    <input type="text" class="layui-input" name="date" style="width:400px" id="test11" placeholder="yyyy年MM月">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">节假日天数</label>
+                <div class="layui-input-inline" style="width:400px">
+                    <input type="number" name="jiejiari" value="0" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">单休双休</label>
+                <div class="layui-input-inline" style="width:400px">
+                    <input type="radio" name="IsDanxiu1" value="0" title="单休">
+                    <input type="radio" name="IsDanxiu1" value="1" title="双休" checked>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn layui-btn-radius" lay-submit lay-filter="Btn_Cost1">开始统计</button>
+
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-left:140px;margin-right:140px">
+            <table id="CostTab" style="width:600px" lay-filter="CostTab"></table>
+        </div>
     </div>
 </body>
 </html>
 
 
 <script>
+    layui.use(['layer','laydate','form','table'], function () {
+        var form = layui.form;
+        var layer = layui.layer;
+        var laydate = layui.laydate;
+        var table = layui.table;    
 
+        var tableIns = table.render({
+            elem: '#CostTab',
+             height: 312
+            , cols: [[ //表头
+                { field: 'Emp_Name', title: '员工名称', width: 120, sort: true}
+                , { field: 'RoleName', title: '职务', width: 80 }
+                , { field: 'Cost_fee', title: '课时费', width: 100, sort: true }
+                , { field: 'Duty_fee', title: '值班费', width: 100 }
+                , { field: 'Invigilation_fee', title: '监考费', width: 100 }
+                , { field: 'Marking_fee', title: '阅卷费', width: 100, sort: true }
+                , { field: 'Super_class', title: '超带班费', width: 130, sort: true }
+                , { field: 'Internal_training_fee', title: '内训费', width: 100 }
+                , { field: 'RD_fee', title: '研发费', width: 100, sort: true }
+                , { field: 'totalmoney', title: '总计', width: 80, sort: true }
+            ]]
+        });
+
+        laydate.render({
+            elem: '#test11'
+            , format: 'yyyy年MM月'
+            , type: 'month'
+            , trigger: 'click'
+        });
+
+        //部门下拉框加载人员
+        form.on('select(dep_select)', function (data) {
+            $.ajax({
+                url: '/Educational/Staff_Cost_Statistics/GetPersonByid?departid=' + data.value,
+                success: function (va) {
+                    $.each(va,function (index, element) {
+                        
+                        $("#dep_per").append('<option value=' + element.Value + '>' + element.Text + '</option>');
+                    })
+                    form.render();
+                }
+            });
+        });
+
+        //监听提交
+        form.on('submit(Btn_Cost1)', function (data) {
+            var data = data.field;
+            table.reload("CostTab",{
+                url: '/Educational/Staff_Cost_Statistics/PersonalCostStatics1',
+                where: { //设定异步数据接口的额外参数，任意设
+                    "empid": data.dep_per,
+                    "date": data.date,
+                    "IsDanxiu": data.IsDanxiu1,
+                    "jiejiari": data.jiejiari
+                }
+            });
+        });
+    });
 </script>
