@@ -186,7 +186,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                         //根据班级id查询单条数据
                         ClassSchedule classSchedule = ClassSchedule_Entity.GetEntity(reconcile.ClassSchedule_Id);
                         //根据课程名称以及阶段id筛选
-                        Curriculum curriculum = curriculum_Entity.GetList().FirstOrDefault(a => a.CourseName == reconcile.Curriculum_Id && a.Grand_Id == classSchedule.grade_Id);
+                        Curriculum curriculum = curriculum_Entity?.GetList()?.FirstOrDefault(a => a?.CourseName == reconcile?.Curriculum_Id && a?.Grand_Id == classSchedule?.grade_Id);
                         //去除语文课之类的
                         Curriculum curriculum1 = curriculum_Entity.GetList()
                             .Where(a => !a.CourseName.Contains("语文") &&
@@ -197,6 +197,8 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                             !a.CourseName.Contains("军事"))
                             .FirstOrDefault(a => a.CourseName == reconcile.Curriculum_Id && a.Grand_Id == classSchedule.grade_Id);
 
+                        if (curriculum != null) {
+                            
                         if (curriculum.CourseName.Contains("语文") ||
                             curriculum.CourseName.Contains("数学") ||
                             curriculum.CourseName.Contains("英语") ||
@@ -229,7 +231,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                             }
                         }
                     }
-
+                    }
                 }
                 //课时费计算总额    //底课时
 
