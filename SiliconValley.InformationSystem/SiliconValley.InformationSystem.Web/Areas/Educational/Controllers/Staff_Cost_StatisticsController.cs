@@ -551,7 +551,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         /// <param name="jiejiari">节假日天数</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult TempFunction(string date, int DeptID, string IsDanxiu,int jiejiari)
+        public ActionResult TempFunction(string date, int [] DeptID, string IsDanxiu,int jiejiari)
         {
             DateTime dt = Convert.ToDateTime(date.Substring(0, 4) + "-" + date.Substring(5, 2));
 
@@ -568,21 +568,17 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             if (jiejiari >0) {
                 WorkDay = WorkDay - jiejiari;
             }
+
+            List<EmployeesInfo> Emp_List = new List<EmployeesInfo>() ;
             
-            
-            List<EmployeesInfo> Emp_List = null;
-            if (DeptID == 0)
+            for (int i = 0; i < DeptID.Length; i++)
             {
-                Emp_List = EmployeesInfoManage_Entity.GetEmpByDeptName();
-            }
-            else
-            {
-                Emp_List = EmployeesInfoManage_Entity.GetEmpsByDeptid(DeptID);
+                Emp_List.AddRange(EmployeesInfoManage_Entity.GetEmpsByDeptid(DeptID[i]));
             }
 
             List<Staff_CostView> staff_list = db_staf_Cost.CostTimeFee(Emp_List,dt,WorkDay);
             
-            AjaxResult ajaxResult = new AjaxResult();
+             AjaxResult ajaxResult = new AjaxResult();
             ajaxResult.Msg = "统计完成";
             SessionHelper.Session["Cost_Emp_list"] = staff_list;
             
