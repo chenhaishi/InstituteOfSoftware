@@ -486,11 +486,20 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         /// 下载模板
         /// </summary>
         /// <returns></returns>
-        public FileStreamResult DownloadModule()
+        public ActionResult DownloadModule(int examid)
         {
-            string tr = Server.MapPath("/uploadXLSXfile/Template/Scoretemplate.xls");
-            FileStream stream = new FileStream(tr, FileMode.Open);
-            return File(stream, "application/octet-stream", Server.UrlEncode("Template.xls"));
+            var xuesheng = db_candidate.GetList().Where(d => d.Examination == examid).ToList();
+            List<string> mingzi = new List<string>();
+            foreach (var item in xuesheng)
+            {
+                var name = db_student.GetList().Where(d => d.StudentNumber == item.StudentID).FirstOrDefault().Name;
+                mingzi.Add(name);
+            }
+            var ajaxresult = new { data = mingzi };
+            return Json(ajaxresult, JsonRequestBehavior.AllowGet);
+            //string tr = Server.MapPath("/uploadXLSXfile/Template/Scoretemplate.xls");
+            //FileStream stream = new FileStream(tr, FileMode.Open);
+            //return File(stream, "application/octet-stream", Server.UrlEncode("Template.xls"));
         }
         /// <summary>
         /// 一键下载解答题

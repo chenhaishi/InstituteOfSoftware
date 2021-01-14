@@ -365,11 +365,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 returnlist.Add(temobj1);
 
             }
-
-
-
-
-
             var obj = new {
                 code = 0,
                 msg = "",
