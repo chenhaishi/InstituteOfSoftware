@@ -80,7 +80,7 @@
             @*}*@
             <input class="layui-btn layui-btn-primary" id="Upload" type="file" name="computerQuestion" />
             <button type="button" class="layui-btn layui-btn-warm" id="COMMIT">提交机试</button><hr />
-            <text style="color:red">（机试题只能下载一套,就不能再下载第二套了,下载下来的内容如果找不到可以去浏览器下载内容中查看,请将项目写上自己的姓名）</text>
+            <text style="color:red">（机试题每次下载下来的永远都是同一套,下载下来的机试题将会被记录,发现提交的内容跟机试题不符合,做零份处理,请将项目写上自己的姓名）</text>
         </div>
     </div>
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
@@ -259,15 +259,15 @@
 
                 var a = new Date()
                 a = a.getFullYear() + "-" + (a.getMonth() + 1) + "-" + a.getDate() + " " + a.getHours() + ":" + a.getMinutes();
-
+                console.log(a);
+                console.log(EndDate);
                 if (a > EndDate) {
 
                     //自动点击提交
                     Commit(true);
                 }
                 else {
-                    console.log(currentDate);
-                    console.log(EndDate);
+                    
                     console.log("考试中......");
                 }
 
