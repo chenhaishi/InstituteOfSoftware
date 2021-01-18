@@ -743,6 +743,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 db_exam.AllExamination().Where(d => d.ID == examid).FirstOrDefault();
                 var Candidateinfo = db_exam.AllCandidateInfo(examid).Where(d => d.Examination == examid && d.StudentID == studentNumber).FirstOrDefault();
                 Candidateinfo.ComputerPaper = computerUrl;
+                string dataes = DateTime.Now.ToString();
+                Candidateinfo.ComputerPaperTime = dataes;
                 //获取需要替换的字符串路径
 
                 if (Candidateinfo.ComputerPaper != null)
@@ -783,7 +785,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         /// <param name="AnswerCommit">解答题答卷</param>
         /// <returns></returns>
         public ActionResult AnswerSheetCommit(float ChoiceScores, string AnswerCommit,int examid)
-        {
+         {
             AjaxResult result = new AjaxResult();
 
             try
@@ -814,8 +816,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 //Candidateinfo.Paper = Server.MapPath("/Areas/ExaminationSystem/Files/AnswerSheet/" + direName + "/" + answerfilename);
                 Candidateinfo.Paper = $"{direName}{answerfilename}";
                 Candidateinfo.ComputerPaper = "1";
-
-
+                string datatimes = DateTime.Now.ToString();
+                Candidateinfo.PaperTime = datatimes;
                 db_exam.UpdateCandidateInfo(Candidateinfo);
 
                 //4.记录选择题分数
