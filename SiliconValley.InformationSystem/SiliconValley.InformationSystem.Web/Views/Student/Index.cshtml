@@ -107,7 +107,7 @@
             <!-- 头部区域（可配合layui已有的水平导航） -->
             <ul class="layui-nav layui-layout-left ">
                 @*<li class="layui-nav-item"><a href="/Teaching/SatisfactionSurvey/StudentSurveyIndex">满意度</a></li>
-                <li class="layui-nav-item"><a href="/ExaminationSystem/StudentExamSys/StuExamIndex">考试</a></li>*@
+                    <li class="layui-nav-item"><a href="/ExaminationSystem/StudentExamSys/StuExamIndex">考试</a></li>*@
             </ul>
             <ul class="layui-nav layui-layout-right">
                 <li class="layui-nav-item">
@@ -117,77 +117,34 @@
                     </a>
                     <dl class="layui-nav-child">
                         <dd><a href="">基本资料</a></dd>
-                        <dd><a href="">安全设置</a></dd>
                     </dl>
                 </li>
                 <li class="layui-nav-item"><a href="/Login/SLogin">退了</a></li>
             </ul>
         </div>
-        @*<div class="layui-side layui-bg-black">
-            <div class="layui-side-scroll">
-                <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
-                <ul class="layui-nav layui-nav-tree" lay-filter="test">
-                    <li class="layui-nav-item layui-nav-itemed">
-                        <a href="javascript:;">满意度</a>
-                        <dl class="layui-nav-child">
-                            <dd><a class="tongyi" href="javascript:;">教员评价</a></dd>
-                            <dd><a class="tongyi" href="javascript:;">班主任评价</a></dd>
-                        </dl>
-                    </li>
-                    <li class="layui-nav-item">
-                        <a href="javascript:;">考试</a>
-                        <dl class="layui-nav-child">
-                            <dd><a class="tongyi" href="javascript:;">考试模拟</a></dd>
-                            <dd><a class="tongyi" href="javascript:;">成绩查询</a></dd>
-                            <dd><a class="tongyi" href="javascript:;">刷题</a></dd>
-                            <dd><a class="tongyi" href="javascript:;">考试</a></dd>
-                        </dl>
-                    </li>
-                </ul>
-            </div>
-        </div>*@
         <div class="">
             <!-- 内容主体区域 -->
             <div class="row" style=" border: 1px solid #dcdcdc;    display: block;box-sizing: border-box;">
-                <div style="background-color: #f3f7fd; padding: 10px 10px 10px 15px; border-bottom: 1px solid #ebeef5; display: block; font-size: 20px; margin-left: 10px">6大专业</div>
+                <div style="background-color: #f3f7fd; padding: 10px 10px 10px 15px; border-bottom: 1px solid #ebeef5; display: block; font-size: 20px; margin-left: 10px">5大专业</div>
                 <div class="col-xs-1 my-col">
-
                     <div class="box" style=" display: block;text-align: center;">
                         <div style="position: relative;font-size: 26px;color: #ec661a;line-height: 50px;"></div>
                         <div style="font-size: 16px;line-height: 30px;text-align: center;margin-top:12px">
                             Java
-
-
                         </div>
                     </div>
-
                 </div>
-
                 <div class="col-xs-1 my-col">
 
                     <div class="box" style=" display: block;text-align: center;">
                         <div style="position: relative;font-size: 26px;color: #ec661a;line-height: 50px;"></div>
                         <div style="font-size: 16px;line-height: 30px;text-align: center;margin-top:12px">
                             .NET
-
-
                         </div>
                     </div>
 
                 </div>
 
-                <div class="col-xs-1 my-col">
-
-                    <div class="box" style=" display: block;text-align: center;">
-                        <div style="position: relative;font-size: 26px;color: #ec661a;line-height: 50px;"></div>
-                        <div style="font-size: 16px;line-height: 30px;text-align: center;margin-top:12px">
-                            APP
-
-
-                        </div>
-                    </div>
-
-                </div>
 
                 <div class="col-xs-1 my-col">
 
@@ -195,8 +152,6 @@
                         <div style="position: relative;font-size: 26px;color: #ec661a;line-height: 50px;"></div>
                         <div style="font-size: 16px;line-height: 30px;text-align: center;margin-top:12px">
                             测试
-
-
                         </div>
                     </div>
 
@@ -208,8 +163,6 @@
                         <div style="position: relative; font-size: 26px; color: #ec661a; line-height: 50px;"></div>
                         <div style="font-size: 16px;line-height: 30px;text-align: center;margin-top:12px">
                             UI
-
-
                         </div>
                     </div>
 
@@ -221,8 +174,6 @@
                         <div style="position: relative;font-size: 26px;color: #ec661a;line-height: 50px;"></div>
                         <div style="  font-size: 16px; line-height: 30px;  text-align: center;   margin-top:12px">
                             实施
-
-
                         </div>
                     </div>
 
@@ -351,8 +302,6 @@
                                     </div>
                                 </div>
                             </div>
-
-
                         </td>
                     </tr>
                 </table>
@@ -361,46 +310,90 @@
 
             <div style="clear: both;"></div>
             <div style="margin-top: 10px;border: 1px solid #dcdcdc; ">
-                <div style=" font-size: 20px;padding: 10px 10px 10px 15px;background-color: #f3f7fd;border-bottom: 1px solid #808080;">考试统计</div>
+                <div style=" font-size: 20px;padding: 10px 10px 10px 15px;background-color: #f3f7fd;border-bottom: 1px solid #808080;">最近考试</div>
 
                 <div class=" col-md-12 col-sm-12 " style="  background-color: #ffffff;box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.05);border-radius: 10px;margin: 22px 0 0 0;">
                     <div class="row" style="">
                         <div style="font-size: 20px;font-weight: normal;color: #333333;font-weight: bold;margin-top: 20px;margin-left: 15px;">
-                            正在进行的考试
+                            <table class="layui-hide" id="test"></table>
                         </div>
-
                         <div style="float: right !important;margin: 23px 14px 0 17px !important;">
                         </div>
+
                     </div>
                     <table class="table table-hover border-0" id="demo" lay-filter="test" style="background-color: #ffffff;"></table>
 
                 </div>
             </div>
         </div>
-        <div class="layui-footer">
-            <!-- 底部固定区域 -->
-            <footer>
-                <p style="color:#000000;">版权所属公司：<a href="https://xin.baidu.com/company_detail_20452183185658?rq=ef&amp;pd=ee&amp;from=ps" title="湖南硅谷云教育科技有限公司">湖南硅谷云教育科技有限公司</a>  <a href="http://www.beian.miit.gov.cn/" target="_blank" title="湘ICP备17003047号-3">湘ICP备17003047号-3</a></p>
-            </footer>
-        </div>
+        @*<div class="layui-footer">
+
+                <footer>
+                    <p style="color:#000000;">版权所属公司：<a href="https://xin.baidu.com/company_detail_20452183185658?rq=ef&amp;pd=ee&amp;from=ps" title="湖南硅谷云教育科技有限公司">湖南硅谷云教育科技有限公司</a>  <a href="http://www.beian.miit.gov.cn/" target="_blank" title="湘ICP备17003047号-3">湘ICP备17003047号-3</a></p>
+                </footer>
+            </div>*@
 
     </div>
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/layui/layui.js"></script>
-
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="">开始考试</a>
+    </script>
     <script>
-        
+
         var Countdown;
         //JavaScript代码区域
-        layui.use(['form', 'util', 'layer', 'element'], function () {
+        layui.use(['form', 'util', 'layer', 'element','table'], function () {
             var util = layui.util;
             var laydate = layui.laydate;
             var element = layui.element;
             var layer = layui.layer;
+            var table = layui.table;
+                table.render({
+                    elem: '#test'
+                    , url: '/demo/table/user/' /*/ ExaminationSystem / StudentExamSys / qiukaoshi*/
+                    , cols: [[
+                        , { field: 'Title', width: "15%", title: '考场名' }
+                        , {
+                            field: 'BeginDate', width: "15%", title: '考试时间', templet: function (res) {
+
+                                var utcstr = res.BeginDate.substr(res.BeginDate.indexOf('(') + 1, 13);
+
+                                var date = new Date(parseInt(utcstr));
+
+                                var year = date.getFullYear();
+                                var month = date.getMonth() + 1;
+                                var day = date.getDate();
+
+                                return year + '年' + month + '月' + day + '日'
+
+
+
+                            }
+                        }
+                        , { field: 'TimeLimit', width: "15%", title: '时限' }
+                        , {
+                            field: 'IsEnd', width: "15%", title: '状态', templet: function (data) {
+
+
+
+                                if (data.IsEnd == true) {
+                                    return "<a class='layui-btn layui-btn-xs'>结束</a>";
+                                }
+                                else {
+                                    return "<a class='layui-btn layui-btn-danger layui-btn-xs'>进行中</a>";
+                                }
+
+                            }
+                        }
+                        , { field: 'right', width: "12%", title: '操作', toolbar: '#barDemo' }
+                    ]]
+
+                });
+            
+
             //班主任点击事件
             $("#Headmaster").click(function () {
-
-
                 $.post("/Teaching/SatisfactionSurvey/IsHaveSatisfaction", { type: "jiaozhi" }, function (data) {
 
 
@@ -482,34 +475,34 @@
             });
             //点击考试模拟 进入考试模拟页
             $("#Mockxamination").click(function () {
-            
+
                 //window.location.href = "/ExaminationSystem/StudentExamSys/MockExaminationView"
                 $.post("/ExaminationSystem/StudentExamSys/SimulationProhibit", {}, function (result) {
                     if (result.ErrorCode == 200) {
                         window.location.href = "/ExaminationSystem/StudentExamSys/MockExaminationView"
-                        
+
                     } else {
                         layer.msg("当前有考试,不能进行此操作!");
                     }
                 })
-                
+
             });
             //点击刷题  进入刷题页
             $("#ShuaTi").click(function () {
                 //window.location.href = "/ExaminationSystem/StudentExamSys/Brushthetopic"
-                $.post("/ExaminationSystem/StudentExamSys/BrushthetopicProhibit", {}, function (result){
+                $.post("/ExaminationSystem/StudentExamSys/BrushthetopicProhibit", {}, function (result) {
                     if (result.ErrorCode == 200) {
                         window.location.href = "/ExaminationSystem/StudentExamSys/Brushthetopic"
                     } else {
                         layer.msg("当前有考试,不能进行此操作!");
-                       
+
                     }
                 })
             })
             //点击考试 进入考试页
             $("#KaoShi").click(function () {
                 window.location.href = "/ExaminationSystem/StudentExamSys/StuExamIndex"
-                
+
             })
         });
     </script>

@@ -55,9 +55,66 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         public ActionResult StuExamIndex()
         {
             //获取学员最近的考试
+            StudentInformationBusiness studentInformationBusiness = new StudentInformationBusiness();
 
-          
+            var studentNumber = SessionHelper.Session["studentnumber"].ToString();
+            var student = studentInformationBusiness.StudentList().Where(d => d.StudentNumber == studentNumber).FirstOrDefault();
+            ViewBag.student = student;
+
             return View();
+        }
+        /// <summary>
+        /// 拿到这个学生参加的考试
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult qiukaoshi()
+        {
+            var list = db_exam.AllExamination().OrderByDescending(d => d.BeginDate).FirstOrDefault();
+        
+            var resultlist = new List<ExaminationView>();
+
+            var tempobj = db_exam.ConvertToExaminationView(list);
+            
+            if (list != null)
+            {
+                resultlist.Add(tempobj);
+            }
+
+            List<object> returnlist = new List<object>();
+
+            foreach (var item in resultlist)
+            {
+                bool Isend = db_exam.IsEnd(db_exam.AllExamination().Where(d => d.ID == item.ID).FirstOrDefault());
+
+                var examtypeview = db_exam.ConvertToExamTypeView(item.ExamType);
+
+                var grand = db_grand.AllGrand().Where(d => d.Id == examtypeview.GrandID.Id).FirstOrDefault();
+
+                var temobj1 = new
+                {
+                    ID = item.ID,
+                    Title = item.Title,
+                    TypeName = examtypeview.TypeName.TypeName,
+                    grand = grand.GrandName,
+                    BeginDate = item.BeginDate,
+                    TimeLimit = item.TimeLimit,
+                    Remark = item.Remark,
+                    IsEnd = Isend,
+                    //== true ? "结束" : "未结束"
+
+                };
+                returnlist.Add(temobj1);
+
+            }
+            var obj = new
+            {
+                code = 0,
+                msg = "",
+                count = 1,
+                data = returnlist
+            };
+
+            return Json(obj, JsonRequestBehavior.AllowGet);
         }
         public ActionResult Brushthetopic()
         {
@@ -988,8 +1045,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             }
             catch (Exception ex)
             {
-
-                throw;
+                result.ErrorCode = 500;
+                result.Msg = "失败";
+                result.Data = null;
             }
 
             return Json(result, JsonRequestBehavior.AllowGet);

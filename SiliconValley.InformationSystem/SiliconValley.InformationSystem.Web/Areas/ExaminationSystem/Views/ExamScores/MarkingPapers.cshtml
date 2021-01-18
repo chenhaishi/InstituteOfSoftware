@@ -72,10 +72,10 @@
                 <label class="infoitem examName" style="color:black;margin-right:200px">考试名称:<span style="color:#009688!important"></span></label>
                 <label class="infoitem examDate" style="color:black">考试时间:<span style="color:#009688!important"></span></label>
 
-                <div style="margin-right:100px;margin-bottom:30px;">
+                @*<div style="margin-right:100px;margin-bottom:30px;">
                     <label class="infoitem totalPaper" style="color:black;margin-right:200px">试卷总数:<span id="fenliang" style="color:#009688!important"></span></label>
-                    @*<label class="infoitem filshPaper" style="color:black">已阅卷数量:<span style="color:#009688!important"></span></label>*@
-                </div>
+                    <label class="infoitem filshPaper" style="color:black">已阅卷数量:<span style="color:#009688!important"></span></label>
+                </div>*@
             </div>
         </div>
     </div>
@@ -176,11 +176,18 @@
     <a class="layui-btn layui-btn-danger download" lay-event="download" style="color:white">下载机试</a>
     {{#}}}
 </script>
+<script type="text/html" id="jishi">
+    {{#if(d.DownloadContent!="没有下载"){}}
+    <a class="layui-btn layui-btn-danger jishi" lay-event="xiazai" style="color:white">下载</a>
+    {{#}else{}}
+    <a class="layui-btn layui-btn-warm" style="color:white">没有</a>
+    {{#}}}
+</script>
 <script type="text/html" id="barDemoes">
     {{#if(d.Paper==null||d.Paper==""){}}
     <a class="layui-btn layui-btn-warm" style="color:white">空</a>
     {{#}else{}}
-    <a class="layui-btn layui-btn-danger download" lay-event="downloades" style="color:white">查看解答题</a>
+    <a class="layui-btn layui-btn-danger" lay-event="downloades" style="color:white">查看解答题</a>
     {{#}}}
 </script>
 <div id="yincangDiv" style="display:none">
@@ -204,7 +211,7 @@
 </div>
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
-        <a href="\ExaminationSystem\ExamScores\DownloadModule" class="layui-btn" style="color:white;width:20%">下载模板</a>
+        <a  id="xiazaimoban" class="layui-btn" style="color:white;width:20%">下载模板</a>
         <a class="layui-btn" style="color:white;width:20%" lay-event="OneClickUploadScore" id="OneClickUploadScore">一键上传分数</a>
         <a href="\ExaminationSystem\ExamScores\Marking" class="layui-btn layui-btn-danger" style="color:white;width:20%">跳转查看笔试</a>
     </div>
@@ -264,24 +271,24 @@
                 , title: '学生名单'
                 , cols: [[
                     , { field: 'StudentID', title: '序号', width: "18%", sort: true }
-                    , { field: 'StudentName', title: '学员名称', width: "15%" }
-                    , {
-                        field: 'DownloadContent', title: '所考的机试题', width: "20%" }
+                    , { field: 'StudentName', title: '学员名称', width: "13%" }
+                    , { field: 'DownloadContent', title: '所考的机试试卷', width: "15%" } 
+                    , { field: 'DownloadContent', title: '试卷', width: "15%", toolbar: '#jishi'}
                     , {
                         field: 'IsReExam', title: '是否已阅', width: "12%", templet: function (data) {
 
                             if (data.IsReExam == false) {
 
-                                return "<text style='color:chartreuse'>未阅</text>";
+                                return "<text>未阅</text>";
                             }
                             else {
 
-                                return "<text style='color:darkgray'>已阅</text>";
+                                return "<text>已阅</text>";
                             }
 
                         } }
-                    , { field: 'Paper', title: '笔试', width: "20%", toolbar: '#barDemoes'}
-                    , { field: 'ComputerPaper', title: '机试', width: "20%", toolbar: '#barDemo'} 
+                    , { field: 'Paper', title: '笔试', width: "15%", toolbar: '#barDemoes'}
+                    , { field: 'ComputerPaper', title: '机试', width: "15%", toolbar: '#barDemo'} 
                     //, { field: 'right', title: '操作', width: "33%", toolbar: '#barDemo' }
                 ]]
             });
@@ -291,6 +298,7 @@
             table.on('tool(ExamScores)', function(obj){
                 var data = obj.data;
                 StuExamNumber = obj.data.StudentID;
+                var DownloadContent = obj.data.DownloadContent;
                 console.log(Examid);
                 if (obj.event === 'download') {
                     $('.download').attr('href', "/ExaminationSystem/ExamScores/DownloadComputerSheet?examid=" + Examid + "&kaohao=" + StuExamNumber);
@@ -300,9 +308,12 @@
                     layer.open({
                         type: 2,
                         title: "解答题",
-                        area: ["700px", "800px"],
+                        area: ["1100px", "100%"],
                         content: '/ExaminationSystem/ExamScores/AnswerPage?kaohao=' + StuExamNumber + '&examid=' + Examid,
                     });
+                } else if (obj.event === 'xiazai') {
+                    //下载学生所考的机试题 给机试题的id或名字过去
+                    $('.jishi').attr('href', "/ExaminationSystem/ExamScores/xiazaijishi?DownloadContent=" + DownloadContent);
                 }
             });
             //监听行双击事件
@@ -319,15 +330,16 @@
                 var checkStatus = table.checkStatus(obj.config.id);
                 switch (obj.event) {
                     case 'OneClickUploadScore':
-                        layer.open({
-                            type: 1,
-                            title: "上传",
-                            area: ["600px", "400px"],
-                            content: $('#yincangDiv'),
-                            success: function () {
+                        layer.msg("功能优化中");
+                        //layer.open({
+                        //    type: 1,
+                        //    title: "上传",
+                        //    area: ["600px", "400px"],
+                        //    content: $('#yincangDiv'),
+                        //    success: function () {
 
-                            }
-                        });
+                        //    }
+                        //});
                         break;
                 };
             });
@@ -448,16 +460,55 @@
                     }
                 }
             });
+            //下载模板
+            $(document).off("click", "#xiazaimoban").on("click", "#xiazaimoban", function () {
+                //var lodindex = layer.load(1);
+                layer.msg("正在下载!!!");
+                $.ajax({
+                    url: '/ExaminationSystem/ExamScores/DownloadModule?examid=' + Examid,
+                    type: 'post',
+                    success: function (res) {
+                        console.log(res);
+                        //列标题，逗号隔开，每一个逗号就是隔开一个单元格
+                        let str = ``;
+                        //增加\t为了不让表格显示科学计数法或者其他格式
+                        for (let i = -1; i < res.data.length; i++) {
+                            if (i == -1) {
+                                str += `姓名\t,选择题分数\t,解答题分数\t,机试题分数\t,备注\t,总分`;
+                                //学号 姓名 解答题分数 机试题分数 备注 
+                            } else {
 
+                                str += res.data[i] /*+ '\t,' + res.data[i].RoleName*/;
+                            }
+                            str += '\n';
+                        }
+                        //encodeURIComponent解决中文乱码
+                        let uri = 'data:text/csv;charset=utf-8,\ufeff' + encodeURIComponent(str);
+                        //通过创建a标签实现
+                        var link = document.createElement("a");
+                        link.href = uri;
+                        //对下载的文件命名
+                        link.download = "Scoretemplate.xls";
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    }
+                })
+                //layer.close(lodindex);
+            })
             
             //3:点击加载阅卷信息及人员名单
             $(document).off("click", ".tayMarkinglist .tayMarkingitem").on("click", '.tayMarkinglist .tayMarkingitem', function () {
                 // 1首先判断考试是否结束   2考试结束才加载考场信息
                 //1判断考试是否结束
                 //获取考试ID
-                
+                var lodindex = layer.load(1);
                 var examid = $(this).attr("examid");
                 var examroom = $(this).attr("examroom");
+                //console.log(examid);
+                //console.log(examroom);
+                Examid = examid;
+                ExamRoom = examroom;
                 //classiD: examroom
                 table.reload('ExamScores', {
                     url: '/ExaminationSystem/ExamScores/StudentList'
@@ -470,7 +521,7 @@
                 //return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
 
                 $.post("/ExaminationSystem/ExamScores/ExamIsEnd", { examid: examid }, function (result) {
-
+                    
                     if (result.ErrorCode == 200) {
 
                         if (result.Data == true) {
@@ -481,9 +532,9 @@
 
                             //考试信息 考场信息 试卷数量 以阅卷数量
                             $.post("/ExaminationSystem/ExamScores/MarkeDatax", { examid: examid, examroom: examroom }, function (data) {
-                                
-                                Examid = data.Data.exam.ID;
-                                ExamRoom = data.Data.examroom.Classroom_Id;
+                              
+                                //Examid = data.Data.exam.ID;
+                                //ExamRoom = data.Data.examroom.Classroom_Id;
                                 $("#MarkingInfoArea .examName").find("span").text(data.Data.exam.Title);
 
                                 var examdate = data.Data.exam.BeginDate;
@@ -514,6 +565,7 @@
                     }
 
                 });
+                layer.close(lodindex);
             });
             
 

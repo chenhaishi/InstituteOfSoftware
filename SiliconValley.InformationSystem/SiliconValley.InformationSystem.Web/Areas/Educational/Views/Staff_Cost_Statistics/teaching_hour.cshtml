@@ -31,16 +31,17 @@
                         <div class="layui-form" action="">
                             <div class="layui-form-item">
                                 <label class="layui-form-label">部门</label>
-                                <div class="layui-input-inline">
-                                    <select name="DeptID" id="dep_select" style="width:400px" lay-filter="dep_select" lay-search="">
-                                        <option value="0">所有</option>
-                                        @{
-                                            foreach (var item in ViewBag.deps as List<Department>)
-                                            {
-                                                <option value="@item.DeptId">@item.DeptName</option>
-                                            }
+                                <div class="layui-input-block">
+                                    @*<select name="DeptID" id="dep_select" style="width:400px" lay-filter="dep_select" lay-search="">*@
+                                    @*<option value="0">所有</option>*@
+                                    @{
+                                        foreach (var item in ViewBag.deps as List<Department>)
+                                        {
+                                            @*<option value=""></option>*@
+                                            <input type="checkbox" name="DeptID" @*lay-skin="primary"*@ value="@item.DeptId" title="@item.DeptName">
                                         }
-                                    </select>
+                                    }
+                                    @*</select>*@
                                 </div>
                             </div>
 
@@ -86,16 +87,14 @@
 
                             <div class="layui-form-item">
                                 <label class="layui-form-label">部门</label>
-                                <div class="layui-input-inline">
-                                    <select name="DeptID" id="dep_select" style="width:400px" lay-filter="dep_select" lay-search="">
-                                        <option value="0">所有</option>
+                                <div class="layui-input-block">
                                         @{
                                             foreach (var item in ViewBag.deps as List<Department>)
                                             {
-                                                <option value="@item.DeptId">@item.DeptName</option>
+                                                @*<option value=""></option>*@
+                                                <input type="checkbox" name="DeptID" @*lay-skin="primary"*@ value="@item.DeptId" title="@item.DeptName">
                                             }
                                         }
-                                    </select>
                                 </div>
                             </div>
 
@@ -169,12 +168,16 @@
             } else if (value.date == "") {
                 layer.msg('请选择时间', { icon: 2, time: 500 });
             } else {
+                var arr = new Array();
+                $("input:checkbox[name='DeptID']:checked").each(function (i) {
+                    arr[i] = $(this).val();
+                });
                 $.ajax({
                     url: "/Educational/Staff_Cost_Statistics/TempFunction",
                     type: "POST",
                     data: {
                         date: value.date,
-                        DeptID: value.DeptID,
+                        DeptID: arr,
                         IsDanxiu: value.IsDanxiu,
                         jiejiari: value.jiejiari
                     },
@@ -197,13 +200,19 @@
             } else if (value.date == "") {
                 layer.msg('请选择时间', { icon: 2, time: 500 });
             } else {
+                var arr = new Array();
+                $("input:checkbox[name='DeptID']:checked").each(function (i) {
+                    arr[i] = $(this).val();
+                });
                 var index = layer.load();
+                console.log(arr);
                 $.ajax({
                     url: "/Educational/Staff_Cost_Statistics/TempFunction",
                     type: "POST",
+                    traditional:true,
                     data: {
                         date: value.date,
-                        DeptID: value.DeptID,
+                        DeptID: arr,
                         IsDanxiu: value.IsDanxiu1,
                         jiejiari: value.jiejiari
                     },

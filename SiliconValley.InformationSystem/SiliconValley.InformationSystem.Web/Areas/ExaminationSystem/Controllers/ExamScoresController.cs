@@ -48,6 +48,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         private readonly CourseBusiness db_course;
         private readonly CandidateInfoBusiness db_candidate;
         private readonly MachTestQuesBankBusiness db_machtest;
+        private readonly ComputerTestQuestionsBusiness db_computerTestQuestion;
 
         public ExamScoresController()
         {
@@ -59,6 +60,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             db_course = new CourseBusiness();
             db_candidate = new CandidateInfoBusiness();
            db_machtest =  new MachTestQuesBankBusiness();
+            db_computerTestQuestion = new ComputerTestQuestionsBusiness();
         }
 
         public ActionResult Index()
@@ -336,35 +338,37 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         /// </summary>
         /// <returns></returns>
         public ActionResult AnswerPage(int examid,string kaohao)
-        {   
-            var answerSheet = db_exam.AllCandidateInfo(examid).Where(d => d.StudentID == kaohao).FirstOrDefault().Paper;
-            List<object> objlist = new List<object>(); 
-            CloudstorageBusiness Bos = new CloudstorageBusiness();
+        {
+            //var answerSheet = db_exam.AllCandidateInfo(examid).Where(d => d.StudentID == kaohao).FirstOrDefault().Paper;
+            //List<object> objlist = new List<object>(); 
+            //CloudstorageBusiness Bos = new CloudstorageBusiness();
 
-            var client = Bos.BosClient();
-            var filedata = client.GetObject("xinxihua", answerSheet);
-            //解答题答卷
-            MemoryStream stream = new MemoryStream();
-            filedata.ObjectContent.CopyTo(stream);
+            //var client = Bos.BosClient();
+            //var filedata = client.GetObject("xinxihua", answerSheet);
+            ////解答题答卷
+            //MemoryStream stream = new MemoryStream();
+            //filedata.ObjectContent.CopyTo(stream);
 
-            string SheetStr = Encoding.UTF8.GetString(stream.ReadToBytes());
+            //string SheetStr = Encoding.UTF8.GetString(stream.ReadToBytes());
 
-            var list = JsonConvert.DeserializeObject<List<AnswerSheetHelp>>(SheetStr);
+            //var list = JsonConvert.DeserializeObject<List<AnswerSheetHelp>>(SheetStr);
 
-            foreach (var item in list)
-            {
-                //根据问题ID 获取题目
-                var question = db_answerQuestion.AllAnswerQuestion().Where(d => d.ID == item.questionid).FirstOrDefault();
+            //foreach (var item in list)
+            //{
+            //    //根据问题ID 获取题目
+            //    var question = db_answerQuestion.AllAnswerQuestion().Where(d => d.ID == item.questionid).FirstOrDefault();
 
-                var obj = new
-                {
-                    question = item,
-                    questionTitle = question,
-                };
+            //    var obj = new
+            //    {
+            //        question = item,
+            //        questionTitle = question,
+            //    };
 
-                objlist.Add(obj);
-            }
-             ViewBag.Data = objlist;
+            //    objlist.Add(obj);
+            //}
+            // ViewBag.Data = objlist;
+            var name = db_student.GetList().Where(d => d.StudentNumber == kaohao).FirstOrDefault().Name;
+            ViewBag.Name = name;
             return View();
         }
 
@@ -482,11 +486,20 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         /// 下载模板
         /// </summary>
         /// <returns></returns>
-        public FileStreamResult DownloadModule()
+        public ActionResult DownloadModule(int examid)
         {
-            string tr = Server.MapPath("/uploadXLSXfile/Template/Scoretemplate.xls");
-            FileStream stream = new FileStream(tr, FileMode.Open);
-            return File(stream, "application/octet-stream", Server.UrlEncode("Template.xls"));
+            var xuesheng = db_candidate.GetList().Where(d => d.Examination == examid).ToList();
+            List<string> mingzi = new List<string>();
+            foreach (var item in xuesheng)
+            {
+                var name = db_student.GetList().Where(d => d.StudentNumber == item.StudentID).FirstOrDefault().Name;
+                mingzi.Add(name);
+            }
+            var ajaxresult = new { data = mingzi };
+            return Json(ajaxresult, JsonRequestBehavior.AllowGet);
+            //string tr = Server.MapPath("/uploadXLSXfile/Template/Scoretemplate.xls");
+            //FileStream stream = new FileStream(tr, FileMode.Open);
+            //return File(stream, "application/octet-stream", Server.UrlEncode("Template.xls"));
         }
         /// <summary>
         /// 一键下载解答题
@@ -556,6 +569,33 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             doc.SaveToFile("C:\\解答题" + examid + ".docx", FileFormat.Docx2013);
 
             return doc;
+        }
+        /// <summary>
+        /// 下载考生考试的试卷
+        /// </summary>
+        /// <param name="kaohao"></param>
+        /// <param name="examid"></param>
+        /// <returns></returns>
+        public ActionResult xiazaijishi(string DownloadContent)
+        {
+            CloudstorageBusiness Bos = new CloudstorageBusiness();
+
+            var client = Bos.BosClient();
+
+            var obj = db_computerTestQuestion.AllComputerTestQuestion().Where(d => d.Title == DownloadContent).FirstOrDefault();
+
+            var filename = Path.GetFileName(obj.SaveURL);
+
+            //var path = Server.MapPath("/uploadXLSXfile/ComputerTestQuestionsWord/"+filename);
+
+            var path = "/ExaminationSystem/ComputerTestQuestionsWord/" + filename;
+
+            var fliedata = client.GetObject("xinxihua", path);
+
+            //FileStream fileStream = new FileStream(path, FileMode.Open);
+
+            return File(fliedata.ObjectContent, "application/octet-stream", Server.UrlEncode(filename));
+
         }
         /// <summary>
         /// 考生机试题答卷下载
