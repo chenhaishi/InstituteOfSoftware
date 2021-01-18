@@ -73,7 +73,7 @@
                     , { field: 'Stage', title: '阶段' }
                     , { field: 'Name', title: '名称 ' }
                     , { field: 'Typex', title: '类别 ' }
-                    , { field: 'Amountofmoney', title: '价格 ' }
+                    , {field: 'Amountofmoney', title: '价格 ', edit: 'text'} 
                     , { fixed: 'right', title: '状态', toolbar: '#barDemo' }
                 ]]
                 , page: true
@@ -81,7 +81,26 @@
                 , limits: [15, 20, 25]
             });
 
+            table.on('edit(test)', function (obj) {
+                var value = obj.value //得到修改后的值
+                    , data = obj.data //得到所在行所有键值
+                    , field = obj.field; //得到字段
+                
+                $.ajax({
+                    type: "get",
+                    dataType: "json",
+                    url: "/Finance/Pricedetails/UpdateShopping",
+                    data: { id: data.id, endvalue: value },
+                    success: function (data) {
+                        if (data.code==0) {
+                            layer.msg("修改成功!");
+                        } else {
+                            layer.msg("修改失败!");
+                        }
+                    }
+                });
 
+            });
             //监听头部工具栏
             table.on('toolbar(test)', function (obj) {
                 var checkStatus = table.checkStatus(obj.config.id);

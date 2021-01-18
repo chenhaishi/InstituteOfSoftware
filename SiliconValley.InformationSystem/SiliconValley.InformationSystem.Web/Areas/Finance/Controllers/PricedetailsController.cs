@@ -466,6 +466,26 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             return View();
         }
         /// <summary>
+        /// 修改商品价格
+        /// </summary>
+        public ActionResult UpdateShopping(decimal endvalue,string id)
+        {
+            try
+            {
+                BaseBusiness<Costitems> Costitems = new BaseBusiness<Costitems>();
+                var list = Costitems.GetList().Where(d => d.id == int.Parse(id)).SingleOrDefault();
+                list.Amountofmoney = endvalue;
+                Costitems.Update(list);
+                return Json(new { code = 0 });
+            }
+            catch (Exception ex)
+            {
+
+                return Json(new { code = -1 });
+            }
+         
+        }
+        /// <summary>
         /// 获取待入账数据
         /// </summary>
         /// <param name="page"></param>
