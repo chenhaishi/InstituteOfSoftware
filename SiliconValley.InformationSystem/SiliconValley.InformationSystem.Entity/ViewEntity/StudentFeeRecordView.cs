@@ -58,4 +58,15 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity
 
       public bool IsDelete { get; set; }
     }
+
+
+    public class StudentClassName
+    {
+      
+        /// <summary>
+        /// 名目阶段
+        /// </summary>
+        public string StageName { get; set; }
+
+    }
 }

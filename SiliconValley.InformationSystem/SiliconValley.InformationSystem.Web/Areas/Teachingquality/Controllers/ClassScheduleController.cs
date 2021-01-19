@@ -877,24 +877,24 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
         {
             StudentFeeStandardBusinsess studentFeeStandardBusinsess = new StudentFeeStandardBusinsess();
 
-            //var list = studentFeeStandardBusinsess.StudentArreargeList();
-            List<DetailedcostView> list = new List<DetailedcostView>();
+            var list = studentFeeStandardBusinsess.StudentArreargeList();
+            //List<DetailedcostView> list = new List<DetailedcostView>();
             if (!string.IsNullOrEmpty(Stidentid))
             {
-                list = studentFeeStandardBusinsess.StudentArreargeList().Where(a => a.Stidentid == Stidentid).ToList();
+                list = list.Where(a => a.Stidentid == Stidentid).ToList();
             }
             if (!string.IsNullOrEmpty(Name))
             {
-                list = studentFeeStandardBusinsess.StudentArreargeList().Where(a => a.Name.Contains(Name)).ToList();
+                list = list.Where(a => a.Name.Contains(Name)).ToList();
             }
             if (!string.IsNullOrEmpty(StagesID))
             {
                 int staid = int.Parse(StagesID);
-                list = studentFeeStandardBusinsess.StudentArreargeList().Where(a => a.StagesID == staid).ToList();
+                list = list.Where(a => a.StagesID == staid).ToList();
             }
             if (!string.IsNullOrEmpty(ClassName))
             {
-                list = studentFeeStandardBusinsess.StudentArreargeList().Where(a => a.ClassName == ClassName).ToList();
+                list = list.Where(a => a.ClassName == ClassName).ToList();
             }
             var Myx = list.OrderBy(a => a.Stidentid).Skip((page - 1) * limit).Take(limit).ToList();
             var data = new
