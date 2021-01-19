@@ -1117,7 +1117,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
             return listdetailedcs;
         }
 
-
+        private List<IGrouping<string, StudentFeeRecordView>> list;
         public List<DetailedcostView> StudentArreargeList()
         {
 
@@ -1127,13 +1127,16 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
             List<DetailedcostView> listdetailedcs = new List<DetailedcostView>();//欠费实体类
             BaseBusiness<Grand> Grand = new BaseBusiness<Grand>();//阶段类型
             BaseBusiness<Costitems> Costitems = new BaseBusiness<Costitems>();//阶段类型详情
+            var studentView =new List<StudentFeeRecordView>();
+            
             //var student = ScheduleForTrainees.GetList().Where(d => d.CurrentClass == true).ToList();
             string sql = " select * from ScheduleForTrainees where CurrentClass='1' ";
             var student = ScheduleForTrainees.GetListBySql<ScheduleForTrainees>(sql).ToList();//查询班级里所有的学生
+        
             //string sql1 = @"select stagename from StudentFeeRecordView 
             //                where stagename is not null
             //               group by stagename ";
-     
+
             //var stage = "";//获取阶段
             //foreach (var item in classname)
             //{
@@ -1142,12 +1145,12 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
             foreach (var item in student)
             {
                 string studentViewSQL = "select * from StudentFeeRecordView where StudenID='" + item.StudentID + "'";
-                var studentView = StudentFeeRecordView.GetListBySql<StudentFeeRecordView>(studentViewSQL).ToList();
-                var list = (from s in studentView where s.StageName!=null//分组对象
+                studentView = StudentFeeRecordView.GetListBySql<StudentFeeRecordView>(studentViewSQL).ToList();
+                 list = (from s in studentView
+                            where s.StageName != null//分组对象
                             group s by s.StageName//按什么分组
-                         into mylist
+                     into mylist
                             select mylist).ToList();//返回对象
-
                 foreach (var i in list)
                 {
                     StringBuilder sb = new StringBuilder();
@@ -1920,6 +1923,8 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
 
         //当前登陆人
         Base_UserModel user = Base_UserBusiness.GetCurrentUser();
+
+
         /// <summary>
         /// 拿到退费名目项目
         /// </summary>
