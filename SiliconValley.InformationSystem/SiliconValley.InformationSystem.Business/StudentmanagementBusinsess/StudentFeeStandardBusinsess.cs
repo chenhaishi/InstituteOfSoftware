@@ -1212,7 +1212,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
             BaseBusiness<Costitems> Costitems = new BaseBusiness<Costitems>();//阶段类型详情
            /* var Class_id = classschedu.GetList().Where(d => d.id == ClassID).SingleOrDefault();*///查询班级
             string Class_idSQL = "select * from ClassSchedule where id='" + ClassID + "'";
-            var Class_id = classschedu.GetListBySql<ClassSchedule>(Class_idSQL).SingleOrDefault();
+            var Class_id = classschedu.GetListBySql<ClassSchedule>(Class_idSQL).SingleOrDefault();   
             string sql = " select * from ScheduleForTrainees where CurrentClass='1' and ClassID='"+Class_id.ClassNumber+"'";
             var student = ScheduleForTrainees.GetListBySql<ScheduleForTrainees>(sql).ToList();//根据班级查询学生
             /*var student = ScheduleForTrainees.GetList().Where(d => d.ClassID == Class_id.ClassNumber && d.CurrentClass == true).ToList();*///查询班级里所有的学生
