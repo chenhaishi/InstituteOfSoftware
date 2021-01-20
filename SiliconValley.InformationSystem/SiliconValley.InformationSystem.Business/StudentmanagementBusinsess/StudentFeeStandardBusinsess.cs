@@ -1132,24 +1132,14 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
             //var student = ScheduleForTrainees.GetList().Where(d => d.CurrentClass == true).ToList();
             string sql = " select * from ScheduleForTrainees where CurrentClass='1' ";
             var student = ScheduleForTrainees.GetListBySql<ScheduleForTrainees>(sql).ToList();//查询班级里所有的学生
-        
-            //string sql1 = @"select stagename from StudentFeeRecordView 
-            //                where stagename is not null
-            //               group by stagename ";
-
-            //var stage = "";//获取阶段
-            //foreach (var item in classname)
-            //{
-            //    stage = item.StageName;
-            //}
             foreach (var item in student)
             {
-                string studentViewSQL = "select * from StudentFeeRecordView where StudenID='" + item.StudentID + "'";
+                string studentViewSQL = "select * from StudentFeeRecordView where StudenID='" + item.StudentID + "'";//根据学生id查询出缴费数据
                 studentView = StudentFeeRecordView.GetListBySql<StudentFeeRecordView>(studentViewSQL).ToList();
                  list = (from s in studentView
                             where s.StageName != null//分组对象
                             group s by s.StageName//按什么分组
-                     into mylist
+                            into mylist
                             select mylist).ToList();//返回对象
                 foreach (var i in list)
                 {
@@ -1220,23 +1210,32 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
             List<DetailedcostView> listdetailedcs = new List<DetailedcostView>();//欠费实体类
             BaseBusiness<Grand> Grand = new BaseBusiness<Grand>();//阶段类型
             BaseBusiness<Costitems> Costitems = new BaseBusiness<Costitems>();//阶段类型详情
-            var Class_id = classschedu.GetList().Where(d => d.id == ClassID).SingleOrDefault();//查询班级
-            var student = ScheduleForTrainees.GetList().Where(d => d.ClassID == Class_id.ClassNumber && d.CurrentClass == true).ToList();//查询班级里所有的学生
+           /* var Class_id = classschedu.GetList().Where(d => d.id == ClassID).SingleOrDefault();*///查询班级
+            string Class_idSQL = "select * from ClassSchedule where id='" + ClassID + "'";
+            var Class_id = classschedu.GetListBySql<ClassSchedule>(Class_idSQL).SingleOrDefault();   
+            string sql = " select * from ScheduleForTrainees where CurrentClass='1' and ClassID='"+Class_id.ClassNumber+"'";
+            var student = ScheduleForTrainees.GetListBySql<ScheduleForTrainees>(sql).ToList();//根据班级查询学生
+            /*var student = ScheduleForTrainees.GetList().Where(d => d.ClassID == Class_id.ClassNumber && d.CurrentClass == true).ToList();*///查询班级里所有的学生
             foreach (var item in student)
             {
 
-                var studentView = StudentFeeRecordView.GetList().Where(d => d.StudenID == item.StudentID).ToList();//所有学生的缴费情况
+                /*var studentView = StudentFeeRecordView.GetList().Where(d => d.StudenID == item.StudentID).ToList();*///所有学生的缴费情况
+                string studentViewSQL = "select * from StudentFeeRecordView where StudenID='" + item.StudentID + "'";//根据学生id查询出缴费数据
+               var studentView = StudentFeeRecordView.GetListBySql<StudentFeeRecordView>(studentViewSQL).ToList();
                 //分组
-                var list = (from s in studentView//分组对象
+
+                var list = (from s in studentView where s.StageName != null //分组对象
                             group s by s.StageName//按什么分组
-                           into mylist
+                            into mylist
                             select mylist).ToList();//返回对象
 
                 foreach (var i in list)
                 {
                     StringBuilder sb = new StringBuilder();
                     var stage = i.Key;//获取阶段
-                    var Grandid = Grand.GetList().Where(d => d.GrandName == stage).SingleOrDefault(); //查询阶段费用
+                    //var Grandid = Grand.GetList().Where(d => d.GrandName == stage).SingleOrDefault(); //查询阶段费用
+                    string GrandSQL = "select * from Grand where GrandName='" + stage + "'";
+                    var Grandid = Grand.GetListBySql<Grand>(GrandSQL).SingleOrDefault();
                     if (Grandid == null)
                     {
                         sb.Append("select SUM(c.Amountofmoney) as 'Summonry' from Costitems  as c where c.IsDelete=0");//查询自考本科及其他费用（转换为字符串）
