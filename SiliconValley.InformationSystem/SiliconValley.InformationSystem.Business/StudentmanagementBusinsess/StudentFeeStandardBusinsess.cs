@@ -59,7 +59,8 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
         //预入费退费业务类
         BaseBusiness<Refund> RefundBusiness = new BaseBusiness<Refund>();
         BaseBusiness<StudentFeeRecord> StudentFeeRecord_list_add = new BaseBusiness<StudentFeeRecord>();
-
+        //缴费视图
+        BaseBusiness<StudentFeeRecordListView> StudentFeeRecordList = new BaseBusiness<StudentFeeRecordListView>();
 
         //退费业务类
         BaseBusiness<Tuitionrefund> TuitionrefundBusiness = new BaseBusiness<Tuitionrefund>();
@@ -382,9 +383,17 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
             {
                 var x = studentfee.GetListBySql<StudentFeeRecord>("select * from StudentFeeRecord where IsDelete='false' and StudenID='" + studentid + "' and Costitemsid=" + item.id).FirstOrDefault();
                 // studentfee.GetList().Where(a => a.IsDelete == false && a.StudenID == studentid && a.Costitemsid == item.id).FirstOrDefault();
+                // string studentViewSQL = "select * from StudentFeeRecordView where StudenID='" + item.StudentID + "'";//根据学生id查询出缴费数据
+                // studentView = StudentFeeRecordView.GetListBySql<StudentFeeRecordView>(studentViewSQL).ToList();
+                var SQLP = "select * from StudentFeeRecordListView where IsDelete='false' and StudenID='" + studentid + "' and Passornot='2'";
+                var p = StudentFeeRecordList.GetListBySql<StudentFeeRecordListView>(SQLP).ToList();
                 if (x != null)
                 {
-                    costlist.Add(item);
+                    if (p.Count() == 0)
+                    {
+                        costlist.Add(item);
+                    }
+                    
                 }
             }
             foreach (var item in costlist)
@@ -1118,6 +1127,10 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
         }
 
         private List<IGrouping<string, StudentFeeRecordView>> list;
+        /// <summary>
+        ///财务查看学生欠费功能
+        /// </summary>
+        /// <returns></returns>
         public List<DetailedcostView> StudentArreargeList()
         {
 
@@ -1520,10 +1533,18 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                 else if (whether == "2")
                 {
                     var x = PaymentverificationBusiness.GetEntity(id);
+                    //var r = StudentFeeRecord_list_add.GetList().Where(d=>d.ID==id).SingleOrDefault();
                     x.Passornot = "2";
                     x.AddDate = DateTime.Now;
                     x.OddNumbers = OddNumbers;
                     x.Paymentmethod = paymentmethod;
+                  
+                        //r.IsDelete = true;
+                        //StudentFeeRecord_list_add.Update(r);
+                    
+                  
+                    
+                    
                     PaymentverificationBusiness.Update(x);
                     retus.Msg = "作废成功";
                 }
