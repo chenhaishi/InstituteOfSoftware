@@ -140,8 +140,11 @@
                         <option value="上午34节">上午3/4节</option>
                         <option value="下午12节">下午1/2节</option>
                         <option value="下午34节">下午3/4节</option>
+                        <option value="下午34节">晚上1/2节</option>
+                        <option value="下午34节">晚上3/4节</option>
                         <option value="上午">上午4节</option>
                         <option value="下午">下午4节</option>
+                        <option value="下午">晚上4节</option>
                     </select>
                 </div>
             </div>
@@ -212,6 +215,9 @@
             $('<option value="上午34节">上午3/4节</option>').appendTo(timetype);
             $('<option value="下午12节">下午1/2节</option>').appendTo(timetype);           
             $('<option value="下午34节">下午3/4节</option>').appendTo(timetype);
+            //
+            $('<option value="晚上12节">晚上1/2节</option>').appendTo(timetype);
+            $('<option value="晚上34节">晚上3/4节</option>').appendTo(timetype);
 
         }
         function My_sametime(num) {
@@ -226,9 +232,15 @@
                 if (mytimename == "上午") {
                     $('<option value="下午34节">下午3/4节</option>').appendTo(timetype);
                     $('<option value="下午12节">下午1/2节</option>').appendTo(timetype);
+                    //
+                    $('<option value="晚上12节">晚上1/2节</option>').appendTo(timetype);
+                    $('<option value="晚上34节">晚上3/4节</option>').appendTo(timetype);
                 } else {
                     $('<option value="上午12节">上午1/2节</option>').appendTo(timetype);
                     $('<option value="上午34节">上午3/4节</option>').appendTo(timetype);
+                    //
+                    $('<option value="晚上12节">晚上1/2节</option>').appendTo(timetype);
+                    $('<option value="晚上34节">晚上3/4节</option>').appendTo(timetype);
                 }
             }
         }
@@ -243,12 +255,18 @@
             }
             $('<option value="上午">上午</option>').appendTo(timetype);
             $('<option value="下午">下午</option>').appendTo(timetype);
+            $('<option value="晚上12节">晚上1/2节</option>').appendTo(timetype);
+            $('<option value="晚上34节">晚上3/4节</option>').appendTo(timetype);
+            $('<option value="晚上">晚上4节</option>').appendTo(timetype);
         }
         //指定时间段
         function PostTimesName(name) {
             $("#childview_timetype")[0].innerHTML = "";
             if (mytimename.length > 0) {
                 $('<option value=' + name + '>' + name + '</option>').appendTo($("#childview_timetype"));
+                $('<option value="晚上12节">晚上1/2节</option>').appendTo($("#childview_timetype"));
+                $('<option value="晚上34节">晚上3/4节</option>').appendTo($("#childview_timetype"));
+                $('<option value="晚上">晚上4节</option>').appendTo($("#childview_timetype"));
             }
         }
         var mytimename = "";

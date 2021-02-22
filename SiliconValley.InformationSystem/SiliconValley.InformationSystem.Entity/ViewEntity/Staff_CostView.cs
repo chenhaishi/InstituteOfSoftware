@@ -59,6 +59,11 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity
         public int RD_fee { get; set; }
 
         /// <summary>
+        /// 课时
+        /// </summary>
+        public int ClassTime { get; set; }
+
+        /// <summary>
         /// 总计
         /// </summary>
         public int totalmoney { get; set; }

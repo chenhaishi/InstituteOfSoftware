@@ -1,5 +1,6 @@
 ﻿using SiliconValley.InformationSystem.Business.Common;
 using SiliconValley.InformationSystem.Business.DormitoryBusiness;
+using SiliconValley.InformationSystem.Business.StudentBusiness;
 using SiliconValley.InformationSystem.Entity.Entity;
 using SiliconValley.InformationSystem.Entity.MyEntity;
 using SiliconValley.InformationSystem.Entity.ViewEntity;
@@ -8,6 +9,8 @@ using SiliconValley.InformationSystem.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 
@@ -30,6 +33,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Dormitory.Controllers
         private ProDormInfoViewBusiness dbproDormInfoViewBusiness;
         private dbprosutdent_dbproheadmaster dbprosutdent_Dbproheadmaster;
         private ChangeDorStudent ChangeDorStudent_Entity = new ChangeDorStudent();
+        private StudentInformationBusiness StudentInfo_Entity = new StudentInformationBusiness();
 
         // GET: /Dormitory/StudentBedtime/EndFunction
         public ActionResult StudentBedtimeIndex()
@@ -416,25 +420,29 @@ namespace SiliconValley.InformationSystem.Web.Areas.Dormitory.Controllers
 
             DateTime endtime = Convert.ToDateTime(Request.Form["endtime"]);
 
-            string sqlstr = @"select * from Accdationinformation where Studentnumber='"+ stuNumber + "' and EndDate is null";
-
-            List<Accdationinformation> list= ChangeDorStudent_Entity.GetListBySql<Accdationinformation>(sqlstr);
-
-            List<Accdationinformation> Update = new List<Accdationinformation>();
-
-            foreach (Accdationinformation item in list)
+            string searchChuanghao = "select * from Accdationinformation where DormId="+DorId+" and BedId="+chuangNumber+" and EndDate  is null";
+            List<Accdationinformation> ChuangList = ChangeDorStudent_Entity.GetListBySql<Accdationinformation>(searchChuanghao);
+            if (ChuangList.Count <= 0)
             {
-                item.EndDate = endtime;
-                item.IsDel = true;
+                string sqlstr = @"select * from Accdationinformation where Studentnumber='" + stuNumber + "' and EndDate is null";
 
-                Update.Add(item);
-            }
-            if (Update.Count>0)
-            {
-                bool Isretult = ChangeDorStudent_Entity.UpdateData(Update);
+                List<Accdationinformation> list = ChangeDorStudent_Entity.GetListBySql<Accdationinformation>(sqlstr);
 
-                if (Isretult)
+                List<Accdationinformation> Update = new List<Accdationinformation>();
+
+                foreach (Accdationinformation item in list)
                 {
+                    item.EndDate = endtime;
+                    item.IsDel = true;
+
+                    Update.Add(item);
+                }
+                if (Update.Count > 0)
+                {
+                    bool Isretult = ChangeDorStudent_Entity.UpdateData(Update);
+
+                    //if (Isretult)
+                    //{
                     Accdationinformation data = new Accdationinformation();
                     data.BedId = chuangNumber;
                     data.CreationTime = DateTime.Now;
@@ -448,29 +456,20 @@ namespace SiliconValley.InformationSystem.Web.Areas.Dormitory.Controllers
 
                     result.Msg = result.Success == false ? "操作失败！" : "调寝成功！";
                 }
-                 
             }
-            else
-            {
-                Accdationinformation data = new Accdationinformation();
-                data.BedId = chuangNumber;
-                data.CreationTime = DateTime.Now;
-                data.DormId = DorId;
-                data.IsDel = false;
-                data.StayDate = DateTime.Now;
-                data.Studentnumber = stuNumber;
-                data.Remark = string.Empty;
-
-                result.Success = ChangeDorStudent_Entity.AddData(data);
-
-                result.Msg = result.Success == false ? "操作失败！" : "调寝成功！";
+            else {
+              result.Data =  ChuangList.Select(s => new {
+                    TeacherName = ChangeDorStudent_Entity.Headmaster_Entity.GetEmployessByStuid(s.Studentnumber).EmpName,
+                    StuName = StudentInfo_Entity.GetEntity(s.Studentnumber)
+                });
+                result.Msg = "改床位已有人";
             }
             
 
-           
             return Json(result,JsonRequestBehavior.AllowGet);
              
         }
+        
 
         [HttpPost]
         public ActionResult EndFunction()
