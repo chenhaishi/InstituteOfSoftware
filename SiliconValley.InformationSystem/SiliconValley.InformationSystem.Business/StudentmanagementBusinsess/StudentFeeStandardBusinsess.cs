@@ -112,7 +112,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                 a.Sex,
                 a.Headmasters,
                 a.BirthDate,
-
+                
                 studentDataKeepAndRecord.findId(a.StudentPutOnRecord_Id.ToString()).ConsultTeacher,
                 studentDataKeepAndRecord.findId(a.StudentPutOnRecord_Id.ToString()).empName
             }).OrderByDescending(a => a.StudentNumber).Skip((page - 1) * limit).Take(limit).ToList();
@@ -143,6 +143,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
         }
         //学员费用
         BaseBusiness<StudentFeeRecord> studentfee = new BaseBusiness<StudentFeeRecord>();
+        BaseBusiness<StudentFeeRecordListView> SfeeRecordList = new BaseBusiness<StudentFeeRecordListView>();
         //财务人员
         BaseBusiness<FinanceModel> finacemo = new BaseBusiness<FinanceModel>();
         /// <summary>
@@ -572,7 +573,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
         public List<vierprice> FienPrice(string student)
         {
             List<object> students = new List<object>();
-            var st = studentfee.GetList().Where(a => a.IsDelete == false && a.StudenID == student).ToList();
+            var st = SfeeRecordList.GetList().Where(a => a.IsDelete == false && a.StudenID == student&&a.Passornot=="1"&&a.AddTime!=null).ToList();
             foreach (var item in st)
             {
                 students.Add(Convert.ToDateTime(item.AddDate).ToLongDateString().ToString());
