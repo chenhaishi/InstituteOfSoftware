@@ -172,13 +172,13 @@
     <script type="text/template" id="chiosequestionTemplate">
         <div class="choiceItem">
             <input type="hidden" class="answer" value="{{=answer}}" />
-            <label class="choicetitle" style="font-size:16px; color: gray;">{{=title}}<span style="margin-left:10px;"></span></label>
+            <label class="choicetitle" style="font-size:16px; color: gray;" oncopy="return false" oncut="return false">{{=title}}<span style="margin-left:10px;"></span></label>
 
             <div style="margin-left:20px;">
-                <div class="option"><label>A<input  type="checkbox" value="A" /></label> <label style="margin-left:10px;">{{=A}}</label></div>
-        <div class="option"><label>B<input   type="checkbox" value="B" /></label> <label style="margin-left:10px;">{{=B}}</label> </div>
-        <div class="option"><label>C<input   type="checkbox" value="C" /></label> <label style="margin-left:10px;">{{=C}}</label>  </div>
-        <div class="option"><label>D<input   type="checkbox" value="D" /></label> <label style="margin-left:10px;">{{=D}}</label> </div>
+                <div oncopy="return false" oncut="return false" class="option"><label>A<input  type="checkbox" value="A" /></label> <label style="margin-left:10px;">{{=A}}</label></div>
+                <div oncopy="return false" oncut="return false" class="option"><label>B<input   type="checkbox" value="B" /></label> <label style="margin-left:10px;">{{=B}}</label> </div>
+                <div oncopy="return false" oncut="return false" class="option"><label>C<input   type="checkbox" value="C" /></label> <label style="margin-left:10px;">{{=C}}</label>  </div>
+                <div oncopy="return false" oncut="return false" class="option"><label>D<input   type="checkbox" value="D" /></label> <label style="margin-left:10px;">{{=D}}</label> </div>
 
                 
             </div>
@@ -188,9 +188,9 @@
 
     <script type="text/template" id="answerquestionTemplate">
         <div class="answerItem" questionid="{{=questionid}}">
-            <label style="font-size:16px; color: gray;">{{=title}} <span style="color:blue; display:none; margin-left:10px; cursor:pointer;" class="refanswer">参考答案</span></label>
+            <label oncopy="return false" oncut="return false" style="font-size:16px; color: gray;">{{=title}} <span style="color:blue; display:none; margin-left:10px; cursor:pointer;" class="refanswer">参考答案</span></label>
 
-            <div class="simple-editor" style="margin-left:20px;">
+            <div oncopy="return false" oncut="return false" class="simple-editor" style="margin-left:20px;">
 
                 <span style="font-size:14px; color:gray;"></span>
 

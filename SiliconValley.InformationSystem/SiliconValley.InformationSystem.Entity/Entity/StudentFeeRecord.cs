@@ -48,7 +48,7 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         /// 是否删除
         /// </summary>
         public Nullable<bool> IsDelete { get; set; }
-
+        //入账时间
         public Nullable<System.DateTime> AddTime { get; set; }
     }
 }

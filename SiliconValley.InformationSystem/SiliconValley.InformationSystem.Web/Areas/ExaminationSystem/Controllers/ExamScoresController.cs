@@ -486,11 +486,20 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         /// 下载模板
         /// </summary>
         /// <returns></returns>
-        public FileStreamResult DownloadModule()
+        public ActionResult DownloadModule(int examid)
         {
-            string tr = Server.MapPath("/uploadXLSXfile/Template/Scoretemplate.xls");
-            FileStream stream = new FileStream(tr, FileMode.Open);
-            return File(stream, "application/octet-stream", Server.UrlEncode("Template.xls"));
+            var xuesheng = db_candidate.GetList().Where(d => d.Examination == examid).ToList();
+            List<string> mingzi = new List<string>();
+            foreach (var item in xuesheng)
+            {
+                var name = db_student.GetList().Where(d => d.StudentNumber == item.StudentID).FirstOrDefault().Name;
+                mingzi.Add(name);
+            }
+            var ajaxresult = new { data = mingzi };
+            return Json(ajaxresult, JsonRequestBehavior.AllowGet);
+            //string tr = Server.MapPath("/uploadXLSXfile/Template/Scoretemplate.xls");
+            //FileStream stream = new FileStream(tr, FileMode.Open);
+            //return File(stream, "application/octet-stream", Server.UrlEncode("Template.xls"));
         }
         /// <summary>
         /// 一键下载解答题
@@ -1004,8 +1013,42 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             return Json(obj, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// 查看考试数据详情
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <param name="examid"></param>
+        /// <param name="classiD"></param>
+        /// <returns></returns>
+        public ActionResult ExamScoreDataes(int page, int limit, int examid)
+        {
+            List<StudentExamView> scorelist = new List<StudentExamView>();
+            List<CandidateInfo> multipleChoicelist = db_candidate.GetList().Where(d => d.Examination == examid).ToList();
 
-        
+            for (int i = 0; i < multipleChoicelist.Count; i++)
+            {
+                StudentExamView examView = new StudentExamView();
+                examView.StudentID = multipleChoicelist[i].StudentID;
+                examView.StudentName = db_student.GetEntity(multipleChoicelist[i].StudentID).Name;
+                examView.PaperTime = multipleChoicelist[i].PaperTime;
+                examView.ComputerPaperTime = multipleChoicelist[i].ComputerPaperTime;
+                scorelist.Add(examView);
+            }
+
+            var obj = new
+            {
+
+                code = 0,
+                msg = "",
+                count = scorelist.Count,
+                data = scorelist
+
+
+            };
+
+            return Json(obj, JsonRequestBehavior.AllowGet);
+        }
         /// <summary>
         /// 成绩数据
         /// </summary>

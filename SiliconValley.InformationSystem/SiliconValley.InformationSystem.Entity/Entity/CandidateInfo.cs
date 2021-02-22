@@ -35,5 +35,9 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         public int ClassId { get; set; }
         //存考生下载下来的机试id
         public string DownloadContent { get; set; }
+        //笔试提交时间
+        public string PaperTime { get; set; }
+        //机试提交时间
+        public string ComputerPaperTime { get; set; }
     }
 }

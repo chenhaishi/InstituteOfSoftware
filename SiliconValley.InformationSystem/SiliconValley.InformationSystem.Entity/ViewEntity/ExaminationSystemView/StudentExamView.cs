@@ -16,5 +16,9 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.ExaminationSystemVie
         public bool IsReExam { get; set; }
         public string Paper { get; set; }
         public string ComputerPaper { get; set; }
+        //笔试提交时间
+        public string PaperTime { get; set; }
+        //机试提交时间
+        public string ComputerPaperTime { get; set; }
     }
 }

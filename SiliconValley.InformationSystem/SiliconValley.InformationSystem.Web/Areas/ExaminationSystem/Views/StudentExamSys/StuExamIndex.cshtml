@@ -86,7 +86,7 @@
         @*<div id="topDiv">
             @*<img src="~/Areas/ExaminationSystem/Images/商务科技.png" />
         </div>*@
-        <button type="button" id="FanHui" class="layui-btn layui-btn-normal">首页</button>
+        @*<button type="button" id="FanHui" class="layui-btn layui-btn-normal">首页</button>*@
         <div id="mycontent">
 
             <div id="icon" class="icon">
@@ -174,8 +174,7 @@
                         var serverTime = new Date().getTime();
                         var a = new Date()
                         a = a.getFullYear() + "-" + (a.getMonth() + 1) + "-" + a.getDate() + " " + a.getHours() + ":" + a.getMinutes();
-                        console.log(a);
-                        timeinit(date, a);
+                        timeinit(date, serverTime);
 
                    }
                     else {
@@ -234,10 +233,10 @@
 
             });
             //返回
-            $("#FanHui").click(function () {
+            //$("#FanHui").click(function () {
 
-                window.location.href = "/student/index";
-            })
+            //    window.location.href = "/student/index";
+            //})
         });
     </script>
 </body>

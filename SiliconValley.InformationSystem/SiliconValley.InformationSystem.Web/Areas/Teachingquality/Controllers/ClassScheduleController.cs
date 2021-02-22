@@ -876,8 +876,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
         public ActionResult Arrearge(int page, int limit, string Stidentid, string Name, string StagesID,string ClassName)
         {
             StudentFeeStandardBusinsess studentFeeStandardBusinsess = new StudentFeeStandardBusinsess();
-    
+
             var list = studentFeeStandardBusinsess.StudentArreargeList();
+            //List<DetailedcostView> list = new List<DetailedcostView>();
             if (!string.IsNullOrEmpty(Stidentid))
             {
                 list = list.Where(a => a.Stidentid == Stidentid).ToList();

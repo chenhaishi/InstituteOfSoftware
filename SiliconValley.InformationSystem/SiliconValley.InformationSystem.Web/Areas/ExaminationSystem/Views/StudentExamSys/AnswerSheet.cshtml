@@ -110,14 +110,6 @@
             <button type="button" style="" class="layui-btn layui-btn-warm" id="COMMIT">提交笔试</button>
             @*<a  class="layui-btn layui-btn-warm" id="COMMIT">提交笔试</a>*@
         </div>
-        @*<div id="ComputerQuestion">
-                <h3 style="text-align:center; font-size:18px;">机试题下载区</h3>
-                <br />
-                <br />
-                <a class="layui-btn layui-btn-warm" href="/ExaminationSystem/StudentExamSys/ComputerQuestionUpload?examid=@ViewBag.EXAMVIEW.ID">机试题下载</a>
-                <input class="layui-btn layui-btn-primary" id="Upload" type="file" name="computerQuestion" />
-                <button type="button" class="layui-btn layui-btn-warm" id="COMMIT">提交机试</button><text style="color:red">（请把项目打成压缩包提交）</text>
-            </div>*@
 
     </div>
   
@@ -546,20 +538,20 @@
                                 var isTrue = arry_answer.toString() == arry_stuanswer.toString();
                                 questionitem.find(".title").find(".panduan").remove();
 
-                                //if (isTrue) {
+                                if (isTrue) {
 
                                     //如果一致
                                     var score = $(questionitem).find(".hidescore").val();
 
                                     trueQuestionscores += parseFloat(score);
-                                    //var span = $('<span class="panduan"><i style="font-size:25px; color:green;" class="layui-icon layui-icon-ok"></i></span>');
+                                    var span = $('<span class="panduan"><i style="font-size:25px; color:green;" class="layui-icon layui-icon-ok"></i></span>');
                                     //questionitem.find(".title").append(span);
 
-                                //}
-                                //else {
-                                //    var span = $('<span class="panduan"><i style="font-size:25px; color:red;" class="layui-icon layui-icon-close"></i></span>');
-                                //    questionitem.find(".title").append(span);
-                                //}
+                                }
+                                else {
+                                    var span = $('<span class="panduan"><i style="font-size:25px; color:red;" class="layui-icon layui-icon-close"></i></span>');
+                                    //questionitem.find(".title").append(span);
+                                }
 
                             }
                         });
@@ -660,15 +652,12 @@
                 var a = new Date()
                 a = a.getFullYear() + "-" + (a.getMonth() + 1) + "-" + a.getDate() + " " + a.getHours() + ":" + a.getMinutes();
 
-                if (a > EndDate) {
+                if (currentDate > EndDate) {
 
                     //自动点击提交
                     Commit(true);
                 }
                 else {
-                    console.log(a);
-                    console.log(currentDate);
-                    console.log(EndDate);
                     console.log("考试中......");
                 }
 

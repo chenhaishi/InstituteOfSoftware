@@ -185,7 +185,8 @@
                                 yes: function (index, layero) {
                                     var OddNumbers = $("#OddNumbers").val();
                                     var paymentmethod = $("#paymentmethod").val();
-                                    $.post("/Finance/Pricedetails/review", { checkID: checkID[0].id, OddNumbers: OddNumbers, paymentmethod: paymentmethod }, (r) => {
+                                    var timeAdd = $("#timeAdd").val();
+                                    $.post("/Finance/Pricedetails/review", { checkID: checkID[0].id, OddNumbers: OddNumbers, paymentmethod: paymentmethod, timeAdd: timeAdd }, (r) => {
                                         if (r.code == 0) {
                                             layer.msg(r.msg);
                                             layer.close(index);

@@ -211,7 +211,7 @@
 </div>
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
-        <a href="\ExaminationSystem\ExamScores\DownloadModule" class="layui-btn" style="color:white;width:20%">下载模板</a>
+        <a  id="xiazaimoban" class="layui-btn" style="color:white;width:20%">下载模板</a>
         <a class="layui-btn" style="color:white;width:20%" lay-event="OneClickUploadScore" id="OneClickUploadScore">一键上传分数</a>
         <a href="\ExaminationSystem\ExamScores\Marking" class="layui-btn layui-btn-danger" style="color:white;width:20%">跳转查看笔试</a>
     </div>
@@ -330,15 +330,16 @@
                 var checkStatus = table.checkStatus(obj.config.id);
                 switch (obj.event) {
                     case 'OneClickUploadScore':
-                        layer.open({
-                            type: 1,
-                            title: "上传",
-                            area: ["600px", "400px"],
-                            content: $('#yincangDiv'),
-                            success: function () {
+                        layer.msg("功能优化中");
+                        //layer.open({
+                        //    type: 1,
+                        //    title: "上传",
+                        //    area: ["600px", "400px"],
+                        //    content: $('#yincangDiv'),
+                        //    success: function () {
 
-                            }
-                        });
+                        //    }
+                        //});
                         break;
                 };
             });
@@ -459,7 +460,42 @@
                     }
                 }
             });
+            //下载模板
+            $(document).off("click", "#xiazaimoban").on("click", "#xiazaimoban", function () {
+                //var lodindex = layer.load(1);
+                layer.msg("正在下载!!!");
+                $.ajax({
+                    url: '/ExaminationSystem/ExamScores/DownloadModule?examid=' + Examid,
+                    type: 'post',
+                    success: function (res) {
+                        console.log(res);
+                        //列标题，逗号隔开，每一个逗号就是隔开一个单元格
+                        let str = ``;
+                        //增加\t为了不让表格显示科学计数法或者其他格式
+                        for (let i = -1; i < res.data.length; i++) {
+                            if (i == -1) {
+                                str += `姓名\t,选择题分数\t,解答题分数\t,机试题分数\t,备注\t,总分`;
+                                //学号 姓名 解答题分数 机试题分数 备注 
+                            } else {
 
+                                str += res.data[i] /*+ '\t,' + res.data[i].RoleName*/;
+                            }
+                            str += '\n';
+                        }
+                        //encodeURIComponent解决中文乱码
+                        let uri = 'data:text/csv;charset=utf-8,\ufeff' + encodeURIComponent(str);
+                        //通过创建a标签实现
+                        var link = document.createElement("a");
+                        link.href = uri;
+                        //对下载的文件命名
+                        link.download = "Scoretemplate.xls";
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    }
+                })
+                //layer.close(lodindex);
+            })
             
             //3:点击加载阅卷信息及人员名单
             $(document).off("click", ".tayMarkinglist .tayMarkingitem").on("click", '.tayMarkinglist .tayMarkingitem', function () {
