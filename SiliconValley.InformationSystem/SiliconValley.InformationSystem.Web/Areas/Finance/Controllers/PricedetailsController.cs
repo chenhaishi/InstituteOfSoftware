@@ -1398,7 +1398,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             {
                 var iq_date = rlist.GetList().Where(d => d.ID == item.ID).SingleOrDefault();
 
-                    iq_date.AddTime = timeAdd;
+                    iq_date.AddTime = timeAdd; 
                     rlist.Update(iq_date);
                 
                 
