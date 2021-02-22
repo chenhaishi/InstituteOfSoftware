@@ -35,13 +35,13 @@
 <body>
     <div class="DivCss1">
         <form id="adddataform" class="layui-form" lay-filter="adddataform">
-            <input name="StuNumber" id="StuNumber" type="hidden" value="@ViewBag.StuNumber"/>
+            <input name="StuNumber" id="StuNumber" type="hidden" value="@ViewBag.StuNumber" />
             <div class="layui-row layui-form-item">
                 <div class="layui-row layui-form-item">
                     <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
                         <label class="LableCss1">调寝日期:</label>
                         <div class="layui-input-block">
-                            <input type="text" id="endtime" name="endtime" class="layui-input" lay-verify="required"/>
+                            <input type="text" id="endtime" name="endtime" class="layui-input" lay-verify="required" />
                         </div>
                     </div>
                 </div>
@@ -79,7 +79,7 @@
                 <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
                     <label class="LableCss1">选择床位:</label>
                     <div class="layui-input-block">
-                        <input name="changid" type="radio" value="1" title="1" checked="checked"/>
+                        <input name="changid" type="radio" value="1" title="1" checked="checked" />
                         <input name="changid" type="radio" value="2" title="2" />
                         <input name="changid" type="radio" value="3" title="3" />
                         <input name="changid" type="radio" value="4" title="4" />
@@ -91,11 +91,20 @@
                 </div>
             </div>
             <div class="layui-row layui-form-item">
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                    <label class="LableCss1">床位信息:</label>
+                    <div class="layui-input-block">
+                        <span id="ChuangInfo" style="font-size:large"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row layui-form-item">
                 <div class="layui-col-xs12 layui-col-sm12 layui-col-md12" style="text-align:center;margin-top:30px;">
                     <button type="submit" class="layui-btn" lay-submit="" lay-filter="addbtn">确定调寝</button>
                     <button id="btn1" type="button" class="layui-btn">取消关闭</button>
                 </div>
             </div>
+            
         </form>
     </div>
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
@@ -185,6 +194,13 @@
 
                                     });
                                 } else {
+                                    var str = '';
+                                    console.log(res.Data);
+                                    for (var i = 0; i < res.Data.length; i++) {
+                                        str += "班主任：" + res.Data[i].TeacherName + ",学生：" + res.Data[i].StuName.Name + "<br />"
+                                    }
+                                    console.log(str);
+                                    $("#ChuangInfo").html(str);
                                     layer.msg(res.Msg, { icon: 2, shade: 0.8 });
                                 }
                             }

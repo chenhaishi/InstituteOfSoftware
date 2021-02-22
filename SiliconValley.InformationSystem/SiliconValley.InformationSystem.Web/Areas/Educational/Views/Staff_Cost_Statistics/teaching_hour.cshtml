@@ -14,10 +14,17 @@
     <script src="~/Scripts/layui/layui.js"></script>
 </head>
 <body>
+    <div id="aboutdiv" style="display:none;font-size:18px">
+        <span>1.自定义安排的课程，名称需要与课程大纲对应</span><br /><br />
+        <span>2.手动安排的班会课，安排时填班会</span><br /><br />
+        <span>3.有法定节假日，计算时将周末排除</span><br />
+        <span></span>
+    </div>
+
     <div>
             <div id="title" style="text-align:center;">
             <div class="line-title"></div>
-            <i class="layui-icon layui-icon-chart" style="font-size:35px;"><i style="font-size:18px;">员工费用统计</i> </i>
+            <i class="layui-icon layui-icon-chart" style="font-size:35px;"><i style="font-size:18px;">员工费用统计</i></i>   <i class="layui-icon layui-icon-about" id="about" style="font-size:25px;"> </i>
             <div class="line-title"></div>
             </div>
 
@@ -242,14 +249,14 @@
                     //增加\t为了不让表格显示科学计数法或者其他格式
                     for (let i = -1; i < res.data.length; i++) {
                         if (i == -1) {
-                            str += `姓名\t,职务\t,课时费\t,值班费\t,监考费\t,阅卷费\t,超带班\t,内训费\t,研发费\t,合计`;
+                            str += `姓名\t,职务\t,课时费\t,值班费\t,监考费\t,阅卷费\t,超带班\t,内训费\t,研发费\t,总课时\t,合计`;
                             //姓名	职务	课时费	值班费	监考费	阅卷费	超带班	内训费	研发费	合计
                         } else {
                             //var mm = TimeChange(res.data[i].time);
                             //var mydate = new Date(mm)
                             //var da = (Number(mydate.getMonth()) + 1) + "月" + mydate.getDate() + "日"
                             str += res.data[i].Emp_Name + '\t,' + res.data[i].RoleName + '\t,' + res.data[i].Cost_fee + '\t,' + res.data[i].Duty_fee + '\t,' +
-                                res.data[i].Invigilation_fee + '\t,' + res.data[i].Marking_fee + '\t,' + res.data[i].Super_class + '\t,' + res.data[i].Internal_training_fee + '\t,' + res.data[i].RD_fee + '\t,' + res.data[i].totalmoney;
+                                res.data[i].Invigilation_fee + '\t,' + res.data[i].Marking_fee + '\t,' + res.data[i].Super_class + '\t,' + res.data[i].Internal_training_fee + '\t,' + res.data[i].RD_fee + '\t,' + res.data[i].ClassTime+'\t,' + res.data[i].totalmoney;
                         }
 
                         str += '\n';
@@ -280,14 +287,14 @@
                     //增加\t为了不让表格显示科学计数法或者其他格式
                     for (let i = -1; i < res.data.length; i++) {
                         if (i == -1) {
-                            str += `姓名\t,职务\t,课时费\t,值班费\t,监考费\t,阅卷费\t,超带班\t,内训费\t,研发费\t,合计`;
+                            str += `姓名\t,职务\t,课时费\t,值班费\t,监考费\t,阅卷费\t,超带班\t,内训费\t,研发费\t,总课时\t,合计`;
                             //姓名	职务	课时费	值班费	监考费	阅卷费	超带班	内训费	研发费	合计
                         } else {
                             //var mm = TimeChange(res.data[i].time);
                             //var mydate = new Date(mm)
                             //var da = (Number(mydate.getMonth()) + 1) + "月" + mydate.getDate() + "日"
                             str += res.data[i].Emp_Name + '\t,' + res.data[i].RoleName + '\t,' + res.data[i].Cost_fee + '\t,' + res.data[i].Duty_fee + '\t,' +
-                                res.data[i].Invigilation_fee + '\t,' + res.data[i].Marking_fee + '\t,' + res.data[i].Super_class + '\t,' + res.data[i].Internal_training_fee + '\t,' + res.data[i].RD_fee + '\t,' + res.data[i].totalmoney;
+                                res.data[i].Invigilation_fee + '\t,' + res.data[i].Marking_fee + '\t,' + res.data[i].Super_class + '\t,' + res.data[i].Internal_training_fee + '\t,' + res.data[i].RD_fee + '\t,' + res.data[i].ClassTime + '\t,' + res.data[i].totalmoney;
                         }
 
                         str += '\n';
@@ -344,6 +351,14 @@
             //    skin: 'layui-layer-molv' //样式类名
             //    , closeBtn: 0
             //});
+        });
+
+        $("#about").click(function () {
+            layer.open({
+                type: 1,
+                content: $('#aboutdiv'),
+                area: ['700px','600px']
+            });
         });
     });
     

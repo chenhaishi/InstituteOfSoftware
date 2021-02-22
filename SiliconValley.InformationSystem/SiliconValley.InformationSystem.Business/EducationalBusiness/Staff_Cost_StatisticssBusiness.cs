@@ -92,6 +92,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             int Super_class = 0;//超带班
             int Internal_training_fee = 0;//内训费
             int RD_fee = 0;//研发费
+            
 
             for (int i = 0; i < Emp_List.Count; i++)
             {
@@ -155,9 +156,9 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                     ClassTime = 0;
                 }
 
-                int FirstStage = 0;//第一阶段  预科，S1,S2
-                int SecondStage = 0;//第二阶段 S3,
-                int ThreeStage = 0;//S4
+                int FirstStage = 0;//第一阶段  预科，S1,S2 ---55
+                int SecondStage = 0;//第二阶段 S3,   ----65
+                int ThreeStage = 0;//S4 ----70   测试和ui ----65    班级名称中UI和CUI为UI班，TA为测试班
                 int OtherStage = 0;//其他  语，数，英，职素，班会，军事
                 for (int j = 0; j < ClassGroup.Count; j++)
                 {
@@ -227,7 +228,13 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                             }
                             else if (grand.GrandName.Contains("S4"))
                             {
-                                ThreeStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
+                                    if (classSchedule.ClassNumber.Contains("UI") || classSchedule.ClassNumber.Contains("CUI") || classSchedule.ClassNumber.Contains("TA"))
+                                    {
+                                        SecondStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
+                                    }
+                                    else {
+                                        ThreeStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
+                                    }
                             }
                         }
                     }
@@ -250,7 +257,8 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
                 if (ThreeStage > 0)
                 {
-
+                    ThreeStage = ThreeStage - ClassTime;
+                    Cost_fee += ThreeStage * 70;
                 }
 
                 if (OtherStage > 0)
@@ -398,6 +406,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                     }
                 }
 
+                staff.ClassTime = FirstStage + SecondStage + ThreeStage + OtherStage;
                 staff.totalmoney = Convert.ToInt32(Cost_fee) + Duty_fee + Invigilation_fee + Marking_fee + Super_class + Internal_training_fee + RD_fee;
                 staff.Cost_fee = Cost_fee;
                 staff.Duty_fee = Duty_fee;
