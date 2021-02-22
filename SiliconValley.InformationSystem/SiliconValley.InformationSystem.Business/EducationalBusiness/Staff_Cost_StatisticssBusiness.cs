@@ -217,7 +217,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                         }
                         else
                         {
-                            Grand grand = Grand_Entity.GetEntity(curriculum1.Grand_Id);
+                             Grand grand = Grand_Entity.GetEntity(curriculum1.Grand_Id);
                             if (grand.GrandName.Contains("S1") || grand.GrandName.Contains("S2") || grand.GrandName.Contains("Y1"))
                             {
                                 FirstStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
