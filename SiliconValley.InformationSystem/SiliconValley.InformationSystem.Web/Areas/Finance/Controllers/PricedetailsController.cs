@@ -347,6 +347,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
 
         BaseBusiness< Preentryfee> Preentryfee = new BaseBusiness<Preentryfee>();
         BaseBusiness<StudentInformation> StudentInformation = new BaseBusiness<StudentInformation>();
+        BaseBusiness<StudentFeeRecordListView> StudentFeeRecordListView_Pr = new BaseBusiness<StudentFeeRecordListView>();
         BaseBusiness<StudentFeeRecord> StudentFeeRecord = new BaseBusiness<StudentFeeRecord>();
         public ActionResult Printrecord()
         {
@@ -356,7 +357,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             ViewBag.StudentPrentryfeeDate = dbtext.StudentPrentryfeeDate(student);
             var xs = StudentInformation.GetList().Where(d => d.StudentNumber == student).SingleOrDefault();
             var YuLv = Preentryfee.GetList().Where(d => d.identitydocument == xs.identitydocument).SingleOrDefault();
-            var XueFei = StudentFeeRecord.GetList().Where(d => d.StudenID == student).ToList();
+            var XueFei = StudentFeeRecordListView_Pr.GetList().Where(d => d.StudenID == student&&d.Passornot=="1").ToList();
             decimal xuefeiSUM = 0;
             decimal ZongJin = 0;
             foreach (var item in XueFei)
