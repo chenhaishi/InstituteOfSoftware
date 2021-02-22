@@ -233,7 +233,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                                         SecondStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
                                     }
                                     else {
-                                        ThreeStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
+                                         ThreeStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
                                     }
                             }
                         }
