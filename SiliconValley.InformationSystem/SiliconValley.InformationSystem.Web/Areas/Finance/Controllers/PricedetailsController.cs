@@ -25,6 +25,7 @@ using NPOI.HSSF.UserModel;
 using System.IO;
 using NPOI.SS.UserModel;
 using SiliconValley.InformationSystem.Entity.ViewEntity.XYK_Data;
+using SiliconValley.InformationSystem.Entity;
 
 namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
 {
@@ -1331,13 +1332,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
            var x= studentfee.GetList().Where(a => a.Costitemsid == 10 || a.Costitemsid == 11).ToList();
             return null;
         }
-        //订单重审
-  /// <summary>
-  /// 
-  /// </summary>
-  /// <param name="check_id"></param>
-  /// <param name="studentid"></param>
-  /// <returns></returns>
+
+        /// <summary>
+        /// 订单重审
+        /// </summary>
+        /// <param name="check_id"></param>
+        /// <param name="studentid"></param>
+        /// <returns></returns>
         public ActionResult reviewOpen(string check_id,string studentid)
         {
             //当前登陆人
@@ -1354,13 +1355,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             ViewBag.paymentmethod = Request.QueryString["paymentmethod"];
             ViewBag.reviewList = pay.GetList().Where(d => d.id == int.Parse(check_id)).ToList();
             //ViewBag.StudentFeeRecord 
-            List<StudentFeeRecord> stulist= StudentFeeRecord.GetList().Where(d => d.StudenID == studentid).ToList();
+            List<StudentFeeRecord> stulist= StudentFeeRecord.GetList().Where(d => d.StudenID == studentid&&d.AddTime!=null).ToList();
 
             StringBuilder sb = new StringBuilder();
 
             for (int i = 0; i < stulist.Count(); i++)
             {
-                if (i!=0)
+                if (i != 0)
                 {
                     if (stulist[i].Remarks != stulist[i - 1].Remarks)
                     {
@@ -1371,10 +1372,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
                 {
                     sb.Append(stulist[i].Remarks);
                 }
-                 
+
             }
 
             ViewBag.StudentFeeRecord = sb.ToString();
+            ViewBag.stulist = stulist;
             //岗位数据
             var positon = employeesInfoManage.GetPositionByEmpid(user.EmpNumber);
             ViewBag.postName = positon.PositionName.Contains("会计") == true ? 1 : 0;
@@ -1382,10 +1384,26 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
         }
         //订单表数据
         BaseBusiness<Paymentverification> pay = new BaseBusiness<Paymentverification>();
-        public ActionResult review(string checkID,string OddNumbers,string Paymentmethod)
+        public ActionResult review(string checkID,string OddNumbers,string Paymentmethod,DateTime timeAdd)
         {
-           
+            BaseBusiness<StudentFeeRecordListView> list = new BaseBusiness<StudentFeeRecordListView>();
+            BaseBusiness<StudentFeeRecord> rlist = new BaseBusiness<StudentFeeRecord>();
+            BaseBusiness<Feedetails> Feedetails = new BaseBusiness<Feedetails>();
             var iq_reID = pay.GetList().Where(d => d.id == int.Parse(checkID)).SingleOrDefault();
+            var iq_Feedetails = Feedetails.GetList().Where(d => d.OddNumbers == OddNumbers).SingleOrDefault();
+
+            var iq_time = list.GetList().Where(a => a.StudenID == iq_Feedetails.studentid&&a.OddNumbers==iq_Feedetails.OddNumbers).ToList();
+            
+            foreach (var item in iq_time)
+            {
+                var iq_date = rlist.GetList().Where(d => d.ID == item.ID).SingleOrDefault();
+
+                    iq_date.AddTime = timeAdd;
+                    rlist.Update(iq_date);
+                
+                
+            }
+           
             iq_reID.OddNumbers = OddNumbers;
             iq_reID.Paymentmethod = Paymentmethod;
             pay.Update(iq_reID);

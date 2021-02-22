@@ -4,6 +4,7 @@
 @{ 
     var list = ViewBag.reviewList as List<SiliconValley.InformationSystem.Entity.Entity.Paymentverification>;
     var rlist = ViewBag.StudentFeeRecord as List<SiliconValley.InformationSystem.Entity.MyEntity.StudentFeeRecord>;
+    var sulist = ViewBag.stulist as List<SiliconValley.InformationSystem.Entity.MyEntity.StudentFeeRecord>;
 }
 <!DOCTYPE html>
 
@@ -118,48 +119,53 @@
         @{
 
             var student = ViewBag.student as StudentInformation;
-            <table id="table1">
-                <tr>
-                    <td>学号：</td>
-                    <td>@student.StudentNumber</td>
-                </tr>
-                <tr>
-                    <td>姓名：</td>
-                    <td>@student.Name</td>
-                </tr>
-                <tr>
-                    <td>身份证：</td>
+        <table id="table1">
+            <tr>
+                <td>学号：</td>
+                <td>@student.StudentNumber</td>
+            </tr>
+            <tr>
+                <td>姓名：</td>
+                <td>@student.Name</td>
+            </tr>
+            <tr>
+                <td>身份证：</td>
 
-                    <td>@student.identitydocument</td>
-                </tr>
-                <tr>
-                    <td>单号：</td>
-                    @{
-                        foreach (var item in list)
-                        {
-                            <td> <input type="text" id="OddNumbers" lay-verify="required|number" value="@item.OddNumbers" placeholder="单号" class="layui-input" /></td>
-                        }
+                <td>@student.identitydocument</td>
+            </tr>
+            <tr>
+                <td>单号：</td>
+                @{
+                    foreach (var item in list)
+                    {
+                        <td> <input type="text" id="OddNumbers" lay-verify="required|number" value="@item.OddNumbers" placeholder="单号" class="layui-input" /></td>
                     }
+                }
 
 
-                </tr>
-                <tr>
-                    <td>收款方式：</td>
-                    @{
-                        foreach (var item in list)
-                        {
-                            <td> <input type="text" id="paymentmethod" lay-verify="required" value="@item.Paymentmethod" placeholder="收款方式" class="layui-input" /></td>
-                        }
+            </tr>
+            <tr>
+                <td>收款方式：</td>
+                @{
+
+                    foreach (var item in list)
+                    {
+                        <td> <input type="text" id="paymentmethod" lay-verify="required" value="@item.Paymentmethod" placeholder="收款方式" class="layui-input" /></td>
                     }
-                  
+                }
 
-                </tr>
-                <tr>
-                    <td>备注:</td>
-                    <td>@ViewBag.StudentFeeRecord</td>
-                </tr>
 
-            </table>
+            </tr>
+            <tr>
+                <td>入账时间：</td>
+                <td> <input type="text" name="date1" id="timeAdd" lay-verify="timeAdd" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input" value=""></td>
+            </tr>
+            <tr>
+                <td>备注:</td>
+                <td>@ViewBag.StudentFeeRecord</td>
+            </tr>
+
+        </table>
         }
     </div>
 
