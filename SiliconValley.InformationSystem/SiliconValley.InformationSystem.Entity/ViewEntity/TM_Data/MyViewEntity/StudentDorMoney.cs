@@ -50,5 +50,10 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data.MyViewEntity
         /// 解决措施
         /// </summary>
         public string Solutions { get; set; }
+
+        /// <summary>
+        /// 处理状态
+        /// </summary>
+        public string MaintainState { get; set; }
     }
 }

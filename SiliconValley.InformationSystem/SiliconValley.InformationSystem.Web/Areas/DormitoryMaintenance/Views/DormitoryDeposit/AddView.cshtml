@@ -11,15 +11,13 @@
     <title>AddView</title>
     <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
     <style>
-        .DivCss1
-        {
+        .DivCss1 {
             margin: 0px auto;
             margin-top: 20px;
             width: 98%;
         }
 
-        .LableCss1
-        {
+        .LableCss1 {
             text-overflow: ellipsis;
             white-space: nowrap;
             float: left;
@@ -30,8 +28,9 @@
             line-height: 20px;
             text-align: right
         }
-        .DisplayCss1{
-        display:none;
+
+        .DisplayCss1 {
+            display: none;
         }
     </style>
 </head>
@@ -179,7 +178,7 @@
             };
             //最后通过file.result属性返回读取文件的内容
             document.querySelector("#showimg").src = file.result;
-        } 
+        }
     </script>
     <script>
         $(function () {
@@ -188,16 +187,16 @@
             var form;
             var layer;
             var laydate;
-            layui.use(['form', 'layer','laydate'], function () {
+            layui.use(['form', 'layer', 'laydate'], function () {
                 form = layui.form;
                 layer = layui.layer;
                 laydate = layui.laydate;
-                
+
                 laydate.render({
                     elem: '#mantinDate'
                     , trigger: 'click'
                     , done: function (value, date, endDate) {
-                        mydate = value; 
+                        mydate = value;
                         $("#dordiv")[0].innerHTML = "";//清空寝室
                         $("#Studiv")[0].innerHTML = "";//清空宿舍人员
 
@@ -210,17 +209,17 @@
 
                 laydate.render({
                     elem: '#CompleteTime',
-                    trigger:'click'
+                    trigger: 'click'
                 });
-                
+
                 ///加载宿舍楼层
                 form.on('radio(Addree)', function (data) {
                     $("#foordiv")[0].innerHTML = "";//清空楼层
                     $("#dordiv")[0].innerHTML = "";//清空寝室
                     $("#Studiv")[0].innerHTML = "";//清空宿舍人员
 
-                    form.val("adddataform", {  
-                        "JieType": "1"   
+                    form.val("adddataform", {
+                        "JieType": "1"
                     });//类型初始化
 
                     $.ajax({
@@ -229,16 +228,16 @@
                             for (var i = 0; i < res.length; i++) {
                                 $('<input lay-filter="foorrido" type="radio" name="foorname" id="foorname" title="' + res[i].Text + '" value="' + res[i].Value + '"/>').appendTo($("#foordiv"));
                             }
-                            form.render(); 
-                             
+                            form.render();
+
                         }
 
                     });
-                      
-                });  
+
+                });
 
                 ///获取宿舍号
-                form.on('radio(foorrido)', function (data) {                    
+                form.on('radio(foorrido)', function (data) {
                     $("#dordiv")[0].innerHTML = "";
                     $("#Studiv")[0].innerHTML = "";//清空宿舍人员
                     form.val("adddataform", {
@@ -250,11 +249,11 @@
                             for (var i = 0; i < res.length; i++) {
                                 $('<input lay-filter="dorrido" type="radio" name="dorname" id="dorname" title="' + res[i].Text + '" value="' + res[i].Value + '"/>').appendTo($("#dordiv"));
                             }
-                            form.render(); 
+                            form.render();
                         }
-                       
+
                     });
-                     
+
                 });
 
                 //获取选中的宿舍
@@ -268,19 +267,17 @@
 
                 //获取寝室人员
                 form.on('select(JieType)', function (data) {
-                    
+
                     if (data.value == "1") {
                         //寝室平摊
                         $("#Studiv")[0].innerHTML = "";
                         $("#dorManDiv").addClass("DisplayCss1");
                         var val = $('input:radio[name="weixiugood"]:checked').val();
-                        console.log(val);
                         $.ajax({
                             url: '/DormitoryMaintenance/DormitoryDeposit/GetGoodPriceById',
                             type: 'post',
                             data: { "GoodID": val },
                             success: function (res) {
-                                console.log(res);
                                 if (res.Data >= 200) {
                                     $("#Goodfujiandiv").removeClass("DisplayCss1");
                                 } else {
@@ -295,7 +292,7 @@
                         $("#dorManDiv").removeClass("DisplayCss1");
                         //获取属于这个寝室的所有学生
                         if (sushennumber == null) {
-                            layer.msg('请先选择宿舍！', {icon:2,shade:0.8});
+                            layer.msg('请先选择宿舍！', { icon: 2, shade: 0.8 });
                         } else if (mydate == null) {
                             layer.msg('请先维修日期！', { icon: 2, shade: 0.8 });
                         } else if (sushennumber != null && mydate != null) {
@@ -306,23 +303,21 @@
                                 data: { "date": mydate, "sushenumber": sushennumber },
                                 success: function (res) {
                                     console.log(res);
-                                    if (res.Data.length>0) {
+                                    if (res.Data.length > 0) {
                                         for (var i = 0; i < res.Data.length; i++) {
-                                            $('<input type="radio" name="sturadi" value="' + res.Data[i].Value + '" title="' + res.Data[i].Text + '" />').appendTo($("#Studiv"));                   
+                                            $('<input type="radio" name="sturadi" value="' + res.Data[i].Value + '" title="' + res.Data[i].Text + '" />').appendTo($("#Studiv"));
                                         }
-                                        form.render(); 
+                                        form.render();
                                     }
                                 }
                             });
-                        }                        
+                        }
                     }
-                    
-                });     
 
-               
-                form.on('submit(addbtn)', function (data) { 
-                    
-                    //console.log(data.field);
+                });
+
+                form.on('submit(addbtn)', function (data) {
+
                     if (data.field.weixiugood == undefined) {
                         layer.msg('请选择维修物品！', { icon: 2, shade: 0.8 });
                     } else if (data.field.Suaddress == undefined) {
@@ -332,47 +327,55 @@
                     } else if (data.field.JieType == "2" && data.field.sturadi == undefined) {
                         layer.msg('请选择学生！', { icon: 2, shade: 0.8 });
                     } else {
-                        
-                        var word = document.getElementsByName("Image")[0].files[0];
-                        console.log(word);
-                        var filename = word.name;
-                        var index = filename.lastIndexOf(".");
-                        var suffix = filename.substr(index + 1);
-                        if (suffix == "jpg" || suffix == "jpg.png") {
-                            console.log(data.field);
-                            $.ajax({
-                                url: '/DormitoryMaintenance/DormitoryDeposit/AddFunction',
-                                data: data.field,
-                                type: 'POST',
-                                success: function (res) {
-                                    if (res.Success) {
-                                        var fd = new FormData();
-                                        fd.append('Image', word);
-                                        $.ajax({
-                                            url: "/DormitoryMaintenance/DormitoryDeposit/UpdateDormInfoImg",
-                                            type: "post",
-                                            contentType: false,
-                                            processData: false,
-                                            dataType: "json",//返回的数据格式
-                                            data: fd,
-                                            success: function (res) {
-                                                window.parent.TableFlush();
-                                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                                                parent.layer.close(index); //再执行关闭   
-                                            }
-                                        });
-                                        
-                                    } else {
-                                        layer.msg(res.Msg, { icon: 2, shade: 0.8 });
+
+                        console.log(data.field);
+                        $.ajax({
+                            url: '/DormitoryMaintenance/DormitoryDeposit/AddFunction',
+                            data: data.field,
+                            type: 'post',
+                            success: function (res) {
+
+                                if (res.Success) {
+
+                                    var word = document.getElementsByName("Image")[0].files[0];
+                                    console.log(word);
+                                    if (typeof (exp) != "undefined") {
+                                        var filename = word.name;
+                                        var index = filename.lastIndexOf(".");
+                                        var suffix = filename.substr(index + 1);
+                                        if (suffix == "jpg" || suffix == "jpg.png") {
+                                            var fd = new FormData();
+                                            fd.append('Image', word);
+                                            $.ajax({
+                                                url: "/DormitoryMaintenance/DormitoryDeposit/UpdateDormInfoImg",
+                                                type: "post",
+                                                contentType: false,
+                                                processData: false,
+                                                dataType: "json",//返回的数据格式
+                                                data: fd,
+                                                success: function (res) {
+                                                    window.parent.TableFlush();
+                                                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                                    parent.layer.close(index); //再执行关闭
+                                                }
+                                            });
+
+                                        } else {
+                                            layer.alert('请选择照片，当前只支持jpg格式!', { icon: 0 });
+
+                                        }
                                     }
+                                    window.parent.TableFlush();
+                                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                    parent.layer.close(index); //再执行关闭
+                                } else {
+                                    layer.msg(res.Msg, { icon: 2, shade: 0.8 });
                                 }
-                            });
-                        } else {
-                            layer.alert('请选择照片，当前只支持jpg格式!', { icon: 0 });
-                        }
-                        
+                            }
+                        });
+
                     }
-                    return false;  
+                    return false;
                 });
 
                 form.on('radio(GoodRadio)', function (data) {
@@ -381,10 +384,8 @@
                         type: 'post',
                         data: { "GoodID": data.value },
                         success: function (res) {
-                            console.log(res);
                             var jietype = $("#JieType").val();
-                            console.log(jietype);
-                            if (res.Data >= 200 && jietype==1) {
+                            if (res.Data >= 200 && jietype == 1) {
                                 $("#Goodfujiandiv").removeClass("DisplayCss1");
                             } else {
                                 $("#Goodfujiandiv").addClass("DisplayCss1");

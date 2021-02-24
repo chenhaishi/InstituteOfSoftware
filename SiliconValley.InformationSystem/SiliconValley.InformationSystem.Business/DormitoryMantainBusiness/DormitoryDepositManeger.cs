@@ -382,107 +382,110 @@ namespace SiliconValley.InformationSystem.Business.DormitoryMantainBusiness
         public decimal BaoxianguiStu(string stuNumber)
         {
             decimal Money = 0;
+            string sql = "select * from dormitorydeposit where MaintainGood = 2001 and stunumber = '"+stuNumber+"'";
+            List<DormitoryDeposit> list = GetListBySql<DormitoryDeposit>(sql);
+            Money = list.Count * 10;
             //看学生是否住了宿舍
-            string sqlstr = "select * from Accdationinformation where Studentnumber='" + stuNumber + "'";
-            List<Accdationinformation> list = this.GetListBySql<Accdationinformation>(sqlstr);
-            if (list.Count > 0)
-            {
-                //获取学生的入住时间
-                string sqlstr1 = "select * from Accdationinformation where Studentnumber='" + stuNumber + "' order by CreationTime";
-                List<Accdationinformation> list2 = this.GetListBySql<Accdationinformation>(sqlstr1);
+            //string sqlstr = "select * from Accdationinformation where Studentnumber='" + stuNumber + "'";
+            //List<Accdationinformation> list = this.GetListBySql<Accdationinformation>(sqlstr);
+            //if (list.Count > 0)
+            //{
+            //    //获取学生的入住时间
+            //    string sqlstr1 = "select * from Accdationinformation where Studentnumber='" + stuNumber + "' order by CreationTime";
+            //    List<Accdationinformation> list2 = this.GetListBySql<Accdationinformation>(sqlstr1);
 
-                if (list.Count > 0)
-                {
-                    DateTime date = Convert.ToDateTime(list2[0].StayDate);
+            //    if (list.Count > 0)
+            //    {
+            //        DateTime date = Convert.ToDateTime(list2[0].StayDate);
 
-                    //判断这个学生是否退学、休学、开除
-                    string strsql2 = "select * from  ApplicationDropout where Studentnumber='" + stuNumber + "'";//退学
+            //        //判断这个学生是否退学、休学、开除
+            //        string strsql2 = "select * from  ApplicationDropout where Studentnumber='" + stuNumber + "'";//退学
 
-                    List<ApplicationDropout> list3 = this.GetListBySql<ApplicationDropout>(strsql2);
-                    if (list3.Count > 0)
-                    {
-                        DateTime dateTime = Convert.ToDateTime(list3[0].Addtime);
+            //        List<ApplicationDropout> list3 = this.GetListBySql<ApplicationDropout>(strsql2);
+            //        if (list3.Count > 0)
+            //        {
+            //            DateTime dateTime = Convert.ToDateTime(list3[0].Addtime);
 
-                        int SumMonth = (dateTime.Year - date.Year) * 12 + (dateTime.Month - date.Month);//入学日期-退学日期
+            //            int SumMonth = (dateTime.Year - date.Year) * 12 + (dateTime.Month - date.Month);//入学日期-退学日期
 
-                        if (SumMonth > -1)
-                        {
-                            SumMonth = SumMonth + 1;
-                        }
-                        Money = SumMonth * 10;
+            //            if (SumMonth > -1)
+            //            {
+            //                SumMonth = SumMonth + 1;
+            //            }
+            //            Money = SumMonth * 10;
 
-                        return Money;
+            //            return Money;
 
-                    }
+            //        }
 
-                    string strsql3 = "select * from Suspensionofschool where Studentnumber='" + stuNumber + "'";//休学
-                    List<Suspensionofschool> list4 = this.GetListBySql<Suspensionofschool>(strsql3);
-                    if (list4.Count > 0)
-                    {
-                        DateTime date1 = list4[0].Startingperiod;//开始休学日期
-                        DateTime date2 = list4[0].Deadline;//结束日期
+            //        string strsql3 = "select * from Suspensionofschool where Studentnumber='" + stuNumber + "'";//休学
+            //        List<Suspensionofschool> list4 = this.GetListBySql<Suspensionofschool>(strsql3);
+            //        if (list4.Count > 0)
+            //        {
+            //            DateTime date1 = list4[0].Startingperiod;//开始休学日期
+            //            DateTime date2 = list4[0].Deadline;//结束日期
 
-                        int count = (date2 - date1).Days;//获取休学天数
+            //            int count = (date2 - date1).Days;//获取休学天数
 
 
-                        int SumMonth = (date1.Year - date.Year) * 12 + (date1.Month - date.Month);//入学日期-开始休学日期
+            //            int SumMonth = (date1.Year - date.Year) * 12 + (date1.Month - date.Month);//入学日期-开始休学日期
 
-                        if (SumMonth > -1)
-                        {
-                            SumMonth = SumMonth + 1;
-                        }
+            //            if (SumMonth > -1)
+            //            {
+            //                SumMonth = SumMonth + 1;
+            //            }
 
-                        if (count < 15)
-                        {
-                            //这个月算宿舍押金
-                            SumMonth = SumMonth - 1;
-                        }
+            //            if (count < 15)
+            //            {
+            //                //这个月算宿舍押金
+            //                SumMonth = SumMonth - 1;
+            //            }
 
-                        Money = SumMonth * 10;
+            //            Money = SumMonth * 10;
 
-                        return Money;
-                    }
+            //            return Money;
+            //        }
 
-                    string strsql4 = "select * from Expels where Studentnumber='" + stuNumber + "'";//开除
+            //        string strsql4 = "select * from Expels where Studentnumber='" + stuNumber + "'";//开除
 
-                    List<Expels> list5 = this.GetListBySql<Expels>(strsql4);
+            //        List<Expels> list5 = this.GetListBySql<Expels>(strsql4);
 
-                    if (list5.Count > 0)
-                    {
-                        DateTime dd = list5[0].Applicationtime;//开除日期
+            //        if (list5.Count > 0)
+            //        {
+            //            DateTime dd = list5[0].Applicationtime;//开除日期
 
-                        int SumMonth = (dd.Year - date.Year) * 12 + (dd.Month - date.Month);//入学日期-开除日期
+            //            int SumMonth = (dd.Year - date.Year) * 12 + (dd.Month - date.Month);//入学日期-开除日期
 
-                        Money = SumMonth * 10;
+            //            Money = SumMonth * 10;
 
-                        return Money;
-                    }
+            //            return Money;
+            //        }
 
-                    //如果没有异常
-                    string strsql6 = @" select * from Accdationinformation where DormId in(
-                                        select ID from DormInformation where TungFloorId in(
-                                        select tf.Id from TungFloor as tf inner join Tung as t on tf.TungId=t.Id where t.Id=27) ) and Studentnumber= '" + stuNumber + "'";
+            //        //如果没有异常
+            //        string strsql6 = @" select * from Accdationinformation where DormId in(
+            //                            select ID from DormInformation where TungFloorId in(
+            //                            select tf.Id from TungFloor as tf inner join Tung as t on tf.TungId=t.Id where t.Id=27) ) and Studentnumber= '" + stuNumber + "'";
 
-                    List<Accdationinformation> list6 = this.GetListBySql<Accdationinformation>(strsql6);
+            //        List<Accdationinformation> list6 = this.GetListBySql<Accdationinformation>(strsql6);
 
-                    if (list6.Count > 0)
-                    {
-                        DateTime dd = list6[0].CreationTime;
+            //        if (list6.Count > 0)
+            //        {
+            //            DateTime dd = list6[0].CreationTime;
 
-                        int SumMonth = (dd.Year - date.Year) * 12 + (dd.Month - date.Month);//退住日期-入住日期
+            //            int SumMonth = (dd.Year - date.Year) * 12 + (dd.Month - date.Month);//退住日期-入住日期
 
-                        if (SumMonth > -1)
-                        {
-                            SumMonth = SumMonth + 1;
-                        }
-                        Money = SumMonth * 10;
+            //            if (SumMonth > -1)
+            //            {
+            //                SumMonth = SumMonth + 1;
+            //            }
+            //            Money = SumMonth * 10;
 
-                        return Money;
-                    }
+            //            return Money;
+            //        }
 
-                }
+            //    }
 
-            }
+            //}
 
             return Money;
         }
@@ -542,13 +545,13 @@ namespace SiliconValley.InformationSystem.Business.DormitoryMantainBusiness
             //try
             //{
                 //获取第二行数据（年月份）
-                string time1 = sheet.GetRow(1).Cells[0].StringCellValue;
-                string[] str = time1.Split('-');
-                var time = str[1];
+                //string time1 = sheet.GetRow(1).Cells[0].StringCellValue;
+                //string[] str = time1.Split('-');
+                //var time = str[1];
                 Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
 
                 int successcount = 0;
-            int totalcount = 0;
+                int totalcount = 0;
                 while (true)
                 {
                     num++;
@@ -560,7 +563,7 @@ namespace SiliconValley.InformationSystem.Business.DormitoryMantainBusiness
                     #region 循环拿值
                     //宿舍号
                     string DormID = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(1))) ? null : getrow.GetCell(1).ToString();
-                    //报修吗日期
+                    //报修日期
                     string Repair_date = getrow.GetCell(2).ToString();
                     string[] temp = Repair_date.Split('-');
                     string month = temp[1].Substring(0, 2);
@@ -586,8 +589,7 @@ namespace SiliconValley.InformationSystem.Business.DormitoryMantainBusiness
                     string HeadMaster = getrow.GetCell(12).ToString();
 
                     #endregion
-
-                    string year_month = time;
+                
 
                     DormitoryDeposit deposit = new DormitoryDeposit();
                     DormitoryInputError DormError = new DormitoryInputError();
