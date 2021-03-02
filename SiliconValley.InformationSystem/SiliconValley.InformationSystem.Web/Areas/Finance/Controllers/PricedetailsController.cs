@@ -174,15 +174,21 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
       
             return Json(dbtext.Tuitionandfees(StudenID, Remarks, Costitemsid),JsonRequestBehavior.AllowGet);
         }
-        //学员缴费页面
+
+        /// <summary>
+        /// 学员缴费页面
+        /// </summary>
+        /// <param name="id">学号</param>
+        /// <returns></returns>
         [HttpGet]
         public ActionResult StudentPrice(string id)
         {
-            decimal Amountofmoney = 0;
+            //decimal Amountofmoney = 0;
             //学员信息
             StudentInformationBusiness studentInformationBusiness = new StudentInformationBusiness();
            BaseBusiness< StudentFeeRecordView> studentFeeRecord = new BaseBusiness<StudentFeeRecordView> ();
             BaseBusiness<ScheduleForTrainees> ScheduleForTrainees = new BaseBusiness<ScheduleForTrainees>();
+            BaseBusiness<StudentFeeRecordListView> StudentFeeRecordListView = new BaseBusiness<StudentFeeRecordListView>();
             BaseBusiness<ClassSchedule> ClassSchedule = new BaseBusiness<ClassSchedule>();
             BaseBusiness<Grand> Grand = new BaseBusiness<Grand>();
             var Student = dbtext.StudentFind(id);
@@ -191,11 +197,25 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             //当前阶段
             var list = ScheduleForTrainees.GetList().Where(d => d.StudentID == id && d.CurrentClass == true).SingleOrDefault();
             var schlist = ClassSchedule.GetList().Where(d => d.id == list.ID_ClassName).SingleOrDefault();
-            var Grandlist = Grand.GetList().Where(d => d.Id == schlist.grade_Id).SingleOrDefault();
-            ViewBag.StuName = Grandlist.GrandName;
-            ViewBag.student = JsonConvert.SerializeObject(Student);
-            var Preentry= Preentryfeebusenn.GetList().Where(a => a.identitydocument == studentInformationBusiness.GetEntity(id).identitydocument && a.Refundornot == null).ToList();
 
+            var Grandlist = Grand.GetList().Where(d => d.Id == schlist.grade_Id).SingleOrDefault();
+            
+            ViewBag.StuName = Grandlist.GrandName;//阶段绑定
+            //学生信息绑定
+            ViewBag.student = JsonConvert.SerializeObject(Student);
+            //是否交了预录费
+            var Preentry= Preentryfeebusenn.GetList().Where(a => a.identitydocument == studentInformationBusiness.GetEntity(id).identitydocument && a.Refundornot == null).ToList();
+            //学生已交费用sql语句
+            var sql_total = "select * from StudentFeeRecordListView where StageName='" + Grandlist.GrandName + "'AND StudenID='"+ id + "' and Passornot='1'";
+            var Ptotal = studentFeeRecord.GetListBySql<StudentFeeRecordListView>(sql_total).ToList();
+            decimal price = 0;
+            foreach (var item in Ptotal)
+            {
+                price += item.Amountofmoney;
+            }
+            ViewBag.price = price;
+
+            //阶段价格绑定
             ViewBag.Amountofmoney = dbtext.PreentryfeeFinet(id);
             BaseBusiness<Preferential> Preferential = new BaseBusiness<Preferential>();
             var Preferential_List = Preferential.GetList().ToList(); 
