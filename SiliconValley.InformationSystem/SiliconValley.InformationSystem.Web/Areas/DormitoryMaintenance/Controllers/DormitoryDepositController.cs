@@ -65,12 +65,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
             for (int i = 0; i < HeadClassList.Count; i++)
             {
                 string ScheduleSql = "select * from ScheduleForTrainees where  ID_ClassName="+HeadClassList[i].ClassID+"";
-                ScheduleList = ScheduleManeger.GetListBySql<ScheduleForTrainees>(ScheduleSql);
+                ScheduleList.AddRange(ScheduleManeger.GetListBySql<ScheduleForTrainees>(ScheduleSql));
             }
             List<DormitoryDeposit> DormDepositList = new List<DormitoryDeposit>();
-            for (int i = 0; i < listall.Count; i++)
-            {
+            
                 for (int j = 0; j < ScheduleList.Count; j++)
+                {
+                for (int i = 0; i < listall.Count; i++)
                 {
                     if (listall[i].StuNumber == ScheduleList[j].StudentID) {
                         DormDepositList.Add(listall[i]);
@@ -471,7 +472,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
         public ActionResult OneData()
         {
             //,RepairContent="",Solutions=""
-            List<StudentDorMoney> list = new List<StudentDorMoney>() { new StudentDorMoney() { StuName = "请查询", PayMoney = 0, MantainMoney = 0, SumMoney = 0, BaoxianguiMoney = 0 } };
+            List<StudentDorMoney> list = new List<StudentDorMoney>() { new StudentDorMoney() { StuName = "请查询", PayMoney = 0, MantainMoney = 0, SumMoney = 0, BaoxianguiMoney = 0} };
             var jsondata = new { code = 0, count = 0, data = list };
             return Json(jsondata, JsonRequestBehavior.AllowGet);
         }
@@ -500,7 +501,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
                     MantainMoney = Dormitory_Entity.GetMantainMoney(s.StudentID),
                     BaoxianguiMoney = Dormitory_Entity.BaoxianguiStu(s.StudentID),
                     SumMoney = Dormitory_Entity.GetStudentMoney(s.StudentID) - Dormitory_Entity.GetMantainMoney(s.StudentID) - Dormitory_Entity.BaoxianguiStu(s.StudentID)
-                    
+                    //MaintainState = 
                 };
                 stumoneylist.Add(data);
             });
