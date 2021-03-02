@@ -580,7 +580,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 CreateCell(row, ContentcellStyle, 13, d.ContractEndTime.ToString());//合同终止时间
                 CreateCell(row, ContentcellStyle, 14, d.Birthdate.ToString());//出生日期
                 CreateCell(row, ContentcellStyle, 15, d.Birthday);//生日
-                CreateCell(row, ContentcellStyle, 16, d.ContractStartTime.ToString());//紧急联系电话
+                CreateCell(row, ContentcellStyle, 16, d.UrgentPhone.ToString());//紧急联系电话
                 CreateCell(row, ContentcellStyle, 17, d.DomicileAddress);//户籍地址
                 CreateCell(row, ContentcellStyle, 18, d.Address);//现居地址
                 CreateCell(row, ContentcellStyle, 19, d.Education);//学历
