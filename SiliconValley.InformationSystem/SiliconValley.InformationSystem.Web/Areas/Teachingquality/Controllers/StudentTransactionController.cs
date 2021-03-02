@@ -470,7 +470,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
             BaseBusiness<ClassSchedule> cs = new BaseBusiness<ClassSchedule>();
             var id = stu.GetList().Where(d => d.StudentNumber == stuid).FirstOrDefault();//获取学生名称
             var class_error = sch.GetList().Where(d => d.StudentID == id.StudentNumber).FirstOrDefault();//获取学生当前所在班级
-            var error = cs.GetList().ToList();//获取所有班级
+            var error = cs.GetList().Where(d=>d.ClassstatusID==null).ToList();//获取所有班级
             ViewBag.id = id.Name;
             ViewBag.class_error = class_error.ClassID;
             ViewBag.error = error;
@@ -491,7 +491,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
             EmployeesInfoManage empid = new EmployeesInfoManage();//员工业务类
             var dept = empid.GetDeptByEmpid(UserName.EmpNumber);//根据员工编号获取员工所属部门
             var posi = empid.GetPositionByEmpid(UserName.EmpNumber);//根据员工编号所属岗位
-            if (dept.DeptName == "s1、s2教质部" && posi.PositionName.Contains("主任"))
+            if (dept.DeptName == "s1、s2教质部" && posi.PositionName.Contains("主任")||dept.DeptName== "s3教质部"&&posi.PositionName.Contains("教质副主任")||dept.DeptName.Contains("就业部")&&posi.PositionName.Contains("就业副主任")|| posi.PositionName.Contains("就业主任"))
             {
                 var id = stu.GetList().Where(d => d.StudentNumber == stuid).FirstOrDefault();
                 var class_error = sch.GetList().Where(d => d.StudentID == id.StudentNumber).FirstOrDefault();
