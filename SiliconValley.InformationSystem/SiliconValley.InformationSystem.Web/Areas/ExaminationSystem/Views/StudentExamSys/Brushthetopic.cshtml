@@ -15,6 +15,7 @@
 
 
         #warp {
+            width:100%;
         }
 
         #titleMsg {
@@ -62,8 +63,13 @@
     </style>
 </head>
 <body>
+
+    <p class="layui-elem-quote"><button type="button" id="FanHui" class="layui-btn">首页</button></p>
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
+        <legend>姓名:<input type="text" name="title" style="border:0px solid white;" readonly value="@ViewBag.student.Name" class="layui-input"></legend>
+    </fieldset>
     <div id="warp" class="layui-container">
-        <button type="button" id="FanHui" class="layui-btn layui-btn-normal">首页</button>
+
         <div id="titleMsg">
             <h1 style="text-align:center; color:gray;">刷题</h1>
 
@@ -73,10 +79,10 @@
                 <form class="layui-form">
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label">姓名:</label>
-                        <div class="layui-input-inline" style="width:80px;">
-                            <input type="text" name="title" style="border:0px solid white;" readonly value="@ViewBag.student.Name" class="layui-input">
-                        </div>
+                        @*<label class="layui-form-label">姓名:</label>
+        <div class="layui-input-inline" style="width:80px;">
+            <input type="text" name="title" style="border:0px solid white;" readonly value="@ViewBag.student.Name" class="layui-input">
+        </div>*@
 
 
                         <label class="layui-form-label">选择阶段:</label>
@@ -106,23 +112,23 @@
                                 </select>
                             </div>
                         </div>
+                        
 
+                            <label class="layui-form-label">刷题类型</label>
+                            <div class="layui-input-inline">
+                                <select class="formitem" name="ShuaTiLeiXing" id="ShuaTiLeiXing">
+                                    <option value="0" selected>--请选择--</option>
+                                    <option value="1">选择题</option>
+                                    <option value="2">解答题</option>
+                                </select>
+                            </div>
+                           
+                                <button type="button" id="begin" class="layui-btn layui-btn-primary formitem">开始刷题</button>
+                            
+                      
                     </div>
 
-                    <div class="layui-form log-item">
-
-                        <label class="layui-form-label">刷题类型</label>
-                        <div class="layui-input-inline">
-                            <select class="formitem" name="ShuaTiLeiXing" id="ShuaTiLeiXing">
-                                <option value="0" selected>--请选择--</option>
-                                <option value="1">选择题</option>
-                                <option value="2">解答题</option>
-                            </select>
-                        </div>
-                        <div class="layui-input-inline" style="margin-left:30px;">
-                            <button type="button" id="begin" class="layui-btn layui-btn-primary formitem">开始刷题</button>
-                        </div>
-                    </div>
+                    
                 </form>
 
 
@@ -148,14 +154,14 @@
     </div>
 
     <script type="text/template" id="chiosequestionTemplate">
-        <div class="choiceItem">
+        <div class="choiceItem"> 
             @*<input type="hidden" class="answer" value="{{=answer}}" />*@
-            <label class="choicetitle" style="font-size:16px; color:gray;" oncopy="return false" oncut="return false" >{{=title}}<span style="margin-left:10px;"></span></label><label style="margin-left:10px;color:red">{{=answer}}</label>
+            <label class="choicetitle" style="font-size:22px; color:gray;" oncopy="return false" oncut="return false">{{=title}}<span style="margin-left:10px;"></span></label><label style="margin-left:10px;color:red">{{=answer}}</label>
             <div style="margin-left:20px;">
-                <div oncopy="return false" oncut="return false" class="option"><label>A:</label> <label  style="margin-left:10px;">{{=A}}</label></div>
-                <div oncopy="return false" oncut="return false" class="option"><label>B:</label> <label  style="margin-left:10px;">{{=B}}</label> </div>
-                <div oncopy="return false" oncut="return false" class="option"><label>C:</label> <label  style="margin-left:10px;">{{=C}}</label>  </div>
-                <div oncopy="return false" oncut="return false" class="option"><label>D:</label> <label  style="margin-left:10px;">{{=D}}</label> </div>
+                <div oncopy="return false" oncut="return false" class="option"><label style="font-size:20px;">A:</label> <label style="margin-left:10px;font-size:20px;">{{=A}}</label></div>
+                <div oncopy="return false" oncut="return false" class="option"><label style="font-size:20px;">B:</label> <label style="margin-left:10px;font-size:20px;">{{=B}}</label> </div>
+                <div oncopy="return false" oncut="return false" class="option"><label style="font-size:20px;">C:</label> <label style="margin-left:10px;font-size:20px;">{{=C}}</label>  </div>
+                <div oncopy="return false" oncut="return false" class="option"><label style="font-size:20px;">D:</label> <label style="margin-left:10px;font-size:20px;">{{=D}}</label> </div>
 
 
             </div>
@@ -163,14 +169,14 @@
 
     </script>
 
-   <script type="text/template" id="answerquestionTemplate">
-       <div class="answerItem">
-           <label class="choicetitle" style="font-size:16px; color:gray;" oncopy="return false" oncut="return false">{{=title}}</label>
-           <div style="margin-left:20px;">
-               <div oncopy="return false" oncut="return false" class="option"><label style="color:red;margin-left:10px;">{{=ref}}</label></div>
-           </div>
-           
-       </div>
+    <script type="text/template" id="answerquestionTemplate">
+        <div class="answerItem">
+            <label class="choicetitle" style="font-size:22px; color:gray;" oncopy="return false" oncut="return false">{{=title}}</label>
+            <div style="margin-left:20px;">
+                <div oncopy="return false" oncut="return false" class="option"><label style="color:red;margin-left:10px;font-size:20px;">{{=ref}}</label></div>
+            </div>
+
+        </div>
     </script>
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/layui/layui.js"></script>
@@ -293,11 +299,11 @@
             });
         }
         window.onload = function () {
-            //假设这里每个五分钟执行一次test函数 
+            //假设这里每个五分钟执行一次test函数
             publicBusi();
         }
         function publicBusi() {
-            setTimeout(publicBusi, 1000 * 60 * 3); //这里的1000表示1秒有1000毫秒,1分钟有60秒,7表示总共7分钟 
+            setTimeout(publicBusi, 1000 * 60 * 3); //这里的1000表示1秒有1000毫秒,1分钟有60秒,7表示总共7分钟
             $.post('/ExaminationSystem/StudentExamSys/BrushthetopicProhibit', function (result) {
                 if (result.ErrorCode == 200) {
                     console.log("当前没有已经开考的考试!");
@@ -316,83 +322,83 @@
             $(document).off("click", ".option").on("click", ".option", function () {
 
                 $(this).find("input").click();
-                
+
             });
-                function loadchoicequestiondata(examtype,kecheng = "0") {
+            function loadchoicequestiondata(examtype, kecheng = "0") {
 
-                    var index = layer.load(2); //又换了种风格，并且设定最长等待10秒
-                    //判断如果类型是选择题就请求BrushAlltheQestion
-                    $.post("/ExaminationSystem/StudentExamSys/BrushAlltheQestion", { examType: examtype, kecheng: kecheng }, function (result) {
-                        layer.close(index);
-                        if (result.ErrorCode == 200) {
+                var index = layer.load(2); //又换了种风格，并且设定最长等待10秒
+                //判断如果类型是选择题就请求BrushAlltheQestion
+                $.post("/ExaminationSystem/StudentExamSys/BrushAlltheQestion", { examType: examtype, kecheng: kecheng }, function (result) {
+                    layer.close(index);
+                    if (result.ErrorCode == 200) {
 
-                            for (var i = 0; i < result.Data.data.length; i++) {
+                        for (var i = 0; i < result.Data.data.length; i++) {
 
-                                var a = $("<label></label>");
-                                a.text(result.Data.data[i].OptionA);
+                            var a = $("<label></label>");
+                            a.text(result.Data.data[i].OptionA);
 
-                                var b = $("<label></label>");
-                                b.text(result.Data.data[i].OptionB);
-
-
-                                var c = $("<label></label>");
-                                c.text(result.Data.data[i].OptionC);
+                            var b = $("<label></label>");
+                            b.text(result.Data.data[i].OptionB);
 
 
-                                var d = $("<label></label>");
-                                d.text(result.Data.data[i].OptionD);
+                            var c = $("<label></label>");
+                            c.text(result.Data.data[i].OptionC);
 
-                                var zheng = $("<label><label>");
-                                zheng.text(result.Data.data[i].Answer);
 
-                                var title = $("<label></label>");
-                                title.text(result.Data.data[i].Title);
+                            var d = $("<label></label>");
+                            d.text(result.Data.data[i].OptionD);
 
-                                var html = _.template($("#chiosequestionTemplate").html());
-                                var htmldata = html({ title: document.HTMLDOMtoString(title[0]), answer: document.HTMLDOMtoString(zheng[0]), A: document.HTMLDOMtoString(a[0]), B: document.HTMLDOMtoString(b[0]), C: document.HTMLDOMtoString(c[0]), D: document.HTMLDOMtoString(d[0]) });
+                            var zheng = $("<label><label>");
+                            zheng.text(result.Data.data[i].Answer);
 
-                                $("#choicequestionlist").append($(htmldata));
+                            var title = $("<label></label>");
+                            title.text(result.Data.data[i].Title);
 
-                            }
+                            var html = _.template($("#chiosequestionTemplate").html());
+                            var htmldata = html({ title: document.HTMLDOMtoString(title[0]), answer: document.HTMLDOMtoString(zheng[0]), A: document.HTMLDOMtoString(a[0]), B: document.HTMLDOMtoString(b[0]), C: document.HTMLDOMtoString(c[0]), D: document.HTMLDOMtoString(d[0]) });
+
+                            $("#choicequestionlist").append($(htmldata));
+
                         }
+                    }
 
-                    });
+                });
 
-                }
-             
-                function loadanswerquestiondata(examtype, kecheng = "0") {
-                    var index = layer.load(2); //又换了种风格，并且设定最长等待10秒
-                    //判断如果类型是解答题就请求BrushAlltheQuestion
-                    $.post("/ExaminationSystem/StudentExamSys/BrushAlltheQuestion", { examType: examtype, kecheng: kecheng }, function (result) {
-                        layer.close(index);
-                        if (result.ErrorCode == 200) {
+            }
 
-                            for (var i = 0; i < result.Data.data.length; i++) {
+            function loadanswerquestiondata(examtype, kecheng = "0") {
+                var index = layer.load(2); //又换了种风格，并且设定最长等待10秒
+                //判断如果类型是解答题就请求BrushAlltheQuestion
+                $.post("/ExaminationSystem/StudentExamSys/BrushAlltheQuestion", { examType: examtype, kecheng: kecheng }, function (result) {
+                    layer.close(index);
+                    if (result.ErrorCode == 200) {
 
-
-                                var ref = $("<label></label>");
-
-                                ref.text(result.Data.data[i].ReferenceAnswer);
-
-                                //result.Data.data[i].ReferenceAnswer = document.HTMLDOMtoString(ref[0]);
-
-                                //answerquestion.push(result.Data.data[i]);
+                        for (var i = 0; i < result.Data.data.length; i++) {
 
 
-                                var title = $("<label></label>");
-                                title.text(result.Data.data[i].Title);                                
-                                var html = _.template($("#answerquestionTemplate").html());
-                                var htmldata = html({ title: document.HTMLDOMtoString(title[0]), ref: document.HTMLDOMtoString(ref[0]) });
+                            var ref = $("<label></label>");
 
-                                $("#answerquestionlist").append($(htmldata));
-                            }
+                            ref.text(result.Data.data[i].ReferenceAnswer);
+
+                            //result.Data.data[i].ReferenceAnswer = document.HTMLDOMtoString(ref[0]);
+
+                            //answerquestion.push(result.Data.data[i]);
+
+
+                            var title = $("<label></label>");
+                            title.text(result.Data.data[i].Title);
+                            var html = _.template($("#answerquestionTemplate").html());
+                            var htmldata = html({ title: document.HTMLDOMtoString(title[0]), ref: document.HTMLDOMtoString(ref[0]) });
+
+                            $("#answerquestionlist").append($(htmldata));
                         }
+                    }
 
-                    });
+                });
 
-                }
+            }
 
-            
+
 
             var type;
             form.on('select(examtype)', function (data) {
@@ -473,7 +479,7 @@
                 } else if (ShuaTiLeiXing == "2") {
                     loadanswerquestiondata(examtype, kecheng);
                 }
-               
+
             });
             //返回
             $("#FanHui").click(function () {
