@@ -16,12 +16,12 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
     [Table(name: "MonthlySalaryRecord")]
     //月度工资表
     public partial class MonthlySalaryRecord
-    { 
+    {
         [Key]
         public int Id { get; set; }
         public string EmployeeId { get; set; }
         public Nullable<System.DateTime> YearAndMonth { get; set; }//年月份
-       
+
         public Nullable<decimal> OvertimeCharges { get; set; }//加班费用
         public Nullable<decimal> Bonus { get; set; }  //奖金/元
         public Nullable<decimal> LeaveDeductions { get; set; }//（请假）扣款
@@ -51,15 +51,18 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         /// <summary>
         /// 审核状态 0-未审核 1-已驳回 2-提交审核 3-苏 4-周 5-刘 6-杨 7-黄 
         /// </summary>
-        public int IsFinancialAudit { get; set; }
+        //public int IsFinancialAudit { get; set; }
         /// <summary>
         /// 备注
         /// </summary>
-        public string FinancialRemarks  {get; set; }
+        //public string FinancialRemarks  {get; set; }
         /// <summary>
         /// 人事备注
         /// </summary>
         public string Remarks { get; set; }
-
+        /// <summary>
+        /// 发送状态
+        /// </summary>
+        public Nullable<bool> SendingStatus { get;set;}
     }
 }

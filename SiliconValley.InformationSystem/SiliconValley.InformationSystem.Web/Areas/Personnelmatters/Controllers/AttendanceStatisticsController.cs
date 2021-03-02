@@ -584,7 +584,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             
          var att=monthly.GetAttendanceInfoByEmpid(over.EmployeeId,Convert.ToDateTime(over.YearAndMonth));
             var OvertimeWithhold= overtime.OvertimeWithhold(over.OvertimeTypeId, (dynamic)over.Duration);
-            if ((bool)over.IsNoDaysOff|| (bool)over.IsPass)
+            if ( (bool)over.IsPass)
             {
                 OvertimeWithhold = 0;
             }

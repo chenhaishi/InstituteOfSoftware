@@ -1,7 +1,6 @@
 ﻿using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
-using NPOI.XSSF.UserModel;
 using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 using SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness;
 using SiliconValley.InformationSystem.Entity.MyEntity;
@@ -344,7 +343,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         {
             MonthlySalaryRecordManage msrmanage = new MonthlySalaryRecordManage();
             var msr = msrmanage.GetEntity(id);
-            ViewBag.IsFinancialAudit = msr.IsFinancialAudit;
+            //ViewBag.IsFinancialAudit = msr.IsFinancialAudit;
             ViewBag.id = id;
             return View(msr);
         }
@@ -471,15 +470,17 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         {
             AjaxResult result = new AjaxResult();
             MonthlySalaryRecordManage monthly = new MonthlySalaryRecordManage();
+            List<PaySlipExcelError> error = new List<PaySlipExcelError>();
             try
             {
-                List<MonthlySalaryRecord> salary = monthly.GetEmpMsrData().Where(i => i.IsDel == false && Convert.ToDateTime(i.YearAndMonth.ToString().Substring(0, 7)) == Convert.ToDateTime(time.Substring(0, 7))).ToList();
+                List<MonthlySalaryRecord> salary = monthly.GetEmpMsrData().Where(i => i.IsDel == false && Convert.ToDateTime(i.YearAndMonth.ToString().Substring(0, 7)) == Convert.ToDateTime(time.Substring(0, 7))&&i.SendingStatus==false).ToList();
                 EmployeesInfoManage manage = new EmployeesInfoManage();
-                List<PaySlipExcelError> error = new List<PaySlipExcelError>();
+
+               
                 //发件人邮箱
-                string FromMail = "2651396164@qq.com";
+                string FromMail = "feihongos@163.com";
                 //发件人邮箱授权码
-                string AuthorizationCode = "xuobhcbwwnewecde";
+                string AuthorizationCode = "QRSNTQRISGFLTXXS";
                 int num = 0;
                 foreach (var i in salary)
                 {
@@ -492,7 +493,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                     }
                     else
                     {
-                        result = monthly.WagesDataToEmail(FromMail, "3330616589@qq.com", AuthorizationCode, i);
+                        result = monthly.WagesDataToEmail(FromMail, "2651396164@qq.com", AuthorizationCode, i);
                         if (!result.Success)
                         {
                            
@@ -502,29 +503,33 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                         }
                         else
                         {
+                            i.SendingStatus = true;
+                            monthly.Update(i);
                             num++;
                         }
                     }
 
                 }
-                
                 if (error.Count()!=0)
                 {
                     result.Success = true;
-                    result.Msg = "总共"+ salary.Count()+"条数据。"+ num+ "条数据发送成功," + (salary.Count()- num) + "条数据发送失败。";
+                    result.Msg = (salary.Count() - error.Count()).ToString();
                     result.Data = error;
                     result.ErrorCode = 200;
                 }
-                else
+                else if(error.Count==0)
                 {
+                    result.Msg = salary.ToString();
                     result.ErrorCode = 100;
                     result.Success = true;
+                    result.Data = error;
                 }
             }
             catch (Exception e)
             {
                 result.Success = false;
-                result.Data = e.Message;
+                result.Msg = e.Message;
+                result.Data = error;
             }
            
             return Json(result, JsonRequestBehavior.AllowGet);
@@ -559,7 +564,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 empl.Update(emplies);
                 rc.RemoveCache("InRedisESEData");
 
-                monlies.IsFinancialAudit = 0;
+                //monlies.IsFinancialAudit = 0;
                 monlies.BaseSalary = m.BaseSalary;
                 monlies.PositionSalary = m.PositionSalary;
                 monlies.FinalGrade = m.FinalGrade;
@@ -735,10 +740,43 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 Header_Name.CellStyle = TcellStyle;
             }
         }
+        [HttpPost]
+        public ActionResult JudgmentOfSalaryDetails()
+        {
+            AjaxResult result = new AjaxResult();
+            MonthlySalaryRecordManage monthly = new MonthlySalaryRecordManage();
+            try
+            {
+                string time = Convert.ToDateTime(FirstTime).ToString("yyyy年MM月");
+                List<MonthlySalaryRecord> salary = monthly.GetEmpMsrData().Where(i => i.IsDel == false && Convert.ToDateTime(i.YearAndMonth.ToString().Substring(0, 7)) == Convert.ToDateTime(FirstTime.Substring(0, 7))).ToList();
+                 int count = salary.Where(i=>i.SendingStatus==false).Count();
+                if (count == 0)
+                {
+                    result.Data = "该月份员工工资详情已发送！";
+                    result.Success = false;
+                }else if (salary.Count() == count)
+                {
+                    result.Data = "是否要向所有员工发送"+ time+"的工资详情";
+                    result.Success = true;
+                }
+                else
+                {
+                    result.Data = "还有"+count+"位员工未发送工资详情是否为这"+count+"位员工发送"+time+"的工资详情";
+                    result.Success = true;
+                }
+                result.ErrorCode = 200;
+            }
+            catch (Exception ex)
+            {
+                result.ErrorCode = 500;
+                result = monthly.Error(ex.Message);
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
         //public ActionResult MonthlySalaryExport()
         //{
         //    return View();
         //}
-       
+
     } 
 }
