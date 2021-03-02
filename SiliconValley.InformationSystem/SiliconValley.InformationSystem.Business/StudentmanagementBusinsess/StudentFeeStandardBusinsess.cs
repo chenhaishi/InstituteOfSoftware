@@ -65,6 +65,31 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
         //退费业务类
         BaseBusiness<Tuitionrefund> TuitionrefundBusiness = new BaseBusiness<Tuitionrefund>();
         /// <summary>
+        /// 获取学员现在所读阶段
+        /// </summary>
+        /// <param name="id">学员学号</param>
+        //public Grand StateGrand(string id)
+        //{
+        //    BaseBusiness<ScheduleForTrainees> ScheduleForTrainees = new BaseBusiness<ScheduleForTrainees>();
+        //    BaseBusiness<ClassSchedule> ClassSchedule = new BaseBusiness<ClassSchedule>();
+        //    BaseBusiness<Grand> Grand = new BaseBusiness<Grand>();
+        //    var listall = ScheduleForTrainees.GetListBySql<ScheduleForTrainees>("select * from ScheduleForTrainees where Id='" + id + "' and CurrentClass='1'").SingleOrDefault();
+        //    var list = ScheduleForTrainees.GetList().Where(d => d.StudentID == id && d.CurrentClass == true).SingleOrDefault();
+        //    List<ClassSchedule> schlist = null;
+        //    foreach (var item in listall)
+        //    {
+        //        schlist = ClassSchedule.GetList().Where(d => d.id == listall.ID_ClassName).ToList();
+        //    }
+        //    List<Grand> Grandlist = null;
+        //    foreach (var item in schlist)
+        //    {
+        //        Grandlist = Grand.GetList().Where(d => d.Id == item.grade_Id).ToList();
+        //    }
+
+
+        //    return Grandlist[0];
+        //}
+        /// <summary>
         /// 获取所有学员数据
         /// </summary>
         /// <param name="page"></param>
@@ -102,7 +127,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
             }
 
             StudentDataKeepAndRecordBusiness studentDataKeepAndRecord = new StudentDataKeepAndRecordBusiness();
-
+            StudentFeeStandardBusinsess StudentFeeStandardBusinsess = new StudentFeeStandardBusinsess();
             var dataList = list.Select(a => new
             {
                 a.ClassName,
@@ -112,7 +137,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                 a.Sex,
                 a.Headmasters,
                 a.BirthDate,
-                
+                //StudentFeeStandardBusinsess.StateGrand(a.StudentNumber.ToString()).GrandName,
                 studentDataKeepAndRecord.findId(a.StudentPutOnRecord_Id.ToString()).ConsultTeacher,
                 studentDataKeepAndRecord.findId(a.StudentPutOnRecord_Id.ToString()).empName
             }).OrderByDescending(a => a.StudentNumber).Skip((page - 1) * limit).Take(limit).ToList();
@@ -1539,13 +1564,9 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                     x.AddDate = DateTime.Now;
                     x.OddNumbers = OddNumbers;
                     x.Paymentmethod = paymentmethod;
-                  
                         //r.IsDelete = true;
                         //StudentFeeRecord_list_add.Update(r);
-                    
-                  
-                    
-                    
+
                     PaymentverificationBusiness.Update(x);
                     retus.Msg = "作废成功";
                 }
