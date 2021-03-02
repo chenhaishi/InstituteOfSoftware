@@ -402,6 +402,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             var ajaxresult = new AjaxResult();
             int num = 2;
             List<AttendanceInfoErrorDataView> attdatalist = new List<AttendanceInfoErrorDataView>();
+            string id = "";
             try
             {
                 //获取第二行数据（年月份）
@@ -418,13 +419,31 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                         break;
                     }
                     #region 循环拿值
+                    //for (int i = 0; i < 25; i++)
+                    //{
+                    //    if (i==5)
+                    //    {
+
+                    //    }
+                    //    
+                    //}
                     //工号(钉钉号)[0]
+                    
                     string ddid = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(0))) ? null : getrow.GetCell(0).ToString();
+                    id = ddid;
                     //姓名[1]
+                    if (id=="224")
+                    {
+
+                    }
                     string name = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(1))) ? null : getrow.GetCell(1).ToString();
                     //应到勤天数[2]
                     string deserveToRegularDays = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(2))) ? null : getrow.GetCell(2).ToString();
                     //到勤天数[3]
+                    if (getrow.GetCell(3).CellType == CellType.Formula)
+                    {
+                        getrow.GetCell(3).SetCellType(CellType.String);
+                    }
                     string workeddays = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(3))) ? null : getrow.GetCell(3).ToString();
                     //请假天数[4](事假)
                     string leaveddays = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(4))) ? null : getrow.GetCell(4).ToString();
@@ -489,7 +508,16 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     }
                     else
                     {
-                       
+                        if (!empmanage.DDidIsExist(int.Parse(ddid)))
+                        {
+                            attview.empname = name;
+                            attview.errorExplain = "不存在该工号！";
+                            attdatalist.Add(attview);
+                        }
+                        else
+                        {
+
+                        
                         if (string.IsNullOrEmpty(deserveToRegularDays))
                         {
                             attview.empname = name;
@@ -521,6 +549,22 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                                     {
                                         atd.YearAndMonth = Convert.ToDateTime(year_month);
                                     }
+                                        if (!string.IsNullOrEmpty(tardyRecord))
+                                        {
+                                            if (!tardyRecord.Contains(";"))
+                                        {
+
+                                            var strs = tardyRecord.Split('号');
+                                                if (strs.Length-1!=1)
+                                                {
+                                                    attview.empname = name;
+                                                    attview.errorExplain = "迟到记录分隔符号需要是  ;  ";
+                                                    attdatalist.Add(attview);
+                                                }
+
+                                        }
+                                        }
+                                        
                                     atd.DeserveToRegularDays = Convert.ToDecimal(deserveToRegularDays);
                                     atd.ToRegularDays = Convert.ToDecimal(workeddays);
 
@@ -559,6 +603,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                                     rc.RemoveCache("InRedisATDData");
                                 }
                             }
+                            }
                         }
 
                     }
@@ -583,7 +628,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             {
                 ajaxresult.Success = false;
                 ajaxresult.ErrorCode = 500;
-                ajaxresult.Msg = ex.Message;
+                ajaxresult.Msg = id;
                 ajaxresult.Data = "0";
             }
             return ajaxresult;
@@ -795,11 +840,11 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                         //迟到或早退30分钟以内扣费
                         if (!string.IsNullOrEmpty(item))
                         {
-                            var str = item.Split('号');
-                        string late = str[1];
-                        if (late.Contains("分钟") && !late.Contains("小时"))
+                        //    var str = item.Split('号');
+                        //string late = str[1];
+                        if (item.Contains("分钟") && !item.Contains("小时"))
                         {
-                            int time = int.Parse(System.Text.RegularExpressions.Regex.Replace(late, @"[^0-9]+", ""));
+                            int time = int.Parse(System.Text.RegularExpressions.Regex.Replace(item, @"[^0-9]+", ""));
                             if (time <= 10)//迟到/早退10分钟以内
                             {
                                 if (emprank == 1)

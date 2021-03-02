@@ -1,7 +1,6 @@
 ﻿using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
-using NPOI.XSSF.UserModel;
 using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 using SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness;
 using SiliconValley.InformationSystem.Entity.MyEntity;
@@ -479,9 +478,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
 
                
                 //发件人邮箱
-                string FromMail = "feihongis@163.com";
+                string FromMail = "feihongos@163.com";
                 //发件人邮箱授权码
-                string AuthorizationCode = "GPPCAZXUGEMKRBZO";
+                string AuthorizationCode = "QRSNTQRISGFLTXXS";
                 int num = 0;
                 foreach (var i in salary)
                 {
@@ -494,7 +493,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                     }
                     else
                     {
-                        result = monthly.WagesDataToEmail(FromMail, "3330616589@qq.com", AuthorizationCode, i);
+                        result = monthly.WagesDataToEmail(FromMail, "2651396164@qq.com", AuthorizationCode, i);
                         if (!result.Success)
                         {
                            

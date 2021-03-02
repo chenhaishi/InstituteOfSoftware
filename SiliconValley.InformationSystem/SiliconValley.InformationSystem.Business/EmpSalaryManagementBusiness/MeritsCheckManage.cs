@@ -224,7 +224,15 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                         {
                             string year = Year.Substring(0, 4);
                             string month = Year.Substring(5, 2);
+                          
+                        if (month.Substring(1,1)=="月")
+                        {
+                            Year = year + "-" + month.Substring(0, 1) + "-" + 01;
+                        }
+                        else
+                        {
                             Year = year + "-" + month + "-" + 01;
+                        }
 
                             if (string.IsNullOrEmpty(ddid))
                         {
@@ -246,9 +254,10 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                                 //merits.EmployeeId = empid;
                                 if (string.IsNullOrEmpty(finalgrade))
                             {
-                                errorDataView.excelId = name;
-                                errorDataView.errorExplain = "原因是该员工绩效分为空！";
-                                error.Add(errorDataView);
+                                    //errorDataView.excelId = name;
+                                    //errorDataView.errorExplain = "原因是该员工绩效分为空！";
+                                    //error.Add(errorDataView);
+                                    finalgrade = "0";
                             }
                                     else
                             {
