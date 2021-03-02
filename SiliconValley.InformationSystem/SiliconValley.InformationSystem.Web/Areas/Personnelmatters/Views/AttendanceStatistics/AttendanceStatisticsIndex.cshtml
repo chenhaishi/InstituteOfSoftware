@@ -414,8 +414,10 @@
         //"确认审批"按钮事件
         function ConfirmApproval(time) {
             layer.confirm('确认已完成该月份考勤的线下审批，且开始进行线上确认审批？<br/><span style="color:red;">注：一经确认将不可进行任何修改！</span>', function (index) {
+                var l = layer.load(1);
                 $.post('/Personnelmatters/AttendanceStatistics/ConfirmApproval', { 'time': time }, function (da) {
                     if (da) {
+                        layer.close(l);
                         layer.alert("操作成功!", { icon: 1 }, function (index) {
                             var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                             window.parent.location.reload();

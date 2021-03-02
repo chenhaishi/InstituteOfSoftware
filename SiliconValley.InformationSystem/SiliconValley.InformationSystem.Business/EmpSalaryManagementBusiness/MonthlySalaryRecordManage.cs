@@ -139,13 +139,22 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
         public AjaxResult CreateSalTab(string time)
         {
             AjaxResult result = new AjaxResult();
-            int id =0;
+            var msg = "";
             try
             {
                 var msrlist = this.GetEmpMsrData().Where(s => s.IsDel == false).ToList();
                 EmployeesInfoManage empmanage = new EmployeesInfoManage();
                 EmplSalaryEmbodyManage esemanage = new EmplSalaryEmbodyManage();
+                # region
+                List < EmployeesInfo> employeeslist= empmanage.GetList().ToList();
+                AttendanceInfoManage attendanceInfoManage = new AttendanceInfoManage();
+                List<AttendanceInfo> attendanceInfos = attendanceInfoManage.GetList().Where(s=>DateTime.Parse(s.YearAndMonth.ToString()).Year == Convert.ToDateTime(time).Year && DateTime.Parse(s.YearAndMonth.ToString()).Month == Convert.ToDateTime(time).Month).ToList();
+                MeritsCheckManage meritsCheckManage = new MeritsCheckManage();
+                List<MeritsCheck> meritslist = meritsCheckManage.GetList().Where(s => DateTime.Parse(s.YearAndMonth.ToString()).Year == Convert.ToDateTime(time).Year && DateTime.Parse(s.YearAndMonth.ToString()).Month == Convert.ToDateTime(time).Month).ToList();
+                #endregion
+                
                 var emplist = esemanage.GetEmpESEData().Where(s => s.IsDel == false).OrderBy(i=>i.Id).ToList();
+
                 //    var emplist = empmanage.GetEmpInfoData();
                 var nowtime = DateTime.Parse(time);
 
@@ -163,19 +172,23 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                    
                     foreach (var item in emplist)
                     {//再将未禁用的员工添加到月度工资表中
-                        
-                        AttendanceInfo attendance = GetAttendanceInfoByEmpid(item.EmployeeId,Convert.ToDateTime(time));
-                        MeritsCheck merits = GetMCByEmpid(item.EmployeeId,Convert.ToDateTime(time));
+                        string name = employeeslist.Where(i => i.EmployeeId == item.EmployeeId).FirstOrDefault().EmpName;
+                        AttendanceInfo attendance = attendanceInfos.Where(i=>i.EmployeeId==item.EmployeeId).FirstOrDefault();
+                        MeritsCheck merits = meritslist.Where(i => i.EmployeeId == item.EmployeeId).FirstOrDefault();
                         MonthlySalaryRecord msr = new MonthlySalaryRecord();
-                        if (merits!=null)
+                        
+                        if (merits==null)
                         {
-                            msr.FinalGrade = string.IsNullOrEmpty(merits.FinalGrade.ToString()) == true ? 0 : merits.FinalGrade;
+                            msr.FinalGrade = 0;
+                            msr.MonthPerformancePay = GetempPerformanceSalary(msr.FinalGrade, item.PerformancePay);
+                        }
+                        else
+                        {
+                            msr.FinalGrade=string.IsNullOrEmpty(merits.FinalGrade.ToString()) == true ? 0 : merits.FinalGrade;
                             msr.MonthPerformancePay = GetempPerformanceSalary(merits.FinalGrade, item.PerformancePay);
                         }
-                        id = (int)empmanage.GetEntity(item.EmployeeId).DDAppId;
                         msr.EmployeeId = item.EmployeeId;
                             msr.YearAndMonth = Convert.ToDateTime(time);
-
                             msr.BaseSalary = item.BaseSalary;
                             msr.PositionSalary = item.PositionSalary;
                             msr.PerformancePay = item.PerformancePay;
@@ -184,28 +197,36 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                             msr.NetbookSubsidy = item.NetbookSubsidy;
                             msr.ContributionBase = item.ContributionBase;
                             msr.PersonalIncomeTax = item.PersonalIncomeTax;
+                            msr.IsDel = false;
+                            msr.IsApproval = false;
+                            msr.SendingStatus = false;
+                            //msr.IsFinancialAudit = 0;
+                        if (attendance != null)
+                        {
                             msr.OvertimeCharges = attendance.OvertimeCharges;
                             msr.TardyAndLeaveWithhold = attendance.TardyAndLeaveWithhold;
                             msr.AbsenteeismWithhold = attendance.AbsenteeismWithhold;
                             msr.AbsentNumWithhold = attendance.AbsentNumWithhold;
-                            msr.IsDel = false;
-                            msr.IsApproval = false;
-                            msr.IsFinancialAudit = 0;
                             this.Insert(msr);
                             rc.RemoveCache("InRedisMSRData");
+                            result.Success = true;
                         }
+                        else
+                        {
+                             msg += "未能为姓名为<span style='font-weight:800'>" + name + "</span>的员工计算月度工资，原因的是该月份的考勤数据为空。<br/>";
+                            
+                        }
+                        result = Success(msg);
+                    }
                            
                     }
-                
-               
-                result.Success = true;
-                result.Msg = "生成成功！" ;
+
 
             }
 
             catch (Exception ex)
             {
-                    result = Error("生成失败！自工号为"+id+"的员工起截至，请查看绩效考核，考勤是否有数据。");
+                    result = Error(ex.Message);
             }
             return result;
         }
@@ -693,7 +714,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                        "</table>";
                 }
                 //加班
-                var over = overtime.GetList().Where(i=>i.EmployeeId==m.EmployeeId&&Convert.ToDateTime(i.YearAndMonth).Year== Convert.ToDateTime(m.YearAndMonth).Year&& Convert.ToDateTime(i.YearAndMonth).Month == Convert.ToDateTime(m.YearAndMonth).Month&&m.IsDel==true);
+                var over = overtime.GetList().Where(i=>i.EmployeeId==m.EmployeeId&&Convert.ToDateTime(i.YearAndMonth).Year== Convert.ToDateTime(m.YearAndMonth).Year&& Convert.ToDateTime(i.YearAndMonth).Month == Convert.ToDateTime(m.YearAndMonth).Month&&m.IsDel==false);
                 
                 if (!att.OvertimeCharges.IsNullOrEmpty())
                 {

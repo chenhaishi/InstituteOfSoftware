@@ -19,7 +19,7 @@
         <form class="layui-form" action="" id="Positive" lay-filter="Positive">
             <div class="layui-container">
 
-                <div class="layui-form-item" style="margin-top:60px;">
+                <div class="layui-form-item" style="margin-top:80px;">
                     <label class="layui-form-label">选择时间:</label>
                     <div class="layui-input-block">
                         <input type="text" id="CurrentTime" name="CurrentTime" class="layui-input" value="@ViewBag.time" />
@@ -95,22 +95,18 @@
                        
                     } else {
                         layer.confirm('确认生成' + time + '月份的工资表吗？', function (index) {
-                            var isQuery = false;
-                            if (!isQuery) {
+                           var l= layer.load(1);
                                 $.ajax({
                                     url: "/Personnelmatters/EmpSalaryManagement/SalarytableRefresh",
                                     type: "post",
                                     data: JSON.stringify({ 'time': time }),
                                     dataType: "json",
                                     contentType: "Application/json",
-                                    beforeSend: function () {
-                                        isQuery = true;
-                                        layer.msg("正在执行", { icon: 16, shade: 0.6 });
-                                    }, success: function (data) {
-                                        isQuery = false;
-                                        console.log(data);
+                                    processData: false,
+                                    success: function (data) {
+                                        layer.close(l);
                                         if (data.Success) {
-                                            layer.alert(data.Msg, { icon: 1 }, function (index) {
+                                            layer.alert("生成成功!" +data.Msg, { icon: 1 }, function (index) {
                                                 var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                                                 window.parent.location.reload();
                                                 parent.layer.close(index);
@@ -120,13 +116,11 @@
                                             layer.alert("生成失败!" + data.Msg);
                                         }
                                     }, error: function (e) {
-                                        isQuery = false;
+                                     
                                         console.log("生成失败");
                                     }
                                 })
-                            } else {
-                                console.log("请不要重复点击");
-                            }
+                            
                         });
                     }
                 });
