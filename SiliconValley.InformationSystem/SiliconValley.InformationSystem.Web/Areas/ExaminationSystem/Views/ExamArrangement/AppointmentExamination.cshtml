@@ -79,7 +79,7 @@
 
 
             <div class="btndiv1">
-                <div class="layui-btn layui-btn-danger" lay-submit="" lay-filter="commit1">确定</div>
+                <div class="layui-btn layui-btn-danger" lay-submit="" id="kaiqitrue" lay-filter="commit1">确定</div>
 
                 <div class="layui-btn layui-btn-danger" id="closefloat">关闭</div>
             </div>
@@ -381,10 +381,11 @@
             //点击确定预约
             form.on('submit(commit1)', function (data) {
 
-
+                document.getElementById("kaiqitrue").disabled = true;
                 var examid = "";
 
                 $(".examintaionitem .layui-form-radio").each(function () {
+
 
                     var Ischeck = $(this).hasClass("layui-form-radioed");
 
@@ -399,7 +400,7 @@
 
                     if (data.ErrorCode == 400) {
                         layer.msg("考试已经结束！");
-
+                        document.getElementById("kaiqitrue").disabled = false;
                         return;
                     }
 
@@ -407,8 +408,10 @@
                         layer.msg("报名成功！");
                         $("#myfloat").slideUp();
                         table.reload("mystudentlist");
+                        document.getElementById("kaiqitrue").disabled = false;
                     } else {
                         layer.msg("考试结束");
+                        document.getElementById("kaiqitrue").disabled = false;
                     }
 
                 });

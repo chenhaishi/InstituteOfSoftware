@@ -72,10 +72,24 @@
         .detail label {
             font-size:20px;
         }
+        .top, .topf {
+            height: 300px;
+            width: 250px;
+        }
+
+        .topf {
+            border: 1px solid #000;
+            position: fixed;
+            top: 0;
+            right: 0;
+            text-align: center;
+            font-size: 20px;
+            color: #000;
+        }
     </style>
 </head>
 <body>
-
+    <p class="layui-elem-quote"><button type="button" id="tiqianjieshu" class="layui-btn">提前结束考试</button></p>
     <div id="mypaper" style="background:#ffffff">
         <input type="hidden" id="examid" value="@ViewBag.EXAMVIEW.ID" />
         <input type="hidden" id="BeginDate" value="@ViewBag.EXAMVIEW.BeginDate" />
@@ -90,7 +104,7 @@
                     <li><label>考室-- </label><span>@ViewBag.AnswerSheetInfo.Classroom.ClassroomName</span></li>
                     @*<li><label>开始时间-- </label><span>@ViewBag.AnswerSheetInfo.BeginDate</span></li>*@
                     <li><label>时限-- </label><span>@ViewBag.AnswerSheetInfo.TimeLimit (小时)</span></li>
-                    <li><label>选择题得分-- </label><span class="choiceQuestionScoreshuode"></span></li>
+                    <li><label>选择题总分-- </label><span>10</span></li>
                     <li><label>笔试题总分-- </label><span>@ViewBag.AnswerSheetInfo.WrittenQuestionScores</span></li>
                     <li><label>机试题总分-- </label><span>@ViewBag.AnswerSheetInfo.ComputerQuestionScores</span></li>
                 </ul>
@@ -112,10 +126,15 @@
         </div>
 
     </div>
-  
-   
+    <div class="top">
+        <div class="topf">
+            <h3 style="color:red">注意事项</h3>
+            检查自己的笔试选择题与解答题是否完全,发生笔试提交失败,请在桌面上创建一个文本文档,将自己的笔试题复制进去,然后刷新提交空的笔试,将有自己的笔试内容的文本文档跟着机试一起提交。
+        </div>
+    </div>
+
     <script language="JavaScript">
-        
+
         document.getElementById("btn").onclick = function () {
             var elem = document.getElementById("mypaper");
             requestFullScreen(elem);
@@ -159,15 +178,15 @@
     <script type="text/template" id="answerquestionmoban">
         <div questionid="{{=questionid}}" class="questionItem">
             @*<div>
-                <span class="questionIndex">{{=index}}</span> <code style="margin-left:5px;color:#000000">{{=question}}</code>&nbsp;&nbsp;(<span class="listScores">{{=score}}</span>分)<input type="hidden" value="{{=score}}" class="hidescore" />
-            </div>*@
+                    <span class="questionIndex">{{=index}}</span> <code style="margin-left:5px;color:#000000">{{=question}}</code>&nbsp;&nbsp;(<span class="listScores">{{=score}}</span>分)<input type="hidden" value="{{=score}}" class="hidescore" />
+                </div>*@
             <label class="questionIndex">{{=index}}</label><label style="margin-left:5px;color:#000000">{{=question}}</label>&nbsp;&nbsp;(<span class="listScores">{{=score}}</span>分)<input type="hidden" value="{{=score}}" class="hidescore" />
             <div style="position:relative;right:109px;" class="layui-input-block">
                 <textarea style="height:250px" placeholder="请填写你的内容" class="layui-textarea desc" onpaste="return false"></textarea>
             </div>
             @*<div class="simple-editor"
-            <h2>答题区</h2>
-        </div>*@
+                    <h2>答题区</h2>
+                </div>*@
         </div>
     </script>
 
@@ -189,7 +208,7 @@
             }
         }
 
-        
+
         var ExamEndDateUTC;
 
         ///获取考试的结束时间
@@ -588,11 +607,10 @@
                                     window.location.href = '/ExaminationSystem/StudentExamSys/MachineTest?examid=' + examid + '&choiceQuestionScoreshuode=' + choiceQuestionScoreshuode;
                                 });
                                 layui.form.render();
-                            } else if (result.ErrorCode == 500)
-                            {
+                            } else if (result.ErrorCode == 500) {
                                 layer.msg('失败。。', { icon: 1 }, function () {
 
-                                    
+
                                 });
                                 layui.form.render();
                             }
@@ -674,6 +692,16 @@
             //        CommitAnswerSheet();
             //    }
             //}
+            //提前结束考试的方法
+            function tiqian() {
+                layer.msg("功能优化中!");
+            }
+            $("#tiqianjieshu").click(function () {
+                var msg = "确定提前结束考试嘛?";
+                layer.confirm(msg, function (index) {
+                    tiqian();
+                });
+            })
         });
 
 
