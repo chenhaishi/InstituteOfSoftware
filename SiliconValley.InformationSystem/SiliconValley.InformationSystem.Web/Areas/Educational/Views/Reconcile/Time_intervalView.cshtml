@@ -1,0 +1,104 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Time_intervalView</title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+</head>
+<body>
+    <div>
+        <div class="DivCss1" style="margin-top:20px;">
+            <form class="layui-form">
+                <div class="layui-row layui-form-item">
+                    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                        <label class="layui-form-label">阶 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 段:</label>
+                        <div class="layui-input-block">
+                            @Html.DropDownList("glist", ViewBag.grandlist as IEnumerable<SelectListItem>, new Dictionary<string, object>() { { "lay-filter", "grand" } })
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-row layui-form-item">
+                    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                        <label class="layui-form-label">班 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 级:</label>
+                        <div id="Myclass_Div" class="layui-input-block">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-row layui-form-item">
+                    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                        <label class="layui-form-label">原本日期:</label>
+                        <div class="layui-input-block">
+                            <input id="starTime" name="starTime" class="layui-input" lay-verify="required" />
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                        <label class="layui-form-label">调课天数:</label>
+                        <div class="layui-input-block">
+                            <input id="endTime" name="endTime" class="layui-input" lay-verify="required|Zero|number" placeholder="正数是推迟课程，负数是提前课程！" />
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                        <label class="layui-form-label">调课时段:</label>
+                        <div class="layui-input-block" style="margin-top:10px;">
+                            <input type="checkbox" name="" title="上午" lay-skin="primary" checked>
+                            <input type="checkbox" name="" title="下午" lay-skin="primary">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-row layui-form-item">
+                    <div class="layui-col-xs12 layui-col-sm12 layui-col-md12" style="text-align:center;margin-top:50px">
+                        <button type="submit" class="layui-btn" lay-submit="" lay-filter="Update_CBig">确定修改</button>
+                        <button type="button" class="layui-btn" onclick="MyClose()">取消关闭</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/layui/layui.js"></script>
+<script>
+    layui.use(['form', 'laydate'], function () {
+        var form = layui.form;
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#starTime'
+            , theme: 'molv'
+            , trigger: 'click'
+        });
+
+        form.on('select(grand)', function (data) {
+            $("#Myclass_Div")[0].innerHTML = "";
+            if (data.value != "0") {
+                $.ajax({
+                    url: '/Educational/Reconcile/GetClassScheduleSelect/' + data.value,
+                    success: function (sudata) {
+                        //获取班级slect
+                        var classselect = $('<select id="class_select" name="class_select" class="layui-select" lay-filter="bianji"><option value="0" selected>--请选择--</select>');
+                        for (var i = 0; i < sudata.length; i++) {
+                            $('<option value=' + sudata[i].id + '>' + sudata[i].ClassNumber + '<option>').appendTo(classselect);
+                        }
+                        $("#Myclass_Div").append(classselect);
+                        form.render(); //更新全部
+                    }
+                });
+            }
+        });
+
+    });
+</script>
