@@ -79,14 +79,20 @@
                 <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
                     <label class="LableCss1">选择床位:</label>
                     <div class="layui-input-block">
-                        <input name="changid" type="radio" value="1" title="1" checked="checked" />
-                        <input name="changid" type="radio" value="2" title="2" />
-                        <input name="changid" type="radio" value="3" title="3" />
-                        <input name="changid" type="radio" value="4" title="4" />
-                        <input name="changid" type="radio" value="5" title="5" />
-                        <input name="changid" type="radio" value="6" title="6" />
-                        <input name="changid" type="radio" value="7" title="7" />
-                        <input name="changid" type="radio" value="8" title="8" />
+                        <div id="listbutton">
+                            <input name="changid" type="radio" value="1" title="1" checked="checked" />
+                            <input name="changid" type="radio" value="2" title="2" />
+                            <input name="changid" type="radio" value="3" title="3" />
+                            <input name="changid" type="radio" value="4" title="4" />
+                            <input name="changid" type="radio" value="5" title="5" />
+                            <input name="changid" type="radio" value="6" title="6" />
+                            <input name="changid" type="radio" value="7" title="7" />
+                            <input name="changid" type="radio" value="8" title="8" />
+                        </div>
+                        
+                        <button type="button" id="addbutton" class="layui-btn">
+                            <i class="layui-icon">&#xe608;</i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -116,6 +122,8 @@
             var form;
             var layer;
             var laydate;
+
+
             layui.use(['form', 'layer', 'laydate'], function () {
                 form = layui.form;
                 layer = layui.layer;
@@ -170,9 +178,7 @@
                 form.on('radio(dorrido)', function (data) {
                     sushennumber = data.value; 
                 });
-
                 
-
                 form.on('submit(addbtn)', function (data) {
                     if (data.field.Suaddress == undefined) {
                         layer.msg('请选择宿舍地址！', { icon: 2, shade: 0.8 });
@@ -219,6 +225,16 @@
 
                 var index = parent.layer.getFrameIndex(window.name);
                 parent.layer.close(index);
+            });
+
+            $("#addbutton").click(function () {
+                console.log(1);
+                var va = $("#listbutton").children("div").last().prevObject.length;
+                console.log(va);
+                var temp = va*1+1*1;
+                var te = '<input name="changid" type="radio" value="' + temp + '" title="' + temp + '" />';
+                $("#listbutton").append(te);
+                form.render();
             });
         });
     </script>

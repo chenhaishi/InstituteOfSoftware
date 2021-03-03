@@ -1072,16 +1072,18 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         {
             int class_id = Convert.ToInt32(Request.Form["class_select"]);
             DateTime startime = Convert.ToDateTime(Request.Form["starTime"]);
-            int count = Convert.ToInt32(Request.Form["endTime"]);           
+            int count = Convert.ToInt32(Request.Form["endTime"]);//正数为推迟，负数为提前
+            int temp = Convert.ToInt32(Request.Form["shiduan"]);//上午0，下午1，上午下午2
             GetYear years = Reconcile_Entity.MyGetYear(startime.Year.ToString(), Server.MapPath("~/Xmlconfigure/Reconcile_XML.xml"));
             bool s = true;
+            
             if (count<=0)
             {
-               s= Reconcile_Entity.DescClassData(startime, count, class_id, years);
+               s= Reconcile_Entity.DescClassData(startime, count, class_id, years,temp);
             }
             else
             {
-                 s = Reconcile_Entity.AidClassData(startime, count, class_id, years);
+                 s = Reconcile_Entity.AidClassData(startime, count, class_id, years,temp);
             }
           
             return Json(s, JsonRequestBehavior.AllowGet);
@@ -1332,6 +1334,38 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
             return View();
         }
+
+        //[HttpPost]
+        //public ActionResult Time_interval()
+        //{
+        //    int grand = Convert.ToInt32(Request.Form["grand"]);
+        //    int class_id = Convert.ToInt32(Request.Form["class_select"]);
+        //    DateTime startime = Convert.ToDateTime(Request.Form["starTime"]);
+        //    int count = Convert.ToInt32(Request.Form["endTime"]);
+
+        //    //如果班级id为空就是阶段推迟，不为空则是班级推迟
+        //    if (class_id == null)
+        //    {
+        //        return View();
+        //    }
+        //    else {
+        //         GetYear years = Reconcile_Entity.MyGetYear(startime.Year.ToString(), Server.MapPath("~/Xmlconfigure/Reconcile_XML.xml"));
+        //         bool s = true;
+        //         if (count <= 0)
+        //         {
+        //             s = Reconcile_Entity.DescClassData(startime, count, class_id, years);
+        //         }
+        //         else
+        //         {
+        //             s = Reconcile_Entity.AidClassData(startime, count, class_id, years);
+        //         }
+        //        return Json(s, JsonRequestBehavior.AllowGet);
+        //    }
+            
+
+            
+        //}
+
         [HttpPost]
         public ActionResult GrandChangData()
         {
@@ -1340,7 +1374,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             DateTime de1 = Convert.ToDateTime(Request.Form["starTime"]);
 
             int de2 = Convert.ToInt32(Request.Form["endTime"]);
-                         
+
+            int temp = Convert.ToInt32(Request.Form["shiduan"]);//上午0，下午1，上午下午2
             List<ClassSchedule> myclass = new List<ClassSchedule>();
 
             foreach (string it in grand)
@@ -1352,10 +1387,22 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 }
             }
 
-            //获取属于这个日期的这些班级的排课数据
 
+            //获取属于这个日期的这些班级的排课数据
+            List<Reconcile> all = new List<Reconcile>();
+            if (temp == 0)
+            {
+                 all = Reconcile_Entity.GetList().Where(a => a.AnPaiDate >= de1 && a.Curse_Id.Contains("上午")).ToList();
+            }
+            else if (temp == 1)
+            {
+                 all = Reconcile_Entity.GetList().Where(a => a.AnPaiDate >= de1 && a.Curse_Id.Contains("下午")).ToList();
+            }
+            else {
+                 all = Reconcile_Entity.GetList().Where(a => a.AnPaiDate >= de1).ToList();
+            }
             List<Reconcile> myclist = new List<Reconcile>();
-            List<Reconcile> all = Reconcile_Entity.GetList().Where(a => a.AnPaiDate >= de1).ToList();
+            
             foreach (ClassSchedule cla in myclass)
             {
                 myclist.AddRange(all.Where(a => a.ClassSchedule_Id == cla.id).ToList());
@@ -1375,6 +1422,14 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
            
 
             return Json(s, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult Time_intervalView()
+        {
+            List<SelectListItem> g_list = Reconcile_Entity.GetEffectiveData().Select(g => new SelectListItem() { Text = g.GrandName, Value = g.Id.ToString() }).ToList();
+            g_list.Add(new SelectListItem() { Text = "--请选择--", Value = "0", Selected = true });
+            ViewBag.grandlist = g_list;
+            return View();
         }
 
         /// <summary>
@@ -1516,7 +1571,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
             //步骤一:先将原本的数据往后推count天」
             GetYear years = Reconcile_Entity.MyGetYear(date.Year.ToString(), Server.MapPath("~/Xmlconfigure/Reconcile_XML.xml"));
-            bool s= Reconcile_Entity.AidClassData(date, count, class_id, years);
+            bool s= Reconcile_Entity.AidClassData(date, count, class_id, years,3);
             AjaxResult a = new AjaxResult() { Success=false,Msg="操作失败，请刷新重试！"};
             if (s)
             {
