@@ -40,9 +40,24 @@
             text-align: center;
             margin-top: 50px;
         }
+        .top, .topf {
+            height: 300px;
+            width: 250px;
+        }
+
+        .topf {
+            border: 1px solid #000;
+            position: fixed;
+            top: 0;
+            right: 0;
+            text-align: center;
+            font-size: 20px;
+            color: #000;
+        }
     </style>
 </head>
 <body>
+    <p class="layui-elem-quote"><button type="button" id="chakan" class="layui-btn">查看答案</button></p>
     <div id="mypaper">
         <input type="hidden" id="examid" value="@ViewBag.EXAMVIEW.ID" />
         <input type="hidden" id="BeginDate" value="@ViewBag.EXAMVIEW.BeginDate" />
@@ -54,10 +69,10 @@
             <div class="detail">
                 <ul>
                     <li><label>答题人-- </label><span id="mingzi">@ViewBag.AnswerSheetInfo.AnswerPerson.Name</span></li>
-                    <li><label>考室-- </label><span>@ViewBag.AnswerSheetInfo.Classroom.ClassroomName</span></li>
+                    @*<li><label>考室-- </label><span>@ViewBag.AnswerSheetInfo.Classroom.ClassroomName</span></li>*@
                     @*<li><label>开始时间-- </label><span>@ViewBag.AnswerSheetInfo.BeginDate</span></li>*@
                     <li><label>时限-- </label><span>@ViewBag.AnswerSheetInfo.TimeLimit (小时)</span></li>
-                    <li><label>选择题得分-- </label><span class="choiceQuestionScoreshuode"></span></li>
+                    <li><label>选择题总分-- </label>10</span></li>
                     <li><label>笔试题总分-- </label><span>@ViewBag.AnswerSheetInfo.WrittenQuestionScores</span></li>
                     <li><label>机试题总分-- </label><span>@ViewBag.AnswerSheetInfo.ComputerQuestionScores</span></li>
                 </ul>
@@ -71,16 +86,23 @@
             <br />
             <br />
             @*@if(@ViewBag.Downloadcontent != null)
-            {
-                <a class="layui-btn layui-btn-warm" href="#" >已下载</a>
-            }
-            else
-            {*@
-                <a class="layui-btn layui-btn-warm" id="xz" href="/ExaminationSystem/StudentExamSys/ComputerQuestionUpload?examid=@ViewBag.EXAMVIEW.ID">机试题下载</a>
+                {
+                    <a class="layui-btn layui-btn-warm" href="#" >已下载</a>
+                }
+                else
+                {*@
+            <a class="layui-btn layui-btn-warm" id="xz" href="/ExaminationSystem/StudentExamSys/ComputerQuestionUpload?examid=@ViewBag.EXAMVIEW.ID">机试题下载</a>
             @*}*@
             <input class="layui-btn layui-btn-primary" id="Upload" type="file" name="computerQuestion" />
             <button type="button" class="layui-btn layui-btn-warm" id="COMMIT">提交机试</button><hr />
-            <text style="color:red">（机试题每次下载下来的永远都是同一套,下载下来的机试题将会被记录,发现提交的内容跟机试题不符合,做零份处理,请将项目写上自己的姓名）</text>
+
+        </div>
+    </div>
+    <div class="top">
+        <div class="topf">
+            <h3 style="color:red">注意事项</h3>
+            检查自己是否有压缩软件,提交的机试是否写上自己的姓名,然提交的机试请与自己考题一样的项目,下载下来的机试将会被记录,如项目与自己的考题无关将做零分处理。
+            
         </div>
     </div>
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
@@ -159,7 +181,7 @@
 
                             layer.msg('成功。。', { icon: 1 }, function () {
 
-                                window.location.href = '/ExaminationSystem/StudentExamSys/StuExamIndex';
+                                window.location.href = '/ExaminationSystem/StudentExamSys/Choiceanalysis?examid=' + examid;
                             });
 
                             layui.form.render();
@@ -265,11 +287,14 @@
                     Commit(true);
                 }
                 else {
-                    
+
                     console.log("考试中......");
                 }
 
             }, 60000);
+            $("#chakan").click(function () {
+                layer.msg("好好写!");
+            })
         });
     </script>
 </body>

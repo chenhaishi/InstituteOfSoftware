@@ -867,7 +867,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         {
             AjaxResult result = new AjaxResult();
 
-
             //{ "钟伦攀":"正常","19081997072400002":"false","19081997072400003":"false","19081997072400008":"false","19081997072400009":"false","19081997072400010":"false"}
 
             //首先去掉首尾括号

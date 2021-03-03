@@ -44,20 +44,22 @@
                 </div>
             </div>
             <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
-                <label class="LableCss1">维修物品:</label>
+                <label class="LableCss1">维修物品:<i class="layui-icon layui-icon-triangle-r"></i></label>
                 <div class="layui-input-block">
                     @{
                         List<SelectListItem> list2 = ViewBag.goodname as List<SelectListItem>;
 
                         foreach (var item in list2)
                         {
-                            <input type="radio" name="weixiugood" value="@item.Value" lay-filter="GoodRadio" title="@item.Text" />
+                              <div style="width:180px;display:inline-block">
+                                  <input type="radio" name="weixiugood" value="@item.Value" lay-filter="GoodRadio" title="@item.Text" />
+                              </div>
                         }
                     }
                 </div>
             </div>
 
-            <div class="layui-row layui-form-item">
+            <div class="layui-row layui-form-item" style="margin-top:40px">
                 <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
                     <label class="LableCss1">宿舍地址:</label>
                     <div class="layui-input-block">

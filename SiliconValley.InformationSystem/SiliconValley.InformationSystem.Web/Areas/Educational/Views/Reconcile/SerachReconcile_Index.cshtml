@@ -144,6 +144,7 @@
             @*<button class="layui-btn layui-btn-sm" lay-event="getCheckData"><i class="layui-icon">&#xe642;</i>全体推迟、提前课程</button>*@
             <button class="layui-btn layui-btn-sm" lay-event="changGrand"><i class="layui-icon">&#xe642;</i>阶段推迟、提前课程</button>
             <button class="layui-btn layui-btn-sm" lay-event="Class_getCheckData"><i class="layui-icon">&#xe642;</i>班级推迟、提前课程</button>
+            @*<button class="layui-btn layui-btn-sm" lay-event="time_interval"><i class="layui-icon">&#xe642;</i>上午、下午班推迟或提前</button>*@
             @*<button class="layui-btn layui-btn-sm" lay-event="Class_getCheckData2"><i class="layui-icon">&#xe642;</i>全体上课日期调换</button>*@
             <button class="layui-btn layui-btn-sm" lay-event="grand_getCheckData"><i class="layui-icon">&#xe642;</i>阶段上课日期调换</button>
             <button class="layui-btn layui-btn-sm" lay-event="Class_getCheckData3"><i class="layui-icon">&#xe642;</i>班级上课日期调换</button>
@@ -457,6 +458,18 @@
 
 
                     break;
+
+                //case 'time_interval':
+                //    layer.open({
+                //        type: 2,
+                //        content: '/Educational/Reconcile/Time_intervalView',
+                //        area: ['680px', '450px'],
+                //        title: '上午、下午阶段或班级推迟，提前'
+                //        , shade: 0.8
+                //        , anim: 4
+                //        , skin: 'demo-class'
+                //    });
+                //    break;
             };
         });
 
