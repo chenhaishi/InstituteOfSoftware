@@ -43,11 +43,20 @@
                 <div class="layui-col-xs11 layui-col-sm11 layui-col-md11">
                     <label class="layui-form-label">调课天数:</label>
                     <div id="DateDiv" class="layui-input-block">
-                        <input id="endTime" name="endTime" class="layui-input" lay-verify="required|number|Zero" placeholder="负数是提前课程，正数是推迟课程"/>
+                        <input id="endTime" name="endTime" class="layui-input" lay-verify="required|number|Zero" placeholder="负数是提前课程，正数是推迟课程" />
                     </div>
                 </div>
-
             </div>
+            <div>
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                    <label class="layui-form-label">调课时段:</label>
+                    <div class="layui-input-block" style="margin-top:10px;">
+                        <input type="checkbox" name="shiduan" title="上午" value="上午" lay-skin="primary" checked>
+                        <input type="checkbox" name="shiduan" title="下午" value="下午" lay-skin="primary">
+                    </div>
+                </div>
+            </div>
+
             <div class="layui-row layui-form-item">
                 <div class="layui-col-xs12 layui-col-sm12 layui-col-md12" style="text-align:center;margin-top:50px">
                     <button type="submit" class="layui-btn" lay-submit="" lay-filter="Anpai_CBig">确定调改</button>
@@ -75,6 +84,17 @@
                     grand = grand + $(ele).val() + ",";
                 });
                 data.field.grands = grand;
+                var shiduan = "";
+                $("input[name='shiduan']:checked").each(function (ind, ele) {
+                    shiduan = shiduan + $(ele).val() + ",";
+                });
+                if (shiduan == "上午,") {
+                    data.field.shiduan = "0";
+                } else if (shiduan == "下午,") {
+                    data.field.shiduan = "1";
+                } else if (shiduan == "上午,下午,") {
+                    data.field.shiduan = "2";
+                }
                 if (grand.length <= 0) {
                     layer.msg('请选择阶段！', { icon: 2, shade: 0.8 });
                 } else {

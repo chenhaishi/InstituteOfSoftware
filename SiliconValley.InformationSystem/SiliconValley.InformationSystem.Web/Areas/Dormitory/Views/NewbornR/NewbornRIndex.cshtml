@@ -190,7 +190,7 @@
                     url: '/Dormitory/DormitoryInfo/EstablishTree',
                     type: 'GET',
                     success: function (successdata) {
-                        //console.log(successdata);
+                        console.log(successdata);
                         jstungid = successdata.data[0].nodeId;
                         jsfloorid = successdata.data[0].children[0].nodeId;
                         //可以重载所有基础参数
@@ -297,7 +297,7 @@
 
             //发请求获取未满的宿舍
             function getUninhabiteddormdata(jsdata) {
-
+                console.log(jsdata);
                 var jsprosex = jsdata.Sex;
                 if (jsdata.Sex == "男") {
                     jsprosex = true;
@@ -305,6 +305,8 @@
                 if (jsdata.Sex == "女") {
                     jsprosex = false;
                 }
+                
+                console.log(jstungid);
                 $.ajax({
                     url: '/Dormitory/NewbornR/ChoiceInfo',
                     type: 'GET',

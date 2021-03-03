@@ -1338,14 +1338,14 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         /// <param name="days"></param>
         /// <param name="class_id"></param>
         /// <returns></returns>
-        public bool AidClassData(DateTime date, int days, int class_id, GetYear YearMon)
+        public bool AidClassData(DateTime date, int days, int class_id, GetYear YearMon,int curse)
         {
             bool s = false;
             //days = days - 1;
             try
             {
                 List<Reconcile> recon = new List<Reconcile>();
-                List<Reconcile> reconciles = GetReconcileDate(date, true).Where(r => r.ClassSchedule_Id == class_id).ToList();
+                List<Reconcile> reconciles = Time_intervalDate(date, curse).Where(r => r.ClassSchedule_Id == class_id).ToList();
                 for (int i = 0; i < days; i++)
                 {
                     foreach (Reconcile re in reconciles)
@@ -1392,14 +1392,14 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             return s;
         }
 
-        public bool DescClassData(DateTime date, int days, int class_id, GetYear YearMon)
+        public bool DescClassData(DateTime date, int days, int class_id, GetYear YearMon,int curse)
         {
             bool s = false;
             //days = days - 1;
             try
             {
                 List<Reconcile> recon = new List<Reconcile>();
-                List<Reconcile> reconciles = GetReconcileDate(date, true).Where(r => r.ClassSchedule_Id == class_id).OrderBy(r => r.AnPaiDate).ToList();
+                List<Reconcile> reconciles = Time_intervalDate(date, curse).Where(r => r.ClassSchedule_Id == class_id).OrderBy(r => r.AnPaiDate).ToList();
                 for (int i = days; i < 0; i++)
                 {
                     foreach (Reconcile re in reconciles)
@@ -2545,6 +2545,29 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
         }
 
+        /// <summary>
+        /// 获取时间段内上午所有的课，或者下午所有的课
+        /// </summary>
+        /// <param name="date">日期</param>
+        /// <param name="curse">时段：上午、下午  上午0，下午1，上午下午2</param>
+        /// <returns></returns>
+        public List<Reconcile> Time_intervalDate(DateTime date,int curse)
+        {
+            string dd = date.Year + "-" + date.Month + "-" + date.Day;
+            if (curse == 0)
+            {
+                List<Reconcile> list = this.GetListBySql<Reconcile>("select * from Reconcile where AnPaiDate>='" + dd + "' and curse_id like '上午%'");
+                return list;
+            }
+            else if (curse == 1)
+            {
+                List<Reconcile> list = this.GetListBySql<Reconcile>("select * from Reconcile where AnPaiDate>='" + dd + "' and curse_id like '下午%'");
+                return list;
+            } else  {
+                List<Reconcile> list = this.GetListBySql<Reconcile>("select * from Reconcile where AnPaiDate>='" + dd + "'");
+                return list;
+            }
+        }
 
         #endregion
 
