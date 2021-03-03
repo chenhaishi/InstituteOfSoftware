@@ -1120,7 +1120,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             string mms = dt.Month.ToString();
             string nianyue = yys + "-" + mms;
             List<MyExamCurren> mylist = new List<MyExamCurren>();
-            
+            MyExamCurren mydata = new MyExamCurren();
             try
             {
                
@@ -1138,26 +1138,27 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                     {
                         if (nianyue == mm)
                         {
-                            MyExamCurren mydata = new MyExamCurren();
+                            
                             mydata.CurreName = "升学";
                             mydata.Title = item.Title;
                             mydata.ID = item.ID;
                             mylist.Add(mydata);
                         }
                     }
-                    else {
+                    else
+                    {
                         var KeCheng = db_course.GetCurriculas().Where(d => d.CurriculumID == courseid).SingleOrDefault().CourseName;
 
                         if (nianyue == mm)
                         {
-                            MyExamCurren mydata = new MyExamCurren();
+                         
                             mydata.CurreName = KeCheng;
                             mydata.Title = item.Title;
                             mydata.ID = item.ID;
                             mylist.Add(mydata);
                         }
                     }
-                    
+
                 }
                 result.ErrorCode = 200;
                 result.Data = mylist;
