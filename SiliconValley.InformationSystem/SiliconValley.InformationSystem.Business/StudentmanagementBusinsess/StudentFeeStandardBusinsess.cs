@@ -1227,7 +1227,6 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                         deta_list.CurrentStageID = stage;
                         deta_list.Amountofmoney = sum;
                         deta_list.ShouldJiao = grand_sum.SingleOrDefault().Summonry;
-
                     }
                     listdetailedcs.Add(deta_list);
                 }
