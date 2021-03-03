@@ -71,8 +71,9 @@
                             @Html.DropDownList("Stage", ViewBag.Stage as SelectList, "请选择", new Dictionary<string, object>() { { "lay-verify", "required" }, { "lay-filter", "Stage" } })
                         </div>
                         <label>现读阶段:</label>
-                            <label style="color:red">@ViewBag.StuName</label>
-                        
+                        <label style="color:red">@ViewBag.StuName</label>
+                        <label>已入账:</label>
+                         <label style="color:red">@ViewBag.price</label>
                     </div>
 
 

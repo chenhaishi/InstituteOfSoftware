@@ -260,11 +260,11 @@
                         , { field: 'Birthday', title: '生日', sort: true, width: 110, hide: true }
                         , { field: 'UrgentPhone', title: '紧急联系电话', sort: true, width: 110, hide: true }
                         , { field: 'Education', title: '学历', sort: true, width: 110, hide: true }
-                        , { field: 'MaritalStatus', title: '婚姻状态', sort: true, width: 110, hide: true }
+                        , { field: 'MaritalStatus', title: '婚姻状态', sort: true, width: 110, hide: true, templet: '#switchTpl' }
                         , { field: 'DomicileAddress', title: '户籍地址', sort: true, width: 110, hide: true }
                         , { field: 'Address', title: '现居地址', sort: true, width: 110, hide: true }
                         , { field: 'IdCardIndate', title: '身份证有效期', sort: true, width: 110, hide: true, templet: function (d) { return GetYMD(d.IdCardIndate) } }
-                        , { field: 'PositiveDate', title: '政治面貌', sort: true, width: 110, hide: true }
+                        , { field: 'PoliticsStatus', title: '政治面貌', sort: true, width: 110, hide: true }
                         , { field: 'ProbationSalary', title: '试用期工资', sort: true, width: 110, hide: true }
                         , { field: 'Salary', title: '转正后工资', sort: true, width: 110, hide: true }
                         , { field: 'BCNum', title: '银行卡号', sort: true, width: 110, hide: true }
