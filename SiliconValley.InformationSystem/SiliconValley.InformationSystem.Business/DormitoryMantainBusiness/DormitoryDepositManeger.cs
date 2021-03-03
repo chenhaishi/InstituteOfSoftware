@@ -508,18 +508,8 @@ namespace SiliconValley.InformationSystem.Business.DormitoryMantainBusiness
         /// <returns></returns>
         public AjaxResult ImportDataFormExcel(Stream stream, string contentType)
         {
-            IWorkbook workbook = null;
-
-            if (contentType == "application/vnd.ms-excel")
-            {
-                workbook = new HSSFWorkbook(stream);
-            }
-
-            if (contentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-            {
-                workbook = new XSSFWorkbook(stream);
-            }
-
+            IWorkbook workbook = WorkbookFactory.Create(stream);
+            
             ISheet sheet = workbook.GetSheetAt(0);
             var result = ExcelImportAtdSql(sheet);
             stream.Close();
@@ -542,9 +532,7 @@ namespace SiliconValley.InformationSystem.Business.DormitoryMantainBusiness
             //try
             //{
                 //获取第二行数据（年月份）
-                string time1 = sheet.GetRow(1).Cells[0].StringCellValue;
-                string[] str = time1.Split('-');
-                var time = str[1];
+                
                 Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
 
                 int successcount = 0;
@@ -587,8 +575,7 @@ namespace SiliconValley.InformationSystem.Business.DormitoryMantainBusiness
 
                     #endregion
 
-                    string year_month = time;
-
+                    
                     DormitoryDeposit deposit = new DormitoryDeposit();
                     DormitoryInputError DormError = new DormitoryInputError();
 
