@@ -206,7 +206,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             //是否交了预录费
             var Preentry= Preentryfeebusenn.GetList().Where(a => a.identitydocument == studentInformationBusiness.GetEntity(id).identitydocument && a.Refundornot == null).ToList();
             //学生已交费用sql语句
-            var sql_total = "select * from StudentFeeRecordListView where StageName='" + Grandlist.GrandName + "'AND StudenID='"+ id + "' and Passornot='1'";
+            var sql_total = "select * from StudentFeeRecordListView where StageName='" + Grandlist.GrandName + "'AND StudenID='"+ id + "' and Passornot='1' and AddTime IS not NULL";
             var Ptotal = studentFeeRecord.GetListBySql<StudentFeeRecordListView>(sql_total).ToList();
             decimal price = 0;
             foreach (var item in Ptotal)
@@ -529,8 +529,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
         {
             BaseBusiness<StudentFeeRecordListView> StudentFeeRecordListView = new BaseBusiness<StudentFeeRecordListView>();
             BaseBusiness<ScheduleForTrainees> ScheduleForTrainees = new BaseBusiness<ScheduleForTrainees>();
+            StudentFeeStandardBusinsess StudentFeeStandardBusinsess = new StudentFeeStandardBusinsess();
             List<PriceDC> PriceDCList = new List<PriceDC>();
-            var ListView = StudentFeeRecordListView.GetList().Where(d => d.Passornot == "1").ToList();
+            var ListView = StudentFeeRecordListView.GetListBySql<StudentFeeRecordListView>("select * from StudentFeeRecordListView where Passornot='1' and AddTime is not null").ToList();
 
             foreach (var item in ListView)
             {
@@ -549,7 +550,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
                     priceDC.AddTime = item.AddTime.ToString();
                     priceDC.AddDate = item.AddDate.ToString();
                     priceDC.FinanceModelName = item.FinancialstaffName;
-                    //priceDC.class_id = a.ClassID;
+                    priceDC.ClassID = StudentFeeStandardBusinsess.schFor_Class(item.StudenID).ClassID;
                     PriceDCList.Add(priceDC);
                 //}
 
@@ -557,7 +558,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
 
             }
            
-            CostDataToExcel(PriceDCList);
+            //CostDataToExcel(PriceDCList);
             return Json(new { code = 0,data= PriceDCList });
         }
 
@@ -605,15 +606,15 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
                 CreateCell(row, ContentcellStyle, 0, d.studentID.ToString());
                 CreateCell(row, ContentcellStyle, 1, d.className);
                 CreateCell(row, ContentcellStyle, 2, d.identity);
-                //CreateCell(row, ContentcellStyle, 3, d.class_id);
-                CreateCell(row, ContentcellStyle, 3, d.Amountofmoney.ToString());
-                CreateCell(row, ContentcellStyle, 4, d.CostitemsName.ToString());
-                CreateCell(row, ContentcellStyle, 5, d.GrandName);
-                CreateCell(row, ContentcellStyle, 6, d.OddNumbers);
-                CreateCell(row, ContentcellStyle, 7, d.Paymentmethod);
-                CreateCell(row, ContentcellStyle, 8, d.FinanceModelName);
-                CreateCell(row, ContentcellStyle, 9, d.AddDate.ToString());
-                CreateCell(row, ContentcellStyle, 10, d.AddTime.ToString());
+                CreateCell(row, ContentcellStyle, 3, d.ClassID);
+                CreateCell(row, ContentcellStyle, 4, d.Amountofmoney.ToString());
+                CreateCell(row, ContentcellStyle, 5, d.CostitemsName.ToString());
+                CreateCell(row, ContentcellStyle, 6, d.GrandName);
+                CreateCell(row, ContentcellStyle, 7, d.OddNumbers);
+                CreateCell(row, ContentcellStyle, 8, d.Paymentmethod);
+                CreateCell(row, ContentcellStyle, 9, d.FinanceModelName);
+                CreateCell(row, ContentcellStyle, 10, d.AddDate.ToString());
+                CreateCell(row, ContentcellStyle, 11, d.AddTime.ToString());
                 num++;
 
             });
