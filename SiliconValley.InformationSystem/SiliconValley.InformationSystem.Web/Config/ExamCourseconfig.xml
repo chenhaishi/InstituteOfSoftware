@@ -327,7 +327,73 @@
   <exam id="32042">
     <course id="22" />
   </exam>
-  <exam id="33045">
+  <exam id="33031">
+    <course id="22" />
+  </exam>
+  <exam id="33032">
     <course id="0" />
+  </exam>
+  <exam id="33033">
+    <course id="0" />
+  </exam>
+  <exam id="33034">
+    <course id="0" />
+  </exam>
+  <exam id="33035">
+    <course id="0" />
+  </exam>
+  <exam id="33036">
+    <course id="0" />
+  </exam>
+  <exam id="33037">
+    <course id="0" />
+  </exam>
+  <exam id="33038">
+    <course id="25" />
+  </exam>
+  <exam id="33039">
+    <course id="23" />
+  </exam>
+  <exam id="33040">
+    <course id="23" />
+  </exam>
+  <exam id="33041">
+    <course id="16" />
+  </exam>
+  <exam id="33042">
+    <course id="26" />
+  </exam>
+  <exam id="33043">
+    <course id="16" />
+  </exam>
+  <exam id="33044">
+    <course id="22" />
+  </exam>
+  <exam id="33045">
+    <course id="22" />
+  </exam>
+  <exam id="33046">
+    <course id="22" />
+  </exam>
+  <exam id="33047">
+    <course id="22" />
+  </exam>
+  <exam id="33048">
+    <course id="22" />
+  </exam>
+  <exam id="33049">
+    <course id="22" />
+  </exam>
+  <exam id="33050">
+    <course id="23" />
+  </exam>
+  <exam id="34044">
+    <course id="24" />
+  </exam>
+  <exam id="34045">
+    <course id="24" />
+  </exam>
+  <exam id="33046">
+    <course id="24" />
   </exam>
 </root>
