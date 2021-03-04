@@ -206,7 +206,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             //是否交了预录费
             var Preentry= Preentryfeebusenn.GetList().Where(a => a.identitydocument == studentInformationBusiness.GetEntity(id).identitydocument && a.Refundornot == null).ToList();
             //学生已交费用sql语句
-            var sql_total = "select * from StudentFeeRecordListView where StageName='" + Grandlist.GrandName + "'AND StudenID='"+ id + "' and Passornot='1'";
+            var sql_total = "select * from StudentFeeRecordListView where StageName='" + Grandlist.GrandName + "'AND StudenID='"+ id + "' and Passornot='1' and AddTime IS not NULL";
             var Ptotal = studentFeeRecord.GetListBySql<StudentFeeRecordListView>(sql_total).ToList();
             decimal price = 0;
             foreach (var item in Ptotal)
