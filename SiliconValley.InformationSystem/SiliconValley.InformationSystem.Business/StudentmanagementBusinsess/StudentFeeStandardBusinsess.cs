@@ -65,6 +65,18 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
         //退费业务类
         BaseBusiness<Tuitionrefund> TuitionrefundBusiness = new BaseBusiness<Tuitionrefund>();
         /// <summary>
+        /// 学生班级查询
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ScheduleForTrainees schFor_Class(string id)
+        {
+            BaseBusiness<ScheduleForTrainees> classID = new BaseBusiness<ScheduleForTrainees>();
+            var sql = "select * from ScheduleForTrainees where StudentID='"+id+ "' and CurrentClass='1'";
+            var sch_classid = classID.GetListBySql<ScheduleForTrainees>(sql).SingleOrDefault();
+            return sch_classid;
+        }
+        /// <summary>
         /// 获取学员现在所读阶段
         /// </summary>
         /// <param name="id">学员学号</param>
