@@ -535,9 +535,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
 
             foreach (var item in ListView)
             {
-                //    var List_class = ScheduleForTrainees.GetList().Where(d => d.StudentID == item.StudenID && d.CurrentClass == true || d.CurrentClass == false).ToList();
-                //    foreach (var a in List_class)
-                //    {
                     PriceDC priceDC = new PriceDC();
                     priceDC.studentID = item.StudenID;
                     priceDC.className = item.Name;
@@ -552,7 +549,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
                     priceDC.FinanceModelName = item.FinancialstaffName;
                     priceDC.ClassID = StudentFeeStandardBusinsess.schFor_Class(item.StudenID).ClassID;
                     PriceDCList.Add(priceDC);
-                //}
+               
 
 
 

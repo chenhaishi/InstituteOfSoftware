@@ -72,9 +72,9 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
         public ScheduleForTrainees schFor_Class(string id)
         {
             BaseBusiness<ScheduleForTrainees> classID = new BaseBusiness<ScheduleForTrainees>();
-            var sql = "select * from ScheduleForTrainees where StudentID='"+id+ "' and CurrentClass='1'";
-            var sch_classid = classID.GetListBySql<ScheduleForTrainees>(sql).SingleOrDefault();
-            return sch_classid;
+            var sql = "select * from ScheduleForTrainees where StudentID='"+id+ "' and CurrentClass='1' or CurrentClass='0' and StudentID='" + id + "'";
+            var sch_classid = classID.GetListBySql<ScheduleForTrainees>(sql).ToList();
+            return sch_classid[0];
         }
         /// <summary>
         /// 获取学员现在所读阶段
