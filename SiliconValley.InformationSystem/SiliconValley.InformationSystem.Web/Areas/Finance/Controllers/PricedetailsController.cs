@@ -1418,8 +1418,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
 
                     iq_date.AddTime = timeAdd; 
                     rlist.Update(iq_date);
-                
-                
             }
            
             iq_reID.OddNumbers = OddNumbers;
