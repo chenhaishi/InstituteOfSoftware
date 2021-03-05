@@ -1118,46 +1118,38 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             DateTime dt = DateTime.Parse(riqi);
             string yys = dt.Year.ToString();
             string mms = dt.Month.ToString();
-            string nianyue = yys + "-" + mms;
             List<MyExamCurren> mylist = new List<MyExamCurren>();
             
             try
             {
-               
-                var exam = db_exam.GetList().ToList();
+                string sql = "select * from Examination where year(BeginDate)='"+ yys + "'  and month(BeginDate)='"+ mms + "'";
+
+                var exam = db_exam.GetListBySql<Examination>(sql).ToList();
                 
                 foreach (Examination item in exam)
                 {
-                   
-                   int year= item.BeginDate.Year;
-                   int month = item.BeginDate.Month;
                    XmlElement xmlelm = db_exam.ExamCourseConfigRead(item.ID);
                    int courseid = int.Parse(xmlelm.FirstChild.Attributes["id"].Value);
-                    string mm = year + "-" + month;
+                    
                     if (courseid == 0)
                     {
-                        if (nianyue == mm)
-                        {
-                            MyExamCurren mydata = new MyExamCurren();
-                            mydata.CurreName = "升学";
+                        MyExamCurren mydata = new MyExamCurren();
+                        mydata.CurreName = "升学";
                             mydata.Title = item.Title;
                             mydata.ID = item.ID;
                             mylist.Add(mydata);
-                        }
                     }
-                    else {
+                    else
+                    {
+                        MyExamCurren mydata = new MyExamCurren();
                         var KeCheng = db_course.GetCurriculas().Where(d => d.CurriculumID == courseid).SingleOrDefault().CourseName;
-
-                        if (nianyue == mm)
-                        {
-                            MyExamCurren mydata = new MyExamCurren();
                             mydata.CurreName = KeCheng;
                             mydata.Title = item.Title;
                             mydata.ID = item.ID;
                             mylist.Add(mydata);
-                        }
+
                     }
-                    
+
                 }
                 result.ErrorCode = 200;
                 result.Data = mylist;
@@ -1165,7 +1157,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             }
             catch (Exception ex)
             {
-
+                
                 result.ErrorCode = 500;
                 result.Data = null;
                 result.Msg = ex.Message;

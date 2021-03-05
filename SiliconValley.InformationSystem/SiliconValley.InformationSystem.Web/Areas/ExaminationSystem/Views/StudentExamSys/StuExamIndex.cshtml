@@ -78,11 +78,26 @@
             left: -186px;
             top: 120px;
         }
+        .top, .topf {
+            height: 300px;
+            width: 250px;
+        }
+
+        .topf {
+            border: 1px solid #000;
+            position: fixed;
+            top: 0;
+            right: 0;
+            text-align: center;
+            font-size: 20px;
+            color: #000;
+        }
     </style>
 </head>
 <body>
-    <div id="mywarp">
 
+    <div id="mywarp">
+        <p class="layui-elem-quote"><button type="button" id="FanHui" class="layui-btn">首页</button></p>
         @*<div id="topDiv">
             @*<img src="~/Areas/ExaminationSystem/Images/商务科技.png" />
         </div>*@
@@ -136,6 +151,13 @@
         </div>
 
     </div>
+    <div class="top">
+        <div class="topf">
+            <h3 style="color:red">注意事项</h3>
+            显示暂无考试请刷新页面再次确认,没有显示考试数据,请耐心等待,服务器在玩命加载,请不要疯狂点击,等加载出考试正在进行时,再点击进入考试,如果发现实在是没有考试就请向监考老师汇报
+
+        </div>
+    </div>
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/layui/layui.js"></script>
     <script src="~/Areas/ExaminationSystem/js/index.js"></script>
@@ -160,7 +182,7 @@
 
             //初始化
             $.post('/ExaminationSystem/StudentExamSys/GetStuSooExam', {}, function (result) {
-                    if (result.ErrorCode == 200) {
+                if (result.ErrorCode == 200) {
 
                     $(".sooexamName").text(result.Data.Title);
                     //BeginDate
@@ -171,16 +193,16 @@
                     //setCountdown(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds());
 
                     $("#indicator").attr("examid", result.Data.ID);
-                        var serverTime = new Date().getTime();
-                        var a = new Date()
-                        a = a.getFullYear() + "-" + (a.getMonth() + 1) + "-" + a.getDate() + " " + a.getHours() + ":" + a.getMinutes();
-                        timeinit(date, serverTime);
+                    var serverTime = new Date().getTime();
+                    var a = new Date()
+                    a = a.getFullYear() + "-" + (a.getMonth() + 1) + "-" + a.getDate() + " " + a.getHours() + ":" + a.getMinutes();
+                    timeinit(date, serverTime);
 
-                   }
-                    else {
+                }
+                else {
 
                     $(".sooexamName").parent().text("您暂无考试！");
-                    $("#indicator").attr("examid", "0");           
+                    $("#indicator").attr("examid", "0");
                     var date = new Date();
                     timeinit(date, date);
                     //setCountdown(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds());
@@ -208,8 +230,8 @@
                     layer.msg("您暂时没有考试");
                     return;
                 }
-                
- 
+
+
                 var day = Countdown[0];
                 var hours = Countdown[1];
                 var minuts = Countdown[2];
@@ -222,7 +244,7 @@
                     return;
 
                 }
-                $.post("/ExaminationSystem/StudentExamSys/ContinueThExam", { examid: examid}, function (result) {
+                $.post("/ExaminationSystem/StudentExamSys/ContinueThExam", { examid: examid }, function (result) {
                     if (result.ErrorCode == 400) {
                         window.location.href = '/ExaminationSystem/StudentExamSys/MachineTest?examid=' + examid;
                     } else {
@@ -233,10 +255,10 @@
 
             });
             //返回
-            //$("#FanHui").click(function () {
+            $("#FanHui").click(function () {
 
-            //    window.location.href = "/student/index";
-            //})
+                window.location.href = "/student/index";
+            })
         });
     </script>
 </body>

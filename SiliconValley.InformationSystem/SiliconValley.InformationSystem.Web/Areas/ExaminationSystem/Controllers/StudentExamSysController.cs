@@ -64,6 +64,14 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             return View();
         }
         /// <summary>
+        /// 考试结束选择题解析页面
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Choiceanalysis(int examid)
+        {
+            return View();
+        }
+        /// <summary>
         /// 拿到这个学生参加的考试
         /// </summary>
         /// <returns></returns>

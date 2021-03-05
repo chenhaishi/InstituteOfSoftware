@@ -65,6 +65,18 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
         //退费业务类
         BaseBusiness<Tuitionrefund> TuitionrefundBusiness = new BaseBusiness<Tuitionrefund>();
         /// <summary>
+        /// 学生班级查询
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ScheduleForTrainees schFor_Class(string id)
+        {
+            BaseBusiness<ScheduleForTrainees> classID = new BaseBusiness<ScheduleForTrainees>();
+            var sql = "select * from ScheduleForTrainees where StudentID='"+id+ "' and CurrentClass='1' or CurrentClass='0' and StudentID='" + id + "'";
+            var sch_classid = classID.GetListBySql<ScheduleForTrainees>(sql).ToList();
+            return sch_classid[0];
+        }
+        /// <summary>
         /// 获取学员现在所读阶段
         /// </summary>
         /// <param name="id">学员学号</param>
@@ -1227,7 +1239,6 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                         deta_list.CurrentStageID = stage;
                         deta_list.Amountofmoney = sum;
                         deta_list.ShouldJiao = grand_sum.SingleOrDefault().Summonry;
-
                     }
                     listdetailedcs.Add(deta_list);
                 }
