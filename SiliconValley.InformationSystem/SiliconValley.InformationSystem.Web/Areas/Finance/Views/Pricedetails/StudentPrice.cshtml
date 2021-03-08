@@ -72,8 +72,7 @@
                         </div>
                         <label>现读阶段:</label>
                         <label style="color:red">@ViewBag.StuName</label>
-                        <label>已入账:</label>
-                         <label style="color:red">@ViewBag.price</label>
+                        
                     </div>
 
 
@@ -83,8 +82,11 @@
                         <div class="layui-input-inline">
                             @Html.TextBoxFor(a => a.Amountofmoney, new Dictionary<string, object>() { { "lay-verify", "Amountofmoney" }, { "class", "layui-input " } })
                             <input type="text" style="display:none;" id="Amountofmoney1" name="Amountofmoney1" />
-                            <div style="position:absolute;left:200px;top:-41px;color:dodgerblue;width:200px;"  id="Tuitionrefund"></div>
+                            <div style="position:absolute;left:200px;top:-41px;color:dodgerblue;width:200px;" id="Tuitionrefund"></div>
                         </div>
+                        <label>学费已交:</label>
+                        <label style="color:red">@Math.Round(ViewBag.price, 2).ToString()</label>
+                      
                     </div>
                     <div class="layui-col-xs12 layui-col-sm12 layui-col-md12 mysql">
                         <label class="layui-form-label">食宿费</label>
@@ -93,6 +95,8 @@
                             <input type="text" class="layui-input" lay-verify="Amountofmoney" name="Amountofmoneys" id="Amountofmoneys" />
 
                         </div>
+                        <label>食宿费已交:</label>
+                        <label style="color:red">@Math.Round(ViewBag.price2, 2).ToString()</label>
                     </div>
                     <div class="layui-col-xs12 layui-col-sm12 layui-col-md12 mysql " id="zafei" style="display:none;">
                         @*<label class="layui-form-label">S1学杂费</label>
