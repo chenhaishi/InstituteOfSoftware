@@ -503,7 +503,7 @@ namespace SiliconValley.InformationSystem.Business.DormitoryMantainBusiness
             return list;
         }
 
-        /// <summary>
+        /// <summary> 
         /// 拿到维修记录excel表中的第一个单元
         /// </summary>
         /// <param name="stream"></param>
@@ -514,7 +514,7 @@ namespace SiliconValley.InformationSystem.Business.DormitoryMantainBusiness
             IWorkbook workbook = null;
 
             if (contentType == "application/vnd.ms-excel")
-            {
+            { 
                 workbook = new HSSFWorkbook(stream);
             }
 
@@ -531,7 +531,7 @@ namespace SiliconValley.InformationSystem.Business.DormitoryMantainBusiness
 
             return result;
         }
-
+         
         /// <summary>
         /// 将excel数据类的数据存入到数据库的考勤表中
         /// </summary>

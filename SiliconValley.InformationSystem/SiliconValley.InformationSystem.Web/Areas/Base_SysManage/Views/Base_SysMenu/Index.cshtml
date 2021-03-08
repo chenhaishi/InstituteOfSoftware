@@ -8,6 +8,10 @@
 <img src="~/Images/Login/shoye.jpg" style="width:1690px;height:850px;margin-left:-23px;margin-top:-23px;" />
 <span hidden id="dept">@ViewBag.Dept</span>
 
+<div id="divdata" style="display:none">
+
+</div>
+
 <script>
     $(function () {
         var dept = $("#dept").text();
@@ -19,31 +23,27 @@
                     success: function (res) {
                         if (res) {
                             $.ajax({
-                                url: "/DormitoryMaintenance/DormitoryDeposit/AddSafeFuntion",
-                                type: "POST",
-                                success: function (res) {
-                                    if (res.Success != false || res.Msg != '这个班的这个月的保险费已录入了，请操作其他班级的！') {
+                                url: "/DormitoryMaintenance/DormitoryDeposit/CheckheadGetStu",
+                                type:'post',
+                                success: function (data) {
+                                    $.each(data.data, function (index, ele) {
+                                        $("#divdata").append("<p>班级：" + ele.Text+"    姓名："+ele.Value+"</p>");
+                                    });
+                                    if (data.count>0) {
                                         layer.open({
-                                            content: '是否结算当月的保险柜押金'
-                                            , btn: ['扣除', '取消']
+                                            type: 1,
+                                            content: $('#divdata'), //这里content是一个普通的String
+                                            offset: 'rb',
+                                            area: ['400px', '300px'],
+                                            btn: ['前往查看']
                                             , yes: function (index, layero) {
-                                                //按钮【按钮一】的回调
-                                                $.ajax({
-                                                    url: "/DormitoryMaintenance/DormitoryDeposit/AddSafeFuntion",
-                                                    type: "POST",
-                                                    success: function (res) {
-                                                        layer.alert(res.Msg, function (index) {
-                                                            layer.close(index);
-                                                        });
-                                                    }
-                                                });
-                                            }
-                                            , btn2: function (index, layero) {
+                                                console.log(1);
+                                                window.location.href  = "/DormitoryMaintenance/DormitoryDeposit/ClassStudentMoneyView";
                                             }
                                         });
                                     }
                                 }
-                            }); 
+                            });
                         }
                         
                     }
