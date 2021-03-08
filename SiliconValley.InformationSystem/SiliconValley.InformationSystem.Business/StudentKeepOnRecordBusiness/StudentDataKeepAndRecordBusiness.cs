@@ -287,9 +287,9 @@ namespace SiliconValley.InformationSystem.Business.StudentKeepOnRecordBusiness
             if (!string.IsNullOrEmpty(stuName))
             {
                 stuName = stuName.Trim();
-                List<ExportStudentBeanData> listall = this.GetListBySql<ExportStudentBeanData>("select * from StudentBeanView where StuName='" + stuName + "' and IsDelete=0");
+                List<ExportStudentBeanData> listall = this.GetListBySql<ExportStudentBeanData>("select * from StudentBeanView where StuName like'" + stuName + "%' and IsDelete=0");
 
-                List<Sch_MarketView> listal2 = this.GetListBySql<Sch_MarketView>("select * from Sch_MarketView where StudentName='" + stuName + "' and IsDel=0");
+                List<Sch_MarketView> listal2 = this.GetListBySql<Sch_MarketView>("select * from Sch_MarketView where StudentName like'" + stuName + "%' and IsDel=0");
 
 
                 listall.AddRange(this.LongrageDataToViewmodel(listal2));

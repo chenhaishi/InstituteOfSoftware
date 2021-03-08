@@ -208,13 +208,20 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             //学生已交费用sql语句
             var sql_total = "select * from StudentFeeRecordListView where StageName='" + Grandlist.GrandName + "'AND StudenID='"+ id + "' and Passornot='1' and AddTime IS not NULL";
             var Ptotal = studentFeeRecord.GetListBySql<StudentFeeRecordListView>(sql_total).ToList();
-            decimal price = 0;
+            decimal price = 0;decimal price2 = 0;
             foreach (var item in Ptotal)
             {
-                price += item.Amountofmoney;
+                if (item.CostitemsName == "食宿费")
+                {
+                    price2 = item.Amountofmoney;
+                }
+                else
+                {
+                    price += item.Amountofmoney;
+                }
             }
             ViewBag.price = price;
-
+            ViewBag.price2 = price2;
             //阶段价格绑定
             ViewBag.Amountofmoney = dbtext.PreentryfeeFinet(id);
             BaseBusiness<Preferential> Preferential = new BaseBusiness<Preferential>();
@@ -377,8 +384,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             ViewBag.Tuitionrefund = dbtext.FienTuitionrefund(dbtext.FienPrice(student));
             ViewBag.StudentPrentryfeeDate = dbtext.StudentPrentryfeeDate(student);
             var xs = StudentInformation.GetList().Where(d => d.StudentNumber == student).SingleOrDefault();
-            var YuLv = Preentryfee.GetList().Where(d => d.identitydocument == xs.identitydocument).SingleOrDefault();
-            var XueFei = StudentFeeRecordListView_Pr.GetList().Where(d => d.StudenID == student&&d.Passornot=="1").ToList();
+            var YuLv = Preentryfee.GetListBySql<Preentryfee>("select * from Preentryfee where identitydocument='"+ xs.identitydocument+ "'").ToList();
+            var XueFei = StudentFeeRecordListView_Pr.GetListBySql<StudentFeeRecordListView>("select * from StudentFeeRecordListView where StudenID='"+ student + "' and Passornot='1'and AddTime is not null").ToList();
             decimal xuefeiSUM = 0;
             decimal ZongJin = 0;
             foreach (var item in XueFei)
@@ -392,7 +399,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             }
             else
             {
-                ZongJin = xuefeiSUM + Convert.ToDecimal(YuLv.Amountofmoney);
+                foreach (var item in YuLv)
+                {
+                    ZongJin = xuefeiSUM + Convert.ToDecimal(item.Amountofmoney);
+                }
                 ZongJin = Math.Round(ZongJin, 2);
             }
             ViewBag.zongjin = ZongJin;
