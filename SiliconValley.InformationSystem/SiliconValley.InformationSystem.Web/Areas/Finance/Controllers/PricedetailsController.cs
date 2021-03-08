@@ -692,15 +692,15 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             ViewBag.OddNumbers = Request.QueryString["OddNumbers"];
             ViewBag.Passornot = Request.QueryString["Passornot"];
             ViewBag.paymentmethod= Request.QueryString["paymentmethod"];
-            List<StudentFeeRecord> stulist = StudentFeeRecord.GetList().Where(d => d.StudenID == studentid).ToList();
-            List<StudentFeeRecord> studentFeeRecordslist = new List<StudentFeeRecord>();
+            List<StudentFeeRecord> stulist = StudentFeeRecord.GetListBySql<StudentFeeRecord>("select * from StudentFeeRecord where StudenID = '"+studentid+"'").ToList();
+         
             BaseBusiness<StudentFeeRecord> StudentRZ = new BaseBusiness<StudentFeeRecord>();
             StudentFeeRecord result = null;
-            var contrast = StudentRZ.GetList().Where(d => d.StudenID == studentid).ToList();
+            var contrast = StudentRZ.GetListBySql<StudentFeeRecord>("select * from StudentFeeRecord where StudenID='"+studentid+"'").ToList();
             
             foreach (var item in contrast)
             {
-                result = StudentRZ.GetList().Where(d => d.ID == item.ID).SingleOrDefault();
+                result = StudentRZ.GetListBySql<StudentFeeRecord>("select * from StudentFeeRecord where ID='" + item.ID + "'").SingleOrDefault();
             }
             if (result == null)
             {
@@ -1408,9 +1408,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             BaseBusiness<StudentFeeRecord> rlist = new BaseBusiness<StudentFeeRecord>();
             BaseBusiness<Feedetails> Feedetails = new BaseBusiness<Feedetails>();
             var iq_reID = pay.GetList().Where(d => d.id == int.Parse(checkID)).SingleOrDefault();
-            var iq_Feedetails = Feedetails.GetList().Where(d => d.OddNumbers == OddNumbers).SingleOrDefault();
-
-            var iq_time = list.GetList().Where(a => a.StudenID == iq_Feedetails.studentid&&a.OddNumbers==iq_Feedetails.OddNumbers).ToList();
+            var iq_Feedetails = Feedetails.GetList().Where(d => d.OddNumbers == iq_reID.OddNumbers).ToList();
+            List<StudentFeeRecordListView> iq_time = null;
+            foreach (var item in iq_Feedetails)
+            {
+                iq_time = list.GetList().Where(a => a.StudenID == item.studentid && a.OddNumbers == item.OddNumbers).ToList();
+            }
+            
             
             foreach (var item in iq_time)
             {
