@@ -535,16 +535,17 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
         /// 入账数据查询导出
         /// </summary>
         /// <returns></returns>
-        public ActionResult Entrydataexport_List()
+        public ActionResult Entrydataexport_List(string date)
         {
             BaseBusiness<StudentFeeRecordListView> StudentFeeRecordListView = new BaseBusiness<StudentFeeRecordListView>();
             BaseBusiness<ScheduleForTrainees> ScheduleForTrainees = new BaseBusiness<ScheduleForTrainees>();
             StudentFeeStandardBusinsess StudentFeeStandardBusinsess = new StudentFeeStandardBusinsess();
             List<PriceDC> PriceDCList = new List<PriceDC>();
-            var ListView = StudentFeeRecordListView.GetListBySql<StudentFeeRecordListView>("select * from StudentFeeRecordListView where Passornot='1' and AddTime is not null").ToList();
-
-            foreach (var item in ListView)
+            if (date == "" || date == null)
             {
+                var ListView = StudentFeeRecordListView.GetListBySql<StudentFeeRecordListView>("select * from StudentFeeRecordListView where Passornot='1' and AddTime is not null").ToList();
+                foreach (var item in ListView)
+                {
                     PriceDC priceDC = new PriceDC();
                     priceDC.studentID = item.StudenID;
                     priceDC.className = item.Name;
@@ -555,19 +556,42 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
                     priceDC.GrandName = item.StageName;
                     priceDC.Paymentmethod = item.Paymentmethod;
                     priceDC.AddTime = item.AddTime.ToString();
-                    priceDC.AddDate = item.AddDate.ToString();
+                    priceDC.AddDate = item.AddDate.ToString("yyyy-MM-dd");
                     priceDC.FinanceModelName = item.FinancialstaffName;
                     priceDC.ClassID = StudentFeeStandardBusinsess.schFor_Class(item.StudenID).ClassID;
+                    priceDC.Remarks = StudentFeeStandardBusinsess.Remarks(item.StudenID).Remarks;
                     PriceDCList.Add(priceDC);
-               
-
-
-
+                }
+            }
+            else
+            {
+                var time = date.Split('-');
+                var ListView = StudentFeeRecordListView.GetListBySql<StudentFeeRecordListView>("select * from StudentFeeRecordListView where Passornot='1' and AddTime is not null and YEAR(AddTime)='"+ time[0]+ "' and MONTH(AddTime)='"+time[1]+"'").ToList();
+                foreach (var item in ListView)
+                {
+                    PriceDC priceDC = new PriceDC();
+                    priceDC.studentID = item.StudenID;
+                    priceDC.className = item.Name;
+                    priceDC.identity = item.identitydocument;
+                    priceDC.Amountofmoney = item.Amountofmoney;
+                    priceDC.CostitemsName = item.CostitemsName;
+                    priceDC.OddNumbers = item.OddNumbers;
+                    priceDC.GrandName = item.StageName;
+                    priceDC.Paymentmethod = item.Paymentmethod;
+                    priceDC.AddTime = item.AddTime.ToString();
+                    priceDC.AddDate = item.AddDate.ToString("yyyy-MM-dd");
+                    priceDC.FinanceModelName = item.FinancialstaffName;
+                    priceDC.ClassID = StudentFeeStandardBusinsess.schFor_Class(item.StudenID).ClassID;
+                    priceDC.Remarks = StudentFeeStandardBusinsess.Remarks(item.StudenID).Remarks;
+                    PriceDCList.Add(priceDC);
+                }
             }
            
             //CostDataToExcel(PriceDCList);
             return Json(new { code = 0,data= PriceDCList });
         }
+
+        
 
         /// <summary>
         /// 课时费统计    写入Excel
@@ -1409,6 +1433,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             var positon = employeesInfoManage.GetPositionByEmpid(user.EmpNumber);
             ViewBag.postName = positon.PositionName.Contains("会计") == true ? 1 : 0;
             return PartialView("/Areas/Finance/Views/Shared/Review.cshtml");
+        }
+        public ActionResult Get_List_Entrydataexport()
+        {
+            return View();
         }
         //订单表数据
         BaseBusiness<Paymentverification> pay = new BaseBusiness<Paymentverification>();

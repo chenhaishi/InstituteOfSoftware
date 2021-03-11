@@ -35,6 +35,8 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.XYK_Data
         public string AddDate { get; set; }
         //经办人
         public string FinanceModelName { get; set; }
+        //备注
+        public string Remarks { get; set; }
        
 
 

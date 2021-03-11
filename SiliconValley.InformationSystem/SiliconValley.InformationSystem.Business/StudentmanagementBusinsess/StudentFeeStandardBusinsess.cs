@@ -77,6 +77,17 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
             return sch_classid[0];
         }
         /// <summary>
+        /// 根据学号获取学生缴费备注
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public StudentFeeRecord Remarks(string id)
+        {
+            var sql = "select * from StudentFeeRecord where StudenID='" + id + "'";
+           var fee= StudentFeeRecord_list_add.GetListBySql<StudentFeeRecord>(sql).ToList();
+            return fee[0];
+        }
+        /// <summary>
         /// 获取学员现在所读阶段
         /// </summary>
         /// <param name="id">学员学号</param>

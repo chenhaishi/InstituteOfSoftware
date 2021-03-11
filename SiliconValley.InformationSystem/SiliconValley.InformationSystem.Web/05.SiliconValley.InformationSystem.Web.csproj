@@ -3073,6 +3073,9 @@
     <Content Include="Scripts\js\index.js" />
     <Content Include="Scripts\js\Index2.js" />
     <Content Include="Scripts\js\jquery-1.7.2-min.js" />
+    <Content Include="Scripts\laydate\laydate.js" />
+    <Content Include="Scripts\laydate\theme\default\font\iconfont.svg" />
+    <Content Include="Scripts\laydate\theme\default\laydate.css" />
     <Content Include="Scripts\layui\excel.js" />
     <Content Include="Scripts\layui\excel.min.js" />
     <Content Include="Scripts\layui\lay\modules\transfer.js" />
@@ -3646,6 +3649,7 @@
     <Content Include="Areas\ExaminationSystem\Views\ExamArrangement\Examinationroomoperation.cshtml" />
     <Content Include="Areas\ExaminationSystem\Views\StudentExamSys\Choiceanalysis.cshtml" />
     <Content Include="Areas\Finance\Views\Pricedetails\Student_arrearage.cshtml" />
+    <Content Include="Areas\Finance\Views\Pricedetails\Get_List_Entrydataexport.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
@@ -5349,6 +5353,9 @@
     <Content Include="uploadXLSXfile\Template\OvertimeTemplate.xlsx" />
     <Content Include="uploadXLSXfile\Template\绩效模板.xlsx" />
     <Content Include="uploadXLSXfile\Template\Scoretemplate.xls" />
+    <Content Include="Scripts\laydate\theme\default\font\iconfont.eot" />
+    <Content Include="Scripts\laydate\theme\default\font\iconfont.ttf" />
+    <Content Include="Scripts\laydate\theme\default\font\iconfont.woff" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
