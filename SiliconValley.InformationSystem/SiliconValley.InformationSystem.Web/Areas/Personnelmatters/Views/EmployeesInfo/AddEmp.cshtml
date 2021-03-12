@@ -43,265 +43,295 @@
 </head>
 <body>
 
-    <div>
-        <form class="layui-form" action="">
-            <div class="layui-container">
-                <div class="layui-row layui-form-item">
-
-                    <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
-                        <label class="layui-form-label needTextColor">姓名:</label>
-                        <div class="layui-input-inline">
-                            @Html.TextBoxFor(a => a.EmpName, new Dictionary<string, object>() { { "lay-verify", "required" }, { "placeholder", "请输入姓名" }, { "class", "layui-input " } })
+    <div style="width:850px;margin:25px">
+        <form class="layui-form layui-form-pane" action="" lay-filter="formtest">
+            <table style="width:850px;margin:25px">
+                <tr>
+                    <td colspan="2">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" style="color:red">姓名</label>
+                            <div class="layui-input-block">
+                                @Html.TextBoxFor(a => a.EmpName, new Dictionary<string, object>() { { "lay-verify", "required" }, { "placeholder", "请输入姓名" }, { "class", "layui-input " } })
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
-                        <label class="layui-form-label">性别:</label>
-                        <div class="layui-input-block">
-                            <input type="radio" name="Sex" value="男" title="男" checked>
-                            <input type="radio" name="Sex" value="女" title="女">
-                        </div>
-                    </div>
-
-                    <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
-                        <label class="layui-form-label needTextColor">钉钉工号:</label>
-                        <div class="layui-input-block">
-                            @Html.TextBoxFor(a => a.DDAppId, new Dictionary<string, object>() { { "lay-verify", "required|number|CheckDDNum" }, { "placeholder", "请输入员工钉钉号" }, { "class", "layui-input" } })
-                        </div>
-                    </div>
-                </div>
-
-                <div class="layui-row layui-form-item">
-
-                    <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
-                        <label class="layui-form-label needTextColor">所属部门:</label>
-                        <div class="layui-input-block">
-                            <select name="deptid" id="deptid" lay-filter="deptidfilter" lay-verify="required">
-                                <option value="-1">请选择所属部门</option>
-                            </select>
-
-                        </div>
-                    </div>
-
-                    <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
-                        <label class="layui-form-label needTextColor">所属岗位:</label>
-                        <div class="layui-input-block">
-                            <select name="PositionId" id="PositionId" lay-verify="required" lay-search="">
-                                <option value="-1">请先选择所属部门</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
-                        <label class="layui-form-label">民族:</label>
-                        <div class="layui-input-block">
-                            @Html.TextBoxFor(a => a.Nation, new Dictionary<string, object>() { { "placeholder", "请输入民族" }, { "class", "layui-input" } })
-                        </div>
-                    </div>
-                </div>
-
-                <div class="layui-row layui-form-item">
-
-                    <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
-                        <label class="layui-form-label needTextColor">手机号码:</label>
-                        <div class="layui-input-block">
-                            @Html.TextBoxFor(a => a.Phone, new Dictionary<string, object>() { { "lay-verify", "required|phone" }, { "placeholder", "请输入电话号码" }, { "class", "layui-input" } })
-                        </div>
-                    </div>
-
-                    <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
-                        <label class="layui-form-label needTextColor">身份证号:</label>
-                        <div class="layui-input-block">
-                            @Html.TextBoxFor(a => a.IdCardNum, new Dictionary<string, object>() { { "lay-verify", "required|myIdCardNum" }, { "placeholder", "请输入身份证号" }, { "class", "layui-input " } })
-                        </div>
-                    </div>
-
-                    <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
-                        <label class="layui-form-label needTextColor">入职时间:</label>
-                        <div class="layui-input-block">
-                            @Html.TextBoxFor(a => a.EntryTime, new Dictionary<string, object>() { { "lay-verify", "required|EntryTime" }, { "placeholder", "yyyy-MM-dd" }, { "class", "layui-input" } })
-                        </div>
-                    </div>
-                </div>
-
-                <div class="layui-row layui-form-item">
-
-                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                        <label class="layui-form-label" style="width:120px;margin-left:-40px;">合同起始时间:</label>
-                        <div class="layui-input-block" style="width:320px;">
-                            @Html.TextBoxFor(a => a.ContractStartTime, new Dictionary<string, object>() { { "placeholder", "yyyy-MM-dd" }, { "class", "layui-input" } })
-                        </div>
-                    </div>
-
-                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                        <label class="layui-form-label" style="width:120px;margin-left:-60px;">合同终止时间:</label>
-                        <div class="layui-input-block">
-                            @Html.TextBoxFor(a => a.ContractEndTime, new Dictionary<string, object>() { { "placeholder", "yyyy-MM-dd" }, { "class", "layui-input" } })
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="layui-row layui-form-item">
-                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                        <label class="layui-form-label">生日:</label>
-                        <div class="layui-input-inline">
-                            <input style="width:50px;height:30px;display:inline-block;" id="month" name="month" class="layui-input" lay-verify="mymonth" />
-                            <label style="margin-left:5px;display:inline-block;">  月</label>
+                    </td>
+                    <td>
+                        <div class="layui-form-item" pane>
+                            <label class="layui-form-label">性别</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="Sex" value="男" title="男" checked>
+                                <input type="radio" name="Sex" value="女" title="女">
+                            </div>
                         </div>
 
-                        <div class="layui-input-inline" style="margin-left:-120px;">
-                            <input type="text" style="width:50px;height:30px;display:inline-block;" id="day" name="day" class="layui-input" lay-verify="myday" />
-                            <label style="margin-left:5px;display:inline-block;">日</label>
+
+                    </td>
+                    <td rowspan="4" style="width:150px;height:199px; background-color:white;">
+                        <input type="file" id="Image" name="Image" />
+                        <div style="border:0px solid #808080;width:150px;height:190px;">
+                            <img id="showimg" style="width:150px;height:190px;" />
                         </div>
+                    </td>
+                </tr>
+                <tr>
 
-                        <div class="layui-input-inline" style="margin-left:-100px;">
-                            <input type="radio" name="yinyang" value="农历" title="农历" checked>
-                            <input type="radio" name="yinyang" value="阳历" title="阳历">
+                    <td colspan="2">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" style="color:red">钉钉工号</label>
+                            <div class="layui-input-block">
+                                @Html.TextBoxFor(a => a.DDAppId, new Dictionary<string, object>() { { "lay-verify", "required|number|CheckDDNum" }, { "placeholder", "请输入员工钉钉号" }, { "class", "layui-input" } })
+
+                            </div>
                         </div>
-                    </div>
-                    <input type="hidden" id="Birthday" value="Birthday" />
-
-                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                        <label class="layui-form-label" style="width:120px;margin-left:-60px;">身份证有效期:</label>
-                        <div class="layui-input-block">
-                            @Html.TextBoxFor(a => a.IdCardIndate, new Dictionary<string, object>() { { "lay-verify", "IdCardIndate" }, { "placeholder", "yyyy-MM-dd" }, { "class", "layui-input" } })
+                    </td>
+                    <td >
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">民族</label>
+                            <div class="layui-input-block">
+                                @Html.TextBoxFor(a => a.Nation, new Dictionary<string, object>() { { "placeholder", "请输入民族" }, { "class", "layui-input" } })
+                            </div>
                         </div>
-                    </div>
+                    </td>
 
-                </div>
-
-                <div class="layui-row layui-form-item">
-
-                    <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
-                        <label class="layui-form-label">招聘来源:</label>
-                        <div class="layui-input-block">
-                            @Html.TextBoxFor(a => a.InvitedSource, new Dictionary<string, object>() { { "class", "layui-input " } })
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" style="color:red">所属部门</label>
+                            <div class="layui-input-block">
+                                <select name="deptid" id="deptid" lay-filter="deptidfilter" lay-verify="required">
+                                    <option value="-1">请选择所属部门</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
-                        <label class="layui-form-label">户籍地址:</label>
-                        <div class="layui-input-block">
-                            @Html.TextBoxFor(a => a.DomicileAddress, new Dictionary<string, object>() { { "placeholder", "请输入户籍地址" }, { "class", "layui-input" } })
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" style="color:red">所属岗位</label>
+                            <div class="layui-input-block">
+                                <select name="PositionId" id="PositionId" lay-verify="required" lay-search="">
+                                    <option value="-1">请先选择所属部门</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
-                        <label class="layui-form-label">现居地址:</label>
-                        <div class="layui-input-block">
-                            @Html.TextBoxFor(a => a.Address, new Dictionary<string, object>() { { "placeholder", "请输入现居地址" }, { "class", "layui-input " } })
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div class="layui-form-item" pane>
+                            <label class="layui-form-label">学历</label>
+                            <div class="layui-input-block">
+                                <select name="Education" id="Education">
+                                    <option value="大专">大专</option>
+                                    <option value="博士">博士</option>
+                                    <option value="硕士">硕士</option>
+                                    <option value="本科">本科</option>
+                                    <option value="高中">高中</option>
+                                    <option value="中专">中专</option>
+                                    <option value="初中">初中</option>
+                                    <option value="小学">小学</option>
+                                    <option value="群众">群众</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">政治面貌</label>
+                            <div class="layui-input-block">
+                                <select name="PoliticsStatus" id="PoliticsStatus">
+                                    <option value="群众">群众</option>
+                                    <option value="团员">团员</option>
+                                    <option value="党员">党员</option>
 
-                </div>
-
-                <div class="layui-row layui-form-item">
-
-                    <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
-                        <label class="layui-form-label" style="margin-left:-40px;width:120px;">紧急联系电话:</label>
-                        <div class="layui-input-block">
-                            @Html.TextBoxFor(a => a.UrgentPhone, new Dictionary<string, object>() { { "lay-verify", "myUrgentPhone" }, { "placeholder", "请输入紧急联系电话" }, { "class", "layui-input" } })
+                                </select>
+                            </div>
                         </div>
-                    </div>
+                    </td>
 
-                    <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
-                        <label class="layui-form-label">政治面貌:</label>
-                        <div class="layui-input-block">
-                            <select name="PoliticsStatus" id="PoliticsStatus">
-                                <option value="党员">党员</option>
-                                <option value="团员">团员</option>
-                                <option value="群众">群众</option>
-                            </select>
+
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" style="color:red">身份证号</label>
+                            <div class="layui-input-block">
+                                @Html.TextBoxFor(a => a.IdCardNum, new Dictionary<string, object>() { { "lay-verify", "required|myIdCardNum" }, { "placeholder", "请输入身份证号" }, { "class", "layui-input " } })
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
-                        <label class="layui-form-label">学历:</label>
-                        <div class="layui-input-block">
-                            <select name="Education" id="Education">
-                                <option value="大专">大专</option>
-                                <option value="博士">博士</option>
-                                <option value="硕士">硕士</option>
-                                <option value="本科">本科</option>
-                                <option value="高中">高中</option>
-                                <option value="中专">中专</option>
-                                <option value="初中">初中</option>
-                                <option value="小学">小学</option>
-                                <option value="群众">群众</option>
-                            </select>
+                    </td>
+                    <td>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" style="color:red">入职时间</label>
+                            <div class="layui-input-block">
+                                @Html.TextBoxFor(a => a.EntryTime, new Dictionary<string, object>() { { "lay-verify", "required|EntryTime" }, { "placeholder", "yyyy-MM-dd" }, { "class", "layui-input" } })
+                            </div>
                         </div>
-                    </div>
+                    </td>
 
-                </div>
+                    <td>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" style="width:47%">身份证有效期</label>
+                            <div class="layui-input-block">
+                                @Html.TextBoxFor(a => a.IdCardIndate, new Dictionary<string, object>() { { "lay-verify", "IdCardIndate" }, { "placeholder", "yyyy-MM-dd" }, { "class", "layui-input" }, { "style", "width:90%" } })
+                            </div>
+                        </div>
+                    </td>
+                </tr>
 
-                <div class="layui-row layui-form-item">
+                <tr>
+                    <td colspan="2">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" style="color:red">电话号码</label>
+                            <div class="layui-input-block">
+                                @Html.TextBoxFor(a => a.Phone, new Dictionary<string, object>() { { "lay-verify", "required|phone" }, { "placeholder", "请输入电话号码" }, { "class", "layui-input" } })
+                            </div>
+                        </div>
+                    </td>
+                    <td colspan="2">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" style="width:22%">紧急联系电话</label>
+                            <div class="layui-input-block">
+                                @Html.TextBoxFor(a => a.UrgentPhone, new Dictionary<string, object>() { { "lay-verify", "myUrgentPhone" }, { "placeholder", "请输入紧急联系电话" }, { "class", "layui-input" }, { "style", "width:96%" } })
+                            </div>
+                        </div>
+                    </td>
 
-                    <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">试用期工资</label>
+                            <div class="layui-input-block">
+                                @Html.TextBoxFor(a => a.ProbationSalary, new Dictionary<string, object>() { { "placeholder", "请输入试用期工资" }, { "class", "layui-input salary" } })
+                            </div>
+                        </div>
+                    </td>
+                    <td colspan="2">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" style="color:red">转正后工资</label>
+                            <div class="layui-input-block">
+                                @Html.TextBoxFor(a => a.Salary, new Dictionary<string, object>() { { "lay-verify", "required" }, { "placeholder", "请输入转正工资" }, { "class", "layui-input salary" } })
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" style="width:39%">合同起始时间</label>
+                            <div class="layui-input-block">
+                                @Html.TextBoxFor(a => a.ContractStartTime, new Dictionary<string, object>() { { "placeholder", "yyyy-MM-dd" }, { "class", "layui-input" }, { "style", "width:96%" } })
+                            </div>
+                        </div>
+                    </td>
+                    <td colspan="2">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label" style="width:22%">合同终止时间</label>
+                            <div class="layui-input-block">
+                                @Html.TextBoxFor(a => a.ContractEndTime, new Dictionary<string, object>() { { "placeholder", "yyyy-MM-dd" }, { "class", "layui-input" }, { "style", "width:96%" } })
+                            </div>
+                        </div>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td colspan="2">
                         <label class="layui-form-label">婚姻状态:</label>
                         <div class="layui-input-block">
                             <input type="radio" name="MaritalStatus" value="False" title="未婚" checked>
                             <input type="radio" name="MaritalStatus" value="True" title="已婚">
                         </div>
-                    </div>
+                    </td>
 
-                    <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
-                        <label class="layui-form-label">试用期工资:</label>
-                        <div class="layui-input-block">
-                            @Html.TextBoxFor(a => a.ProbationSalary, new Dictionary<string, object>() { { "placeholder", "请输入试用期工资" }, { "class", "layui-input salary" } })
-                        </div>
-                    </div>
+                    <td colspan="2">
 
-                    <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
-                        <label class="layui-form-label needTextColor">转正后工资:</label>
-                        <div class="layui-input-block">
-                            @Html.TextBoxFor(a => a.Salary, new Dictionary<string, object>() { { "lay-verify", "required" }, { "placeholder", "请输入转正工资" }, { "class", "layui-input salary" } })
-                        </div>
-                    </div>
+                        <div class="layui-form-item" pane>
+                            <label class="layui-form-label">生日</label>
+                            <div class="layui-inline" style="margin-left:5px">
+                                <div class="layui-input-inline" style="margin-top:10px">
+                                    <input style="width:50px;height:30px;display:inline-block;" id="month" name="month" class="layui-input" lay-verify="mymonth" />
+                                    <label style="margin-left:5px;display:inline-block;">月</label>
+                                </div>
 
-                </div>
+                                <div class="layui-input-inline" style="margin-left:-120px;margin-top:10px">
+                                    <input type="text" style="width:50px;height:30px;display:inline-block;" id="day" name="day" class="layui-input" lay-verify="myday" />
+                                    <label style="margin-left:5px;display:inline-block;">日</label>
+                                </div>
 
-                <div class="layui-row layui-form-item">
-
-                    <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
-                        <label class="layui-form-label">银行卡号:</label>
-                        <div class="layui-input-block">
-                            @Html.TextBoxFor(a => a.BCNum, new Dictionary<string, object>() { { "lay-verify", "myBCNum" }, { "placeholder", "请输入银行卡号" }, { "class", "layui-input" } })
-                        </div>
-                    </div>
-
-                    <div class="layui-col-xs8 layui-col-sm8 layui-col-md8">
-                        <label class="layui-form-label">材料:</label>
-                        <div class="layui-input-block">
-                            @Html.TextAreaFor(a => a.Material, new Dictionary<string, object>() { { "class", "layui-input linu" } })
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="layui-row layui-form-item">
-
-                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                        <label class="layui-form-label">备注:</label>
-                        <div class="layui-input-block">
-                            @Html.TextAreaFor(a => a.Remark, new Dictionary<string, object>() { { "class", "layui-input linu" } })
-                        </div>
-                    </div>
-
-                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                        <label class="layui-form-label">图片:</label>
-                        <div class="layui-input-block">
-                            <input type="file" id="Image" name="Image" />
-                            <div style="border:0px solid #808080;width:460px;height:200px;">
-                                <img id="showimg" style="width:460px;height:200px;" />
+                                <div class="layui-input-inline" style="margin-left:-100px;" id="myyinyang">
+                                    <input type="radio" name="yinyang" value="农历" title="农历">
+                                    <input type="radio" name="yinyang" value="阳历" title="阳历">
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </td>
 
-                </div>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">户籍地址</label>
+                            <div class="layui-input-block">
+                                @Html.TextBoxFor(a => a.DomicileAddress, new Dictionary<string, object>() { { "placeholder", "请输入户籍地址" }, { "class", "layui-input" } })
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">现居地址</label>
+                            <div class="layui-input-block">
+                                @Html.TextBoxFor(a => a.Address, new Dictionary<string, object>() { { "placeholder", "请输入现居地址" }, { "class", "layui-input " } })
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">银行卡号</label>
+                            <div class="layui-input-block">
+                                @Html.TextBoxFor(a => a.BCNum, new Dictionary<string, object>() { { "lay-verify", "myBCNum" }, { "placeholder", "请输入银行卡号" }, { "class", "layui-input" } })
+                            </div>
+                        </div>
+                    </td>
 
-            </div>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">招聘来源</label>
+                            <div class="layui-input-block">
+                                @Html.TextBoxFor(a => a.InvitedSource, new Dictionary<string, object>() { { "class", "layui-input " } })
+                            </div>
+                        </div>
+                    </td>
 
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <div class="layui-form-item layui-form-text">
+                            <label class="layui-form-label">材料</label>
+                            <div class="layui-input-block">
+                                @Html.TextAreaFor(a => a.Material, new Dictionary<string, object>() { { "class", "layui-input linu" } })
+                            </div>
+                        </div>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <div class="layui-form-item  layui-form-text">
+                            <label class="layui-form-label">备注</label>
+                            <div class="layui-input-block">
+                                @Html.TextAreaFor(a => a.Remark, new Dictionary<string, object>() { { "class", "layui-input linu" } })
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
             <div class="layui-form-item" style="margin-left:400px;margin-top:30px;">
                 <div class="layui-input-block">
                     <button class="layui-btn " lay-submit="" type="button" lay-filter="demo1">立即提交</button>
@@ -595,8 +625,9 @@
                     contentType: false,
                     success: function (data) {
                         layer.close(loadindex);
+                        
                         if (data.Success) {
-                            layer.alert("添加成功!", { icon: 1 }, function () {
+                            layer.alert("添加成功!" + data.Msg, { icon: 1 }, function () {
                                 var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                                 parent.layui.table.reload('myEmpInfo');
                                 parent.layer.close(index);
