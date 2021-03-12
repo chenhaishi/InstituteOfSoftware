@@ -384,13 +384,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 AjaxResultxx = empinfo.Success();
                 if (AjaxResultxx.Success)
                 {
-                  var s=  empinfo.AddEmpToCorrespondingDept(emp);
-                    if (s.ErrorCode == 200)
-                    {
-                        AjaxResultxx.Msg = "未能为该员工创建账号，原因是该账号已存在！";
-                    }
+                    empinfo.AddEmpToCorrespondingDept(emp);
                 }
-                
             }
             catch (Exception ex)
             {
@@ -481,9 +476,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         /// <returns></returns>        
         public FileStreamResult DownFile()
         {
-            string rr = Server.MapPath("/uploadXLSXfile/Template/EmpInfoTemplate.xlsx");  //获取下载文件的路径         
+            string rr = Server.MapPath("/uploadXLSXfile/Template/EmpInfoTemplate.xls");  //获取下载文件的路径         
             FileStream stream = new FileStream(rr, FileMode.Open);
-            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", Server.UrlEncode("ExcleTemplate.xlsx"));
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", Server.UrlEncode("ExcleTemplate.xls"));
         }
         #endregion
 
@@ -554,16 +549,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             HSSFFont ContentcellFont = (HSSFFont)workbook.CreateFont();
 
             ContentcellStyle.Alignment = HorizontalAlignment.Center;
-            
+
             CreateHeader();
 
             int num = 1;
+
             GrandBusiness dbgrand = new GrandBusiness();
             var list = GetConditionEmplist(condition);
             list.ForEach(d =>
             {
                 var row = (HSSFRow)sheet.CreateRow(num);
-
 
                 CreateCell(row, ContentcellStyle, 0, d.EmployeeId);//员工编号
                 CreateCell(row, ContentcellStyle, 1, d.DDAppId.ToString());//钉钉号
@@ -572,11 +567,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 CreateCell(row, ContentcellStyle, 3, d.Sex);//性别
                 CreateCell(row, ContentcellStyle, 4, empmanage.GetDeptByPid(d.PositionId).DeptName);//部门名称
                 CreateCell(row, ContentcellStyle, 5, empmanage.GetPobjById(d.PositionId).PositionName);//岗位名称
-                
+
                 CreateCell(row, ContentcellStyle, 6, d.Age.ToString());//年龄
                 CreateCell(row, ContentcellStyle, 7, d.Nation);//民族
                 CreateCell(row, ContentcellStyle, 8, d.Phone);//电话号码
-                CreateCell(row, ContentcellStyle, 9, "'"+d.IdCardNum);//身份证号
+                CreateCell(row, ContentcellStyle, 9, d.IdCardNum);//身份证号
                 CreateCell(row, ContentcellStyle, 10, d.EntryTime.ToString());//入职时间
                 CreateCell(row, ContentcellStyle, 11, d.PositiveDate.ToString());//转正时间
 
@@ -584,8 +579,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 CreateCell(row, ContentcellStyle, 13, d.ContractEndTime.ToString());//合同终止时间
                 CreateCell(row, ContentcellStyle, 14, d.Birthdate.ToString());//出生日期
                 CreateCell(row, ContentcellStyle, 15, d.Birthday);//生日
-                var UrgentPhone = d.UrgentPhone == "" ? d.UrgentPhone.ToString():"2";
-                CreateCell(row, ContentcellStyle, 16, d.UrgentPhone);//紧急联系电话
+                CreateCell(row, ContentcellStyle, 16, d.ContractStartTime.ToString());//紧急联系电话
                 CreateCell(row, ContentcellStyle, 17, d.DomicileAddress);//户籍地址
                 CreateCell(row, ContentcellStyle, 18, d.Address);//现居地址
                 CreateCell(row, ContentcellStyle, 19, d.Education);//学历
@@ -596,7 +590,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 CreateCell(row, ContentcellStyle, 24, d.ProbationSalary.ToString());//试用期工资
                 CreateCell(row, ContentcellStyle, 25, d.Salary.ToString());//转正后工资
                 CreateCell(row, ContentcellStyle, 26, d.SSStartMonth.ToString());//社保起始月份
-                CreateCell(row, ContentcellStyle, 27, "'" + d.BCNum);//银行卡号
+                CreateCell(row, ContentcellStyle, 27, d.BCNum);//银行卡号
                 CreateCell(row, ContentcellStyle, 28, d.Material);//材料
                 CreateCell(row, ContentcellStyle, 29, d.Remark);//备注
                 CreateCell(row, ContentcellStyle, 30, d.IsDel == false ? "在职" : "离职");//员工状态
@@ -623,7 +617,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             {
                 HSSFRow Header = (HSSFRow)sheet.CreateRow(0);
                 Header.HeightInPoints = 40;
-               
+
                 CreateCell(Header, HeadercellStyle, 0, "员工编号");
 
                 CreateCell(Header, HeadercellStyle, 1, "钉钉号");
@@ -641,6 +635,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 CreateCell(Header, HeadercellStyle, 7, "民族");
 
                 CreateCell(Header, HeadercellStyle, 8, "电话号码");
+
                 CreateCell(Header, HeadercellStyle, 9, "身份证号码");
 
                 CreateCell(Header, HeadercellStyle, 10, "入职时间");

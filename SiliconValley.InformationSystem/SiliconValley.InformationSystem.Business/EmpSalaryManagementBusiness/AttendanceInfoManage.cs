@@ -430,7 +430,12 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     //工号(钉钉号)[0]
                     
                     string ddid = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(0))) ? null : getrow.GetCell(0).ToString();
+                    id = ddid;
                     //姓名[1]
+                    if (id=="224")
+                    {
+
+                    }
                     string name = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(1))) ? null : getrow.GetCell(1).ToString();
                     //应到勤天数[2]
                     string deserveToRegularDays = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(2))) ? null : getrow.GetCell(2).ToString();
@@ -444,54 +449,50 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     string leaveddays = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(4))) ? null : getrow.GetCell(4).ToString();
                     //请假记录[5]
                     string leaveRecord = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(5))) ? null : getrow.GetCell(5).ToString();
-                    //非事假请假天数[6](事假)
-                    string nonpersonalleaveNum = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(6))) ? null : getrow.GetCell(6).ToString();
-                    //非事假请假记录[7]
-                    string nonpersonalleaveRecord = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(7))) ? null : getrow.GetCell(7).ToString();
-                    //上班缺卡次数[8]
-                    string workAbsentNum = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(8))) ? null : getrow.GetCell(8).ToString();
-                    //上班缺卡记录[9]
-                    string workAbsentRecord = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(9))) ? null : getrow.GetCell(9).ToString();
+                    //上班缺卡次数[6]
+                    string workAbsentNum = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(6))) ? null : getrow.GetCell(6).ToString();
+                    //上班缺卡记录[7]
+                    string workAbsentRecord = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(7))) ? null : getrow.GetCell(7).ToString();
 
-                    //中午缺卡次数[10]
-                    string noonAbsentNum = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(10))) ? null : getrow.GetCell(10).ToString();
-                    //中午缺卡记录[11]
-                    string noonAbsentRecord = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(11))) ? null : getrow.GetCell(11).ToString();
+                    //中午缺卡次数[8]
+                    string noonAbsentNum = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(8))) ? null : getrow.GetCell(8).ToString();
+                    //中午缺卡记录[9]
+                    string noonAbsentRecord = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(9))) ? null : getrow.GetCell(9).ToString();
 
-                    //下班缺卡次数[12]
-                    string offDutyAbsentNum = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(12))) ? null : getrow.GetCell(12).ToString();
-                    //下班缺卡记录[13]
-                    string OffDutyAbsentRecord = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(13))) ? null : getrow.GetCell(13).ToString();
+                    //下班缺卡次数[10]
+                    string offDutyAbsentNum = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(10))) ? null : getrow.GetCell(10).ToString();
+                    //下班缺卡记录[11]
+                    string OffDutyAbsentRecord = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(11))) ? null : getrow.GetCell(11).ToString();
 
-                    //迟到次数[14]
-                    string tardyNum = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(14))) ? null : getrow.GetCell(14).ToString();
-                    //早退次数[16]
-                    string leaveEarlyNum = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(16))) ? null : getrow.GetCell(16).ToString();
-                    //迟到记录[15]
-                    string tardyRecord = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(15))) ? null : getrow.GetCell(15).ToString();
-                    //早退记录[17]
-                    string leaveEarlyRecord = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(17))) ? null : getrow.GetCell(17).ToString();
+                    //迟到次数[12]
+                    string tardyNum = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(12))) ? null : getrow.GetCell(12).ToString();
+                    //早退次数[14]
+                    string leaveEarlyNum = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(14))) ? null : getrow.GetCell(14).ToString();
+                    //迟到记录[13]
+                    string tardyRecord = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(13))) ? null : getrow.GetCell(13).ToString();
+                    //早退记录[15]
+                    string leaveEarlyRecord = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(15))) ? null : getrow.GetCell(15).ToString();
 
-                    //调休时长[18]
-                    string DaysoffDuration = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(18))) ? null : getrow.GetCell(18).ToString();
-                    //调休记录[19]
-                    string DaysoffRecord = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(19))) ? null : getrow.GetCell(19).ToString();
+                    //调休时长[16]
+                    string DaysoffDuration = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(16))) ? null : getrow.GetCell(16).ToString();
+                    //调休记录[17]
+                    string DaysoffRecord = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(17))) ? null : getrow.GetCell(17).ToString();
 
-                    //旷工天数[20]
-                    string absenteeismDays = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(20))) ? null : getrow.GetCell(20).ToString();
-                    //旷工记录[21]
-                    string absenteeismRecord = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(21))) ? null : getrow.GetCell(21).ToString();
-                    //外出次数[22]
-                    string GoOutNum = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(22))) ? null : getrow.GetCell(22).ToString();
-                    //外出记录[23]
-                    string GoOutRecord = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(23))) ? null : getrow.GetCell(23).ToString();
-                    //出差天数[24]
-                    string EvectionNum = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(24))) ? null : getrow.GetCell(24).ToString();
-                    //出差记录[25]
-                    string EvectionRecord = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(25))) ? null : getrow.GetCell(25).ToString();
+                    //旷工天数[18]
+                    string absenteeismDays = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(18))) ? null : getrow.GetCell(18).ToString();
+                    //旷工记录[19]
+                    string absenteeismRecord = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(19))) ? null : getrow.GetCell(19).ToString();
+                    //外出次数[20]
+                    string GoOutNum = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(20))) ? null : getrow.GetCell(20).ToString();
+                    //外出记录[21]
+                    string GoOutRecord = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(21))) ? null : getrow.GetCell(21).ToString();
+                    //出差天数[22]
+                    string EvectionNum = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(22))) ? null : getrow.GetCell(22).ToString();
+                    //出差记录[23]
+                    string EvectionRecord = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(23))) ? null : getrow.GetCell(23).ToString();
 
-                    //备注[26]
-                    string Remark = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(26))) ? null : getrow.GetCell(24).ToString();
+                    //备注[24]
+                    string Remark = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(24))) ? null : getrow.GetCell(24).ToString();
 
                     #endregion
 
@@ -551,74 +552,56 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                                         if (!string.IsNullOrEmpty(tardyRecord))
                                         {
                                             if (!tardyRecord.Contains(";"))
-                                            {
+                                        {
 
-                                                var strs = tardyRecord.Split('号');
-                                                if (strs.Length - 1 != 1)
+                                            var strs = tardyRecord.Split('号');
+                                                if (strs.Length-1!=1)
                                                 {
                                                     attview.empname = name;
                                                     attview.errorExplain = "迟到记录分隔符号需要是  ;  ";
                                                     attdatalist.Add(attview);
-                                                    continue;
                                                 }
-                                                
-                                            }
 
                                         }
-                                        if (!string.IsNullOrEmpty(leaveEarlyRecord))
-                                        {
-                                            if (!leaveEarlyRecord.Contains(";"))
-                                            {
-
-                                                var strss = leaveEarlyRecord.Split('号');
-                                                if (strss.Length - 1 != 1)
-                                                {
-                                                    attview.empname = name;
-                                                    attview.errorExplain = "早退记录分隔符号需要是  ;  ";
-                                                    attdatalist.Add(attview);
-                                                    continue;
-                                                }
-                                            }
                                         }
                                         
+                                    atd.DeserveToRegularDays = Convert.ToDecimal(deserveToRegularDays);
+                                    atd.ToRegularDays = Convert.ToDecimal(workeddays);
 
-                                        atd.LeaveDays = Convert.ToDecimal(leaveddays);
-                                        atd.LeaveRecord = leaveRecord;
+                                    atd.LeaveDays = Convert.ToDecimal(leaveddays);
+                                    atd.LeaveRecord = leaveRecord;
 
-                                        atd.WorkAbsentNum = Convert.ToInt32(workAbsentNum);
-                                        atd.WorkAbsentRecord = workAbsentRecord;
-                                        atd.NoonAbsentNum = Convert.ToInt32(noonAbsentNum);
-                                        atd.NoonAbsentRecord = noonAbsentRecord;
-                                        atd.OffDutyAbsentNum = Convert.ToInt32(offDutyAbsentNum);
-                                        atd.OffDutyAbsentRecord = OffDutyAbsentRecord;
-                                        atd.DeserveToRegularDays = Convert.ToDecimal(deserveToRegularDays);
-                                        atd.ToRegularDays = Convert.ToDecimal(workeddays);
-                                        atd.TardyNum = Convert.ToInt32(tardyNum);
-                                        atd.TardyRecord = tardyRecord;
-                                        atd.LeaveEarlyNum = Convert.ToInt32(leaveEarlyNum);
-                                        atd.LeaveEarlyRecord = leaveEarlyRecord;
+                                    atd.WorkAbsentNum = Convert.ToInt32(workAbsentNum);
+                                    atd.WorkAbsentRecord = workAbsentRecord;
+                                    atd.NoonAbsentNum = Convert.ToInt32(noonAbsentNum);
+                                    atd.NoonAbsentRecord = noonAbsentRecord;
+                                    atd.OffDutyAbsentNum = Convert.ToInt32(offDutyAbsentNum);
+                                    atd.OffDutyAbsentRecord = OffDutyAbsentRecord;
 
-                                        atd.DaysoffDuration = Convert.ToDecimal(DaysoffDuration);
-                                        atd.DaysoffRecord = DaysoffRecord;
-                                        atd.AbsenteeismDays = Convert.ToDecimal(absenteeismDays);
-                                        atd.AbsenteeismRecord = absenteeismRecord;
-                                        atd.GoOutNum = Convert.ToInt32(GoOutNum);
-                                        atd.GoOutRecord = GoOutRecord;
-                                        atd.EvectionNum = Convert.ToDecimal(EvectionNum);
-                                        atd.EvectionRecord = EvectionRecord;
-                                        atd.NonPersonalLeaveNum = Convert.ToDecimal(nonpersonalleaveNum);
-                                        atd.NonPersonalLeaveRecord = nonpersonalleaveRecord;
+                                    atd.TardyNum = Convert.ToInt32(tardyNum);
+                                    atd.TardyRecord = tardyRecord;
+                                    atd.LeaveEarlyNum = Convert.ToInt32(leaveEarlyNum);
+                                    atd.LeaveEarlyRecord = leaveEarlyRecord;
 
-                                        atd.AbsenteeismWithhold = GetAbsenteeismWithhold(emp.EmployeeId, Convert.ToDouble(atd.WorkAbsentNum + atd.NoonAbsentNum + atd.OffDutyAbsentNum));
-                                        atd.TardyAndLeaveWithhold = TardyWithhold(emp.EmployeeId, Convert.ToInt32(atd.TardyNum + atd.LeaveEarlyNum), atd.TardyRecord, atd.LeaveEarlyRecord);
-                                        atd.AbsentNumWithhold = AbsentWithhold(emp.EmployeeId, (int)(atd.WorkAbsentNum + atd.OffDutyAbsentNum + atd.NoonAbsentNum));
-                                        atd.OvertimeCharges = GetOvertimeWithhold(emp.EmployeeId, (DateTime)atd.YearAndMonth);
-                                        atd.Remark = Remark;
-                                        atd.IsDel = false;	
-                                        atd.IsApproval = false;
-                                        this.Insert(atd);
-                                        rc.RemoveCache("InRedisATDData");
-                                    }
+                                    atd.DaysoffDuration = Convert.ToDecimal(DaysoffDuration);
+                                    atd.DaysoffRecord = DaysoffRecord;
+                                    atd.AbsenteeismDays = Convert.ToDecimal(absenteeismDays);
+                                    atd.AbsenteeismRecord = absenteeismRecord;
+                                    atd.GoOutNum = Convert.ToInt32(GoOutNum);
+                                    atd.GoOutRecord = GoOutRecord;
+                                    atd.EvectionNum = Convert.ToDecimal(EvectionNum);
+                                    atd.EvectionRecord = EvectionRecord;
+
+                                    atd.AbsenteeismWithhold = GetAbsenteeismWithhold(emp.EmployeeId, Convert.ToDouble(atd.WorkAbsentNum + atd.NoonAbsentNum + atd.OffDutyAbsentNum));
+                                    atd.TardyAndLeaveWithhold = TardyWithhold(emp.EmployeeId, Convert.ToInt32(atd.TardyNum + atd.LeaveEarlyNum), atd.TardyRecord, atd.LeaveEarlyRecord);
+                                    atd.AbsentNumWithhold = AbsentWithhold(emp.EmployeeId, (int)(atd.WorkAbsentNum + atd.OffDutyAbsentNum + atd.NoonAbsentNum));
+                                    atd.OvertimeCharges = GetOvertimeWithhold(emp.EmployeeId, (DateTime)atd.YearAndMonth);
+                                    atd.Remark = Remark;
+                                    atd.IsDel = false;
+                                    atd.IsApproval = false;
+                                    this.Insert(atd);
+                                    rc.RemoveCache("InRedisATDData");
+                                }
                             }
                             }
                         }
@@ -645,7 +628,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             {
                 ajaxresult.Success = false;
                 ajaxresult.ErrorCode = 500;
-                ajaxresult.Msg = ex.Message;
+                ajaxresult.Msg = id;
                 ajaxresult.Data = "0";
             }
             return ajaxresult;
@@ -947,26 +930,24 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             Nullable<decimal> result=null;
             EmployeesInfoManage empmanage = new EmployeesInfoManage();
             var emprank = empmanage.JudgeEmpType(empid);//1代表校长；2代表副校长；3代表主任；4代表普通员工
-
-            if (AbsentNum>3)
-            {
+            if (AbsentNum>3) {
                 result = 0;
-                if (emprank == 1)
-                {
-                    result = 200;
-                }
-                else if (emprank == 2)
-                {
-                    result = 150;
-                }
-                else if (emprank == 3)
-                {
-                    result = 100;
-                }
-                else if (emprank == 4)
-                {
-                    result = 50;
-                }
+                    if (emprank == 1)
+                    {
+                        result = 200;
+                    }
+                    else if (emprank == 2)
+                    {
+                        result = 150;
+                    }
+                    else if (emprank == 3)
+                    {
+                        result = 100;
+                    }
+                    else if (emprank == 4)
+                    {
+                        result = 50;
+                    }
             }
             return result;
         }
