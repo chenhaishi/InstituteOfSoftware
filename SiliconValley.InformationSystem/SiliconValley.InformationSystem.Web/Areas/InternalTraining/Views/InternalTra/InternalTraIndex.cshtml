@@ -1,0 +1,95 @@
+﻿
+@{
+    ViewBag.Title = "InternalTraIndex";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>InternalTraIndex</title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/Areas/ExaminationSystem/js/trumbowyg/design/css/trumbowyg.css" rel="stylesheet" />
+</head>
+<body>
+
+    <table class="layui-hide" id="test" lay-filter="test"></table>
+
+</body>
+</html>
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">添加内训</button>
+    </div>
+</script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+</script>
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/layui/layui.js"></script>
+<script src="~/Scripts/underscore.js"></script>
+<script>
+    layui.use('table', function () {
+        var table = layui.table;
+        table.render({
+            elem: '#test'
+            , url: '/InternalTraining/InternalTra/ShowShuJu'
+            , toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
+            , defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
+                title: '提示'
+                , layEvent: 'LAYTABLE_TIPS'
+                , icon: 'layui-icon-tips'
+            }]
+            , title: '内训数据表'
+            , cols: [[
+                  { type: 'checkbox', fixed: 'left' }
+                , { field: 'Title', title: '内训标题' }
+                , { field: 'Contents', title: '内训详情', }
+                , { field: 'Trainer', title: '培训人' }
+                , {
+                    field: 'Time', title: '内训时间', templet: function (res) {
+
+                        var utcstr = res.Time.substr(res.Time.indexOf('(') + 1, 13);
+
+                        var date = new Date(parseInt(utcstr));
+
+                        var year = date.getFullYear();
+                        var month = date.getMonth() + 1;
+                        var day = date.getDate();
+
+                        return year + '年' + month + '月' + day + '日'
+                    }}
+                , { field: 'Department', title: '内训部门' }
+                , { field: 'grandId', title: '阶段' }
+                , { field: 'Curriculum', title: '课程' }
+                , { field: 'ClassHours', title: '课时次数' }
+                , { fixed: 'right', title: '操作', toolbar: '#barDemo' }
+            ]]
+            , page: true
+        });
+        //头工具栏事件
+        table.on('toolbar(test)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch (obj.event) {
+                case 'getCheckData':
+                    layer.open({
+                        type: 2,
+                        title: "添加",
+                        area: ["700px", "700px"],
+                        content: '/InternalTraining/InternalTra/AddInternalTraIndex',
+                        end: function () {
+
+                            table.reload('ShowShuJu', {
+
+                            });
+                        }
+                    });
+                    break;
+            };
+        });
+        
+
+ 
+    });
+</script>
+

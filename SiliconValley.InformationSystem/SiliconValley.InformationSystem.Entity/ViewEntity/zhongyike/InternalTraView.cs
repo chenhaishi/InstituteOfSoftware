@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SiliconValley.InformationSystem.Entity.Entity
+namespace SiliconValley.InformationSystem.Entity.ViewEntity.zhongyike
 {
-
-    [Table(name: "InternalTrainingCost")]
     /// <summary>
-    /// 内训表
+    /// 内训表视图模型
     /// </summary>
-    public partial class InternalTrainingCost
+   public class InternalTraView
     {
         /// <summary>
         /// 内训id
@@ -21,7 +18,7 @@ namespace SiliconValley.InformationSystem.Entity.Entity
         /// <summary>
         /// 阶段
         /// </summary>
-        public int grandId { get; set; }
+        public string grandId { get; set; }
         /// <summary>
         /// 是否删除
         /// </summary>
@@ -41,7 +38,7 @@ namespace SiliconValley.InformationSystem.Entity.Entity
         /// <summary>
         /// 内训部门id
         /// </summary>
-        public int Department { get; set; }
+        public string Department { get; set; }
         /// <summary>
         /// 培训人id
         /// </summary>
@@ -58,5 +55,6 @@ namespace SiliconValley.InformationSystem.Entity.Entity
         /// 课程id
         /// </summary>
         public string Curriculum { get; set; }
+
     }
 }

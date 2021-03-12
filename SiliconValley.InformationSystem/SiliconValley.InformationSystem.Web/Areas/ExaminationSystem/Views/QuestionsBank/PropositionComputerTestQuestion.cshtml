@@ -117,8 +117,7 @@
                                 var grand_ = item.Grand == null ? "" : item.Grand.GrandName;
                                 var namaC = item.CourseName + '(' + grand_ + ')';
                                 //赋值
-                                $('#course')
-                                    .append(new Option(namaC, item.CurriculumID));
+                                $('#course').append(new Option(namaC, item.CurriculumID));
                             });
                         } else {
                             $("#course").empty();

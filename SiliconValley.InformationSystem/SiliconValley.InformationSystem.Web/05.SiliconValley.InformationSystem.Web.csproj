@@ -288,6 +288,8 @@
     <Compile Include="Areas\Finance\Controllers\PricedetailsController.cs" />
     <Compile Include="Areas\Finance\FinanceAreaRegistration.cs" />
     <Compile Include="Areas\flow\flowAreaRegistration.cs" />
+    <Compile Include="Areas\InternalTraining\Controllers\InternalTraController.cs" />
+    <Compile Include="Areas\InternalTraining\InternalTrainingAreaRegistration.cs" />
     <Compile Include="Areas\Logistics\LogisticsAreaRegistration.cs" />
     <Compile Include="Areas\Market\Controllers\BiddingRecordController.cs" />
     <Compile Include="Areas\Market\Controllers\ChannelStaffController.cs" />
@@ -3645,6 +3647,10 @@
     <Content Include="Areas\ExaminationSystem\Views\ExamScores\AnswerPage.cshtml" />
     <Content Include="Areas\ExaminationSystem\Views\ExamArrangement\Examinationroomoperation.cshtml" />
     <Content Include="Areas\ExaminationSystem\Views\StudentExamSys\Choiceanalysis.cshtml" />
+    <Content Include="Areas\InternalTraining\Views\web.config" />
+    <Content Include="Areas\InternalTraining\Views\InternalTra\InternalTraIndex.cshtml" />
+    <Content Include="Areas\InternalTraining\Views\InternalTra\AddInternalTraIndex.cshtml" />
+    <Content Include="Areas\InternalTraining\Views\InternalTra\XiuGaiInternalTraIndex.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
@@ -5383,6 +5389,8 @@
     <Folder Include="Areas\Educational\Views\ShppingDetail\" />
     <Folder Include="Areas\Finance\Models\" />
     <Folder Include="Areas\flow\Controllers\" />
+    <Folder Include="Areas\InternalTraining\Models\" />
+    <Folder Include="Areas\InternalTraining\Views\Shared\" />
     <Folder Include="Areas\Logistics\Controllers\" />
     <Folder Include="Areas\Logistics\Models\" />
     <Folder Include="Areas\Logistics\Views\Shared\" />
