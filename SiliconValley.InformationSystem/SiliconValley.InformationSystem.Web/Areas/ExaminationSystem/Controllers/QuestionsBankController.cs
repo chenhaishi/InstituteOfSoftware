@@ -1872,7 +1872,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             {
                 code = 0,
                 msg = "",
-                count = resultlist.Count,
+                count = list.Count,
                 data = resultlist
 
             };
