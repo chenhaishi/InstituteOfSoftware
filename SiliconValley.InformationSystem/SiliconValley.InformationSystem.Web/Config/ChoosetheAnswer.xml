@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <root>
   <choicequestion>
-    <total>8</total>
+    <total>10</total>
     <level levelId="1">
       <name>简单</name>
 
@@ -28,7 +28,7 @@
   </choicequestion>
 
   <answerQuestion>
-    <total>8</total>
+    <total>10</total>
     <level levelId="1">
       <name>简单</name>
       <count levelId="1" name="简单" Percentage="80"></count>

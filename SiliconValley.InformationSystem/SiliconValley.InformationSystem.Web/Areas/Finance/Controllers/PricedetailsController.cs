@@ -206,15 +206,22 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             //是否交了预录费
             var Preentry= Preentryfeebusenn.GetList().Where(a => a.identitydocument == studentInformationBusiness.GetEntity(id).identitydocument && a.Refundornot == null).ToList();
             //学生已交费用sql语句
-            var sql_total = "select * from StudentFeeRecordListView where StageName='" + Grandlist.GrandName + "'AND StudenID='"+ id + "' and Passornot='1'";
+            var sql_total = "select * from StudentFeeRecordListView where StageName='" + Grandlist.GrandName + "'AND StudenID='"+ id + "' and Passornot='1' and AddTime IS not NULL";
             var Ptotal = studentFeeRecord.GetListBySql<StudentFeeRecordListView>(sql_total).ToList();
-            decimal price = 0;
+            decimal price = 0;decimal price2 = 0;
             foreach (var item in Ptotal)
             {
-                price += item.Amountofmoney;
+                if (item.CostitemsName == "食宿费")
+                {
+                    price2 = item.Amountofmoney;
+                }
+                else
+                {
+                    price += item.Amountofmoney;
+                }
             }
             ViewBag.price = price;
-
+            ViewBag.price2 = price2;
             //阶段价格绑定
             ViewBag.Amountofmoney = dbtext.PreentryfeeFinet(id);
             BaseBusiness<Preferential> Preferential = new BaseBusiness<Preferential>();
@@ -377,8 +384,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             ViewBag.Tuitionrefund = dbtext.FienTuitionrefund(dbtext.FienPrice(student));
             ViewBag.StudentPrentryfeeDate = dbtext.StudentPrentryfeeDate(student);
             var xs = StudentInformation.GetList().Where(d => d.StudentNumber == student).SingleOrDefault();
-            var YuLv = Preentryfee.GetList().Where(d => d.identitydocument == xs.identitydocument).SingleOrDefault();
-            var XueFei = StudentFeeRecordListView_Pr.GetList().Where(d => d.StudenID == student&&d.Passornot=="1").ToList();
+            var YuLv = Preentryfee.GetListBySql<Preentryfee>("select * from Preentryfee where identitydocument='"+ xs.identitydocument+ "'").ToList();
+            var XueFei = StudentFeeRecordListView_Pr.GetListBySql<StudentFeeRecordListView>("select * from StudentFeeRecordListView where StudenID='"+ student + "' and Passornot='1'and AddTime is not null").ToList();
             decimal xuefeiSUM = 0;
             decimal ZongJin = 0;
             foreach (var item in XueFei)
@@ -392,7 +399,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             }
             else
             {
-                ZongJin = xuefeiSUM + Convert.ToDecimal(YuLv.Amountofmoney);
+                foreach (var item in YuLv)
+                {
+                    ZongJin = xuefeiSUM + Convert.ToDecimal(item.Amountofmoney);
+                }
                 ZongJin = Math.Round(ZongJin, 2);
             }
             ViewBag.zongjin = ZongJin;
@@ -525,18 +535,17 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
         /// 入账数据查询导出
         /// </summary>
         /// <returns></returns>
-        public ActionResult Entrydataexport_List()
+        public ActionResult Entrydataexport_List(string date)
         {
             BaseBusiness<StudentFeeRecordListView> StudentFeeRecordListView = new BaseBusiness<StudentFeeRecordListView>();
             BaseBusiness<ScheduleForTrainees> ScheduleForTrainees = new BaseBusiness<ScheduleForTrainees>();
+            StudentFeeStandardBusinsess StudentFeeStandardBusinsess = new StudentFeeStandardBusinsess();
             List<PriceDC> PriceDCList = new List<PriceDC>();
-            var ListView = StudentFeeRecordListView.GetList().Where(d => d.Passornot == "1").ToList();
-
-            foreach (var item in ListView)
+            if (date == "" || date == null)
             {
-                //    var List_class = ScheduleForTrainees.GetList().Where(d => d.StudentID == item.StudenID && d.CurrentClass == true || d.CurrentClass == false).ToList();
-                //    foreach (var a in List_class)
-                //    {
+                var ListView = StudentFeeRecordListView.GetListBySql<StudentFeeRecordListView>("select * from StudentFeeRecordListView where Passornot='1' and AddTime is not null").ToList();
+                foreach (var item in ListView)
+                {
                     PriceDC priceDC = new PriceDC();
                     priceDC.studentID = item.StudenID;
                     priceDC.className = item.Name;
@@ -547,19 +556,42 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
                     priceDC.GrandName = item.StageName;
                     priceDC.Paymentmethod = item.Paymentmethod;
                     priceDC.AddTime = item.AddTime.ToString();
-                    priceDC.AddDate = item.AddDate.ToString();
+                    priceDC.AddDate = item.AddDate.ToString("yyyy-MM-dd");
                     priceDC.FinanceModelName = item.FinancialstaffName;
-                    //priceDC.class_id = a.ClassID;
+                    priceDC.ClassID = StudentFeeStandardBusinsess.schFor_Class(item.StudenID).ClassID;
+                    priceDC.Remarks = StudentFeeStandardBusinsess.Remarks(item.StudenID).Remarks;
                     PriceDCList.Add(priceDC);
-                //}
-
-
-
+                }
+            }
+            else
+            {
+                var time = date.Split('-');
+                var ListView = StudentFeeRecordListView.GetListBySql<StudentFeeRecordListView>("select * from StudentFeeRecordListView where Passornot='1' and AddTime is not null and YEAR(AddTime)='"+ time[0]+ "' and MONTH(AddTime)='"+time[1]+"'").ToList();
+                foreach (var item in ListView)
+                {
+                    PriceDC priceDC = new PriceDC();
+                    priceDC.studentID = item.StudenID;
+                    priceDC.className = item.Name;
+                    priceDC.identity = item.identitydocument;
+                    priceDC.Amountofmoney = item.Amountofmoney;
+                    priceDC.CostitemsName = item.CostitemsName;
+                    priceDC.OddNumbers = item.OddNumbers;
+                    priceDC.GrandName = item.StageName;
+                    priceDC.Paymentmethod = item.Paymentmethod;
+                    priceDC.AddTime = item.AddTime.ToString();
+                    priceDC.AddDate = item.AddDate.ToString("yyyy-MM-dd");
+                    priceDC.FinanceModelName = item.FinancialstaffName;
+                    priceDC.ClassID = StudentFeeStandardBusinsess.schFor_Class(item.StudenID).ClassID;
+                    priceDC.Remarks = StudentFeeStandardBusinsess.Remarks(item.StudenID).Remarks;
+                    PriceDCList.Add(priceDC);
+                }
             }
            
-            CostDataToExcel(PriceDCList);
+            //CostDataToExcel(PriceDCList);
             return Json(new { code = 0,data= PriceDCList });
         }
+
+        
 
         /// <summary>
         /// 课时费统计    写入Excel
@@ -605,15 +637,15 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
                 CreateCell(row, ContentcellStyle, 0, d.studentID.ToString());
                 CreateCell(row, ContentcellStyle, 1, d.className);
                 CreateCell(row, ContentcellStyle, 2, d.identity);
-                //CreateCell(row, ContentcellStyle, 3, d.class_id);
-                CreateCell(row, ContentcellStyle, 3, d.Amountofmoney.ToString());
-                CreateCell(row, ContentcellStyle, 4, d.CostitemsName.ToString());
-                CreateCell(row, ContentcellStyle, 5, d.GrandName);
-                CreateCell(row, ContentcellStyle, 6, d.OddNumbers);
-                CreateCell(row, ContentcellStyle, 7, d.Paymentmethod);
-                CreateCell(row, ContentcellStyle, 8, d.FinanceModelName);
-                CreateCell(row, ContentcellStyle, 9, d.AddDate.ToString());
-                CreateCell(row, ContentcellStyle, 10, d.AddTime.ToString());
+                CreateCell(row, ContentcellStyle, 3, d.ClassID);
+                CreateCell(row, ContentcellStyle, 4, d.Amountofmoney.ToString());
+                CreateCell(row, ContentcellStyle, 5, d.CostitemsName.ToString());
+                CreateCell(row, ContentcellStyle, 6, d.GrandName);
+                CreateCell(row, ContentcellStyle, 7, d.OddNumbers);
+                CreateCell(row, ContentcellStyle, 8, d.Paymentmethod);
+                CreateCell(row, ContentcellStyle, 9, d.FinanceModelName);
+                CreateCell(row, ContentcellStyle, 10, d.AddDate.ToString());
+                CreateCell(row, ContentcellStyle, 11, d.AddTime.ToString());
                 num++;
 
             });
@@ -694,15 +726,15 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             ViewBag.OddNumbers = Request.QueryString["OddNumbers"];
             ViewBag.Passornot = Request.QueryString["Passornot"];
             ViewBag.paymentmethod= Request.QueryString["paymentmethod"];
-            List<StudentFeeRecord> stulist = StudentFeeRecord.GetList().Where(d => d.StudenID == studentid).ToList();
-            List<StudentFeeRecord> studentFeeRecordslist = new List<StudentFeeRecord>();
+            List<StudentFeeRecord> stulist = StudentFeeRecord.GetListBySql<StudentFeeRecord>("select * from StudentFeeRecord where StudenID = '"+studentid+"'").ToList();
+         
             BaseBusiness<StudentFeeRecord> StudentRZ = new BaseBusiness<StudentFeeRecord>();
             StudentFeeRecord result = null;
-            var contrast = StudentRZ.GetList().Where(d => d.StudenID == studentid).ToList();
+            var contrast = StudentRZ.GetListBySql<StudentFeeRecord>("select * from StudentFeeRecord where StudenID='"+studentid+"'").ToList();
             
             foreach (var item in contrast)
             {
-                result = StudentRZ.GetList().Where(d => d.ID == item.ID).SingleOrDefault();
+                result = StudentRZ.GetListBySql<StudentFeeRecord>("select * from StudentFeeRecord where ID='" + item.ID + "'").SingleOrDefault();
             }
             if (result == null)
             {
@@ -1402,6 +1434,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             ViewBag.postName = positon.PositionName.Contains("会计") == true ? 1 : 0;
             return PartialView("/Areas/Finance/Views/Shared/Review.cshtml");
         }
+        public ActionResult Get_List_Entrydataexport()
+        {
+            return View();
+        }
         //订单表数据
         BaseBusiness<Paymentverification> pay = new BaseBusiness<Paymentverification>();
         public ActionResult review(string checkID,string OddNumbers,string Paymentmethod,DateTime timeAdd)
@@ -1410,9 +1446,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             BaseBusiness<StudentFeeRecord> rlist = new BaseBusiness<StudentFeeRecord>();
             BaseBusiness<Feedetails> Feedetails = new BaseBusiness<Feedetails>();
             var iq_reID = pay.GetList().Where(d => d.id == int.Parse(checkID)).SingleOrDefault();
-            var iq_Feedetails = Feedetails.GetList().Where(d => d.OddNumbers == OddNumbers).SingleOrDefault();
-
-            var iq_time = list.GetList().Where(a => a.StudenID == iq_Feedetails.studentid&&a.OddNumbers==iq_Feedetails.OddNumbers).ToList();
+            var iq_Feedetails = Feedetails.GetList().Where(d => d.OddNumbers == iq_reID.OddNumbers).ToList();
+            List<StudentFeeRecordListView> iq_time = null;
+            foreach (var item in iq_Feedetails)
+            {
+                iq_time = list.GetList().Where(a => a.StudenID == item.studentid && a.OddNumbers == item.OddNumbers).ToList();
+            }
+            
             
             foreach (var item in iq_time)
             {
@@ -1420,8 +1460,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
 
                     iq_date.AddTime = timeAdd; 
                     rlist.Update(iq_date);
-                
-                
             }
            
             iq_reID.OddNumbers = OddNumbers;

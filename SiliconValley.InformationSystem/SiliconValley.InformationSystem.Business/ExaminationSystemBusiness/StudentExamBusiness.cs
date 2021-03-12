@@ -1037,10 +1037,10 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
             var exam = db_exam.AllExamination().Where(d => d.ID == examid).FirstOrDefault();
             infosView.BeginDate = exam.BeginDate;
 
-            var examroomdistri = db_exam.AllExamroomDistributed(examid).Where(d => d.CandidateNumber == candidateinfo.CandidateNumber).FirstOrDefault();
-           var examroom = db_exam.AllExaminationRoom().Where(d => d.Examination == examid && d.ID == examroomdistri.ExaminationRoom).FirstOrDefault();
+           // var examroomdistri = db_exam.AllExamroomDistributed(examid).Where(d => d.CandidateNumber == candidateinfo.CandidateNumber).FirstOrDefault();
+           //var examroom = db_exam.AllExaminationRoom().Where(d => d.Examination == examid && d.ID == examroomdistri.ExaminationRoom).FirstOrDefault();
             BaseBusiness<Classroom> dbclassroom = new BaseBusiness<Classroom>();
-            infosView.Classroom = dbclassroom.GetIQueryable().Where(d => d.Id == examroom.Classroom_Id).FirstOrDefault();
+            infosView.Classroom = dbclassroom.GetIQueryable().Where(d => d.Id == candidateinfo.ClassId).FirstOrDefault();
 
 
             ///读取配置文件

@@ -1,0 +1,100 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Get_List_Entrydataexport</title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/layui/layui.js"></script>
+</head>
+<body>
+    <form class="layui-form" action="" lay-filter="example">
+        <div class="layui-inline">
+            <label class="layui-form-label">年月选择器</label>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" id="test3" placeholder="yyyy-MM" value="">
+            </div>
+        </div>
+        <button class="layui-btn"  type="button" id="demo">确认导出</button>
+        </form>
+        
+</body>
+</html>
+<script>
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#test3'
+            , type: 'month',
+
+        });
+        $("#demo").click(function () {
+            var date = $("#test3").val();
+            $.post("/Finance/Pricedetails/Entrydataexport_List", { date: date }, (r) => {
+                if (r.code == 0) {
+                    //列标题，逗号隔开，每一个逗号就是隔开一个单元格
+                    let str = `学生学号,学生名字,学生身份证,班级,缴费金额,缴费名目,缴费单号,缴费阶段,收款方式,入账时间,缴费时间,经办人,备注\n`;
+                    //增加\t为了不让表格显示科学计数法或者其他格式
+                    console.log(str);
+                    for (let i = 0; i < r.data.length; i++) {
+                        for (let item in r.data[i]) {
+                            str += `${r.data[i][item] + '\t'},`;
+                        }
+                        str += '\n';
+                    }
+                    //encodeURIComponent解决中文乱码
+                    let uri = 'data:text/csv;charset=utf-8,\ufeff' + encodeURIComponent(str);
+
+                    //通过创建a标签实现
+                    let link = document.createElement("a");
+                    link.href = uri;
+                    //对下载的文件命名
+                    link.download = "入账数据表.csv";
+
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    layer.close();
+                }
+                
+            });
+        })
+        //监听提交
+        //form.on('submit(demo1)', function () {
+        //    var date = $("#test3").val();
+        //    console.log(date);
+        //});
+
+        //$.post("/Finance/Pricedetails/Entrydataexport_List", {}, (r) => {
+        //    //列标题，逗号隔开，每一个逗号就是隔开一个单元格
+        //    let str = `学生学号,学生名字,学生身份证,班级,缴费金额,缴费名目,缴费单号,缴费阶段,收款方式,入账时间,缴费时间,经办人,备注\n`;
+        //    //增加\t为了不让表格显示科学计数法或者其他格式
+        //    console.log(str);
+        //    for (let i = 0; i < r.data.length; i++) {
+        //        for (let item in r.data[i]) {
+        //            str += `${r.data[i][item] + '\t'},`;
+        //        }
+        //        str += '\n';
+        //    }
+        //    //encodeURIComponent解决中文乱码
+        //    let uri = 'data:text/csv;charset=utf-8,\ufeff' + encodeURIComponent(str);
+
+        //    //通过创建a标签实现
+        //    let link = document.createElement("a");
+        //    link.href = uri;
+        //    //对下载的文件命名
+        //    link.download = "入账数据表.csv";
+        //    document.body.appendChild(link);
+        //    link.click();
+        //    document.body.removeChild(link);
+        //});
+    });
+</script>

@@ -13,6 +13,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
     using SiliconValley.InformationSystem.Business.Cloudstorage_Business;
     using SiliconValley.InformationSystem.Business.Common;
     using SiliconValley.InformationSystem.Business.DormitoryBusiness;
+    using SiliconValley.InformationSystem.Business.StudentBusiness;
     using SiliconValley.InformationSystem.Entity.Base_SysManage;
     using SiliconValley.InformationSystem.Entity.Entity;
     using SiliconValley.InformationSystem.Entity.ViewEntity;
@@ -34,6 +35,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
         BaseBusiness<HeadClass> HeadClassManeger = new BaseBusiness<HeadClass>();
         ScheduleForTraineesBusiness ScheduleManeger = new ScheduleForTraineesBusiness();
         DormInformationBusiness Dorm_Entity = new DormInformationBusiness();
+        StudentInformationBusiness stu_Entity = new StudentInformationBusiness();
+        AccdationinformationBusiness Accda_Entity = new AccdationinformationBusiness();
         #region 登记人操作
 
         public ActionResult DormitoryDepositIndex()
@@ -57,29 +60,28 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
 
             List<DormitoryDeposit> listall = Dormitory_Entity.GetListBySql<DormitoryDeposit>(sql);
             Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
-            string Headmastersql = "select * from Headmaster where informatiees_Id="+UserName.EmpNumber+"";
+            string Headmastersql = "select * from Headmaster where informatiees_Id=" + UserName.EmpNumber + "";
             Headmaster HeadMas = HeadmasterBusiness.GetListBySql<Headmaster>(Headmastersql).FirstOrDefault();
-            string HeadClassSql = "select * from HeadClass where LeaderID = "+HeadMas.ID+" and EndingTime is null";
+            string HeadClassSql = "select * from HeadClass where LeaderID = " + HeadMas.ID + " and EndingTime is null";
             List<HeadClass> HeadClassList = HeadClassManeger.GetListBySql<HeadClass>(HeadClassSql);
             List<ScheduleForTrainees> ScheduleList = new List<ScheduleForTrainees>();
             for (int i = 0; i < HeadClassList.Count; i++)
             {
-                string ScheduleSql = "select * from ScheduleForTrainees where  ID_ClassName="+HeadClassList[i].ClassID+"";
-                ScheduleList.AddRange(ScheduleManeger.GetListBySql<ScheduleForTrainees>(ScheduleSql));
+                string ScheduleSql = "select * from ScheduleForTrainees where  ID_ClassName=" + HeadClassList[i].ClassID + "";
+                ScheduleList = ScheduleManeger.GetListBySql<ScheduleForTrainees>(ScheduleSql);
             }
             List<DormitoryDeposit> DormDepositList = new List<DormitoryDeposit>();
-            
+            for (int i = 0; i < listall.Count; i++)
+            {
                 for (int j = 0; j < ScheduleList.Count; j++)
-                {
-                for (int i = 0; i < listall.Count; i++)
                 {
                     if (listall[i].StuNumber == ScheduleList[j].StudentID) {
                         DormDepositList.Add(listall[i]);
-                     }
+                    }
                 }
-                
+
             }
-            
+
             var data = DormDepositList.OrderByDescending(l => l.CreaDate).Skip((page - 1) * limit).Take(limit).Select(l => new
             {
                 ID = l.ID,
@@ -106,7 +108,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
         /// <returns></returns>
         public DormInformation GetDormInfoName(string stuid)
         {
-            string sql = "select * from DormInformation where Id= (select DormId from Accdationinformation where Studentnumber = '"+stuid+"')";
+            string sql = "select * from DormInformation where Id= (select DormId from Accdationinformation where Studentnumber = '" + stuid + "')";
             DormInformation Dorm = Dorm_Entity.GetListBySql<DormInformation>(sql).FirstOrDefault();
             return Dorm;
         }
@@ -161,7 +163,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
 
             if (!string.IsNullOrEmpty(startime))
             {
-                DormDepositList = DormDepositList.Where(s=>s.Maintain>=Convert.ToDateTime(startime)).ToList();
+                DormDepositList = DormDepositList.Where(s => s.Maintain >= Convert.ToDateTime(startime)).ToList();
             }
             if (!string.IsNullOrEmpty(endtime))
             {
@@ -229,7 +231,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
         /// <returns></returns>
         public ActionResult GetDormitory(int id)
         {
-            List<SelectListItem> list = Dormitory_Entity.DormInformation_Entity.GetList().Where(s => s.TungFloorId == id && s.IsDelete==false).ToList().Select(s => new SelectListItem() { Text = s.DormInfoName, Value = s.ID.ToString() }).ToList();
+            List<SelectListItem> list = Dormitory_Entity.DormInformation_Entity.GetList().Where(s => s.TungFloorId == id && s.IsDelete == false).ToList().Select(s => new SelectListItem() { Text = s.DormInfoName, Value = s.ID.ToString() }).ToList();
 
             return Json(list, JsonRequestBehavior.AllowGet);
         }
@@ -279,7 +281,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
         {
 
             AjaxResult result = new AjaxResult() { Success = true, Msg = "登记成功！" };
-            
+
             Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
 
             DateTime mantinDate = Convert.ToDateTime(Request.Form["mantinDate"]);//维修的日期
@@ -304,14 +306,24 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
             string sturadi = Request.Form["sturadi"];//学生编号
 
             List<string> list_dormid = new List<string>();
-            if (JieType == 1)
+
+            //根据宿舍号查询该宿舍共住多少人
+            string accsql = "select * from Accdationinformation where DormID = " + dorname + " and EndDate is null";
+            List<Accdationinformation> accda = Accda_Entity.GetListBySql<Accdationinformation>(accsql);
+            if (accda.Count > 8)
+            {
+                result.Msg = "该宿舍人员超过八位，请先调寝";
+                result.Success = false;
+            }
+            else {
+                 if (JieType == 1)
             {
 
                 //寝室平摊
                 List<Accdationinformation> list = Dormitory_Entity.GetStudentSushe(Convert.ToDateTime(mantinDate), dorname); //获取属于这个寝室的学生
 
                 List<StudentInformation> studentlist = new List<StudentInformation>();
-                
+
                 list.ForEach(l =>
                 {
                     StudentInformation student = Dormitory_Entity.StudentInformation_Entity.GetEntity(l.Studentnumber);
@@ -332,12 +344,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
                         dormitory.DormId = dorname;
                         dormitory.RepairContent = RepairContent;
                         dormitory.Solutions = Solutions;
-                        dormitory.CompleteTime =Convert.ToDateTime(CompleteTime);
+                        dormitory.CompleteTime = Convert.ToDateTime(CompleteTime);
                         dormitory.EntryPersonnel = UserName.EmpNumber;
                         dormitory.GoodPrice = goods.Reentry / studentlist.Count;
-                        dormitory.Maintain =Convert.ToDateTime(mantinDate);
+                        dormitory.Maintain = Convert.ToDateTime(mantinDate);
                         dormitory.MaintainGood = weixiugood;
-                        
+
                         dormitory.MaintainState = 1;
                         dormitory.StuNumber = stu.StudentNumber;
                         dormitory.ChuangNumber = list.Where(l => l.Studentnumber == stu.StudentNumber).FirstOrDefault().BedId;
@@ -359,7 +371,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
                     result.Success = false;
                 }
             }
-            else if (JieType == 2)
+                 else if (JieType == 2)
             {
                 //个人承担
                 DormitoryDeposit dormitory = new DormitoryDeposit();
@@ -385,7 +397,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
                 }
                 result.Data = list_dormid;
             }
-
+            }
             SessionHelper.Session["list_dormid"] = list_dormid;
             return Json(result, JsonRequestBehavior.AllowGet);
         }
@@ -404,10 +416,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
             {
                 for (int i = 0; i < id.Count; i++)
                 {
-                var fien = Request.Files[0];
-                string filename = fien.FileName;
-                string Extension = Path.GetExtension(filename);
-                string newfilename = id[i] + Extension;
+                    var fien = Request.Files[0];
+                    string filename = fien.FileName;
+                    string Extension = Path.GetExtension(filename);
+                    string newfilename = id[i] + Extension;
 
                     if (Dormitory_Entity.UpdateImgUrl(id[i], newfilename) == true)
                     {
@@ -415,11 +427,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
                         result.ErrorCode = 200;
 
                         var client = cloudstorage_Business.BosClient();
-                       
+
                         cloudstorage_Business.PutObject("xinxihua", "DormitoryDepositImage", newfilename, fien.InputStream);
                     }
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -430,7 +442,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
             return Json(result, JsonRequestBehavior.AllowGet);
         }
         #endregion
-        
+
 
         #region 班主任操作
         /// <summary>
@@ -472,7 +484,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
         public ActionResult OneData()
         {
             //,RepairContent="",Solutions=""
-            List<StudentDorMoney> list = new List<StudentDorMoney>() { new StudentDorMoney() { StuName = "请查询", PayMoney = 0, MantainMoney = 0, SumMoney = 0, BaoxianguiMoney = 0} };
+            List<StudentDorMoney> list = new List<StudentDorMoney>() { new StudentDorMoney() { StuName = "请查询", PayMoney = 0, MantainMoney = 0, SumMoney = 0, BaoxianguiMoney = 0 } };
             var jsondata = new { code = 0, count = 0, data = list };
             return Json(jsondata, JsonRequestBehavior.AllowGet);
         }
@@ -501,7 +513,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
                     MantainMoney = Dormitory_Entity.GetMantainMoney(s.StudentID),
                     BaoxianguiMoney = Dormitory_Entity.BaoxianguiStu(s.StudentID),
                     SumMoney = Dormitory_Entity.GetStudentMoney(s.StudentID) - Dormitory_Entity.GetMantainMoney(s.StudentID) - Dormitory_Entity.BaoxianguiStu(s.StudentID)
-                    //MaintainState = 
+
                 };
                 stumoneylist.Add(data);
             });
@@ -578,70 +590,109 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
 
             AjaxResult result = new AjaxResult();
 
-           
-                for (int i = 0; i < headclass_List.Count; i++)
+
+            for (int i = 0; i < headclass_List.Count; i++)
+            {
+
+                //获取这个班的所有学生
+                string sqlstr = "select * from ScheduleForTrainees where  CurrentClass=1 and ID_ClassName='" + headclass_List[i].ClassID + "'";
+                List<ScheduleForTrainees> stulist = Dormitory_Entity.GetListBySql<ScheduleForTrainees>(sqlstr);
+
+                foreach (ScheduleForTrainees s in stulist)
                 {
-
-                    //获取这个班的所有学生
-                    string sqlstr = "select * from ScheduleForTrainees where  CurrentClass=1 and ID_ClassName='" + headclass_List[i].ClassID + "'";
-                    List<ScheduleForTrainees> stulist = Dormitory_Entity.GetListBySql<ScheduleForTrainees>(sqlstr);
-
-                    foreach (ScheduleForTrainees s in stulist)
+                    //判断这个学生在哪个宿舍       and StayDate >= '" + dateTime + "'
+                    string sqlstr2 = @"select * from DormInformation where Id= (select DormId from Accdationinformation where Studentnumber='" + s.StudentID + "'  and (EndDate is null or EndDate<='" + dateTime + "'))";
+                    List<DormInformation> list2 = Dormitory_Entity.GetListBySql<DormInformation>(sqlstr2);
+                    if (list2.Count > 0)
                     {
-                        //判断这个学生在哪个宿舍       and StayDate >= '" + dateTime + "'
-                        string sqlstr2 = @"select * from DormInformation where Id= (select DormId from Accdationinformation where Studentnumber='" + s.StudentID + "'  and (EndDate is null or EndDate<='" + dateTime + "'))";
-                        List<DormInformation> list2 = Dormitory_Entity.GetListBySql<DormInformation>(sqlstr2);
-                        if (list2.Count > 0)
+                        DormitoryDeposit dormitory = new DormitoryDeposit()
                         {
-                            DormitoryDeposit dormitory = new DormitoryDeposit()
-                            {
-                                ID = Guid.NewGuid().ToSequentialGuid(),
-                                Maintain = dateTime,
-                                DormId = list2[0].ID,
-                                StuNumber = s.StudentID,
-                                MaintainGood = Price_List.ID,
-                                GoodPrice = Dormitory_Entity.Pricedormitoryarticles_Entity.GetEntity(Price_List.ID).Reentry,
-                                MaintainState = 1,
-                                CreaDate = DateTime.Now,
-                                RepairContent = "每月扣除的保险柜金额",
-                                EntryPersonnel = UserName.EmpNumber
-                            };
+                            ID = Guid.NewGuid().ToSequentialGuid(),
+                            Maintain = dateTime,
+                            DormId = list2[0].ID,
+                            StuNumber = s.StudentID,
+                            MaintainGood = Price_List.ID,
+                            GoodPrice = Dormitory_Entity.Pricedormitoryarticles_Entity.GetEntity(Price_List.ID).Reentry,
+                            MaintainState = 1,
+                            CreaDate = DateTime.Now,
+                            RepairContent = "每月扣除的保险柜金额",
+                            EntryPersonnel = UserName.EmpNumber
+                        };
 
-                            //去数据库查看是否这个月的宿舍保险柜数据已经录入成功了
-                            string sqlstr3 = @"select * from DormitoryDeposit where StuNumber='" + s.StudentID + "' and YEAR(Maintain)='" + dateTime.Year + "' and MONTH(Maintain)='" + dateTime.Month + "' and MaintainGood='" + Price_List.ID + "'";
-                            int count = Dormitory_Entity.GetListBySql<DormitoryDeposit>(sqlstr3).Count;
-                            if (count <= 0)
-                            {
-                                Dorlist.Add(dormitory);
-                            }
-
-                        }
-                        else
+                        //去数据库查看是否这个月的宿舍保险柜数据已经录入成功了
+                        string sqlstr3 = @"select * from DormitoryDeposit where StuNumber='" + s.StudentID + "' and YEAR(Maintain)='" + dateTime.Year + "' and MONTH(Maintain)='" + dateTime.Month + "' and MaintainGood='" + Price_List.ID + "'";
+                        int count = Dormitory_Entity.GetListBySql<DormitoryDeposit>(sqlstr3).Count;
+                        if (count <= 0)
                         {
-                            string stuname = Dormitory_Entity.StudentInformation_Entity.GetEntity(s.StudentID).Name;
-                            sb.Append(stuname + "、");
+                            Dorlist.Add(dormitory);
                         }
-                    }
 
-                    if (Dorlist.Count == stulist.Count)
-                    {
-                        result.Success = Dormitory_Entity.AddData(Dorlist);
-                        result.Msg = result.Success == false ? "操作失败" : "操作成功";
                     }
-                    else if (sb.Length > 0)
+                    else
                     {
-                        result.Success = false;
-                        result.Msg = sb.ToString() + "没有宿舍信息！,请核对学生数据在进行数据录入！";
-                    }
-                    else if (Dorlist.Count == 0)
-                    {
-                        result.Success = false;
-                        result.Msg = "这个班的这个月的保险费已录入了，请操作其他班级的！";
+                        string stuname = Dormitory_Entity.StudentInformation_Entity.GetEntity(s.StudentID).Name;
+                        sb.Append(stuname + "、");
                     }
                 }
+
+                if (Dorlist.Count == stulist.Count)
+                {
+                    result.Success = Dormitory_Entity.AddData(Dorlist);
+                    result.Msg = result.Success == false ? "操作失败" : "操作成功";
+                }
+                else if (sb.Length > 0)
+                {
+                    result.Success = false;
+                    result.Msg = sb.ToString() + "没有宿舍信息！,请核对学生数据在进行数据录入！";
+                }
+                else if (Dorlist.Count == 0)
+                {
+                    result.Success = false;
+                    result.Msg = "这个班的这个月的保险费已录入了，请操作其他班级的！";
+                }
+            }
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 根据登陆的班主任，获取带班的所有学生,查询每个人的宿舍押金剩余费用
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult CheckheadGetStu()
+        {
+            Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
+            string headsql = "select * from Headmaster where informatiees_Id="+UserName.EmpNumber+"";
+            Headmaster headmaster = HeadmasterBusiness.GetListBySql<Headmaster>(headsql).FirstOrDefault();
+            string headclasssql = "select * from HeadClass where LeaderID = "+headmaster.ID+"";
+            List<HeadClass> classes = HeadClassManeger.GetListBySql<HeadClass>(headclasssql);
+            List<ScheduleForTrainees> stulist = new List<ScheduleForTrainees>();
+            List<SelectListItem> newItem = new List<SelectListItem>();
+            for (int i = 0; i < classes.Count; i++)
+            {
+                stulist.AddRange(ScheduleManeger.GetList().Where(a=>a.ID_ClassName==classes[i].ClassID));
+            }
+            int count = 0;
+
+            for (int i = 0; i < stulist.Count; i++)
+            {
+                if (Dormitory_Entity.GetStudentMoney(stulist[i].StudentID) - Dormitory_Entity.GetMantainMoney(stulist[i].StudentID) - Dormitory_Entity.BaoxianguiStu(stulist[i].StudentID)<0) {
+                    count += 1;
+                    SelectListItem item = new SelectListItem();
+                    item.Text = stulist[i].ClassID;
+                    item.Value = stu_Entity.GetEntity(stulist[i].StudentID).Name;
+                    newItem.Add(item);
+                }
+                
+            }
+            var data = new
+            {
+                data = newItem,
+                count = count
+            };
+            return Json(data,JsonRequestBehavior.AllowGet);
+
+        }
 
         public ActionResult AddSafeView()
         {

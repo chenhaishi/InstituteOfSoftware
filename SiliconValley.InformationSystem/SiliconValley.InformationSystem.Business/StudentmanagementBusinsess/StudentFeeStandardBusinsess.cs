@@ -65,30 +65,54 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
         //退费业务类
         BaseBusiness<Tuitionrefund> TuitionrefundBusiness = new BaseBusiness<Tuitionrefund>();
         /// <summary>
+        /// 学生班级查询
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ScheduleForTrainees schFor_Class(string id)
+        {
+            BaseBusiness<ScheduleForTrainees> classID = new BaseBusiness<ScheduleForTrainees>();
+            var sql = "select * from ScheduleForTrainees where StudentID='"+id+ "' and CurrentClass='1' or CurrentClass='0' and StudentID='" + id + "'";
+            var sch_classid = classID.GetListBySql<ScheduleForTrainees>(sql).ToList();
+            return sch_classid[0];
+        }
+        /// <summary>
+        /// 根据学号获取学生缴费备注
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public StudentFeeRecord Remarks(string id)
+        {
+            var sql = "select * from StudentFeeRecord where StudenID='" + id + "'";
+           var fee= StudentFeeRecord_list_add.GetListBySql<StudentFeeRecord>(sql).ToList();
+            return fee[0];
+        }
+        /// <summary>
         /// 获取学员现在所读阶段
         /// </summary>
         /// <param name="id">学员学号</param>
-        //public Grand StateGrand(string id)
-        //{
-        //    BaseBusiness<ScheduleForTrainees> ScheduleForTrainees = new BaseBusiness<ScheduleForTrainees>();
-        //    BaseBusiness<ClassSchedule> ClassSchedule = new BaseBusiness<ClassSchedule>();
-        //    BaseBusiness<Grand> Grand = new BaseBusiness<Grand>();
-        //    var listall = ScheduleForTrainees.GetListBySql<ScheduleForTrainees>("select * from ScheduleForTrainees where Id='" + id + "' and CurrentClass='1'").SingleOrDefault();
-        //    var list = ScheduleForTrainees.GetList().Where(d => d.StudentID == id && d.CurrentClass == true).SingleOrDefault();
-        //    List<ClassSchedule> schlist = null;
-        //    foreach (var item in listall)
-        //    {
-        //        schlist = ClassSchedule.GetList().Where(d => d.id == listall.ID_ClassName).ToList();
-        //    }
-        //    List<Grand> Grandlist = null;
-        //    foreach (var item in schlist)
-        //    {
-        //        Grandlist = Grand.GetList().Where(d => d.Id == item.grade_Id).ToList();
-        //    }
+        public Grand StateGrand(string id)
+        {
+            BaseBusiness<ScheduleForTrainees> ScheduleForTrainees = new BaseBusiness<ScheduleForTrainees>();
+            BaseBusiness<ClassSchedule> ClassSchedule = new BaseBusiness<ClassSchedule>();
+            BaseBusiness<Grand> Grand = new BaseBusiness<Grand>();
+            string sql = "select * from ScheduleForTrainees where StudentID='" + id + "' and CurrentClass='1'";
+            var listall = ScheduleForTrainees.GetListBySql<ScheduleForTrainees>(sql).ToList();
+            //var list = ScheduleForTrainees.GetList().Where(d => d.StudentID == id && d.CurrentClass == true).SingleOrDefault();
+            List<ClassSchedule> schlist = null;
+            foreach (var item in listall)
+            {
+                 schlist = ClassSchedule.GetList().Where(d => d.id == item.ID_ClassName).ToList();
+            }
+            List<Grand> Grandlist = null;
+            foreach (var item in schlist)
+            {
+                 Grandlist = Grand.GetList().Where(d => d.Id == item.grade_Id).ToList();
+            }
 
 
-        //    return Grandlist[0];
-        //}
+            return Grandlist[0];
+        }
         /// <summary>
         /// 获取所有学员数据
         /// </summary>
@@ -137,7 +161,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                 a.Sex,
                 a.Headmasters,
                 a.BirthDate,
-                //StudentFeeStandardBusinsess.StateGrand(a.StudentNumber.ToString()).GrandName,
+                StudentFeeStandardBusinsess.StateGrand(a.StudentNumber).GrandName,
                 studentDataKeepAndRecord.findId(a.StudentPutOnRecord_Id.ToString()).ConsultTeacher,
                 studentDataKeepAndRecord.findId(a.StudentPutOnRecord_Id.ToString()).empName
             }).OrderByDescending(a => a.StudentNumber).Skip((page - 1) * limit).Take(limit).ToList();
@@ -227,27 +251,44 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                 var Costitems = Costitemsid.Substring(0, Costitemsid.Length - 1).Split(',');
                 foreach (var item in Costitems)
                 {
-                    Payview studentFee = new Payview();
-                    studentFee.StudenID = StudenID;
-                    studentFee.FinanceModelid = fine.id;
-                    studentFee.IsDelete = false;
-                    studentFee.AddDate = DateTime.Now;
-                    studentFee.Costitemsid = int.Parse(item);
-                    studentFee.Amountofmoney = costitemsBusiness.GetEntity(int.Parse(item)).Amountofmoney;
-                    studentFee.Remarks = Remarks;
-                    listFeeRecord.Add(studentFee);
-                    //学历添加
-                    Enrollment listEnrollment = new Enrollment();
-                    listEnrollment.PassNumber = null;
-                    listEnrollment.Datestration = null;
-                    listEnrollment.School = null;
-                    listEnrollment.StudentNumber = StudenID;
-                    listEnrollment.Remarks = null;
-                    listEnrollment.IsDelete = false;
-                    listEnrollment.MajorID = null;
-                    listEnrollment.Registeredbatch = null;
-                    ENlist.Add(listEnrollment);
-                    //   this.Studentpayment(studentFee.StudenID, fine.id, 1);
+                    if (Enrollment.GetList().Where(d=>d.StudentNumber==StudenID).Count()==0)
+                    {
+                        Payview studentFee = new Payview();
+                        studentFee.StudenID = StudenID;
+                        studentFee.FinanceModelid = fine.id;
+                        studentFee.IsDelete = false;
+                        studentFee.AddDate = DateTime.Now;
+                        studentFee.Costitemsid = int.Parse(item);
+                        studentFee.Amountofmoney = costitemsBusiness.GetEntity(int.Parse(item)).Amountofmoney;
+                        studentFee.Remarks = Remarks;
+                        listFeeRecord.Add(studentFee);
+                        //学历添加
+                        Enrollment listEnrollment = new Enrollment();
+                        listEnrollment.PassNumber = null;
+                        listEnrollment.Datestration = null;
+                        listEnrollment.School = null;
+                        listEnrollment.StudentNumber = StudenID;
+                        listEnrollment.Remarks = null;
+                        listEnrollment.IsDelete = false;
+                        listEnrollment.MajorID = null;
+                        listEnrollment.Registeredbatch = null;
+                        ENlist.Add(listEnrollment);
+                    }
+                    else
+                    {
+                        Payview studentFee = new Payview();
+                        studentFee.StudenID = StudenID;
+                        studentFee.FinanceModelid = fine.id;
+                        studentFee.IsDelete = false;
+                        studentFee.AddDate = DateTime.Now;
+                        studentFee.Costitemsid = int.Parse(item);
+                        studentFee.Amountofmoney = costitemsBusiness.GetEntity(int.Parse(item)).Amountofmoney;
+                        studentFee.Remarks = Remarks;
+                        listFeeRecord.Add(studentFee);
+                    }
+                    
+                   
+                    //this.Studentpayment(studentFee.StudenID, fine.id, 1);
                 }
                 Enrollment.Insert(ENlist);
                 SessionHelper.Session["person"] = listFeeRecord;
@@ -497,7 +538,6 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                     studentFeeRecord.Amountofmoney = item.Amountofmoney;
                     studentFeeRecord.StudenID = item.StudenID;
                     studentFeeRecord.Remarks = Remarks + Help;
-
                     listFeeRecord.Add(studentFeeRecord);
                 }
                 try
@@ -1152,7 +1192,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
             return listdetailedcs;
         }
 
-        private List<IGrouping<string, StudentFeeRecordView>> list;
+        private List<IGrouping<string, StudentFeeRecordListView>> list;
         /// <summary>
         ///财务查看学生欠费功能
         /// </summary>
@@ -1162,19 +1202,19 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
 
             BaseBusiness<ScheduleForTrainees> ScheduleForTrainees = new BaseBusiness<ScheduleForTrainees>();//所有学生
             BaseBusiness<StudentInformation> stuinfomation = new BaseBusiness<StudentInformation>();
-            BaseBusiness<StudentFeeRecordView> StudentFeeRecordView = new BaseBusiness<StudentFeeRecordView>();//学员缴费
+            BaseBusiness<StudentFeeRecordListView> StudentFeeRecordListView = new BaseBusiness<StudentFeeRecordListView>();//学员缴费
             List<DetailedcostView> listdetailedcs = new List<DetailedcostView>();//欠费实体类
             BaseBusiness<Grand> Grand = new BaseBusiness<Grand>();//阶段类型
             BaseBusiness<Costitems> Costitems = new BaseBusiness<Costitems>();//阶段类型详情
-            var studentView =new List<StudentFeeRecordView>();
+            var studentView =new List<StudentFeeRecordListView>();
             
             //var student = ScheduleForTrainees.GetList().Where(d => d.CurrentClass == true).ToList();
             string sql = " select * from ScheduleForTrainees where CurrentClass='1' ";
             var student = ScheduleForTrainees.GetListBySql<ScheduleForTrainees>(sql).ToList();//查询班级里所有的学生
             foreach (var item in student)
             {
-                string studentViewSQL = "select * from StudentFeeRecordView where StudenID='" + item.StudentID + "'";//根据学生id查询出缴费数据
-                studentView = StudentFeeRecordView.GetListBySql<StudentFeeRecordView>(studentViewSQL).ToList();
+                 string studentViewSQL = "select * from StudentFeeRecordListView where StudenID='" + item.StudentID + "' and Passornot='1'";//根据学生id查询出缴费数据
+                 studentView = StudentFeeRecordListView.GetListBySql<StudentFeeRecordListView>(studentViewSQL).ToList();
                  list = (from s in studentView
                             where s.StageName != null//分组对象
                             group s by s.StageName//按什么分组
@@ -1226,7 +1266,6 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                         deta_list.CurrentStageID = stage;
                         deta_list.Amountofmoney = sum;
                         deta_list.ShouldJiao = grand_sum.SingleOrDefault().Summonry;
-
                     }
                     listdetailedcs.Add(deta_list);
                 }
