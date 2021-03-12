@@ -109,6 +109,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                              e.IsDel,
                              e.IsApproval,
                              e.TardyAndLeaveWithhold,
+                             e.AbsentNumWithhold,
                             // e.LeaveWithhold,
                             // e.OvertTimeDuration,
                             // e.OvertTimeRecord,
@@ -117,7 +118,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                              e.DaysoffRecord,
                              e.AbsenteeismDays,
                              e.AbsenteeismRecord,
-                             e.AbsenteeismWithhold
+                             e.AbsenteeismWithhold,
+                             e.NonPersonalLeaveNum,
+                             e.NonPersonalLeaveRecord
                              #endregion
                          };
                  

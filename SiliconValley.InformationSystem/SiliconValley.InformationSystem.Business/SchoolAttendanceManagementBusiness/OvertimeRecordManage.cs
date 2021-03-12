@@ -28,15 +28,15 @@ namespace SiliconValley.InformationSystem.Business.SchoolAttendanceManagementBus
         {
             IWorkbook workbook = null;
 
-            //if (contentType == "application/vnd.ms-excel")
-            //{
-            //    workbook = new HSSFWorkbook(stream);
-            //}
+            if (contentType == "application/vnd.ms-excel")
+            {
+                workbook = new HSSFWorkbook(stream);
+            }
 
-            //if (contentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-            //{
-                workbook = new XSSFWorkbook(stream); 
-            //}
+            if (contentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            {
+                workbook = new XSSFWorkbook(stream);
+            }
 
             ISheet sheet = workbook.GetSheetAt(0); 
             var result = ExcelImportAtdSql(sheet);

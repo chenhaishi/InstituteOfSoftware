@@ -81,6 +81,7 @@
         <a class="layui-btn layui-btn-sm" lay-event="getRemove"><i class="layui-icon">&#xe62e;</i>订单重审</a>
         <a class="layui-btn layui-btn-sm" lay-event="GetList"><i class="layui-icon">&#xe62e;</i>Excel入账导出</a>
     </div>
+   
 </script>
 <script src="~/Areas/Teachingquality/js/AjaxAddupdate.js"></script>
 <script src="~/Areas/Teachingquality/js/Datetime.js"></script>
@@ -105,7 +106,6 @@
                 , { field: 'name', title: '姓名' }
                 , { field: 'IDnumber', title: '身份证号 ' }
                 , { field: 'Amountofmoney', title: '金额 ' }
-               
                 , {
                     field: 'OddNumbers', title: '单号', templet: function (c) {
                         if (c.OddNumbers == null) {
@@ -201,30 +201,51 @@
                     }
                     break;
                 case 'GetList':
-                    $.post("/Finance/Pricedetails/Entrydataexport_List", {}, (r) => {
-                   
-                        //列标题，逗号隔开，每一个逗号就是隔开一个单元格
-                        let str = `学生学号,学生名字,班级,学生身份证,缴费金额,缴费名目,缴费单号,缴费阶段,收款方式,入账时间,缴费时间,经办人\n`;
-                        //增加\t为了不让表格显示科学计数法或者其他格式
-                        console.log(str);
-                        for (let i = 0; i < r.data.length; i++) {
-                            for (let item in r.data[i]) {
-                                str += `${r.data[i][item] + '\t'},`;
-                            }
-                            str += '\n';
-                        }
-                        //encodeURIComponent解决中文乱码
-                        let uri = 'data:text/csv;charset=utf-8,\ufeff' + encodeURIComponent(str);
-                        
-                        //通过创建a标签实现
-                        let link = document.createElement("a");
-                        link.href = uri;
-                        //对下载的文件命名
-                        link.download = "入账数据表.csv";
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
+
+                    layer.open({
+                        title: "数据入账导出",
+                        type: 2,
+                        content: '/Finance/Pricedetails/Get_List_Entrydataexport',
+                        area: ['25%', '50%'],
+                       
+
                     });
+                    //$.get("/Finance/Pricedetails/Get_List_Entrydataexport", {}, (r) => {
+                    //    layer.open({
+                    //        title: "订单重审",
+                    //        content: r,
+                    //        area: ['60%', '60%'],
+                    //        type: 1,
+                    //        btn: ["确定"],
+                    //        end: function () { table.reload('idTest'); },
+                    //        yes: function (index, layero) {
+                    //            $.post("/Finance/Pricedetails/Entrydataexport_List", {}, (r) => {
+                    //                //列标题，逗号隔开，每一个逗号就是隔开一个单元格
+                    //                let str = `学生学号,学生名字,学生身份证,班级,缴费金额,缴费名目,缴费单号,缴费阶段,收款方式,入账时间,缴费时间,经办人,备注\n`;
+                    //                //增加\t为了不让表格显示科学计数法或者其他格式
+                    //                console.log(str);
+                    //                for (let i = 0; i < r.data.length; i++) {
+                    //                    for (let item in r.data[i]) {
+                    //                        str += `${r.data[i][item] + '\t'},`;
+                    //                    }
+                    //                    str += '\n';
+                    //                }
+                    //                //encodeURIComponent解决中文乱码
+                    //                let uri = 'data:text/csv;charset=utf-8,\ufeff' + encodeURIComponent(str);
+
+                    //                //通过创建a标签实现
+                    //                let link = document.createElement("a");
+                    //                link.href = uri;
+                    //                //对下载的文件命名
+                    //                link.download = "入账数据表.csv";
+                    //                document.body.appendChild(link);
+                    //                link.click();
+                    //                document.body.removeChild(link);
+                    //            });
+                    //        }
+                    //    })
+                    //});
+                
                     break;
            
             };

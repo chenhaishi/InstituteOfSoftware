@@ -413,8 +413,8 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
             Base_UserBusiness db_user = new Base_UserBusiness();
             EnCh ench = new EnCh();
             var empname = ench.convertCh(emp.EmpName);
-            var count =  this.GetListBySql<Base_User>("select *from Base_User where UserName=" + empname).Count();
-            if (count==0)
+            var count = this.GetListBySql<Base_User>("select *from Base_User where UserName='" + empname+"'").Count();
+            if (count == 0)
             {
                 db_user.createAccount(empname, emp.EmployeeId);
             }
@@ -422,12 +422,12 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
             {
                 //EmpErrorDataView emperror = new EmpErrorDataView();
                 //emperror.excelId = emp.EmpName;
-               //result.Msg= "未能创建账号，原因是已经有该账号了！";
+                //result.Msg= "未能创建账号，原因是已经有该账号了！";
                 result.ErrorCode = 200;
                 //emperrorlist.Add(emperror);
 
             }
-            
+
             #endregion
             var dname = this.GetDept(emp.PositionId).DeptName;//获取该员工所属部门名称
             var pname = this.GetPosition(emp.PositionId).PositionName;//获取该员工所属岗位名称
@@ -536,6 +536,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
         /// <returns></returns>
         public AjaxResult DelEmp(EmployeesInfo emp)
         {
+            rc = new RedisCache();
             var ajaxresult = new AjaxResult();
             try
             {
@@ -556,7 +557,12 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
             if (ajaxresult.Success)
             {
                 Base_UserBusiness user = new Base_UserBusiness();
-                ajaxresult = user.Change(emp.EmployeeId, false);//将该员工的账号禁用且密码改为后台设置的默认密码
+               var useremp=user.GetUserByEmpid(emp.EmployeeId);
+                if (useremp!=null)
+                {
+                    ajaxresult = user.Change(emp.EmployeeId, false);//将该员工的账号禁用且密码改为后台设置的默认密码
+                }
+                
             }
             return ajaxresult;
         }
