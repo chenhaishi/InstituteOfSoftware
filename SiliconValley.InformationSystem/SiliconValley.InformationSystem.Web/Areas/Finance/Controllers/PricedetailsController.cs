@@ -566,7 +566,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             else
             {
                 var time = date.Split('-');
-                var ListView = StudentFeeRecordListView.GetListBySql<StudentFeeRecordListView>("select * from StudentFeeRecordListView where Passornot='1' and AddTime is not null and YEAR(AddTime)='"+ time[0]+ "' and MONTH(AddTime)='"+time[1]+"'").ToList();
+                var ListView = StudentFeeRecordListView.GetListBySql<StudentFeeRecordListView>("select * from StudentFeeRecordListView where Passornot='1' and AddTime is not null and YEAR(AddTime)='"+ time[0]+ "' and MONTH(AddTime)='"+time[1]+ "' and DAY(AddTime)='"+time[2]+"'").ToList();
                 foreach (var item in ListView)
                 {
                     PriceDC priceDC = new PriceDC();
