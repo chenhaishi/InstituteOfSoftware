@@ -236,6 +236,35 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public ActionResult oldDormPerson()
+        {
+            int dormid = Convert.ToInt32(Request.Form["dormid"]);
+            string sql = "select * from Accdationinformation where DormId = "+dormid+" and Year(getdate()) - Year(Enddate)=0";// and Month(getdate())-Month(enddate)=1
+            List<Accdationinformation> list = Accda_Entity.GetListBySql<Accdationinformation>(sql);
+            List<SelectListItem> studentlist = new List<SelectListItem>();
+
+            list.ForEach(l =>
+            {
+                StudentInformation student = Dormitory_Entity.StudentInformation_Entity.GetEntity(l.Studentnumber);
+                if (student != null)
+                {
+                    SelectListItem item = new SelectListItem() { Text = student.Name, Value = student.StudentNumber };
+
+                    studentlist.Add(item);
+                }
+            });
+
+            AjaxResult result = new AjaxResult() { Data = studentlist, Success = true };
+            if (list.Count < 0)
+            {
+                result.Success = false;
+            }
+
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
         /// <summary>
         /// 获取某个日期中属于XX宿舍的所有学生
         /// </summary>
@@ -277,7 +306,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult AddFunction()
+        public ActionResult AddFunction(string[] oldstu)
         {
 
             AjaxResult result = new AjaxResult() { Success = true, Msg = "登记成功！" };
@@ -298,6 +327,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
             int dorname = Convert.ToInt32(Request.Form["dorname"]);//宿舍编号
 
             int JieType = Convert.ToInt32(Request.Form["JieType"]);//类型
+            
 
             Pricedormitoryarticles goods = Dormitory_Entity.Pricedormitoryarticles_Entity.GetEntity(weixiugood);//查询维修物品的信息
 
@@ -316,6 +346,40 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
                 result.Success = false;
             }
             else {
+                if (oldstu.Length > 0)
+                {
+                    string sql = "select * from Accdationinformation where DormId = " + dorname + " and Year(getdate()) - Year(Enddate)=0";// and Month(getdate())-Month(enddate)=1
+                    List<Accdationinformation> list = Accda_Entity.GetListBySql<Accdationinformation>(sql);
+                    for (int i = 0; i < oldstu.Count(); i++)
+                    {
+                        DormitoryDeposit dormitory = new DormitoryDeposit();
+                        dormitory.ID = Guid.NewGuid().ToSequentialGuid();
+                        dormitory.CreaDate = DateTime.Now;
+                        dormitory.DormId = dorname;
+                        dormitory.RepairContent = RepairContent;
+                        dormitory.Solutions = Solutions;
+                        dormitory.CompleteTime = Convert.ToDateTime(CompleteTime);
+                        dormitory.EntryPersonnel = UserName.EmpNumber;
+                        dormitory.GoodPrice = goods.Reentry / oldstu.Count();
+                        dormitory.Maintain = Convert.ToDateTime(mantinDate);
+                        dormitory.MaintainGood = weixiugood;
+
+                        dormitory.MaintainState = 1;
+                        dormitory.StuNumber = oldstu[i];
+                        dormitory.ChuangNumber = list.Where(l => l.Studentnumber == oldstu[i]).FirstOrDefault().BedId;
+                        list_dormid.Add(dormitory.ID);
+                        Dormlist.Add(dormitory);
+                    }
+
+                    bool s = Dormitory_Entity.AddData(Dormlist);
+                    if (s == false)
+                    {
+                        result.Msg = "网络异常，请刷新重试！";
+                        result.Success = false;
+                    }
+                }
+                else { 
+
                  if (JieType == 1)
             {
 
@@ -397,6 +461,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
                 }
                 result.Data = list_dormid;
             }
+                }
             }
             SessionHelper.Session["list_dormid"] = list_dormid;
             return Json(result, JsonRequestBehavior.AllowGet);
