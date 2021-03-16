@@ -3651,6 +3651,8 @@
     <Content Include="Areas\InternalTraining\Views\InternalTra\InternalTraIndex.cshtml" />
     <Content Include="Areas\InternalTraining\Views\InternalTra\AddInternalTraIndex.cshtml" />
     <Content Include="Areas\InternalTraining\Views\InternalTra\XiuGaiInternalTraIndex.cshtml" />
+    <Content Include="Areas\Finance\Views\Pricedetails\Get_List_Entrydataexport.cshtml" />
+    <Content Include="Areas\Finance\Views\Pricedetails\Student_arrearage.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />

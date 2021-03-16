@@ -1,5 +1,7 @@
-﻿using SiliconValley.InformationSystem.Business.Common;
+﻿using SiliconValley.InformationSystem.Business.Base_SysManage;
+using SiliconValley.InformationSystem.Business.Common;
 using SiliconValley.InformationSystem.Business.DormitoryBusiness;
+using SiliconValley.InformationSystem.Business.DormitoryMantainBusiness;
 using SiliconValley.InformationSystem.Business.StudentBusiness;
 using SiliconValley.InformationSystem.Entity.Entity;
 using SiliconValley.InformationSystem.Entity.MyEntity;
@@ -32,8 +34,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Dormitory.Controllers
         private AccdationinformationBusiness dbacc;
         private ProDormInfoViewBusiness dbproDormInfoViewBusiness;
         private dbprosutdent_dbproheadmaster dbprosutdent_Dbproheadmaster;
-        private ChangeDorStudent ChangeDorStudent_Entity = new ChangeDorStudent();
-        private StudentInformationBusiness StudentInfo_Entity = new StudentInformationBusiness();
+        private ChangeDorStudent ChangeDorStudent_Entity;
+        private StudentInformationBusiness StudentInfo_Entity ;
+        private PricedormitoryarticlesManeger PriceManger ;
+        private DormitoryDepositManeger Dormitory_Entity;
 
         // GET: /Dormitory/StudentBedtime/EndFunction
         public ActionResult StudentBedtimeIndex()
@@ -420,6 +424,44 @@ namespace SiliconValley.InformationSystem.Web.Areas.Dormitory.Controllers
 
             DateTime endtime = Convert.ToDateTime(Request.Form["endtime"]);
 
+            //扣除保险柜押金   学号判断当前的入住宿舍，如果在老校区，需要调去新校区扣除押金
+            //没调寝前住的宿舍，校区
+            string X_Dormidsql = "select * from Accdationinformation where studentnumber = "+stuNumber+" and Enddate is null";
+            Accdationinformation accinfo = dbacc.GetListBySql<Accdationinformation>(X_Dormidsql).FirstOrDefault();
+            string X_TungFidsql = "select * from DormInformation where  Id = "+accinfo.DormId+"";
+            DormInformation dorminfo = dbdorm.GetListBySql<DormInformation>(X_TungFidsql).FirstOrDefault();
+            string X_Tungidsql = "select * from TungFloor where Id="+dorminfo.TungFloorId+"";
+            TungFloor tunginfo = dbtungfloor.GetListBySql<TungFloor>(X_Tungidsql).FirstOrDefault();
+
+            //需要调去的宿舍，校区
+            string X_TungFidsql1 = "select * from DormInformation where  Id = " + DorId + "";
+            DormInformation dorminfo1 = dbdorm.GetListBySql<DormInformation>(X_TungFidsql1).FirstOrDefault();
+            string X_Tungidsql1 = "select * from TungFloor where Id=" + dorminfo1.TungFloorId + "";
+            TungFloor tunginfo1 = dbtungfloor.GetListBySql<TungFloor>(X_Tungidsql1).FirstOrDefault();
+            //如果调寝前住的宿舍属于老校区，调寝后住的宿舍属于新校区，扣除宿舍保险柜的押金 
+            if (tunginfo.TungId==27 && tunginfo1.TungId==34) {
+                string yuandate = "select top 1 * from Accdationinformation where studentnumber = "+stuNumber+" order by staydate asc";
+                Accdationinformation accinfo1 = dbacc.GetListBySql<Accdationinformation>(yuandate).FirstOrDefault();
+                var months = ((endtime.Year - accinfo1.StayDate.Year) * 12) + DateTime.Now.Month - accinfo1.StayDate.Month;
+                Pricedormitoryarticles Price_List = PriceManger.GetList().Where(s => s.Nameofarticle.Contains("保险柜每月扣费")).FirstOrDefault();
+                Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
+                DormitoryDeposit dormitory = new DormitoryDeposit()
+                {
+                    ID = Guid.NewGuid().ToSequentialGuid(),
+                    Maintain = endtime,
+                    DormId = DorId,
+                    StuNumber = stuNumber,
+                    MaintainGood = Price_List.ID,
+                    GoodPrice = months*10,
+                    MaintainState = 1,
+                    CreaDate = DateTime.Now,
+                    RepairContent = "每月扣除的保险柜金额",
+                    EntryPersonnel = UserName.EmpNumber
+                };
+                Dormitory_Entity.AddData(dormitory);
+            }
+
+
             string searchChuanghao = "select * from Accdationinformation where DormId="+DorId+" and BedId="+chuangNumber+" and EndDate  is null";
             List<Accdationinformation> ChuangList = ChangeDorStudent_Entity.GetListBySql<Accdationinformation>(searchChuanghao);
             if (ChuangList.Count <= 0)
@@ -453,6 +495,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Dormitory.Controllers
                     data.Remark = string.Empty;
 
                     result.Success = ChangeDorStudent_Entity.AddData(data);
+
+
+
 
                     result.Msg = result.Success == false ? "操作失败！" : "调寝成功！";
                 }

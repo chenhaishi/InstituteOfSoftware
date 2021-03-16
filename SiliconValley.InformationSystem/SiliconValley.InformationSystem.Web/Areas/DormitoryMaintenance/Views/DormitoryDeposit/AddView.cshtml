@@ -52,9 +52,9 @@
 
                         foreach (var item in list2)
                         {
-                              <div style="width:180px;display:inline-block">
-                                  <input type="radio" name="weixiugood" value="@item.Value" lay-filter="GoodRadio" title="@item.Text" />
-                              </div>
+                            <div style="width:180px;display:inline-block">
+                                <input type="radio" name="weixiugood" value="@item.Value" lay-filter="GoodRadio" title="@item.Text" />
+                            </div>
                         }
                     }
                 </div>
@@ -93,6 +93,14 @@
             </div>
             <div class="layui-row layui-form-item">
                 <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                    <label class="LableCss1">原宿舍人员:</label>
+                    <div class="layui-input-block" id="olddor">
+
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
                     <label class="LableCss1">结算类型:</label>
                     <div class="layui-input-block">
                         <select name="JieType" id="JieType" lay-filter="JieType">
@@ -123,7 +131,6 @@
 
                     </div>
                 </div>
-
             </div>
 
             @*维修内容*@
@@ -262,6 +269,19 @@
                 //获取选中的宿舍
                 form.on('radio(dorrido)', function (data) {
                     sushennumber = data.value;
+                    $.ajax({
+                        url: "/DormitoryMaintenance/DormitoryDeposit/oldDormPerson",
+                        type: "post",
+                        data: { "dormid": data.value },
+                        success: function (res) {
+                            if (res.Data.length > 0) {
+                                for (var i = 0; i < res.Data.length; i++) {
+                                    $('<input type="checkbox" name="oldstu" value="' + res.Data[i].Value + '" title="' + res.Data[i].Text + '" />').appendTo($("#olddor"));
+                                }
+                                form.render();
+                            }
+                        }
+                    });
                     $("#Studiv")[0].innerHTML = "";//清空宿舍人员
                     form.val("adddataform", {
                         "JieType": "1"
@@ -334,9 +354,16 @@
                     } else if (data.field.JieType == "2" && data.field.sturadi == undefined) {
                         layer.msg('请选择学生！', { icon: 2, shade: 0.8 });
                     } else {
+                        var arr_box = [];
+                        $('input[name=oldstu]:checked').each(function () {
+                            arr_box.push($(this).val());
+                        });
+                        data.field.oldstu = arr_box;
+                        console.log(arr_box);
                         $.ajax({
                             url: '/DormitoryMaintenance/DormitoryDeposit/AddFunction',
                             data: data.field,
+                            traditional: true,//必须指定为true,
                             type: 'post',
                             success: function (res) {
 

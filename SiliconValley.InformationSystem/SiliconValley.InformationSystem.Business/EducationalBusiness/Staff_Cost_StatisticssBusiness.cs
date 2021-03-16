@@ -105,7 +105,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                     ClassTime = 40;
                 }
                 
-                string sqlstr = $"select * from Reconcile  where Year(AnPaiDate)={dt.Year} and Month(AnPaiDate) = {dt.Month} and EmployeesInfo_Id ={ Emp_List[i].EmployeeId }";
+                string sqlstr = $"select * from Reconcile  where Year(AnPaiDate)={dt.Year} and Month(AnPaiDate) = {dt.Month} and EmployeesInfo_Id ={ Emp_List[i].EmployeeId } and IsDelete = 0";
                 List<Reconcile> mydata = Reconcile_Entity.GetListBySql<Reconcile>(sqlstr).ToList();
 
                 //筛选出前预科的数据
@@ -183,7 +183,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                     else
                     {
                         //根据课程名称获取第一条数据 && && a.Curriculum_Id != ""
-                        Reconcile reconcile = mydata.Where(a => a.Curriculum_Id == ClassGroup[j].Key).FirstOrDefault();
+                        Reconcile reconcile = mydata.Where(a => a.Curriculum_Id == ClassGroup[j].Key && a.IsDelete==false).FirstOrDefault();
                         //根据班级id查询单条数据
                         ClassSchedule classSchedule = ClassSchedule_Entity.GetEntity(reconcile.ClassSchedule_Id);
                         //根据课程名称以及阶段id筛选
@@ -275,7 +275,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 //计算值班费
                 //查询当年 年月的值班数据
                 string TeacherAddsql = @"select * from TeacherAddorBeonDutyView  where YEAR(Anpaidate)=" + dt.Year + "" +
-                    " and Month(Anpaidate)=" + dt.Month + "";
+                    " and Month(Anpaidate)=" + dt.Month + " and IsDels=1";
                 List<TeacherAddorBeonDutyView> TearcherAdd_List = teacherAddorBeonDutyView_Entity.GetListBySql<TeacherAddorBeonDutyView>(TeacherAddsql);
                 //根据时间分组
                 var TeacherAddGroup = (
