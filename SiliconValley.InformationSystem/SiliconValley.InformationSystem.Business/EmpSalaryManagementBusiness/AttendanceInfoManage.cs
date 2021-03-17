@@ -402,6 +402,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             var ajaxresult = new AjaxResult();
             int num = 2;
             List<AttendanceInfoErrorDataView> attdatalist = new List<AttendanceInfoErrorDataView>();
+            EmplSalaryEmbodyManage emplSalary = new EmplSalaryEmbodyManage();
             string id = "";
             try
             {
@@ -409,6 +410,17 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 string time1 = sheet.GetRow(1).Cells[0].StringCellValue;
                 string[] str = time1.Split('-');
                 var time = str[1];
+                string year = time.Substring(0, 4);
+                string month = time.Substring(5, 2);
+
+                if (month.Substring(1, 1) == "月")
+                {
+                    time = year + "-" + month.Substring(0, 1) + "-" + 01;
+                }
+                else
+                {
+                    time = year + "-" + month + "-" + 01;
+                }
 
                 while (true)
                 {
@@ -496,7 +508,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     #endregion
 
                     string year_month = time;
-
+                    id = name;
                     AttendanceInfo atd = new AttendanceInfo();
                     AttendanceInfoErrorDataView attview = new AttendanceInfoErrorDataView();
                     if (string.IsNullOrEmpty(ddid))
@@ -533,8 +545,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                             }
                             else
                             {
-
-                                var emp = empmanage.GetEmpByDDid(Convert.ToInt32(ddid));
+                                    var emp = empmanage.GetEmpByDDid(Convert.ToInt32(ddid));
                                 if (this.IsExist(emp.EmployeeId, Convert.ToDateTime(year_month)))
                                 {
                                     attview.empname = name;
@@ -580,7 +591,6 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                                                 }
                                             }
                                         }
-                                        
 
                                         atd.LeaveDays = Convert.ToDecimal(leaveddays);
                                         atd.LeaveRecord = leaveRecord;
@@ -609,9 +619,9 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                                         atd.NonPersonalLeaveNum = Convert.ToDecimal(nonpersonalleaveNum);
                                         atd.NonPersonalLeaveRecord = nonpersonalleaveRecord;
 
-                                        atd.AbsenteeismWithhold = GetAbsenteeismWithhold(emp.EmployeeId, Convert.ToDouble(atd.WorkAbsentNum + atd.NoonAbsentNum + atd.OffDutyAbsentNum));
+                                        atd.AbsenteeismWithhold = GetAbsenteeismWithhold(emp.EmployeeId, Convert.ToDouble(atd.AbsenteeismDays));
                                         atd.TardyAndLeaveWithhold = TardyWithhold(emp.EmployeeId, Convert.ToInt32(atd.TardyNum + atd.LeaveEarlyNum), atd.TardyRecord, atd.LeaveEarlyRecord);
-                                        atd.AbsentNumWithhold = AbsentWithhold(emp.EmployeeId, (int)(atd.WorkAbsentNum + atd.OffDutyAbsentNum + atd.NoonAbsentNum));
+                                        atd.AbsentNumWithhold = AbsentWithhold(emp.EmployeeId, (int)(atd.WorkAbsentNum + atd.OffDutyAbsentNum + atd.NoonAbsentNum),atd.DeserveToRegularDays);
                                         atd.OvertimeCharges = GetOvertimeWithhold(emp.EmployeeId, (DateTime)atd.YearAndMonth);
                                         atd.Remark = Remark;
                                         atd.IsDel = false;	
@@ -645,7 +655,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             {
                 ajaxresult.Success = false;
                 ajaxresult.ErrorCode = 500;
-                ajaxresult.Msg = ex.Message;
+                ajaxresult.Msg = id+ex.Message;
                 ajaxresult.Data = "0";
             }
             return ajaxresult;
@@ -942,10 +952,19 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
         /// <param name="empid"></param>
         /// <param name="AbsentNum">总缺卡次数</param>
         /// <returns></returns>
-        public Nullable<decimal> AbsentWithhold(string empid,int AbsentNum)
+        public Nullable<decimal> AbsentWithhold(string empid,int AbsentNum,decimal? DeserveToRegularDays)
         {
             Nullable<decimal> result=null;
             EmployeesInfoManage empmanage = new EmployeesInfoManage();
+            EmplSalaryEmbodyManage emplSalary = new EmplSalaryEmbodyManage();
+        var salary=emplSalary.GetList().Where(i=>i.EmployeeId==empid).FirstOrDefault();
+            decimal countsalary=0;
+            if (salary!=null)
+            {
+                 countsalary = Convert.ToDecimal(salary.BaseSalary + salary.PositionSalary + salary.PerformancePay);
+            }
+
+
             var emprank = empmanage.JudgeEmpType(empid);//1代表校长；2代表副校长；3代表主任；4代表普通员工
 
             if (AbsentNum>3)
@@ -968,6 +987,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     result = 50;
                 }
             }
+            result += countsalary / DeserveToRegularDays / 2;
             return result;
         }
 

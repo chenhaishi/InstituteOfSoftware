@@ -35,21 +35,33 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         public ActionResult Index()
         {
             @ViewBag.yearandmonth = FirstTime;
-
-           var year =Convert.ToDateTime(FirstTime).Month-1;
+            var year = 0;
+            if (!string.IsNullOrEmpty(FirstTime))
+            {
+                 year = Convert.ToDateTime(FirstTime).Month -1;
             if (year==0)
             {
                 year = 12;
+            }
             }
             ViewBag.year = year;
             SocialSecProportionManage socialSec = new SocialSecProportionManage();
             var comsoc = socialSec.GetbyType("单位部分");
             var persoc = socialSec.GetbyType("个人部分");
+            if (persoc!=null)
+            {
+
             ViewBag.PersonalEndowmentInsurance = persoc.EndowmentInsurance ;
             ViewBag.PersonalMedicalInsurance = persoc.MedicalInsurance ;
             ViewBag.PersonalUnemploymentInsurance = persoc.UnemploymentInsurance ;
+            }
+            //if (comsoc!=null)
+            //{
 
-            SocialSecurityDetailManage social = new SocialSecurityDetailManage();
+            //}
+           
+
+            //SocialSecurityDetailManage social = new SocialSecurityDetailManage();
 
             return View(comsoc);
         }
@@ -140,10 +152,15 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         public ActionResult SocialSecProportionEdit()
         {
             SocialSecProportionManage social = new SocialSecProportionManage();
-           var s= social.GetbyType("单位部分");
+            var s = social.GetbyType("单位部分");
+            var soc = social.GetbyType("个人部分");
+            if (soc != null)
+            {
             ViewBag.PersonalEndowmentInsurance= social.GetbyType("个人部分").EndowmentInsurance;
             ViewBag.PersonalMedicalInsurance = social.GetbyType("个人部分").MedicalInsurance;
             ViewBag.PersonalUnemploymentInsurance = social.GetbyType("个人部分").UnemploymentInsurance;
+            }
+
             return View(s);
         }
         [HttpPost]

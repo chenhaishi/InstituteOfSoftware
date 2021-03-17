@@ -207,8 +207,8 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                         string name = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(0))) ? null : getrow.GetCell(0).ToString();
                         string ddid = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(1))) ? null : getrow.GetCell(1).ToString();
                         string finalgrade = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(2))) ? null : getrow.GetCell(2).ToString();
-                        
-                       
+                    
+
 
 
                         MeritsCheckErrorDataView errorDataView = new MeritsCheckErrorDataView();
