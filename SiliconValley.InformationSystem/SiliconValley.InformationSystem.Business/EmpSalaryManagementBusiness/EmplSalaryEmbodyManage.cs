@@ -8,7 +8,10 @@ using SiliconValley.InformationSystem.Business.Common;
 using SiliconValley.InformationSystem.Entity.MyEntity;
 using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 using SiliconValley.InformationSystem.Util;
-
+using NPOI.SS.UserModel;
+using System.IO;
+using NPOI.HSSF.UserModel;
+using NPOI.XSSF.UserModel;
 
 namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
 {
@@ -219,6 +222,100 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 }
             }
             return resultsalary;
+        }
+        /// <summary>
+        /// 拿到考勤excel表中的第一个单元
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="contentType"></param>
+        /// <returns></returns>
+        public AjaxResult ImportDataFormExcel(Stream stream, string contentType)
+        {
+            IWorkbook workbook = null;
+
+            if (contentType == "application/vnd.ms-excel")
+            {
+                workbook = new HSSFWorkbook(stream);
+            }
+
+            if (contentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            {
+                workbook = new XSSFWorkbook(stream);
+            }
+
+            ISheet sheet = workbook.GetSheetAt(0);
+            var result = ExcelImportAtdSql(sheet);
+            stream.Close();
+            stream.Dispose();
+            workbook.Close();
+
+            return result;
+        }
+
+        /// <summary>
+        /// 将excel数据类的数据存入到数据库的考勤表中
+        /// </summary>
+        /// <returns></returns>
+        public AjaxResult ExcelImportAtdSql(ISheet sheet)
+        {
+            var ajaxresult = new AjaxResult();
+            EmployeesInfoManage manage = new EmployeesInfoManage();
+            int num = 1;
+            string error = "";
+            try
+            {
+                while (true)
+                {
+                    num++;
+                    var getrow = sheet.GetRow(num);
+                    if (getrow == null)
+                    {
+                        break;
+                    }
+                    string name = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(0))) ? null : getrow.GetCell(0).ToString();
+                    string contributionbase = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(1))) ? null : getrow.GetCell(1).ToString();
+                    string personalSocialsecurity = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(2))) ? null : getrow.GetCell(2).ToString();
+                    
+                   var empid= manage.GetList().Where(i=>i.EmpName==name);
+                    if (empid.Count()==1)
+                    {
+                        var s = this.GetList().Where(i=>i.EmployeeId==empid.FirstOrDefault().EmployeeId).FirstOrDefault();
+                        s.ContributionBase =int.Parse(contributionbase);
+                        s.PersonalSocialSecurity = decimal.Parse(personalSocialsecurity);
+                        this.Update(s);
+                    }
+                    else
+                    {
+                        error += name;
+                    }
+                    
+                }
+
+                ajaxresult = Success();
+                int exceldatasum = num - 3;
+                //if (exceldatasum - attdatalist.Count() == exceldatasum)
+                //{//说明没有出错数据，导入的数据全部添加成功
+                //    ajaxresult.Success = true;
+                //    ajaxresult.ErrorCode = 100;
+                //    ajaxresult.Msg = exceldatasum.ToString();
+                //    ajaxresult.Data = attdatalist;
+                //}
+                //else
+                //{//说明有出错数据，导入的数据条数就是导入的数据总数-错误数据总数
+                //    ajaxresult.Success = true;
+                //    ajaxresult.ErrorCode = 200;
+                //    ajaxresult.Msg = (exceldatasum - attdatalist.Count()).ToString();
+                //    ajaxresult.Data = attdatalist;
+                //}
+            }
+            catch (Exception ex)
+            {
+                ajaxresult.Success = false;
+                ajaxresult.ErrorCode = 500;
+                ajaxresult.Msg = ex.Message;
+                ajaxresult.Data = "0";
+            }
+            return ajaxresult;
         }
     }
 }

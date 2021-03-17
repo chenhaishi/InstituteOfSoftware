@@ -111,7 +111,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             var ese = esemanage.GetEmpESEData().Where(s => s.EmployeeId == empid).FirstOrDefault();
             return ese;
         }
-
+        
         /// <summary>
         /// 根据员工编号获取考勤统计表中对应月份的该员工对象
         /// </summary>
@@ -152,7 +152,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 MeritsCheckManage meritsCheckManage = new MeritsCheckManage();
                 List<MeritsCheck> meritslist = meritsCheckManage.GetList().Where(s => DateTime.Parse(s.YearAndMonth.ToString()).Year == Convert.ToDateTime(time).Year && DateTime.Parse(s.YearAndMonth.ToString()).Month == Convert.ToDateTime(time).Month).ToList();
                 #endregion
-                
+
                 var emplist = esemanage.GetEmpESEData().Where(s => s.IsDel == false).OrderBy(i=>i.Id).ToList();
 
                 //    var emplist = empmanage.GetEmpInfoData();
@@ -172,7 +172,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                    
                     foreach (var item in emplist)
                     {//再将未禁用的员工添加到月度工资表中
-                        string name = employeeslist.Where(i => i.EmployeeId == item.EmployeeId).FirstOrDefault().EmpName;
+                        string name = employeeslist.Where(i => i.EmployeeId == item.EmployeeId).FirstOrDefault().EmpName;                       
                         AttendanceInfo attendance = attendanceInfos.Where(i=>i.EmployeeId==item.EmployeeId).FirstOrDefault();
                         MeritsCheck merits = meritslist.Where(i => i.EmployeeId == item.EmployeeId).FirstOrDefault();
                         MonthlySalaryRecord msr = new MonthlySalaryRecord();
@@ -218,7 +218,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                         }
                         result = Success(msg);
                     }
-                           
+                   
                     }
 
 

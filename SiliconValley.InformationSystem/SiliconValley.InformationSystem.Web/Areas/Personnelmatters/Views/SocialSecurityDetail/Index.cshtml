@@ -87,8 +87,11 @@
         var form = layui.form;
         var laydate = layui.laydate;
         var element = layui.element;
+        
 
-        table.render({
+            @*if (@social!="")
+            {
+                        table.render({
             elem: "#Soctab",
             url: "/Personnelmatters/SocialSecurityDetail/GetSocialSecurityList",
             id: "Soctab",
@@ -127,6 +130,45 @@
             ]
             , page: true
         });
+            } else {*@
+                        table.render({
+            elem: "#Soctab",
+            url: "/Personnelmatters/SocialSecurityDetail/GetSocialSecurityList",
+            id: "Soctab",
+            toolbar: '#toolbarDemo',
+            limits: [5, 10, 15, 20, 25, 30, 50, 100, 120, 150, 180, 200, 250, 300],
+            limit: 10,
+            cols: [[{ type: 'checkbox', width: 28, rowspan: 2 }
+                , { field: 'empName', title: '姓名', width: 100, sort: true, rowspan: 2 }
+                , { field: 'Depart', title: '所属部门', width: 130, sort: true, rowspan: 2 }
+                , { field: 'Position', title: '所属岗位', width: 110, sort: true, rowspan: 2 }
+                , { field: 'YearAndMonth', title: '年月份', width: 110, sort: true, rowspan: 2 }
+                , { field: 'Type', title: '员工状态', width: 110, sort: true, rowspan: 2 }
+                , { field: 'PaymentBase', title: '缴费基数', width: 110, sort: true, rowspan: 2 }
+                , { align: 'center', title: '单位部分', colspan: 7 }
+                , { align: 'center', title: '个人部分', colspan: 6 }
+                , { field: 'Total', title: '合计', width: 110, sort: true, rowspan: 2 },
+                { title: '操作', toolbar: '#barDemo', width: 280, fixed: 'right', rowspan: 2 }
+            ]
+                , [ 
+                { field: 'EndowmentInsurance', title: '养老保险(%)', width: 115 },
+                { field: 'MedicalInsurance', title: '医疗保险()%)', width: 115 },
+                { field: 'WorkInjuryInsurance', title: '工伤保险(%)', width: 115 },
+                { field: 'MaternityInsurance', title: '生育保险(%)', width: 115 },
+                { field: 'UnemploymentInsurance', title: '失业保险(%)', width: 115 },
+                { field: 'UnitTotal', title: '单位小计', width: 115 },
+                { field: 'PersonalEndowmentInsurance', title: '养老保险(%)', width: 115 },
+                { field: 'PersonalMedicalInsurance', title: '医疗保险(%)', width: 115 },
+                { field: 'PersonalUnemploymentInsurance', title: '失业保险(%)', width: 115 },
+                { field: 'SeriousIllnessInsurance', title: '大病保险', width: 115 },
+                { field: 'PersonalTotal', title: '个人小计', width: 115 },
+
+            ]
+
+            ]
+            , page: true
+        });
+            //}
         $("#Conditionselect").click(function () {
             var ename = $("#EmpName").val();//员工姓名
             var deptname = $("#deptid").val();//员工所属部门

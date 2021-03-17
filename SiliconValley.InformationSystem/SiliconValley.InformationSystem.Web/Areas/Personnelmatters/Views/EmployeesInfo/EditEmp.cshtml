@@ -558,7 +558,7 @@
                 //console.log(data.field.MyImage);
                 var fd = new FormData();
                 var myimg = document.querySelector("#MyImage").files[0];
-                console.log(myimg);
+                //console.log(myimg);
                 fd.append('Image', myimg);
                 for (var item in data.field) {
                     fd.append(item, data.field[item]);
@@ -571,9 +571,9 @@
                     dataType: "json",
 
                     //报错请加入以下三行，则ajax提交无问题
-                    //cache: false,
-                    //processData: false,
-                    //contentType: false,
+                    cache: false,
+                    processData: false,
+                    contentType: false,
                     success: function (data) {
                         if (data.Success) {
                             layer.alert("编辑成功!", { icon: 1 }, function () {
@@ -587,7 +587,7 @@
                         }
                     }
                 });
-             
+       
             });
           
         });

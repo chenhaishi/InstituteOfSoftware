@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using SiliconValley.InformationSystem.Entity.MyEntity;
 using SiliconValley.InformationSystem.Util;
+using System.IO;
 
 namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
 {
@@ -186,6 +187,18 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 AjaxResultxx = esemanage.Error(ex.Message);
             }
             return Json(AjaxResultxx,JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult Import()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult Import(HttpPostedFileBase excelfile)
+        {
+            Stream filestream = excelfile.InputStream;
+            EmplSalaryEmbodyManage emplSalary = new EmplSalaryEmbodyManage();
+            var result = emplSalary.ImportDataFormExcel(filestream, excelfile.ContentType);
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
     }

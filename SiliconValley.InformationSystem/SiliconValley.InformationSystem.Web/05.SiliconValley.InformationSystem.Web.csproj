@@ -3641,6 +3641,7 @@
     <Content Include="Areas\Personnelmatters\Views\SocialSecurityDetail\SupplementaryPayment.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\SocialSecurityDetail\UpdateTime.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\PerformanceAssess\AssessmentTimePeriodQuery.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\EmplSalaryEmbody\Import.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
