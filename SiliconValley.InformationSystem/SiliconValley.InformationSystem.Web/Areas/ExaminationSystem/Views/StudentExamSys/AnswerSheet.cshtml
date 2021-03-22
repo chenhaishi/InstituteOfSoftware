@@ -597,7 +597,7 @@
                         dataType: "json",//返回的数据格式
                         data: formData,
                         success: function (result) {
-
+                            http://www.kakadm.com/anime/702/1/
                             layer.close(loadindex);
 
                             if (result.ErrorCode == 200) {
@@ -608,6 +608,7 @@
                                 });
                                 layui.form.render();
                             } else if (result.ErrorCode == 500) {
+                                console.log(result.Data);
                                 layer.msg('失败。。', { icon: 1 }, function () {
 
 

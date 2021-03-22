@@ -149,8 +149,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                     //{
                     //    view.NoClockWithhold = null;
                     //}
-                    view.NoClockWithhold = attendobj.NoonAbsentNum;
-                    view.AbsentNumWithhold = attendobj.AbsentNumWithhold;
+                    view.NoClockWithhold = attendobj.AbsentNumWithhold;
+                    view.AbsentNumWithhold = attendobj.AbsenteeismWithhold;
                 }
 
                 view.OvertimeCharges = item.OvertimeCharges;//加班费用
@@ -193,6 +193,19 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         /// <returns></returns>
         public ActionResult UpdateTime()
         {
+            //string names = "";
+            //EmployeesInfoManage empmanage = new EmployeesInfoManage();
+            //EmplSalaryEmbodyManage esemanage = new EmplSalaryEmbodyManage();
+            //List<EmployeesInfo> employeeslist = empmanage.GetList().Where(i=>i.IsDel==false).ToList();
+            //var emplist = esemanage.GetEmpESEData().Where(s => s.IsDel == false).OrderBy(i => i.Id).ToList();
+            //foreach (var item in employeeslist)
+            //{
+            //    var s = emplist.Where(i => i.EmployeeId == item.EmployeeId).FirstOrDefault();
+            //    if (s == null)
+            //    {
+            //        names += item.EmpName+";";
+            //    }
+            //}
             ViewBag.time = FirstTime;
             return View();
         }
@@ -684,7 +697,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             catch (Exception ex)
             {
                 ajaxresult.ErrorCode = 100;
-                ajaxresult.Msg = "导入失败，" + ex.Message;
+                ajaxresult.Msg = "导出失败，" + ex.Message;
 
             }
             return File(bookStream, "application / vnd.ms - excel", Detailfilename);

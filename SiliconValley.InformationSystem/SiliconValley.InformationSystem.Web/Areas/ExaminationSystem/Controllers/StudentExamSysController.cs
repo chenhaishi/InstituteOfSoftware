@@ -858,7 +858,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 //SiliconValley.InformationSystem.Util.ErrorLog.clsLogHelper.m_CreateErrorLogTxt("myExecute(" & str执行SQL语句 & ")", Err.Number.ToString, Err.Description)
                 result.ErrorCode = 500;
                 result.Msg = "失败";
-                result.Data = null;
+                result.Data = ex;
+
             }
             return Json(result);
         }
