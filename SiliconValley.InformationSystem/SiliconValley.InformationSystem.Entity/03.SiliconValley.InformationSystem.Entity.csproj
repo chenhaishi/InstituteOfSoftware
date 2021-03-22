@@ -555,6 +555,7 @@
     <Compile Include="ViewEntity\vierprice.cs" />
     <Compile Include="ViewEntity\XYK_Data\FeedStudent.cs" />
     <Compile Include="ViewEntity\XYK_Data\GetDateListclass.cs" />
+    <Compile Include="ViewEntity\XYK_Data\GetPreentryfeet.cs" />
     <Compile Include="ViewEntity\XYK_Data\Grand_SUM.cs" />
     <Compile Include="ViewEntity\XYK_Data\PriceDC.cs" />
     <Compile Include="ViewEntity\XYK_Data\Student .cs" />

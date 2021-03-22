@@ -343,6 +343,7 @@
     <Compile Include="Areas\Teachingquality\Controllers\HeadteacherController.cs" />
     <Compile Include="Areas\Teachingquality\Controllers\InterviewStudentsController.cs" />
     <Compile Include="Areas\Teachingquality\Controllers\MessagenotificationController.cs" />
+    <Compile Include="Areas\Teachingquality\Controllers\SQLCommon.cs" />
     <Compile Include="Areas\Teachingquality\Controllers\StudentAttendancController.cs" />
     <Compile Include="Areas\Teachingquality\Controllers\StudentInformationController.cs" />
     <Compile Include="Areas\Teachingquality\Controllers\StudentTransactionController.cs" />
@@ -3650,6 +3651,7 @@
     <Content Include="Areas\ExaminationSystem\Views\StudentExamSys\Choiceanalysis.cshtml" />
     <Content Include="Areas\Finance\Views\Pricedetails\Student_arrearage.cshtml" />
     <Content Include="Areas\Finance\Views\Pricedetails\Get_List_Entrydataexport.cshtml" />
+    <Content Include="Areas\Finance\Views\Pricedetails\Get_List_GetPreentryfeet.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />

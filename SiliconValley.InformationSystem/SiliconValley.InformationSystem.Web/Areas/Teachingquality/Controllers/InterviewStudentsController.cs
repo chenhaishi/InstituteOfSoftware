@@ -14,6 +14,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Newtonsoft.Json;
+using System.Data.SqlClient;
+using System.Data;
 
 namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
 {
@@ -42,9 +44,55 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
         {
             return View();
         }
+        //对象储存测试
+        //public class SQLCommon
+        //{
+        //    private string connectionStr;
+
+        //    public SQLCommon(string connectionStr)
+        //    {
+        //        this.connectionStr = connectionStr;
+        //    }
+        //}
+        //private static string connectionStr = "server=.;database=Coldairarrow.Fx.Net.Easyui.GitHub;uid=sa;pwd=123456";
+        //SQLCommon SQLC = new SQLCommon(connectionStr);
+        //public DataTable GetsSQLData(string MYSQLCODE, SqlParameter[] SQlCMDpas)
+        //{
+        //    SqlConnection Sqlcon = new SqlConnection(connectionStr);
+        //    DataTable dt = new DataTable();
+        //    Sqlcon.Open();
+        //    SqlCommand com = new SqlCommand(MYSQLCODE, Sqlcon);
+        //    com.CommandType = CommandType.StoredProcedure;
+        //    com.Parameters.AddRange(SQlCMDpas);
+        //    SqlDataReader sdr = com.ExecuteReader();
+        //    if (sdr.HasRows)
+        //    {
+        //        while (sdr.Read())
+        //        {
+        //            string id = sdr["Id"].ToString();
+                    
+        //        }
+                
+        //    }
+        //    //SqlDataAdapter sqlda = new SqlDataAdapter(MYSQLCODE, Sqlcon);
+        //    //sqlda.SelectCommand.Parameters.AddRange(SQlCMDpas);
+        //   // sqlda.SelectCommand.CommandType = CommandType.StoredProcedure;
+        //    //sqlda.Fill(dt);
+        //    return dt;
+        //}
         //主页面获取表格数据
         public ActionResult GetDate(int page, int limit, string Name, string StudentNumberID, string qBeginTime, string InterviewTopicsm, string qEndTime)
         {
+            //SqlCommand SQLC = new SqlCommand(connectionStr);
+            //SqlParameter[] sqlpar = new SqlParameter[2];
+            //sqlpar[0] = new SqlParameter("@StudentNumberID", "19062003122710694");
+            //sqlpar[1] = new SqlParameter("@InterviewTopicsm", "202005300054");
+
+
+            //Console.WriteLine(sqlpar[0]);
+            //DataTable dt = GetsSQLData("proc_InterviewStudents", sqlpar);
+           
+
             var list = new List<InterviewStudents>();
             if (user.UserName == "Admin")
             {
@@ -436,4 +484,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
             return View();
         }
     }
+
+ 
 }

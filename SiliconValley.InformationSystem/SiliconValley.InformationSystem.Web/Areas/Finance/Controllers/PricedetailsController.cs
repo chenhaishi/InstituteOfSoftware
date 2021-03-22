@@ -531,11 +531,64 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
         {
             return Json(dbtext.Expenseentry(page, limit, StudentID,Name,IsaDopt,OddNumbers), JsonRequestBehavior.AllowGet);
         }
+        public ActionResult Get_List_GetPreentryfeet()
+        {
+            return View();
+        }
+        /// <summary>
+        /// 预录费数据查询导出
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Preentryfeet_List(string date, string time)
+        {
+            BaseBusiness<Preentryfee> Preentryfee = new BaseBusiness<Preentryfee>();
+            BaseBusiness<StudentPutOnRecord> StudentPutOnRecord = new BaseBusiness<StudentPutOnRecord>();
+            StudentDataKeepAndRecordBusiness studentDataKeepAndRecordBusiness = new StudentDataKeepAndRecordBusiness();
+            List<GetPreentryfeet> GetPreentryfeet = new List<GetPreentryfeet>();
+            if (date == "" || date == null||time==null||time=="")
+            {
+                var ListView = Preentryfee.GetListBySql<Preentryfee>("select * from Preentryfee where OddNumbers is not null").ToList();
+                foreach (var item in ListView)
+                {
+                    GetPreentryfeet cmd = new GetPreentryfeet();
+                    cmd.Py_Name = studentDataKeepAndRecordBusiness.GetEntity(item.keeponrecordid).StuName;
+                    cmd.sex = studentDataKeepAndRecordBusiness.GetEntity(item.keeponrecordid).StuSex;
+                    cmd.identitydocument = item.identitydocument;
+                    cmd.AddDtae = item.AddDate.ToString("yyyy-MM-dd");
+                    cmd.Amountofmoney = item.Amountofmoney.ToString();
+                    cmd.Refundornot = item.Refundornot.ToString()=="1"?"已报名":"未报名";
+                    cmd.OddNumbers = item.OddNumbers;
+                    cmd.ClassID = item.ClassID;
+                    GetPreentryfeet.Add(cmd);
+                }
+            }
+            else
+            {
+                var sql = "select * from Preentryfee where OddNumbers is not null and AddDate>=(dateadd(day,-1,'" + date + "')) and AddDate<=(dateadd(day,1,'" + time + "'))";
+                var ListView = Preentryfee.GetListBySql<Preentryfee>(sql).ToList();
+                foreach (var item in ListView)
+                {
+                    GetPreentryfeet cmd = new GetPreentryfeet();
+                    cmd.Py_Name = studentDataKeepAndRecordBusiness.GetEntity(item.keeponrecordid).StuName;
+                    cmd.sex = studentDataKeepAndRecordBusiness.GetEntity(item.keeponrecordid).StuSex;
+                    cmd.identitydocument = item.identitydocument;
+                    cmd.AddDtae = item.AddDate.ToString("yyyy-MM-dd");
+                    cmd.Amountofmoney = item.Amountofmoney.ToString();
+                    cmd.Refundornot = item.Refundornot.ToString() == "1" ? "已报名" : "未报名";
+                    cmd.OddNumbers = item.OddNumbers;
+                    cmd.ClassID = item.ClassID;
+                    GetPreentryfeet.Add(cmd);
+                }
+            }
+
+            //CostDataToExcel(PriceDCList);
+            return Json(new { code = 0, data = GetPreentryfeet });
+        }
         /// <summary>
         /// 入账数据查询导出
         /// </summary>
         /// <returns></returns>
-        public ActionResult Entrydataexport_List(string date)
+        public ActionResult Entrydataexport_List(string date,string time)
         {
             BaseBusiness<StudentFeeRecordListView> StudentFeeRecordListView = new BaseBusiness<StudentFeeRecordListView>();
             BaseBusiness<ScheduleForTrainees> ScheduleForTrainees = new BaseBusiness<ScheduleForTrainees>();
@@ -565,8 +618,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             }
             else
             {
-                var time = date.Split('-');
-                var ListView = StudentFeeRecordListView.GetListBySql<StudentFeeRecordListView>("select * from StudentFeeRecordListView where Passornot='1' and AddTime is not null and YEAR(AddTime)='"+ time[0]+ "' and MONTH(AddTime)='"+time[1]+ "' and DAY(AddTime)='"+time[2]+"'").ToList();
+               
+                var ListView = StudentFeeRecordListView.GetListBySql<StudentFeeRecordListView>("select * from StudentFeeRecordListView where Passornot='1' and AddTime is not null and  AddDate>=(dateadd(day,-1,'"+date+"')) and AddDate<=(dateadd(day,1,'"+time+"'))").ToList();
                 foreach (var item in ListView)
                 {
                     PriceDC priceDC = new PriceDC();
