@@ -10,6 +10,7 @@ using SiliconValley.InformationSystem.Entity.MyEntity;
 using SiliconValley.InformationSystem.Util;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -250,6 +251,18 @@ namespace SiliconValley.InformationSystem.Web.Areas.MyEducation.Controllers
         public ActionResult StudentUndergraduatecount(string Studentid)
         {
             return Json(dbtext.StudentUndergraduatecount(Studentid), JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult AchievementImport()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult AchievementImport(HttpPostedFileBase excelfile)
+        {
+            Stream filestream = excelfile.InputStream;
+
+            var result = dbtext.ImportDataFormExcel(filestream, excelfile.ContentType);
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
     }
 }

@@ -191,10 +191,8 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 EmployeesInfoManage emanage = new EmployeesInfoManage();
                 int num = 2;
                 AjaxResult ajaxResult = new AjaxResult();
-                //string sql = "insert into MeritsCheck values";
                 while (true)
                 {
-                    //MeritsCheckView merits = new MeritsCheckView();
                     num++;
                     var getrow = sheet.GetRow(num);
                     if (getrow==null)
@@ -277,9 +275,6 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
 
 
                     }
-                //}
-                //sql = sql.Substring(0, sql.Length - 1);
-                //ExecuteSql(sql);
 
 
                 int sum = num - 3;
