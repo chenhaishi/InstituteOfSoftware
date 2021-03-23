@@ -614,7 +614,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             catch (Exception ex)
             {
                 ajaxresult.ErrorCode = 100;
-                ajaxresult.Msg = "导入失败，" + ex.Message;
+                ajaxresult.Msg = "导出失败，" + ex.Message;
 
             }
                 return File(bookStream, "application / vnd.ms - excel", Detailfilename);

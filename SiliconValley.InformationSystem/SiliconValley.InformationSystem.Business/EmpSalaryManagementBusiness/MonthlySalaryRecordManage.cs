@@ -200,23 +200,34 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                             msr.IsDel = false;
                             msr.IsApproval = false;
                             msr.SendingStatus = false;
-                            //msr.IsFinancialAudit = 0;
+                        //msr.IsFinancialAudit = 0;
                         if (attendance != null)
                         {
+                            var SalaryOne = GetSalaryone(item.BaseSalary, msr.PositionSalary, msr.MonthPerformancePay, item.NetbookSubsidy, item.SocialSecuritySubsidy, attendance.DeserveToRegularDays, attendance.ToRegularDays, attendance.LeaveDays, attendance.AbsenteeismDays,attendance.NonPersonalLeaveNum);
+
                             msr.OvertimeCharges = attendance.OvertimeCharges;
                             msr.TardyAndLeaveWithhold = attendance.TardyAndLeaveWithhold;
                             msr.AbsenteeismWithhold = attendance.AbsenteeismWithhold;
                             msr.AbsentNumWithhold = attendance.AbsentNumWithhold;
+                            msr.LeaveDeductions = GetLeaveDeductions(item.Id, msr.PositionSalary,msr.BaseSalary, msr.MonthPerformancePay, attendance.DeserveToRegularDays, attendance.LeaveDays);
+                            var SalaryTwo = GetSalarytwo(SalaryOne, attendance.OvertimeCharges, msr.Bonus, msr.LeaveDeductions, msr.TardyAndLeaveWithhold, msr.AbsentNumWithhold, msr.OtherDeductions);
+
+                            msr.Total = GetTotal(item.Id, SalaryTwo, item.PersonalSocialSecurity, item.PersonalIncomeTax);
+
+
+
+
                             this.Insert(msr);
                             rc.RemoveCache("InRedisMSRData");
                             result.Success = true;
+
                         }
                         else
                         {
-                             msg += "未能为姓名为<span style='font-weight:800'>" + name + "</span>的员工计算月度工资，原因的是该月份的考勤数据为空。<br/>";
-                            
+                            msg += "未能为姓名为<span style='font-weight:800'>" + name + "</span>的员工计算月度工资，原因的是该月份的考勤数据为空。<br/>";
+
                         }
-                        result = Success(msg);
+                result = Success(msg);
                     }
                    
                     }
@@ -262,13 +273,44 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
         /// <param name="PerformanceSalary">绩效工资</param>
         /// <param name="netbookSubsidy">笔记本补助</param>
         /// <param name="socialSecuritySubsidy">社保补贴</param>
+        /// <param name="DeserveToRegularDays">应出勤天数</param>
+        /// <param name="ToRegularDays">到勤天数</param>
+        /// <param name="LeaveDays">请假天数</param>
+        /// <param name="AbsenteeismDays">旷工天数</param>
+        /// <param name="NonPersonalLeaveNum">非事假请假天数</param>
         /// <returns></returns>
-        public decimal? GetSalaryone(decimal? one, decimal? PerformanceSalary, decimal? netbookSubsidy, decimal? socialSecuritySubsidy)
+        public decimal? GetSalaryone(decimal? BaseSalary, decimal? PositionSalary, decimal? PerformanceSalary, decimal? netbookSubsidy, decimal? socialSecuritySubsidy,decimal? DeserveToRegularDays, decimal? ToRegularDays,decimal? LeaveDays,decimal? AbsenteeismDays,decimal? NonPersonalLeaveNum)
         {
-            decimal? SalaryOne = one;
+            decimal? SalaryOne = BaseSalary;
+            if (!string.IsNullOrEmpty(PositionSalary.ToString()))
+            {
+                SalaryOne = SalaryOne + PositionSalary;
+            }
             if (!string.IsNullOrEmpty(PerformanceSalary.ToString()))
             {
                 SalaryOne = SalaryOne + PerformanceSalary;
+            }
+            decimal? num = ToRegularDays;
+            if (!string.IsNullOrEmpty(LeaveDays.ToString()))
+            {
+                num = num + LeaveDays;
+            }
+            if (!string.IsNullOrEmpty(AbsenteeismDays.ToString()))
+            {
+                num = num + AbsenteeismDays;
+            }
+            if (!string.IsNullOrEmpty(NonPersonalLeaveNum.ToString()))
+            {
+                num = num + NonPersonalLeaveNum;
+                ToRegularDays = ToRegularDays + NonPersonalLeaveNum;
+            }
+            if (DeserveToRegularDays - num > 0)
+            {
+                SalaryOne = SalaryOne / DeserveToRegularDays * ToRegularDays;
+            }
+            else
+            {
+                SalaryOne = SalaryOne / DeserveToRegularDays * num;
             }
             if (!string.IsNullOrEmpty(netbookSubsidy.ToString()))
             {
@@ -279,26 +321,31 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 SalaryOne = SalaryOne + socialSecuritySubsidy;
             }
 
-            return SalaryOne;
+            return Math.Round(Convert.ToDecimal(SalaryOne.ToString()), 2);
         }
 
         /// <summary>
         /// 计算请假扣款
         /// </summary>
-        /// <param name="one">基本工资+岗位工资</param>
+        /// <param name="BaseSalary">基本工资</param>
+        /// <param name="PositionSalary">岗位工资</param>
         /// <param name="persalary">绩效工资</param>
         /// <param name="shouldday">应出勤天数</param>
         /// <param name="leaveday">请假天数</param>
         /// <returns></returns>
-        public decimal? GetLeaveDeductions(int id, decimal? one, decimal? persalary, decimal? shouldday, decimal? leaveday)
+        public decimal? GetLeaveDeductions(int id, decimal? PositionSalary,decimal? BaseSalary, decimal? persalary, decimal? shouldday, decimal? leaveday)
         {
             AjaxResult result = new AjaxResult();
-            decimal? countsalary = one;
+            decimal? countsalary = PositionSalary;
             var msr = this.GetEntity(id);
             try
             {
                 if (!string.IsNullOrEmpty(shouldday.ToString()))
                 {
+                    if (!string.IsNullOrEmpty(BaseSalary.ToString()))
+                    {
+                        countsalary = countsalary + BaseSalary;
+                    }
                     if (!string.IsNullOrEmpty(persalary.ToString()))
                     {
                         countsalary = countsalary + persalary;
@@ -307,12 +354,14 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     if (!string.IsNullOrEmpty(leaveday.ToString()))
                     {
                         countsalary = countsalary / shouldday * leaveday;
-
-                        msr.LeaveDeductions = countsalary;
-                        this.Update(msr);
-                        rc.RemoveCache("InRedisMSRData");
-                        result = this.Success();
                         countsalary = (decimal)Math.Round(Convert.ToDouble(countsalary), 2);
+                        if (msr != null)
+                        {
+                            msr.LeaveDeductions = countsalary;
+                            this.Update(msr);
+                            rc.RemoveCache("InRedisMSRData");
+                            result = this.Success();
+                        }
                     }
                     else
                     {
@@ -450,10 +499,13 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             try
             {
                 var msr = this.GetEntity(id);
-                msr.Total = Total;
-                this.Update(msr);
-                rc.RemoveCache("InRedisMSRData");
-                result = this.Success();
+                if (msr != null)
+                {
+                    msr.Total = Total;
+                    this.Update(msr);
+                    rc.RemoveCache("InRedisMSRData");
+                    result = this.Success();
+                }
             }
             catch (Exception ex)
             {
@@ -603,7 +655,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 <th>缺卡扣款(元)</th>
                 <th>旷工扣款(元)</th>
             </tr>";
-                var SalaryOne = GetSalaryone(m.BaseSalary + m.PositionSalary, m.MonthPerformancePay, m.NetbookSubsidy, m.SocialSecuritySubsidy);
+                var SalaryOne = GetSalaryone(m.BaseSalary, m.PositionSalary, m.MonthPerformancePay, m.NetbookSubsidy, m.SocialSecuritySubsidy, att.DeserveToRegularDays, att.ToRegularDays, att.LeaveDays, att.AbsenteeismDays,att.NonPersonalLeaveNum);
                 var SalaryTwo = GetSalarytwo(SalaryOne, m.OvertimeCharges, m.Bonus, m.LeaveDeductions, m.TardyAndLeaveWithhold, m.AbsentNumWithhold, m.OtherDeductions);
 
                 mail.Body += "<tr><td>" + manage.GetEntity(m.EmployeeId).EmpName + "</td>" +
@@ -859,7 +911,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             var workbook = new XSSFWorkbook();
             EmployeesInfoManage manage = new EmployeesInfoManage();
             AttendanceInfoManage attendance = new AttendanceInfoManage();
-
+          
             //创建工作区
             var sheet = workbook.CreateSheet();
 
@@ -888,10 +940,11 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             var YearAndMonth = "";
             data.ForEach(d =>
             {
+                var att = GetAttendanceInfoByEmpid(d.EmployeeId, Convert.ToDateTime(d.YearAndMonth));
                 var row = (XSSFRow)sheet.CreateRow(num);
                 YearAndMonth = d.YearAndMonth.ToString();
 
-                var Salaryone = GetSalaryone(d.BaseSalary + d.PositionSalary, d.MonthPerformancePay, d.NetbookSubsidy, d.SocialSecuritySubsidy);
+                var Salaryone = GetSalaryone(d.BaseSalary, d.PositionSalary, d.MonthPerformancePay, d.NetbookSubsidy, d.SocialSecuritySubsidy, att.DeserveToRegularDays, att.ToRegularDays, att.LeaveDays, att.AbsenteeismDays,att.NonPersonalLeaveNum);
                 var Salarytwo = GetSalarytwo(Salaryone, d.OvertimeCharges, d.Bonus, d.LeaveDeductions, d.TardyAndLeaveWithhold, d.AbsentNumWithhold, d.OtherDeductions);
                 var PaycardSalary = GetPaycardSalary(d.Id, d.Total, d.PersonalSocialSecurity, d.ContributionBase);
 

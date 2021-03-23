@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NPOI.HSSF.UserModel;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using SiliconValley.InformationSystem.Business.ClassesBusiness;
 using SiliconValley.InformationSystem.Business.Common;
 using SiliconValley.InformationSystem.Business.FinaceBusines;
@@ -791,6 +795,105 @@ namespace SiliconValley.InformationSystem.Business.EnrollmentBusiness
         public int StudentUndergraduatecount(string Studentid)
         {
             return this.GetList().Where(a => a.StudentNumber == Studentid && a.IsDelete == false&&a.PassNumber!=null).Count();
+        }
+        /// <summary>
+        /// 拿到考勤excel表中的第一个单元
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="contentType"></param>
+        /// <returns></returns>
+        public AjaxResult ImportDataFormExcel(Stream stream, string contentType)
+        {
+            IWorkbook workbook = null;
+            AjaxResult result = new AjaxResult();
+            try
+            {
+                if (contentType == "application/vnd.ms-excel")
+                {
+                    workbook = new HSSFWorkbook(stream);
+                }
+
+                if (contentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                {
+                    workbook = new XSSFWorkbook(stream);
+                }
+
+                ISheet sheet = workbook.GetSheetAt(0);
+                result = ExcelImportAtdSql(sheet);
+                stream.Close();
+                stream.Dispose();
+                workbook.Close();
+            }
+            catch (Exception e)
+            {
+                result.Success = false;
+                result.Msg = e.Message;
+            }
+
+
+            return result;
+        }
+
+        /// <summary>
+        /// 将excel数据类的数据存入到数据库的考勤表中
+        /// </summary>
+        /// <returns></returns>
+        public AjaxResult ExcelImportAtdSql(ISheet sheet)
+        {
+            var ajaxresult = new AjaxResult();
+            //StudentInformationBusiness student = new StudentInformationBusiness();
+
+            int num = 3;
+            try
+            {
+                var under = UbderfgerBunsiness.GetList();
+                var schoollist = UndergraduateschoolBunsiness.GetList();
+                while (true)
+                {
+                    num++;
+                    var getrow = sheet.GetRow(num);
+                    if (getrow == null)
+                    {
+                        break;
+                    }
+                    string School = string.IsNullOrEmpty(Convert.ToString(sheet.GetRow(0).GetCell(0))) ? null : sheet.GetRow(0).GetCell(0).ToString();
+                    string passNumber = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(1))) ? null : getrow.GetCell(1).ToString();
+                    string name = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(2))) ? null : getrow.GetCell(2).ToString();
+                    string identitydocument = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(3))) ? null : getrow.GetCell(3).ToString();
+                    string professionalName = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(4))) ? null : getrow.GetCell(4).ToString();
+                    string Datestration = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(5))) ? null : getrow.GetCell(5).ToString();
+
+                    var student = studentInformationBusiness.GetListBySql<StudentInformation>("select * from StudentInformation where identitydocument='" + identitydocument + "'").FirstOrDefault();
+                    if (student == null)
+                    {
+                        StudentInformation stu = new StudentInformation();
+                        stu.StudentNumber = num.ToString();
+                        stu.Name = name;
+                        stu.identitydocument = identitydocument;
+                        studentInformationBusiness.Insert(stu);
+
+                    }
+                    var year = Datestration.Substring(0, 4);
+                    var month = Datestration.Substring(4, 2);
+                    Enrollment e = new Enrollment();
+                    e.PassNumber = passNumber;
+                    e.StudentNumber = student.StudentNumber;
+                    e.Datestration = Convert.ToDateTime(year + "-" + month + "-01");
+                    e.MajorID = under.Where(i => i.ProfessionalName == professionalName).FirstOrDefault().id;
+                    e.School = schoollist.Where(i => i.SchoolName == School).FirstOrDefault().id;
+                    e.IsDelete = false;
+                    Insert(e);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                ajaxresult.Success = false;
+                ajaxresult.ErrorCode = 500;
+                ajaxresult.Msg = ex.Message;
+                ajaxresult.Data = "0";
+            }
+            return ajaxresult;
         }
     }
 }
