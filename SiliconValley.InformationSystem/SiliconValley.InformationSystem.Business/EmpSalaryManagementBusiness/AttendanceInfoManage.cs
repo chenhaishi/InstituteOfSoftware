@@ -546,8 +546,8 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                             else
                             {
                                     var emp = empmanage.GetEmpByDDid(Convert.ToInt32(ddid));
-                                if (this.IsExist(emp.EmployeeId, Convert.ToDateTime(year_month)))
-                                {
+                                    if (!this.IsExist(emp.EmployeeId, Convert.ToDateTime(year_month)))
+                                    {
                                     attview.empname = name;
                                     attview.errorExplain = "该员工这个月的考勤已存在！";
                                     attdatalist.Add(attview);
@@ -961,7 +961,15 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             decimal countsalary=0;
             if (salary!=null)
             {
-                 countsalary = Convert.ToDecimal(salary.BaseSalary + salary.PositionSalary + salary.PerformancePay);
+                countsalary = Convert.ToDecimal(salary.BaseSalary);
+                if (!string.IsNullOrEmpty(salary.PerformancePay.ToString()))
+                {
+                    countsalary = Convert.ToDecimal(countsalary + salary.PerformancePay);
+                }
+                if (!string.IsNullOrEmpty(salary.PositionSalary.ToString()))
+                {
+                    countsalary = Convert.ToDecimal(countsalary + salary.PositionSalary);
+                }
             }
 
 
@@ -986,8 +994,8 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 {
                     result = 50;
                 }
+                result += countsalary / DeserveToRegularDays / 2;
             }
-            result += countsalary / DeserveToRegularDays / 2;
             return result;
         }
 
@@ -1073,12 +1081,13 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
         /// <param name="year_month"></param>
         /// <returns></returns>
         public bool IsExist(string empid,DateTime year_month) {
-            var result = false;
+            var result = true;
             var year = year_month.Year;
             var month = year_month.Month;
-            var atd= this.GetListBySql<AttendanceInfo>("select * from AttendanceInfo where EmployeeId='empid' and YEAR(YearAndMonth)=" + year + " and MONTH(YearAndMonth)=" + month);
-            if (atd.Count()>0) {
-                result = true;
+            var atd = this.GetListBySql<AttendanceInfo>("select * from AttendanceInfo where EmployeeId='" + empid + "' and YEAR(YearAndMonth)=" + year + " and MONTH(YearAndMonth)=" + month).Count();
+            if (atd != 0)
+            {
+                result = false;
             }
             return result;
         }
