@@ -86,6 +86,7 @@
     <Compile Include="Entity\Accdationinformation.cs" />
     <Compile Include="Entity\AddCourse.cs" />
     <Compile Include="Entity\AdmissArrangement.cs" />
+    <Compile Include="Entity\AnalysisoftheChoiceQuestion.cs" />
     <Compile Include="Entity\AnswerQuestionBank.cs" />
     <Compile Include="Entity\AnswerQuestionPaper.cs" />
     <Compile Include="Entity\ApplicationDropout.cs" />

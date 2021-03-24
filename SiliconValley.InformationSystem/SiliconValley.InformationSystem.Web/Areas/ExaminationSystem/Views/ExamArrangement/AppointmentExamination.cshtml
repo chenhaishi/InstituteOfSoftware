@@ -46,7 +46,7 @@
             position: fixed;
             right: 0px;
             width: 300px;
-            height: 90%;
+            height: 85%;
             background-color: white;
             z-index: 2;
             border: 1px solid #e0d0d0;
@@ -380,8 +380,11 @@
 
             //点击确定预约
             form.on('submit(commit1)', function (data) {
-
-                document.getElementById("kaiqitrue").disabled = true;
+                $("#kaiqitrue").attr({ "disabled": "disabled" });
+                //document.getElementById("kaiqitrue").disabled = true;
+                document.getElementById("kaiqitrue").innerHTML = "加载中...";
+                //document.getElementById("kaiqitrue").style.color = "white"; 
+                
                 var examid = "";
 
                 $(".examintaionitem .layui-form-radio").each(function () {
@@ -400,7 +403,8 @@
 
                     if (data.ErrorCode == 400) {
                         layer.msg("考试已经结束！");
-                        document.getElementById("kaiqitrue").disabled = false;
+                        $("#kaiqitrue").removeAttr("disabled");
+                        document.getElementById("kaiqitrue").innerHTML = "确认";
                         return;
                     }
 
@@ -408,10 +412,12 @@
                         layer.msg("报名成功！");
                         $("#myfloat").slideUp();
                         table.reload("mystudentlist");
-                        document.getElementById("kaiqitrue").disabled = false;
+                        $("#kaiqitrue").removeAttr("disabled");
+                        document.getElementById("kaiqitrue").innerHTML = "确认";
                     } else {
                         layer.msg("考试结束");
-                        document.getElementById("kaiqitrue").disabled = false;
+                        $("#kaiqitrue").removeAttr("disabled");
+                        document.getElementById("kaiqitrue").innerHTML = "确认";
                     }
 
                 });

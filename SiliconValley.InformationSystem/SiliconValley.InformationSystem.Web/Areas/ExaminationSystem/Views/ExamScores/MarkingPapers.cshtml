@@ -89,11 +89,11 @@
                     <a id="YiJian" class="layui-btn layui-btn-danger" style="width:100%;color:white">一键下载机试</a>
                 </td>
             </tr>
-            <tr>
+            @*<tr>
                 <td colspan="2">
                     <a id="YiJianjd" class="layui-btn layui-btn-danger" style="width:100%;color:white">一键下载解答题</a>
                 </td>
-            </tr>
+            </tr>*@
             
             <tr>
                 <td colspan="2">
@@ -154,7 +154,7 @@
         </tbody>
 
     </table>
-    <div style="margin-left:31px;margin-top:-940px;float:none;width:1140px">
+    <div style="margin-left:31px;margin-top:-870px;float:none;width:1140px">
         <table class="layui-hide" lay-filter="ExamScores" id="ExamScores"></table>
     </div>
 </div>
@@ -211,7 +211,8 @@
 </div>
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
-        <a  id="xiazaimoban" class="layui-btn" style="color:white;width:20%">下载模板</a>
+        <a @*href="/ExaminationSystem/ExamScores/DownFile"*@ lay-event="BatchExport"  class="layui-btn" style="color:white;width:20%">导出模板</a>
+        @*<a  id="xiazaimoban" class="layui-btn" style="color:white;width:20%">下载模板</a>*@
         <a class="layui-btn" style="color:white;width:20%" lay-event="OneClickUploadScore" id="OneClickUploadScore">一键上传分数</a>
         <a href="\ExaminationSystem\ExamScores\Marking" class="layui-btn layui-btn-danger" style="color:white;width:20%">跳转查看笔试</a>
     </div>
@@ -299,7 +300,8 @@
                 var data = obj.data;
                 StuExamNumber = obj.data.StudentID;
                 var DownloadContent = obj.data.DownloadContent;
-                console.log(Examid);
+                //console.log(Examid);
+                //console.log(StuExamNumber);
                 if (obj.event === 'download') {
                     $('.download').attr('href', "/ExaminationSystem/ExamScores/DownloadComputerSheet?examid=" + Examid + "&kaohao=" + StuExamNumber);
 
@@ -330,19 +332,33 @@
                 var checkStatus = table.checkStatus(obj.config.id);
                 switch (obj.event) {
                     case 'OneClickUploadScore':
-                        layer.msg("功能优化中");
-                        //layer.open({
-                        //    type: 1,
-                        //    title: "上传",
-                        //    area: ["600px", "400px"],
-                        //    content: $('#yincangDiv'),
-                        //    success: function () {
+                        //layer.msg("功能优化中");
+                        layer.open({
+                            type: 1,
+                            title: "上传",
+                            area: ["600px", "400px"],
+                            content: $('#yincangDiv'),
+                            success: function () {
 
-                        //    }
-                        //});
+                            }
+                        });
+                        break;
+                    case 'BatchExport':
+                        BatchExportEmps();
                         break;
                 };
             });
+            //批量导出的方法
+            function BatchExportEmps() {
+                //var mydata = tab1.config.data;
+
+                var close = layer.confirm('确认导出?', { icon: 3, title: '提示' }, function (index) {
+                    console.log("条件：" + Examid);
+                    layer.close(close); 
+                    window.open("/ExaminationSystem/ExamScores/EmpInfoToExcel?Examid=" + Examid);
+                });
+
+            }
             //选择文件之后的函数
             $("#file").change(function (data) {
 
@@ -463,7 +479,7 @@
             //下载模板
             $(document).off("click", "#xiazaimoban").on("click", "#xiazaimoban", function () {
                 //var lodindex = layer.load(1);
-                layer.msg("正在下载!!!");
+                //layer.msg("正在下载!!!");
                 $.ajax({
                     url: '/ExaminationSystem/ExamScores/DownloadModule?examid=' + Examid,
                     type: 'post',

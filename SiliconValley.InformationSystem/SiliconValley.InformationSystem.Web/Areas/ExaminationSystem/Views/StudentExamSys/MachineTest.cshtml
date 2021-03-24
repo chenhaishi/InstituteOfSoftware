@@ -101,7 +101,7 @@
     <div class="top">
         <div class="topf">
             <h3 style="color:red">注意事项</h3>
-            检查自己是否有压缩软件,提交的机试是否写上自己的姓名,然提交的机试请与自己考题一样的项目,下载下来的机试将会被记录,如项目与自己的考题无关将做零分处理。
+            检查自己是否有压缩软件,提交的机试是否写上自己的姓名,然提交的机试请与自己考题一样的项目,下载下来的机试将会被记录,如项目与自己的考题无关将做零分处理,机试提交失败重新登录,再次交卷。
             
         </div>
     </div>
@@ -188,10 +188,12 @@
                         }
 
                         else {
+                            console.log(result.Data);
                             layer.msg('失败', { icon: 2 });
                         }
                     },
                     error: function () {
+                        console.log(result.Data);
                         layer.msg('异常。。', { icon: 2 });
 
                     }
@@ -212,7 +214,7 @@
                     CommitAnswerSheet();
                 }
                 else {
-                    var msg = "点击确认之后,在上传机试,请耐心等待,别疯狂点击!";
+                    var msg = "点击确认之后,在上传机试,请耐心等待,别疯狂点击,会出现白卷情况!";
 
                     if (formData.get("rarfile") == undefined) {
                         msg = "机试未上传,是否继续提交";

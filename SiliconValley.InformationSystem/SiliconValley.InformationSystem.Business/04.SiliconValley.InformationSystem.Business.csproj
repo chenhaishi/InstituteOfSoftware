@@ -226,6 +226,7 @@
     <Compile Include="EmpTransactionBusiness\EmpTransactionManage.cs" />
     <Compile Include="EnroExamination_Business\EnroExaminationBusiness.cs" />
     <Compile Include="EnrollmentBusiness\EnrollmentBusinesse.cs" />
+    <Compile Include="ExaminationSystemBusiness\AnalysisoftheChoiceQuestionBusiness.cs" />
     <Compile Include="ExaminationSystemBusiness\AnswerQuestionBusiness.cs" />
     <Compile Include="ExaminationSystemBusiness\CandidateInfoBusiness.cs" />
     <Compile Include="ExaminationSystemBusiness\ChoiceQuestionBusiness.cs" />
