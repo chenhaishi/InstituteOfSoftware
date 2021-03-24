@@ -32,6 +32,13 @@
                 <input type="text" class="layui-input" id="test4" placeholder="yyyy-MM-dd">
             </div>
         </div>
+        <div class="layui-inline">
+
+            <label class="layui-form-label">导出当天</label>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" id="test5" placeholder="yyyy-MM-dd">
+            </div>
+        </div>
         <button class="layui-btn" type="button" id="demo">确认导出</button>
 
     </form>
@@ -39,9 +46,9 @@
 </body>
 </html>
 <script>
-    layui.use('laydate', function () {
+    layui.use(['laydate', 'layer'], function () {
         var laydate = layui.laydate;
-
+        var layer = layui.layer;
         //执行一个laydate实例
         laydate.render({
             elem: '#test3'
@@ -50,11 +57,15 @@
         laydate.render({
             elem: '#test4'
         });
+        laydate.render({
+            elem: '#test5'
+        });
 
         $("#demo").click(function () {
             var date = $("#test3").val();
+            var test = $("#test5").val();
             var time = $("#test4").val();
-            $.post("/Finance/Pricedetails/Entrydataexport_List", { date: date, time: time }, (r) => {
+            $.post("/Finance/Pricedetails/Entrydataexport_List", { date: date, time: time, test: test}, (r) => {
                 if (r.code == 0) {
                     //列标题，逗号隔开，每一个逗号就是隔开一个单元格
                     let str = `学生学号,学生名字,学生身份证,班级,缴费金额,缴费名目,缴费单号,缴费阶段,收款方式,入账时间,缴费时间,经办人,备注\n`;
@@ -78,8 +89,11 @@
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
-                    layer.msg("导出成功!");
+                    layer.msg(r.msg);
                     layer.close();
+                }
+                else if (r.code == -1) {
+                    layer.msg(r.msg);
                 }
                 
             });

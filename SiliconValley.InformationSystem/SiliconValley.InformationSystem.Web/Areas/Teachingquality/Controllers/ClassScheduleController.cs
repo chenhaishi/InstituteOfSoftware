@@ -86,6 +86,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
             ViewBag.ClassState = States.Select(a => new SelectListItem { Text = a.TypeName, Value = a.id==null? "null":a.id.ToString(),Selected=(a.id==null) });
             return View();
         }
+        public ActionResult OddNumberMyclass()
+        {
+            return View();
+        }
         //基础数据枚举数据
         BaseDataEnumBusiness BanseDatea = new BaseDataEnumBusiness();
         //当前登陆人

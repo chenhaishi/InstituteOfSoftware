@@ -1,0 +1,132 @@
+﻿
+@{
+    ViewBag.Title = "OddNumberMyclass";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<form class="layui-form" action="">
+    <div class="layui-carousel-left">
+        <div class="layui-row ">
+
+
+            <div class="layui-row layui-form-item">
+
+
+                <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                    <label class="layui-form-label labels">学号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="StudentID" autocomplete="off" class="layui-input linu">
+                    </div>
+                </div>
+                <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                    <label class="layui-form-label labels">姓名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="Name" class="layui-input linu">
+                    </div>
+                </div>
+                <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                    <label class="layui-form-label labels">单号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="OddNumbers" class="layui-input linu">
+                    </div>
+                </div>
+                <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                    <label class="layui-form-label">状态</label>
+                    <div class="layui-input-block">
+                        <select name="IsaDopt">
+                            <option value="" selected="">全部</option>
+                            <option value="1">已入账</option>
+                            <option value="null">待审核</option>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+
+            <div style="position:absolute;left:78%;top:67px;">
+                <button class="layui-btn" lay-submit="" type="button" lay-filter="demo2"><i class="layui-icon">&#xe615;</i> 查询</button>
+            </div>
+
+
+        </div>
+
+    </div>
+</form>
+<div>
+    <table class="layui-hide" id="test" lay-filter="test"></table>
+</div>
+<script type="text/html" id="barDemo">
+
+    {{#  if(d.Passornot ==1){ }}
+    <a class="layui-btn layui-btn-xs layui-btn-sm" lay-event="process"><i class="layui-icon">&#x1005;</i>已入账</a>
+    {{#  }else{ }}
+    <a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="process"><i class="layui-icon">&#xe6b2;</i>待处理</a>
+    {{#   } }}
+
+</script>
+<script src="~/Scripts/Tangmin_CssAndJs/com_js/MyOrther_tangmin.js"></script>
+<script src="~/Areas/Teachingquality/js/AjaxAddupdate.js"></script>
+<script src="~/Areas/Teachingquality/js/Datetime.js"></script>
+<script>
+
+    layui.use(['table', 'layer', 'tree', 'form'], function () {
+        var table = layui.table;
+        var layer = layui.layer;
+        var form = layui.form;
+
+        //表格渲染
+        table.render({
+            elem: '#test'
+            , url: '/Finance/Pricedetails/Expenseentrys'
+            , toolbar: '#toolbarDemo'
+            , id: 'idTest'
+            , page: true
+            , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            , cols: [[
+                { type: 'radio' }
+                , { field: 'studentid', title: '学号', sort: true }
+                , { field: 'name', title: '姓名' }
+                , { field: 'IDnumber', title: '身份证号 ' }
+                , { field: 'Amountofmoney', title: '金额 ' }
+                , {
+                    field: 'OddNumbers', title: '单号', templet: function (c) {
+                        if (c.OddNumbers == null) {
+                            return "待审核入账";
+                        }
+                        return c.OddNumbers;
+                    }
+                }
+                , {
+                    field: 'AddDate', title: '缴费时间', templet: function (c) {
+                        return getFDate(c.AddDate);
+                    }
+                }
+                , { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 100 }
+            ]]
+            , page: true
+            , limit: 15
+            , limits: [15, 18, 20]
+        });
+
+
+        //查询功能
+        form.on('submit(demo2)', function (data) {
+            var x = data.field;
+            table.reload('idTest', {
+                where: {
+                    StudentID: x.StudentID,
+                    Name: x.Name,
+                    IsaDopt: x.IsaDopt,
+                    OddNumbers: x.OddNumbers
+                }, page: {
+                    curr: 1
+                }
+            });
+            return false;
+        });
+
+        //监听操作按钮
+    
+     
+    });
+
+</script>
