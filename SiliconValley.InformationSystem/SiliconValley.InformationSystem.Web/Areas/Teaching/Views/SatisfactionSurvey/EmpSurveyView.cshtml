@@ -45,7 +45,7 @@
     <hr />
     <div id="surveytabel">
         <div id="optiores">
-            <label style="color:gray;">时间：</label> <input type="text" style="width:200px;display:inline-block;" class="layui-input" id="date1">
+            <label style="color:gray;">时间：</label> <input type="text" style="width:200px;display:inline-block;" class="layui-input" id="date1" placeholder="yyyy-MM" autocomplete="off">
         </div>
 
         <!--数据表格-->
@@ -111,7 +111,10 @@
             });
 
             laydate.render({
-                elem: '#date1' //指定元素
+                elem: '#date1', //指定元素
+                format: 'yyyy-MM',
+                type: 'month',
+                trigger: 'click'//点击触发
                 , change: function (value, date, endDate) {
 
                     table.reload('dataTable', {
