@@ -866,6 +866,8 @@ namespace SiliconValley.InformationSystem.Business.EnrollmentBusiness
                     var student = studentInformationBusiness.GetListBySql<StudentInformation>("select * from StudentInformation where identitydocument='" + identitydocument + "'").FirstOrDefault();
                     if (student == null)
                     {
+                        var s= studentInformationBusiness.GetListBySql<StudentInformation>("select top 1 StudentNumber+1  from StudentInformation order by StudentNumber desc").FirstOrDefault();
+                     
                         StudentInformation stu = new StudentInformation();
                         stu.StudentNumber = num.ToString();
                         stu.Name = name;
