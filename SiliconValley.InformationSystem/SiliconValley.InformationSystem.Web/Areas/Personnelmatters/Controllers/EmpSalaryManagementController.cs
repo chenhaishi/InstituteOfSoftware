@@ -666,28 +666,28 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
 
                 CreateCell(row, ContentcellStyle, 0, d.EmployeeId);//员工编号
                 CreateCell(row, ContentcellStyle, 1, d.empName);//员工姓名
-                //CreateCell(row, ContentcellStyle, 2, manage.GetDeptByEmpid(d.EmployeeId).DeptName);//所属部门
-                //CreateCell(row, ContentcellStyle, 3, manage.GetPositionByEmpid(d.EmployeeId).PositionName);//所属岗位
-                //CreateCell(row, ContentcellStyle, 4, d.BaseSalary.ToString());//基本工资
-                //CreateCell(row, ContentcellStyle, 5, d.PositionSalary.ToString());//岗位工资
-                //CreateCell(row, ContentcellStyle, 6, d.FinalGrade.ToString());//绩效分
-                //CreateCell(row, ContentcellStyle, 7, d.MonthPerformancePay.ToString());//绩效工资
-                //CreateCell(row, ContentcellStyle, 8, d.NetbookSubsidy.ToString());//笔记本补助
-                //CreateCell(row, ContentcellStyle, 9, d.SocialSecuritySubsidy.ToString());//社保补贴
-                //CreateCell(row, ContentcellStyle, 10, Salaryone.ToString());//应发工资1
-                //CreateCell(row, ContentcellStyle, 11, d.OvertimeCharges.ToString());//加班费用
-                //CreateCell(row, ContentcellStyle, 12, d.Bonus.ToString());//奖金(元)
-                //CreateCell(row, ContentcellStyle, 13, monthly.GetAttendanceInfoByEmpid(d.EmployeeId, (DateTime)d.YearAndMonth).LeaveDays.ToString());//请假天数
-                //CreateCell(row, ContentcellStyle, 14, d.LeaveDeductions.ToString());//请假扣款(元)
-                //CreateCell(row, ContentcellStyle, 15, d.TardyAndLeaveWithhold.ToString());//迟到/早退扣款(元)
-                //CreateCell(row, ContentcellStyle, 16, d.AbsentNumWithhold.ToString());//缺卡扣款(元)
-                //CreateCell(row, ContentcellStyle, 17, d.AbsenteeismWithhold.ToString());//旷工扣款(元)
-                //CreateCell(row, ContentcellStyle, 18, d.OtherDeductions.ToString());//其他扣款(元)
-                //CreateCell(row, ContentcellStyle, 19, Salarytwo.ToString());//应发工资2
-                //CreateCell(row, ContentcellStyle, 20, d.PersonalSocialSecurity.ToString());//个人社保
-                //CreateCell(row, ContentcellStyle, 21, d.PersonalIncomeTax.ToString());//个税
-                //CreateCell(row, ContentcellStyle, 22, PaycardSalary.ToString());//实发工资(工资卡)
-                //CreateCell(row, ContentcellStyle, 23, monthly.GetCashSalary(d.Id, d.Total, PaycardSalary).ToString());//实发工资(现金)
+                CreateCell(row, ContentcellStyle, 2, d.Depart);//所属部门
+                CreateCell(row, ContentcellStyle, 3, d.Position);//所属岗位
+                CreateCell(row, ContentcellStyle, 4, d.baseSalary.ToString());//基本工资
+                CreateCell(row, ContentcellStyle, 5, d.positionSalary.ToString());//岗位工资
+                CreateCell(row, ContentcellStyle, 6, d.finalGrade.ToString());//绩效分
+                CreateCell(row, ContentcellStyle, 7, d.PerformanceSalary.ToString());//绩效工资
+                CreateCell(row, ContentcellStyle, 8, d.netbookSubsidy.ToString());//笔记本补助
+                CreateCell(row, ContentcellStyle, 9, d.socialSecuritySubsidy.ToString());//社保补贴
+                CreateCell(row, ContentcellStyle, 10, d.SalaryOne.ToString());//应发工资1
+                CreateCell(row, ContentcellStyle, 11, d.OvertimeCharges.ToString());//加班费用
+                CreateCell(row, ContentcellStyle, 12, d.Bonus.ToString());//奖金(元)
+                CreateCell(row, ContentcellStyle, 13, d.leavedays.ToString());//请假天数
+                CreateCell(row, ContentcellStyle, 14, d.LeaveDeductions.ToString());//请假扣款(元)
+                CreateCell(row, ContentcellStyle, 15, d.TardyAndLeaveWithhold.ToString());//迟到/早退扣款(元)
+                CreateCell(row, ContentcellStyle, 16, d.NoClockWithhold.ToString());//缺卡扣款(元)
+                CreateCell(row, ContentcellStyle, 17, d.AbsentNumWithhold.ToString());//旷工扣款(元)
+                CreateCell(row, ContentcellStyle, 18, d.OtherDeductions.ToString());//其他扣款(元)
+                CreateCell(row, ContentcellStyle, 19, d.SalaryTwo.ToString());//应发工资2
+                CreateCell(row, ContentcellStyle, 20, d.PersonalSocialSecurity.ToString());//个人社保
+                CreateCell(row, ContentcellStyle, 21, d.PersonalIncomeTax.ToString());//个税
+                CreateCell(row, ContentcellStyle, 22, d.PayCardSalary.ToString());//实发工资(工资卡)
+                CreateCell(row, ContentcellStyle, 23,d.CashSalary.ToString());//实发工资(现金)
                 CreateCell(row, ContentcellStyle, 24,d.Total.ToString());//实发工资(现金)
                 num++;
 
