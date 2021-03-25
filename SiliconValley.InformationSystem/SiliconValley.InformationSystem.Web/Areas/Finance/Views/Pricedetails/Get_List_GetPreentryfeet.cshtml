@@ -38,9 +38,9 @@
 </body>
 </html>
 <script>
-    layui.use('laydate', function () {
+    layui.use(['laydate', 'layer'], function () {
         var laydate = layui.laydate;
-
+        var layer = layui.layer;
         //执行一个laydate实例
         laydate.render({
             elem: '#test3'
@@ -77,8 +77,11 @@
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
-                    layer.msg("导出成功!");
+                    layer.msg(r.msg);
                     layer.close();
+                }
+                else {
+                    layer.msg(r.msg);
                 }
 
             });

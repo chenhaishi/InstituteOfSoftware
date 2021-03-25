@@ -580,21 +580,29 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
                     GetPreentryfeet.Add(cmd);
                 }
             }
+            if (GetPreentryfeet.Count() == 0)
+            {
+                return Json(new { code = -1, msg="该时间段没有数据" });
+            }
+            else
+            {
+                return Json(new { code = 0, data = GetPreentryfeet, msg = "导出成功" });
+            }
 
             //CostDataToExcel(PriceDCList);
-            return Json(new { code = 0, data = GetPreentryfeet });
+           
         }
         /// <summary>
         /// 入账数据查询导出
         /// </summary>
         /// <returns></returns>
-        public ActionResult Entrydataexport_List(string date,string time)
+        public ActionResult Entrydataexport_List(string date,string time,string test)
         {
             BaseBusiness<StudentFeeRecordListView> StudentFeeRecordListView = new BaseBusiness<StudentFeeRecordListView>();
             BaseBusiness<ScheduleForTrainees> ScheduleForTrainees = new BaseBusiness<ScheduleForTrainees>();
             StudentFeeStandardBusinsess StudentFeeStandardBusinsess = new StudentFeeStandardBusinsess();
             List<PriceDC> PriceDCList = new List<PriceDC>();
-            if (date == "" || date == null)
+            if (date == "" && time == ""&& test == "" )
             {
                 var ListView = StudentFeeRecordListView.GetListBySql<StudentFeeRecordListView>("select * from StudentFeeRecordListView where Passornot='1' and AddTime is not null").ToList();
                 foreach (var item in ListView)
@@ -616,10 +624,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
                     PriceDCList.Add(priceDC);
                 }
             }
-            else
+            else if(date != "" && time != "")
             {
                
-                var ListView = StudentFeeRecordListView.GetListBySql<StudentFeeRecordListView>("select * from StudentFeeRecordListView where Passornot='1' and AddTime is not null and  AddDate>=(dateadd(day,-1,'"+date+"')) and AddDate<=(dateadd(day,1,'"+time+"'))").ToList();
+                var ListView = StudentFeeRecordListView.GetListBySql<StudentFeeRecordListView>("select * from StudentFeeRecordListView where Passornot='1' and AddTime is not null and  AddTime>=(dateadd(day,-1,'"+date+ "')) and AddTime<=(dateadd(day,1,'" + time+"'))").ToList();
                 foreach (var item in ListView)
                 {
                     PriceDC priceDC = new PriceDC();
@@ -639,9 +647,38 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
                     PriceDCList.Add(priceDC);
                 }
             }
-           
+            else if(test!="")
+            {
+                var ListView = StudentFeeRecordListView.GetListBySql<StudentFeeRecordListView>("select * from StudentFeeRecordListView where Passornot='1' and AddTime is not null and  AddTime='" + test + "'").ToList();
+                foreach (var item in ListView)
+                {
+                    PriceDC priceDC = new PriceDC();
+                    priceDC.studentID = item.StudenID;
+                    priceDC.className = item.Name;
+                    priceDC.identity = item.identitydocument;
+                    priceDC.Amountofmoney = item.Amountofmoney;
+                    priceDC.CostitemsName = item.CostitemsName;
+                    priceDC.OddNumbers = item.OddNumbers;
+                    priceDC.GrandName = item.StageName;
+                    priceDC.Paymentmethod = item.Paymentmethod;
+                    priceDC.AddTime = item.AddTime.ToString();
+                    priceDC.AddDate = item.AddDate.ToString("yyyy-MM-dd");
+                    priceDC.FinanceModelName = item.FinancialstaffName;
+                    priceDC.ClassID = StudentFeeStandardBusinsess.schFor_Class(item.StudenID).ClassID;
+                    priceDC.Remarks = StudentFeeStandardBusinsess.Remarks(item.StudenID).Remarks;
+                    PriceDCList.Add(priceDC);
+                }
+            }
+            if (PriceDCList.Count() == 0)
+            {
+                return Json(new { code = -1, msg = "该时间段没有数据" });
+            }
+            else
+            {
+                return Json(new { code = 0, data = PriceDCList,msg="导出成功" });
+            }
             //CostDataToExcel(PriceDCList);
-            return Json(new { code = 0,data= PriceDCList });
+            
         }
 
         
