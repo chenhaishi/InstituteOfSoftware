@@ -308,6 +308,7 @@
         laydate.render({
             elem: '#Dateofapplication'
             , format: 'yyyy-MM-dd',
+
             done: function (value, date, endDate) {
                 var endTime = new Date(value).getTime();
                 if (endTime < curDate.getTime()) {
