@@ -9,6 +9,8 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
     using NPOI.HSSF.UserModel;
     using NPOI.SS.UserModel;
     using NPOI.XSSF.UserModel;
+    using SiliconValley.InformationSystem.Business.Base_SysManage;
+    using SiliconValley.InformationSystem.Business.Common;
     using SiliconValley.InformationSystem.Business.CourseSyllabusBusiness;
     using SiliconValley.InformationSystem.Business.EmployeesBusiness;
     using SiliconValley.InformationSystem.Business.TeachingDepBusiness;
@@ -23,6 +25,23 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
     //考试成绩业务类
     public class ExamScoresBusiness : BaseBusiness<TestScore>
     {
+        RedisCache rc = new RedisCache();
+        /// <summary>
+        /// 将员工绩效考核表数据存储到redis服务器中
+        /// </summary>
+        /// <returns></returns>
+        public List<TestScore> GetEmpMCData()
+        {
+            rc.RemoveCache("InRedisMCData");
+            List<TestScore> mclist = new List<TestScore>();
+            if (mclist == null || mclist.Count() == 0)
+            {
+                mclist = this.GetList();
+                rc.SetCache("InRedisMCData", mclist);
+            }
+            mclist = rc.GetCache<List<TestScore>>("InRedisMCData");
+            return mclist;
+        }
         /// <summary>
         /// 考试业务类实例
         /// </summary>
@@ -37,12 +56,14 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
         /// 员工业务类实例
         /// </summary>
         private readonly EmployeesInfoManage db_emp;
+        private readonly CandidateInfoBusiness db_cand;
 
         public ExamScoresBusiness()
         {
             db_exam = new ExaminationBusiness();
             db_markingArrange = new BaseBusiness<MarkingArrange>();
             db_emp = new EmployeesInfoManage();
+            db_cand =  new CandidateInfoBusiness();
         }
 
         public List<TestScore> AllExamScores()
@@ -81,22 +102,80 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
 
         private AjaxResult ExcelImportAtdSql(ISheet sheet)
         {
-            var ajaxresult = new AjaxResult();
+            var result = new AjaxResult();
+            List<MeritsCheckErrorDataView> error = new List<MeritsCheckErrorDataView>();
+            int num = 1;
+            AjaxResult ajaxResult = new AjaxResult();
             try
             {
                 while (true)
                 {
+                    num++;
+                    var getrow = sheet.GetRow(num);
+                    if (getrow == null)
+                    {
+                        break;
+                    }
+                    //考场id
+                    string Examid = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(0))) ? null : getrow.GetCell(0).ToString();
+                    //学号
+                    string studentid = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(1))) ? null : getrow.GetCell(1).ToString();
+                    //解答题分数
+                    string jiedati = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(3))) ? null : getrow.GetCell(3).ToString();
+                    //机试分数
+                    string jishi = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(4))) ? null : getrow.GetCell(4).ToString();
+                    //备注
+                    string beizhu = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(5))) ? null : getrow.GetCell(5).ToString();
 
+                    MeritsCheckErrorDataView errorDataView = new MeritsCheckErrorDataView();
+                    MeritsCheck merits1 = new MeritsCheck();
+                    if (string.IsNullOrEmpty(studentid))
+                    {
+                        MeritsCheckErrorDataView err = new MeritsCheckErrorDataView();
+                        errorDataView.excelId = studentid;
+                        errorDataView.errorExplain = "有学生的id为空";
+                        error.Add(errorDataView);
+                    }
+                    else
+                    {
+                        Base_UserModel user = Base_UserBusiness.GetCurrentUser();
+
+                        TeacherBusiness teacherdb = new TeacherBusiness();
+                        var Reviewer = teacherdb.GetTeachers().Where(d => d.EmployeeId == user.EmpNumber).FirstOrDefault().TeacherID;
+                        string sql = "select * from CandidateInfo where StudentID ='"+ studentid + "'and Examination = '"+ Examid + "'";
+                        var candid = db_cand.GetListBySql<CandidateInfo>(sql).FirstOrDefault();
+                        string sqles = "select * from TestScore where CandidateInfo = '"+ candid + "' and Examination = '" + Examid + "'";
+                        var CandidateInfo = this.GetListBySql<TestScore>(sqles).FirstOrDefault().CandidateInfo;
+                        ExecuteSql("UPDATE TestScore set TextQuestionScore ='" + jiedati + ",OnBoard = '" + jishi + "',Reviewer = '" + Reviewer + "',Remark = '"+ beizhu + "',CreateTime='"+ DateTime.Now + "' where CandidateInfo = '" + CandidateInfo + "' and Examination = '" + Examid + "'");
+                        BusHelper.WriteSysLog("Excel文件导入成功", Entity.Base_SysManage.EnumType.LogType.Excle文件导入);
+                        rc.RemoveCache("InRedisMCData");
+                    }
+
+                }
+                int sum = num - 3;
+                if (sum - error.Count() == sum)
+                {//说明没有出错数据，导入的数据全部添加成功
+                    result.Success = true;
+                    result.ErrorCode = 100;
+                    result.Msg = sum.ToString();
+                    result.Data = error;
+                }
+                else
+                {//说明有出错数据，导入的数据条数就是导入的数据总数-错误数据总数
+                    result.Success = true;
+                    result.ErrorCode = 200;
+                    result.Msg = (sum - error.Count()).ToString();
+                    result.Data = error;
                 }
             }
             catch (Exception ex)
             {
-                ajaxresult.Success = false;
-                ajaxresult.ErrorCode = 500;
-                ajaxresult.Msg = ex.Message;
-                ajaxresult.Data = "0";
+                result.Success = false;
+                result.ErrorCode = 500;
+                result.Msg = ex.Message;
+                result.Data = "0";
             }
-            return ajaxresult;
+            return result;
         }
 
         /// <summary>
@@ -213,15 +292,13 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
 
 
         }
-
-
         /// <summary>
-        /// 获取考场考生
+        /// 获取考生二
         /// </summary>
-        /// <param name="examid">考试ID</param>
-        /// <param name="examroom">考场（教室ID）</param>
+        /// <param name="examid"></param>
+        /// <param name="examroom"></param>
         /// <returns></returns>
-        public List<CandidateInfo> CandidateinfosByExamroom(int examid, int examroom)
+        public List<CandidateInfo> CandidateinfosByExamroomes(int examid)
         {
 
             List<CandidateInfo> resultlist = new List<CandidateInfo>();
@@ -231,14 +308,35 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
             foreach (var item in list)
             {
                 var tempexamroom = db_exam.AllExaminationRoom().Where(d => d.ID == item.ExaminationRoom).FirstOrDefault();
+                var tempobj = db_exam.AllCandidateInfo(examid).Where(d => d.CandidateNumber == item.CandidateNumber).FirstOrDefault();
 
-                if (tempexamroom.Classroom_Id == examroom)
-                {
+                if (tempobj != null)
+                    resultlist.Add(tempobj);
+            }
+
+            return resultlist;
+
+        }
+        /// <summary>
+        /// 获取考场考生
+        /// </summary>
+        /// <param name="examid">考试ID</param>
+        /// <param name="examroom">考场（教室ID）</param>
+        /// <returns></returns>
+        public List<CandidateInfo> CandidateinfosByExamroom(int examid,int examroom)
+        {
+
+            List<CandidateInfo> resultlist = new List<CandidateInfo>();
+
+            var list = db_exam.AllExamroomDistributed(examid);
+
+            foreach (var item in list)
+            {
+                var tempexamroom = db_exam.AllExaminationRoom().Where(d => d.ID == item.ExaminationRoom).FirstOrDefault();
                     var tempobj = db_exam.AllCandidateInfo(examid).Where(d => d.CandidateNumber == item.CandidateNumber).FirstOrDefault();
 
                     if (tempobj != null)
                         resultlist.Add(tempobj);
-                }
             }
 
             return resultlist;

@@ -189,7 +189,7 @@
                                     var timeAdd = $("#timeAdd").val();
                                     $.post("/Finance/Pricedetails/review", { checkID: checkID[0].id, OddNumbers: OddNumbers, paymentmethod: paymentmethod, timeAdd: timeAdd }, (r) => {
                                         if (r.code == 0) {
-                                            layer.msg(r.msg);
+                                            layer.msg("订单重审成功");
                                             layer.close(index);
                                         }
                                     })

@@ -394,9 +394,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             try
             {
                 //获取考试的类型
-                
+                string sql = "select * from Examination Where ID = '"+ examid + "'";
 
-                var exam = db_exam.AllExamination().Where(d => d.ID == examid).FirstOrDefault();
+                var exam = db_exam.GetListBySql<Examination>(sql).FirstOrDefault();
 
                 var examveiw  = db_exam.ConvertToExaminationView(exam);
 
@@ -548,7 +548,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         /// 机试题下载
         /// </summary>
         /// <returns></returns>
-
         public ActionResult ComputerQuestionUpload(int examid)
         {
             var courseid = 0;
@@ -645,7 +644,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
         }
         /// <summary>
-        /// 获取选择题答案
+        /// 获取选择题答案 
         /// </summary>
         /// <returns></returns>
         public ActionResult ChoiceQuestionAnswer(string questions)
@@ -779,7 +778,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             {
                 result.ErrorCode = 500;
                 result.Msg = "失败";
-                result.Data = null;
+                result.Data = ex;
             }
             return Json(result);
         }
@@ -788,6 +787,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         [ValidateInput(false)]
         /// <summary>
         /// 学员提交答卷 
+        /// 将选择题存入数据库,为选择题解析做准备
         /// </summary>
         /// <param name="ChoiceScores">选择题得分</param>
         /// <param name="AnswerCommit">解答题答卷</param>
@@ -827,6 +827,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 string datatimes = DateTime.Now.ToString();
                 Candidateinfo.PaperTime = datatimes;
                 db_exam.UpdateCandidateInfo(Candidateinfo);
+                //将选择题存入数据库做解析
 
                 //4.记录选择题分数
                 //获取考生

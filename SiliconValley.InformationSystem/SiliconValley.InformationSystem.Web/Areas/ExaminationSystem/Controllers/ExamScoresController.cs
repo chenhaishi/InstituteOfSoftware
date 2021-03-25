@@ -16,6 +16,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
     using System.Text;
     using System.Xml;
     using Newtonsoft.Json;
+    using NPOI.HSSF.UserModel;
     using NPOI.SS.UserModel;
     using SiliconValley.InformationSystem.Business.Cloudstorage_Business;
     using SiliconValley.InformationSystem.Business.CourseSyllabusBusiness;
@@ -338,40 +339,124 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         /// </summary>
         /// <returns></returns>
         public ActionResult AnswerPage(int examid,string kaohao)
-        {
-            //var answerSheet = db_exam.AllCandidateInfo(examid).Where(d => d.StudentID == kaohao).FirstOrDefault().Paper;
-            //List<object> objlist = new List<object>(); 
-            //CloudstorageBusiness Bos = new CloudstorageBusiness();
-
-            //var client = Bos.BosClient();
-            //var filedata = client.GetObject("xinxihua", answerSheet);
-            ////解答题答卷
-            //MemoryStream stream = new MemoryStream();
-            //filedata.ObjectContent.CopyTo(stream);
-
-            //string SheetStr = Encoding.UTF8.GetString(stream.ReadToBytes());
-
-            //var list = JsonConvert.DeserializeObject<List<AnswerSheetHelp>>(SheetStr);
-
-            //foreach (var item in list)
-            //{
-            //    //根据问题ID 获取题目
-            //    var question = db_answerQuestion.AllAnswerQuestion().Where(d => d.ID == item.questionid).FirstOrDefault();
-
-            //    var obj = new
-            //    {
-            //        question = item,
-            //        questionTitle = question,
-            //    };
-
-            //    objlist.Add(obj);
-            //}
-            // ViewBag.Data = objlist;
+        {            
             var name = db_student.GetList().Where(d => d.StudentNumber == kaohao).FirstOrDefault().Name;
             ViewBag.Name = name;
+            ViewBag.Examid = examid;
+            ViewBag.Kaohao = kaohao;
             return View();
         }
+        /// <summary>
+        /// 提供答卷二
+        /// </summary>
+        /// <param name="examid"></param>
+        /// <param name="examroom"></param>
+        /// <param name="index"></param>
+        /// <param name="StudentNumber"></param>
+        /// <returns></returns>
+        public ActionResult MarkeAnswerSheetDataes(int examid,string StudentNumber)
+        {
 
+            AjaxResult result = new AjaxResult();
+            try
+            {
+
+                CandidateInfo candidateInfo = new CandidateInfo();
+                ///考生
+                var candidinfolist = db_examScores.CandidateinfosByExamroomes(examid).OrderBy(d => d.CandidateNumber).ToList();
+                //if (StudentNumber != null)
+                //{
+                    candidateInfo = candidinfolist.Where(d => d.StudentID == StudentNumber).FirstOrDefault();
+                //}
+                //else
+                //{
+                //    candidateInfo = candidinfolist.Skip(index - 1).Take(1).FirstOrDefault();
+                //}
+                //·········获取这个考生的考卷···················
+
+                // 1. 获取文件夹名称   文件夹名称为 学号_考试ID   解答题文件名称为 AnswerSheet文本文件   机试题文件名为 computerfielnaem.rar 压缩包
+
+                //var stuDirName = candidinfo.StudentID + '_' + examid.ToString();
+
+                //解答题答卷路径
+                var answerSheet = candidateInfo.Paper;
+
+                List<object> objlist = new List<object>();
+
+                if (answerSheet == null)
+                {
+                    var obj = new
+                    {
+                        question = "",
+                        questionTitle = "",
+                        candidinfo = candidateInfo,
+                        isEnd = ""
+                    };
+
+                    objlist.Add(obj);
+                }
+                else
+                {
+                    CloudstorageBusiness Bos = new CloudstorageBusiness();
+
+                    var client = Bos.BosClient();
+
+                    //Server.MapPath("/Areas/ExaminationSystem/Files/AnswerSheet/" + stuDirName + "AnswerSheet.txt");
+
+                    //FileStream fileStream = new FileStream(answerSheet, FileMode.Open, FileAccess.Read);
+
+                    var filedata = client.GetObject("xinxihua", answerSheet);
+
+
+                    //解答题答卷
+                    MemoryStream stream = new MemoryStream();
+                    filedata.ObjectContent.CopyTo(stream);
+
+                    string SheetStr = Encoding.UTF8.GetString(stream.ReadToBytes());
+
+                    var list = JsonConvert.DeserializeObject<List<AnswerSheetHelp>>(SheetStr);
+
+                    //判断是否为最后一个 
+                    //var IsEnd = index == candidinfolist.Count() ? true : false;
+
+
+                    foreach (var item in list)
+                    {
+                        //根据问题ID 获取题目
+                        var question = db_answerQuestion.AllAnswerQuestion().Where(d => d.ID == item.questionid).FirstOrDefault();
+
+                        var obj = new
+                        {
+                            question = item,
+                            questionTitle = question,
+                            candidinfo = candidateInfo,
+                            //isEnd = IsEnd
+                        };
+
+                        objlist.Add(obj);
+
+                    }
+                }
+                result.ErrorCode = 200;
+                result.Msg = "成功";
+                result.Data = objlist;
+            }
+            catch (Exception ex)
+            {
+
+                result.ErrorCode = 500;
+                result.Msg = "失败";
+                result.Data = null;
+            }
+
+
+
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+
+
+
+        }
         /// <summary>
         /// 提供阅卷的答卷数据
         /// </summary>
@@ -481,6 +566,109 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
 
 
+        }
+        /// <summary>
+        /// 导出数据二
+        /// </summary>
+        /// <param name="condition"></param>
+        /// <returns></returns>
+        public FileStreamResult EmpInfoToExcel(int Examid)
+        {
+            var ajaxresult = new AjaxResult();
+
+            MemoryStream bookStream = new MemoryStream();
+            var workbook = new HSSFWorkbook();
+            //表名
+            string Detailfilename = "考试成绩登记表.xls";
+            //创建工作区
+            var sheet = workbook.CreateSheet();
+
+            #region 表头样式
+
+            HSSFCellStyle HeadercellStyle = (HSSFCellStyle)workbook.CreateCellStyle();
+            HSSFFont HeadercellFont = (HSSFFont)workbook.CreateFont();
+
+            HeadercellStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+            HeadercellFont.IsBold = true;
+
+            HeadercellStyle.SetFont(HeadercellFont);
+
+            #endregion
+
+
+            HSSFCellStyle ContentcellStyle = (HSSFCellStyle)workbook.CreateCellStyle();
+            HSSFFont ContentcellFont = (HSSFFont)workbook.CreateFont();
+
+            ContentcellStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+
+            CreateHeader();
+
+            int num = 1;
+            StudentInformationBusiness studet = new StudentInformationBusiness();
+            string sql = "select * from CandidateInfo where Examination ='"+ Examid + "'";
+            var list = db_candidate.GetListBySql<CandidateInfo>(sql).ToList();
+            list.ForEach(d =>
+            {
+                var row = (HSSFRow)sheet.CreateRow(num);
+                string sqles = "select * from StudentInformation where StudentNumber = '" +d.StudentID +"'";
+                var name = studet.GetListBySql<StudentInformation>(sqles).FirstOrDefault().Name;
+                CreateCell(row, ContentcellStyle, 0, Examid.ToString());//考场id
+                CreateCell(row, ContentcellStyle, 1, d.StudentID);//学员id
+                CreateCell(row, ContentcellStyle, 2, name);//学员名字
+
+                num++;
+
+            });
+
+
+            try
+            {
+                workbook.Write(bookStream);
+                bookStream.Seek(0, SeekOrigin.Begin);
+            }
+            catch (Exception ex)
+            {
+                ajaxresult.ErrorCode = 100;
+                ajaxresult.Msg = "导入失败，" + ex.Message;
+
+            }
+            return File(bookStream, "application / vnd.ms - excel", Detailfilename);
+
+            void CreateHeader()
+            {
+                HSSFRow Header = (HSSFRow)sheet.CreateRow(0);
+                Header.HeightInPoints = 40;
+                CreateCell(Header, HeadercellStyle, 0, "考场id");
+
+                CreateCell(Header, HeadercellStyle, 1, "学员id");
+
+                CreateCell(Header, HeadercellStyle, 2, "学员名字");
+
+                CreateCell(Header, HeadercellStyle, 3, "解答题分数");
+
+                CreateCell(Header, HeadercellStyle, 4, "机试分数");
+
+                CreateCell(Header, HeadercellStyle, 5, "备注");
+            }
+
+            void CreateCell(HSSFRow row, HSSFCellStyle TcellStyle, int index, string value)
+            {
+                HSSFCell Header_Name = (HSSFCell)row.CreateCell(index);
+
+                Header_Name.SetCellValue(value);
+
+                Header_Name.CellStyle = TcellStyle;
+            }
+
+        }
+        /// <summary>
+        /// 导出数据
+        /// </summary>
+        public  FileStreamResult DownFile()
+        {
+            string rr = Server.MapPath("/uploadXLSXfile/Template/Scoretemplate.xls");  //获取下载文件的路径         
+            FileStream stream = new FileStream(rr, FileMode.Open);
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", Server.UrlEncode("ScoreTemplate.xlsx"));
         }
         /// <summary>
         /// 下载模板
