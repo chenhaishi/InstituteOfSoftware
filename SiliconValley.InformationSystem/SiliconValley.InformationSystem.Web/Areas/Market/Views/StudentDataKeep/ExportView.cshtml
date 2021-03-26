@@ -42,43 +42,14 @@
 </head>
 <body>
     <div class="DivCss">
-        <form id="formexpor" class="layui-form">          
-            <div class="layui-form-item">
-                <div class="layui-col-xs12 DivCss3">
-                    <label class="LableCss1">备&nbsp; 案&nbsp;人:</label>
-                    <div class="layui-input-block">
-                        <input name="beanMan" id="beanMan" class="layui-input linu" />
-                    </div>
-                </div>
-                 
-            </div>
-            <div class="layui-form-item">
-                <div class="layui-col-xs12 DivCss3">
-                    <label class="LableCss1">所在区域:</label>
-                    <div class="layui-input-block">
-                        @Html.DropDownList("Area", ViewBag.areExport as IEnumerable<SelectListItem>)
-                    </div>
-                </div>                
-
-            </div> 
-            <div class="layui-form-item">
-                <div class="layui-col-sm12 DivCss3">
-                    <label class="LableCss1">咨 &nbsp; 询&nbsp;师:</label>
-                    <div class="layui-input-block">
-                        @Html.DropDownList("teacher_c", ViewBag.c_teacher as IEnumerable<SelectListItem>)
-                    </div>
-
-                </div>
-            </div>
+        <form id="formexpor" class="layui-form">
             <div class="layui-form-item">
                 <div class="layui-col-sm12 DivCss3">
                     <label class="LableCss1">开始日期:</label>
                     <div class="layui-input-block">
                         <input name="oneTime" id="oneTime" class="layui-input linu" />
                     </div>
-
                 </div>
-                                
             </div>
             <div class="layui-form-item">
                 <div class="layui-col-sm12 DivCss3">
@@ -87,6 +58,15 @@
                         <input name="twoTime" id="twoTime" class="layui-input linu" />
                     </div>
 
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-col-sm12 DivCss3">
+                    <label class="LableCss1">学生状态:</label>
+                    <div class="layui-input-block">
+                        @Html.DropDownList("S_status", ViewBag.slist as IEnumerable<SelectListItem>, new Dictionary<string, object>() { })
+                    </div>
                 </div>
             </div>
             <div class="DivCss2">
@@ -122,6 +102,24 @@
                 trigger: 'click'
             });
 
+            function MyTimeChange(newtime) {
+                if (newtime == null)
+                    return "";
+
+                var date = new Date(parseInt(newtime.slice(6)));
+                var year = date.getFullYear();
+                var month = parseInt(date.getMonth()) + 1;
+                if (parseInt(month) < 10) {
+                    month = "0" + month;
+                }
+                var days = date.getDate();
+                if (days < 10) {
+                    days = "0" + days;
+                }
+                var result = year + '-' + month + '-' + days;
+                return result;
+            }
+
             form.on('submit(IsTrueBtn)', function (data) {                
                   // console.log(data.field);
                   var layer = layui.layer;
@@ -133,27 +131,16 @@
                     data: data.field,
                     success: function (res) {
                         if (res.Success == true) {
-
-                            ////下载
-                            //let a = document.createElement('a') // 创建a标签
-                            //let e = document.createEvent('MouseEvents') // 创建鼠标事件对象
-                            //e.initEvent('click', false, false) // 初始化事件对象
-                            //a.href = "/Market/StudentDataKeep/GetExcelport" // 设置下载地址
-                            //a.download = '' // 设置下载文件名
-                            //a.dispatchEvent(e);
-                            //layer.close(ind);
-                            //MyClose();
-                            //layer.msg('操作成功！！！', { icon: 1, shade: 0.8 });
-
-
-                            //列标题，逗号隔开，每一个逗号就是隔开一个单元格
-                            let str = res.titile + `\n`;
-                            //增加\t为了不让表格显示科学计数法或者其他格式
+                            console.log(res.Data);
+                            let str = res.title + `\n`;
                             for (let i = -1; i < res.Data.length; i++) {
                                 if (i == -1) {
-                                    str += `姓名\t,性别\t,电话\t,学校\t,学历\t,家庭住址\t,微信\t,QQ\t,信息来源\t,区域\t,备案人\t,关系人\t`;
+                                    str += `姓名\t,性别\t,学校\t,区域\t,信息来源\t,咨询师\t,备案人\t,学历\t,关联人\t,学生状态\t,上门日期`;
                                 } else {
-                                    str += '' + res.Data[i].StuName + '\t,' + res.Data[i].StuSex + '\t,' + res.Data[i].Stuphone + '\t,' + res.Data[i].StuSchoolName + '\t,' + res.Data[i].StuEducational + '\t,' + res.Data[i].StuWeiXin + '\t,' + res.Data[i].StuQQ + '\t,' + res.Data[i].stuinfomation + '\t,' + res.Data[i].empName + '\t,' + res.Data[i].RegionName + '\t,' + res.Data[i].empName + '\t,' + res.Data[i].Party+'\t';
+                                    var mm = MyTimeChange(res.Data[i].StuVisit);
+                                    var mydate = new Date(mm)
+                                    var da = (Number(mydate.getMonth()) + 1) + "月" + mydate.getDate() + "日"
+                                    str += '' + res.Data[i].StuName + '\t,' + res.Data[i].StuSex + '\t,' + res.Data[i].StuSchoolName + '\t,' + res.Data[i].RegionName + '\t,' + res.Data[i].stuinfomation + '\t,' + res.Data[i].ConsultTeacher + '\t,' + res.Data[i].empName + '\t,' + res.Data[i].StuEducational + '\t,' + res.Data[i].Party + '\t,' + res.Data[i].StatusName + '\t,' + da;
                                 }
 
                                 str += '\n';

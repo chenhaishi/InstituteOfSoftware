@@ -20,9 +20,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Base_SysManage.Controllers
         // GET: Base_SysManage/Base_SysMenu
         public ActionResult Index()
         {
-            
+
             Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();
-            Department department =  EmployeesInfoManage_Entity.GetDeptByEmpid(UserName.EmpNumber);
+            Department department = EmployeesInfoManage_Entity.GetDeptByEmpid(UserName.EmpNumber);
             ViewBag.Dept = department.DeptId;
 
             return View();
@@ -33,7 +33,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Base_SysManage.Controllers
 
             //加入登陆的用户是Admin
 
-            
+
             //Base_User user = userdb.GetList().Where(u => u.UserId == "Admin").FirstOrDefault();
 
             //SessionHelper._Session session = new SessionHelper._Session();
@@ -52,15 +52,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.Base_SysManage.Controllers
         /// <returns></returns>
         public ActionResult UserClass()
         {
-           
+
             //session["UserId"] = user.UserId;
-         return Json(SystemMenuManage.UserClass(), JsonRequestBehavior.AllowGet);
+            return Json(SystemMenuManage.UserClass(), JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
         /// 查看宿舍物品价格表中的保险柜每月扣费是否正常
         /// </summary>
         /// <returns></returns>
+        [HttpPost]
         public bool CheckDormState()
         {
             string sql = "select * from Pricedormitoryarticles where Nameofarticle='保险柜每月扣费'";
