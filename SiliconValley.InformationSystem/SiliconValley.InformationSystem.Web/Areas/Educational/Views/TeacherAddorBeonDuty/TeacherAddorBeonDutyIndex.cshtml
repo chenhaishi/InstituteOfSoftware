@@ -676,7 +676,7 @@
                     data: data.field,
                     type: 'post',
                     success: function (res) {
-                         
+                        console.log(res.data);
                         //列标题，逗号隔开，每一个逗号就是隔开一个单元格
                         let str = res.titile + `\n`;
                         //增加\t为了不让表格显示科学计数法或者其他格式

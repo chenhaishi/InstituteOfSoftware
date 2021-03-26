@@ -1286,16 +1286,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
         {
             //获取区域所有信息
 
-            var r_list = s_Entity.GetEffectiveRegionAll(true).Select(r => new SelectListItem { Text = r.RegionName, Value = r.RegionName }).ToList();
-            r_list.Add(new SelectListItem() { Text = "请选择", Value = "-1", Selected = true });
-            r_list.Add(new SelectListItem() { Text = "区域外", Value = "0" });
-            ViewBag.areExport = r_list;
+            List<SelectListItem> ss = new List<SelectListItem>();
+            ss.Add(new SelectListItem() { Value = "0", Text = "请选择", Selected = true });
+            ss.AddRange(s_Entity.Stustate_Entity.GetList().Select(s => new SelectListItem { Text = s.StatusName, Value = s.StatusName }).ToList());
 
-            //获取所有咨询师
-            List<SelectListItem> c_teacher = EmployandCounTeacherCoom.getallCountTeacher(true).Select(t => new SelectListItem() { Text = t.empname, Value = t.empname }).ToList();
-            c_teacher.Add(new SelectListItem() { Text = "请选择", Value = "0", Selected = true });
-
-            ViewBag.c_teacher = c_teacher;
+            ViewBag.slist = ss;
 
 
             return View();
@@ -1309,163 +1304,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
         public ActionResult ExportFunction()
         {
             AjaxResult a = new AjaxResult();
-            string beanman = Request.Form["beanMan"];//备案人
-            string Area = Request.Form["Area"];//区域
-            string teacher_c = Request.Form["teacher_c"];//咨询师
+            string zhuangtai = Request.Form["S_status"];//学生状态
             string oneTime = Request.Form["oneTime"];//开始日期
             string twoTime = Request.Form["twoTime"];//结束日期
-            string str = "select * from StudentBeanView where 1=1";
-            string str2 = "select * from Sch_MarketView where 1=1";
-            if (!string.IsNullOrEmpty(beanman))
-            {
-                str = str + " and empName='" + beanman + "'";
-                str2 = str2 + " and SalePerson='" + beanman + "'";
-            }
 
-            if (Area != "-1")
-            {
-                if (Area == "0")
-                {
-                    str = str + " and RegionName is null";
-                    str2 = str2 + " and Area is null ";
-                }
-                else
-                {
-                    str = str + " and RegionName='" + Area + "'";
-
-                    str2 = str2 + " and Area ='" + Area + "' ";
-                }
-            }
-
-            if (teacher_c != "0")
-            {
-                str = str + " and ConsultTeacher='" + teacher_c + "'";
-
-                str2 = str2 + " and Inquiry='" + teacher_c + "'";
-            }
-
-            if (!string.IsNullOrEmpty(oneTime))
-            {
-                str = str + " and BeanDate>='" + oneTime + "'";
-
-                str2 = str2 + " and CreateDate>='" + oneTime + "'";
-            }
-
-            if (!string.IsNullOrEmpty(twoTime))
-            {
-                DateTime date = Convert.ToDateTime(twoTime);
-                date.AddDays(1);
-                str = str + " and BeanDate<='" + twoTime + "'";
-
-                str2 = str2 + " and CreateDate<'" + date + "'";
-            }
-
-            DataTable data = s_Entity.GetDataTableWithSql(str);
-            //去另外一张视图匹配数据
-
-            DataTable data2 = s_Entity.GetDataTableWithSql(str2);
-
-            if (data.Columns.Count <= 0 && data2.Columns.Count <= 0)
-            {
-                a.Msg = "没有符合条件的数据";
-                return Json(a, JsonRequestBehavior.AllowGet);
-            }
-
-            List<Sch_MarketView> entity2 = s_Entity.GetListBySql<Sch_MarketView>(str2);
-
-
-            //string jsonfile = Server.MapPath("/Config/ExportStudentBean.json");//获取表头
-            //System.IO.StreamReader file = System.IO.File.OpenText(jsonfile);
-            //JsonTextReader reader = new JsonTextReader(file);
-            ////转化为JObject
-            //JObject ojb = (JObject)JToken.ReadFrom(reader);
-
-            //var jj = ojb["ExportStudentBeanData"].ToString();
-
-            //JObject jo = (JObject)JsonConvert.DeserializeObject(jj);
-
-            //生成字段名称 
-            //List<string> Head = new List<string>();
-            //int indexss = 0;
-            //try
-            //{
-            //    foreach (DataColumn col in data.Columns)
-            //    {
-            //        if (indexss != 0)
-            //        {
-            //            Head.Add(jo[col.ColumnName].ToString());
-            //        }
-            //        indexss++;
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    string s = ex.Message;
-                
-            //}
+            string sql = "select * from StudentBeanView where statusName='"+zhuangtai+"' and BeanDate >= '" + oneTime + "' and BeanDate <='" + twoTime + "'";
            
-            //Excel_Entity = new ExcelHelper();
-
-            List<ExportStudentBeanData> entity = s_Entity.GetListBySql<ExportStudentBeanData>(str).Select(s => new ExportStudentBeanData()
-            {
-                StuName = s.StuName,
-                StuSex = s.StuSex,
-                StuBirthy = s.StuBirthy,
-                Stuphone = s.Stuphone,
-                StuSchoolName = s.StuSchoolName,
-                StuEducational = s.StuEducational,
-                StuAddress = s.StuAddress,
-                StuWeiXin = s.StuWeiXin,
-                StuQQ = s.StuQQ,
-                stuinfomation = s.stuinfomation,
-                StatusName = s.StatusName,
-                StuisGoto = s.StuisGoto,
-                StuVisit = s.StuVisit,
-                empName = s.empName,
-                Party = s.Party,
-                BeanDate = s.BeanDate,
-                StuEntering = s.StuEntering,
-                StatusTime = s.StatusTime,
-                RegionName = s.RegionName,
-                Reak = s.Reak,
-                ConsultTeacher = s.ConsultTeacher
-            }).ToList();
-
-
-            entity.AddRange(s_Entity.LongrageDataToViewmodel(entity2));
-
-
-            if (entity.Count>0)
-            {
-                a.Success = true;
-                a.Data = entity;
-            }
-            else
-            {
-                a.Success = false;
-            }
-            return Json(a, JsonRequestBehavior.AllowGet);
-
-            //string filename = DateTime.Now.ToString("yyyyMMddhhmmss") + ".xls";
-            //SessionHelper.Session["filename"] = filename;
-            //string path = "~/uploadXLSXfile/ConsultUploadfile/ExportAll/" + filename;
-            //string truePath = Server.MapPath(path);
-
-            //SessionHelper.Session["truePath"] = truePath;
-            //bool result = Excel_Entity.DaoruExport(entity, truePath, Head);
-
-            //a.Success = false;
-
-            //if (result)
-            //{
-            //    a.Success = result;
-            //    return Json(a, JsonRequestBehavior.AllowGet);
-            //}
-            //else
-            //{
-            //    a.Msg = "网络异常，请刷新重试！";
-            //    return Json(a, JsonRequestBehavior.AllowGet);
-            //}
+            List<ExportStudentBeanData> list = s_Entity.GetListBySql<ExportStudentBeanData>(sql);
+            
+            var jsondata = new {title="备案数据Excel",Data=list.OrderBy(t =>t.BeanDate),Success=true };
+            return Json(jsondata,JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>

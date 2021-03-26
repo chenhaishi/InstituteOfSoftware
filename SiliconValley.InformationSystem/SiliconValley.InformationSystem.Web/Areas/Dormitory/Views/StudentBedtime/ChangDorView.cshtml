@@ -35,7 +35,6 @@
 <body>
     <div class="DivCss1">
         <form id="adddataform" class="layui-form" lay-filter="adddataform">
-            <input name="StuNumber" id="StuNumber" type="hidden" value="@ViewBag.StuNumber" />
             <div class="layui-row layui-form-item">
                 <div class="layui-row layui-form-item">
                     <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
@@ -46,7 +45,7 @@
                     </div>
                 </div>
                 <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
-                    <label class="LableCss1">宿舍地址:</label>
+                    <label class="LableCss1">原宿舍地址:</label>
                     <div class="layui-input-block">
                         @{
                             List<SelectListItem> list = ViewBag.tung as List<SelectListItem>;
@@ -61,7 +60,7 @@
             </div>
             <div class="layui-row layui-form-item">
                 <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
-                    <label class="LableCss1">宿舍楼层:</label>
+                    <label class="LableCss1">原宿舍楼层:</label>
                     <div class="layui-input-block" id="foordiv">
 
                     </div>
@@ -69,7 +68,7 @@
             </div>
             <div class="layui-row layui-form-item">
                 <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
-                    <label class="LableCss1">选择宿舍:</label>
+                    <label class="LableCss1">原宿舍:</label>
                     <div class="layui-input-block" id="dordiv">
 
                     </div>
@@ -77,40 +76,55 @@
             </div>
             <div class="layui-row layui-form-item">
                 <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
-                    <label class="LableCss1">选择床位:</label>
-                    <div class="layui-input-block">
-                        <div id="listbutton">
-                            <input name="changid" type="radio" value="1" title="1" checked="checked" />
-                            <input name="changid" type="radio" value="2" title="2" />
-                            <input name="changid" type="radio" value="3" title="3" />
-                            <input name="changid" type="radio" value="4" title="4" />
-                            <input name="changid" type="radio" value="5" title="5" />
-                            <input name="changid" type="radio" value="6" title="6" />
-                            <input name="changid" type="radio" value="7" title="7" />
-                            <input name="changid" type="radio" value="8" title="8" />
-                        </div>
-                        
-                        <button type="button" id="addbutton" class="layui-btn">
-                            <i class="layui-icon">&#xe608;</i>
-                        </button>
+                    <label class="LableCss1">宿舍人员:</label>
+                    <div class="layui-input-block" id="DormPerson">
+
                     </div>
                 </div>
             </div>
+
+
+            @*  现*@
             <div class="layui-row layui-form-item">
                 <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
-                    <label class="LableCss1">床位信息:</label>
+                    <label class="LableCss1">现宿舍地址:</label>
                     <div class="layui-input-block">
-                        <span id="ChuangInfo" style="font-size:large"></span>
+                        @{
+                            List<SelectListItem> list1 = ViewBag.tung as List<SelectListItem>;
+                            foreach (var item in list)
+                            {
+                                <input type="radio" name="Suaddress1" value="@item.Value" title="@item.Text" lay-filter="Addree1" />
+                            }
+                        }
                     </div>
                 </div>
             </div>
+
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                    <label class="LableCss1">现宿舍楼层:</label>
+                    <div class="layui-input-block" id="foordiv1">
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                    <label class="LableCss1">应去宿舍:</label>
+                    <div class="layui-input-block" id="dordiv1">
+
+                    </div>
+                </div>
+            </div>
+
             <div class="layui-row layui-form-item">
                 <div class="layui-col-xs12 layui-col-sm12 layui-col-md12" style="text-align:center;margin-top:30px;">
                     <button type="submit" class="layui-btn" lay-submit="" lay-filter="addbtn">确定调寝</button>
                     <button id="btn1" type="button" class="layui-btn">取消关闭</button>
                 </div>
             </div>
-            
+
         </form>
     </div>
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
@@ -151,14 +165,26 @@
                                 $('<input lay-filter="foorrido" type="radio" name="foorname" id="foorname" title="' + res[i].Text + '" value="' + res[i].Value + '"/>').appendTo($("#foordiv"));
                             }
                             form.render();
-
                         }
-
                     });
-
                 });
 
-                ///获取宿舍号
+                ///加载宿舍楼层
+                form.on('radio(Addree1)', function (data) {
+                    $("#foordiv1")[0].innerHTML = "";//清空楼层
+                    $("#dordiv1")[0].innerHTML = "";//清空寝室
+                    $.ajax({
+                        url: '/DormitoryMaintenance/DormitoryDeposit/GetAllFoor/' + data.value,
+                        success: function (res) {
+                            for (var i = 0; i < res.length; i++) {
+                                $('<input lay-filter="foorrido1" type="radio" name="foorname1" id="foorname1" title="' + res[i].Text + '" value="' + res[i].Value + '"/>').appendTo($("#foordiv1"));
+                            }
+                            form.render();
+                        }
+                    });
+                });
+
+                ///获取宿舍号  原
                 form.on('radio(foorrido)', function (data) {
                     $("#dordiv")[0].innerHTML = "";
                     $.ajax({
@@ -174,9 +200,39 @@
 
                 });
 
+                ///获取宿舍号  应去
+                form.on('radio(foorrido1)', function (data) {
+                    $("#dordiv1")[0].innerHTML = "";
+                    $.ajax({
+                        url: '/DormitoryMaintenance/DormitoryDeposit/GetDormitory/' + data.value,
+                        success: function (res) {
+                            for (var i = 0; i < res.length; i++) {
+                                $('<input lay-filter="dorrido1" type="radio" name="dorname1" id="dorname1" title="' + res[i].Text + '" value="' + res[i].Value + '"/>').appendTo($("#dordiv1"));
+                            }
+                            form.render();
+                        }
+
+                    });
+
+                });
+
                 //获取选中的宿舍
                 form.on('radio(dorrido)', function (data) {
-                    sushennumber = data.value; 
+                    sushennumber = data.value;
+                    $("#DormPerson")[0].innerHTML = "";
+                    $.ajax({
+                        url: "/Dormitory/StudentBedtime/GetDormstu",
+                        type: "post",
+                        data: { "dormid": data.value },
+                        success: function (res) {
+                            if (res.Data.length > 0) {
+                                for (var i = 0; i < res.Data.length; i++) {
+                                    $('<input type="checkbox" name="oldstu" value="' + res.Data[i].Value + '" title="' + res.Data[i].Text + '" />').appendTo($("#DormPerson"));
+                                }
+                                form.render();
+                            }
+                        }
+                    });
                 });
                 
                 form.on('submit(addbtn)', function (data) {
@@ -184,11 +240,18 @@
                         layer.msg('请选择宿舍地址！', { icon: 2, shade: 0.8 });
                     } else if (data.field.dorname == undefined) {
                         layer.msg('请选择宿舍！', { icon: 2, shade: 0.8 });
-                    }else {
+                    } else {
+                        var arr = [];
+                        $('input[name=oldstu]:checked').each(function () {
+                            arr.push($(this).val());
+                        });
+                        console.log(arr);
+                        data.field.stuNumber = arr;
                         $.ajax({
                             url: '/Dormitory/StudentBedtime/ChangDorFunction',
                             data: data.field,
                             type: 'POST',
+                            traditional: true,
                             success: function (res) {
                                 if (res.Success) {
                                     layer.msg(res.Msg, { icon: 1, shade: 0.8 }, function () {
@@ -201,11 +264,7 @@
                                     });
                                 } else {
                                     var str = '';
-                                    console.log(res.Data);
-                                    for (var i = 0; i < res.Data.length; i++) {
-                                        str += "班主任：" + res.Data[i].TeacherName + ",学生：" + res.Data[i].StuName.Name + "<br />"
-                                    }
-                                    console.log(str);
+                                    
                                     $("#ChuangInfo").html(str);
                                     layer.msg(res.Msg, { icon: 2, shade: 0.8 });
                                 }
@@ -227,15 +286,7 @@
                 parent.layer.close(index);
             });
 
-            $("#addbutton").click(function () {
-                console.log(1);
-                var va = $("#listbutton").children("div").last().prevObject.length;
-                console.log(va);
-                var temp = va*1+1*1;
-                var te = '<input name="changid" type="radio" value="' + temp + '" title="' + temp + '" />';
-                $("#listbutton").append(te);
-                form.render();
-            });
+           
         });
     </script>
 </body>
