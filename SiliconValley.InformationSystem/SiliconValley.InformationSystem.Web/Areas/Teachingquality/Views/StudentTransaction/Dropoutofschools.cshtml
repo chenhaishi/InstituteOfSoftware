@@ -302,7 +302,7 @@
         var laydate = layui.laydate;
         //日期正则
         var curDate = new Date();
-        var curYearMonthrDay = curDate.getFullYear() + "-" + MoDay(parseInt(curDate.getMonth()) + 1) + "-" + MoDay(parseInt(curDate.getDate()));
+        var curYearMonthrDay = curDate.getFullYear() + "-" + MoDay(parseInt(curDate.getMonth()) - 1) + "-" + MoDay(parseInt(curDate.getDate()));
 
         $("#Dateofapplication").val(curYearMonthrDay);
         laydate.render({
