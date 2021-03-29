@@ -11,14 +11,14 @@
     <title>ExportView</title>
     <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
     <style>
-        .DivCss{
-            width:95%;
-            margin-top:20px;
-            margin-left:auto;
-            margin-right:auto;
+        .DivCss {
+            width: 95%;
+            margin-top: 20px;
+            margin-left: auto;
+            margin-right: auto;
         }
-        .LableCss1
-        {
+
+        .LableCss1 {
             text-overflow: ellipsis;
             white-space: nowrap;
             float: left;
@@ -29,19 +29,21 @@
             line-height: 20px;
             text-align: right
         }
-        .DivCss2{
-           text-align:center;
-           margin-top:20px;
-        }      
-        #formexpor
-        {
-             width:80%;
-             margin:0px auto;
+
+        .DivCss2 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #formexpor {
+            width: 80%;
+            margin: 0px auto;
         }
     </style>
 </head>
 <body>
     <div class="DivCss">
+        <p hidden id="Pers">@ViewBag.Pers</p>
         <form id="formexpor" class="layui-form">
             <div class="layui-form-item">
                 <div class="layui-col-sm12 DivCss3">
@@ -80,11 +82,11 @@
     <script>
         function MyClose() {
             layui.use('layer', function () {
-                var index = parent.layer.getFrameIndex(window.name);  
-                parent.layer.close(index); 
+                var index = parent.layer.getFrameIndex(window.name);
+                parent.layer.close(index);
             });
         }
-        layui.use(['form','laydate'], function () {
+        layui.use(['form', 'laydate'], function () {
             var form = layui.form;
             var laydate = layui.laydate;
 
@@ -120,15 +122,21 @@
                 return result;
             }
 
-            form.on('submit(IsTrueBtn)', function (data) {                
-                  // console.log(data.field);
-                  var layer = layui.layer;
-                  var ind = layer.load(1);
+            form.on('submit(IsTrueBtn)', function (data) {
+                console.log($("#Pers").text());
+                var layer = layui.layer;
+                var ind = layer.load(1);
+                if ($("#Pers").text() == "0" || $("#Pers").text() == "4") {
+                    zixun_out(data.field);
+                }
 
+            });
+
+            function caiwu_out(data) {
                 $.ajax({
                     url: '/Market/StudentDataKeep/ExportFunction',
                     type: 'POST',
-                    data: data.field,
+                    data: data,
                     success: function (res) {
                         if (res.Success == true) {
                             console.log(res.Data);
@@ -163,13 +171,48 @@
 
                     }
                 });
-            });
+            }
 
+            function zixun_out(data) {
+                $.ajax({
+                    url: '/Market/StudentDataKeep/ExportFunction',
+                    type: 'POST',
+                    data: data,
+                    success: function (res) {
+                        if (res.Success == true) {
+                            console.log(res.Data);
+                            let str = res.title + `\n`;
+                            for (let i = -1; i < res.Data.length; i++) {
+                                if (i == -1) {
+                                    str += `姓名\t,性别\t,学校\t,区域\t,信息来源\t,咨询师\t,备案人\t,学历\t,关联人\t,学生状态\t,上门日期`;
+                                } else {
+                                   
+                                    str += '' + res.Data[i].StuName + '\t,' + res.Data[i].StuSex + '\t,' + res.Data[i].StuSchoolName + '\t,' + res.Data[i].RegionName + '\t,' + res.Data[i].stuinfomation + '\t,' + res.Data[i].ConsultTeacher + '\t,' + res.Data[i].empName + '\t,' + res.Data[i].StuEducational + '\t,' + res.Data[i].Party + '\t,' + res.Data[i].StatusName + '\t,' + res.Data[i].StuVisit;
+                                }
 
-           
-                
+                                str += '\n';
+                            }
+                            //encodeURIComponent解决中文乱码
+                            let uri = 'data:text/csv;charset=utf-8,\ufeff' + encodeURIComponent(str);
+                            //通过创建a标签实现
+                            var link = document.createElement("a");
+                            link.href = uri;
+                            //对下载的文件命名
+                            link.download = "备案表.xls";
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                        } else {
+                            layer.close(ind);
+
+                            layer.msg('系统错误，请刷新重试!!!', { icon: 2, shade: 0.8 });
+                        }
+
+                    }
+                });
+            }
         });
-       
+
     </script>
 </body>
 </html>

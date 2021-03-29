@@ -1284,14 +1284,14 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
         /// <returns></returns>
         public ActionResult ExportView()
         {
-            //获取区域所有信息
+            Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
+            ViewBag.Pers = s_Entity.GetPostion(UserName.EmpNumber);
 
             List<SelectListItem> ss = new List<SelectListItem>();
-            ss.Add(new SelectListItem() { Value = "0", Text = "请选择", Selected = true });
+            ss.Add(new SelectListItem() { Value = "0", Text = "全部", Selected = true });
             ss.AddRange(s_Entity.Stustate_Entity.GetList().Select(s => new SelectListItem { Text = s.StatusName, Value = s.StatusName }).ToList());
 
             ViewBag.slist = ss;
-
 
             return View();
         }
@@ -1309,10 +1309,40 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
             string twoTime = Request.Form["twoTime"];//结束日期
 
             string sql = "select * from StudentBeanView where statusName='"+zhuangtai+"' and BeanDate >= '" + oneTime + "' and BeanDate <='" + twoTime + "'";
-           
-            List<ExportStudentBeanData> list = s_Entity.GetListBySql<ExportStudentBeanData>(sql);
+            if (zhuangtai =="0") {
+                sql = "select * from StudentBeanView where BeanDate >= '" + oneTime + "' and BeanDate <='" + twoTime + "'";
+            }
             
-            var jsondata = new {title="备案数据Excel",Data=list.OrderBy(t =>t.BeanDate),Success=true };
+            List<ExportStudentBeanData> list = s_Entity.GetListBySql<ExportStudentBeanData>(sql);
+            List<ExportStudentBeanData> twolist = new List<ExportStudentBeanData>();
+            foreach (var item in list)
+            {
+                ExportStudentBeanData e = new ExportStudentBeanData()
+                {
+                    StuName = item.StuName ,                
+                    StuSex = item.StuSex          ==null?"":item.StuSex ,                  
+                    StuBirthy = item.StuBirthy  ,           
+                    Stuphone = item.Stuphone == null ? "" : item.Stuphone,             
+                    StuSchoolName = item.StuSchoolName == null ? "" : item.StuSchoolName,
+                    StuEducational = item.StuEducational == null ? "" : item.StuEducational,
+                    StuAddress = item.StuAddress == null ? "" : item.StuAddress,       
+                    StuWeiXin = item.StuWeiXin == null ? "" : item.StuWeiXin,      
+                    StuQQ = item.StuQQ == null ? "" : item.StuQQ,          
+                    stuinfomation = item.stuinfomation == null ? "" : item.stuinfomation, 
+                    StatusName = item.StatusName == null ? "" : item.StatusName,
+                    StuVisit = item.StuVisit  , 
+                    empName = item.empName == null ? "" : item.empName, 
+                    BeanDate = item.BeanDate    ,
+                    StatusTime = item.StatusTime == null ? Convert.ToDateTime(""):item.StatusTime,
+                    RegionName = item.RegionName == null ? "" : item.RegionName,  
+                    ConsultTeacher = item.ConsultTeacher == null ? "" : item.ConsultTeacher,
+                    Party = item.Party == null ? "" : item.Party
+
+                };
+                twolist.Add(e);
+            }
+            
+            var jsondata = new {title="备案数据Excel",Data= twolist.OrderBy(t =>t.BeanDate),Success=true };
             return Json(jsondata,JsonRequestBehavior.AllowGet);
         }
 
