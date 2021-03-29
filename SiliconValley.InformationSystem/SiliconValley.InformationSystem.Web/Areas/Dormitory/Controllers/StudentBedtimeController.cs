@@ -17,7 +17,7 @@ using System.Web.Mvc;
 
 namespace SiliconValley.InformationSystem.Web.Areas.Dormitory.Controllers
 {
-    [CheckLogin]
+    [CheckLogin] 
     public class StudentBedtimeController : Controller
     {
         public HeadmasterBusiness Headmaster_Entity = new HeadmasterBusiness();
