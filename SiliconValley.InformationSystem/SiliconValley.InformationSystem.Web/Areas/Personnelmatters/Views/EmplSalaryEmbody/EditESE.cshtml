@@ -144,7 +144,12 @@
                             @Html.TextBoxFor(a => a.PersonalIncomeTax, new Dictionary<string, object>() { { "class", "layui-input " } })
                         </div>
                     </div>
-
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                        <label class="layui-form-label" style="width:140px;margin-left:-60px">岗位工资:</label>
+                        <div class="layui-input-block">
+                            @Html.TextBoxFor(a => a.PositionSalary, new Dictionary<string, object>() { { "class", "layui-input" } })
+                        </div>
+                    </div>
                     <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                         <label class="layui-form-label">备注:</label>
                         <div class="layui-input-block">

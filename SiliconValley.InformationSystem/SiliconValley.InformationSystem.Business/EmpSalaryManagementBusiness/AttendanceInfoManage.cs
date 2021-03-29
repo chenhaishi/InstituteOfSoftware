@@ -620,7 +620,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                                         atd.NonPersonalLeaveRecord = nonpersonalleaveRecord;
 
                                         atd.AbsenteeismWithhold = GetAbsenteeismWithhold(emp.EmployeeId, Convert.ToDouble(atd.AbsenteeismDays));
-                                        atd.TardyAndLeaveWithhold = TardyWithhold(emp.EmployeeId, Convert.ToInt32(atd.TardyNum + atd.LeaveEarlyNum), atd.TardyRecord, atd.LeaveEarlyRecord);
+                                        atd.TardyAndLeaveWithhold = TardyWithhold(emp.EmployeeId, Convert.ToInt32(atd.TardyNum + atd.LeaveEarlyNum), atd.TardyRecord, atd.LeaveEarlyRecord,atd.DeserveToRegularDays);
                                         atd.AbsentNumWithhold = AbsentWithhold(emp.EmployeeId, (int)(atd.WorkAbsentNum + atd.OffDutyAbsentNum + atd.NoonAbsentNum),atd.DeserveToRegularDays);
                                         atd.OvertimeCharges = GetOvertimeWithhold(emp.EmployeeId, (DateTime)atd.YearAndMonth);
                                         atd.Remark = Remark;
@@ -852,18 +852,39 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
         /// <param name="absentnum">迟到早退总次数</param>
         /// <param name="absenttime">迟到早退时长</param>
         /// <returns></returns>
-        public Nullable<decimal> TardyWithhold(string empid,int absentnum, string tardyrecord, string leaveearlyrecord/* string absenttime*/)
+        public Nullable<decimal> TardyWithhold(string empid,int absentnum, string tardyrecord, string leaveearlyrecord/* string absenttime*/,decimal? DeserveToRegularDays)
         {
             Nullable<decimal> result = null;
             EmployeesInfoManage empmanage = new EmployeesInfoManage();
-
+            EmplSalaryEmbodyManage emplSalary = new EmplSalaryEmbodyManage();
+            //基本工资+岗位工资+绩效工资/应出勤天数/2+50
             var emprank = empmanage.JudgeEmpType(empid);//1代表校长；2代表副校长；3代表主任；4代表普通员工
-                string absenttime = GetAbsentTime(tardyrecord, leaveearlyrecord);
-                if (!string.IsNullOrEmpty(absenttime))
+            string absenttime = GetAbsentTime(tardyrecord, leaveearlyrecord);
+            var salary = emplSalary.GetList().Where(i => i.EmployeeId == empid).FirstOrDefault();
+            decimal countsalary = 0;
+            if (salary != null)
+            {
+                countsalary = Convert.ToDecimal(salary.BaseSalary);
+                if (!string.IsNullOrEmpty(salary.PerformancePay.ToString()))
                 {
+                    countsalary = Convert.ToDecimal(countsalary + salary.PerformancePay);
+                }
+                if (!string.IsNullOrEmpty(salary.PositionSalary.ToString()))
+                {
+                    countsalary = Convert.ToDecimal(countsalary + salary.PositionSalary);
+                }
+            }
+            if (!string.IsNullOrEmpty(absenttime))
+                {
+                int arr = 0;
                     result = 0;
                     foreach (var item in absenttime.Split(';'))
                     {
+                    arr++;
+                    if (arr>3)
+                    {
+                        break; 
+                    }
                         //迟到或早退30分钟以内扣费
                         if (!string.IsNullOrEmpty(item))
                         {
@@ -916,6 +937,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                         //迟到或早退30分钟以上扣费
                         else
                         {
+                            result += countsalary / DeserveToRegularDays/2;
                             if (emprank == 1)
                             {
                                 result += 200;
@@ -934,13 +956,13 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                             }
                         }
                         }
-                        
                     }
                     if (absentnum > 3)
                     {
                         var num = absentnum - 3;
                         result += num * 100;
                     }
+                   
                 }
            
             return result;
@@ -957,7 +979,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             Nullable<decimal> result=null;
             EmployeesInfoManage empmanage = new EmployeesInfoManage();
             EmplSalaryEmbodyManage emplSalary = new EmplSalaryEmbodyManage();
-        var salary=emplSalary.GetList().Where(i=>i.EmployeeId==empid).FirstOrDefault();
+            var salary=emplSalary.GetList().Where(i=>i.EmployeeId==empid).FirstOrDefault();
             decimal countsalary=0;
             if (salary!=null)
             {

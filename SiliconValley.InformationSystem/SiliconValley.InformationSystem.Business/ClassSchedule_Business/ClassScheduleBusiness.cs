@@ -24,6 +24,7 @@ using SiliconValley.InformationSystem.Business.ExaminationSystemBusiness;
 using SiliconValley.InformationSystem.Business.Base_SysManage;
 using SiliconValley.InformationSystem.Business.EmployeesBusiness;
 using SiliconValley.InformationSystem.Business.Cloudstorage_Business;
+using SiliconValley.InformationSystem.Business.DormitoryMantainBusiness;
 
 namespace SiliconValley.InformationSystem.Business.ClassSchedule_Business
 {
@@ -85,10 +86,12 @@ namespace SiliconValley.InformationSystem.Business.ClassSchedule_Business
         EmployeesInfoManage employeesInfoManage = new EmployeesInfoManage();
         //班主任带班
         BaseBusiness<HeadClass> Hoadclass = new BaseBusiness<HeadClass>();
-       
-        //学生居住信息
-        private AccdationinformationBusiness Accdation;
 
+        //学生居住信息
+        private AccdationinformationBusiness Accdation = new AccdationinformationBusiness ();
+        private PricedormitoryarticlesManeger PriceManger = new PricedormitoryarticlesManeger();
+        //private DormitoryDepositManeger Dormitory_Entity = new DormitoryDepositManeger();
+        BaseBusiness<DormitoryDeposit> Dormitory_Entity = new BaseBusiness<DormitoryDeposit>();
         //public 
 
         /// <summary>
@@ -1686,6 +1689,36 @@ namespace SiliconValley.InformationSystem.Business.ClassSchedule_Business
                 retus.Success = true;
                 if (Secss == "Yes")
                 {
+                    //休学的将学生移除宿舍并结算保险柜押金
+                    int? Suspensionid = x.SuspensionofschoolID;
+                    Suspensionofschool SuspenEntity = SuspensionofschoolBusiness.GetEntity(Suspensionid);
+                    string accsql = "select * from Accdationinformation where studentnumber = " + x.Studentnumber + " and EndDate is null";
+                    Accdationinformation Acc = Accdation.GetListBySql<Accdationinformation>(accsql).FirstOrDefault();
+                    Acc.EndDate = SuspenEntity.Startingperiod;
+                    Acc.IsDel = true;
+                    Accdation.Update(Acc);
+
+                    //结算押金
+                    Accdationinformation accdate = Accdation.GetListBySql<Accdationinformation>("select top 1 * from Accdationinformation where Studentnumber=" + x.Studentnumber + " order by StayDate asc").FirstOrDefault();
+                    Accdationinformation accdate1 = Accdation.GetListBySql<Accdationinformation>("select top 1 * from Accdationinformation where Studentnumber=" + x.Studentnumber + " order by StayDate desc").FirstOrDefault();
+                    var months = ((SuspenEntity.Startingperiod.Year - accdate.StayDate.Year) * 12) + SuspenEntity.Startingperiod.Month - accdate.StayDate.Month;
+                    Pricedormitoryarticles Price_List = PriceManger.GetList().Where(s => s.Nameofarticle.Contains("保险柜每月扣费")).FirstOrDefault();
+                    Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
+                    DormitoryDeposit dormitory = new DormitoryDeposit()
+                    {
+                        ID = Guid.NewGuid().ToSequentialGuid(),
+                        Maintain = SuspenEntity.Startingperiod,
+                        DormId = accdate1.DormId,
+                        StuNumber = x.Studentnumber,
+                        MaintainGood = Price_List.ID,
+                        GoodPrice = months * 10,
+                        MaintainState = 1,
+                        CreaDate = DateTime.Now,
+                        RepairContent = "每月扣除的保险柜金额",
+                        EntryPersonnel = UserName.EmpNumber
+                    };
+                    Dormitory_Entity.Insert(dormitory);
+
                     x.IsaDopt = true;
                     var StudenClass = ss.GetList().Where(a => a.StudentID == x.Studentnumber && a.CurrentClass == true).FirstOrDefault();
                     StudenClass.CurrentClass = false;
@@ -1734,6 +1767,8 @@ namespace SiliconValley.InformationSystem.Business.ClassSchedule_Business
                     transfer.Studentnumber = transactionView.StudentID;//学号
                     transfer.Startingperiod = transactionView.qBeginTime;//开始时间
                     transfer.Deadline = transactionView.qEndTime;//结束时间
+
+
 
                     var boolTransfer = classDynamicsBusiness.GetList().Where(a => a.IsaDopt == null && a.Studentnumber == transfer.Studentnumber && a.SuspensionofschoolID != null).ToList();
                    
@@ -1962,13 +1997,47 @@ namespace SiliconValley.InformationSystem.Business.ClassSchedule_Business
                 retus.Success = true;
                 if (Secss == "Yes")
                 {
+
+                    //退学的将学生移除宿舍并结算保险柜押金
+                    int? ApplicationDropoutID = x.ApplicationDropoutID;
+
+                    ApplicationDropout ApPEntity = ApplicationDropoutBusiness.GetEntity(ApplicationDropoutID);
+                    Accdationinformation Acc = Accdation.GetListBySql<Accdationinformation>("select * from Accdationinformation where studentnumber = " + x.Studentnumber + " and EndDate is null").FirstOrDefault();
+                    //删除宿舍
+                    Accdation = new AccdationinformationBusiness();
+                    Accdation.delacc(x.Studentnumber);
+                    if (ApplicationDropoutID !=null) {
+                         
+                        //结算押金
+                        Accdationinformation accdate = Accdation.GetListBySql<Accdationinformation>("select top 1 * from Accdationinformation where Studentnumber=" + x.Studentnumber + " order by StayDate asc").FirstOrDefault();
+                        Accdationinformation accdate1 = Accdation.GetListBySql<Accdationinformation>("select top 1 * from Accdationinformation where Studentnumber=" + x.Studentnumber + " order by StayDate desc").FirstOrDefault();
+                        var months = ((ApPEntity.Addtime.Value.Year - accdate.StayDate.Year) * 12) + ApPEntity.Addtime.Value.Month - accdate.StayDate.Month;
+                        Pricedormitoryarticles Price_List = PriceManger.GetList().Where(s => s.Nameofarticle.Contains("保险柜每月扣费")).FirstOrDefault();
+                        Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
+                        DormitoryDeposit dormitory = new DormitoryDeposit()
+                        {
+                            ID = Guid.NewGuid().ToSequentialGuid(),
+                            Maintain = ApPEntity.Addtime.Value,
+                            DormId = accdate1.DormId,
+                            StuNumber = x.Studentnumber,
+                            MaintainGood = Price_List.ID,
+                            GoodPrice = months * 10,
+                            MaintainState = 1,
+                            CreaDate = DateTime.Now,
+                            RepairContent = "每月扣除的保险柜金额",
+                            EntryPersonnel = UserName.EmpNumber
+                        };
+                        Dormitory_Entity.Insert(dormitory);
+                    }
+                    
+
+                    
+
                     x.IsaDopt = true;
                     var StudenClass = ss.GetList().Where(a => a.StudentID == x.Studentnumber && a.CurrentClass == true).FirstOrDefault();
                     StudenClass.CurrentClass = false;
                     ss.Update(StudenClass);
-                    //删除宿舍
-                    Accdation = new AccdationinformationBusiness();
-                    Accdation.delacc(x.Studentnumber);
+                    
                     var Student = studentInformationBusiness.GetEntity(x.Studentnumber);
                     Student.State= this.FineBasicdat(State).ID;
                     studentInformationBusiness.Update(Student);
@@ -2018,6 +2087,7 @@ namespace SiliconValley.InformationSystem.Business.ClassSchedule_Business
                 result.Success = true;
                 if (this.Changeprocessing(transactionView.StudentID) < 1)
                 {
+                    
                     ApplicationDropout transfer = new ApplicationDropout();
                     transfer.IsDelete = false;//是否删除
                     transfer.Reasonofdropout = transactionView.Reason;//原因

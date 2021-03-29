@@ -108,12 +108,14 @@
                         var iden = index % 2;
                         var x = "";
                         if (iden === 1) {
+                            
                             x = " <input type='checkbox' lay-filter='UndergraduatecourseID' Amountofmoney=" + item.Amountofmoney + "  name='Subjectid' value=" + item.id + "  title=" + item.Name + " ><br/><br/>";
                         } else {
                             x = " <input type='checkbox' lay-filter='UndergraduatecourseID'  Amountofmoney=" + item.Amountofmoney + "  name='Subjectid' value=" + item.id + "  title=" + item.Name + " >";
                         }
 
                         $("#UndergraduatecourseID").append(x);
+                        console.log(x);
 
                     });
               
@@ -143,16 +145,25 @@
                         form.render();
                     }
                 }, function (value, index, elem) {
-                        if (value >= $(data.elem).attr("Amountofmoney") && RegExp(/\d{8-20}/)) {
+                  //  console.log(value);
+                        //console.log(value >= $(data.elem).attr("Amountofmoney"));
+                    if (parseInt(value) >= parseInt($(data.elem).attr("Amountofmoney")) && RegExp(/\d{8-20}/)) {
 
                             value = $(data.elem).attr("Amountofmoney");
+                            //console.log(1);
 
-                        } else if (value < $(data.elem).attr("Amountofmoney")) {
+                    } else if (parseInt(value) < parseInt($(data.elem).attr("Amountofmoney"))) {
+                           
+                            value = value;
+                            //console.log(2);
 
-                        } else {
-                            value = $(data.elem).attr("Amountofmoney");
                         }
-                        Amountofmoney = Amountofmoney + parseInt(value);
+                        else {
+                            value = $(data.elem).attr("Amountofmoney");
+                            //console.log(3);
+                        }
+                    Amountofmoney = Amountofmoney + parseInt(value);
+                    console.log(Amountofmoney);
                         $("#Totalsum").text(Amountofmoney);
 
                      //
@@ -164,6 +175,7 @@
                         StudentFeeRecordId: $(data.elem).val(),
                         StudentID: $("#StudentID").val()
                     };
+                    console.log(obj);
                     list.push(obj);
                     layer.close(index);
 
