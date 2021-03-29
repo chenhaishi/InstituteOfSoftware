@@ -22,12 +22,12 @@
     <form class="layui-form" lay-filter="sercherform">
         <div class="layui-row layui-form-item">
             <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
-                <label class="LableCss1">学生姓名:</label>
+                <label class="LableCss1">班级:</label>
                 <div class="layui-input-block">
-                    <input type="text" placeholder="学生姓名" class="layui-input" name="stuName" id="stuName" />
+                    @Html.DropDownList("classNumber", ViewBag.classlist as IEnumerable<SelectListItem>, new Dictionary<string, object>())
                 </div>
             </div>
-            
+
             <div class="layui-col-xs2 layui-col-sm2 layui-col-md2" style="text-align:center">
                 <button type="button" class="layui-btn" onclick="SercherFuntion()">查询</button>
             </div>
@@ -47,6 +47,8 @@
     var table;
     var layer;
     $(function () {
+
+
         layui.use(['layer', 'table', 'form'], function () {
             form = layui.form;
             table = layui.table;
@@ -54,7 +56,9 @@
 
 
             table.render({
-                elem: '#StudentTable'                 
+                elem: '#StudentTable'     
+                , page: true //开启分页
+                , limits: [10, 20, 30,40]
                 , cols: [[
                     { type: 'checkbox', fixed: 'left' }
                     , { field: 'StuNumber', title: '学号', fixed: 'left' }
@@ -86,7 +90,7 @@
                         layer.open({
                             type: 2,
                             content: ' /Dormitory/StudentBedtime/ChangDorView/' + data.StuNumber,
-                            area: ['1000px', '600px']
+                            area: ['1000px', '800px']
                         });
 
                         layer.close(index);
@@ -126,10 +130,10 @@
     });
 
     function SercherFuntion() {
-        if ($("#stuName").val().length > 0) {
+        console.log($("select[name='classNumber']").val());
             table.reload('StudentTable', {
                 url: '/Dormitory/StudentBedtime/StudentChangDorData'
-                , where: { "stuname": $("#stuName").val() }
+                , where: { "classNumber": $("select[name='classNumber']").val() }
             });
             //$.ajax({
             //    url: '/Dormitory/StudentBedtime/StudentChangDorData',
@@ -138,9 +142,7 @@
 
             //    }
             //});
-        } else {
-            layer.msg("请输入学生姓名!", { icon: 2, shade: 0.8 });
-        }
+      
 
     }
 
