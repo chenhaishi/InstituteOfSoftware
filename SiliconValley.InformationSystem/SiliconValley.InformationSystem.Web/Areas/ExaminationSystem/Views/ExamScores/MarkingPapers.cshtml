@@ -211,9 +211,10 @@
 </div>
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
-        <a @*href="/ExaminationSystem/ExamScores/DownFile"*@ lay-event="BatchExport"  class="layui-btn" style="color:white;width:20%">导出模板</a>
+        <a @*href="/ExaminationSystem/ExamScores/DownFile"*@ lay-event="BatchExport" class="layui-btn" style="color:white;width:20%">导出模板</a>
         @*<a  id="xiazaimoban" class="layui-btn" style="color:white;width:20%">下载模板</a>*@
         <a class="layui-btn" style="color:white;width:20%" lay-event="OneClickUploadScore" id="OneClickUploadScore">一键上传分数</a>
+        <a href="\ExaminationSystem\ExamScores\ExamScoreSearch" class="layui-btn layui-btn-danger" style="color:white;width:20%">查看分数</a>
         <a href="\ExaminationSystem\ExamScores\Marking" class="layui-btn layui-btn-danger" style="color:white;width:20%">跳转查看笔试</a>
     </div>
 </script>

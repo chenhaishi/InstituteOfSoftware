@@ -143,16 +143,16 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
                         TeacherBusiness teacherdb = new TeacherBusiness();
                         var Reviewer = teacherdb.GetTeachers().Where(d => d.EmployeeId == user.EmpNumber).FirstOrDefault().TeacherID;
                         string sql = "select * from CandidateInfo where StudentID ='"+ studentid + "'and Examination = '"+ Examid + "'";
-                        var candid = db_cand.GetListBySql<CandidateInfo>(sql).FirstOrDefault();
+                        var candid = db_cand.GetListBySql<CandidateInfo>(sql).FirstOrDefault().CandidateNumber;
                         string sqles = "select * from TestScore where CandidateInfo = '"+ candid + "' and Examination = '" + Examid + "'";
                         var CandidateInfo = this.GetListBySql<TestScore>(sqles).FirstOrDefault().CandidateInfo;
-                        ExecuteSql("UPDATE TestScore set TextQuestionScore ='" + jiedati + ",OnBoard = '" + jishi + "',Reviewer = '" + Reviewer + "',Remark = '"+ beizhu + "',CreateTime='"+ DateTime.Now + "' where CandidateInfo = '" + CandidateInfo + "' and Examination = '" + Examid + "'");
+                        ExecuteSql("UPDATE TestScore set TextQuestionScore ='" + jiedati + "',OnBoard = '" + jishi + "',Reviewer = '" + Reviewer + "',Remark = '"+ beizhu + "',CreateTime='"+ DateTime.Now + "' where CandidateInfo = '" + CandidateInfo + "' and Examination = '" + Examid + "'");
                         BusHelper.WriteSysLog("Excel文件导入成功", Entity.Base_SysManage.EnumType.LogType.Excle文件导入);
                         rc.RemoveCache("InRedisMCData");
                     }
 
                 }
-                int sum = num - 3;
+                int sum = num - 1;
                 if (sum - error.Count() == sum)
                 {//说明没有出错数据，导入的数据全部添加成功
                     result.Success = true;
