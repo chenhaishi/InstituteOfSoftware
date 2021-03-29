@@ -627,7 +627,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             else if(date != "" && time != "")
             {
                
-                var ListView = StudentFeeRecordListView.GetListBySql<StudentFeeRecordListView>("select * from StudentFeeRecordListView where Passornot='1' and AddTime is not null and  AddTime>=(dateadd(day,-1,'"+date+ "')) and AddTime<=(dateadd(day,1,'" + time+"'))").ToList();
+                var ListView = StudentFeeRecordListView.GetListBySql<StudentFeeRecordListView>("select * from StudentFeeRecordListView where Passornot='1' and AddTime is not null and  AddTime>='"+date+ "' and AddTime<='" + time+"'").ToList();
                 foreach (var item in ListView)
                 {
                     PriceDC priceDC = new PriceDC();
