@@ -56,7 +56,9 @@
 
 
             table.render({
-                elem: '#StudentTable'                 
+                elem: '#StudentTable'     
+                , page: true //开启分页
+                , limits: [10, 20, 30,40]
                 , cols: [[
                     { type: 'checkbox', fixed: 'left' }
                     , { field: 'StuNumber', title: '学号', fixed: 'left' }
@@ -131,7 +133,7 @@
         console.log($("select[name='classNumber']").val());
             table.reload('StudentTable', {
                 url: '/Dormitory/StudentBedtime/StudentChangDorData'
-                , where: { "classNumber": $("input[name='classNumber']").val() }
+                , where: { "classNumber": $("select[name='classNumber']").val() }
             });
             //$.ajax({
             //    url: '/Dormitory/StudentBedtime/StudentChangDorData',
