@@ -2098,8 +2098,6 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                 {
                     if (item1 == item.StudenID)
                     {
-
-
                         studentRefunditems.Amountofmoney = studentRefunditems.Amountofmoney + item.Amountofmoney;
 
                     }
