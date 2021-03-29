@@ -1950,7 +1950,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
             AjaxResult retus = null;
             foreach (var item in tuitionrefunds)
             {
-                var studentfeelist = studentfee.GetList().Where(a => a.StudenID == item.StudentID && a.Costitemsid == item.StudentFeeRecordId).ToList();
+                var studentfeelist = studentfee.GetList().Where(a => a.StudenID == item.StudentID && a.Costitemsid == item.StudentFeeRecordId&&a.AddTime!=null).ToList();
                 if (studentfeelist.Count >= 1)
                 {
                     TuitionrefundAdds(studentfeelist, item.Amountofmoney);
@@ -2016,19 +2016,19 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
             foreach (var item in studentFeeRecords)
             {
                 Tuitionrefund tuitionrefund = new Tuitionrefund();
-                if (item.Amountofmoney - Amountofmoney > 0)
-                {
+                //if (item.Amountofmoney - Amountofmoney >= 0)
+                //{
                     tuitionrefund.Amountofmoney = Amountofmoney;
                     tuitionrefund.StudentFeeRecordId = item.ID;
                     tuitionrefund.AddDate = DateTime.Now;
                     tuitionrefund.Empnumber = user.EmpNumber;
                     tuitionrefundsz.Add(tuitionrefund);
-                }
-                else
-                {
+                //}
+                //else
+                //{
 
-                    TuitionrefundAddd(item, Amountofmoney);
-                }
+                //    TuitionrefundAddd(item, Amountofmoney);
+                //}
             }
         }
         /// <summary>

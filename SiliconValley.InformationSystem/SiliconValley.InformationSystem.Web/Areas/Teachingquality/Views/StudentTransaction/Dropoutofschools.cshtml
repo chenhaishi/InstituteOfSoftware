@@ -302,19 +302,20 @@
         var laydate = layui.laydate;
         //日期正则
         var curDate = new Date();
-        var curYearMonthrDay = curDate.getFullYear() + "-" + MoDay(parseInt(curDate.getMonth()) + 1) + "-" + MoDay(parseInt(curDate.getDate()));
+        //var curYearMonthrDay = curDate.getFullYear() + "-" + MoDay(parseInt(curDate.getMonth()) - 1) + "-" + MoDay(parseInt(curDate.getDate()));
 
-        $("#Dateofapplication").val(curYearMonthrDay);
+        $("#Dateofapplication").val();
         laydate.render({
             elem: '#Dateofapplication'
             , format: 'yyyy-MM-dd',
 
             done: function (value, date, endDate) {
-                var endTime = new Date(value).getTime();
-                if (endTime < curDate.getTime()) {
-                    layer.msg('不能小于当前日期');
-                    $('#Dateofapplication').val(curYearMonthrDay);
-                }
+                //var endTime = new Date(value).getTime();
+                //console.log(endTime);
+                //if (endTime < curDate.getTime()) {
+                //    layer.msg('不能小于当前日期');
+                    $('#Dateofapplication').val();
+                //}
             }
         });
 
