@@ -199,14 +199,14 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             //string names = "";
             //EmployeesInfoManage empmanage = new EmployeesInfoManage();
             //EmplSalaryEmbodyManage esemanage = new EmplSalaryEmbodyManage();
-            //List<EmployeesInfo> employeeslist = empmanage.GetList().Where(i=>i.IsDel==false).ToList();
-            //var emplist = esemanage.GetEmpESEData().Where(s => s.IsDel == false).OrderBy(i => i.Id).ToList();
+            //List<EmployeesInfo> employeeslist = empmanage.GetList().Where(i => i.IsDel!= false).ToList();
+            //var emplist = esemanage.GetEmpESEData().Where(s => s.IsDel != false).OrderBy(i => i.Id).ToList();
             //foreach (var item in employeeslist)
             //{
             //    var s = emplist.Where(i => i.EmployeeId == item.EmployeeId).FirstOrDefault();
             //    if (s == null)
             //    {
-            //        names += item.EmpName+";";
+            //        names += item.EmpName + ";";
             //    }
             //}
             ViewBag.time = FirstTime;

@@ -53,6 +53,6 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         public string Remark { get; set; }
         public Nullable<bool> IsDel { get; set; }
         public string Image { get; set; }
-        //public string Email { get; set; }
+        public string RecruitSource { get; set; }
     }
 }

@@ -107,16 +107,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             {
                 var myese = esemanage.GetEntity(ese.Id);
                 var emp = emanage.GetInfoByEmpID(ese.EmployeeId);
-                if (string.IsNullOrEmpty(emp.PositiveDate.ToString()))
-                {
-                    ese.PositionSalary = emp.ProbationSalary - ese.BaseSalary ;
-                }
-                else {
-                    ese.PositionSalary = emp.Salary - ese.BaseSalary ;
-                }
-                if (!string.IsNullOrEmpty(ese.PerformancePay.ToString())) {
-                    ese.PositionSalary =emp.Salary- ese.BaseSalary - ese.PerformancePay;
-                }
+                //if (string.IsNullOrEmpty(emp.PositiveDate.ToString()))
+                //{
+                //    ese.PositionSalary = emp.ProbationSalary - ese.BaseSalary ;
+                //}
+                //else {
+                //    ese.PositionSalary = emp.Salary - ese.BaseSalary ;
+                //}
+                //if (!string.IsNullOrEmpty(ese.PerformancePay.ToString())) {
+                //    ese.PositionSalary =emp.Salary- ese.BaseSalary - ese.PerformancePay;
+                //}
                 
                 ese.IsDel = myese.IsDel;
                 esemanage.Update(ese);
