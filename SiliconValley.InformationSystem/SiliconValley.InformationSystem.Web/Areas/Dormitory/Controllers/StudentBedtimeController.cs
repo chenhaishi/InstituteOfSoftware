@@ -39,6 +39,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Dormitory.Controllers
         BaseBusiness<DormitoryDeposit> Dormitory_Entity = new BaseBusiness<DormitoryDeposit>();
         //private DormitoryDepositManeger Dormitory_Entity = new DormitoryDepositManeger();
         public BaseBusiness<EmployeesInfo> EmployeesInfo_Entity = new BaseBusiness<EmployeesInfo>();
+        public ScheduleForTraineesBusiness Schedule_Entity = new ScheduleForTraineesBusiness();
 
         // GET: /Dormitory/StudentBedtime/EndFunction
         public ActionResult StudentBedtimeIndex()
@@ -263,9 +264,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.Dormitory.Controllers
             list.ForEach(l =>
             {
                 StudentInformation student = StudentInfo_Entity.GetEntity(l.Studentnumber);
+                string Schsql = "select * from ScheduleForTrainees where StudentID = "+student.StudentNumber+ " and CurrentClass=1";
+                ScheduleForTrainees schedule = Schedule_Entity.GetListBySql<ScheduleForTrainees>(Schsql).FirstOrDefault();
                 if (student != null)
                 {
-                    SelectListItem item = new SelectListItem() { Text = student.Name, Value = student.StudentNumber };
+                    SelectListItem item = new SelectListItem() { Text = student.Name+" "+schedule.ClassID, Value = student.StudentNumber };
 
                     studentlist.Add(item);
                 }
@@ -382,12 +385,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.Dormitory.Controllers
         }
 
         [HttpGet]
-        public ActionResult StudentChangDorData()
+        public ActionResult StudentChangDorData(int page, int limit)
         {
-            string StuName= Request.QueryString["classNumber"];
-            string sqlstr = "select * from StudentInformation where Name like '%"+StuName+"%'";
+            string ClassName= Request.QueryString["classNumber"];
+            List<StudentInformation> stulist = Schedule_Entity.ClassStudent(Convert.ToInt32(ClassName)).ToList() ;
 
-            List<StudentInformation> stulist= ChangeDorStudent_Entity.GetListBySql<StudentInformation>(sqlstr);
+            //List<StudentInformation> stulist= ChangeDorStudent_Entity.GetListBySql<StudentInformation>(sqlstr);
 
             //学生姓名，所在班级，班主任姓名，所在寝室，所在床位
             List<DorChangeStudentData> dorchanglist = new List<DorChangeStudentData>();
@@ -424,7 +427,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Dormitory.Controllers
                 dorchanglist.Add(studentData);
             }
 
-            var jsondata = new {data= dorchanglist ,code=0,count= dorchanglist.Count };
+            var jsondata = new {data= dorchanglist.Skip((page - 1) * limit).Take(limit), code=0,count= dorchanglist.Count };
 
             return Json(jsondata,JsonRequestBehavior.AllowGet) ;
 
@@ -542,7 +545,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Dormitory.Controllers
                 if (count<stuNumber.Length) {
                     string checkDorm = "select * from Accdationinformation where studentnumber = " + stuNumber[i] + " and Enddate is null";
                     Accdationinformation checklist = ChangeDorStudent_Entity.GetListBySql<Accdationinformation>(checkDorm).FirstOrDefault();
-                    if (checklist == null) {
+                    if (checklist != null) {
                          int n = ChangeDorStudent_Entity.GetList().Where(a=>a.DormId==DorId).Max(a=>a.BedId);
                         string sqlstr = @"select * from Accdationinformation where Studentnumber='" + stuNumber[i] + "' and EndDate is null";
 
