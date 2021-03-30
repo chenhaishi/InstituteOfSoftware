@@ -56,6 +56,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         public BaseBusiness<MarkingArrange> Marking_Entity = new BaseBusiness<MarkingArrange>();
         public CandidateInfoBusiness Candi_Entity = new CandidateInfoBusiness();
         public CoursewaremakingBusiness Courseware_Entity = new CoursewaremakingBusiness();
+        public BaseBusiness<InternalTrainingCost> InternalTraining = new BaseBusiness<InternalTrainingCost>();
 
         public Staff_Cost_StatisticssBusiness()
         {
@@ -403,6 +404,18 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
 
                         }
+                    }
+                }
+
+                //计算内训费
+                int Internal_count_one = 0;//Y1  S1 S2
+                int Internal_count_two = 0;//Y2 Ca S3 S4
+                string Internalsql = "select * from InternalTrainingCost where Trainer="+Emp_List[i].EmployeeId+" and Year(Time)="+dt.Year+" and MONTH(Time)="+dt.Month+" and IsUsing=0";
+                List<InternalTrainingCost> Internallist = InternalTraining.GetListBySql<InternalTrainingCost>(Internalsql);
+                for (int k = 0; k < Internallist.Count; k++)
+                {
+                    if (Internallist[k].grand==1002 || Internallist[k].grand ==1 || Internallist[k].grand ==2) {
+                        
                     }
                 }
 
