@@ -1659,6 +1659,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                 preentryfee.AddDate = DateTime.Now;
                 preentryfee.IsDit = false;
                 preentryfee.FinanceModelid = fine.id;
+                preentryfee.Reamk = preentryfee.Reamk;
                 var classid = preentryfee.ClassID.Split(',');
                 Payview studentFee = new Payview();
                 studentFee.StudenID = preentryfee.keeponrecordid.ToString() + "," + preentryfee.ClassID;
@@ -2127,7 +2128,6 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
             StudentRefunditems studentRefunditems = new StudentRefunditems();
             foreach (var item in x)
             {
-
                 studentRefunditems.Amountofmoney = studentRefunditems.Amountofmoney + Convert.ToDecimal(item.Amountofmoney);
             }
             return studentRefunditems.Amountofmoney;

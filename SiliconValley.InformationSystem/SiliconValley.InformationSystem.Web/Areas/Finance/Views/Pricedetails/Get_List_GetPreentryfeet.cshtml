@@ -56,7 +56,7 @@
             $.post("/Finance/Pricedetails/Preentryfeet_List", { date: date, time: time }, (r) => {
                 if (r.code == 0) {
                     //列标题，逗号隔开，每一个逗号就是隔开一个单元格
-                    let str = `学生名字,学生身份证,性别,班级,预录费金额,状态,缴费单号,缴费时间\n`;
+                    let str = `学生名字,学生身份证,性别,班级,预录费金额,状态,缴费单号,缴费方式,缴费时间\n`;
                     //增加\t为了不让表格显示科学计数法或者其他格式
                     console.log(str);
                     for (let i = 0; i < r.data.length; i++) {
