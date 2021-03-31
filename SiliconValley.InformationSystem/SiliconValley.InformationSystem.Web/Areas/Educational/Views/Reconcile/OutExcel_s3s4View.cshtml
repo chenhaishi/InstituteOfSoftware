@@ -1,0 +1,90 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>OutExcel_s3s4View</title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+</head>
+<body>
+    <div>
+        <form class="layui-form" style="margin-top:20px;">
+            <div class="layui-row layui-form-item">
+
+                <div class="layui-form-item" style="width:540px;margin-left:40px;">
+                    <label class="layui-form-label">阶段</label>
+                    <div class="layui-input-block">
+                        @Html.DropDownList("Re_grand", ViewBag.grandlist as IEnumerable<SelectListItem>, new Dictionary<string, object>() { { "class", "linu layui-input" }, { "lay-filter", "Re_grand" } })
+                    </div>
+                </div>
+                <div class="layui-form-item" style="width:540px;margin-left:40px;">
+                    <label class="layui-form-label">班级</label>
+                    <div class="layui-input-block" id="Re_class">
+                        <select>
+                            <option value="0">--请选择--</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-input-block" id="Re_class">
+                        <button type="submit" class="layui-btn" lay-submit="" lay-filter="serch1"  style="width:200px;margin-left:100px;">导出</button>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</body>
+</html>
+
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/layui/layui.js"></script>
+<script>
+    layui.use(['element', 'layer', 'form', 'laydate', 'table'], function () {
+        var element = layui.element;
+        var layer = layui.layer;
+        var form = layui.form;
+        var laydate = layui.laydate;
+        var table = layui.table;
+
+
+        //获取班级
+        form.on('select(Re_grand)', function (data) {
+            $("#Re_class")[0].innerHTML = "";
+            $.ajax({
+                url: '/Educational/Reconcile/GetClassScheduleSelect/' + data.value,
+                success: function (sudata) {
+                    //获取班级slect
+                    var classselect = $('<select id="class_select" name="class_select" class="layui-select"><option value="0" selected>--请选择--</select>');
+                    for (var i = 0; i < sudata.length; i++) {
+                        $('<option value=' + sudata[i].id + '>' + sudata[i].ClassNumber + '<option>').appendTo(classselect);
+                    }
+                    $("#Re_class")[0].innerHTML = "";
+                    $("#Re_class").append(classselect);
+                    form.render(); //更新全部
+                }
+            });
+        });
+
+        //导出
+        form.on("submit(serch1)", function (data) {
+            var data = data.field;
+            console.log(data.field);
+            $.ajax({
+                url: '/Educational/Reconcile/OutExcel_s3s4Funtion',
+                type: 'POST',
+                data: data.field,
+                success: function (res) {
+
+                }
+
+            });
+        });
+    });
+</script>
