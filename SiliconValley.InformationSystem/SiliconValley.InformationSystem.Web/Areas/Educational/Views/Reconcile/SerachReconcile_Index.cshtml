@@ -151,6 +151,7 @@
             <button class="layui-btn layui-btn-sm" lay-event="Class_getUpdateData"><i class="layui-icon">&#xe642;</i>修改班级上专业课时间段</button>
             <button class="layui-btn layui-btn-sm" lay-event="Class_getUpdateData2"><i class="layui-icon">&#xe642;</i>修改班级上专业课老师</button>
             <button class="layui-btn layui-btn-sm" lay-event="More_Delets"><i class="layui-icon">&#xe642;</i>批量删除</button>
+            <button class="layui-btn layui-btn-sm" lay-event="outExcel_S3S4"><i class="layui-icon">&#xe642;</i>导出S3S4班级任课信息</button>
         </div>
     </script>
 </div>
@@ -455,8 +456,17 @@
                     } else {
                         layer.msg("至少选择一条数据！！！", { icon: 2, shade: 0.8 })
                     }
-
-
+                    break;
+                case 'outExcel_S3S4':
+                    layer.open({
+                        type: 2,
+                        content: '/Educational/Reconcile/OutExcel_s3s4View',
+                        area: ['680px', '450px'],
+                        title: '班级授课信息'
+                        , shade: 0.8
+                        , anim: 4
+                        , skin: 'demo-class'
+                    });
                     break;
 
                 //case 'time_interval':

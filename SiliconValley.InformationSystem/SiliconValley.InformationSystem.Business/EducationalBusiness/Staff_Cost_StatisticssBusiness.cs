@@ -214,7 +214,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
                             int zhisuClassTime = Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
                             int totalClassTime = (zhisuClassTime / 4) + zhisuClassTime;
-                            OtherStage += zhisuClassTime;
+                            OtherStage += totalClassTime;
                         }
                         else
                         {

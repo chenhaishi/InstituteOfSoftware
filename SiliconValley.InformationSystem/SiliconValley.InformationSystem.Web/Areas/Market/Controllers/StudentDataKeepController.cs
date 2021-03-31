@@ -1308,9 +1308,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
             string oneTime = Request.Form["oneTime"];//开始日期
             string twoTime = Request.Form["twoTime"];//结束日期
 
-            string sql = "select * from StudentBeanView where statusName='"+zhuangtai+"' and BeanDate >= '" + oneTime + "' and BeanDate <='" + twoTime + "'";
+            string sql = "select * from StudentBeanView where statusName='"+zhuangtai+"' and BeanDate >= '" + oneTime + "' and BeanDate <='" + twoTime + "' and IsDelete=0";
             if (zhuangtai =="0") {
-                sql = "select * from StudentBeanView where BeanDate >= '" + oneTime + "' and BeanDate <='" + twoTime + "'";
+                sql = "select * from StudentBeanView where BeanDate >= '" + oneTime + "' and BeanDate <='" + twoTime + "' and IsDelete=0";
             }
             List<ExportStudentBeanData> Exportlist = s_Entity.GetListBySql<ExportStudentBeanData>(sql);
   
