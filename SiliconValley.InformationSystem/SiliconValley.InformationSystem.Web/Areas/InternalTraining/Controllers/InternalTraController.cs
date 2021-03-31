@@ -70,6 +70,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.InternalTraining.Controllers
         /// <returns></returns>
         public ActionResult XiuGaiInternalTraIndex()
         {
+            //提供难度级别数据
+            GrandBusiness grandBusiness = new GrandBusiness();
+            DepartmentManage dep = new DepartmentManage();
+            //提供阶段数据
+            ViewBag.Grand = grandBusiness.AllGrand();
+            //提供部门数据
+            ViewBag.bumeng = dep.GetList().Where(d => d.DeptId == 5 || d.DeptId == 6 || d.DeptId == 1008 || d.DeptId == 1009).ToList();
             return View();
         }
         /// <summary>
@@ -137,7 +144,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.InternalTraining.Controllers
                 cost.Curriculum = Curriculum;
                 cost.ClassHours = ClassHours;
                 cost.Contents = Contents;
-
+                cost.IsUsing = false;
+                cost.State = 0;
                 db_internal.Insert(cost);
 
                 result.ErrorCode = 200;

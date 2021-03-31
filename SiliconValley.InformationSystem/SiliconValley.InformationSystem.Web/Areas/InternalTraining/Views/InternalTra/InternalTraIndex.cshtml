@@ -87,7 +87,25 @@
                     break;
             };
         });
-        
+        //监听行工具事件
+        table.on('tool(test)', function (obj) {
+            var data = obj.data;
+            //console.log(obj)
+            if (obj.event === 'edit') {
+                layer.open({
+                    type: 2,
+                    title: "修改",
+                    area: ["700px", "700px"],
+                    content: '/InternalTraining/InternalTra/XiuGaiInternalTraIndex',
+                    end: function () {
+
+                        table.reload('ShowShuJu', {
+
+                        });
+                    }
+                })
+            }
+        });
 
  
     });
