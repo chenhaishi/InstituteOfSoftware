@@ -16,6 +16,7 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.XYK_Data
         public string Amountofmoney { get; set; }
         public string Refundornot { get; set; }
         public string OddNumbers { get; set; }
+        public string Reamk { get; set; }
         public string AddDtae { get; set; }
     }
 }

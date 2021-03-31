@@ -577,6 +577,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
                     cmd.Refundornot = item.Refundornot.ToString() == "1" ? "已报名" : "未报名";
                     cmd.OddNumbers = item.OddNumbers;
                     cmd.ClassID = item.ClassID;
+                    cmd.Reamk = item.Reamk;
                     GetPreentryfeet.Add(cmd);
                 }
             }
@@ -1072,6 +1073,15 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
         [HttpGet]
         public ActionResult RefunditemsDate()
         {
+            BaseBusiness<Refunditemsview> RefunditemsviewBusiness = new BaseBusiness<Refunditemsview>();
+            string sql = "select * from Refunditemsview";
+            var ReAmountofmoney = RefunditemsviewBusiness.GetListBySql<Refunditemsview>(sql);
+            decimal count = 0;
+            foreach (var item in ReAmountofmoney)
+            {
+                count += item.Amountofmoney;
+            }
+            ViewBag.price = count;
             return View();
 
         }
