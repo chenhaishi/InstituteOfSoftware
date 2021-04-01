@@ -1307,6 +1307,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
             string zhuangtai = Request.Form["S_status"];//学生状态
             string oneTime = Request.Form["oneTime"];//开始日期
             string twoTime = Request.Form["twoTime"];//结束日期
+            int page =Convert.ToInt16(Request.Form["page"]);
 
             string sql = "select * from StudentBeanView where statusName='"+zhuangtai+"' and BeanDate >= '" + oneTime + "' and BeanDate <='" + twoTime + "' and IsDelete=0";
             if (zhuangtai =="0") {
@@ -1334,8 +1335,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
                 ConsultTeacher = ac.ConsultTeacher ?? string.Empty,
                 Party = ac.Party?? string.Empty
             }).ToList();
-           
-            var jsondata = new {title="备案数据Excel",Data= list,Success=true };
+
+            var jsondata = new { title = "", Data = list, Success = true,count=0 };
+            if (list.Count > 5000)
+            {
+                jsondata = new { title = "备案数据Excel", Data = list.Skip((page-1)*5000).Take(5000).ToList(), Success = true, count = list.Count / 5000 };
+            }
+            else
+            {
+                jsondata = new { title = "备案数据Excel", Data = list, Success = true, count = 0 };
+            }
             return Json(jsondata,JsonRequestBehavior.AllowGet);
         }
 

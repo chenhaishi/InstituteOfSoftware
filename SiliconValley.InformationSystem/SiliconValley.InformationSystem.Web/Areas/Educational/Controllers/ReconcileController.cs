@@ -78,8 +78,20 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         public ActionResult OutExcel_s3s4Funtion(string class_select)
         {
             string ClassID = Request.Form["class_select"];//获取班级
+            //根据班级编号获取所有排课数据
+            string AllReconSql = "select * from Reconcile where ClassSchedule_Id="+ClassID+"";
+            List<Reconcile> AllReconList = Reconcile_Entity.GetListBySql<Reconcile>(AllReconSql);
+            List<Recon_CostOut> costOuts = new List<Recon_CostOut>();
 
+            var EmployId_Fen = (
+                    from m in AllReconList
+                    group m by m.EmployeesInfo_Id into list
+                    select list).ToList();
+            for (int i = 0; i < EmployId_Fen.Count; i++)
+            {
+                List<Reconcile> Emp_Recon = AllReconList.Where(a=>a.EmployeesInfo_Id==EmployId_Fen[i].Key).ToList();
 
+            }
 
             return View();
         }

@@ -25,7 +25,7 @@
                 <div class="layui-form-item" style="width:540px;margin-left:40px;">
                     <label class="layui-form-label">班级</label>
                     <div class="layui-input-block" id="Re_class">
-                        <select>
+                        <select name="class_select">
                             <option value="0">--请选择--</option>
                         </select>
                     </div>
@@ -73,13 +73,13 @@
         });
 
         //导出
-        form.on("submit(serch1)", function (data) {
-            var data = data.field;
-            console.log(data.field);
+        form.on('submit(serch1)', function (data) {
+            var data1 = data.field;
+            console.log(data1);
             $.ajax({
                 url: '/Educational/Reconcile/OutExcel_s3s4Funtion',
                 type: 'POST',
-                data: data.field,
+                data: data1,
                 success: function (res) {
 
                 }
