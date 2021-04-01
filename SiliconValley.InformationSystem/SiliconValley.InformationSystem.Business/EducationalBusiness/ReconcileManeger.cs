@@ -2796,7 +2796,14 @@ Curriculum_Id like '职素' or Curriculum_Id like '班会' or Curriculum_Id like
                 {
                     if (item.Curse_Id.Contains("12") || item.Curse_Id.Contains("34"))
                     {
-                        number += 2;
+                        if (item.Curriculum_Id.Contains("班会"))
+                        {
+                            number += 1;
+                        }
+                        else {
+                            number += 2;
+                        }
+                        
                     }
                     else
                     {
