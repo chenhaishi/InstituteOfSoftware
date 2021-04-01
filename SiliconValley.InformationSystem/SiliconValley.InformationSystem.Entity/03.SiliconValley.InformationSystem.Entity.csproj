@@ -436,6 +436,7 @@
     <Compile Include="ViewEntity\OvertimeRecordView.cs" />
     <Compile Include="ViewEntity\PaySlipExcelError.cs" />
     <Compile Include="ViewEntity\PutStudentDataView.cs" />
+    <Compile Include="ViewEntity\Recon_CostOut.cs" />
     <Compile Include="ViewEntity\RecruitPhoneTraceView.cs" />
     <Compile Include="ViewEntity\Refunditemsview.cs" />
     <Compile Include="ViewEntity\SatisficingConfigDataView.cs" />
