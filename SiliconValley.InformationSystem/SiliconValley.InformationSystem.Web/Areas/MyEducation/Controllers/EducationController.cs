@@ -264,5 +264,18 @@ namespace SiliconValley.InformationSystem.Web.Areas.MyEducation.Controllers
             var result = dbtext.ImportDataFormExcel(filestream, excelfile.ContentType);
             return Json(result, JsonRequestBehavior.AllowGet);
         }
+        public ActionResult AchievementDetails(string stunumber)
+        {
+            ViewBag.stunumber = stunumber;
+            return View();
+        }
+        public ActionResult GetDetails(int page,int limit,string stunumber)
+        {
+           return Json(dbtext.GetUndergraduateachievement(page,limit,stunumber),JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult GetDetailspass(int page, int limit, string stunumber)
+        {
+            return Json(dbtext.Getpass(page, limit, stunumber), JsonRequestBehavior.AllowGet);
+        }
     }
 }

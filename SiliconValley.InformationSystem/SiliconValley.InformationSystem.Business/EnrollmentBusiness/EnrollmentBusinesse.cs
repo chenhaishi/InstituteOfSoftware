@@ -203,7 +203,7 @@ namespace SiliconValley.InformationSystem.Business.EnrollmentBusiness
             {
                 list = list.Where(a => a.Name.Contains(Name)).ToList();
             }
-         
+
             if (!string.IsNullOrEmpty(StudentNumber))
             {
                 list = list.Where(a => a.StudentNumber.Contains(StudentNumber)).ToList();
@@ -214,9 +214,9 @@ namespace SiliconValley.InformationSystem.Business.EnrollmentBusiness
             }
             var xz = list.Select(a => new EnrollmentStudentView
             {
-             StudentNumber=  a.StudentNumber,
-              Name=  a.Name,
-              identitydocument=    a.identitydocument,
+                StudentNumber=a.StudentNumber,
+                Name=a.Name,
+                identitydocument=a.identitydocument,
                 ClassName = scheduleForTraineesBusiness.SutdentCLassName(a.StudentNumber)==null?"暂无":scheduleForTraineesBusiness.SutdentCLassName(a.StudentNumber).ClassID,
                 Headmasters = headmasters.Listheadmasters(a.StudentNumber)==null?"暂无" : headmasters.Listheadmasters(a.StudentNumber).EmpName,
                 School =this.GetList().Where(x=>x.IsDelete==false&&x.StudentNumber==a.StudentNumber).FirstOrDefault().School==null?"请补充完整信息": UndergraduateschoolBusiness.GetEntity( this.GetList().Where(x => x.IsDelete == false && x.StudentNumber == a.StudentNumber).FirstOrDefault().School).SchoolName,
@@ -882,22 +882,24 @@ namespace SiliconValley.InformationSystem.Business.EnrollmentBusiness
                         if (sum != null)
                         {
                             number = int.Parse(sum.StudentNumber);
-                            while (true)
-                            {
+                            //while (true)
+                            //{
                                 number++;
-                                var count = studentInformationBusiness.GetListBySql<StudentInformation>("select * from StudentInformation where StudentNumber='" + number + "'").Count();
-                                if (count == 0)
-                                {
-                                    break;
-                                }
-
-                            }
+                            //    var count = studentInformationBusiness.GetListBySql<StudentInformation>("select * from StudentInformation where StudentNumber='" + number + "'").Count();
+                            //    if (count == 0)
+                            //    {
+                            //        break;
+                            //    }
+                            //}
+                        }
+                        else
+                        {
+                            number++;
                         }
                         stu.StudentNumber = number.ToString();
                         stu.Name = name;
                         stu.identitydocument = identitydocument;
                         studentInformationBusiness.Insert(stu);
-                        //continue;
                     }
                     else
                     {
@@ -929,6 +931,50 @@ namespace SiliconValley.InformationSystem.Business.EnrollmentBusiness
                 ajaxresult.Data = "0";
             }
             return ajaxresult;
+        }
+        public object GetUndergraduateachievement(int page, int limit,string stunumber)
+        {
+            var enrollid = this.GetList().Where(i => i.StudentNumber == stunumber).FirstOrDefault().ID;
+            var uglist = UndergraduatecourseBusiness.GetList();
+            var  list = UndergraduateachievementBusines.GetList().Where(i => i.EnrollID == enrollid).Select(i => new
+            {
+                i.id,
+                i.Examinationperiod,
+                i.Fraction,
+                Coursecode = uglist.Where(s=>s.id==i.Subjectid).FirstOrDefault().Coursecode,
+                Coursetitle = uglist.Where(s => s.id == i.Subjectid).FirstOrDefault().Coursetitle
+            }).ToList();
+            var  datalist =list.OrderBy(a => a.id).Skip((page - 1) * limit).Take(limit).ToList();
+            var data = new
+            {
+                code = "",
+                msg = "",
+                count = list.Count,
+                data = datalist
+            };
+            return data;
+        }
+        public object Getpass(int page, int limit, string stunumber)
+        {
+            var enrollid = this.GetList().Where(i => i.StudentNumber == stunumber).FirstOrDefault().ID;
+            var uglist = UndergraduatecourseBusiness.GetList();
+            var list = UndergraduateachievementBusines.GetList().Where(i => i.EnrollID == enrollid&&i.Fraction>=60).Select(i => new
+            {
+                i.id,
+                i.Examinationperiod,
+                i.Fraction,
+                Coursecode = uglist.Where(s => s.id == i.Subjectid).FirstOrDefault().Coursecode,
+                Coursetitle = uglist.Where(s => s.id == i.Subjectid).FirstOrDefault().Coursetitle
+            }).ToList();
+            var datalist = list.OrderBy(a => a.id).Skip((page - 1) * limit).Take(limit).ToList();
+            var data = new
+            {
+                code = "",
+                msg = "",
+                count = list.Count,
+                data = datalist
+            };
+            return data;
         }
     }
 }
