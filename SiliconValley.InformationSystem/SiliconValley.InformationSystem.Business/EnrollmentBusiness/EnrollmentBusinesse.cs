@@ -598,11 +598,14 @@ namespace SiliconValley.InformationSystem.Business.EnrollmentBusiness
          var student=  studentInformationBusiness.StudentList().Where(a => a.StudentNumber == Studentid).FirstOrDefault();
             EnrollmentView enrollmentView = new EnrollmentView();
             enrollmentView.Name = student.Name;
-            enrollmentView.ClassName=scheduleForTraineesBusiness.SutdentCLassName(student.StudentNumber).ClassID;
             enrollmentView.PassNumber = x.PassNumber;
             enrollmentView.id = x.ID;
             enrollmentView.identitydocument = student.identitydocument;
             enrollmentView.StudentNumber = student.StudentNumber;
+            if (scheduleForTraineesBusiness.SutdentCLassName(student.StudentNumber)!=null)
+            {
+                enrollmentView.ClassName = scheduleForTraineesBusiness.SutdentCLassName(student.StudentNumber).ClassID;
+            }
 
             return enrollmentView;
         }
