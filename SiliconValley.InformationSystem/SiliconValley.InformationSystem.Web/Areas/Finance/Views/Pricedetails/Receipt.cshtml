@@ -147,7 +147,7 @@
     console.log(studen);
     $("#GrandName").text(studen.GrandName);
     $("#Name").text(studen.Name);
-
+    $("#Remarks").text(studen.method);
     $("#classa").text(studen.classa);
     $("#identitydocument").text(studen.identitydocument);
     var Receiptdata = JSON.parse('@Html.Raw(ViewBag.Receiptdata)');
@@ -185,6 +185,7 @@
           
             var Amountofmoney = Receiptdata[i].Amountofmoney + ".00";
             $("#xiangmu").append($('<tr style="height:55px;"> <td colspan="4" style="text-align:center;">' + Receiptdata[i].ostitemsName + '</td> <td colspan="4" style="text-align:inherit;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + Amountofmoney + '</td></tr>'));
+          
             // $("#text thead").append($('<tr style="text-align:center;"><td colspan="6">' + Receiptdata[i].Rategory+"：" + Receiptdata[i].ostitemsName + '</td><td colspan="4">' + Amountofmoney + '</td></tr>'));
         } else if (Receiptdata[i].Rategory == "自考本科费用" ) {
             var Amountofmoney = Receiptdata[i].Amountofmoney + ".00";

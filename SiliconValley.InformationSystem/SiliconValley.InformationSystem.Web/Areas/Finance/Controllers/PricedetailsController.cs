@@ -341,15 +341,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             
                 //班级业务类
                 ClassScheduleBusiness classScheduleBusiness = new ClassScheduleBusiness();
+                
                 var stu = stuDataKeepAndRecordBusiness.findId(stuid[0]);
-            
+
                 var student = new
                 {
                     Name = stu.StuName,
                     identitydocument = personlist[0].Remarks,
                     classa = stuid[1],
-                    GrandName = GrandName
-
+                    GrandName = GrandName,
+                    method = Preentryfeebusenn.GetList().Where(d => d.identitydocument == personlist[0].Remarks).SingleOrDefault().Reamk
                 };
                 List<object> objlist = new List<object>();
                 
@@ -364,7 +365,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
                     personlist[0].AddDate
                 };
                 objlist.Add(obj);
-             ViewBag.student= JsonConvert.SerializeObject(student);
+                ViewBag.student= JsonConvert.SerializeObject(student);
                 ViewBag.Receiptdata = JsonConvert.SerializeObject(objlist);
             }
            
