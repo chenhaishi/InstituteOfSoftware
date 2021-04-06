@@ -77,15 +77,22 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         /// <returns></returns>
         public ActionResult qiukaoshi()
         {
-            var list = db_exam.AllExamination().OrderByDescending(d => d.BeginDate).FirstOrDefault();
-        
-            var resultlist = new List<ExaminationView>();
+            CloudstorageBusiness Bos = new CloudstorageBusiness();
 
-            var tempobj = db_exam.ConvertToExaminationView(list);
+            var client = Bos.BosClient();
+            //获取当前登陆学生的学号
+            var studentNumber = Request.Cookies["StudentNumber"].Value.ToString();
+            var exam = db_stuExam.StudetnSoonExam(studentNumber.ToString()).OrderByDescending(d => d.BeginDate).FirstOrDefault();
+            var examview = db_exam.ConvertToExaminationView(exam);
+            string sqles = "select * from CandidateInfo where Examination = '" + exam.ID + "' and StudentID = '" + studentNumber + "'";
+            var cand = db_candidateinfo.GetListBySql<CandidateInfo>(sqles).FirstOrDefault();
             
-            if (list != null)
+
+            var resultlist = new List<ExaminationView>();
+            
+            if (exam != null)
             {
-                resultlist.Add(tempobj);
+                resultlist.Add(examview);
             }
 
             List<object> returnlist = new List<object>();
@@ -94,19 +101,19 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             {
                 bool Isend = db_exam.IsEnd(db_exam.AllExamination().Where(d => d.ID == item.ID).FirstOrDefault());
 
-                var examtypeview = db_exam.ConvertToExamTypeView(item.ExamType);
+                //var examtypeview = db_exam.ConvertToExamTypeView(item.ExamType);
 
-                var grand = db_grand.AllGrand().Where(d => d.Id == examtypeview.GrandID.Id).FirstOrDefault();
+                //var grand = db_grand.AllGrand().Where(d => d.Id == examtypeview.GrandID.Id).FirstOrDefault();
 
                 var temobj1 = new
                 {
                     ID = item.ID,
                     Title = item.Title,
-                    TypeName = examtypeview.TypeName.TypeName,
-                    grand = grand.GrandName,
+                    //TypeName = examtypeview.TypeName.TypeName,
+                    //grand = grand.GrandName,
                     BeginDate = item.BeginDate,
                     TimeLimit = item.TimeLimit,
-                    Remark = item.Remark,
+                    //Remark = item.Remark,
                     IsEnd = Isend,
                     //== true ? "结束" : "未结束"
 
@@ -191,8 +198,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         public ActionResult ContinueThExam(int examid)
         {
             AjaxResult result = new AjaxResult();
-            //获取当前登录学员
-            var studentNumber = SessionHelper.Session["studentnumber"].ToString();
+            CloudstorageBusiness Bos = new CloudstorageBusiness();
+
+            var client = Bos.BosClient();
+            //获取当前登陆学生的学号
+            var studentNumber = Request.Cookies["StudentNumber"].Value.ToString();
 
             var candidateinfo = db_candidateinfo.CandidateInfoList().Where(d => d.Examination == examid && d.StudentID == studentNumber).SingleOrDefault();
             if (candidateinfo.ComputerPaper == "1")
@@ -292,18 +302,21 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             try
             {
-                //获取这个学生的信息
-                var studentNumber = SessionHelper.Session["studentnumber"].ToString();
+                 CloudstorageBusiness Bos = new CloudstorageBusiness();
+
+                var client = Bos.BosClient();
+                //获取当前登陆学生的学号
+                var studentNumber = Request.Cookies["StudentNumber"].Value.ToString();
                 //获取这个学生最近的一堂考试信息
                 var exam = db_stuExam.StudetnSoonExam(studentNumber.ToString()).OrderByDescending(d => d.BeginDate).FirstOrDefault();
                 var examview = db_exam.ConvertToExaminationView(exam);
                 var candidateinfo = db_candidateinfo.CandidateInfoList().Where(d => d.Examination == exam.ID && d.StudentID == studentNumber).SingleOrDefault();
                 //在判断是否考完了
 
-                if (examview != null )
+                if (examview != null)
                 {
-                    var scores = db_examScores.StuExamScores(examview.ID, studentNumber);
-                    //判断如果选择题的分数不等于空，那么就默认他考试结束
+                    //var scores = db_examScores.StuExamScores(examview.ID, studentNumber);
+                    //判断如果他的笔试跟机试等于空，那么就默认他考试结束
                     if (candidateinfo.ComputerPaper == "1" || candidateinfo.ComputerPaper == null && candidateinfo.Paper ==null)
                     {
                         result.Data = examview;
@@ -314,7 +327,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                     {
                         result.Msg = "考试结束";
                         result.Data = "0";
-                        result.ErrorCode = 400;                        
+                        result.ErrorCode = 600;                        
                     }
                     
                 }
@@ -350,8 +363,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             var EXAMVIEW = db_exam.ConvertToExaminationView(exam);
             ViewBag.EXAMVIEW = EXAMVIEW;
             //~获取答卷信息.
-            var studentNumber = SessionHelper.Session["studentnumber"].ToString();
-            //获取当前登录学员
+            CloudstorageBusiness Bos = new CloudstorageBusiness();
+
+            var client = Bos.BosClient();
+            //获取当前登陆学生的学号
+            var studentNumber = Request.Cookies["StudentNumber"].Value.ToString();
             var answerSheetInfo = db_stuExam.AnswerSheetInfos(examid, studentNumber);
             
             ViewBag.AnswerSheetInfo = answerSheetInfo;
@@ -374,7 +390,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             ViewBag.EXAMVIEW = EXAMVIEW;
 
             //~获取答卷信息.
-            var studentNumber = SessionHelper.Session["studentnumber"].ToString();
+            CloudstorageBusiness Bos = new CloudstorageBusiness();
+
+            var client = Bos.BosClient();
+            //获取当前登陆学生的学号
+            var studentNumber = Request.Cookies["StudentNumber"].Value.ToString();
             //获取当前登录学员
             var answerSheetInfo = db_stuExam.AnswerSheetInfos(examid, studentNumber);
 
@@ -402,7 +422,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
                 List<ChoiceQuestionTableView> data = new List<ChoiceQuestionTableView>();
                 //获取当前用户
-                var studentNumber = SessionHelper.Session["studentnumber"].ToString();
+                CloudstorageBusiness Bos = new CloudstorageBusiness();
+
+                var client = Bos.BosClient();
+                //获取当前登陆学生的学号
+                var studentNumber = Request.Cookies["StudentNumber"].Value.ToString();
                 BaseBusiness<ScheduleForTrainees> schedul = new BaseBusiness<ScheduleForTrainees>();
                 //根据当前用户查出所在班级
                 var classname = schedul.GetList().Where(d => d.StudentID == studentNumber && d.CurrentClass == true).FirstOrDefault().ClassID;
@@ -477,8 +501,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 var exam = db_exam.AllExamination().Where(d => d.ID == examid).FirstOrDefault();
                 var examveiw = db_exam.ConvertToExaminationView(exam);
                 List<AnswerQuestionView> data = new List<AnswerQuestionView>();
-                //获取当前用户
-                var studentNumber = SessionHelper.Session["studentnumber"].ToString();
+                CloudstorageBusiness Bos = new CloudstorageBusiness();
+
+                var client = Bos.BosClient();
+                //获取当前登陆学生的学号
+                var studentNumber = Request.Cookies["StudentNumber"].Value.ToString();
                 BaseBusiness<ScheduleForTrainees> schedul = new BaseBusiness<ScheduleForTrainees>();
                 //根据当前用户查出所在班级
                 var classname = schedul.GetList().Where(d => d.StudentID == studentNumber && d.CurrentClass == true).FirstOrDefault().ClassID;
@@ -555,8 +582,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             var examview = db_exam.ConvertToExaminationView(exam);
             var PaperLevel = examview.PaperLevel.LevelID;
             //随机选择一个机试题
-            //获取当前用户
-            var studentNumber = SessionHelper.Session["studentnumber"].ToString();
+            CloudstorageBusiness Bos = new CloudstorageBusiness();
+
+            var client = Bos.BosClient();
+            //获取当前登陆学生的学号
+            var studentNumber = Request.Cookies["StudentNumber"].Value.ToString();
             //首先查看是否已经随机获取到了一个
             var info = db_candidateinfo.GetList().Where(d => d.StudentID == studentNumber && d.Examination == examid).FirstOrDefault();
             var candidateInfo = db_exam.AllCandidateInfo(examid).Where(d => d.StudentID == studentNumber ).FirstOrDefault();
@@ -619,9 +649,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 }
                 }
             }
-                CloudstorageBusiness Bos = new CloudstorageBusiness();
+                //CloudstorageBusiness Bos = new CloudstorageBusiness();
                 
-                var client = Bos.BosClient();
+                //var client = Bos.BosClient();
 
                 //Onlyonce字段的值改变成下载下要来的文件id。并且之后将不能下载机试题
 
@@ -777,8 +807,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             catch (Exception ex)
             {
                 result.ErrorCode = 500;
-                result.Msg = "失败";
-                result.Data = ex;
+                result.Msg = ex.Message;
+                result.Data = null;
             }
             return Json(result);
         }
@@ -858,8 +888,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             {
                 //SiliconValley.InformationSystem.Util.ErrorLog.clsLogHelper.m_CreateErrorLogTxt("myExecute(" & str执行SQL语句 & ")", Err.Number.ToString, Err.Description)
                 result.ErrorCode = 500;
-                result.Msg = "失败";
-                result.Data = ex;
+                result.Msg = ex.Message;
+                result.Data = null;
 
             }
             return Json(result);
