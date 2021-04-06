@@ -1337,9 +1337,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
             }).ToList();
 
             var jsondata = new { title = "", Data = list, Success = true,count=0 };
-            if (list.Count > 5000)
+            if (list.Count > 7000)
             {
-                jsondata = new { title = "备案数据Excel", Data = list.Skip((page-1)*5000).Take(5000).ToList(), Success = true, count = list.Count / 5000 };
+                jsondata = new { title = "备案数据Excel", Data = list.Skip((page-1)*7000).Take(7000).ToList(), Success = true, count = (list.Count / 7000)+1 };
             }
             else
             {
