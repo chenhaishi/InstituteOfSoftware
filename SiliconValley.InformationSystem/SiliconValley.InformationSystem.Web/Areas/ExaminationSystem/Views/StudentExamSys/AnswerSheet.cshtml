@@ -133,7 +133,7 @@
         </div>
     </div>
 
-    <script language="JavaScript">
+    @*<script language="JavaScript">
 
         document.getElementById("btn").onclick = function () {
             var elem = document.getElementById("mypaper");
@@ -154,7 +154,7 @@
                 }
             }
         }
-    </script>
+    </script>*@
     <script type="text/template" id="choicequestionmoban">
         <div questionid="{{=questionid}}" class="questionItem">
 
@@ -607,7 +607,7 @@
                                 });
                                 layui.form.render();
                             } else if (result.ErrorCode == 500) {
-                                console.log(result.Data);
+                                console.log(result.Msg);
                                 layer.msg('失败。。', { icon: 1 }, function () {
 
 
@@ -616,7 +616,7 @@
                             }
                         },
                         error: function () {
-                            console.log(result.Data);
+                            console.log(result.Msg);
                             layer.msg('异常。。', { icon: 2 });
                         }
 
