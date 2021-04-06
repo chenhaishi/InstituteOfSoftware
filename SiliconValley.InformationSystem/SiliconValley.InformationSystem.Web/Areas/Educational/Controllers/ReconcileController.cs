@@ -57,6 +57,44 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             return View();
         }
 
+        /// <summary>
+        /// 导出S3s4某个班级的老师，课程，课时   导出页面
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult OutExcel_s3s4View()
+        {
+            //加载阶段
+            List<SelectListItem> g_list = Reconcile_Entity.GetEffectiveData().Select(g => new SelectListItem() { Text = g.GrandName, Value = g.Id.ToString() }).ToList();
+            g_list.Add(new SelectListItem() { Text = "--请选择--", Value = "0", Selected = true });
+            ViewBag.grandlist = g_list;
+            return View();
+        }
+
+        /// <summary>
+        /// 导出某个班级有哪些老师上过课，哪些课，课时
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult OutExcel_s3s4Funtion(string class_select)
+        {
+            string ClassID = Request.Form["class_select"];//获取班级
+            //根据班级编号获取所有排课数据
+            string AllReconSql = "select * from Reconcile where ClassSchedule_Id="+ClassID+"";
+            List<Reconcile> AllReconList = Reconcile_Entity.GetListBySql<Reconcile>(AllReconSql);
+            List<Recon_CostOut> costOuts = new List<Recon_CostOut>();
+
+            var EmployId_Fen = (
+                    from m in AllReconList
+                    group m by m.EmployeesInfo_Id into list
+                    select list).ToList();
+            for (int i = 0; i < EmployId_Fen.Count; i++)
+            {
+                List<Reconcile> Emp_Recon = AllReconList.Where(a=>a.EmployeesInfo_Id==EmployId_Fen[i].Key).ToList();
+
+            }
+
+            return View();
+        }
 
 
         /// <summary>

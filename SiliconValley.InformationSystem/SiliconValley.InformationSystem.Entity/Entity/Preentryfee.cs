@@ -52,5 +52,9 @@ namespace SiliconValley.InformationSystem.Entity.Entity
         /// 单号
         /// </summary>
         public string OddNumbers { get; set; }
+        /// <summary>
+        /// 缴费方式
+        /// </summary>
+        public string  Reamk { get; set; }
     }
 }

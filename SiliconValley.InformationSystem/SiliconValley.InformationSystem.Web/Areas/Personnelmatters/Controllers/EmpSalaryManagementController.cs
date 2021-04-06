@@ -196,19 +196,19 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         /// <returns></returns>
         public ActionResult UpdateTime()
         {
-            //string names = "";
-            //EmployeesInfoManage empmanage = new EmployeesInfoManage();
-            //EmplSalaryEmbodyManage esemanage = new EmplSalaryEmbodyManage();
-            //List<EmployeesInfo> employeeslist = empmanage.GetList().Where(i => i.IsDel!= false).ToList();
-            //var emplist = esemanage.GetEmpESEData().Where(s => s.IsDel != false).OrderBy(i => i.Id).ToList();
-            //foreach (var item in employeeslist)
-            //{
-            //    var s = emplist.Where(i => i.EmployeeId == item.EmployeeId).FirstOrDefault();
-            //    if (s == null)
-            //    {
-            //        names += item.EmpName + ";";
-            //    }
-            //}
+            string names = "";
+            EmployeesInfoManage empmanage = new EmployeesInfoManage();
+            EmplSalaryEmbodyManage esemanage = new EmplSalaryEmbodyManage();
+            List<EmployeesInfo> employeeslist = empmanage.GetList().Where(i => i.IsDel == false).ToList();
+            var emplist = esemanage.GetEmpESEData().Where(s => s.IsDel == false).OrderBy(i => i.Id).ToList();
+            foreach (var item in employeeslist)
+            {
+                var s = emplist.Where(i => i.EmployeeId == item.EmployeeId).FirstOrDefault();
+                if (s == null)
+                {
+                    names += item.EmpName + ";";
+                }
+            }
             ViewBag.time = FirstTime;
             return View();
         }
@@ -489,38 +489,42 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             List<PaySlipExcelError> error = new List<PaySlipExcelError>();
             try
             {
-                List<MonthlySalaryRecord> salary = monthly.GetEmpMsrData().Where(i => i.IsDel == false && Convert.ToDateTime(i.YearAndMonth.ToString().Substring(0, 7)) == Convert.ToDateTime(time.Substring(0, 7))&&i.SendingStatus==false).ToList();
+                //List<MonthlySalaryRecord> salary = monthly.GetEmpMsrData().Where(i => i.IsDel == false && Convert.ToDateTime(i.YearAndMonth.ToString().Substring(0, 7)) == Convert.ToDateTime(time.Substring(0, 7))&&i.SendingStatus==false).ToList();
+                var salary = monthly.GetListBySql<MonthlySalaryRecord>("select *from MonthlySalaryRecord where datepart(YEAR, YearAndMonth)=datepart(YEAR, '" +Convert.ToDateTime(time) + "') and datepart(MONTH, YearAndMonth)=datepart(MONTH, '" + Convert.ToDateTime(time) + "') and SendingStatus=0");
                 EmployeesInfoManage manage = new EmployeesInfoManage();
-
+                var data = datalist();
                
                 //发件人邮箱
                 string FromMail = "feihongos@163.com";
                 //发件人邮箱授权码
                 string AuthorizationCode = "QRSNTQRISGFLTXXS";
                 int num = 0;
-                foreach (var i in salary)
+                foreach (var i in data)
                 {
                     PaySlipExcelError paySlip = new PaySlipExcelError();
                     if (!(bool)i.IsApproval)
                     {
-                        paySlip.empname = manage.GetInfoByEmpID(i.EmployeeId).EmpName;
+                        paySlip.empname = i.empName;
                         paySlip.errorExplain = "工资未审核";
                         error.Add(paySlip);
                     }
                     else
                     {
-                        result = monthly.WagesDataToEmail(FromMail, "2651396164@qq.com", AuthorizationCode, i);
+                        result = monthly.WagesDataToEmail(FromMail, "2651396164@qq.com", AuthorizationCode, i,FirstTime);
                         if (!result.Success)
                         {
                            
-                            paySlip.empname = manage.GetInfoByEmpID(i.EmployeeId).EmpName;
+                            paySlip.empname = i.empName;
                             paySlip.errorExplain = result.Msg;
                             error.Add(paySlip);
                         }
                         else
                         {
-                            i.SendingStatus = true;
-                            monthly.Update(i);
+                            //var l = monthly.GetEntity(i);
+                            //l.SendingStatus = true;
+                            //monthly.Update(l);
+                            monthly.ExecuteSql("update MonthlySalaryRecord set SendingStatus=1 where Id="+i.Id);
+                            rc.RemoveCache("InRedisMSRData");
                             num++;
                         }
                     }
@@ -761,14 +765,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             }
         }
         [HttpPost]
-        public ActionResult JudgmentOfSalaryDetails()
+        public ActionResult JudgmentOfSalaryDetails(string time)
         {
             AjaxResult result = new AjaxResult();
             MonthlySalaryRecordManage monthly = new MonthlySalaryRecordManage();
             try
             {
-                string time = Convert.ToDateTime(FirstTime).ToString("yyyy年MM月");
-                List<MonthlySalaryRecord> salary = monthly.GetEmpMsrData().Where(i => i.IsDel == false && Convert.ToDateTime(i.YearAndMonth.ToString().Substring(0, 7)) == Convert.ToDateTime(FirstTime.Substring(0, 7))).ToList();
+                 time = Convert.ToDateTime(FirstTime).ToString("yyyy年MM月");
+                var  yearandmonth = Convert.ToDateTime(FirstTime).ToString();
+                //List<MonthlySalaryRecord> salary = monthly.GetEmpMsrData().Where(i => i.IsDel == false && Convert.ToDateTime(i.YearAndMonth.ToString()).Year == Convert.ToDateTime(FirstTime).Year && Convert.ToDateTime(i.YearAndMonth.ToString()).Month == Convert.ToDateTime(FirstTime).Month).ToList();
+                var salary = monthly.GetListBySql<MonthlySalaryRecord>("select *from MonthlySalaryRecord where datepart(YEAR, YearAndMonth)=datepart(YEAR, '"+ yearandmonth + "') and datepart(MONTH, YearAndMonth)=datepart(MONTH, '"+ yearandmonth + "') and IsDel=0");
                  int count = salary.Where(i=>i.SendingStatus==false).Count();
                 if (count == 0)
                 {
@@ -820,6 +826,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 view.Depart = empmanage.GetDeptByEmpid(item.EmployeeId).DeptName;//所属部门
                 view.Position = empmanage.GetPositionByEmpid(item.EmployeeId).PositionName;//所属岗位
                 view.EmpState = empmanage.GetEntity(item.EmployeeId).IsDel;
+                view.SendingStatus = item.SendingStatus;
+                view.IsApproval = item.IsApproval;
                 //拿到该员工工资体系对象
                 var eseobj = msrmanage.GetEmpsalaryByEmpid(item.EmployeeId);
                 view.baseSalary = eseobj.BaseSalary;//基本工资
@@ -890,7 +898,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
 
                 view.OtherDeductions = item.OtherDeductions;//其他扣款
 
-                #region 应发工资2赋值
+                #region 应发工资2赋值v
                 view.SalaryTwo = msrmanage.GetSalarytwo(view.SalaryOne, view.OvertimeCharges, view.Bonus, view.LeaveDeductions, view.TardyAndLeaveWithhold/*, view.LeaveWithhold*/, view.NoClockWithhold, view.OtherDeductions);
                 #endregion
                 view.PersonalSocialSecurity = eseobj.PersonalSocialSecurity;//个人社保

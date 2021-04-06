@@ -125,9 +125,10 @@
             form.on('submit(IsTrueBtn)', function (data) {
                 console.log($("#Pers").text());
                 var layer = layui.layer;
-                var ind = layer.load(1);
                 if ($("#Pers").text() == "0" || $("#Pers").text() == "4") {
                     zixun_out(data.field);
+                } else {
+                    caiwu_out(data.field);
                 }
 
             });
@@ -164,8 +165,7 @@
                             link.click();
                             document.body.removeChild(link);
                         } else {
-                            layer.close(ind);
-
+                            
                             layer.msg('系统错误，请刷新重试!!!', { icon: 2, shade: 0.8 });
                         }
 
@@ -180,18 +180,47 @@
                     data: data,
                     success: function (res) {
                         if (res.Success == true) {
-                            console.log(res.Data);
-                            let str = res.title + `\n`;
-                            for (let i = -1; i < res.Data.length; i++) {
-                                if (i == -1) {
-                                    str += `姓名\t,性别\t,学校\t,区域\t,信息来源\t,咨询师\t,备案人\t,学历\t,关联人\t,学生状态\t,上门日期`;
-                                } else {
-                                   
-                                    str += '' + res.Data[i].StuName + '\t,' + res.Data[i].StuSex + '\t,' + res.Data[i].StuSchoolName + '\t,' + res.Data[i].RegionName + '\t,' + res.Data[i].stuinfomation + '\t,' + res.Data[i].ConsultTeacher + '\t,' + res.Data[i].empName + '\t,' + res.Data[i].StuEducational + '\t,' + res.Data[i].Party + '\t,' + res.Data[i].StatusName + '\t,' + res.Data[i].StuVisit;
+                            var str = res.title + `\n`;
+                            str += `姓名\t,性别\t,学校\t,区域\t,信息来源\t,咨询师\t,备案人\t,学历\t,关联人\t,学生状态\t,上门日期\t,联系电话\t,微信\t,QQ\t,备案时间`;
+                            if (res.count > 1) {
+                                for (var k = 1; k <= res.count+1; k++) {
+                                    data.page = k;
+                                    $.ajax({
+                                        url: '/Market/StudentDataKeep/ExportFunction',
+                                        type: 'post',
+                                        data: data,
+                                        async: false,
+                                        success: function (val) {
+                                            for (let h = 0; h < val.Data.length; h++) {
+                                                    str += '' + val.Data[h].StuName + '\t,' + val.Data[h].StuSex + '\t,' + val.Data[h].StuSchoolName + '\t,'
+                                                        + val.Data[h].RegionName + '\t,' + val.Data[h].stuinfomation + '\t,' + val.Data[h].ConsultTeacher
+                                                        + '\t,' + val.Data[h].empName + '\t,' + val.Data[h].StuEducational + '\t,' + val.Data[h].Party
+                                                        + '\t,' + val.Data[h].StatusName + '\t,' + val.Data[h].StuVisit + '\t,' + val.Data[h].Stuphone
+                                                        + '\t,' + val.Data[h].StuWeiXin + '\t,' + val.Data[h].StuQQ + '\t,' + val.Data[h].BeanDate + '\t';
+                                               
+                                                str += '\n';
+                                            }
+                                        }
+                                    });
                                 }
+                                
+                            } else {
+                                for (let i = -1; i < res.Data.length; i++) {
+                                    if (i == -1) {
+                                        str += `姓名\t,性别\t,学校\t,区域\t,信息来源\t,咨询师\t,备案人\t,学历\t,关联人\t,学生状态\t,上门日期\t,联系电话\t,微信\t,QQ\t,备案时间`;
+                                    } else {
 
-                                str += '\n';
+                                        str += '' + res.Data[i].StuName + '\t,' + res.Data[i].StuSex + '\t,' + res.Data[i].StuSchoolName + '\t,'
+                                            + res.Data[i].RegionName + '\t,' + res.Data[i].stuinfomation + '\t,' + res.Data[i].ConsultTeacher
+                                            + '\t,' + res.Data[i].empName + '\t,' + res.Data[i].StuEducational + '\t,' + res.Data[i].Party
+                                            + '\t,' + res.Data[i].StatusName + '\t,' + res.Data[i].StuVisit + '\t,' + res.Data[i].Stuphone
+                                            + '\t,' + res.Data[i].StuWeiXin + '\t,' + res.Data[i].StuQQ + '\t,' + res.Data[i].BeanDate + '\t';
+                                    }
+
+                                    str += '\n';
+                                }
                             }
+                            
                             //encodeURIComponent解决中文乱码
                             let uri = 'data:text/csv;charset=utf-8,\ufeff' + encodeURIComponent(str);
                             //通过创建a标签实现
@@ -203,7 +232,6 @@
                             link.click();
                             document.body.removeChild(link);
                         } else {
-                            layer.close(ind);
 
                             layer.msg('系统错误，请刷新重试!!!', { icon: 2, shade: 0.8 });
                         }

@@ -56,6 +56,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         public BaseBusiness<MarkingArrange> Marking_Entity = new BaseBusiness<MarkingArrange>();
         public CandidateInfoBusiness Candi_Entity = new CandidateInfoBusiness();
         public CoursewaremakingBusiness Courseware_Entity = new CoursewaremakingBusiness();
+        public BaseBusiness<InternalTrainingCost> InternalTraining = new BaseBusiness<InternalTrainingCost>();
 
         public Staff_Cost_StatisticssBusiness()
         {
@@ -213,7 +214,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
                             int zhisuClassTime = Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
                             int totalClassTime = (zhisuClassTime / 4) + zhisuClassTime;
-                            OtherStage += zhisuClassTime;
+                            OtherStage += totalClassTime;
                         }
                         else
                         {
@@ -241,6 +242,19 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                     }
                 }
                 //课时费计算总额    //底课时
+
+                List<Reconcile> dabianList = mydata.Where(a=>a.Curriculum_Id == "项目答辩").ToList();//计算项目答辩的课时
+                for (int k = 0; k < dabianList.Count; k++)
+                {
+                    ClassSchedule s = ClassSchedule_Entity.GetEntity(dabianList[k].ClassSchedule_Id);
+                    if (s.grade_Id == 1 || s.grade_Id == 2 || s.grade_Id == 1002)
+                    {
+                        FirstStage += 2;
+                    }
+                    else {
+                        SecondStage += 2;
+                    }
+                }
 
                 if (FirstStage > 0)
                 {
@@ -272,7 +286,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 }
 
 
-                //计算值班费
+                #region//计算值班费
                 //查询当年 年月的值班数据
                 string TeacherAddsql = @"select * from TeacherAddorBeonDutyView  where YEAR(Anpaidate)=" + dt.Year + "" +
                     " and Month(Anpaidate)=" + dt.Month + " and IsDels=1";
@@ -298,8 +312,9 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                         Duty_fee += 80;
                     }
                 }
+                #endregion
 
-                //计算监考费
+                #region//计算监考费
                 int InvigilationCount = 0;
                 string ExaminationRoomSql = "select * from ExaminationRoom where Invigilator1 = '" + Emp_List[i].EmployeeId + "' or Invigilator2='" + Emp_List[i].EmployeeId + "'";
                 List<ExaminationRoom> ExamRoomList = ExaminationRoom_Entity.GetListBySql<ExaminationRoom>(ExaminationRoomSql);
@@ -313,8 +328,10 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                     }
                 }
                 Invigilation_fee += InvigilationCount * 20;
+                #endregion
 
-                //计算阅卷费
+                #region //计算阅卷费
+                //
                 int StuCount = 0;
                 string MarkingSql = "select * from MarkingArrange where MarkingTeacher=" + Emp_List[i].EmployeeId + "";
                 List<MarkingArrange> MarkingList = Marking_Entity.GetListBySql<MarkingArrange>(MarkingSql);
@@ -339,8 +356,10 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 //获取标准费用
                 var cost = xmlRoot.GetElementsByTagName("MarkingCost")[0].InnerText;
                 Marking_fee = int.Parse(cost) * StuCount;
+                #endregion
 
-                //计算教材研发费用
+                #region////计算教材研发费用
+                
                 var PPT_NodeCost = xmlRoot.GetElementsByTagName("PPT_NodeCost")[0].InnerText;
                 var TextBook_NodeCost = xmlRoot.GetElementsByTagName("TextBook_NodeCost")[0].InnerText;
                 string CoursewareSql = "select * from Coursewaremaking where year(submissiontime)=" + dt.Year + " and month(submissiontime)=" + dt.Year + " and RampdpersonID =" + Emp_List[i].EmployeeId + "";
@@ -356,8 +375,10 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                         RD_fee += Convert.ToInt32(PPT_NodeCost);
                     }
                 }
+                #endregion
 
-                //计算班主任超带班   7-15天  200    15-30天   300  
+                #region//计算班主任超带班   7-15天  200    15-30天   300  
+                
                 int jibenban = 3;  //主任带班2个   班主任带班3个
                 if (EmployeesInfoManage_Entity.GetDeptByEmpid(Emp_List[i].EmployeeId).DeptName.Contains("教质部"))
                 {
@@ -405,6 +426,27 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                         }
                     }
                 }
+                #endregion
+
+                #region//计算内训费
+                
+                int Internal_count_one = 0;//Y1  S1 S2
+                int Internal_count_two = 0;//Y2 Ca S3 S4
+                string Internalsql = "select * from InternalTrainingCost where Trainer="+Emp_List[i].EmployeeId+" and Year(Time)="+dt.Year+" and MONTH(Time)="+dt.Month+" and IsUsing=0";
+                List<InternalTrainingCost> Internallist = InternalTraining.GetListBySql<InternalTrainingCost>(Internalsql);
+                for (int k = 0; k < Internallist.Count; k++)
+                {
+                    if (Internallist[k].grandId == 1002 || Internallist[k].grandId == 1 || Internallist[k].grandId == 2)
+                    {
+                        Internal_count_one += Internallist[k].ClassHours;
+                    }
+                    else {
+                        Internal_count_two += Internallist[k].ClassHours;
+                    }
+                }
+                Internal_training_fee = Internal_count_one + Internal_count_two;
+                #endregion
+
 
                 staff.ClassTime = FirstStage + SecondStage + ThreeStage + OtherStage;
                 staff.totalmoney = Convert.ToInt32(Cost_fee) + Duty_fee + Invigilation_fee + Marking_fee + Super_class + Internal_training_fee + RD_fee;

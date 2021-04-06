@@ -1307,42 +1307,44 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
             string zhuangtai = Request.Form["S_status"];//学生状态
             string oneTime = Request.Form["oneTime"];//开始日期
             string twoTime = Request.Form["twoTime"];//结束日期
+            int page =Convert.ToInt16(Request.Form["page"]);
 
-            string sql = "select * from StudentBeanView where statusName='"+zhuangtai+"' and BeanDate >= '" + oneTime + "' and BeanDate <='" + twoTime + "'";
+            string sql = "select * from StudentBeanView where statusName='"+zhuangtai+"' and BeanDate >= '" + oneTime + "' and BeanDate <='" + twoTime + "' and IsDelete=0";
             if (zhuangtai =="0") {
-                sql = "select * from StudentBeanView where BeanDate >= '" + oneTime + "' and BeanDate <='" + twoTime + "'";
+                sql = "select * from StudentBeanView where BeanDate >= '" + oneTime + "' and BeanDate <='" + twoTime + "' and IsDelete=0";
             }
-            
-            List<ExportStudentBeanData> list = s_Entity.GetListBySql<ExportStudentBeanData>(sql);
-            List<ExportStudentBeanData> twolist = new List<ExportStudentBeanData>();
-            foreach (var item in list)
-            {
-                ExportStudentBeanData e = new ExportStudentBeanData()
-                {
-                    StuName = item.StuName ,                
-                    StuSex = item.StuSex          ==null?"":item.StuSex ,                  
-                    StuBirthy = item.StuBirthy  ,           
-                    Stuphone = item.Stuphone == null ? "" : item.Stuphone,             
-                    StuSchoolName = item.StuSchoolName == null ? "" : item.StuSchoolName,
-                    StuEducational = item.StuEducational == null ? "" : item.StuEducational,
-                    StuAddress = item.StuAddress == null ? "" : item.StuAddress,       
-                    StuWeiXin = item.StuWeiXin == null ? "" : item.StuWeiXin,      
-                    StuQQ = item.StuQQ == null ? "" : item.StuQQ,          
-                    stuinfomation = item.stuinfomation == null ? "" : item.stuinfomation, 
-                    StatusName = item.StatusName == null ? "" : item.StatusName,
-                    StuVisit = item.StuVisit  , 
-                    empName = item.empName == null ? "" : item.empName, 
-                    BeanDate = item.BeanDate    ,
-                    StatusTime = item.StatusTime == null ? Convert.ToDateTime(""):item.StatusTime,
-                    RegionName = item.RegionName == null ? "" : item.RegionName,  
-                    ConsultTeacher = item.ConsultTeacher == null ? "" : item.ConsultTeacher,
-                    Party = item.Party == null ? "" : item.Party
+            List<ExportStudentBeanData> Exportlist = s_Entity.GetListBySql<ExportStudentBeanData>(sql);
+  
+            var list = Exportlist.Select(ac => new{
+                StuName = ac.StuName ?? string.Empty,
+                StuSex = ac.StuSex ?? string.Empty,
+                StuBirthy = ac.StuBirthy?.ToString() ?? string.Empty,
+                Stuphone = ac.Stuphone?? string.Empty,
+                StuSchoolName = ac.StuSchoolName?? string.Empty,
+                StuEducational = ac.StuEducational ?? string.Empty,
+                StuAddress = ac.StuAddress?? string.Empty,
+                StuWeiXin = ac.StuWeiXin ?? string.Empty,
+                StuQQ = ac.StuQQ ?? string.Empty,
+                stuinfomation = ac.stuinfomation?? string.Empty,
+                StatusName = ac.StatusName ?? string.Empty,
+                StuVisit = ac.StuVisit?.ToString()?? string.Empty,
+                empName = ac.empName?? string.Empty,
+                BeanDate = ac.BeanDate.ToString()?? string.Empty,
+                StatusTime = ac.StatusTime?.ToString()?? string.Empty,
+                RegionName = ac.RegionName ?? string.Empty,
+                ConsultTeacher = ac.ConsultTeacher ?? string.Empty,
+                Party = ac.Party?? string.Empty
+            }).ToList();
 
-                };
-                twolist.Add(e);
+            var jsondata = new { title = "", Data = list, Success = true,count=0 };
+            if (list.Count > 5000)
+            {
+                jsondata = new { title = "备案数据Excel", Data = list.Skip((page-1)*5000).Take(5000).ToList(), Success = true, count = list.Count / 5000 };
             }
-            
-            var jsondata = new {title="备案数据Excel",Data= twolist.OrderBy(t =>t.BeanDate),Success=true };
+            else
+            {
+                jsondata = new { title = "备案数据Excel", Data = list, Success = true, count = 0 };
+            }
             return Json(jsondata,JsonRequestBehavior.AllowGet);
         }
 

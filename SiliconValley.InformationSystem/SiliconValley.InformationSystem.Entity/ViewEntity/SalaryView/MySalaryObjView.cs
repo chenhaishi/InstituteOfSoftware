@@ -146,5 +146,7 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.SalaryView
         /// 人事备注
         /// </summary>
         public string Remarks { get; set; }
+        public Nullable<bool> SendingStatus { get; set; }
+        public Nullable<bool> IsApproval { get; set; }//是否已审批
     }
 }

@@ -491,7 +491,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
             EmployeesInfoManage empid = new EmployeesInfoManage();//员工业务类
             var dept = empid.GetDeptByEmpid(UserName.EmpNumber);//根据员工编号获取员工所属部门
             var posi = empid.GetPositionByEmpid(UserName.EmpNumber);//根据员工编号所属岗位
-            if (dept.DeptName == "s1、s2教质部" && posi.PositionName.Contains("主任")||dept.DeptName== "s3教质部"&&posi.PositionName.Contains("教质副主任")||dept.DeptName.Contains("就业部")&&posi.PositionName.Contains("就业副主任")|| posi.PositionName.Contains("就业主任")||posi.PositionName.Contains("咨询主任"))
+            if (dept.DeptName == "s1、s2教质部" && posi.PositionName.Contains("主任")||dept.DeptName== "s3教质部"&&posi.PositionName.Contains("教质副主任")||dept.DeptName.Contains("就业部")&&posi.PositionName.Contains("就业副主任")|| posi.PositionName.Contains("就业主任")||posi.PositionName.Contains("咨询主任")||posi.PositionName.Contains("市场部主任"))
             {
                 var id = stu.GetList().Where(d => d.StudentNumber == stuid).FirstOrDefault();
                 var class_error = sch.GetList().Where(d => d.StudentID == id.StudentNumber).FirstOrDefault();

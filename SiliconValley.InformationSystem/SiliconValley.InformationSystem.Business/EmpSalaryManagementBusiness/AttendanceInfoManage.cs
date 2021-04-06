@@ -431,14 +431,6 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                         break;
                     }
                     #region 循环拿值
-                    //for (int i = 0; i < 25; i++)
-                    //{
-                    //    if (i==5)
-                    //    {
-
-                    //    }
-                    //    
-                    //}
                     //工号(钉钉号)[0]
                     
                     string ddid = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(0))) ? null : getrow.GetCell(0).ToString();

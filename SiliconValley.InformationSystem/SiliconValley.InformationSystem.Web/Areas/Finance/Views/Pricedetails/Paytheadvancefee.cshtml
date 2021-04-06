@@ -60,9 +60,9 @@
                                 <input type="text" style="border:0px;" readonly="readonly" value=" @exportStudentBeanData.Stuphone" class="layui-input" />
                             </div>
                         </div>
-                        
-                   
-                        
+
+
+
                     }
                     <div class="layui-col-xs10 layui-col-sm10 layui-col-md10 widths">
                         <label class="layui-form-label">身份证号码</label>
@@ -80,15 +80,21 @@
                         </div>
 
                         @*<div class="layui-input-inline" id="CLassNames">
-                            <button type="button" style="width:190px;height:38px;" class="layui-btn layui-btn-sm layui-btn-primary">
-                                <i class="layui-icon" id="ClassName" style="margin-left:156px;">&#xe615;</i>
-                            </button>
-                        </div>*@
+                <button type="button" style="width:190px;height:38px;" class="layui-btn layui-btn-sm layui-btn-primary">
+                    <i class="layui-icon" id="ClassName" style="margin-left:156px;">&#xe615;</i>
+                </button>
+            </div>*@
                     </div>
                     <div class="layui-col-xs10 layui-col-sm10 layui-col-md10 widths">
                         <label class="layui-form-label">缴费金额</label>
                         <div class="layui-input-inline">
                             @Html.TextBoxFor(a => a.Amountofmoney, new Dictionary<string, object>() { { "lay-verify", "required" }, { "placeholder", "请输入需要缴纳额度" }, { "class", "layui-input " } })
+                        </div>
+                    </div>
+                    <div class="layui-col-xs10 layui-col-sm10 layui-col-md10 widths">
+                        <label class="layui-form-label">缴费方式</label>
+                        <div class="layui-input-inline">
+                            @Html.TextBoxFor(a => a.Reamk, new Dictionary<string, object>() { { "lay-verify", "required" }, { "placeholder", "请输入缴费方式" }, { "class", "layui-input " } })
                         </div>
                     </div>
                 </div>

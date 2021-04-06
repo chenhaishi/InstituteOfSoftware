@@ -341,15 +341,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             
                 //班级业务类
                 ClassScheduleBusiness classScheduleBusiness = new ClassScheduleBusiness();
+                
                 var stu = stuDataKeepAndRecordBusiness.findId(stuid[0]);
-            
+
                 var student = new
                 {
                     Name = stu.StuName,
                     identitydocument = personlist[0].Remarks,
                     classa = stuid[1],
-                    GrandName = GrandName
-
+                    GrandName = GrandName,
+                    method = Preentryfeebusenn.GetList().Where(d => d.identitydocument == personlist[0].Remarks).SingleOrDefault().Reamk
                 };
                 List<object> objlist = new List<object>();
                 
@@ -364,7 +365,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
                     personlist[0].AddDate
                 };
                 objlist.Add(obj);
-             ViewBag.student= JsonConvert.SerializeObject(student);
+                ViewBag.student= JsonConvert.SerializeObject(student);
                 ViewBag.Receiptdata = JsonConvert.SerializeObject(objlist);
             }
            
@@ -577,6 +578,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
                     cmd.Refundornot = item.Refundornot.ToString() == "1" ? "已报名" : "未报名";
                     cmd.OddNumbers = item.OddNumbers;
                     cmd.ClassID = item.ClassID;
+                    cmd.Reamk = item.Reamk;
                     GetPreentryfeet.Add(cmd);
                 }
             }
@@ -1072,6 +1074,15 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
         [HttpGet]
         public ActionResult RefunditemsDate()
         {
+            BaseBusiness<Refunditemsview> RefunditemsviewBusiness = new BaseBusiness<Refunditemsview>();
+            string sql = "select * from Refunditemsview";
+            var ReAmountofmoney = RefunditemsviewBusiness.GetListBySql<Refunditemsview>(sql);
+            decimal count = 0;
+            foreach (var item in ReAmountofmoney)
+            {
+                count += item.Amountofmoney;
+            }
+            ViewBag.price = count;
             return View();
 
         }
