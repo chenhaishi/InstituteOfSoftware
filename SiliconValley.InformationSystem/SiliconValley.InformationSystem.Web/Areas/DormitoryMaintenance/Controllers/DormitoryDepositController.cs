@@ -344,7 +344,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
                 result.Success = false;
             }
             else {
-                if (oldstu.Length > 0)
+                if (oldstu !=null )
                 {
                     string sql = "select * from Accdationinformation where DormId = " + dorname + " and Year(getdate()) - Year(Enddate)=0";// and Month(getdate())-Month(enddate)=1
                     List<Accdationinformation> list = Accda_Entity.GetListBySql<Accdationinformation>(sql);

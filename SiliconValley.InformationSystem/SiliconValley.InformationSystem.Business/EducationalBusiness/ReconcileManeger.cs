@@ -2760,6 +2760,31 @@ Curriculum_Id like '职素' or Curriculum_Id like '班会' or Curriculum_Id like
             return cout > 0 ? true : false;
         }
 
+
+        /// <summary>
+        /// S3S4阶段班级的任课老师的课时计算
+        /// </summary>
+        /// <param name="empid">员工id</param>
+        /// <param name="currName">课程名称</param>
+        /// <param name="list">排课数据集合</param>
+        /// <returns></returns>
+        public int S3S4_jiecount(List<Reconcile> list)
+        {
+            int number = 0;
+            foreach (Reconcile item in list)
+            {
+                if (item.Curse_Id.Contains("12") || item.Curse_Id.Contains("34"))
+                {
+                    number += 2;
+                }
+                else
+                {
+                    number += 4;
+                }
+            }
+            return number;
+        }
+
         /// <summary>
         /// 获取XX教员XX年XX月XX课程的节数
         /// </summary>

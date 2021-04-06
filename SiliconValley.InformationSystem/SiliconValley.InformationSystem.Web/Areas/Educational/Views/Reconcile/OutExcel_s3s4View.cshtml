@@ -81,10 +81,21 @@
                 type: 'POST',
                 data: data1,
                 success: function (res) {
+                    console.log(res.Data);
+                    for (let i = -1; i < res.Data.length; i++) {
+                        if (i == -1) {
+                            str += `姓名\t,性别\t,学校`;
+                        } else {
 
+                            str += '' + res.Data[i].StuName + '\t,' + res.Data[i].StuSex + '\t,' + res.Data[i].StuSchoolName;
+                        }
+
+                        str += '\n';
+                    }
                 }
 
             });
+            return false;
         });
     });
 </script>

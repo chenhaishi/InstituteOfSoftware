@@ -16,6 +16,8 @@ using SiliconValley.InformationSystem.Business.Base_SysManage;
 using SiliconValley.InformationSystem.Business.CourseSyllabusBusiness;
 using SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data.MyViewEntity;
 using SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data;
+using SiliconValley.InformationSystem.Business.CourseSchedulingSysBusiness;
+using SiliconValley.InformationSystem.Business.ClassSchedule_Business;
 
 namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 {
@@ -24,7 +26,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
     {
         // GET: /Educational/Reconcile/AddReconcileFunction
         readonly ReconcileManeger Reconcile_Entity = new ReconcileManeger();
-
+        EmployeesInfoManage Emp_Entity = new EmployeesInfoManage();
+        public CurriculumBusiness curriculum_Entity = new CurriculumBusiness();
+        public ClassScheduleBusiness classBusiness = new ClassScheduleBusiness();
 
         #region 大批量课表安排
         /// <summary>
@@ -83,17 +87,50 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             List<Reconcile> AllReconList = Reconcile_Entity.GetListBySql<Reconcile>(AllReconSql);
             List<Recon_CostOut> costOuts = new List<Recon_CostOut>();
 
+            string ClassName = classBusiness.GetEntity(ClassID).ClassNumber;
+
             var EmployId_Fen = (
                     from m in AllReconList
                     group m by m.EmployeesInfo_Id into list
                     select list).ToList();
+            
+
             for (int i = 0; i < EmployId_Fen.Count; i++)
             {
+                Recon_CostOut recon_CostOut = new Recon_CostOut();
+                //班级   员工id
                 List<Reconcile> Emp_Recon = AllReconList.Where(a=>a.EmployeesInfo_Id==EmployId_Fen[i].Key).ToList();
-
+                List<Reconcile> reconciles = new List<Reconcile>();//筛选出与课程大纲对应的课程
+                foreach (var item in Emp_Recon)
+                {
+                    string currsql = "select * from Curriculum where CourseName='"+item.Curriculum_Id+"' and IsDelete =0 and IsEndCurr =0";
+                    List<Curriculum> curricula = curriculum_Entity.GetListBySql<Curriculum>(currsql);
+                    if (curricula!=null) {
+                        reconciles.Add(item);
+                    }
+                }
+                string EmpName = Emp_Entity.GetInfoByEmpID(EmployId_Fen[i].Key).EmpName;
+                recon_CostOut.EmpName = EmpName;
+                var Curricu_Fen = (
+                    from m in reconciles
+                    group m by m.Curriculum_Id into list
+                    select list).ToList();
+                List<string> strlist = new List<string>();
+                foreach (var item in Curricu_Fen)
+                {
+                    string str = string.Empty;
+                    str = item.Key;
+                    strlist.Add(str);
+                }
+                recon_CostOut.CurriName = strlist;
+                int count = Reconcile_Entity.S3S4_jiecount(reconciles);
+                recon_CostOut.CostTime = count;
+                costOuts.Add(recon_CostOut);
+                count = 0;
             }
+            var jsondata = new { Data = costOuts };
 
-            return View();
+            return Json(jsondata,JsonRequestBehavior.AllowGet);
         }
 
 
