@@ -5307,7 +5307,6 @@
     <Content Include="Views\Login\SLogin.cshtml" />
     <Content Include="Views\WeiXin\BindingWX.cshtml" />
     <Content Include="Views\WeiXin\WXLoginError.cshtml" />
-    <Content Include="uploadXLSXfile\Template\EmpInfoTemplate.xls" />
     <Content Include="uploadXLSXfile\CostStatis.xls" />
     <Content Include="uploadXLSXfile\ter.xls" />
     <Content Include="uploadXLSXfile\ComputerTestQuestionsWord\1578394647.rar" />
