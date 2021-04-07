@@ -81,7 +81,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         [HttpPost]
         public ActionResult OutExcel_s3s4Funtion(string class_select)
         {
-            string ClassID = Request.Form["class_select"];//获取班级
+            int ClassID = Convert.ToInt16(Request.Form["class_select"]);//获取班级
             //根据班级编号获取所有排课数据
             string AllReconSql = "select * from Reconcile where ClassSchedule_Id="+ClassID+"";
             List<Reconcile> AllReconList = Reconcile_Entity.GetListBySql<Reconcile>(AllReconSql);
@@ -125,10 +125,26 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 recon_CostOut.CurriName = strlist;
                 int count = Reconcile_Entity.S3S4_jiecount(reconciles);
                 recon_CostOut.CostTime = count;
+                //教质部职素4+1模式
+                if (Emp_Entity.GetDeptByEmpid(EmployId_Fen[i].Key).DeptName.Contains("教质")) {
+                    int temp = 0;
+                    for (int h = 0; h < reconciles.Count; h++)
+                    {
+                        if (reconciles[h].Curriculum_Id.Contains("职素")) {
+                            if (reconciles[h].Curse_Id.Contains("12") || reconciles[h].Curse_Id.Contains("34"))
+                            {
+                                temp += 2;
+                            }
+                        }
+                    }
+                    recon_CostOut.CostTime = (temp / 4) * 1 + temp;
+                }
+
+                
                 costOuts.Add(recon_CostOut);
                 count = 0;
             }
-            var jsondata = new { Data = costOuts };
+            var jsondata = new { Data = costOuts,count= costOuts.Count,title = ClassName };
 
             return Json(jsondata,JsonRequestBehavior.AllowGet);
         }
@@ -966,6 +982,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             list.Add(new SelectListItem() { Text = "上午3/4节", Value = "上午34节" });
             list.Add(new SelectListItem() { Text = "下午1/2节", Value = "下午12节" });
             list.Add(new SelectListItem() { Text = "下午3/4节", Value = "下午34节" });
+            list.Add(new SelectListItem() { Text = "晚上1/2节", Value = "晚上1/2节"});
+            list.Add(new SelectListItem() { Text = "晚上3/4节", Value = "晚上3/4节" });
+            list.Add(new SelectListItem() { Text = "晚上", Value = "晚上" });
             ViewBag.Time = list;
             ReconView data = new ReconView()
             {

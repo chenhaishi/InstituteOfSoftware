@@ -170,7 +170,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             bool s = false;
             try
             {
-                List<ReconcileView> find_list = SQLGetReconcileDate().Where(rs => rs.AnPaiDate == r.AnPaiDate && rs.ClassSchedule_Id == r.ClassSchedule_Id && rs.Curriculum_Id == r.Curriculum_Id).ToList();
+                List<ReconcileView> find_list = SQLGetReconcileDate().Where(rs => rs.AnPaiDate == r.AnPaiDate && rs.ClassSchedule_Id == r.ClassSchedule_Id && rs.Curriculum_Id == r.Curriculum_Id && rs.Curse_Id==r.Curse_Id).ToList();
                 int count = find_list.Count;
                 if (count <= 0)
                 {

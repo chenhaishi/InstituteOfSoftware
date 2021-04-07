@@ -213,7 +213,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 List<EmployeesInfo> list_emp = new List<EmployeesInfo>();
                 EmployeesInfo employees = Tb_Entity.EmployeesInfo_Entity.FindEmpData(UserName.EmpNumber, true);
                 list_emp.Add(employees);
-                List<TeacherAddorBeonDutyView> list = Tb_Entity.DepData(list_emp).OrderBy(l => l.Anpaidate).ToList();
+                List<TeacherAddorBeonDutyView> list = Tb_Entity.DepData(list_emp).OrderByDescending(l => l.Anpaidate).ToList();
 
                 var jsondata = new { code = 0, Msg = "", count = list.Count, data = list.Skip((page - 1) * limit).Take(limit).ToList() };
                 return Json(jsondata, JsonRequestBehavior.AllowGet);
