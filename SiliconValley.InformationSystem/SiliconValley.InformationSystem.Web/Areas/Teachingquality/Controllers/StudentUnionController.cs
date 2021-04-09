@@ -1,9 +1,12 @@
 ﻿using SiliconValley.InformationSystem.Business;
+using SiliconValley.InformationSystem.Business.Cloudstorage_Business;
 using SiliconValley.InformationSystem.Business.StudentmanagementBusinsess;
 using SiliconValley.InformationSystem.Entity.MyEntity;
 using SiliconValley.InformationSystem.Entity.ViewEntity;
+using SiliconValley.InformationSystem.Util;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -100,6 +103,51 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
             ViewBag.department = UnName;
             return View();
         }
+        public ActionResult Activty()
+        {
+            return View();
+        }
+        
+        CloudstorageBusiness cloudstorage_Business = new CloudstorageBusiness();
+        [HttpPost]
+        public ActionResult ActivtyStudentimg(string id)
+        {
+            //    string studentid = Request.QueryString["studentid"];
+            // Bitmap bitmap = new Bitmap(144,192);
+            AjaxResult result = new AjaxResult();
+            try
+            {
+                var fien = Request.Files[0];
+                string filename = fien.FileName;
+                string Extension = Path.GetExtension(filename);
+                string newfilename = "15055"+ Extension;
+
+                //if (dbtext.StudentAddImg(id, newfilename) == true)
+                //{
+
+                    result = new SuccessResult();
+                    result.ErrorCode = 200;
+                result.Data = newfilename;
+                    var client = cloudstorage_Business.BosClient();
+                    // 以数据流形式上传Object
+
+
+                    cloudstorage_Business.PutObject("xinxihua", "Activty", newfilename, fien.InputStream);
+
+
+
+                    //  bitmap.Save(path);
+                //}
+            }
+            catch (Exception ex)
+            {
+
+                result = new SuccessResult();
+                result.ErrorCode = 300;
+            }
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
         //添加学生会数据操作
         [HttpPost] 
         public ActionResult UnionMemberAdd(StudentUnionMembers studentUnionMembers)
@@ -107,7 +155,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
 
             studentUnionMembers.department = UnionDepart.GetList().Where(a => a.Dateofregistration == false && a.Departmentname == UnName).FirstOrDefault().ID;
             string Studentid = Request.QueryString["StudentID"];
-          return Json( dbtext.UnionMembersEntity(studentUnionMembers, Studentid),JsonRequestBehavior.AllowGet);
+            return Json( dbtext.UnionMembersEntity(studentUnionMembers, Studentid),JsonRequestBehavior.AllowGet);
         }
         //学生会成员离职
         [HttpGet]

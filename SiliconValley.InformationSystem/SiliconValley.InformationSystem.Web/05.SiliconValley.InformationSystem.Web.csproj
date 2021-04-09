@@ -3653,6 +3653,7 @@
     <Content Include="Areas\Finance\Views\Pricedetails\Get_List_Entrydataexport.cshtml" />
     <Content Include="Areas\Finance\Views\Pricedetails\Get_List_GetPreentryfeet.cshtml" />
     <Content Include="Areas\Teachingquality\Views\ClassSchedule\OddNumberMyclass.cshtml" />
+    <Content Include="Areas\Teachingquality\Views\StudentUnion\Activty.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />

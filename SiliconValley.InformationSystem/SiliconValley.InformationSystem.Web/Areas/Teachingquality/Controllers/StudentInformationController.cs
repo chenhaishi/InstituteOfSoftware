@@ -309,7 +309,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
                 qq=s.qq,
                 WeChat=s.WeChat,
                 Familyaddress=s.Familyaddress,
-                className= SutdentCLassNameList.SutdentCLassName(s.StudentNumber).ClassID
+                className= SutdentCLassNameList.SutdentCLassName(s.StudentNumber).ClassID == null?"往届班级": SutdentCLassNameList.SutdentCLassName(s.StudentNumber).ClassID
             }).ToList();
             //  var x = dbtext.GetList();
             var data = new
