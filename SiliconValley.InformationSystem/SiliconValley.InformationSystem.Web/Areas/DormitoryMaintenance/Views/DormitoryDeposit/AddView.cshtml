@@ -359,7 +359,6 @@
                             arr_box.push($(this).val());
                         });
                         data.field.oldstu = arr_box;
-                        console.log(arr_box);
                         $.ajax({
                             url: '/DormitoryMaintenance/DormitoryDeposit/AddFunction',
                             data: data.field,
@@ -370,8 +369,7 @@
                                 if (res.Success) {
 
                                     var word = document.getElementsByName("Image")[0].files[0];
-                                    console.log(word);
-                                    if (typeof (exp) != "undefined") {
+                                  
                                         var filename = word.name;
                                         var index = filename.lastIndexOf(".");
                                         var suffix = filename.substr(index + 1);
@@ -386,9 +384,11 @@
                                                 dataType: "json",//返回的数据格式
                                                 data: fd,
                                                 success: function (res) {
-                                                    window.parent.TableFlush();
-                                                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                                                    parent.layer.close(index); //再执行关闭
+                                                    console.log(res);
+                                                    return false;
+                                                    //window.parent.TableFlush();
+                                                    //var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                                    //parent.layer.close(index); //再执行关闭
                                                 }
                                             });
 
@@ -396,7 +396,7 @@
                                             layer.alert('请选择照片，当前只支持jpg格式!', { icon: 0 });
 
                                         }
-                                    }
+                                   
                                     window.parent.TableFlush();
                                     var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                                     parent.layer.close(index); //再执行关闭

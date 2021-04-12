@@ -1344,6 +1344,8 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             //days = days - 1;
             try
             {
+                
+
                 List<Reconcile> recon = new List<Reconcile>();
                 List<Reconcile> reconciles = Time_intervalDate(date, curse).Where(r => r.ClassSchedule_Id == class_id).ToList();
                 for (int i = 0; i < days; i++)

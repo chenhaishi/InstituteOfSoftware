@@ -492,6 +492,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
                         var client = cloudstorage_Business.BosClient();
 
                         cloudstorage_Business.PutObject("xinxihua", "DormitoryDepositImage", newfilename, fien.InputStream);
+                        DormitoryDeposit deposit = Dormitory_Entity.GetEntity(id[i]);
+                        deposit.Image = newfilename;
+                        Dormitory_Entity.UpdateData(deposit);
+
                     }
                 }
 
@@ -576,7 +580,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
                     MantainMoney = Dormitory_Entity.GetMantainMoney(s.StudentID),
                     BaoxianguiMoney = Dormitory_Entity.BaoxianguiStu(s.StudentID),
                     SumMoney = Dormitory_Entity.GetStudentMoney(s.StudentID) - Dormitory_Entity.GetMantainMoney(s.StudentID) - Dormitory_Entity.BaoxianguiStu(s.StudentID)
-
+                    
                 };
                 stumoneylist.Add(data);
             });
