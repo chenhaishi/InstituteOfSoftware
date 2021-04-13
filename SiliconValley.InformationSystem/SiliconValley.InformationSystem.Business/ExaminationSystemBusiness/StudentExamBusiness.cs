@@ -278,10 +278,10 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
             //去掉重复项
             foreach (var item in resultlist)
             {
-                if (!IsContain(returnlist, item))
-                {
+                //if (!IsContain(returnlist, item))
+                //{
                     returnlist.Add(item);
-                }
+                //}
             }
 
 
@@ -419,11 +419,6 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
                 //}
                 xmlDocument.Load(System.Web.HttpContext.Current.Server.MapPath("/Config/questionLevelConfig.xml"));
             }
-
-      
-            
-            
-
             var xmlRoot = xmlDocument.DocumentElement;
 
             //获取题目总数量
@@ -484,10 +479,10 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
             //去掉重复项
             foreach (var item in resultlist)
             {
-                if (!IsContain(returnlist, item))
-                {
+                //if (!IsContain(returnlist, item))
+                //{
                     returnlist.Add(item);
-                }
+                //}
             }
             return returnlist;
 

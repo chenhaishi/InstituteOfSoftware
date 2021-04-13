@@ -57,7 +57,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             //获取学员最近的考试
             StudentInformationBusiness studentInformationBusiness = new StudentInformationBusiness();
 
-            var studentNumber = SessionHelper.Session["studentnumber"].ToString();
+            CloudstorageBusiness Bos = new CloudstorageBusiness();
+
+            var client = Bos.BosClient();
+            //获取当前登陆学生的学号
+            var studentNumber = Request.Cookies["StudentNumber"].Value.ToString();
             var student = studentInformationBusiness.StudentList().Where(d => d.StudentNumber == studentNumber).FirstOrDefault();
             ViewBag.student = student;
 
@@ -137,7 +141,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             StudentInformationBusiness studentInformationBusiness = new StudentInformationBusiness();
 
-            var studentNumber = SessionHelper.Session["studentnumber"].ToString();
+            CloudstorageBusiness Bos = new CloudstorageBusiness();
+
+            var client = Bos.BosClient();
+            //获取当前登陆学生的学号
+            var studentNumber = Request.Cookies["StudentNumber"].Value.ToString();
             var student = studentInformationBusiness.StudentList().Where(d => d.StudentNumber == studentNumber).FirstOrDefault();
             ViewBag.student = student;
 
@@ -171,26 +179,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             return View();
         }
         /// <summary>
-        /// 判断如果机试提交提交并且确认提交，提交压缩包为空那么就也默认考试完毕
-        /// </summary>
-        /// <param name="examid"></param>
-        /// <returns></returns>
-        //public ActionResult MachineTestisEmpty(int examid)
-        //{
-        //    AjaxResult result = new AjaxResult();
-        //    //获取当前登录学员
-        //    var studentNumber = SessionHelper.Session["studentnumber"].ToString();
-
-        //    var candidateinfo = db_candidateinfo.CandidateInfoList().Where(d => d.Examination == examid && d.StudentID == studentNumber).SingleOrDefault();
-        //    if (candidateinfo.ComputerPaper == "")
-        //    {
-        //        result.Data = "0";
-        //        result.Msg = "成功";
-        //        result.ErrorCode = 400;
-        //    }
-        //    return Json(result, JsonRequestBehavior.AllowGet);
-        //}
-        /// <summary>
         /// 如果中途关闭了机试页,再次进入考场直接跳转到机试页
         /// </summary>
         /// <param name="examid"></param>
@@ -204,7 +192,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             //获取当前登陆学生的学号
             var studentNumber = Request.Cookies["StudentNumber"].Value.ToString();
 
-            var candidateinfo = db_candidateinfo.CandidateInfoList().Where(d => d.Examination == examid && d.StudentID == studentNumber).SingleOrDefault();
+            //var candidateinfo = db_candidateinfo.CandidateInfoList().Where(d => d.Examination == examid && d.StudentID == studentNumber).SingleOrDefault();
+            string sql = "select * from CandidateInfo where Examination = '" + examid + "' and StudentID = '" + studentNumber + "'";
+            var candidateinfo = db_candidateinfo.GetListBySql<CandidateInfo>(sql).SingleOrDefault();
+
             if (candidateinfo.ComputerPaper == "1")
             {
                 result.Data = "0";
@@ -310,7 +301,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 //获取这个学生最近的一堂考试信息
                 var exam = db_stuExam.StudetnSoonExam(studentNumber.ToString()).OrderByDescending(d => d.BeginDate).FirstOrDefault();
                 var examview = db_exam.ConvertToExaminationView(exam);
-                var candidateinfo = db_candidateinfo.CandidateInfoList().Where(d => d.Examination == exam.ID && d.StudentID == studentNumber).SingleOrDefault();
+                string sql = "select * from CandidateInfo where Examination = '"+ exam.ID + "' and StudentID = '"+ studentNumber + "'";
+                var candidateinfo = db_candidateinfo.GetListBySql<CandidateInfo>(sql).SingleOrDefault();
+                //var candidateinfo = db_candidateinfo.CandidateInfoList().Where(d => d.Examination == exam.ID && d.StudentID == studentNumber).SingleOrDefault();
                 //在判断是否考完了
 
                 if (examview != null)
@@ -404,7 +397,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         }
 
         /// <summary>
-        /// 选择题题目数据
+        /// 选择题 题目数据
         /// </summary>
         /// <param name="examid"></param>
         /// <returns></returns>
@@ -429,12 +422,18 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 var studentNumber = Request.Cookies["StudentNumber"].Value.ToString();
                 BaseBusiness<ScheduleForTrainees> schedul = new BaseBusiness<ScheduleForTrainees>();
                 //根据当前用户查出所在班级
-                var classname = schedul.GetList().Where(d => d.StudentID == studentNumber && d.CurrentClass == true).FirstOrDefault().ClassID;
+                string sqles = "select * from ScheduleForTrainees where StudentID = '" + studentNumber + "' and CurrentClass = '" + true + "'";
+                var classname = schedul.GetListBySql<ScheduleForTrainees>(sqles).FirstOrDefault().ClassID;
+                //var classname = schedul.GetList().Where(d => d.StudentID == studentNumber && d.CurrentClass == true).FirstOrDefault().ClassID;
                 //截取这个学生是什么阶段的比如s2的分阶段 .net java
                 var classnamees = classname.Substring(classname.Length - 2, 2);
                 //如果examview.ExamType.ExamTypeID == 1那么就是升学考试，然后获取什么阶段的考试，然后获取这个阶段的最后最后一门课程
-                var examtype = db_examtype.GetList().Where(d => d.ID == exam.ExamType).FirstOrDefault();
-                var grand = db_grand.AllGrand().Where(d => d.Id == examtype.GrandID).FirstOrDefault();
+                string sqless = "select * from ExamType where ID = '"+ exam.ExamType + "'";
+                var examtype = db_examtype.GetListBySql<ExamType>(sqless).FirstOrDefault();
+                //var examtype = db_examtype.GetList().Where(d => d.ID == exam.ExamType).FirstOrDefault();
+                string sqlesss= "select * from Grand where Id = '"+ examtype.GrandID + "'";
+                var grand = db_grand.GetListBySql<Grand>(sqlesss).FirstOrDefault();
+                //var grand = db_grand.AllGrand().Where(d => d.Id == examtype.GrandID).FirstOrDefault();
                 if (examveiw.ExamType.ExamTypeID == 1)
                 {
                     if (grand.Id == 2 && classnamees == "NA")
@@ -498,7 +497,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             AjaxResult result = new AjaxResult();
             try
             {
-                var exam = db_exam.AllExamination().Where(d => d.ID == examid).FirstOrDefault();
+                string sql = "select * from Examination Where ID = '" + examid + "'";
+
+                var exam = db_exam.GetListBySql<Examination>(sql).FirstOrDefault();
                 var examveiw = db_exam.ConvertToExaminationView(exam);
                 List<AnswerQuestionView> data = new List<AnswerQuestionView>();
                 CloudstorageBusiness Bos = new CloudstorageBusiness();
@@ -508,12 +509,18 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 var studentNumber = Request.Cookies["StudentNumber"].Value.ToString();
                 BaseBusiness<ScheduleForTrainees> schedul = new BaseBusiness<ScheduleForTrainees>();
                 //根据当前用户查出所在班级
-                var classname = schedul.GetList().Where(d => d.StudentID == studentNumber && d.CurrentClass == true).FirstOrDefault().ClassID;
+                string sqles = "select * from ScheduleForTrainees where StudentID = '" + studentNumber + "' and CurrentClass = '" + true + "'";
+                var classname = schedul.GetListBySql<ScheduleForTrainees>(sqles).FirstOrDefault().ClassID;
+                //var classname = schedul.GetList().Where(d => d.StudentID == studentNumber && d.CurrentClass == true).FirstOrDefault().ClassID;
                 //截取这个学生是什么阶段的比如s2的分阶段 .net java
                 var classnamees = classname.Substring(classname.Length - 2, 2);
                 //如果examview.ExamType.ExamTypeID == 1那么就是升学考试，然后获取什么阶段的考试，然后获取这个阶段的最后最后一门课程
-                var examtype = db_examtype.GetList().Where(d => d.ID == exam.ExamType).FirstOrDefault();
-                var grand = db_grand.AllGrand().Where(d => d.Id == examtype.GrandID).FirstOrDefault();
+                string sqless = "select * from ExamType where ID = '" + exam.ExamType + "'";
+                var examtype = db_examtype.GetListBySql<ExamType>(sqless).FirstOrDefault();
+                //var examtype = db_examtype.GetList().Where(d => d.ID == exam.ExamType).FirstOrDefault();
+                string sqlesss = "select * from Grand where Id = '" + examtype.GrandID + "'";
+                var grand = db_grand.GetListBySql<Grand>(sqlesss).FirstOrDefault();
+                //var grand = db_grand.AllGrand().Where(d => d.Id == examtype.GrandID).FirstOrDefault();
                 //判断考试类型
                 if (examveiw.ExamType.ExamTypeID == 1)
                 {
@@ -748,7 +755,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             int choiceCount  = int.Parse(choxml.GetElementsByTagName("total")[0].InnerText);
             int answerCount = int.Parse(answer.GetElementsByTagName("total")[0].InnerText);
 
-            return Json((choiceCount+ answerCount).ToString(),JsonRequestBehavior.AllowGet);
+            return Json((5+5).ToString(),JsonRequestBehavior.AllowGet);
         }
 
         //学员提交机试
@@ -846,11 +853,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 //写文件
                  string answerfilename = "AnswerSheet.txt";
 
-
                 PutObjectResponse putObjectResponseFromString = client.PutObject("xinxihua",$"{direName}{answerfilename}", AnswerCommit);
 
                 db_exam.AllExamination().Where(d => d.ID == examid).FirstOrDefault();
-                var Candidateinfo = db_exam.AllCandidateInfo(examid).Where(d => d.Examination == examid && d.StudentID == studentNumber).FirstOrDefault();
+                string sql = "select * from CandidateInfo where Examination = '"+ examid + "' and StudentID = '"+ studentNumber + "'";
+                var Candidateinfo = db_candidateinfo.GetListBySql<CandidateInfo>(sql).FirstOrDefault();
+                //var Candidateinfo = db_exam.AllCandidateInfo(examid).Where(d => d.Examination == examid && d.StudentID == studentNumber).FirstOrDefault();
                 //Candidateinfo.Paper = Server.MapPath("/Areas/ExaminationSystem/Files/AnswerSheet/" + direName + "/" + answerfilename);
                 Candidateinfo.Paper = $"{direName}{answerfilename}";
                 Candidateinfo.ComputerPaper = "1";

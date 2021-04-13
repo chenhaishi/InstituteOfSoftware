@@ -555,7 +555,6 @@ namespace SiliconValley.InformationSystem.Business.TeachingDepBusiness
             List<SatisficingConfig> result = new List<SatisficingConfig>();
 
             //条件 未到满意度填写截止日期 为当前学员的班级 未填写过
-
             //获取学员当前班级
             TeacherClassBusiness db_teaclsss = new TeacherClassBusiness();
 
@@ -564,18 +563,30 @@ namespace SiliconValley.InformationSystem.Business.TeachingDepBusiness
             //var 
 
             List<SatisficingConfig> list = new List<SatisficingConfig>();
-
             if (type == "teacher")
             {
                 list = GetSatisficingConfigNoCutOffdate().Where(d => d.ClassNumber == stuClass.id && d.CurriculumID != null).ToList();
             }
-
             if (type == "jiaozhi")
             {
                 list = GetSatisficingConfigNoCutOffdate().Where(d => d.ClassNumber == stuClass.id && d.CurriculumID == null).ToList();
             }
-
-
+            if (type == "shitang")
+            {
+                list = GetSatisficingConfigNoCutOffdate().Where(d => d.ClassNumber == stuClass.id && d.CurriculumID == null && d.Isitacanteen == true).ToList();
+            }
+            if (type == "yuwen")
+            {
+                list = GetSatisficingConfigNoCutOffdate().Where(d => d.ClassNumber == stuClass.id && d.CurriculumID != null && d.Isitayuwen == true).ToList();
+            }
+            if (type == "shuxue")
+            {
+                list = GetSatisficingConfigNoCutOffdate().Where(d => d.ClassNumber == stuClass.id && d.CurriculumID != null && d.isitashuxue == true).ToList();
+            }
+            if (type == "yingyu")
+            {
+                list = GetSatisficingConfigNoCutOffdate().Where(d => d.ClassNumber == stuClass.id && d.CurriculumID != null && d.isitayingyu == true).ToList();
+            }
             if (list.Count == 0)
             {
                 return result;
@@ -714,9 +725,6 @@ namespace SiliconValley.InformationSystem.Business.TeachingDepBusiness
                     resultEmplist.Add(item);
                 }
             }
-
-
-
 
             return resultEmplist;
         }

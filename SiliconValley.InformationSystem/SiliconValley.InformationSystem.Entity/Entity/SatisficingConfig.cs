@@ -50,7 +50,21 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         /// 截止日期
         /// </summary>
         public DateTime CutoffDate { get; set; }
-
-
+        /// <summary>
+        /// 是否是食堂满意度问卷
+        /// </summary>
+        public Nullable<bool> Isitacanteen { get; set; }
+        /// <summary>
+        /// 是否是语文老师满意度问卷
+        /// </summary>
+        public Nullable<bool> Isitayuwen { get; set; }
+        /// <summary>
+        /// 是否是数学老师满意度问卷
+        /// </summary>
+        public Nullable<bool> isitashuxue { get; set; }
+        /// <summary>
+        /// 是否是英语老师满意度问卷
+        /// </summary>
+        public Nullable<bool> isitayingyu { get; set; }
     }
 }
