@@ -555,6 +555,7 @@
             $.get("/Personnelmatters/EmpTransactionRecord/GetertById/" + id, function (data) {
                 layui.use(['layer', 'form', 'table'], function () {
                     var form = layui.form;
+
                     if (data.type == "转正") {
                         $("#Positive").show();
                         data.EntryTime = GetYMD(data.EntryTime);
@@ -578,7 +579,7 @@
                         $("#IncreaseSalary").show();
                         data.EntryTime = GetYMD(data.EntryTime);
                         data.TransactionTime = GetYMD(data.TransactionTime);
-                        $("#balance").val(abs(data.PresentSalary - data.PreviousSalary));
+                        $("#balance").val((data.PresentSalary - data.PreviousSalary));
                         console.log(data);
                         form.val("IncreaseSalary", data);
                     } else if (data.type == "续签") {

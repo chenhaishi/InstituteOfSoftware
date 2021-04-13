@@ -26,6 +26,7 @@ using BaiduBce;
 using BaiduBce.Auth;
 using BaiduBce.Services.Bos.Model;
 using SiliconValley.InformationSystem.Entity.ViewEntity;
+using SiliconValley.InformationSystem.Business.JuniorCollegeBusinesse;
 
 namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
 {  //学员信息模块
@@ -45,7 +46,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
         BaseBusiness<Grand> MyGrand = new BaseBusiness<Grand>();
         //专业
         SpecialtyBusiness Techarcontext = new SpecialtyBusiness();
-
+        //大专
+        JuniorCollegeBusinesse juniorCollegeBusinesse = new JuniorCollegeBusinesse();
         private static int NameKeysid = 0;
         public class Student { }
 
@@ -876,7 +878,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
                 studentInformation.InsitDate = x.InsitDate;
                 studentInformation.IsDelete = false;
                 dbtext.Update(studentInformation);
-               
+
+                juniorCollegeBusinesse.UpdateJuniorCollege(studentInformation.StudentNumber,studentInformation.Education);
                 result = new SuccessResult();
                 result.Msg = "修改成功";
                 result.Success = true;

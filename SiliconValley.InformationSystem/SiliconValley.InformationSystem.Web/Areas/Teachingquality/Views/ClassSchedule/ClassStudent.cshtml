@@ -301,6 +301,7 @@
             <div>
                 <button type="button" id="ClassStudent" class="layui-btn layui-btn-fluid mybut">查看班级学员</button>
             </div>
+
         </div>
     </div>
     <div class="layui-colla-item">
@@ -435,6 +436,9 @@
         <div class="layui-colla-content layui-anim">
             <div>
                 <button type="button" id="AddUndergraduateachievement" class="layui-btn layui-btn-fluid mybut">自考本科成绩</button>
+                <div>
+                    <button type="button" id="InsertJuniorCollege" class="layui-btn layui-btn-fluid mybut">添加未报考大专学员</button>
+                </div>
             </div>
 
         </div>
@@ -1262,6 +1266,42 @@
                         layer.msg('该学员未报本科或未审核');
                     }
                 });
+
+            } else {
+                layer.alert('请选择一个学员', { icon: 0 });
+            }
+
+        });
+        //添加未报大专学员
+        $("#InsertJuniorCollege").click(function () {
+            if ($(".color").length == 1) {
+                var x = $($($(".color")[0]).children()[0]).text();
+                var dbase = {
+                    Studentid: x
+                }
+                $.post("/MyEducation/JuniorCollege/ISJuniorCollege?id=" + x, function (data) {
+                    if (data.Success) {
+                        layer.open({
+                            type: 2,
+                            content: '/MyEducation/JuniorCollege/InsertNotRegisteredForJuniorCollege/?id=' + x
+                            , area: ["550px", "700px"]
+                            , title: '添加未报考自考本科的学生'
+                            , shade: 0.8
+                            , anim: 4
+                            , skin: 'demo-class'
+                        });
+                    } else {
+                        layer.alert('该学生已是或已报大专', { icon: 0 });
+                    }
+                })
+
+                //$.post("/MyEducation/JuniorCollege/InsertNotRegisteredForJuniorCollege", function (da) {
+                    //if (da > 0) {
+                    //    window.location = "/MyEducation/Education/Achievementduate/" + x;
+                    //} else {
+                    //    layer.msg('该学员未报本科或未审核');
+                    //}
+                //});
 
             } else {
                 layer.alert('请选择一个学员', { icon: 0 });
