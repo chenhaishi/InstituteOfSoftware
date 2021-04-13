@@ -16,11 +16,16 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity
         /// <summary>
         /// 课程名称
         /// </summary>
-        public string  CurriName { get; set; }
+        public List<string>  CurriName { get; set; }
 
         /// <summary>
         /// 课时
         /// </summary>
         public int CostTime { get; set; }
+
+        /// <summary>
+        /// 班级名称
+        /// </summary>
+        public string ClassName { get; set; }
     }
 }

@@ -7,19 +7,19 @@
     <div class="layui-btn-container">
         <button class="layui-btn layui-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>修改社保比例</button>
         <button class="layui-btn layui-btn-sm" lay-event="year"><i class="layui-icon layui-icon-edit"></i>更改年月份</button>
-        @*<button class="layui-btn layui-btn-sm" lay-event="payment"><i class="layui-icon layui-icon-edit"></i>缴纳大病保险</button>*@
-        @*<button class="layui-btn layui-btn-sm" lay-event="Multiple"><i class="layui-icon layui-icon-edit"></i>补缴社保</button>*@
+        <button class="layui-btn layui-btn-sm" lay-event="payment"><i class="layui-icon layui-icon-edit"></i>缴纳大病保险</button>
+        <button class="layui-btn layui-btn-sm" lay-event="Multiple"><i class="layui-icon layui-icon-edit"></i>补缴社保</button>
     </div>
 </script>
 <script type="text/html" id="barDemo">
     <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-sm" lay-event="insert">补缴社保</button>
+        @*<button class="layui-btn layui-btn-sm" lay-event="insert">补缴社保</button>*@
         {{# if(d.Count!=0) { }}
         <button class="layui-btn layui-btn-sm" lay-event="edit">修改补缴社保</button>
         {{# } }}
 
         {{# if(d.SeriousIllnessInsurance==null) { }}
-        <button class="layui-btn layui-btn-sm" lay-event="payment">缴纳大病保险</button>
+        @*<button class="layui-btn layui-btn-sm" lay-event="payment">缴纳大病保险</button>*@
         {{# }else{ }}
         <button class="layui-btn layui-btn-sm" lay-event="editpay">修改大病保险</button>
         {{# } }}

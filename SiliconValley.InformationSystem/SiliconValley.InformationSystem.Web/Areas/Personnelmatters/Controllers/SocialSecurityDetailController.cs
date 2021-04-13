@@ -380,6 +380,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         public ActionResult SicknessInsurance(string id,int SeriousIllnessInsurance)
         {
             SocialSecurityDetailManage social = new SocialSecurityDetailManage();
+            EmplSalaryEmbodyManage emplSalary = new EmplSalaryEmbodyManage();
             AjaxResult result = new AjaxResult();
             try
             {
@@ -397,8 +398,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                     }
                           item.SeriousIllnessInsurance = SeriousIllnessInsurance;              
                     social.Update(item);
+                   var salary= emplSalary.GetEseByEmpid(item.EmployeeId);
+                    salary.PersonalSocialSecurity = item.PersonalTotal;
                     rc.RemoveCache("InRedisSocialSecurityData");
+                    
                 }
+
                 result = social.Success();
                 result.ErrorCode = 200;
 

@@ -170,7 +170,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             bool s = false;
             try
             {
-                List<ReconcileView> find_list = SQLGetReconcileDate().Where(rs => rs.AnPaiDate == r.AnPaiDate && rs.ClassSchedule_Id == r.ClassSchedule_Id && rs.Curriculum_Id == r.Curriculum_Id).ToList();
+                List<ReconcileView> find_list = SQLGetReconcileDate().Where(rs => rs.AnPaiDate == r.AnPaiDate && rs.ClassSchedule_Id == r.ClassSchedule_Id && rs.Curriculum_Id == r.Curriculum_Id && rs.Curse_Id==r.Curse_Id).ToList();
                 int count = find_list.Count;
                 if (count <= 0)
                 {
@@ -1344,6 +1344,8 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             //days = days - 1;
             try
             {
+                
+
                 List<Reconcile> recon = new List<Reconcile>();
                 List<Reconcile> reconciles = Time_intervalDate(date, curse).Where(r => r.ClassSchedule_Id == class_id).ToList();
                 for (int i = 0; i < days; i++)
@@ -2758,6 +2760,31 @@ Curriculum_Id like '职素' or Curriculum_Id like '班会' or Curriculum_Id like
             int cout = list.Where(l => l.Curriculum_Id.Contains("考试") || l.Curriculum_Id.Contains("语文") || l.Curriculum_Id.Contains("数学")).Count();
 
             return cout > 0 ? true : false;
+        }
+
+
+        /// <summary>
+        /// S3S4阶段班级的任课老师的课时计算
+        /// </summary>
+        /// <param name="empid">员工id</param>
+        /// <param name="currName">课程名称</param>
+        /// <param name="list">排课数据集合</param>
+        /// <returns></returns>
+        public int S3S4_jiecount(List<Reconcile> list)
+        {
+            int number = 0;
+            foreach (Reconcile item in list)
+            {
+                if (item.Curse_Id.Contains("12") || item.Curse_Id.Contains("34"))
+                {
+                    number += 2;
+                }
+                else
+                {
+                    number += 4;
+                }
+            }
+            return number;
         }
 
         /// <summary>

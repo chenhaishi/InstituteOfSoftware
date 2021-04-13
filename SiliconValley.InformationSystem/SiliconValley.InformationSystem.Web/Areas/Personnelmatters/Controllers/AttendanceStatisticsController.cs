@@ -143,13 +143,14 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         public ActionResult GetFullCheckingInData(int page, int limit, string AppCondition)
         {
             string ymtime = FirstTime;
-            var attlist = atdmanage.GetListBySql<AttendanceInfo>("select *from  AttendanceInfo where DeserveToRegularDays=ToRegularDays and (TardyNum is null or TardyNum = 0)  and(LeaveEarlyNum is null or LeaveEarlyNum = 0)  and(AbsenteeismDays is null or AbsenteeismDays = 0) ");
+            var attlist = atdmanage.GetListBySql<AttendanceInfo>(@"select *from  AttendanceInfo where DeserveToRegularDays=ToRegularDays and (TardyNum is null or TardyNum = 0)  and
+                (LeaveEarlyNum is null or LeaveEarlyNum = 0)  and(AbsenteeismDays is null or AbsenteeismDays = 0)and
+                (WorkAbsentNum is null or WorkAbsentNum = 0) and (OffDutyAbsentNum is null or OffDutyAbsentNum=0) and (NoonAbsentNum is null or NoonAbsentNum=0)");
              attlist = attlist.Where(s => s.IsDel == false).ToList();
             if (!string.IsNullOrEmpty(ymtime))
             {
                 var time = DateTime.Parse(ymtime);
                 attlist = attlist.Where(s => DateTime.Parse(s.YearAndMonth.ToString()).Year == time.Year && DateTime.Parse(s.YearAndMonth.ToString()).Month == time.Month).ToList();
-                
             }
             if (!string.IsNullOrEmpty(AppCondition))
             {

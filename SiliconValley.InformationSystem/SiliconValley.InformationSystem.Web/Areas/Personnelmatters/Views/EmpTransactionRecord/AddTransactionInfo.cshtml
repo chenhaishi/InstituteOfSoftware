@@ -134,10 +134,17 @@
                                 @Html.TextBoxFor(a => a.PreviousSalary, new Dictionary<string, object>() { { "style", "border:0px" }, { "readonly", "true" }, { "class", "layui-input" } })
                             </div>
                         </div>
+                        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                            <label class="layui-form-label">是&nbsp;否&nbsp;转&nbsp;正:</label>
+                            <div class="layui-input-block" style="width:200px;">
+                                <input type="radio" name="WhetherToBecomeARegularWorkers" value="是" title="是" checked>
+                                <input type="radio" name="WhetherToBecomeARegularWorkers" value="否" title="否">
 
+                            </div>
+                        </div>
                         <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                             <label class="layui-form-label">拟&nbsp;转&nbsp;部&nbsp;门:</label>
-                            <div class="layui-input-block"   style="width:200px;">
+                            <div class="layui-input-block" style="width:200px;">
                                 <select name="PresentDept" id="PresentDept" style="width:130px;" lay-filter="deptidfilter" lay-search=""></select>
                             </div>
                         </div>

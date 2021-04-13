@@ -55,10 +55,10 @@
 <script type="text/html" id="DormitoryDeposit_toolbarDemo">
     <div class="layui-btn-container">
         <button class="layui-btn layui-btn-sm" lay-event="add">添加数据</button>
-        <button type="button" class="layui-btn layui-btn-sm" lay-event="getFileInto">
+        @*<button type="button" class="layui-btn layui-btn-sm" lay-event="getFileInto">
             <i class="layui-icon">&#xe601;</i>
             Excel文件导入
-        </button>
+        </button>*@
     </div>
 </script>
 
@@ -136,15 +136,15 @@
                                 return res.GoodPrice + "元"
                             }
                         }
-                        //, {
-                        //    field: 'MaintainState', title: '状态', templet: function (res) {
-                        //        if (res.MaintainState == 1) {
-                        //            return '<span style="color:red">未处理</span>'
-                        //        } else if (res.MaintainState == 2) {
-                        //            return '已扣除'
-                        //        }
-                        //    }
-                        //}
+                        , {
+                            field: 'MaintainState', title: '状态', templet: function (res) {
+                                if (res.MaintainState == 1) {
+                                    return '<span style="color:red">未处理</span>'
+                                } else if (res.MaintainState == 2) {
+                                    return '已扣除'
+                                }
+                            }
+                        }
 
                         //, { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150 }
                     ]]

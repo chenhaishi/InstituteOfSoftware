@@ -100,11 +100,12 @@
                 }
 
             </div>
-            <div class="layui-col-sm4" style="margin-left:20px">
+            <div class="layui-col-sm5" style="margin-left:20px">
                 <button type="button" class="layui-btn" onclick="GetKebiao()">获取课表</button>
                 <button type="button" class="layui-btn" onclick="SysStudy()">安排自习课</button>
                 <button type="button" class="layui-btn" onclick="AnpaiStuyEvning()">阶段安排晚自习</button>
                 <button type="button" class="layui-btn" onclick="DeleteStuyEvning()">阶段删除晚自习</button>
+                <button type="button" class="layui-btn" onclick="openkebiao()">放大课表</button>
             </div>
         </div>
     </form>
@@ -121,6 +122,9 @@
         function TableFulsh() {
             GetKebiao();
         }
+
+        
+
         //打开编辑排课数据页面
         function SetmyidValue(id) {
             var layer = layui.layer;
@@ -587,6 +591,20 @@
                     , anim: 4
                     , skin: 'demo-class'
                 });
+            });
+        }
+
+        //将显示课表部分已弹出层放大
+        function openkebiao() {
+            var layer = layui.layer;
+            layer.open({
+                type: 1,
+                content: $('#table_div'),
+                area: ['2000px', '1000px']
+                , shade: 0.8
+                , title:"课表"
+                , anim: 4
+                , skin: 'demo-class'
             });
         }
     </script>

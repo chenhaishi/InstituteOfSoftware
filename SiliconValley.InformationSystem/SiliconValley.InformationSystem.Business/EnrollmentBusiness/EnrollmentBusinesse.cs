@@ -875,6 +875,11 @@ namespace SiliconValley.InformationSystem.Business.EnrollmentBusiness
                     {
                         identitydocument = identitydocument.Substring(1, 18);
                     }
+                    if (identitydocument.Length!=18)
+                    {
+                        ajaxresult.Msg = name+"的身份证错误";
+                        break;
+                    }
                     var student = studentInformationBusiness.GetListBySql<StudentInformation>("select * from StudentInformation where identitydocument='" + identitydocument + "'").FirstOrDefault();
                     StudentInformation stu = new StudentInformation();
 
@@ -903,6 +908,17 @@ namespace SiliconValley.InformationSystem.Business.EnrollmentBusiness
                         stu.Name = name;
                         stu.identitydocument = identitydocument;
                         studentInformationBusiness.Insert(stu);
+
+                        ScheduleForTrainees s = new ScheduleForTrainees();
+                        s.ClassID = "学历测试班";
+                        s.StudentID = number.ToString();
+                        s.CurrentClass = true;
+                        s.ID_ClassName = 18098;
+                        s.AddDate = DateTime.Now;
+                        s.identitydocument = identitydocument;
+                        s.IsGraduating = true;
+                        scheduleForTraineesBusiness.Insert(s);
+
                     }
                     else
                     {

@@ -43,8 +43,8 @@
     <Reference Include="EntityFramework">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib, Version=1.2.0.246, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpZipLib.1.2.0\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\ICSharpCode.SharpZipLib.dll.0.85.4.369\lib\net20\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
@@ -53,6 +53,9 @@
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
       <HintPath>..\packages\Microsoft.Office.Interop.Excel.15.0.4795.1000\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.QualityTools.Testing.Fakes, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Nest, Version=6.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
       <HintPath>..\packages\NEST.6.6.0\lib\net461\Nest.dll</HintPath>
@@ -72,6 +75,7 @@
       <HintPath>..\packages\NPOI.2.5.1\lib\net45\NPOI.OpenXml4Net.dll</HintPath>
     </Reference>
     <Reference Include="NPOI.OpenXmlFormats, Version=2.5.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NPOI.2.5.1\lib\net45\NPOI.OpenXmlFormats.dll</HintPath>
     </Reference>
     <Reference Include="Spire.License, Version=1.3.8.40, Culture=neutral, PublicKeyToken=b1144360237c8b3f, processorArchitecture=MSIL">
@@ -243,6 +247,8 @@
     <Compile Include="FinaceBusines\CostitemsBusiness.cs" />
     <Compile Include="FinanceBusiness\FinanceModelBusiness.cs" />
     <Compile Include="ipRequestBusiness\ClientBusiness.cs" />
+    <Compile Include="JuniorCollegeBusinesse\JuniorCollegeBusinesse.cs" />
+    <Compile Include="JuniorCollegeBusinesse\NotRegisteredForJuniorCollegeBuiness.cs" />
     <Compile Include="Logger\ElasticSearchLogger.cs" />
     <Compile Include="Logger\ILogger.cs" />
     <Compile Include="Logger\LoggerFactory.cs" />
@@ -310,155 +316,10 @@
     <Compile Include="UserManeger\UsersInfoManeger.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="%24R9GAEVN\Debug\SiliconValley.InformationSystem.Business.dll.config" />
-    <None Include="%24R9GAEVN\Debug\SiliconValley.InformationSystem.Depository.dll.config" />
-    <None Include="%24R9GAEVN\Debug\SiliconValley.InformationSystem.Entity.dll.config" />
-    <None Include="%24R9GAEVN\Debug\SiliconValley.InformationSystem.Util.dll.config" />
-    <None Include="%24R9GAEVN\Release\SiliconValley.InformationSystem.Business.dll.config" />
-    <None Include="%24R9GAEVN\Release\SiliconValley.InformationSystem.Depository.dll.config" />
-    <None Include="%24R9GAEVN\Release\SiliconValley.InformationSystem.Entity.dll.config" />
-    <None Include="%24R9GAEVN\Release\SiliconValley.InformationSystem.Util.dll.config" />
     <None Include="app.config" />
+    <Fakes Include="Fakes\NPOI.fakes" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="%24R9GAEVN\Debug\Aspose.Cells.dll" />
-    <Content Include="%24R9GAEVN\Debug\Aspose.Cells.xml" />
-    <Content Include="%24R9GAEVN\Debug\BceSdkDotNet.dll" />
-    <Content Include="%24R9GAEVN\Debug\BouncyCastle.Crypto.dll" />
-    <Content Include="%24R9GAEVN\Debug\BouncyCastle.Crypto.xml" />
-    <Content Include="%24R9GAEVN\Debug\Elasticsearch.Net.dll" />
-    <Content Include="%24R9GAEVN\Debug\Elasticsearch.Net.xml" />
-    <Content Include="%24R9GAEVN\Debug\EntityFramework.dll" />
-    <Content Include="%24R9GAEVN\Debug\EntityFramework.xml" />
-    <Content Include="%24R9GAEVN\Debug\ICSharpCode.SharpZipLib.dll" />
-    <Content Include="%24R9GAEVN\Debug\ICSharpCode.SharpZipLib.pdb" />
-    <Content Include="%24R9GAEVN\Debug\ICSharpCode.SharpZipLib.xml" />
-    <Content Include="%24R9GAEVN\Debug\log4net.dll" />
-    <Content Include="%24R9GAEVN\Debug\log4net.xml" />
-    <Content Include="%24R9GAEVN\Debug\MySql.Data.dll" />
-    <Content Include="%24R9GAEVN\Debug\MySql.Data.xml" />
-    <Content Include="%24R9GAEVN\Debug\Nest.dll" />
-    <Content Include="%24R9GAEVN\Debug\Nest.xml" />
-    <Content Include="%24R9GAEVN\Debug\netstandard.dll" />
-    <Content Include="%24R9GAEVN\Debug\Newtonsoft.Json.dll" />
-    <Content Include="%24R9GAEVN\Debug\Newtonsoft.Json.xml" />
-    <Content Include="%24R9GAEVN\Debug\Npgsql.dll" />
-    <Content Include="%24R9GAEVN\Debug\Npgsql.pdb" />
-    <Content Include="%24R9GAEVN\Debug\Npgsql.xml" />
-    <Content Include="%24R9GAEVN\Debug\NPOI.dll" />
-    <Content Include="%24R9GAEVN\Debug\NPOI.OOXML.dll" />
-    <Content Include="%24R9GAEVN\Debug\NPOI.OpenXml4Net.dll" />
-    <Content Include="%24R9GAEVN\Debug\NPOI.OpenXmlFormats.dll" />
-    <Content Include="%24R9GAEVN\Debug\Oracle.ManagedDataAccess.dll" />
-    <Content Include="%24R9GAEVN\Debug\Pipelines.Sockets.Unofficial.dll" />
-    <Content Include="%24R9GAEVN\Debug\Pipelines.Sockets.Unofficial.xml" />
-    <Content Include="%24R9GAEVN\Debug\SiliconValley.InformationSystem.Business.dll" />
-    <Content Include="%24R9GAEVN\Debug\SiliconValley.InformationSystem.Business.pdb" />
-    <Content Include="%24R9GAEVN\Debug\SiliconValley.InformationSystem.Depository.dll" />
-    <Content Include="%24R9GAEVN\Debug\SiliconValley.InformationSystem.Depository.pdb" />
-    <Content Include="%24R9GAEVN\Debug\SiliconValley.InformationSystem.Entity.dll" />
-    <Content Include="%24R9GAEVN\Debug\SiliconValley.InformationSystem.Entity.pdb" />
-    <Content Include="%24R9GAEVN\Debug\SiliconValley.InformationSystem.Util.dll" />
-    <Content Include="%24R9GAEVN\Debug\SiliconValley.InformationSystem.Util.pdb" />
-    <Content Include="%24R9GAEVN\Debug\StackExchange.Redis.dll" />
-    <Content Include="%24R9GAEVN\Debug\StackExchange.Redis.xml" />
-    <Content Include="%24R9GAEVN\Debug\System.Buffers.dll" />
-    <Content Include="%24R9GAEVN\Debug\System.Buffers.xml" />
-    <Content Include="%24R9GAEVN\Debug\System.IO.Compression.dll" />
-    <Content Include="%24R9GAEVN\Debug\System.IO.Pipelines.dll" />
-    <Content Include="%24R9GAEVN\Debug\System.IO.Pipelines.xml" />
-    <Content Include="%24R9GAEVN\Debug\System.Linq.Dynamic.dll" />
-    <Content Include="%24R9GAEVN\Debug\System.Memory.dll" />
-    <Content Include="%24R9GAEVN\Debug\System.Memory.xml" />
-    <Content Include="%24R9GAEVN\Debug\System.Net.Sockets.dll" />
-    <Content Include="%24R9GAEVN\Debug\System.Numerics.Vectors.dll" />
-    <Content Include="%24R9GAEVN\Debug\System.Numerics.Vectors.xml" />
-    <Content Include="%24R9GAEVN\Debug\System.Runtime.CompilerServices.Unsafe.dll" />
-    <Content Include="%24R9GAEVN\Debug\System.Runtime.CompilerServices.Unsafe.xml" />
-    <Content Include="%24R9GAEVN\Debug\System.Runtime.InteropServices.RuntimeInformation.dll" />
-    <Content Include="%24R9GAEVN\Debug\System.Threading.Channels.dll" />
-    <Content Include="%24R9GAEVN\Debug\System.Threading.Channels.xml" />
-    <Content Include="%24R9GAEVN\Debug\System.Threading.Tasks.Extensions.dll" />
-    <Content Include="%24R9GAEVN\Debug\System.Threading.Tasks.Extensions.xml" />
-    <Content Include="%24R9GAEVN\Debug\System.ValueTuple.dll" />
-    <Content Include="%24R9GAEVN\Debug\System.ValueTuple.xml" />
-    <Content Include="%24R9GAEVN\Debug\System.Web.Mvc.dll" />
-    <Content Include="%24R9GAEVN\Debug\System.Web.Mvc.xml" />
-    <Content Include="%24R9GAEVN\Debug\zh-Hans\EntityFramework.resources.dll" />
-    <Content Include="%24R9GAEVN\Debug\zh-Hans\System.Web.Mvc.resources.dll" />
-    <Content Include="%24R9GAEVN\Debug\zxing.dll" />
-    <Content Include="%24R9GAEVN\Debug\zxing.pdb" />
-    <Content Include="%24R9GAEVN\Debug\zxing.xml" />
-    <Content Include="%24R9GAEVN\Release\Aspose.Cells.dll" />
-    <Content Include="%24R9GAEVN\Release\Aspose.Cells.xml" />
-    <Content Include="%24R9GAEVN\Release\BceSdkDotNet.dll" />
-    <Content Include="%24R9GAEVN\Release\BceSdkDotNet.xml" />
-    <Content Include="%24R9GAEVN\Release\BouncyCastle.Crypto.dll" />
-    <Content Include="%24R9GAEVN\Release\BouncyCastle.Crypto.xml" />
-    <Content Include="%24R9GAEVN\Release\Elasticsearch.Net.dll" />
-    <Content Include="%24R9GAEVN\Release\Elasticsearch.Net.xml" />
-    <Content Include="%24R9GAEVN\Release\EntityFramework.dll" />
-    <Content Include="%24R9GAEVN\Release\EntityFramework.xml" />
-    <Content Include="%24R9GAEVN\Release\ICSharpCode.SharpZipLib.dll" />
-    <Content Include="%24R9GAEVN\Release\ICSharpCode.SharpZipLib.pdb" />
-    <Content Include="%24R9GAEVN\Release\ICSharpCode.SharpZipLib.xml" />
-    <Content Include="%24R9GAEVN\Release\log4net.dll" />
-    <Content Include="%24R9GAEVN\Release\log4net.xml" />
-    <Content Include="%24R9GAEVN\Release\MySql.Data.dll" />
-    <Content Include="%24R9GAEVN\Release\MySql.Data.xml" />
-    <Content Include="%24R9GAEVN\Release\Nest.dll" />
-    <Content Include="%24R9GAEVN\Release\Nest.xml" />
-    <Content Include="%24R9GAEVN\Release\netstandard.dll" />
-    <Content Include="%24R9GAEVN\Release\Newtonsoft.Json.dll" />
-    <Content Include="%24R9GAEVN\Release\Newtonsoft.Json.xml" />
-    <Content Include="%24R9GAEVN\Release\Npgsql.dll" />
-    <Content Include="%24R9GAEVN\Release\Npgsql.pdb" />
-    <Content Include="%24R9GAEVN\Release\Npgsql.xml" />
-    <Content Include="%24R9GAEVN\Release\NPOI.dll" />
-    <Content Include="%24R9GAEVN\Release\NPOI.OOXML.dll" />
-    <Content Include="%24R9GAEVN\Release\NPOI.OpenXml4Net.dll" />
-    <Content Include="%24R9GAEVN\Release\NPOI.OpenXmlFormats.dll" />
-    <Content Include="%24R9GAEVN\Release\Oracle.ManagedDataAccess.dll" />
-    <Content Include="%24R9GAEVN\Release\Pipelines.Sockets.Unofficial.dll" />
-    <Content Include="%24R9GAEVN\Release\Pipelines.Sockets.Unofficial.xml" />
-    <Content Include="%24R9GAEVN\Release\SiliconValley.InformationSystem.Business.dll" />
-    <Content Include="%24R9GAEVN\Release\SiliconValley.InformationSystem.Business.pdb" />
-    <Content Include="%24R9GAEVN\Release\SiliconValley.InformationSystem.Depository.dll" />
-    <Content Include="%24R9GAEVN\Release\SiliconValley.InformationSystem.Depository.pdb" />
-    <Content Include="%24R9GAEVN\Release\SiliconValley.InformationSystem.Entity.dll" />
-    <Content Include="%24R9GAEVN\Release\SiliconValley.InformationSystem.Entity.pdb" />
-    <Content Include="%24R9GAEVN\Release\SiliconValley.InformationSystem.Util.dll" />
-    <Content Include="%24R9GAEVN\Release\SiliconValley.InformationSystem.Util.pdb" />
-    <Content Include="%24R9GAEVN\Release\StackExchange.Redis.dll" />
-    <Content Include="%24R9GAEVN\Release\StackExchange.Redis.xml" />
-    <Content Include="%24R9GAEVN\Release\System.Buffers.dll" />
-    <Content Include="%24R9GAEVN\Release\System.Buffers.xml" />
-    <Content Include="%24R9GAEVN\Release\System.IO.Compression.dll" />
-    <Content Include="%24R9GAEVN\Release\System.IO.Pipelines.dll" />
-    <Content Include="%24R9GAEVN\Release\System.IO.Pipelines.xml" />
-    <Content Include="%24R9GAEVN\Release\System.Linq.Dynamic.dll" />
-    <Content Include="%24R9GAEVN\Release\System.Memory.dll" />
-    <Content Include="%24R9GAEVN\Release\System.Memory.xml" />
-    <Content Include="%24R9GAEVN\Release\System.Net.Sockets.dll" />
-    <Content Include="%24R9GAEVN\Release\System.Numerics.Vectors.dll" />
-    <Content Include="%24R9GAEVN\Release\System.Numerics.Vectors.xml" />
-    <Content Include="%24R9GAEVN\Release\System.Runtime.CompilerServices.Unsafe.dll" />
-    <Content Include="%24R9GAEVN\Release\System.Runtime.CompilerServices.Unsafe.xml" />
-    <Content Include="%24R9GAEVN\Release\System.Runtime.InteropServices.RuntimeInformation.dll" />
-    <Content Include="%24R9GAEVN\Release\System.Threading.Channels.dll" />
-    <Content Include="%24R9GAEVN\Release\System.Threading.Channels.xml" />
-    <Content Include="%24R9GAEVN\Release\System.Threading.Tasks.Extensions.dll" />
-    <Content Include="%24R9GAEVN\Release\System.Threading.Tasks.Extensions.xml" />
-    <Content Include="%24R9GAEVN\Release\System.ValueTuple.dll" />
-    <Content Include="%24R9GAEVN\Release\System.ValueTuple.xml" />
-    <Content Include="%24R9GAEVN\Release\System.Web.Mvc.dll" />
-    <Content Include="%24R9GAEVN\Release\System.Web.Mvc.xml" />
-    <Content Include="%24R9GAEVN\Release\zh-Hans\EntityFramework.resources.dll" />
-    <Content Include="%24R9GAEVN\Release\zh-Hans\System.Web.Mvc.resources.dll" />
-    <Content Include="%24R9GAEVN\Release\zxing.dll" />
-    <Content Include="%24R9GAEVN\Release\zxing.pdb" />
-    <Content Include="%24R9GAEVN\Release\zxing.xml" />
+    <None Include="Scripts\jquery-2.1.1.min.map" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SiliconValley.InformationSystem.Depository\02.SiliconValley.InformationSystem.Depository.csproj">
@@ -474,6 +335,23 @@
       <Name>01.SiliconValley.InformationSystem.Util</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="%24R9GAEVN\Debug\zh-Hans\" />
+    <Folder Include="%24R9GAEVN\Release\zh-Hans\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="%24R9GAEVN\Debug\NPOI.dll" />
+    <Content Include="%24R9GAEVN\Debug\NPOI.OOXML.dll" />
+    <Content Include="%24R9GAEVN\Debug\NPOI.OpenXml4Net.dll" />
+    <Content Include="%24R9GAEVN\Debug\NPOI.OpenXmlFormats.dll" />
+    <Content Include="%24R9GAEVN\Release\NPOI.dll" />
+    <Content Include="%24R9GAEVN\Release\NPOI.OOXML.dll" />
+    <Content Include="%24R9GAEVN\Release\NPOI.OpenXml4Net.dll" />
+    <Content Include="%24R9GAEVN\Release\NPOI.OpenXmlFormats.dll" />
+    <Content Include="Scripts\jquery-2.1.1.intellisense.js" />
+    <Content Include="Scripts\jquery-2.1.1.js" />
+    <Content Include="Scripts\jquery-2.1.1.min.js" />
+    <Content Include="Scripts\nugetexample.js" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

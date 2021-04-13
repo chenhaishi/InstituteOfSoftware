@@ -75,16 +75,47 @@
         //导出
         form.on('submit(serch1)', function (data) {
             var data1 = data.field;
-            console.log(data1);
             $.ajax({
                 url: '/Educational/Reconcile/OutExcel_s3s4Funtion',
                 type: 'POST',
                 data: data1,
                 success: function (res) {
+                    
+                    var str = res.title + `\n`;
+                    for (let i = -1; i < res.Data.length; i++) {
+                        if (i == -1) {
+                            str += `任课老师\t,课时\t,课程`;
+                        } else {
 
+                            str += '' + res.Data[i].EmpName + '\t,' + res.Data[i].CostTime + '\t,';
+
+                            for (var k = 0; k < res.Data[i].CurriName.length; k++) {
+                                if (k == 0) {
+                                    str += res.Data[i].CurriName[k] + '\n';
+                                } else {
+                                    str +='\t,\t,'+ res.Data[i].CurriName[k] + '\n';
+                                }
+                                
+                                
+                            }
+                        }
+
+                        str += '\n';
+                    }
+                    //encodeURIComponent解决中文乱码
+                    let uri = 'data:text/csv;charset=utf-8,\ufeff' + encodeURIComponent(str);
+                    //通过创建a标签实现
+                    var link = document.createElement("a");
+                    link.href = uri;
+                    //对下载的文件命名
+                    link.download = "班级任课老师及课时统计.xls";
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
                 }
 
             });
+            return false;
         });
     });
 </script>
