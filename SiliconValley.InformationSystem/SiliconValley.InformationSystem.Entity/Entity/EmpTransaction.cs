@@ -111,5 +111,9 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         /// 现实习工资
         /// </summary>
         public Nullable<decimal> PresentInternshipSalary { get; set; }
+        /// <summary>
+        /// 是否转正
+        /// </summary>
+        public Nullable<bool> WhetherToBecomeARegularWorkers { get; set; }
     }
 }
