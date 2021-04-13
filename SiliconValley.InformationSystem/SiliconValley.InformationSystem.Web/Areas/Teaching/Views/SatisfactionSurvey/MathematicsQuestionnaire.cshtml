@@ -1,0 +1,309 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>MathematicsQuestionnaire</title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+    <style>
+        #warp {
+            width: 100%;
+        }
+
+        #info {
+            width: 80%;
+            margin-left: 50px;
+            border-bottom: 1px solid gray;
+        }
+
+        .infoItem {
+            display: inline-block;
+            font-size: 16px;
+            margin-left: 50px;
+        }
+
+            .infoItem label {
+                font-size: 20px;
+            }
+
+        #content {
+            margin-top: 50px;
+            margin-left: 50px;
+        }
+
+        .contentItem {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+        <ul class="layui-tab-title">
+            <li><a id="zhuyi">满意度问卷注意事项</a></li>
+            <li><a id="zhuanye">专业老师满意度调查</a></li>
+            <li><a id="banzhuren">班主任满意度调查</a></li>
+            <li><a id="shitang">食堂满意度调查</a></li>
+            <li><a id="yuwen">语文老师满意度调查</a></li>
+            <li class="layui-this"><a>数学老师满意度调查</a></li>
+            <li><a id="yingyu">英语老师满意度调查</a></li>
+        </ul>
+        <div class="layui-tab-content"></div>
+    </div>
+    <input type="hidden" id="configId" value="@ViewBag.SurveyConfig.ID" />
+    <div id="warp">
+
+        <div id="info">
+            <div class="infoItem"><label>数学老师：</label><span>@ViewBag.SurveyConfig.EmployeeId.EmpName</span></div>
+
+            <div class="infoItem"><label>课程：</label><span>@ViewBag.SurveyConfig.CurriculumID.CourseName</span></div>
+
+            <div class="infoItem" id="Score"><label>分数：</label><span>0</span></div>
+
+        </div>
+
+        <div id="content">
+
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">您的意见:</label>
+            <div class="layui-input-block">
+                <textarea id="sug" placeholder="请输入内容" class="layui-textarea"></textarea>
+            </div>
+
+        </div>
+
+        <div style="text-align:center">
+            <button type="button" lay-submit lay-filter="commit" class="layui-btn layui-btn-danger" style="width:80%; margin-top:20px;">提交</button>
+        </div>
+    </div>
+</body>
+</html>
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/layui/layui.js"></script>
+<script src="~/Scripts/underscore.js"></script>
+<script type="text/template" id="moban">
+    <div contentId="{{=contentId}}" class="contentItem">
+        <div class="title">
+            <span class="contentIndex">{{=index}}</span> <code style="margin-left:20px;">{{=content}}</code>
+        </div>
+        <div class="option">
+            <form class="layui-form">
+                <div class="layui-form-item">
+                    <label class="layui-form-label"></label>
+                    <div class="layui-input-block">
+                        <input type="radio" value="5" id="{{=contentId}}" lay-filter="option" name="title" title="非常满意(5分)">
+                        <input type="radio" value="4" id="{{=contentId}}" lay-filter="option" name="title" title="满意(4分)">
+                        <input type="radio" value="3" id="{{=contentId}}" lay-filter="option" name="title" title="基本满意(3分)">
+                        <input type="radio" value="1" id="{{=contentId}}" lay-filter="option" name="title" title="不满意(1分)">
+                        <input type="radio" value="0" id="{{=contentId}}" lay-filter="option" name="title" title="非常不满意(0分)">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</script>
+<script>
+    var resultArry = new Array();
+    layui.use('element', function () {
+        var element = layui.element;
+
+        //…
+    });
+    layui.use(['form', 'layer'], function () {
+
+        var form = layui.form;
+
+        $.post("/Teaching/SatisfactionSurvey/GetSurveyQuectionTeacher", {}, function (data) {
+            if (data.ErrorCode == 200) {
+
+                for (var i = 0; i < data.Data.length; i++) {
+
+                    var html = _.template($("#moban").html());
+                    var htmldate = html({ contentId: data.Data[i].ItemID, index: i + 1, content: data.Data[i].ItemContent });
+                    var ResultObj = new Object();
+                    ResultObj.contentId = data.Data[i].ItemID;
+                    ResultObj.scores = 0;
+                    resultArry.push(ResultObj);
+                    $("#content").append(htmldate);
+                }
+                form.render();
+
+            }
+            else {
+
+                layer.msg('数据加载异常。。', { icon: 2 });
+            }
+
+
+        });
+        ///监听单选按钮
+        form.on('radio(option)', function (data) {
+            console.log(data);
+
+            var score = $(this).val();
+            var id = $(this).attr("id");
+            for (var i = 0; i < resultArry.length; i++) {
+
+                if (resultArry[i].contentId == id) {
+                    resultArry[i].scores = score;
+                }
+
+            }
+
+            var totalScored = 0;
+
+            for (var i = 0; i < resultArry.length; i++) {
+
+                totalScored += parseInt(resultArry[i].scores);
+
+            }
+
+            $("#Score span").text(totalScored);
+
+        });
+        //监听提交
+        form.on('submit(commit)', function (data) {
+
+
+            var configId = $("#configId").val();
+            var sug = $("#sug").val();
+            //发送请求
+            layer.confirm('是否确认提交！', function (index) {
+                $.post("/Teaching/SatisfactionSurvey/", { list: resultArry, configId: configId, suggest: sug }, function (result) {
+                    if (result.ErrorCode == 200) {
+                        layer.msg('提交成功', { icon: 1, time: 2000 }, function () {
+                            //当你在iframe页面关闭自身时
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.layer.close(index); //再执行关闭
+                        });
+                    }
+                    else {
+                        layer.msg('服务器错误。。', { icon: 2 });
+                    }
+                    layer.close(index);
+                })
+
+            });
+
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+
+
+        });
+        //切换满意度主页事项页面
+        $("#zhuyi").click(function () {
+            location.href = "/Teaching/SatisfactionSurvey/SatisfactionHomePage"
+        })
+        //切换语文老师问卷
+        $("#yuwen").click(function () {
+            //location.href = "/Teaching/SatisfactionSurvey/ChineseQuestionnaire"
+            $.post("/Teaching/SatisfactionSurvey/IsHaveSatisfaction", { type: "yuwen" }, function (data) {
+
+                if (data.ErrorCode == 200) {
+                    if (data.Data.length > 0) {
+                        location.href = "/Teaching/SatisfactionSurvey/ChineseQuestionnaire?surveyId=" + data.Data[0].ID
+                    }
+                    else {
+                        layer.msg('当前没有课填写的满意度调查单', { icon: 2 });
+                    }
+                }
+                else {
+                    layer.msg('数据加载异常。。', { icon: 2 });
+                }
+            });
+        })
+        //切换英语老师问卷
+        $("#yingyu").click(function () {
+            //location.href = "/Teaching/SatisfactionSurvey/EnglishQuestionnaire"
+            $.post("/Teaching/SatisfactionSurvey/IsHaveSatisfaction", { type: "yingyu" }, function (data) {
+
+                if (data.ErrorCode == 200) {
+                    if (data.Data.length > 0) {
+                        location.href = "/Teaching/SatisfactionSurvey/EnglishQuestionnaire?surveyId=" + data.Data[0].ID
+                    }
+                    else {
+                        layer.msg('当前没有课填写的满意度调查单', { icon: 2 });
+                    }
+                }
+                else {
+                    layer.msg('数据加载异常。。', { icon: 2 });
+                }
+            });
+        })
+        //切换专业老师问卷
+        $("#zhuanye").click(function () {
+            $.post("/Teaching/SatisfactionSurvey/IsHaveSatisfaction", { type: "teacher" }, function (data) {
+
+
+                if (data.ErrorCode == 200) {
+
+                    if (data.Data.length > 0) {
+                        location.href = "/Teaching/SatisfactionSurvey/TeacherSatisfactionQuestionnaire?surveyId=" + data.Data[0].ID
+                    }
+
+                    else {
+
+                        layer.msg('当前没有课填写的满意度调查单', { icon: 2 });
+
+                    }
+                }
+                else {
+                    layer.msg('数据加载异常。。', { icon: 2 });
+                }
+
+            });
+
+        })
+        //切换班主任问卷
+        $("#banzhuren").click(function () {
+
+            $.post("/Teaching/SatisfactionSurvey/IsHaveSatisfaction", { type: "jiaozhi" }, function (data) {
+                console.log(data);
+                if (data.ErrorCode == 200) {
+
+                    if (data.Data.length > 0) {
+
+                        location.href = "/Teaching/SatisfactionSurvey/HeadMasterSatisfactionQuestionnaire?surveyId=" + data.Data[0].ID
+                    }
+                    else {
+
+                        layer.msg('当前没有课填写的满意度调查单', { icon: 2 });
+
+                    }
+                }
+                else {
+                    layer.msg('数据加载异常。。', { icon: 2 });
+                }
+
+            });
+        })
+        //切换食堂问卷
+        $("#shitang").click(function () {
+
+            $.post("/Teaching/SatisfactionSurvey/IsHaveSatisfaction", { type: "shitang" }, function (data) {
+                console.log(data);
+                if (data.ErrorCode == 200) {
+
+                    if (data.Data.length > 0) {
+                        //location.href = "/Teaching/SatisfactionSurvey/CanteenSatisfaction"
+                        location.href = "/Teaching/SatisfactionSurvey/CanteenSatisfaction?surveyId=" + data.Data[0].ID
+                    }
+                    else {
+
+                        layer.msg('当前没有课填写的满意度调查单', { icon: 2 });
+
+                    }
+                }
+                else {
+                    layer.msg('数据加载异常。。', { icon: 2 });
+                }
+
+            });
+        })
+    });
+</script>
