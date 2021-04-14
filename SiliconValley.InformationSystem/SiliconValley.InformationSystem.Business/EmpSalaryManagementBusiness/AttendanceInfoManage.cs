@@ -372,22 +372,32 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
         public AjaxResult ImportDataFormExcel(Stream stream, string contentType)
         {
             IWorkbook workbook = null;
-
-            if (contentType == "application/vnd.ms-excel")
+            AjaxResult result = new AjaxResult();
+            try
             {
-                workbook = new HSSFWorkbook(stream);
-            }
+                if (contentType == "application/vnd.ms-excel")
+                {
+                    workbook = new HSSFWorkbook(stream);
+                }
 
-            if (contentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                if (contentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                {
+                    //workbook = new XSSFWorkbook(stream);
+                }
+
+                ISheet sheet = workbook.GetSheetAt(0);
+                result = ExcelImportAtdSql(sheet);
+                stream.Close();
+                stream.Dispose();
+                workbook.Close();
+            }
+            catch (Exception e)
             {
-                workbook = new XSSFWorkbook(stream);
+                result.Success = false;
+                result.Msg = e.Message; 
+                throw;
             }
-
-            ISheet sheet = workbook.GetSheetAt(0);
-            var result = ExcelImportAtdSql(sheet);
-            stream.Close();
-            stream.Dispose();
-            workbook.Close();
+            
 
             return result;
         }
@@ -495,7 +505,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     string EvectionRecord = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(25))) ? null : getrow.GetCell(25).ToString();
 
                     //备注[26]
-                    string Remark = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(26))) ? null : getrow.GetCell(24).ToString();
+                    string Remark = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(26))) ? null : getrow.GetCell(26).ToString();
 
                     #endregion
 
