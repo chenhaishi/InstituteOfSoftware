@@ -1,0 +1,203 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>SatisfactionHomePage</title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+    <style>
+        #warp {
+            width: 100%;
+        }
+
+        #info {
+            width: 80%;
+            margin-left: 50px;
+            border-bottom: 1px solid gray;
+        }
+
+        .infoItem {
+            display: inline-block;
+            font-size: 16px;
+            margin-left: 50px;
+        }
+
+            .infoItem label {
+                font-size: 20px;
+            }
+
+        #content {
+            margin-top: 50px;
+            margin-left: 50px;
+        }
+
+        .contentItem {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">满意度问卷注意事项</li>
+            <li><a id="zhuanye">专业老师满意度调查</a></li>
+            <li><a id="banzhuren">班主任满意度调查</a></li>
+            <li><a id="shitang">食堂满意度调查</a></li>
+            <li><a id="yuwen">语文老师满意度调查</a></li>
+            <li><a id="shuxue">数学老师满意度调查</a></li>
+            <li><a id="yingyu">英语老师满意度调查</a></li>
+        </ul>
+        <div class="layui-tab-content"></div>
+    </div>
+    <div>
+        <h1 style="color:red"  align=center>满意度注意事项</h1><hr />
+        <div style="font-size:28px">
+            <text>1:满意度问卷有六大类:专业老师,班主任,食堂,语数英三位老师</text><br /><br />
+            <text>2:填写的满意度问卷将会匿名</text><br /><br />
+            <text>3:预科班填写六大满意度,高中生班填写前三大满意度</text><br /><br />
+            <text>4:填写满意度时间为一天,在这一天如何时间段都可以进行填写,超出时间则无法进行</text><br /><br />
+            <text>5:如果感觉填写或加载很缓慢,请稍后再试,可能现在有考试,或访问人数过多</text><br /><br />
+            <text>6:请同学根据真实情况进行评写,实事求是</text><br /><br />
+            <text>7:系统出现故障,报错,请拍照发个班主任</text><br /><br />
+        </div>
+    </div>
+</body>
+</html>
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/layui/layui.js"></script>
+<script src="~/Scripts/underscore.js"></script>
+<script>
+    layui.use(['form', 'layer'], function () {
+
+        var form = layui.form;
+        //切换语文老师问卷
+        $("#yuwen").click(function () {
+            //location.href = "/Teaching/SatisfactionSurvey/ChineseQuestionnaire"
+            $.post("/Teaching/SatisfactionSurvey/IsHaveSatisfaction", { type: "yuwen" }, function (data) {
+
+                if (data.ErrorCode == 200) {
+                    if (data.Data.length > 0) {
+                        location.href = "/Teaching/SatisfactionSurvey/ChineseQuestionnaire?surveyId=" + data.Data[0].ID
+                    }
+                    else {
+                        layer.msg('当前没有课填写的满意度调查单', { icon: 2 });
+                    }
+                }
+                else {
+                    layer.msg('数据加载异常。。', { icon: 2 });
+                }
+            });
+        })
+        //切换数学老师问卷
+        $("#shuxue").click(function () {
+            //location.href = "/Teaching/SatisfactionSurvey/MathematicsQuestionnaire"
+            $.post("/Teaching/SatisfactionSurvey/IsHaveSatisfaction", { type: "shuxue" }, function (data) {
+
+                if (data.ErrorCode == 200) {
+                    if (data.Data.length > 0) {
+                        location.href = "/Teaching/SatisfactionSurvey/MathematicsQuestionnaire?surveyId=" + data.Data[0].ID
+                    }
+                    else {
+                        layer.msg('当前没有课填写的满意度调查单', { icon: 2 });
+                    }
+                }
+                else {
+                    layer.msg('数据加载异常。。', { icon: 2 });
+                }
+            });
+        })
+        //切换英语老师问卷
+        $("#yingyu").click(function () {
+            //location.href = "/Teaching/SatisfactionSurvey/EnglishQuestionnaire"
+            $.post("/Teaching/SatisfactionSurvey/IsHaveSatisfaction", { type: "yingyu" }, function (data) {
+
+                if (data.ErrorCode == 200) {
+                    if (data.Data.length > 0) {
+                        location.href = "/Teaching/SatisfactionSurvey/EnglishQuestionnaire?surveyId=" + data.Data[0].ID
+                    }
+                    else {
+                        layer.msg('当前没有课填写的满意度调查单', { icon: 2 });
+                    }
+                }
+                else {
+                    layer.msg('数据加载异常。。', { icon: 2 });
+                }
+            });
+        })
+
+        //切换班主任问卷
+        $("#banzhuren").click(function () {
+
+            $.post("/Teaching/SatisfactionSurvey/IsHaveSatisfaction", { type: "jiaozhi" }, function (data) {
+                console.log(data);
+                if (data.ErrorCode == 200) {
+
+                    if (data.Data.length > 0) {
+
+                        location.href = "/Teaching/SatisfactionSurvey/HeadMasterSatisfactionQuestionnaire?surveyId=" + data.Data[0].ID
+                    }
+                    else {
+
+                        layer.msg('当前没有课填写的满意度调查单', { icon: 2 });
+
+                    }
+                }
+                else {
+                    layer.msg('数据加载异常。。', { icon: 2 });
+                }
+
+            });
+        })
+        //切换食堂问卷
+        $("#shitang").click(function () {
+
+            $.post("/Teaching/SatisfactionSurvey/IsHaveSatisfaction", { type: "shitang" }, function (data) {
+                if (data.ErrorCode == 200) {
+
+                    if (data.Data.length > 0) {
+                        //location.href = "/Teaching/SatisfactionSurvey/CanteenSatisfaction"
+                        location.href = "/Teaching/SatisfactionSurvey/CanteenSatisfaction?surveyId=" + data.Data[0].ID
+                    }
+                    else {
+
+                        layer.msg('当前没有课填写的满意度调查单', { icon: 2 });
+
+                    }
+                }
+                else {
+                    layer.msg('数据加载异常。。', { icon: 2 });
+                }
+
+            });
+        })
+
+        //切换专业老师问卷
+        $("#zhuanye").click(function () {
+            $.post("/Teaching/SatisfactionSurvey/IsHaveSatisfaction", { type: "teacher" }, function (data) {
+                if (data.ErrorCode == 200) {
+
+                    if (data.Data.length > 0) {
+                        location.href = "/Teaching/SatisfactionSurvey/TeacherSatisfactionQuestionnaire?surveyId=" + data.Data[0].ID
+                    }
+
+                    else {
+
+                        layer.msg('当前没有课填写的满意度调查单', { icon: 2 });
+
+                    }
+                }
+                else {
+                    layer.msg('数据加载异常。。', { icon: 2 });
+                }
+
+            });
+
+        })
+    });
+    
+</script>

@@ -32,10 +32,21 @@
     </style>
 
 </head>
-<body><input type="hidden" id="configId" value="@ViewBag.SurveyConfig.ID" />
+<body>
+    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+        <ul class="layui-tab-title">
+            <li><a id="zhuyi">满意度问卷注意事项</a></li>
+            <li><a id="zhuanye">专业老师满意度调查</a></li>
+            <li class="layui-this"><a>班主任满意度调查</a></li>
+            <li><a id="shitang">食堂满意度调查</a></li>
+            <li><a id="yuwen">语文老师满意度调查</a></li>
+            <li><a id="shuxue">数学老师满意度调查</a></li>
+            <li><a id="yingyu">英语老师满意度调查</a></li>
+        </ul>
+        <div class="layui-tab-content"></div>
+    </div>
+    <input type="hidden" id="configId" value="@ViewBag.SurveyConfig.ID" />
     <div>
-
-        <h2 style="text-align:center; margin-top:20px;">班主任满意度调查问卷</h2>
 
         <form class="layui-form">
 
@@ -46,7 +57,7 @@
                 <br />
                 <div class="infoItem"><label>班主任：</label><span>@ViewBag.SurveyConfig.EmployeeId.EmpName</span></div>
 
-                
+
 
                 <div class="infoItem" id="TotalScore"><label>当前分数：</label><span>0</span></div>
 
@@ -71,11 +82,8 @@
         </div>
 
 
-        <div style="margin-top:100px; width:100%; text-align:center;">
-            <button id="commit" style="width:80%;" class="layui-btn layui-btn-danger">
-
-                提交
-            </button>
+        <div style="width:100%; text-align:center;">
+            <button id="commit" style="width:80%; margin-top:20px;" class="layui-btn layui-btn-danger">提交</button>
         </div>
 
 
@@ -87,57 +95,24 @@
 
                     <div class="quection" score="0" quectionid="{{=itemid}}" style="font-size:20px; display:inline-block;"><i style="font-size:30px;" class="layui-icon layui-icon-survey"></i>{{=itemcontent}}</div>
                     <div style="margin-top:10px;">
-
                         <div class="radio">
-                            <div class="layui-input-block">
-
                                 <input score="0" type="radio" title="0分(非常不满意)" name="{{=radioname}}">
-                            </div>
-
-
                         </div>
-
                         <div class="radio">
-                            <div class="layui-input-block">
-
                                 <input score="1" type="radio" title="1分(不满意)" name="{{=radioname}}">
-                            </div>
-
-
                         </div>
-
                         <div class="radio">
-                            <div class="layui-input-block">
-
                                 <input score="3" type="radio" title="3分(基本满意)" name="{{=radioname}}">
-                            </div>
-
-
                         </div>
-
                         <div class="radio">
-
-                            <div class="layui-input-block">
-
                                 <input score="4" type="radio" title="4分(满意)" name="{{=radioname}}">
-                            </div>
-
-
                         </div>
                         <div class="radio">
-                            <div class="layui-input-block">
-
                                 <input score="5" type="radio" title="5分(非常满意)" name="{{=radioname}}">
-                            </div>
-
-
                         </div>
                     </div>
-
                 </div>
             </form>
-
-
         </script>
 
     </div>
@@ -201,7 +176,7 @@
 
                     if (data.ErrorCode == 200) {
 
-                       
+
 
                         for (var i = 0; i < data.Data.length; i++) {
 
@@ -252,8 +227,8 @@
                 var proposal = $("#proposal").val();
 
                 var configId = $("#configId").val();
-              
 
+                layer.confirm('是否确认提交！', function (index) {
 
                 $.post("/Teaching/SatisfactionSurvey/SurveyQuectionCommitHeadMaster", { surveyCommit: resultlist, configId: configId, suggest: proposal }, function (result) {
 
@@ -262,8 +237,8 @@
                         layer.msg('提交成功', { icon: 1, time: 2000 }, function () {
 
                             //当你在iframe页面关闭自身时
-                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                            parent.layer.close(index); //再执行关闭  
+                            //var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            //parent.layer.close(index); //再执行关闭
 
                         });
 
@@ -272,10 +247,115 @@
                     else {
                         layer.msg('服务器错误。。', { icon: 2 });
                     }
-
+                    layer.close(index);
+                    });
                 });
 
             });
+            //切换满意度主页事项页面
+            $("#zhuyi").click(function () {
+                location.href = "/Teaching/SatisfactionSurvey/SatisfactionHomePage"
+            })
+            //切换语文老师问卷
+            $("#yuwen").click(function () {
+                //location.href = "/Teaching/SatisfactionSurvey/ChineseQuestionnaire"
+                $.post("/Teaching/SatisfactionSurvey/IsHaveSatisfaction", { type: "yuwen" }, function (data) {
+                    if (data.ErrorCode == 200) {
+                        if (data.Data.length > 0) {
+                            location.href = "/Teaching/SatisfactionSurvey/ChineseQuestionnaire?surveyId=" + data.Data[0].ID
+                        }
+                        else {
+                            layer.msg('当前没有课填写的满意度调查单', { icon: 2 });
+                        }
+                    }
+                    else {
+                        layer.msg('数据加载异常。。', { icon: 2 });
+                    }
+                });
+            })
+            //切换数学老师问卷
+            $("#shuxue").click(function () {
+                //location.href = "/Teaching/SatisfactionSurvey/MathematicsQuestionnaire"
+                $.post("/Teaching/SatisfactionSurvey/IsHaveSatisfaction", { type: "shuxue" }, function (data) {
+
+                    if (data.ErrorCode == 200) {
+                        if (data.Data.length > 0) {
+                            location.href = "/Teaching/SatisfactionSurvey/MathematicsQuestionnaire?surveyId=" + data.Data[0].ID
+                        }
+                        else {
+                            layer.msg('当前没有课填写的满意度调查单', { icon: 2 });
+                        }
+                    }
+                    else {
+                        layer.msg('数据加载异常。。', { icon: 2 });
+                    }
+                });
+            })
+            //切换英语老师问卷
+            $("#yingyu").click(function () {
+                //location.href = "/Teaching/SatisfactionSurvey/EnglishQuestionnaire"
+                $.post("/Teaching/SatisfactionSurvey/IsHaveSatisfaction", { type: "yingyu" }, function (data) {
+
+                    if (data.ErrorCode == 200) {
+                        if (data.Data.length > 0) {
+                            location.href = "/Teaching/SatisfactionSurvey/EnglishQuestionnaire?surveyId=" + data.Data[0].ID
+                        }
+                        else {
+                            layer.msg('当前没有课填写的满意度调查单', { icon: 2 });
+                        }
+                    }
+                    else {
+                        layer.msg('数据加载异常。。', { icon: 2 });
+                    }
+                });
+            })
+            //切换专业老师问卷
+            $("#zhuanye").click(function () {
+                $.post("/Teaching/SatisfactionSurvey/IsHaveSatisfaction", { type: "teacher" }, function (data) {
+
+
+                    if (data.ErrorCode == 200) {
+
+                        if (data.Data.length > 0) {
+                            location.href = "/Teaching/SatisfactionSurvey/TeacherSatisfactionQuestionnaire?surveyId=" + data.Data[0].ID
+                        }
+
+                        else {
+
+                            layer.msg('当前没有课填写的满意度调查单', { icon: 2 });
+
+                        }
+                    }
+                    else {
+                        layer.msg('数据加载异常。。', { icon: 2 });
+                    }
+
+                });
+
+            })
+            //切换食堂问卷
+            $("#shitang").click(function () {
+                
+                $.post("/Teaching/SatisfactionSurvey/IsHaveSatisfaction", { type: "shitang" }, function (data) {
+                    console.log(data);
+                    if (data.ErrorCode == 200) {
+
+                        if (data.Data.length > 0) {
+                            //location.href = "/Teaching/SatisfactionSurvey/CanteenSatisfaction"
+                            location.href = "/Teaching/SatisfactionSurvey/CanteenSatisfaction?surveyId=" + data.Data[0].ID
+                        }
+                        else {
+
+                            layer.msg('当前没有课填写的满意度调查单', { icon: 2 });
+
+                        }
+                    }
+                    else {
+                        layer.msg('数据加载异常。。', { icon: 2 });
+                    }
+
+                });
+            })
 
         });
 

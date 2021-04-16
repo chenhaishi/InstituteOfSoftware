@@ -41,7 +41,7 @@
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">阶段</label>
+                @*<label class="layui-form-label">阶段</label>
                 <div class="layui-input-inline">
                     <select name="Grand" lay-filter="major">
                         <option value="0">请选择</option>
@@ -52,7 +52,7 @@
                             }
                         }
                     </select>
-                </div>
+                </div>*@
                 <label class="layui-form-label">课程</label>
                 <div class="layui-input-inline">
                     <select lay-verify="required" name="course" id="course" lay-search="">
@@ -160,15 +160,25 @@
                         if (resultData.ErrorCode == 200) {
                             //清空赋值
                             $("#laoshi").empty();
-
                             $("#laoshi").append(new Option("请选择老师", ""));
+                            $("#ywlaoshi").empty();
+                            $("#ywlaoshi").append(new Option("请选择语文老师", ""));
+                            $("#sxlaoshi").empty();
+                            $("#sxlaoshi").append(new Option("请选择数学老师", ""));
+                            $("#yylaoshi").empty();
+                            $("#yylaoshi").append(new Option("请选择英语老师", ""));
                             $.each(resultData.Data, function (index, item) {
                                 //赋值
-
                                 $('#laoshi').append(new Option(item.EmpName, item.EmployeeId));
+                                $('#ywlaoshi').append(new Option(item.EmpName, item.EmployeeId));
+                                $('#sxlaoshi').append(new Option(item.EmpName, item.EmployeeId));
+                                $('#yylaoshi').append(new Option(item.EmpName, item.EmployeeId));
                             });
                         } else {
                             $("#laoshi").append(new Option("暂无数据", ""));
+                            $("#ywlaoshi").append(new Option("暂无数据", ""));
+                            $("#sxlaoshi").append(new Option("暂无数据", ""));
+                            $("#yylaoshi").append(new Option("暂无数据", ""));
                         }
                         layui.form.render("select");
                     }
@@ -181,7 +191,6 @@
 
                 //获取班级
                 var classnumber = $("#classnumber").val();
-
                 //获取课程
                 var skill = $("#course").val();
 
