@@ -137,8 +137,8 @@
                         <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                             <label class="layui-form-label">是&nbsp;否&nbsp;转&nbsp;正:</label>
                             <div class="layui-input-block" style="width:200px;">
-                                <input type="radio" name="WhetherToBecomeARegularWorkers" value="是" title="是" checked>
-                                <input type="radio" name="WhetherToBecomeARegularWorkers" value="否" title="否">
+                                <input type="radio" name="WhetherToBecomeARegularWorkers" value="true" title="是" checked>
+                                <input type="radio" name="WhetherToBecomeARegularWorkers" value="false" title="否">
 
                             </div>
                         </div>
@@ -340,6 +340,7 @@
 
             //添加异动信息提交
             form.on('submit(demo1)', function (data) {
+                console.log(data.field);
                 var loadindex = layer.load(1);
                 var newsalary = parseFloat(data.field.salaryBefore) + parseFloat(data.field.Raiselimit);
                 if (data.field.BeforePositiveDate != "") {
