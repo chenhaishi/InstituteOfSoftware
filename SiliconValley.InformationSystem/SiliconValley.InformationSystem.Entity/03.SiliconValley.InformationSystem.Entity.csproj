@@ -299,6 +299,7 @@
     <Compile Include="Entity\StrengthenClass.cs" />
     <Compile Include="Entity\StrengthenStu.cs" />
     <Compile Include="Entity\StuBookAcqRecords.cs" />
+    <Compile Include="Entity\StudentActivity.cs" />
     <Compile Include="Entity\StudentAttendance.cs" />
     <Compile Include="Entity\StudentAwardwinning.cs" />
     <Compile Include="Entity\StudentFeeRecord.cs" />
