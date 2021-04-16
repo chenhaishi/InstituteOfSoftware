@@ -203,7 +203,7 @@ namespace SiliconValley.InformationSystem.Business.EnrollmentBusiness
             {
                 list = list.Where(a => a.Name.Contains(Name)).ToList();
             }
-         
+
             if (!string.IsNullOrEmpty(StudentNumber))
             {
                 list = list.Where(a => a.StudentNumber.Contains(StudentNumber)).ToList();
@@ -214,9 +214,9 @@ namespace SiliconValley.InformationSystem.Business.EnrollmentBusiness
             }
             var xz = list.Select(a => new EnrollmentStudentView
             {
-             StudentNumber=  a.StudentNumber,
-              Name=  a.Name,
-              identitydocument=    a.identitydocument,
+                StudentNumber=a.StudentNumber,
+                Name=a.Name,
+                identitydocument=a.identitydocument,
                 ClassName = scheduleForTraineesBusiness.SutdentCLassName(a.StudentNumber)==null?"暂无":scheduleForTraineesBusiness.SutdentCLassName(a.StudentNumber).ClassID,
                 Headmasters = headmasters.Listheadmasters(a.StudentNumber)==null?"暂无" : headmasters.Listheadmasters(a.StudentNumber).EmpName,
                 School =this.GetList().Where(x=>x.IsDelete==false&&x.StudentNumber==a.StudentNumber).FirstOrDefault().School==null?"请补充完整信息": UndergraduateschoolBusiness.GetEntity( this.GetList().Where(x => x.IsDelete == false && x.StudentNumber == a.StudentNumber).FirstOrDefault().School).SchoolName,
@@ -598,11 +598,14 @@ namespace SiliconValley.InformationSystem.Business.EnrollmentBusiness
          var student=  studentInformationBusiness.StudentList().Where(a => a.StudentNumber == Studentid).FirstOrDefault();
             EnrollmentView enrollmentView = new EnrollmentView();
             enrollmentView.Name = student.Name;
-            enrollmentView.ClassName=scheduleForTraineesBusiness.SutdentCLassName(student.StudentNumber).ClassID;
             enrollmentView.PassNumber = x.PassNumber;
             enrollmentView.id = x.ID;
             enrollmentView.identitydocument = student.identitydocument;
             enrollmentView.StudentNumber = student.StudentNumber;
+            if (scheduleForTraineesBusiness.SutdentCLassName(student.StudentNumber)!=null)
+            {
+                enrollmentView.ClassName = scheduleForTraineesBusiness.SutdentCLassName(student.StudentNumber).ClassID;
+            }
 
             return enrollmentView;
         }
@@ -867,11 +870,75 @@ namespace SiliconValley.InformationSystem.Business.EnrollmentBusiness
                     {
                         continue;
                     }
-                    names = name;
+                    //names = name;
+                    #region
                     if (identitydocument.Contains("'"))
                     {
                         identitydocument = identitydocument.Substring(1, 18);
                     }
+                    if (identitydocument.Length != 18)
+                    {
+                        names += name + "的身份证错误</br>";
+                        continue;
+                        //ajaxresult.Msg = name+"的身份证错误";
+                        //break;
+                    }
+                    else
+                    {
+                        var x = identitydocument.Substring(6).Substring(0, 8);
+                        var n = int.Parse(x.Substring(0, 4));
+                        var y = int.Parse(x.Substring(4, 2));
+                        var r = int.Parse(x.Substring(6, 2));
+                        if (y > 12)
+                        {
+                            names += name + "的身份证错误</br>";
+                            continue;
+
+                        }
+                       
+                            if (y==2)
+                            {
+                            if (n % 4 == 0)
+                            {
+                                if (r > 29)
+                                {
+                                    names += name + "的身份证错误</br>";
+                                    continue;
+                                }
+                            }
+                            else
+                            {
+                                if (r > 28)
+                                {
+                                    names += name + "的身份证错误</br>";
+                                    continue;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            
+                        }
+                        if (y==1||y==3||y==5||y==7||y==8||y==10||y==12)
+                        {
+                            if (r > 31)
+                            {
+                                names += name + "的身份证错误</br>";
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            if (r > 30)
+                            {
+                                names += name + "的身份证错误</br>";
+                                continue;
+                            }
+                        }
+
+                    }
+                    #endregion
+
                     var student = studentInformationBusiness.GetListBySql<StudentInformation>("select * from StudentInformation where identitydocument='" + identitydocument + "'").FirstOrDefault();
                     StudentInformation stu = new StudentInformation();
 
@@ -882,22 +949,35 @@ namespace SiliconValley.InformationSystem.Business.EnrollmentBusiness
                         if (sum != null)
                         {
                             number = int.Parse(sum.StudentNumber);
-                            while (true)
-                            {
+                            //while (true)
+                            //{
                                 number++;
-                                var count = studentInformationBusiness.GetListBySql<StudentInformation>("select * from StudentInformation where StudentNumber='" + number + "'").Count();
-                                if (count == 0)
-                                {
-                                    break;
-                                }
-
-                            }
+                            //    var count = studentInformationBusiness.GetListBySql<StudentInformation>("select * from StudentInformation where StudentNumber='" + number + "'").Count();
+                            //    if (count == 0)
+                            //    {
+                            //        break;
+                            //    }
+                            //}
+                        }
+                        else
+                        {
+                            number++;
                         }
                         stu.StudentNumber = number.ToString();
                         stu.Name = name;
                         stu.identitydocument = identitydocument;
                         studentInformationBusiness.Insert(stu);
-                        //continue;
+
+                        ScheduleForTrainees s = new ScheduleForTrainees();
+                        s.ClassID = "学历测试班";
+                        s.StudentID = number.ToString();
+                        s.CurrentClass = true;
+                        s.ID_ClassName = 19098;
+                        s.AddDate = DateTime.Now;
+                        s.identitydocument = identitydocument;
+                        s.IsGraduating = true;
+                        scheduleForTraineesBusiness.Insert(s);
+
                     }
                     else
                     {
@@ -919,6 +999,10 @@ namespace SiliconValley.InformationSystem.Business.EnrollmentBusiness
                     e.IsDelete = false;
                     Insert(e);
                 }
+                ajaxresult.Success = true;
+                ajaxresult.ErrorCode = 100;
+                ajaxresult.Msg = names;
+                ajaxresult.Data = "0";
             }
 
             catch (Exception ex)
@@ -929,6 +1013,50 @@ namespace SiliconValley.InformationSystem.Business.EnrollmentBusiness
                 ajaxresult.Data = "0";
             }
             return ajaxresult;
+        }
+        public object GetUndergraduateachievement(int page, int limit,string stunumber)
+        {
+            var enrollid = this.GetList().Where(i => i.StudentNumber == stunumber).FirstOrDefault().ID;
+            var uglist = UndergraduatecourseBusiness.GetList();
+            var  list = UndergraduateachievementBusines.GetList().Where(i => i.EnrollID == enrollid).Select(i => new
+            {
+                i.id,
+                i.Examinationperiod,
+                i.Fraction,
+                Coursecode = uglist.Where(s=>s.id==i.Subjectid).FirstOrDefault().Coursecode,
+                Coursetitle = uglist.Where(s => s.id == i.Subjectid).FirstOrDefault().Coursetitle
+            }).ToList();
+            var  datalist =list.OrderBy(a => a.id).Skip((page - 1) * limit).Take(limit).ToList();
+            var data = new
+            {
+                code = "",
+                msg = "",
+                count = list.Count,
+                data = datalist
+            };
+            return data;
+        }
+        public object Getpass(int page, int limit, string stunumber)
+        {
+            var enrollid = this.GetList().Where(i => i.StudentNumber == stunumber).FirstOrDefault().ID;
+            var uglist = UndergraduatecourseBusiness.GetList();
+            var list = UndergraduateachievementBusines.GetList().Where(i => i.EnrollID == enrollid&&i.Fraction>=60).Select(i => new
+            {
+                i.id,
+                i.Examinationperiod,
+                i.Fraction,
+                Coursecode = uglist.Where(s => s.id == i.Subjectid).FirstOrDefault().Coursecode,
+                Coursetitle = uglist.Where(s => s.id == i.Subjectid).FirstOrDefault().Coursetitle
+            }).ToList();
+            var datalist = list.OrderBy(a => a.id).Skip((page - 1) * limit).Take(limit).ToList();
+            var data = new
+            {
+                code = "",
+                msg = "",
+                count = list.Count,
+                data = datalist
+            };
+            return data;
         }
     }
 }

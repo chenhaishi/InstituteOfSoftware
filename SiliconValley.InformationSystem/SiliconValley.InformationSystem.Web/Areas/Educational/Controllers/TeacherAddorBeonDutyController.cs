@@ -13,7 +13,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
     using SiliconValley.InformationSystem.Business.Base_SysManage;
     using SiliconValley.InformationSystem.Business.ClassSchedule_Business;
     using SiliconValley.InformationSystem.Business.EducationalBusiness;
+    using SiliconValley.InformationSystem.Business.EmployeesBusiness;
     using SiliconValley.InformationSystem.Business.TeachingDepBusiness;
+    using SiliconValley.InformationSystem.Depository.CellPhoneSMS;
+    using SiliconValley.InformationSystem.Entity.Entity;
     using SiliconValley.InformationSystem.Entity.MyEntity;
     using SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data;
     using SiliconValley.InformationSystem.Entity.ViewEntity.TM_Data.MyViewEntity;
@@ -29,6 +32,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         // GET: /Educational/TeacherAddorBeonDuty/AddDataView
         TeacherAddorBeonDutyManager Tb_Entity = new TeacherAddorBeonDutyManager();
         ClassScheduleBusiness ClassSchedule_Entity = new ClassScheduleBusiness();
+        EmployeesInfoManage db_emp = new EmployeesInfoManage();
+        EvningSelfStudyManeger db_evning = new EvningSelfStudyManeger();
         //值班数据导出
 
         public ActionResult dutyDataToExcel(string dutyTime)
@@ -213,7 +218,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 List<EmployeesInfo> list_emp = new List<EmployeesInfo>();
                 EmployeesInfo employees = Tb_Entity.EmployeesInfo_Entity.FindEmpData(UserName.EmpNumber, true);
                 list_emp.Add(employees);
-                List<TeacherAddorBeonDutyView> list = Tb_Entity.DepData(list_emp).OrderBy(l => l.Anpaidate).ToList();
+                List<TeacherAddorBeonDutyView> list = Tb_Entity.DepData(list_emp).OrderByDescending(l => l.Anpaidate).ToList();
 
                 var jsondata = new { code = 0, Msg = "", count = list.Count, data = list.Skip((page - 1) * limit).Take(limit).ToList() };
                 return Json(jsondata, JsonRequestBehavior.AllowGet);
@@ -343,7 +348,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         public ActionResult HandAnpaiFunction()
         {
             AjaxResult a = new AjaxResult();
-            string[] evnings = Request.Form["evnings"].Split(',');
+            string[] evnings = Request.Form["evnings"].Split(',');  //晚自习时间段
             DateTime time = Convert.ToDateTime(Request.Form["mytime"]);
             List<TeacherAddorBeonDuty> list = new List<TeacherAddorBeonDuty>();
             foreach (string item in evnings)
@@ -372,6 +377,24 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             if (list.Count > 0)
             {
                 a = Tb_Entity.Add_data(list);
+
+                //给值班的老师发送信息
+                EmployeesInfo emp = db_emp.GetAll().Where(c => c.EmployeeId == Request.Form["Teacherid"]).FirstOrDefault();
+                string temp = string.Empty;
+
+                foreach (var item in evnings)
+                {
+                    if (!string.IsNullOrEmpty(item))
+                    {
+                        string sql = "select * from evningselfstudy where ID = " + item + " and IsDelete = 0";
+                        temp += db_evning.GetListBySql<EvningSelfStudy>(sql).FirstOrDefault().curd_name;
+                    }
+                        
+                }
+
+                string smgText = "值班通知: 亲爱的" + emp.EmpName + "老师,您于" + time + "," + temp + "值班";
+
+                PhoneMsgHelper.SendMsg(emp.Phone, smgText);
             }
             else
             {

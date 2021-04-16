@@ -344,7 +344,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
                 result.Success = false;
             }
             else {
-                if (oldstu.Length > 0)
+                if (oldstu !=null )
                 {
                     string sql = "select * from Accdationinformation where DormId = " + dorname + " and Year(getdate()) - Year(Enddate)=0";// and Month(getdate())-Month(enddate)=1
                     List<Accdationinformation> list = Accda_Entity.GetListBySql<Accdationinformation>(sql);
@@ -486,12 +486,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
 
                     if (Dormitory_Entity.UpdateImgUrl(id[i], newfilename) == true)
                     {
-                        result = new SuccessResult();
+                        result = new SuccessResult(); 
                         result.ErrorCode = 200;
 
                         var client = cloudstorage_Business.BosClient();
 
                         cloudstorage_Business.PutObject("xinxihua", "DormitoryDepositImage", newfilename, fien.InputStream);
+                        DormitoryDeposit deposit = Dormitory_Entity.GetEntity(id[i]);
+                        deposit.Image = newfilename;
+                        Dormitory_Entity.UpdateData(deposit);
+
                     }
                 }
 
@@ -576,7 +580,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
                     MantainMoney = Dormitory_Entity.GetMantainMoney(s.StudentID),
                     BaoxianguiMoney = Dormitory_Entity.BaoxianguiStu(s.StudentID),
                     SumMoney = Dormitory_Entity.GetStudentMoney(s.StudentID) - Dormitory_Entity.GetMantainMoney(s.StudentID) - Dormitory_Entity.BaoxianguiStu(s.StudentID)
-
+                    
                 };
                 stumoneylist.Add(data);
             });
@@ -721,42 +725,42 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
         /// 根据登陆的班主任，获取带班的所有学生,查询每个人的宿舍押金剩余费用
         /// </summary>
         /// <returns></returns>
-        //[HttpPost]
-        //public ActionResult CheckheadGetStu()
-        //{
-        //    Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
-        //    string headsql = "select * from Headmaster where informatiees_Id=" + UserName.EmpNumber + "";
-        //    Headmaster headmaster = HeadmasterBusiness.GetListBySql<Headmaster>(headsql).FirstOrDefault();
-        //    string headclasssql = "select * from HeadClass where LeaderID = " + headmaster.ID + "";
-        //    List<HeadClass> classes = HeadClassManeger.GetListBySql<HeadClass>(headclasssql);
-        //    List<ScheduleForTrainees> stulist = new List<ScheduleForTrainees>();
-        //    List<SelectListItem> newItem = new List<SelectListItem>();
-        //    for (int i = 0; i < classes.Count; i++)
-        //    {
-        //        stulist.AddRange(ScheduleManeger.GetList().Where(a => a.ID_ClassName == classes[i].ClassID));
-        //    }
-        //    int count = 0;
+        [HttpPost]
+        public ActionResult CheckheadGetStu()
+        {
+            Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
+            string headsql = "select * from Headmaster where informatiees_Id=" + UserName.EmpNumber + "";
+            Headmaster headmaster = HeadmasterBusiness.GetListBySql<Headmaster>(headsql).FirstOrDefault();
+            string headclasssql = "select * from HeadClass where LeaderID = " + headmaster.ID + " and IsDelete = 0 and EndingTime is null";
+            List<HeadClass> classes = HeadClassManeger.GetListBySql<HeadClass>(headclasssql);
+            List<ScheduleForTrainees> stulist = new List<ScheduleForTrainees>();
+            List<SelectListItem> newItem = new List<SelectListItem>();
+            for (int i = 0; i < classes.Count; i++)
+            {
+                stulist.AddRange(ScheduleManeger.GetList().Where(a => a.ID_ClassName == classes[i].ClassID));
+            }
+            int count = 0;
 
-        //    for (int i = 0; i < stulist.Count; i++)
-        //    {
-        //        if (Dormitory_Entity.GetStudentMoney(stulist[i].StudentID) - Dormitory_Entity.GetMantainMoney(stulist[i].StudentID) - Dormitory_Entity.BaoxianguiStu(stulist[i].StudentID) < 0)
-        //        {
-        //            count += 1;
-        //            SelectListItem item = new SelectListItem();
-        //            item.Text = stulist[i].ClassID;
-        //            item.Value = stu_Entity.GetEntity(stulist[i].StudentID).Name;
-        //            newItem.Add(item);
-        //        }
+            for (int i = 0; i < stulist.Count; i++)
+            {
+                if (Dormitory_Entity.GetStudentMoney(stulist[i].StudentID) - Dormitory_Entity.GetMantainMoney(stulist[i].StudentID) - Dormitory_Entity.BaoxianguiStu(stulist[i].StudentID) < 0)
+                {
+                    count += 1;
+                    SelectListItem item = new SelectListItem();
+                    item.Text = stulist[i].ClassID;
+                    item.Value = stu_Entity.GetEntity(stulist[i].StudentID).Name;
+                    newItem.Add(item);
+                }
 
-        //    }
-        //    var data = new
-        //    {
-        //        data = newItem,
-        //        count = count
-        //    };
-        //    return Json(data, JsonRequestBehavior.AllowGet);
+            }
+            var data = new
+            {
+                data = newItem,
+                count = count
+            };
+            return Json(data, JsonRequestBehavior.AllowGet);
 
-        //}
+        }
 
         public ActionResult AddSafeView()
         {

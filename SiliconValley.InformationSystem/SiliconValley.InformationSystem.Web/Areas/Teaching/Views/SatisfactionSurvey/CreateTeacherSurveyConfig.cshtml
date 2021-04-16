@@ -13,8 +13,7 @@
 </head>
 <body>
     <div>
-        <h3 style="text-align:center;">创建教员满意度调查单</h3>
-
+        <h2 align="center">生成满意度问卷</h2>
         <hr />
 
         <form class="layui-form">
@@ -25,7 +24,7 @@
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label">选择班级</label>
-                    <div class="layui-input-inline">
+                    <div class="layui-input-block">
                         <select id="classnumber" lay-filter="classnumber" name="classnumber">
 
                             <option value="0">请选择班级</option>
@@ -40,12 +39,34 @@
                         </select>
                     </div>
                 </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">选择课程</label>
-                    <div class="layui-input-inline">
-                        <select name="skill" id="skill" lay-verify="required" lay-search=""></select>
-                    </div>
+            </div>
+            <div class="layui-form-item">
+                @*<label class="layui-form-label">阶段</label>
+                <div class="layui-input-inline">
+                    <select name="Grand" lay-filter="major">
+                        <option value="0">请选择</option>
+                        @{
+                            foreach (var item in ViewBag.Grand as List<Grand>)
+                            {
+                                <option value="@item.Id">@item.GrandName</option>
+                            }
+                        }
+                    </select>
+                </div>*@
+                <label class="layui-form-label">课程</label>
+                <div class="layui-input-inline">
+                    <select lay-verify="required" name="course" id="course" lay-search="">
+                        <option value="0" selected>--请选择--</option>
+                        @{
+                            foreach (var item in ViewBag.Courselist as List<Curriculum>)
+                            {
+                                <option value="@item.CurriculumID">@item.CourseName</option>
+                            }
+                        }
+                    </select>
                 </div>
+            </div>
+            <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label">选择部门</label>
                     <div class="layui-input-inline">
@@ -61,24 +82,44 @@
                         </select>
                     </div>
                 </div>
+            </div>
+            <div class="layui-form-item">
                 <div class="layui-inline">
-                    <label class="layui-form-label">选择老师</label>
+                    <label class="layui-form-label">专业老师</label>
                     <div class="layui-input-inline">
-                        <select name="laoshi" id="laoshi" lay-verify="required" lay-search="">
-
-                            
-                        </select>
+                        <select name="laoshi" id="laoshi" lay-verify="required" lay-search=""></select>
                     </div>
                 </div>
             </div>
+            <div class="layui-form-item" id="LaoShi" style="display:none;">
+                <div class="layui-inline">
+                    <label class="layui-form-label">语文老师</label>
+                    <div class="layui-input-inline">
+                        <select name="ywlaoshi" id="ywlaoshi" lay-verify="required" lay-search=""></select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">数学老师</label>
+                        <div class="layui-input-inline">
+                            <select name="sxlaoshi" id="sxlaoshi" lay-verify="required" lay-search=""></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">英语老师</label>
+                        <div class="layui-input-inline">
+                            <select name="yylaoshi" id="yylaoshi" lay-verify="required" lay-search=""></select>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                <div style="width:100%;">
+                    <button style="width:100%" id="commit" type="button" class="layui-btn layui-btn-danger">生成</button>
+                </div>
 
-            <div style="width:100%;">
-                <button  style="width:100%" id="commit" type="button" class="layui-btn layui-btn-danger">
-                    生成
-                </button>
-            </div>
-
-        </form>
+</form>
     </div>
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/layui/layui.js"></script>
@@ -90,36 +131,21 @@
             var form = layui.form;
             var layer = layui.layer;
 
-            //级联子项目
-            //select 监听
-            form.on('select(classnumber)', function (data) {
-                var value = data.value;  //select选中的值
-                console.log("选中值" + value);
-                $.ajax({
-                    url: "/Teaching/SatisfactionSurvey/GetCorsueOnReconile",
-                    data: { classnumber: value },
-                    dataType: "json",
-                    success: function (resultData) {
+            form.on('select(classnumber)', function () {
+                var banji = $("#classnumber").val();
+                console.log(banji);
+                $.post("/Teaching/SatisfactionSurvey/HuoQulaoshi", { banjiid: banji }, function (data) {
+                    console.log(data.Data);
+                    if (data.Data == "YK" || data.Data == "yk") {
 
-                        console.log(resultData);
+                        $("#LaoShi").show();
 
-                        if (resultData.ErrorCode == 200) {
-                            //清空赋值
-                            $("#skill").empty();
-                          
-                            $("#skill").append(new Option("请选择课程", ""));
-                            $.each(resultData.Data, function (index, item) {
-                                //赋值
-                                
-                                $('#skill').append(new Option(item.CourseName, item.CurriculumID));
-                            });
-                        } else {
-                            $("#skill").append(new Option("暂无数据", ""));
-                        }
-                        layui.form.render("select");
                     }
-                });
-            })
+                    else {
+                        $("#LaoShi").hide();
+                    }
+                })
+            });      
             form.on('select(bumeng)', function (data) {
                 var value = data.value;  //select选中的值
                 console.log("选中值" + value);
@@ -134,15 +160,25 @@
                         if (resultData.ErrorCode == 200) {
                             //清空赋值
                             $("#laoshi").empty();
-
                             $("#laoshi").append(new Option("请选择老师", ""));
+                            $("#ywlaoshi").empty();
+                            $("#ywlaoshi").append(new Option("请选择语文老师", ""));
+                            $("#sxlaoshi").empty();
+                            $("#sxlaoshi").append(new Option("请选择数学老师", ""));
+                            $("#yylaoshi").empty();
+                            $("#yylaoshi").append(new Option("请选择英语老师", ""));
                             $.each(resultData.Data, function (index, item) {
                                 //赋值
-
                                 $('#laoshi').append(new Option(item.EmpName, item.EmployeeId));
+                                $('#ywlaoshi').append(new Option(item.EmpName, item.EmployeeId));
+                                $('#sxlaoshi').append(new Option(item.EmpName, item.EmployeeId));
+                                $('#yylaoshi').append(new Option(item.EmpName, item.EmployeeId));
                             });
                         } else {
                             $("#laoshi").append(new Option("暂无数据", ""));
+                            $("#ywlaoshi").append(new Option("暂无数据", ""));
+                            $("#sxlaoshi").append(new Option("暂无数据", ""));
+                            $("#yylaoshi").append(new Option("暂无数据", ""));
                         }
                         layui.form.render("select");
                     }
@@ -155,12 +191,18 @@
 
                 //获取班级
                 var classnumber = $("#classnumber").val();
-
                 //获取课程
-                var skill = $("#skill").val();
+                var skill = $("#course").val();
 
                 //获取教学老师
                 var laoshi = $("#laoshi").val();
+
+                //获取语文老师
+                var yuwen = $("#ywlaoshi").val();
+                //获取数学老师
+                var shuxue = $("#sxlaoshi").val();
+                //获取英语老师
+                var yingyu = $("#yylaoshi").val();
 
                 if (classnumber == 0 || skill == "" || laoshi == "") {
                     layer.msg("请选择");
@@ -172,7 +214,7 @@
 
                     //发送请求
 
-                    $.post('/Teaching/SatisfactionSurvey/CreateTeacherSurveyConfig', { classnumber: classnumber, Curriculum: skill,laoshi:laoshi }, function (data) {
+                    $.post('/Teaching/SatisfactionSurvey/CreateTeacherSurveyConfig', { classnumber: classnumber, Curriculum: skill, laoshi: laoshi, yuwen: yuwen, shuxue: shuxue, yingyu: yingyu }, function (data) {
 
                         if (data.ErrorCode == 200) {
 

@@ -20,40 +20,40 @@
                 var layer = layui.layer;
                 
 
-                //$.ajax({
-                //    url: "/Base_SysManage/Base_SysMenu/CheckDormState",
-                //    type:"POST",
-                //    success: function (res) {
-                //        if (res) {
-                            //$.ajax({
-                            //    url: "/DormitoryMaintenance/DormitoryDeposit/CheckheadGetStu",
-                            //    type: 'post',
-                            //    success: function (data) {
-                            //        console.log(data);
-                            //        //$.each(data.data, function (index, ele) {
-                            //        //    $("#divdata").append("<p>班级：" + ele.Text + "    姓名：" + ele.Value + "</p>");
-                            //        //});
-                            //        if (data.count > 0) {
-                            //            layer.open({
-                            //                type: 1,
-                            //                content: $('#divdata'), //这里content是一个普通的String
-                            //                offset: 'rb',
-                            //                area: ['400px', '300px'],
-                            //                title: '押金欠费学生',
-                            //                btn: ['前往查看']
-                            //                , yes: function (index, layero) {
-                            //                    console.log(1);
-                            //                    window.location.href = "/DormitoryMaintenance/DormitoryDeposit/ClassStudentMoneyView";
-                            //                }
-                            //            });
-                            //        }
-                            //    }
-                            //});
+                $.ajax({
+                    url: "/Base_SysManage/Base_SysMenu/CheckDormState",
+                    type:"POST",
+                    success: function (res) {
+                        if (res) {
+                            $.ajax({
+                                url: "/DormitoryMaintenance/DormitoryDeposit/CheckheadGetStu",
+                                type: 'post',
+                                success: function (data) {
+                                    console.log(data);
+                                    $.each(data.data, function (index, ele) {
+                                        $("#divdata").append("<p>班级：" + ele.Text + "    姓名：" + ele.Value + "</p>");
+                                    });
+                                    if (data.count > 0) {
+                                        layer.open({
+                                            type: 1,
+                                            content: $('#divdata'), //这里content是一个普通的String
+                                            offset: 'rb',
+                                            area: ['400px', '300px'],
+                                            title: '押金欠费学生',
+                                            btn: ['前往查看']
+                                            , yes: function (index, layero) {
+                                                console.log(1);
+                                                window.location.href = "/DormitoryMaintenance/DormitoryDeposit/ClassStudentMoneyView";
+                                            }
+                                        });
+                                    }
+                                }
+                            });
                             
-                        //}
+                        }
                         
-                    //}
-                //});
+                    }
+                });
             });
         }
         

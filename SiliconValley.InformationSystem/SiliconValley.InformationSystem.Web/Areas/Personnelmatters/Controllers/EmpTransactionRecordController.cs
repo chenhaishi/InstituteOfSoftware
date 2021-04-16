@@ -144,7 +144,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 e.BeforePositiveDate,
                 e.AfterPositiveDate,
                 e.PreviousInternshipSalary,
-                e.PresentInternshipSalary
+                e.PresentInternshipSalary,
+                WhetherToBecomeARegularWorkers=e.WhetherToBecomeARegularWorkers==true?"是":"否"
                 #endregion
             };
 
@@ -353,8 +354,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             EmpTransactionManage etrmanage = new EmpTransactionManage();
             MoveTypeManage mtmanage = new MoveTypeManage();
             EmployeesInfoManage empmanage = new EmployeesInfoManage();
+            var PositionId = 0;
             try
             {
+                PositionId = empmanage.GetEntity(etr.EmployeeId).PositionId;//这是未改变部门岗位之前的员工对象
                 etr.IsDel = false;
                 etrmanage.Insert(etr);
                 ajaxresult = etrmanage.Success();
@@ -367,6 +370,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             if (ajaxresult.Success) {
                 var mtname = mtmanage.GetList().Where(s => s.IsDel == false && s.ID == etr.TransactionType).FirstOrDefault().MoveTypeName;
                 var emp = empmanage.GetEntity(etr.EmployeeId);//这是未改变部门岗位之前的员工对象
+
                 if (mtname.Equals("离职")) {
                     #region 员工表（及相关子表）修改（离职）
                     ajaxresult = empmanage.DelEmp(emp);
@@ -400,6 +404,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 {
                     if (ajaxresult.Success)
                     {
+                        //if (emp.WhetherToBecomeARegularWorkers=="")
+                        //{
+
+                        //}
                         emp.PositionId = (int)etr.PresentPosition;
                         emp.PositiveDate = etr.AfterPositiveDate;
                         if (string.IsNullOrEmpty(etr.AfterPositiveDate.ToString())) {
@@ -417,6 +425,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                             if (ajaxresult.Success) {
                                 var emp2 = empmanage.GetInfoByEmpID(etr.EmployeeId);//这是部门岗位改变之后的员工对象
                                 if (etr.PreviousDept!=etr.PresentDept) {
+                                    emp.PositionId = PositionId;
                                     ajaxresult.Success = empmanage.DelEmpToCorrespondingDept(emp);
                                     if (ajaxresult.Success) {
                                         ajaxresult.Success = empmanage.AddEmpToCorrespondingDept(emp2).Success;

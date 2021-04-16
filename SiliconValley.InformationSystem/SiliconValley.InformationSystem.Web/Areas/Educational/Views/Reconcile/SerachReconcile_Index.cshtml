@@ -45,6 +45,23 @@
     </style>
 }
 
+    <form class="layui-form" action="" hidden id="check_recon" style="margin-top:30px;margin-left:50px;">
+        <div class="layui-form-item">
+            <label class="layui-form-label">日期</label>
+            <div class="layui-input-block">
+                <input type="text" class="layui-input" style="width:300px" name="check_date" id="test3" placeholder="yyyy-MM">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"></label>
+            <div class="layui-input-block" style="margin-left:200px">
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+            </div>
+        </div>
+
+    </form>
+
+
 <div class="layui-collapse" lay-filter="test">
     <div class="layui-colla-item">
         <h2 class="layui-colla-title">查询班级排课数据</h2>
@@ -152,6 +169,7 @@
             <button class="layui-btn layui-btn-sm" lay-event="Class_getUpdateData2"><i class="layui-icon">&#xe642;</i>修改班级上专业课老师</button>
             <button class="layui-btn layui-btn-sm" lay-event="More_Delets"><i class="layui-icon">&#xe642;</i>批量删除</button>
             <button class="layui-btn layui-btn-sm" lay-event="outExcel_S3S4"><i class="layui-icon">&#xe642;</i>导出S3S4班级任课信息</button>
+            <button class="layui-btn layui-btn-sm" lay-event="Reconcil_Month"><i class="layui-icon">&#xe642;</i>查询排课冲突</button>
         </div>
     </script>
 </div>
@@ -228,6 +246,12 @@
             , theme: 'molv'
         });
 
+        //年月选择器
+        laydate.render({
+            elem: '#test3'
+            , type: 'month'
+        });
+
         //table初始化
         table.render({
             elem: '#Recon_table'
@@ -294,6 +318,49 @@
                     , skin: 'demo-class'
                 });
             }
+        });
+
+        //检查排课数据的提交
+        form.on('submit(demo1)', function (data) {
+            $.ajax({
+                url: '/Educational/Reconcile/Reconcil_Month',
+                type: 'post',
+                data: data.field,
+                success: function (res) {
+                    var str = res.title + `\n`;
+                    for (let i = -1; i < res.Data.length; i++) {
+                        if (i == -1) {
+                            str += `任课老师\t,日期\t`;
+                        } else {
+
+                            str += '' + res.Data[i].EmpName + '\t,';
+
+                            for (var k = 0; k < res.Data[i].date.length; k++) {
+                                if (k == 0) {
+                                    str += res.Data[i].date[k] + '\n';
+                                } else {
+                                    str += '\t,' + res.Data[i].date[k] + '\n';
+                                }
+
+
+                            }
+                        }
+
+                        str += '\n';
+                    }
+                    //encodeURIComponent解决中文乱码
+                    let uri = 'data:text/csv;charset=utf-8,\ufeff' + encodeURIComponent(str);
+                    //通过创建a标签实现
+                    var link = document.createElement("a");
+                    link.href = uri;
+                    //对下载的文件命名
+                    link.download = "排课冲突数据.xls";
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+            });
+            return false;
         });
 
         //查询1
@@ -466,6 +533,13 @@
                         , shade: 0.8
                         , anim: 4
                         , skin: 'demo-class'
+                    });
+                    break;
+                case 'Reconcil_Month':
+                    layer.open({
+                        type: 1,
+                        content: $('#check_recon'),
+                        area: ['600px', '290px']
                     });
                     break;
 

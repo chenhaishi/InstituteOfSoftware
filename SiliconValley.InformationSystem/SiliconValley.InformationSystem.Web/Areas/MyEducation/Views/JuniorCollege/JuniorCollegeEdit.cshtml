@@ -1,0 +1,106 @@
+﻿@{
+    Layout = null;
+}
+@using SiliconValley.InformationSystem.Entity.Entity
+@model SiliconValley.InformationSystem.Entity.Entity.JuniorCollege
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>JuniorCollegeEdit</title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/layui/layui.js"></script>
+</head>
+<body>
+
+
+
+    <form class="layui-form" id="addGoodsForm" action="" lay-filter="example">
+        <div class="layui-container" style="margin-top:40px;margin-left:80px;">
+            @{
+                JuniorCollege junior = ViewBag.data as JuniorCollege;
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12" style="height:50px;">
+                    @*<label class="layui-form-label lables">学号</label>
+                <label class="layui-form-label">@junior.StudentNumber</label>*@
+                    <input type="text" style="display:none" value="@junior.StudentNumber" name="StudentNumber" />
+                </div>
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12" style="height:50px;">
+                    <label class="layui-form-label lables">姓名</label>
+                    <label class="layui-form-label">@junior.Name</label>
+                </div>
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12" style="height:50px;">
+                    <label class="layui-form-label lables">性别</label>
+                    @{
+                        if (junior.Sex == true)
+                        {
+                            <label class="layui-form-label">男</label>
+                        }
+                        else
+                        {
+                            <label class="layui-form-label">女</label>
+                        }
+                    }
+
+                </div>
+                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12" style="height:50px;">
+                    <label class="layui-form-label lables">身份证号码</label>
+                    <label class="layui-form-label">@junior.identitydocument</label>
+                </div>
+            }
+
+            <div class="layui-col-xs12 layui-col-sm12 layui-col-md12" style="height:50px;">
+                <label class="layui-form-label">成考学号</label>
+                <div class="layui-input-inline">
+                    @Html.TextBoxFor(a => a.ChengkaoStudentNumber, new Dictionary<string, object>() { { "class", "layui-input " } })
+
+                </div>
+            </div>
+
+            <div class="layui-col-xs12 layui-col-sm12 layui-col-md12" style="height:50px;">
+                <label class="layui-form-label">学历层次</label>
+                <div class="layui-input-inline">
+                    @Html.TextBoxFor(a => a.EducationLevel, new Dictionary<string, object>() { { "class", "layui-input " } })
+                </div>
+            </div>
+            <div class="layui-col-xs12 layui-col-sm12 layui-col-md12" style="height:50px;">
+                <label class="layui-form-label">报考专业</label>
+                <div class="layui-input-inline">
+                    @Html.DropDownListFor(a => a.MajorID, ViewBag.Major as IEnumerable<SelectListItem>, "请选择", new Dictionary<string, object>() { { "lay-verify", "required" }, { "lay-filter", "userClass" } })
+
+                </div>
+            </div>
+            <div class="layui-col-xs12 layui-col-sm12 layui-col-md12" style="height:50px;">
+                <label class="layui-form-label lables">报考学校</label>
+                <div class="layui-input-inline">
+                    @Html.DropDownListFor(a => a.SchoolId, ViewBag.Registeredbatch as IEnumerable<SelectListItem>, "请选择", new Dictionary<string, object>() { { "lay-verify", "required" }, { "lay-filter", "userClass" } })
+                </div>
+            </div>
+
+
+            <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+                <div class="layui-input-block" style="margin-left:114px;margin-top:10px;">
+                    <button class="layui-btn" lay-submit="" type="button" lay-filter="demo1">确认</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</body>
+</html>
+<script src="~/Areas/Teachingquality/js/AjaxAddupdate.js"></script>
+<script>
+    layui.use(['form', 'layedit', 'laydate', 'layer'], function () {
+
+        var layer = layui.layer;
+        var form = layui.form;
+        //监听提交
+        form.on('submit(demo1)', function (data) {
+            var db = data.field;
+            console.log(db);
+            ajaxUniom("/MyEducation/JuniorCollege/JuniorCollegeEdit", db);
+        })
+    });
+</script>

@@ -105,6 +105,7 @@
     <Compile Include="Entity\BookInformation.cs" />
     <Compile Include="Entity\Delte_StudentPutinfo.cs" />
     <Compile Include="Entity\DormitoryDeposit.cs" />
+    <Compile Include="Entity\JuniorCollege.cs" />
     <Compile Include="Entity\MyBreak.cs" />
     <Compile Include="Entity\CancelLeaveApply.cs" />
     <Compile Include="Entity\Cancelreceipt.cs" />
@@ -128,6 +129,7 @@
     <Compile Include="Entity\ClassStudyGroup.cs" />
     <Compile Include="Entity\ClassTeacher.cs" />
     <Compile Include="Entity\ClassTeacherKeep.cs" />
+    <Compile Include="Entity\NotRegisteredForJuniorCollege.cs" />
     <Compile Include="Entity\Preferential.cs" />
     <Compile Include="Entity\ReqClient.cs" />
     <Compile Include="Entity\Consult.cs" />
@@ -350,6 +352,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Registerforexamination.cs" />
     <Compile Include="SqlDate.cs" />
+    <Compile Include="ViewEntity\checkRecon_View.cs" />
     <Compile Include="ViewEntity\DormitoryInputError.cs" />
     <Compile Include="ViewEntity\AccdationView.cs" />
     <Compile Include="ViewEntity\AchievementView.cs" />
@@ -433,6 +436,7 @@
     <Compile Include="ViewEntity\MeritsCheckView.cs" />
     <Compile Include="ViewEntity\MessagenotificationView.cs" />
     <Compile Include="ViewEntity\NetClientRecordView.cs" />
+    <Compile Include="ViewEntity\JuniorCollegeView.cs" />
     <Compile Include="ViewEntity\OvertimeRecordErrorDataView.cs" />
     <Compile Include="ViewEntity\OvertimeRecordView.cs" />
     <Compile Include="ViewEntity\PaySlipExcelError.cs" />

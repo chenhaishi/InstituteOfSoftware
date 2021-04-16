@@ -183,7 +183,7 @@
                             var str = res.title + `\n`;
                             str += `姓名\t,性别\t,学校\t,区域\t,信息来源\t,咨询师\t,备案人\t,学历\t,关联人\t,学生状态\t,上门日期\t,联系电话\t,微信\t,QQ\t,备案时间`;
                             if (res.count > 1) {
-                                for (var k = 1; k <= res.count+1; k++) {
+                                for (var k = 1; k <= res.count; k++) {
                                     data.page = k;
                                     $.ajax({
                                         url: '/Market/StudentDataKeep/ExportFunction',

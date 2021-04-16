@@ -107,14 +107,13 @@
             <!-- 头部区域（可配合layui已有的水平导航） -->
             <ul class="layui-nav layui-layout-left ">
                 @*<li class="layui-nav-item"><a href="/Teaching/SatisfactionSurvey/StudentSurveyIndex">满意度</a></li>
-                    <li class="layui-nav-item"><a href="/ExaminationSystem/StudentExamSys/StuExamIndex">考试</a></li>*@
+                <li class="layui-nav-item"><a href="/ExaminationSystem/StudentExamSys/StuExamIndex">考试</a></li>*@
             </ul>
             <ul class="layui-nav layui-layout-right">
                 <li class="layui-nav-item">
                     <a href="javascript:;">
                         <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
-                        <label>@ViewBag.student.Name<input id="xuehao" value="@ViewBag.student.StudentNumber" style="display:none"/>
-                    </a>
+                        <label>@ViewBag.student.Name</label><input id="xuehao" value="@ViewBag.student.StudentNumber" style="display:none" /></a>
                     <dl class="layui-nav-child">
                         <dd><a id="ziliao">基本资料</a></dd>
                     </dl>
@@ -201,34 +200,23 @@
                                                             <use xlink:href="#icon-kaoshi"></use>
                                                         </svg>
                                                     </div>
-                                                    <div style=" font-size: 16px;line-height: 30px;">教员评价</div>
+                                                    <div style=" font-size: 16px;line-height: 30px;">满意度问卷</div>
                                                 </div>
                                             </a>
                                         </div>
-                                        <div style="width: 33.33333%;float: left;box-sizing: border-box;">
-                                            <a href="#" id="Headmaster">
-                                                <div style="text-align: center;margin: 10px;padding: 10px;">
-                                                    <div style="font-size: 16px;line-height: 30px;">
-                                                        <svg class="icon" aria-hidden="true" style="font-size:34px">
-                                                            <use xlink:href="#icon-kaoshi4"></use>
-                                                        </svg>
-                                                    </div>
-                                                    <div style=" font-size: 16px;line-height: 30px;">班主任评价</div>
-                                                </div>
-                                            </a>
-                                        </div>
-                                        <div style="width: 33.33333%;float: left;box-sizing: border-box;">
-                                            <a href="#" id="examScoreSearch">
-                                                <div style="text-align: center;margin: 10px;padding: 10px;">
-                                                    <div style="font-size: 16px;line-height: 30px;">
-                                                        <svg class="icon" aria-hidden="true" style="font-size:34px">
-                                                            <use xlink:href="#icon-kaoshi5"></use>
-                                                        </svg>
-                                                    </div>
-                                                    <div style=" font-size: 16px;line-height: 30px;">成绩查询</div>
-                                                </div>
-                                            </a>
-                                        </div>
+                                        @*<div style="width: 33.33333%;float: left;box-sizing: border-box;">
+            <a href="#" id="Headmaster">
+                <div style="text-align: center;margin: 10px;padding: 10px;">
+                    <div style="font-size: 16px;line-height: 30px;">
+                        <svg class="icon" aria-hidden="true" style="font-size:34px">
+                            <use xlink:href="#icon-kaoshi4"></use>
+                        </svg>
+                    </div>
+                    <div style=" font-size: 16px;line-height: 30px;">班主任评价</div>
+                </div>
+            </a>
+        </div>*@
+
                                         <div style="width: 33.33333%;float: left;box-sizing: border-box;">
                                             <a href="#" id="Mockxamination">
                                                 <div style="text-align: center;margin: 10px;padding: 10px;">
@@ -254,17 +242,29 @@
                                             </a>
                                         </div>
                                         <div style="width: 33.33333%;float: left;box-sizing: border-box;">
-                                            <a href="#" id="KaoShi">
+                                            <a href="#" id="examScoreSearch">
                                                 <div style="text-align: center;margin: 10px;padding: 10px;">
                                                     <div style="font-size: 16px;line-height: 30px;">
                                                         <svg class="icon" aria-hidden="true" style="font-size:34px">
-                                                            <use xlink:href="#icon-kaoshi3"></use>
+                                                            <use xlink:href="#icon-kaoshi5"></use>
                                                         </svg>
                                                     </div>
-                                                    <div style=" font-size: 16px;line-height: 30px;">进入考试</div>
+                                                    <div style=" font-size: 16px;line-height: 30px;">成绩查询</div>
                                                 </div>
                                             </a>
                                         </div>
+                                        @*<div style="width: 33.33333%;float: left;box-sizing: border-box;">
+            <a href="#" id="KaoShi">
+                <div style="text-align: center;margin: 10px;padding: 10px;">
+                    <div style="font-size: 16px;line-height: 30px;">
+                        <svg class="icon" aria-hidden="true" style="font-size:34px">
+                            <use xlink:href="#icon-kaoshi3"></use>
+                        </svg>
+                    </div>
+                    <div style=" font-size: 16px;line-height: 30px;">进入考试</div>
+                </div>
+            </a>
+        </div>*@
                                     </div>
                                 </div>
 
@@ -298,7 +298,7 @@
                                 </div>
                                 <div>
                                     <div style="border-bottom: 1px solid #dcdcdc;">
-                                        <div style="width: 73%;    display: inline-block;  padding-left: 10px;  line-height: 50px;   overflow: hidden;  text-overflow: ellipsis; white-space: nowrap;">⑤发现系统有问题请及时跟班主任或技术老师老师进行汇报</div>
+                                        <div style="width: 73%;    display: inline-block;  padding-left: 10px;  line-height: 50px;   overflow: hidden;  text-overflow: ellipsis; white-space: nowrap;">⑤认真作答,仔细审题,不准作弊</div>
                                     </div>
                                 </div>
                             </div>
@@ -309,73 +309,70 @@
             </div>
 
             <div style="clear: both;"></div>
-            <div style="margin-top: 10px;border: 1px solid #dcdcdc; ">
-                <div style=" font-size: 20px;padding: 10px 10px 10px 15px;background-color: #f3f7fd;border-bottom: 1px solid #808080;">最近考试</div>
-
-                <div class=" col-md-12 col-sm-12 " style="  background-color: #ffffff;box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.05);border-radius: 10px;margin: 22px 0 0 0;">
+            <div style="margin-top: -10px;border: 1px solid #dcdcdc;">
+                <div style="font-size: 20px;padding: 10px 10px 10px 15px;background-color: #f3f7fd;border-bottom: 1px solid #808080;">最近考试(显示数据接口异常就是暂无考试)</div>
+                <div class=" col-md-12 col-sm-12 " style="background-color: #ffffff;box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.05);border-radius: 10px;margin: 22px 0 0 0;">
                     <div class="row" style="">
                         <div style="font-size: 20px;font-weight: normal;color: #333333;font-weight: bold;margin-top: 20px;margin-left: 15px;">
                             <table class="layui-hide" id="test"></table>
                         </div>
                         <div style="float: right !important;margin: 23px 14px 0 17px !important;">
                         </div>
-
                     </div>
-                    <table class="table table-hover border-0" id="demo" lay-filter="test" style="background-color: #ffffff;"></table>
+                    
+                    <table class="table table-hover border-0" style="margin-top: -60px;" id="demo" lay-filter="test" style="background-color: #ffffff;"></table>
 
                 </div>
             </div>
         </div>
+        <div style="display:none;text-align:center;" id="test2" ></div>
         @*<div class="layui-footer">
 
-                <footer>
-                    <p style="color:#000000;">版权所属公司：<a href="https://xin.baidu.com/company_detail_20452183185658?rq=ef&amp;pd=ee&amp;from=ps" title="湖南硅谷云教育科技有限公司">湖南硅谷云教育科技有限公司</a>  <a href="http://www.beian.miit.gov.cn/" target="_blank" title="湘ICP备17003047号-3">湘ICP备17003047号-3</a></p>
-                </footer>
-            </div>*@
+            <footer>
+                <p style="color:#000000;">版权所属公司：<a href="https://xin.baidu.com/company_detail_20452183185658?rq=ef&amp;pd=ee&amp;from=ps" title="湖南硅谷云教育科技有限公司">湖南硅谷云教育科技有限公司</a>  <a href="http://www.beian.miit.gov.cn/" target="_blank" title="湘ICP备17003047号-3">湘ICP备17003047号-3</a></p>
+            </footer>
+        </div>*@
 
     </div>
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/layui/layui.js"></script>
     <script type="text/html" id="barDemo">
-        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="">开始考试</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="kaishi">开始考试</a>
     </script>
     <script>
 
         var Countdown;
         //JavaScript代码区域
-        layui.use(['form', 'util', 'layer', 'element','table'], function () {
-            var util = layui.util;
+        layui.use(['form', 'util','layer','table'], function () {
             var laydate = layui.laydate;
-            var element = layui.element;
             var layer = layui.layer;
             var table = layui.table;
+            var util = layui.util;
                 table.render({
-                    elem: '#test'
-                    , url: '/demo/table/user/' /*/ ExaminationSystem / StudentExamSys / qiukaoshi*/
+                    elem: '#demo'
+                    //,text: {
+                    //    none: '暂无相关数据' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
+                    //}
+                    , url: '/ExaminationSystem/StudentExamSys/qiukaoshi' /*/ ExaminationSystem / StudentExamSys / qiukaoshi*/
                     , cols: [[
-                        , { field: 'Title', width: "15%", title: '考场名' }
+                        , { field: 'Title', title: '考场名' }
                         , {
-                            field: 'BeginDate', width: "15%", title: '考试时间', templet: function (res) {
+                            field: 'BeginDate', title: '考试时间', templet: function (res) {
 
                                 var utcstr = res.BeginDate.substr(res.BeginDate.indexOf('(') + 1, 13);
-
                                 var date = new Date(parseInt(utcstr));
-
                                 var year = date.getFullYear();
                                 var month = date.getMonth() + 1;
                                 var day = date.getDate();
-
-                                return year + '年' + month + '月' + day + '日'
-
-
-
+                                var Hours = date.getHours();
+                                var Minutes = date.getMinutes();
+                                var Seconds = date.getSeconds();
+                                return year + '年' + month + '月' + day + '日' + Hours + ":" + Minutes
                             }
                         }
-                        , { field: 'TimeLimit', width: "15%", title: '时限' }
+                        , { field: 'TimeLimit',  title: '时限' }
                         , {
-                            field: 'IsEnd', width: "15%", title: '状态', templet: function (data) {
-
-
+                            field: 'IsEnd', title: '状态', templet: function (data) {
 
                                 if (data.IsEnd == true) {
                                     return "<a class='layui-btn layui-btn-xs'>结束</a>";
@@ -386,80 +383,84 @@
 
                             }
                         }
-                        , { field: 'right', width: "12%", title: '操作', toolbar: '#barDemo' }
+                        , { field: 'right', title: '操作', toolbar: '#barDemo' }
                     ]]
 
-                });
-            
-
-            //班主任点击事件
-            $("#Headmaster").click(function () {
-                $.post("/Teaching/SatisfactionSurvey/IsHaveSatisfaction", { type: "jiaozhi" }, function (data) {
-
-
-                    if (data.ErrorCode == 200) {
-
-                        if (data.Data.length > 0) {
-
-
-                            layer.open({
-
-                                type: 2,
-                                area: ['1000px', '900px'],
-                                content: "/Teaching/SatisfactionSurvey/HeadMasterSatisfactionQuestionnaire?surveyId=" + data.Data[0].ID
-
-
-                            });
-                        }
-
-                        else {
-
-                            layer.msg('当前没有课填写的满意度调查单', { icon: 2 });
-
-                        }
-                    }
-                    else {
-                        layer.msg('数据加载异常。。', { icon: 2 });
-                    }
-
-                });
             });
-            //教员点击事件
-            $("#Teacher").click(function () {
+             //监听行工具事件
+            table.on('tool(test)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+                var data = obj.data; //获得当前行数据
+                var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+                var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
 
-                //首先判断
-
-                $.post("/Teaching/SatisfactionSurvey/IsHaveSatisfaction", { type: "teacher" }, function (data) {
-
-
-                    if (data.ErrorCode == 200) {
-
-                        if (data.Data.length > 0) {
-                            layer.open({
-                                title: "调查问卷",
-                                type: 2,
-                                area: ['1000px', '900px'],
-                                content: "/Teaching/SatisfactionSurvey/TeacherSatisfactionQuestionnaire?surveyId=" + data.Data[0].ID
-
-
+                if (layEvent === 'kaishi') { //查看
+                    //初始化
+                    $.post('/ExaminationSystem/StudentExamSys/GetStuSooExam', {}, function (result) {
+                        if (result.ErrorCode == 200) {
+                            var str;
+                            var utcstr = result.Data.BeginDate.substr(result.Data.BeginDate.indexOf('(') + 1, 13);
+                            var date = new Date(parseInt(utcstr));
+                            var serverTime = new Date().getTime();
+                            var a = new Date()
+                            a = a.getFullYear() + "-" + (a.getMonth() + 1) + "-" + a.getDate() + " " + a.getHours() + ":" + a.getMinutes();
+                            util.countdown(date, serverTime, function (date, serverTime, timer) {
+                                str = date[0] + '天' + date[1] + '时' + date[2] + '分' + date[3] + '秒';
+                                layui.$('#test2').html(str);
+                                Countdown = date;
                             });
+                            if (str == "0天0时0分0秒") {
+                                layer.confirm("是否进入考试", function (index) {
+                                    $.post("/ExaminationSystem/StudentExamSys/ContinueThExam", { examid: data.ID }, function (result) {
+                                        if (result.ErrorCode == 400) {
+                                            window.location.href = '/ExaminationSystem/StudentExamSys/MachineTest?examid=' + data.ID;
+                                        } else {
+                                            window.location.href = '/ExaminationSystem/StudentExamSys/AnswerSheet?examid=' + data.ID;
+                                        }
+                                    })
+                                });
+                            } else {
+
+                                layer.msg("未到考试时间,禁止进入");
+                            }
+                        } else if (result.ErrorCode == 600){
+
+                            layer.msg("您已做达完毕,禁止进入");
                         }
 
-                        else {
-
-                            layer.msg('当前没有课填写的满意度调查单', { icon: 2 });
-
-                        }
-                    }
-                    else {
-                        layer.msg('数据加载异常。。', { icon: 2 });
-                    }
-
+                    });
+                } 
+            });
+            
+            //满意度问卷点击事件
+            $("#Teacher").click(function () {
+                layer.open({
+                    title: "调查问卷",
+                    type: 2,
+                    area: ['1050px', '100%'],
+                    content: "/Teaching/SatisfactionSurvey/SatisfactionHomePage"
                 });
+                //$.post("/Teaching/SatisfactionSurvey/IsHaveSatisfaction", { type: "teacher" }, function (data) {
+                //    if (data.ErrorCode == 200) {
+                //        if (data.Data.length > 0) {
+                //            layer.open({
+                //                title: "调查问卷",
+                //                type: 2,
+                //                area: ['950px', '100%'],
+                //                content: "/Teaching/SatisfactionSurvey/TeacherSatisfactionQuestionnaire?surveyId=" + data.Data[0].ID
+                //            });
+                //        }
 
+                //        else {
 
+                //            layer.msg('当前没有课填写的满意度调查单', { icon: 2 });
 
+                //        }
+                //    }
+                //    else {
+                //        layer.msg('数据加载异常。。', { icon: 2 });
+                //    }
 
+                //});
             });
             //成绩查询按钮
             $("#examScoreSearch").click(function () {
@@ -498,11 +499,6 @@
 
                     }
                 })
-            })
-            //点击考试 进入考试页
-            $("#KaoShi").click(function () {
-                window.location.href = "/ExaminationSystem/StudentExamSys/StuExamIndex"
-
             })
             $("#ziliao").click(function () {
                 var xuehao = $("#xuehao").val();

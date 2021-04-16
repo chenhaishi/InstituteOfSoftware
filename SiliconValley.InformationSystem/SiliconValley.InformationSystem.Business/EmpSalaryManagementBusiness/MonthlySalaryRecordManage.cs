@@ -590,15 +590,15 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
         /// <param name="ToMail">收件人地址</param>
         /// <param name="AuthorizationCode">发件人授权码</param>
         /// <returns></returns>
-        public AjaxResult WagesDataToEmail(string FromMail, string ToMail,string AuthorizationCode,MonthlySalaryRecord m)
+        public AjaxResult WagesDataToEmail(string FromMail, string ToMail,string AuthorizationCode,MySalaryObjView m,string time)
         {
-
+           string  YearAndMonth =Convert.ToDateTime(time).ToString();
             EmployeesInfoManage manage = new EmployeesInfoManage();
             MeritsCheckManage merits = new MeritsCheckManage();
             AttendanceInfoManage attendance = new AttendanceInfoManage();
             SchoolAttendanceManagementBusiness.OvertimeRecordManage overtime = new SchoolAttendanceManagementBusiness.OvertimeRecordManage();
-            var att = GetAttendanceInfoByEmpid(m.EmployeeId,Convert.ToDateTime(m.YearAndMonth));
-
+            //var att = GetAttendanceInfoByEmpid(m.EmployeeId,Convert.ToDateTime(YearAndMonth));
+            var att = attendance.GetListBySql<AttendanceInfo>("select *from AttendanceInfo where EmployeeId='"+m.EmployeeId+"' and datepart(YEAR, YearAndMonth)=datepart(YEAR, '"+ YearAndMonth + "') and datepart(MONTH, YearAndMonth)=datepart(MONTH, '"+ YearAndMonth + "')").FirstOrDefault();
             AjaxResult result = new AjaxResult();
             try
             {
@@ -617,7 +617,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 mail.IsBodyHtml = true;
                 
                 //邮件标题。
-                mail.Subject = "您好！这是您"+Convert.ToDateTime(m.YearAndMonth).ToString("yyyy年MM月") + "的工资详情";
+                mail.Subject = "您好！这是您"+Convert.ToDateTime(YearAndMonth).ToString("yyyy年MM月") + "的工资详情";
                 //邮件内容。
 
                 #region 邮件正文
@@ -647,42 +647,44 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 <th rowspan='2'>应发工资2</th>
                 <th rowspan='2'>个人社保</th>
                 <th rowspan='2'>个税</th>
-                <th rowspan='2'>实发工资(工资卡)</th>
-                <th rowspan='2'>实发工资(现金)</th>
+                
+                <th rowspan='2'>合计</th>
             </tr>
             <tr>
                 <th>迟到/早退扣款</th>
                 <th>缺卡扣款(元)</th>
                 <th>旷工扣款(元)</th>
             </tr>";
-                var SalaryOne = GetSalaryone(m.BaseSalary, m.PositionSalary, m.MonthPerformancePay, m.NetbookSubsidy, m.SocialSecuritySubsidy, att.DeserveToRegularDays, att.ToRegularDays, att.LeaveDays, att.AbsenteeismDays,att.NonPersonalLeaveNum);
-                var SalaryTwo = GetSalarytwo(SalaryOne, m.OvertimeCharges, m.Bonus, m.LeaveDeductions, m.TardyAndLeaveWithhold, m.AbsentNumWithhold, m.OtherDeductions);
+                //<th rowspan='2'>实发工资(工资卡)</th>
+                //<th rowspan='2'>实发工资(现金)</th>
+                //var SalaryOne = GetSalaryone(m.baseSalary, m.PositionSalary, m.MonthPerformancePay, m.NetbookSubsidy, m.SocialSecuritySubsidy, att.DeserveToRegularDays, att.ToRegularDays, att.LeaveDays, att.AbsenteeismDays,att.NonPersonalLeaveNum);
+                //var SalaryTwo = GetSalarytwo(SalaryOne, m.OvertimeCharges, m.Bonus, m.LeaveDeductions, m.TardyAndLeaveWithhold, m.AbsentNumWithhold, m.OtherDeductions);
 
-                mail.Body += "<tr><td>" + manage.GetEntity(m.EmployeeId).EmpName + "</td>" +
-                        "<td>" + manage.GetDeptByEmpid(m.EmployeeId).DeptName + "</td>" +
-                        "<td>" + manage.GetPositionByEmpid(m.EmployeeId).PositionName + "</td>" +
-                        "<td>" + att.ToRegularDays.ToString() + "</td>" +
-                        "<td>" + m.BaseSalary + "</td>" +
-                        "<td>" + m.PositionSalary + "</td>" +
-                        "<td>" + m.FinalGrade + "</td>" +
-                        "<td>" + m.MonthPerformancePay + "</td>" +
-                        "<td>" + m.NetbookSubsidy + "</td>" +
-                        "<td>" + m.SocialSecuritySubsidy + "</td>" +
-                        "<td>" + SalaryOne + "</td>" +
-                        "<td>" + m.OvertimeCharges + "</td>" +
-                        "<td>" + m.Bonus + "</td>" +
-                        "<td>" + att.LeaveDays + "</td>" +
-                        "<td>" + m.LeaveDeductions + "</td>" +
-                        "<td>" + m.TardyAndLeaveWithhold + "</td>" +
-                        "<td>" + m.AbsentNumWithhold + "</td>" +
-                        "<td>" + m.AbsenteeismWithhold + "</td>" +
-                        "<td>" + m.OtherDeductions + "</td>" +
-                        "<td>" + SalaryTwo + "</td>" +
-                        "<td>" + m.PersonalSocialSecurity + "</td>" +
-                        "<td>" + m.PersonalIncomeTax + "</td>" +
-                        "<td>" + m.PayCardSalary + "</td>" +
-                        "<td>" + m.CashSalary + "</td>" +
-
+                mail.Body += "<tr><td>" + m.empName + "</td>" +
+                        "<td>" + m.Depart + "</td>" +//部门
+                        "<td>" + m.Position + "</td>" +//岗位
+                        "<td>" + att.ToRegularDays.ToString() + "</td>" +//出勤天数
+                        "<td>" + m.baseSalary + "</td>" +                //基本工资
+                        "<td>" + m.positionSalary + "</td>" +            //岗位工资
+                        "<td>" + m.finalGrade + "</td>" +                //绩效分
+                        "<td>" + m.PerformanceSalary + "</td>" +         //绩效工资
+                        "<td>" + m.netbookSubsidy + "</td>" +            //笔记本补助
+                        "<td>" + m.socialSecuritySubsidy + "</td>" +     //社保补贴
+                        "<td>" + m.SalaryOne + "</td>" +                 //应发工资
+                        "<td>" + m.OvertimeCharges + "</td>" +           //加班费用
+                        "<td>" + m.Bonus + "</td>" +                     //奖金(元)
+                        "<td>" + att.LeaveDays + "</td>" +               //请假天数
+                        "<td>" + m.LeaveDeductions + "</td>" +           //请假扣款
+                        "<td>" + m.TardyAndLeaveWithhold + "</td>" +     //迟到/早退扣款
+                        "<td>" + m.NoClockWithhold + "</td>" +         //缺卡扣款(元)<
+                        "<td>" + m.AbsentNumWithhold + "</td>" +       //旷工扣款(元)<
+                        "<td>" + m.OtherDeductions + "</td>" +           //其他扣款</th>
+                        "<td>" + m.SalaryTwo + "</td>" +                 //应发工资2</th>
+                        "<td>" + m.PersonalSocialSecurity + "</td>" +    //个人社保</th>
+                        "<td>" + m.PersonalIncomeTax + "</td>" +         //个税</th>
+                        //"<td>" + m.PayCardSalary + "</td>" +             //实发工资(工资卡
+                        //"<td>" + m.CashSalary + "</td>" +                //实发工资(现金)
+                        "<td>" + m.Total + "</td>" +         //合计</th>
                    "</tr></table></div>";
                 #region
                 //mail.Body += "<div>绩效详情";
@@ -766,9 +768,9 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                        "</table>";
                 }
                 //加班
-                var over = overtime.GetList().Where(i=>i.EmployeeId==m.EmployeeId&&Convert.ToDateTime(i.YearAndMonth).Year== Convert.ToDateTime(m.YearAndMonth).Year&& Convert.ToDateTime(i.YearAndMonth).Month == Convert.ToDateTime(m.YearAndMonth).Month&&m.IsDel==false);
-                
-                if (!att.OvertimeCharges.IsNullOrEmpty())
+                //var over = overtime.GetList().Where(i=>i.EmployeeId==m.EmployeeId&&Convert.ToDateTime(i.YearAndMonth).Year== Convert.ToDateTime(YearAndMonth).Year&& Convert.ToDateTime(i.YearAndMonth).Month == Convert.ToDateTime(YearAndMonth).Month&&m.IsDel==false);
+                var over = overtime.GetListBySql<OvertimeRecord>("select *from OvertimeRecord where EmployeeId='"+m.EmployeeId+"' and datepart(YEAR, YearAndMonth)=datepart(YEAR, '"+YearAndMonth+"') and datepart(MONTH, YearAndMonth)=datepart(MONTH, '"+YearAndMonth+"') and IsPass=0");
+                if (over.Count!=0)
                 {
                     mail.Body += "<span style='font-size:17px;font-weight:600'>加班</span><table border='1' cellspacing='0'>" +
                         "<tr><th>加班类型</th><th>加班时长</th><th>加班记录</th><th>是否调休</th></tr>";

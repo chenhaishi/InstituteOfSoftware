@@ -1,4 +1,5 @@
-﻿using SiliconValley.InformationSystem.Business.StudentBusiness;
+﻿using SiliconValley.InformationSystem.Business.Cloudstorage_Business;
+using SiliconValley.InformationSystem.Business.StudentBusiness;
 using SiliconValley.InformationSystem.Util;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,11 @@ namespace SiliconValley.InformationSystem.Web.Controllers
         {
             StudentInformationBusiness studentInformationBusiness = new StudentInformationBusiness();
 
-            var studentNumber = SessionHelper.Session["studentnumber"].ToString();
+            CloudstorageBusiness Bos = new CloudstorageBusiness();
+
+            var client = Bos.BosClient();
+            //获取当前登陆学生的学号
+            var studentNumber = Request.Cookies["StudentNumber"].Value.ToString();
             var student = studentInformationBusiness.StudentList().Where(d => d.StudentNumber == studentNumber).FirstOrDefault();
             ViewBag.student = student;
             return View();
