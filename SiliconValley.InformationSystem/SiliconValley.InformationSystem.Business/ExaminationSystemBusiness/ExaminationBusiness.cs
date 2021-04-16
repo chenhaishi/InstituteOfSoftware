@@ -450,7 +450,7 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
 
                 exammroom.Invigilator1 = headmaster.EmployeeId;
 
-                //发送短信
+                //发送短信 
                 var classroom = dbclassroom.GetEntity(exammroom.Classroom_Id);
                 string smgText = "监考通知: "+ exam.Title +" ， 教室："+classroom.ClassroomName + "，时间："+ exam.BeginDate;
 
