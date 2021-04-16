@@ -870,16 +870,75 @@ namespace SiliconValley.InformationSystem.Business.EnrollmentBusiness
                     {
                         continue;
                     }
-                    names = name;
+                    //names = name;
+                    #region
                     if (identitydocument.Contains("'"))
                     {
                         identitydocument = identitydocument.Substring(1, 18);
                     }
-                    if (identitydocument.Length!=18)
+                    if (identitydocument.Length != 18)
                     {
-                        ajaxresult.Msg = name+"的身份证错误";
-                        break;
+                        names += name + "的身份证错误</br>";
+                        continue;
+                        //ajaxresult.Msg = name+"的身份证错误";
+                        //break;
                     }
+                    else
+                    {
+                        var x = identitydocument.Substring(6).Substring(0, 8);
+                        var n = int.Parse(x.Substring(0, 4));
+                        var y = int.Parse(x.Substring(4, 2));
+                        var r = int.Parse(x.Substring(6, 2));
+                        if (y > 12)
+                        {
+                            names += name + "的身份证错误</br>";
+                            continue;
+
+                        }
+                       
+                            if (y==2)
+                            {
+                            if (n % 4 == 0)
+                            {
+                                if (r > 29)
+                                {
+                                    names += name + "的身份证错误</br>";
+                                    continue;
+                                }
+                            }
+                            else
+                            {
+                                if (r > 28)
+                                {
+                                    names += name + "的身份证错误</br>";
+                                    continue;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            
+                        }
+                        if (y==1||y==3||y==5||y==7||y==8||y==10||y==12)
+                        {
+                            if (r > 31)
+                            {
+                                names += name + "的身份证错误</br>";
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            if (r > 30)
+                            {
+                                names += name + "的身份证错误</br>";
+                                continue;
+                            }
+                        }
+
+                    }
+                    #endregion
+
                     var student = studentInformationBusiness.GetListBySql<StudentInformation>("select * from StudentInformation where identitydocument='" + identitydocument + "'").FirstOrDefault();
                     StudentInformation stu = new StudentInformation();
 
@@ -913,7 +972,7 @@ namespace SiliconValley.InformationSystem.Business.EnrollmentBusiness
                         s.ClassID = "学历测试班";
                         s.StudentID = number.ToString();
                         s.CurrentClass = true;
-                        s.ID_ClassName = 18098;
+                        s.ID_ClassName = 19098;
                         s.AddDate = DateTime.Now;
                         s.identitydocument = identitydocument;
                         s.IsGraduating = true;
@@ -940,6 +999,10 @@ namespace SiliconValley.InformationSystem.Business.EnrollmentBusiness
                     e.IsDelete = false;
                     Insert(e);
                 }
+                ajaxresult.Success = true;
+                ajaxresult.ErrorCode = 100;
+                ajaxresult.Msg = names;
+                ajaxresult.Data = "0";
             }
 
             catch (Exception ex)
