@@ -3655,7 +3655,9 @@
     <Content Include="Areas\Teachingquality\Views\ClassSchedule\OddNumberMyclass.cshtml" />
     <Content Include="Areas\Teachingquality\Views\StudentUnion\Activty.cshtml" />
     <Content Include="Areas\Teachingquality\Views\StudentUnion\openActivty.cshtml" />
-    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.ttf" />
@@ -5303,7 +5305,6 @@
     <Content Include="Views\Login\SLogin.cshtml" />
     <Content Include="Views\WeiXin\BindingWX.cshtml" />
     <Content Include="Views\WeiXin\WXLoginError.cshtml" />
-    <Content Include="uploadXLSXfile\Template\EmpInfoTemplate.xls" />
     <Content Include="uploadXLSXfile\CostStatis.xls" />
     <Content Include="uploadXLSXfile\ter.xls" />
     <Content Include="uploadXLSXfile\ComputerTestQuestionsWord\1578394647.rar" />
@@ -5361,6 +5362,7 @@
     <Content Include="Scripts\laydate\theme\default\font\iconfont.eot" />
     <Content Include="Scripts\laydate\theme\default\font\iconfont.ttf" />
     <Content Include="Scripts\laydate\theme\default\font\iconfont.woff" />
+    <Content Include="uploadXLSXfile\Template\EmpInfoTemplate.xlsx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
