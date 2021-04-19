@@ -95,9 +95,8 @@
     <Reference Include="NPOI">
       <HintPath>..\packages\NPOI.2.5.1\lib\net40\NPOI.dll</HintPath>
     </Reference>
-    <Reference Include="NPOI.OOXML, Version=2.5.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Bin\NPOI.OOXML.dll</HintPath>
+    <Reference Include="NPOI.OOXML">
+      <HintPath>..\packages\NPOI.2.5.1\lib\net45\NPOI.OOXML.dll</HintPath>
     </Reference>
     <Reference Include="Oracle.ManagedDataAccess, Version=4.122.18.3, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -288,6 +287,8 @@
     <Compile Include="Areas\Finance\Controllers\PricedetailsController.cs" />
     <Compile Include="Areas\Finance\FinanceAreaRegistration.cs" />
     <Compile Include="Areas\flow\flowAreaRegistration.cs" />
+    <Compile Include="Areas\InternalTraining\Controllers\InternalTraController.cs" />
+    <Compile Include="Areas\InternalTraining\InternalTrainingAreaRegistration.cs" />
     <Compile Include="Areas\Logistics\LogisticsAreaRegistration.cs" />
     <Compile Include="Areas\Market\Controllers\BiddingRecordController.cs" />
     <Compile Include="Areas\Market\Controllers\ChannelStaffController.cs" />
@@ -305,6 +306,7 @@
     <Compile Include="Areas\Market\Controllers\StudentDataKeepController.cs" />
     <Compile Include="Areas\Market\MarketAreaRegistration.cs" />
     <Compile Include="Areas\MyEducation\Controllers\EducationController.cs" />
+    <Compile Include="Areas\MyEducation\Controllers\JuniorCollegeController.cs" />
     <Compile Include="Areas\MyEducation\MyEducationAreaRegistration.cs" />
     <Compile Include="Areas\Obtainemployment\Controllers\BusinessManagementController.cs" />
     <Compile Include="Areas\Obtainemployment\Controllers\CDinterviewController.cs" />
@@ -331,6 +333,7 @@
     <Compile Include="Areas\Personnelmatters\Controllers\EmpOverTimeRecordController.cs" />
     <Compile Include="Areas\Personnelmatters\Controllers\EmpSalaryManagementController.cs" />
     <Compile Include="Areas\Personnelmatters\Controllers\EmpTransactionRecordController.cs" />
+    <Compile Include="Areas\Personnelmatters\Controllers\MonthlySalaryReviewController.cs" />
     <Compile Include="Areas\Personnelmatters\Controllers\PerformanceAssessController.cs" />
     <Compile Include="Areas\Personnelmatters\Controllers\RecruitingDataSummaryController.cs" />
     <Compile Include="Areas\Personnelmatters\Controllers\SocialSecurityDetailController.cs" />
@@ -3652,12 +3655,17 @@
     <Content Include="Areas\Finance\Views\Pricedetails\Student_arrearage.cshtml" />
     <Content Include="Areas\Finance\Views\Pricedetails\Get_List_Entrydataexport.cshtml" />
     <Content Include="Areas\Finance\Views\Pricedetails\Get_List_GetPreentryfeet.cshtml" />
-    <Content Include="Areas\Teachingquality\Views\ClassSchedule\OddNumberMyclass.cshtml" />
-    <Content Include="Areas\Teachingquality\Views\StudentUnion\Activty.cshtml" />
-    <Content Include="Areas\Teachingquality\Views\StudentUnion\openActivty.cshtml" />
-    <None Include="Properties\PublishProfiles\FolderProfile.pubxml">
-      <SubType>Designer</SubType>
-    </None>
+    <Content Include="Areas\InternalTraining\Views\InternalTra\AddInternalTraIndex.cshtml" />
+    <Content Include="Areas\InternalTraining\Views\InternalTra\InternalTraIndex.cshtml" />
+    <Content Include="Areas\InternalTraining\Views\InternalTra\XiuGaiInternalTraIndex.cshtml" />
+    <Content Include="Areas\InternalTraining\Views\web.config" />
+    <Content Include="Areas\Teaching\Views\SatisfactionSurvey\CanteenSatisfaction.cshtml" />
+    <Content Include="Areas\Teaching\Views\SatisfactionSurvey\ChineseQuestionnaire.cshtml" />
+    <Content Include="Areas\Teaching\Views\SatisfactionSurvey\MathematicsQuestionnaire.cshtml" />
+    <Content Include="Areas\Teaching\Views\SatisfactionSurvey\EnglishQuestionnaire.cshtml" />
+    <Content Include="Areas\Teaching\Views\SatisfactionSurvey\SatisfactionHomePage.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\EmplSalaryEmbody\Import.cshtml" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.ttf" />
@@ -5362,7 +5370,6 @@
     <Content Include="Scripts\laydate\theme\default\font\iconfont.eot" />
     <Content Include="Scripts\laydate\theme\default\font\iconfont.ttf" />
     <Content Include="Scripts\laydate\theme\default\font\iconfont.woff" />
-    <Content Include="uploadXLSXfile\Template\EmpInfoTemplate.xlsx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -5398,6 +5405,8 @@
     <Folder Include="Areas\Educational\Views\ShppingDetail\" />
     <Folder Include="Areas\Finance\Models\" />
     <Folder Include="Areas\flow\Controllers\" />
+    <Folder Include="Areas\InternalTraining\Models\" />
+    <Folder Include="Areas\InternalTraining\Views\Shared\" />
     <Folder Include="Areas\Logistics\Controllers\" />
     <Folder Include="Areas\Logistics\Models\" />
     <Folder Include="Areas\Logistics\Views\Shared\" />
