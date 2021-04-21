@@ -46,10 +46,11 @@
 </script>
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs" id="DOX" lay-event="select">下载文件</a>
-
+    <a class="layui-btn layui-btn-danger layui-btn-xs" id="DOX" lay-event="Delete">删除</a>
 </script>
 <script>
-   
+
+    var bind = function () {
         layui.use(['table', 'layer', 'form'], function () {
             var table = layui.table;
             var layer = layui.layer;
@@ -61,29 +62,29 @@
                 , toolbar: '#toolbarDemo'
                 , id: 'idTest'
                 , cols: [[
-                     { field: 'Title', title: '标题', fixed: 'left'}
+                    { field: 'Title', title: '标题', fixed: 'left' }
                     , { field: 'ADox', title: '文件地址' }
                     , { field: 'AddTime', title: '时间' }
-                    , { title: '操作', toolbar: '#barDemo',fixed: 'right' }
+                    , { title: '操作', toolbar: '#barDemo', fixed: 'right' }
                 ]]
                 , page: true
                 , limit: 15
                 , limits: [15, 20, 25]
             });
-           
+
             //监听头部工具栏
             table.on('toolbar(test)', function (obj) {
                 //var checkStatus = table.checkStatus(obj.config.id);
                 switch (obj.event) {
                     case "Dox":
-                         layer.open({
-                        title: "学生会活动",
-                        type: 2,
-                        area: ['50%', '50%']
-                        , content: "/Teachingquality/StudentUnion/openActivty"
+                        layer.open({
+                            title: "学生会活动",
+                            type: 2,
+                            area: ['50%', '50%']
+                            , content: "/Teachingquality/StudentUnion/openActivty"
 
-                        //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
-                    });
+                            //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                        });
                         break;
                 };
             });
@@ -108,6 +109,22 @@
                     //    //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
                     //});
                 }
+                else if (layEvent === 'Delete') {
+                    layer.confirm('确定删除吗', {
+                        btn: ['确定'] //可以无限个按钮
+                    }, function (index, layero) {
+                        //按钮【按钮一】的回调
+                        $.post("/Teachingquality/StudentUnion/DeleteActivty", { AID: data.AID }, function (r) {
+                            if (r.code == 0) {
+                                bind()
+                                layer.msg(r.msg);
+                            }
+                            else {
+                                layer.msg(r.msg);
+                            }
+                        });
+                    });
+                }
 
             });
 
@@ -123,7 +140,8 @@
                 });
                 return false;
             });
-        });
+        })
+    };
 </script>
 
 }
