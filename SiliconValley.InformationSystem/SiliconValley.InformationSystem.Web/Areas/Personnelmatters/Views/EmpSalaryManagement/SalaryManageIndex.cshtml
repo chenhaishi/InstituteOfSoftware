@@ -78,12 +78,10 @@
     {{# } }}
 </script>
 <script type="text/html" id="Audit">
-    {{# if(d.IsFinancialAudit==0){ }}
-    {{ d.IsFinancialAudit="未审核" }}
-    {{# }else if(d.IsFinancialAudit==1){ }}
-    {{ d.IsFinancialAudit="已审核" }}
+    {{# if(d.IsApproval==false){ }}
+    {{ d.IsApproval="未审核" }}
     {{# }else{ }}
-    {{ d.IsFinancialAudit="已驳回" }}
+    {{ d.IsApproval="已审核" }}
     {{# } }}
 
 </script>
@@ -137,7 +135,7 @@
                     , { field: 'PayCardSalary', title: '实发工资(工资卡)', width: 160, rowspan: 2 }
                     , { field: 'CashSalary', title: '实发工资(现金)', width: 150, rowspan: 2 }
                     , { field: 'EmpState', title: '员工状态', width: 100, rowspan: 2, templet: '#empstate' }
-                    //, { field: 'IsFinancialAudit', title: '财务审核状态', sort: true, width: 110, fixed: "right", templet: '#Audit' }
+                    , { field: 'IsApproval', title: '审核状态', sort: true, width: 110, fixed: "right", templet: '#Audit' }
                     , { title: '操作', toolbar: '#barDemo', width: 100, fixed: 'right', rowspan: 2 }
                     ]
                     ,[
