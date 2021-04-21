@@ -46,7 +46,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             List<MonthlySalaryRecord> eselist = new List<MonthlySalaryRecord>();
             List<MySalaryObjView> result = new List<MySalaryObjView>();
             EmployeesInfoManage empmanage = new EmployeesInfoManage();//员工信息表
-            var type = msrmanage.type();
+            //var type = msrmanage.type();
             eselist = msrmanage.GetEmpMsrData().Where(s => s.IsDel == false).ToList();
             if (!string.IsNullOrEmpty(ymtime))
             {
@@ -112,7 +112,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 #region 应发工资1赋值
                 var one = view.baseSalary + view.positionSalary;
 
-                view.SalaryOne = msrmanage.GetSalaryone(one, view.PerformanceSalary, view.netbookSubsidy, view.socialSecuritySubsidy);
+                //view.SalaryOne = msrmanage.GetSalaryone(view.baseSalary,view.positionSalary, view.PerformanceSalary, view.netbookSubsidy, view.socialSecuritySubsidy,view.LeaveDeductions);
                 #endregion
                 //考勤表对象
                 var attendobj = msrmanage.GetAttendanceInfoByEmpid(item.EmployeeId, (DateTime)item.YearAndMonth);
@@ -127,7 +127,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                     view.leavedays = attendobj.LeaveDays;
                     if (view.leavedays > 0)
                     {
-                        view.LeaveDeductions = msrmanage.GetLeaveDeductions(view.Id, one, view.PerformanceSalary, attendobj.DeserveToRegularDays, view.leavedays);//请假扣款
+                        view.LeaveDeductions = msrmanage.GetLeaveDeductions(view.Id, view.positionSalary,view.baseSalary, view.PerformanceSalary, attendobj.DeserveToRegularDays, view.leavedays);//请假扣款
                     }
                     else
                     {
@@ -175,91 +175,91 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
 
             return Json(newobj, JsonRequestBehavior.AllowGet);
         }
-        
-        public ActionResult SalaryApproval(int id)
-        {
-            MonthlySalaryRecordManage msrmanage = new MonthlySalaryRecordManage();//员工月度工资
-            EmployeesInfoManage manage = new EmployeesInfoManage();
-            var type = msrmanage.type();
-            var list = msrmanage.GetEmpMsrData().Where(i=>i.IsDel==false&&Convert.ToDateTime(i.YearAndMonth).Year==Convert.ToDateTime(FirstTime).Year&& Convert.ToDateTime(i.YearAndMonth).Month == Convert.ToDateTime(FirstTime).Month).ToList();
-            ViewBag.list = list;
-            var s = msrmanage.GetEntity(id);
-            ViewBag.EmpName = manage.GetEntity(s.EmployeeId).EmpName;
-            ViewBag.yearandmonth = FirstTime;
-            return View(s);
-        }
-        public ActionResult SalaryApproved(int id,string remark)
-        {
-            MonthlySalaryRecordManage monthly = new MonthlySalaryRecordManage();
 
-            AjaxResult result = new AjaxResult();
+        //public ActionResult SalaryApproval(int id)
+        //{
+        //    MonthlySalaryRecordManage msrmanage = new MonthlySalaryRecordManage();//员工月度工资
+        //    EmployeesInfoManage manage = new EmployeesInfoManage();
+        //    var type = msrmanage.type();
+        //    var list = msrmanage.GetEmpMsrData().Where(i => i.IsDel == false && Convert.ToDateTime(i.YearAndMonth).Year == Convert.ToDateTime(FirstTime).Year && Convert.ToDateTime(i.YearAndMonth).Month == Convert.ToDateTime(FirstTime).Month).ToList();
+        //    ViewBag.list = list;
+        //    var s = msrmanage.GetEntity(id);
+        //    ViewBag.EmpName = manage.GetEntity(s.EmployeeId).EmpName;
+        //    ViewBag.yearandmonth = FirstTime;
+        //    return View(s);
+        //    //}
+        //    public ActionResult SalaryApproved(int id, string remark)
+        //    {
+        //        MonthlySalaryRecordManage monthly = new MonthlySalaryRecordManage();
 
-            try
-            {
-                var monlies = monthly.GetEntity(id);
-                monlies.IsFinancialAudit = 1;
-                monlies.FinancialRemarks = remark;
+        //        AjaxResult result = new AjaxResult();
 
-                monthly.Update(monlies);
-                rc.RemoveCache("InRedisMSRData");
-                result = monthly.Success();
-                result.ErrorCode = 200;
-            }
-            catch (Exception ex)
-            {
-                result = monthly.Error(ex.Message);
-            }
-            return Json(result, JsonRequestBehavior.AllowGet);
+        //        try
+        //        {
+        //            var monlies = monthly.GetEntity(id);
+        //            monlies.IsFinancialAudit = 1;
+        //            monlies.FinancialRemarks = remark;
 
-        }
-        public ActionResult SalaryReviewRejected(int id, string remark)
-        {
-            MonthlySalaryRecordManage monthly = new MonthlySalaryRecordManage();
+        //            monthly.Update(monlies);
+        //            rc.RemoveCache("InRedisMSRData");
+        //            result = monthly.Success();
+        //            result.ErrorCode = 200;
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            result = monthly.Error(ex.Message);
+        //        }
+        //        return Json(result, JsonRequestBehavior.AllowGet);
 
-            AjaxResult result = new AjaxResult();
+        //    }
+            //public ActionResult SalaryReviewRejected(int id, string remark)
+            //{
+            //    MonthlySalaryRecordManage monthly = new MonthlySalaryRecordManage();
 
-            try
-            {
-                var monlies = monthly.GetEntity(id);
-                monlies.IsFinancialAudit = 2;
-                monlies.FinancialRemarks = remark;
-                monthly.Update(monlies);
-                rc.RemoveCache("InRedisMSRData");
-                result = monthly.Success();
-                result.ErrorCode = 200;
-            }
-            catch (Exception ex)
-            {
-                result = monthly.Error(ex.Message);
-            }
-            return Json(result, JsonRequestBehavior.AllowGet);
+            //    AjaxResult result = new AjaxResult();
 
-        }
-        public ActionResult OneClickRejection(string id,string remark)
-        {
-            MonthlySalaryRecordManage monthly = new MonthlySalaryRecordManage();
+            //    try
+            //    {`
+            //    var monlies = monthly.GetEntity(id);
+            //        monlies.IsFinancialAudit = 2;
+            //        monlies.FinancialRemarks = remark;
+            //        monthly.Update(monlies);
+            //        rc.RemoveCache("InRedisMSRData");
+            //        result = monthly.Success();
+            //        result.ErrorCode = 200;
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        result = monthly.Error(ex.Message);
+            //    }
+            //    return Json(result, JsonRequestBehavior.AllowGet);
 
-            AjaxResult result = new AjaxResult();
-            try
-            {
-                var monthlies = monthly.GetListBySql<MonthlySalaryRecord>("select *from MonthlySalaryRecord  where Id in("+id+")");
-                foreach (var item in monthlies)
-                {
-                    item.IsFinancialAudit = 2;
-                    item.FinancialRemarks = remark;
-                    monthly.Update(item);
-                    rc.RemoveCache("InRedisMSRData");
-                }
-                result = monthly.Success();
-                result.ErrorCode = 200;
+            //}
+            //public ActionResult OneClickRejection(string id, string remark)
+            //{
+            //    MonthlySalaryRecordManage monthly = new MonthlySalaryRecordManage();
 
-            }
-            catch (Exception ex)
-            {
-                result = monthly.Error(ex.Message);
-            }
-            return Json(result, JsonRequestBehavior.AllowGet);
-        }
+            //    AjaxResult result = new AjaxResult();
+            //    try
+            //    {
+            //        var monthlies = monthly.GetListBySql<MonthlySalaryRecord>("select *from MonthlySalaryRecord  where Id in(" + id + ")");
+            //        foreach (var item in monthlies)
+            //        {
+            //            item.IsFinancialAudit = 2;
+            //            item.FinancialRemarks = remark;
+            //            monthly.Update(item);
+            //            rc.RemoveCache("InRedisMSRData");
+            //        }
+            //        result = monthly.Success();
+            //        result.ErrorCode = 200;
+
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        result = monthly.Error(ex.Message);
+            //    }
+            //    return Json(result, JsonRequestBehavior.AllowGet);
+            //}
         [HttpPost]
         public ActionResult IsConfirmApproval(string time)
         {
@@ -270,32 +270,32 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             {
                 var UserName = Base_UserBusiness.GetCurrentUser();//获取当前登录人
                 var ddid = empmanage.GetInfoByEmpID(UserName.EmpNumber).DDAppId;
-                
-                var type = 0;
-                switch (ddid)
-                {
-                    case 145:
-                        type = 3;
-                        break;
-                    case 147:
-                        type = 4;
-                        break;
-                    case 190:
-                        type = 5;
-                        break;
-                    case 2:
-                        type = 6;
-                        break;
-                    case 1:
-                        type = 7;
-                        break;
-                    default:
-                        break;
-                }
+
+                //var type = 0;
+                //switch (ddid)
+                //{
+                //    case 145:
+                //        type = 3;
+                //        break;
+                //    case 147:
+                //        type = 4;
+                //        break;
+                //    case 190:
+                //        type = 5;
+                //        break;
+                //    case 2:
+                //        type = 6;
+                //        break;
+                //    case 1:
+                //        type = 7;
+                //        break;
+                //    default:
+                //        break;
+                //}
 
                 var curtime = DateTime.Parse(time);
-                var monthlies = msrmanage.GetEmpMsrData().Where(s => DateTime.Parse(s.YearAndMonth.ToString()).Year == curtime.Year && DateTime.Parse(s.YearAndMonth.ToString()).Month == curtime.Month && s.IsFinancialAudit == 0).ToList();
-                if (monthlies.FirstOrDefault().IsFinancialAudit == type)
+                var monthlies = msrmanage.GetEmpMsrData().Where(s => DateTime.Parse(s.YearAndMonth.ToString()).Year == curtime.Year && DateTime.Parse(s.YearAndMonth.ToString()).Month == curtime.Month && s.IsApproval == true).ToList();
+                if (monthlies.FirstOrDefault().IsApproval == true)
                 {
                     AjaxResultxx.Data = "该月份员工月度工资已确认审批！";
                     AjaxResultxx.Success = false;
@@ -321,18 +321,19 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             var AjaxResultxx = new AjaxResult();
             try
             {
-                var type = msrmanage.type();
+                //var type = msrmanage.type();
                 var curtime = DateTime.Parse(time);
-                var monthlies = msrmanage.GetEmpMsrData().Where(s => DateTime.Parse(s.YearAndMonth.ToString()).Year == curtime.Year && DateTime.Parse(s.YearAndMonth.ToString()).Month == curtime.Month&&s.IsFinancialAudit==0).ToList();
+                var monthlies = msrmanage.GetEmpMsrData().Where(s => DateTime.Parse(s.YearAndMonth.ToString()).Year == curtime.Year && DateTime.Parse(s.YearAndMonth.ToString()).Month == curtime.Month &&s.IsApproval==true ).ToList();
                 foreach (var item in monthlies)
                 {
-                    item.IsFinancialAudit = type;
+                    item.IsApproval = true;
+                    //item.IsFinancialAudit = type;
                     msrmanage.Update(item);
                     rc.RemoveCache("InRedisMSRData");
                 }
                 AjaxResultxx = msrmanage.Success();
                 AjaxResultxx.ErrorCode = 200;
-                
+
             }
             catch (Exception ex)
             {

@@ -939,9 +939,26 @@ namespace SiliconValley.InformationSystem.Business.EnrollmentBusiness
                     }
                     #endregion
 
+
                     var student = studentInformationBusiness.GetListBySql<StudentInformation>("select * from StudentInformation where identitydocument='" + identitydocument + "'").FirstOrDefault();
                     StudentInformation stu = new StudentInformation();
-
+                    List<ExportStudentBeanData> listall = this.GetListBySql<ExportStudentBeanData>("select * from StudentBeanView where StuName='" + name + "' and IsDelete=0 order by BeanDate desc ");
+                    if (listall.Count() == 0)
+                    {
+                        names += name + "查询不到备案数据</br>";
+                        continue;
+                    }
+                    else
+                    {
+                        if (listall.Where(i => i.StatusName == "已报名").Count() == 0)
+                        {
+                            stu.StudentPutOnRecord_Id = listall.Where(i=>i.StatusName=="未报名").FirstOrDefault().Id;
+                        }
+                        else
+                        {
+                            stu.StudentPutOnRecord_Id = listall.Where(i => i.StatusName == "已报名").FirstOrDefault().Id;
+                        }
+                    }
                     if (student == null)
                     {
                         int number = 0;
@@ -972,7 +989,7 @@ namespace SiliconValley.InformationSystem.Business.EnrollmentBusiness
                         s.ClassID = "学历测试班";
                         s.StudentID = number.ToString();
                         s.CurrentClass = true;
-                        s.ID_ClassName = 19098;
+                        s.ID_ClassName = 18098;
                         s.AddDate = DateTime.Now;
                         s.identitydocument = identitydocument;
                         s.IsGraduating = true;
@@ -988,6 +1005,7 @@ namespace SiliconValley.InformationSystem.Business.EnrollmentBusiness
                             continue;
                         }
                     }
+
                     var year = Datestration.Substring(0, 4);
                     var month = Datestration.Substring(4, 2);
                     Enrollment e = new Enrollment();
