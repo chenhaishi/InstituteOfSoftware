@@ -105,6 +105,28 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
             ViewBag.department = UnName;
             return View();
         }
+        /// <summary>
+        /// 文件删除
+        /// </summary>
+        /// <param name="AID">文件id</param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult DeleteActivty(string AID)
+        {
+
+            try
+            {
+                var AList = list.GetList().Where(d => d.AID == AID).SingleOrDefault();
+                AList.IsDelete = 0;
+                list.Update(AList);
+                return Json(new { code = 0,msg="删除成功" });
+            }
+            catch (Exception ex)
+            {
+
+                return Json(new { code = -1,msg="服务器异常" });
+            }
+        }
         public ActionResult Activty()
         {
             return View();
@@ -196,18 +218,15 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
         public ActionResult Acticty_List(int page, int limit, string StuTitle)
         {
 
-
-            
-
             var sql = "";
 
             if (StuTitle == null)
             {
-                sql = "select* from StudentActivity";
+                sql = "select* from StudentActivity where IsDelete='1'";
             }
             else
             {
-                sql = "select * from StudentActivity where Title='" + StuTitle + "'";
+                sql = "select * from StudentActivity where Title='" + StuTitle + "'and IsDelete='1'";
             }
             var Alist = list.GetListBySql<StudentActivity>(sql).Select(d => new {AID=d.AID, AddTime = d.AddTime.ToString("yyyy-MM-dd"), ADox = d.ADox, Title = d.Title }).ToList();
 
