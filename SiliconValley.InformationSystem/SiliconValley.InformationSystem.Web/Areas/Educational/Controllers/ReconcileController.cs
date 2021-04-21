@@ -92,7 +92,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             var EmployId_Fen = (
                     from m in AllReconList
                     group m by m.EmployeesInfo_Id into list
-                    select list).ToList();
+                    select list).ToList().Where(e=>e.Key != null).ToList();
 
 
             for (int i = 0; i < EmployId_Fen.Count; i++)
@@ -566,14 +566,14 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 int Kcount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(find_c.CourseCount / 4.0)));
                 //判断该班级这个课程是否已排完课
                 int count = Reconcile_Entity.GetList().Where(r => r.Curriculum_Id == ke && r.ClassSchedule_Id == class_Id).ToList().Count;
-                if (count > 0)
+                if (count > 0 && ke != "软件工厂")
                 {
                     a.Msg = Reconcile_Com.ClassSchedule_Entity.GetEntity(class_Id).ClassNumber + "的" + ke + "已有排课数据，为了避免重复，请删除之后再操作！！";
                     a.Success = false;
                 }
-                else if (count == Kcount)
+                else if (count == Kcount && ke != "软件工厂")
                 {
-                    a.Msg = Reconcile_Com.ClassSchedule_Entity.GetEntity(class_Id).ClassNumber + "的" + ke + "已有排课数据,请安排其他课程！！";
+                    a.Msg = Reconcile_Com.ClassSchedule_Entity.GetEntity(class_Id).ClassNumber + "的" + ke + "已安排完排课,请安排其他课程！！";
                     a.Success = false;
                 }
                 else

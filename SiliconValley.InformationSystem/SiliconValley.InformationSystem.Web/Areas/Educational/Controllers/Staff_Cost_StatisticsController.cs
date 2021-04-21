@@ -558,7 +558,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             int WorkDay = 0;
             if (IsDanxiu == "0")
             {
-                WorkDay = WorkDaysOfyearmonth(dt.Year, dt.Month, true);
+                WorkDay = WorkDaysOfyearmonth(dt.Year, dt.Month, true); 
             }
             else {
                 WorkDay = WorkDaysOfyearmonth(dt.Year, dt.Month, false);

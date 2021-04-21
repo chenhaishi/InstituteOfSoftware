@@ -1712,6 +1712,8 @@ namespace SiliconValley.InformationSystem.Business.ClassSchedule_Business
                         StuNumber = x.Studentnumber,
                         MaintainGood = Price_List.ID,
                         GoodPrice = months * 10,
+                        CompleteTime = DateTime.Now,
+                        ChuangNumber= Acc.BedId,
                         MaintainState = 1,
                         CreaDate = DateTime.Now,
                         RepairContent = "每月扣除的保险柜金额",
@@ -2024,6 +2026,8 @@ namespace SiliconValley.InformationSystem.Business.ClassSchedule_Business
                             GoodPrice = months * 10,
                             MaintainState = 1,
                             CreaDate = DateTime.Now,
+                            CompleteTime = DateTime.Now,
+                            ChuangNumber = Acc.BedId,
                             RepairContent = "每月扣除的保险柜金额",
                             EntryPersonnel = UserName.EmpNumber
                         };
