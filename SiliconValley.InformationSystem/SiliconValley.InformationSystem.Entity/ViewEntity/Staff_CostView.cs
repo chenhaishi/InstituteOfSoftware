@@ -67,5 +67,10 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity
         /// 总计
         /// </summary>
         public int totalmoney { get; set; }
+
+        /// <summary>
+        /// 底课时
+        /// </summary>
+        public int DiClassTime { get; set; }
     }
 }

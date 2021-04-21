@@ -98,7 +98,9 @@
                 <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
                     <label class="LableCss1">上课时间:</label>
                     <div class="layui-input-block">
-                        <input style="color:black; " class="layui-input linu" type="text" name="time" id="time" readonly="readonly">
+                        @*<input style="color:black;" class="layui-input linu" type="text" name="time" id="time" readonly>*@
+                        <select name="time" id="time" lay-verify="required">
+                        </select>
                     </div>
                 </div>
             </div>
@@ -273,22 +275,40 @@
                             }
                         });
                     }
-                });
+            });
+
+            var temptime = "";
+            //判断课程，如果为
+            form.on('select(kecheng)', function (data) {
+
+                console.log(data.elem[data.elem.selectedIndex].text);
+                if (data.elem[data.elem.selectedIndex].text == "软件工厂") {
+                    $("#time")[0].innerHTML = "";
+                    $("#time").append("<option value='上午'>上午</option><option value='下午'>下午</option>");
+                    form.render();
+                } else {
+                    $("#time")[0].innerHTML = "";
+                    $("#time").append("<option value='" + temptime + "'>" + temptime + "</option>");
+                    form.render();
+                }
+            });
                 //获取课程
                 form.on('select(bianji)', function (data) {
                     $("#currr_div")[0].innerHTML = "";
+                    $("#time")[0].innerHTML = "";
                     if (data.value != "0") {
                         $.ajax({
                             url: '/Educational/Reconcile/GetClassDate/' + data.value,
                             success: function (sucdata) {
                                 if (sucdata.stataus == "true") {
-                                    var myselect_c = $("<select name='kecheng' id='kecheng'></select>");
+                                    var myselect_c = $("<select name='kecheng' id='kecheng' lay-filter='kecheng'></select>");
                                     for (var i = 0; i < sucdata.c_list.length; i++) {
                                         $("<option value=" + sucdata.c_list[i].CurriculumID + ">" + sucdata.c_list[i].CourseName + "<option>").appendTo(myselect_c);
                                     }
                                     $("#currr_div").append(myselect_c);
-
-                                    $("#time")[0].value = sucdata.classData.ClassDate; //上课时间
+                                    console.log(sucdata.classData.ClassDate);
+                                    temptime = sucdata.classData.ClassDate;
+                                    $("#time").append("<option value='" + sucdata.classData.ClassDate+"'>" + sucdata.classData.ClassDate + "</option>") ; //上课时间
                                     $("#Marjon")[0].value = sucdata.classData.marjoiName.length > 0 ? sucdata.classData.marjoiName:"无";//专业
                                     form.render(); //更新全部
                                 } else {

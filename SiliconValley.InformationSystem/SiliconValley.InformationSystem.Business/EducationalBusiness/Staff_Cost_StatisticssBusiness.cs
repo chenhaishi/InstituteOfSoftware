@@ -451,7 +451,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 Internal_training_fee = Internal_count_one * 55 + Internal_count_two * 65;
                 #endregion
 
-
+                staff.DiClassTime = ClassTime;
                 staff.ClassTime = FirstStage + SecondStage + ThreeStage + OtherStage;
                 staff.totalmoney = Convert.ToInt32(Cost_fee) + Duty_fee + Invigilation_fee + Marking_fee + Super_class + Internal_training_fee + RD_fee;
                 staff.Cost_fee = Cost_fee;

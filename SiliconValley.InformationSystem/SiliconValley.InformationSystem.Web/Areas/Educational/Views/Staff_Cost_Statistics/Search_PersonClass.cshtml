@@ -112,6 +112,7 @@
             $.ajax({
                 url: '/Educational/Staff_Cost_Statistics/GetPersonByid?departid=' + data.value,
                 success: function (va) {
+                    $("#dep_per").empty();
                     $.each(va,function (index, element) {
                         
                         $("#dep_per").append('<option value=' + element.Value + '>' + element.Text + '</option>');

@@ -835,7 +835,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             else
             {
                 //集合数据判断
-                ReconcileView find_r = SQLGetReconcileDate().Where(rs => rs.Curriculum_Id == r.Curriculum_Id && rs.AnPaiDate == r.AnPaiDate && rs.ClassSchedule_Id == r.ClassSchedule_Id).FirstOrDefault();
+                ReconcileView find_r = SQLGetReconcileDate().Where(rs => rs.Curriculum_Id == r.Curriculum_Id && rs.AnPaiDate == r.AnPaiDate && rs.ClassSchedule_Id == r.ClassSchedule_Id && r.Curriculum_Id !="软件工厂").FirstOrDefault();
                 if (find_r != null)
                 {
                     s = true;
