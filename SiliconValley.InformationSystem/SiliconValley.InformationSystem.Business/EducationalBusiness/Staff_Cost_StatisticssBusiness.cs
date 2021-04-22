@@ -157,6 +157,10 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                     ClassTime = 0;
                 }
 
+                if (Emp_List[i].EmployeeId == "202005300026") {
+                    ClassTime = 30;
+                }
+
                 int FirstStage = 0;//第一阶段  预科，S1,S2 ---55
                 int SecondStage = 0;//第二阶段 S3,   ----65
                 int ThreeStage = 0;//S4 ----70   测试和ui ----65    班级名称中UI和CUI为UI班，TA为测试班
@@ -289,7 +293,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 #region//计算值班费
                 //查询当年 年月的值班数据
                 string TeacherAddsql = @"select * from TeacherAddorBeonDutyView  where YEAR(Anpaidate)=" + dt.Year + "" +
-                    " and Month(Anpaidate)=" + dt.Month + " and IsDels=1";
+                    " and Month(Anpaidate)=" + dt.Month + " and IsDels=0";
                 List<TeacherAddorBeonDutyView> TearcherAdd_List = teacherAddorBeonDutyView_Entity.GetListBySql<TeacherAddorBeonDutyView>(TeacherAddsql);
                 //根据时间分组
                 var TeacherAddGroup = (
@@ -444,15 +448,16 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                         Internal_count_two += Internallist[k].ClassHours;
                     }
                 }
-                Internal_training_fee = Internal_count_one + Internal_count_two;
+                Internal_training_fee = Internal_count_one * 55 + Internal_count_two * 65;
                 #endregion
 
-
+                staff.DiClassTime = ClassTime;
                 staff.ClassTime = FirstStage + SecondStage + ThreeStage + OtherStage;
                 staff.totalmoney = Convert.ToInt32(Cost_fee) + Duty_fee + Invigilation_fee + Marking_fee + Super_class + Internal_training_fee + RD_fee;
                 staff.Cost_fee = Cost_fee;
                 staff.Duty_fee = Duty_fee;
                 staff.Invigilation_fee = Invigilation_fee;
+                staff.Internal_training_fee = Internal_training_fee;
                 staff.Marking_fee = Marking_fee;
                 staff.RD_fee = RD_fee;
                 staff.Super_class = Super_class;

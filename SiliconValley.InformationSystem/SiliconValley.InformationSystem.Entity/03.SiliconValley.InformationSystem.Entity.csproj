@@ -301,6 +301,7 @@
     <Compile Include="Entity\StrengthenClass.cs" />
     <Compile Include="Entity\StrengthenStu.cs" />
     <Compile Include="Entity\StuBookAcqRecords.cs" />
+    <Compile Include="Entity\StudentActivity.cs" />
     <Compile Include="Entity\StudentAttendance.cs" />
     <Compile Include="Entity\StudentAwardwinning.cs" />
     <Compile Include="Entity\StudentFeeRecord.cs" />
@@ -351,6 +352,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Registerforexamination.cs" />
     <Compile Include="SqlDate.cs" />
+    <Compile Include="ViewEntity\checkRecon_View.cs" />
     <Compile Include="ViewEntity\DormitoryInputError.cs" />
     <Compile Include="ViewEntity\AccdationView.cs" />
     <Compile Include="ViewEntity\AchievementView.cs" />

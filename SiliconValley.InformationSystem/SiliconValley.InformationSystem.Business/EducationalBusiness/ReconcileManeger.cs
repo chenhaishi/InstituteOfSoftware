@@ -170,7 +170,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             bool s = false;
             try
             {
-                List<ReconcileView> find_list = SQLGetReconcileDate().Where(rs => rs.AnPaiDate == r.AnPaiDate && rs.ClassSchedule_Id == r.ClassSchedule_Id && rs.Curriculum_Id == r.Curriculum_Id && rs.Curse_Id==r.Curse_Id).ToList();
+                List<ReconcileView> find_list = SQLGetReconcileDate().Where(rs => rs.AnPaiDate == r.AnPaiDate && rs.ClassSchedule_Id == r.ClassSchedule_Id && rs.Curriculum_Id == r.Curriculum_Id && rs.Curse_Id == r.Curse_Id).ToList();
                 int count = find_list.Count;
                 if (count <= 0)
                 {
@@ -835,7 +835,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             else
             {
                 //集合数据判断
-                ReconcileView find_r = SQLGetReconcileDate().Where(rs => rs.Curriculum_Id == r.Curriculum_Id && rs.AnPaiDate == r.AnPaiDate && rs.ClassSchedule_Id == r.ClassSchedule_Id).FirstOrDefault();
+                ReconcileView find_r = SQLGetReconcileDate().Where(rs => rs.Curriculum_Id == r.Curriculum_Id && rs.AnPaiDate == r.AnPaiDate && rs.ClassSchedule_Id == r.ClassSchedule_Id && r.Curriculum_Id !="软件工厂").FirstOrDefault();
                 if (find_r != null)
                 {
                     s = true;
@@ -1338,13 +1338,13 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         /// <param name="days"></param>
         /// <param name="class_id"></param>
         /// <returns></returns>
-        public bool AidClassData(DateTime date, int days, int class_id, GetYear YearMon,int curse)
+        public bool AidClassData(DateTime date, int days, int class_id, GetYear YearMon, int curse)
         {
             bool s = false;
             //days = days - 1;
             try
             {
-                
+
 
                 List<Reconcile> recon = new List<Reconcile>();
                 List<Reconcile> reconciles = Time_intervalDate(date, curse).Where(r => r.ClassSchedule_Id == class_id).ToList();
@@ -1394,7 +1394,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             return s;
         }
 
-        public bool DescClassData(DateTime date, int days, int class_id, GetYear YearMon,int curse)
+        public bool DescClassData(DateTime date, int days, int class_id, GetYear YearMon, int curse)
         {
             bool s = false;
             //days = days - 1;
@@ -2553,7 +2553,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         /// <param name="date">日期</param>
         /// <param name="curse">时段：上午、下午  上午0，下午1，上午下午2</param>
         /// <returns></returns>
-        public List<Reconcile> Time_intervalDate(DateTime date,int curse)
+        public List<Reconcile> Time_intervalDate(DateTime date, int curse)
         {
             string dd = date.Year + "-" + date.Month + "-" + date.Day;
             if (curse == 0)
@@ -2565,7 +2565,9 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             {
                 List<Reconcile> list = this.GetListBySql<Reconcile>("select * from Reconcile where AnPaiDate>='" + dd + "' and curse_id like '下午%'");
                 return list;
-            } else  {
+            }
+            else
+            {
                 List<Reconcile> list = this.GetListBySql<Reconcile>("select * from Reconcile where AnPaiDate>='" + dd + "'");
                 return list;
             }
@@ -2642,7 +2644,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             }
             catch (Exception ex)
             {
-                  
+
                 string m = ex.Message;
             }
 
@@ -2798,7 +2800,7 @@ Curriculum_Id like '职素' or Curriculum_Id like '班会' or Curriculum_Id like
         /// <returns></returns>
         public int GetTeacherClassCount(int year, int month, string empname, string currName, bool IsCount)
         {
-              string sqlstr = @"select * from Reconcile where YEAR(AnPaiDate)='" + year + "' and MONTH(AnPaiDate)='" + month + "' and EmployeesInfo_Id='" + empname + "' and Curriculum_Id='" + currName + "' and IsDelete = 0";
+            string sqlstr = @"select * from Reconcile where YEAR(AnPaiDate)='" + year + "' and MONTH(AnPaiDate)='" + month + "' and EmployeesInfo_Id='" + empname + "' and Curriculum_Id='" + currName + "' and IsDelete = 0";
 
             List<Reconcile> list = this.GetListBySql<Reconcile>(sqlstr);
 
@@ -2827,10 +2829,11 @@ Curriculum_Id like '职素' or Curriculum_Id like '班会' or Curriculum_Id like
                         {
                             number += 1;
                         }
-                        else {
+                        else
+                        {
                             number += 2;
                         }
-                        
+
                     }
                     else
                     {
@@ -2838,7 +2841,7 @@ Curriculum_Id like '职素' or Curriculum_Id like '班会' or Curriculum_Id like
                     }
                 }
             }
-            
+
             return number;
         }
 
@@ -2902,48 +2905,94 @@ Curriculum_Id like '职素' or Curriculum_Id like '班会' or Curriculum_Id like
         public List<Reconcile> AddCurr(int count, DateTime date, int class_id, GetYear year, string currname, int classroomid, string curse, string emp)
         {
             List<Reconcile> datalist = new List<Reconcile>();
-            for (int i = 0; i < count; i++)
+            if (curse.Contains("晚上"))
             {
-                Reconcile r = new Reconcile();
-                r.AnPaiDate = date;
-                if (date.Month >= year.StartmonthName && date.Month <= year.EndmonthName)
+                for (int i = 0; i < count; i++)
                 {
-                    //单休
-                    if (date.DayOfWeek == DayOfWeek.Saturday)
+                    Reconcile r = new Reconcile();
+                    r.AnPaiDate = date;
+                    if (date.Month >= year.StartmonthName && date.Month <= year.EndmonthName)
                     {
-                        //星期六
-                        date = date.AddDays(2);
+                        //单休
+                        if (date.DayOfWeek == DayOfWeek.Friday)
+                        {
+                            //星期五
+                            date = date.AddDays(3);
+                        }
+                        else
+                        {
+                            date = date.AddDays(1);
+                        }
                     }
                     else
                     {
-                        date = date.AddDays(1);
+                        //双休
+                        if (date.DayOfWeek == DayOfWeek.Thursday)
+                        {
+                            //星期四
+                            date = date.AddDays(4);
+                        }
+                        else
+                        {
+                            date = date.AddDays(1);
+                        }
                     }
-                }
-                else
-                {
-                    //双休
-                    if (date.DayOfWeek == DayOfWeek.Friday)
-                    {
-                        //星期五
-                        date = date.AddDays(3);
-                    }
-                    else
-                    {
-                        date = date.AddDays(1);
-                    }
-                }
 
-                r.ClassRoom_Id = classroomid;
-                r.ClassSchedule_Id = class_id;
-                r.Curse_Id = curse;
-                r.Curriculum_Id = currname;
-                r.EmployeesInfo_Id = emp;
-                r.IsDelete = false;
-                r.NewDate = DateTime.Now;
+                    r.ClassRoom_Id = classroomid;
+                    r.ClassSchedule_Id = class_id;
+                    r.Curse_Id = curse;
+                    r.Curriculum_Id = currname;
+                    r.EmployeesInfo_Id = emp;
+                    r.IsDelete = false;
+                    r.NewDate = DateTime.Now;
 
-                datalist.Add(r);
+                    datalist.Add(r);
+                }
             }
+            else
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    Reconcile r = new Reconcile();
+                    r.AnPaiDate = date;
+                    if (date.Month >= year.StartmonthName && date.Month <= year.EndmonthName)
+                    {
+                        //单休
+                        if (date.DayOfWeek == DayOfWeek.Saturday)
+                        {
+                            //星期六
+                            date = date.AddDays(2);
+                        }
+                        else
+                        {
+                            date = date.AddDays(1);
+                        }
+                    }
+                    else
+                    {
+                        //双休
+                        if (date.DayOfWeek == DayOfWeek.Friday)
+                        {
+                            //星期五
+                            date = date.AddDays(3);
+                        }
+                        else
+                        {
+                            date = date.AddDays(1);
+                        }
+                    }
 
+                    r.ClassRoom_Id = classroomid;
+                    r.ClassSchedule_Id = class_id;
+                    r.Curse_Id = curse;
+                    r.Curriculum_Id = currname;
+                    r.EmployeesInfo_Id = emp;
+                    r.IsDelete = false;
+                    r.NewDate = DateTime.Now;
+
+                    datalist.Add(r);
+                }
+            }
             return datalist;
         }
 

@@ -516,7 +516,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
 
                 return Json(new { code = -1 });
             }
-         
         }
         /// <summary>
         /// 获取待入账数据

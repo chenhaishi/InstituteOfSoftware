@@ -46,11 +46,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
             //当前登陆人
             Base_UserModel user = Base_UserBusiness.GetCurrentUser();
             //  int DepaID = Depa.GetList().Where(a => a.DeptName.Contains("教质部") && a.IsDel == false).FirstOrDefault().DeptId;
-            var list = dbtext.GetList().ToList();
+            var list = dbtext.GetList().Where(d=>d.IsDelete==false).ToList();
             if (dbtext.GetList().Where(a => a.informatiees_Id == user.EmpNumber).FirstOrDefault() != null)
             {
                 //employeesInfoManage.GetDeptByEmpid(user.EmpNumber).DeptId;//部门
-                list= dbtext.GetList().Where(a =>  employeesInfoManage.GetDeptByEmpid(a.informatiees_Id).DeptId == employeesInfoManage.GetDeptByEmpid(user.EmpNumber).DeptId).ToList();
+                list= dbtext.GetList().Where(a =>  employeesInfoManage.GetDeptByEmpid(a.informatiees_Id).DeptId == employeesInfoManage.GetDeptByEmpid(user.EmpNumber).DeptId&&a.IsDelete==false).ToList();
             }
                 //    List<EmployeesInfo> EmployeesInfoList = new List<EmployeesInfo>();
                 var emp=   employeesInfoManage.GetList();

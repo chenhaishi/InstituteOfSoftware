@@ -558,7 +558,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             int WorkDay = 0;
             if (IsDanxiu == "0")
             {
-                WorkDay = WorkDaysOfyearmonth(dt.Year, dt.Month, true);
+                WorkDay = WorkDaysOfyearmonth(dt.Year, dt.Month, true); 
             }
             else {
                 WorkDay = WorkDaysOfyearmonth(dt.Year, dt.Month, false);
@@ -611,9 +611,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             ViewBag.deps = deps;
             return View();
         }
-
         
-
         /// <summary>
         /// 计算当月工作日天数
         /// </summary>

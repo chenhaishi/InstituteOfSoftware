@@ -1027,6 +1027,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
                     TotalcostView views = new TotalcostView();
                     views.TypeID = item1.id;
                     view.ListTotalcostView.Add(views);
+                    view.ListTotalcostView.Add(views);
                 }
                 totalcostViews.Add(view);
 

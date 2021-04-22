@@ -170,6 +170,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 view.Total = item.Total;//合计
                 view.PayCardSalary = msrmanage.GetPaycardSalary(view.Id, view.Total, view.PersonalSocialSecurity, eseobj.ContributionBase);//工资卡工资
                 view.CashSalary = msrmanage.GetCashSalary(view.Id, view.Total, view.PayCardSalary);//现金工资
+                view.IsApproval = item.IsApproval;
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
                 result.Add(view);
             }
@@ -661,7 +662,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             data.ForEach(d =>
             {
                 var att = attlist.Where(i=>i.EmployeeId==d.EmployeeId).FirstOrDefault();
-                var row = (HSSFRow)sheet.CreateRow(num);
+                 var row = (HSSFRow)sheet.CreateRow(num);
                 YearAndMonth =FirstTime.ToString();
 
                 //var Salaryone = monthly.GetSalaryone(d.BaseSalary , d.PositionSalary, d.MonthPerformancePay, d.NetbookSubsidy, d.SocialSecuritySubsidy, att.DeserveToRegularDays, att.ToRegularDays, att.LeaveDays, att.AbsenteeismDays,att.NonPersonalLeaveNum);

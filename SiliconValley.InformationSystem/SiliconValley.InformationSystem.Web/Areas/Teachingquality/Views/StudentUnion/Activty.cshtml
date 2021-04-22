@@ -1,0 +1,149 @@
+﻿
+@{
+    ViewBag.Title = "Activty";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+    @section style{
+        <style>
+            .linu {
+                width: 200px;
+            }
+        </style>
+        }
+
+    <form class="layui-form" action="">
+        <div class="layui-carousel-left" style="width:80%">
+            <div class="layui-row ">
+                <div class="layui-row layui-form-item">
+                    <div class="layui-col-xs3">
+
+                        <label class="layui-form-label" style="width:110px;">文件标题：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input linu" name="Dateofregistration" id="Dateofregistration" placeholder="请输入文件标题">
+                        </div>
+
+                    </div>
+                    <div style="position:absolute;left:30%;">
+                        <button class="layui-btn" lay-submit="" type="button" lay-filter="demo2"><i class="layui-icon">&#xe615;</i>查询</button>
+                    </div>
+
+                </div>
+
+
+                </div>
+            </div>
+    </form>
+
+    <table class="layui-hide" id="test" lay-filter="test"></table>
+
+
+    @section script{
+        @*头部工具栏*@
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="Dox"> <i class="layui-icon">&#xe642;</i>文件上传</button>
+    </div>
+</script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" id="DOX" lay-event="select">下载文件</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" id="DOX" lay-event="Delete">删除</a>
+</script>
+<script>
+
+    var bind = function () {
+        layui.use(['table', 'layer', 'form'], function () {
+            var table = layui.table;
+            var layer = layui.layer;
+            var form = layui.form;
+            //表格渲染
+            table.render({
+                elem: '#test'
+                , url: '/Teachingquality/StudentUnion/Acticty_List'
+                , toolbar: '#toolbarDemo'
+                , id: 'idTest'
+                , cols: [[
+                    { field: 'Title', title: '标题', fixed: 'left' }
+                    , { field: 'ADox', title: '文件地址' }
+                    , { field: 'AddTime', title: '时间' }
+                    , { title: '操作', toolbar: '#barDemo', fixed: 'right' }
+                ]]
+                , page: true
+                , limit: 15
+                , limits: [15, 20, 25]
+            });
+
+            //监听头部工具栏
+            table.on('toolbar(test)', function (obj) {
+                //var checkStatus = table.checkStatus(obj.config.id);
+                switch (obj.event) {
+                    case "Dox":
+                        layer.open({
+                            title: "学生会活动",
+                            type: 2,
+                            area: ['50%', '50%']
+                            , content: "/Teachingquality/StudentUnion/openActivty"
+
+                            //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                        });
+                        break;
+                };
+            });
+            //监听工作条
+            table.on('tool(test)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+                var data = obj.data; //获得当前行数据
+                var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+                var tr = obj.tr; //获得当前行 tr 的DOM对象
+
+                if (layEvent === 'select') { //查看
+                    //console.log(data);
+                    //$.post("/Teachingquality/StudentUnion/DownloadComputerSheet", { AID: data.AID }, function (res) {
+
+                    //});
+                    $('#DOX').attr('href', "/Teachingquality/StudentUnion/DownloadComputerSheet?AID=" + data.AID);
+                    //layer.open({
+                    //    title: name,
+                    //    type: 2,
+                    //    area: ['900px', '790px']
+                    //    , content: "/Teachingquality/StudentUnion/openActivty"
+
+                    //    //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                    //});
+                }
+                else if (layEvent === 'Delete') {
+                    layer.confirm('确定删除吗', {
+                        btn: ['确定'] //可以无限个按钮
+                    }, function (index, layero) {
+                        //按钮【按钮一】的回调
+                        $.post("/Teachingquality/StudentUnion/DeleteActivty", { AID: data.AID }, function (r) {
+                            if (r.code == 0) {
+                                bind()
+                                layer.msg(r.msg);
+                            }
+                            else {
+                                layer.msg(r.msg);
+                            }
+                        });
+                    });
+                }
+
+            });
+
+            //查询功能
+            form.on('submit(demo2)', function (data) {
+                var x = data.field;
+                table.reload('idTest', {
+                    where: {
+                        StuTitle: x.Dateofregistration,
+                    }, page: {
+                        curr: 1
+                    }
+                });
+                return false;
+            });
+        })
+    };
+</script>
+
+}
+
+

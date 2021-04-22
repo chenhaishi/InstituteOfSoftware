@@ -870,19 +870,95 @@ namespace SiliconValley.InformationSystem.Business.EnrollmentBusiness
                     {
                         continue;
                     }
-                    names = name;
+                    //names = name;
+                    #region
                     if (identitydocument.Contains("'"))
                     {
                         identitydocument = identitydocument.Substring(1, 18);
                     }
-                    if (identitydocument.Length!=18)
+                    if (identitydocument.Length != 18)
                     {
-                        ajaxresult.Msg = name+"的身份证错误";
-                        break;
+                        names += name + "的身份证错误</br>";
+                        continue;
+                        //ajaxresult.Msg = name+"的身份证错误";
+                        //break;
                     }
+                    else
+                    {
+                        var x = identitydocument.Substring(6).Substring(0, 8);
+                        var n = int.Parse(x.Substring(0, 4));
+                        var y = int.Parse(x.Substring(4, 2));
+                        var r = int.Parse(x.Substring(6, 2));
+                        if (y > 12)
+                        {
+                            names += name + "的身份证错误</br>";
+                            continue;
+
+                        }
+                       
+                            if (y==2)
+                            {
+                            if (n % 4 == 0)
+                            {
+                                if (r > 29)
+                                {
+                                    names += name + "的身份证错误</br>";
+                                    continue;
+                                }
+                            }
+                            else
+                            {
+                                if (r > 28)
+                                {
+                                    names += name + "的身份证错误</br>";
+                                    continue;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            
+                        }
+                        if (y==1||y==3||y==5||y==7||y==8||y==10||y==12)
+                        {
+                            if (r > 31)
+                            {
+                                names += name + "的身份证错误</br>";
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            if (r > 30)
+                            {
+                                names += name + "的身份证错误</br>";
+                                continue;
+                            }
+                        }
+
+                    }
+                    #endregion
+
+
                     var student = studentInformationBusiness.GetListBySql<StudentInformation>("select * from StudentInformation where identitydocument='" + identitydocument + "'").FirstOrDefault();
                     StudentInformation stu = new StudentInformation();
-
+                    List<ExportStudentBeanData> listall = this.GetListBySql<ExportStudentBeanData>("select * from StudentBeanView where StuName='" + name + "' and IsDelete=0 order by BeanDate desc ");
+                    if (listall.Count() == 0)
+                    {
+                        names += name + "查询不到备案数据</br>";
+                        continue;
+                    }
+                    else
+                    {
+                        if (listall.Where(i => i.StatusName == "已报名").Count() == 0)
+                        {
+                            stu.StudentPutOnRecord_Id = listall.Where(i=>i.StatusName=="未报名").FirstOrDefault().Id;
+                        }
+                        else
+                        {
+                            stu.StudentPutOnRecord_Id = listall.Where(i => i.StatusName == "已报名").FirstOrDefault().Id;
+                        }
+                    }
                     if (student == null)
                     {
                         int number = 0;
@@ -929,6 +1005,7 @@ namespace SiliconValley.InformationSystem.Business.EnrollmentBusiness
                             continue;
                         }
                     }
+
                     var year = Datestration.Substring(0, 4);
                     var month = Datestration.Substring(4, 2);
                     Enrollment e = new Enrollment();
@@ -940,6 +1017,10 @@ namespace SiliconValley.InformationSystem.Business.EnrollmentBusiness
                     e.IsDelete = false;
                     Insert(e);
                 }
+                ajaxresult.Success = true;
+                ajaxresult.ErrorCode = 100;
+                ajaxresult.Msg = names;
+                ajaxresult.Data = "0";
             }
 
             catch (Exception ex)

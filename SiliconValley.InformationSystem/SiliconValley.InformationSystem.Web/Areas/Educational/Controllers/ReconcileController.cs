@@ -92,7 +92,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             var EmployId_Fen = (
                     from m in AllReconList
                     group m by m.EmployeesInfo_Id into list
-                    select list).ToList();
+                    select list).ToList().Where(e=>e.Key != null).ToList();
 
 
             for (int i = 0; i < EmployId_Fen.Count; i++)
@@ -272,6 +272,65 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             }
 
             return Json(a, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 查询某年某月的员工排课数据是否有冲突的数据，例如下午就两条排课数据的
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult Reconcil_Month()
+        {
+            AjaxResult result = new AjaxResult();
+            DateTime date = DateTime.Parse(Request.Form["check_date"]);
+
+            string recon_sql = "select * from Reconcile where Year(AnPaiDate)=" + date.Year + " and Month(AnPaiDate) = " + date.Month + " and IsDelete =0";
+            List<Reconcile> list = Reconcile_Entity.GetListBySql<Reconcile>(recon_sql);
+
+            //根据教员id分组
+            var EmpID_Fenzu = (
+                    from m in list
+                    group m by m.EmployeesInfo_Id into list1
+                    select list1).ToList();
+
+            //分组安排课程日期
+            var Recon_Date = (
+                from m in list
+                group m by m.AnPaiDate into list1
+                select list1).ToList();
+
+            List<checkRecon_View> checklist = new List<checkRecon_View>();
+
+            for (int i = 0; i < EmpID_Fenzu.Count; i++)
+            {
+                List<string> datelist = new List<string>();
+                for (int j = 0; j < Recon_Date.Count; j++)
+                {
+                    List<Reconcile> reconciles = list.Where(a => a.AnPaiDate.Day == Recon_Date[j].Key.Day && a.EmployeesInfo_Id == EmpID_Fenzu[i].Key && a.EmployeesInfo_Id != null).ToList();
+                    List<string> Duplica = new List<string>();
+                    for (int g = 0; g < reconciles.Count; g++)
+                    {
+                        Duplica.Add(reconciles[g].Curse_Id);
+                    }
+                    bool HaveDuplicates = Duplica.GroupBy(n => n).Any(c => c.Count() > 1);
+                    if (HaveDuplicates)
+                    {
+                        datelist.Add(Recon_Date[j].Key.ToString());
+                    }
+                }
+                if (datelist.Count != 0)
+                {
+                    checkRecon_View che = new checkRecon_View();
+                    che.EmpName = Emp_Entity.GetEntity(EmpID_Fenzu[i].Key).EmpName;//EmpID_Fenzu[i].Key; 
+                    che.date = datelist;
+                    checklist.Add(che);
+                }
+
+            }
+            result.Data = checklist;
+
+
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -507,14 +566,14 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 int Kcount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(find_c.CourseCount / 4.0)));
                 //判断该班级这个课程是否已排完课
                 int count = Reconcile_Entity.GetList().Where(r => r.Curriculum_Id == ke && r.ClassSchedule_Id == class_Id).ToList().Count;
-                if (count > 0)
+                if (count > 0 && ke != "软件工厂")
                 {
                     a.Msg = Reconcile_Com.ClassSchedule_Entity.GetEntity(class_Id).ClassNumber + "的" + ke + "已有排课数据，为了避免重复，请删除之后再操作！！";
                     a.Success = false;
                 }
-                else if (count == Kcount)
+                else if (count == Kcount && ke != "软件工厂")
                 {
-                    a.Msg = Reconcile_Com.ClassSchedule_Entity.GetEntity(class_Id).ClassNumber + "的" + ke + "已有排课数据,请安排其他课程！！";
+                    a.Msg = Reconcile_Com.ClassSchedule_Entity.GetEntity(class_Id).ClassNumber + "的" + ke + "已安排完排课,请安排其他课程！！";
                     a.Success = false;
                 }
                 else

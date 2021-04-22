@@ -13,12 +13,12 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
     /// <summary>
     /// 显示课表数据的业务类
     /// </summary>
-   public class TimeTableManeger 
+    public class TimeTableManeger
     {
         public ReconcileManeger Reconcile_Entity;
         public EvningSelfStudyManeger EvningSelfStudy_Entity;
         public TeacherNightManeger Teacher_Entity = new TeacherNightManeger();
-        
+
         /// <summary>
         /// 获取排课数据(显示课表形式)
         /// </summary>
@@ -38,17 +38,18 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             {
                 foreach (Classroom c in classrooms)
                 {
-                     List<ReconcileView> finddata=  r_list.Where(r => (r.Curse_Id == timename || r.Curse_Id == timenames) && r.ClassRoom_Id == c.Id).ToList();
-                     AnPaiData new_a = new AnPaiData();
-                    if (finddata.Count==1)
+                    List<ReconcileView> finddata = r_list.Where(r => (r.Curse_Id == timename || r.Curse_Id == timenames) && r.ClassRoom_Id == c.Id).ToList();
+                    AnPaiData new_a = new AnPaiData();
+                    if (finddata.Count == 1)
                     {
-                      
+
                         new_a.R_Id = finddata[0].Id.ToString();
                         new_a.ClassName = Reconcile_Com.ClassSchedule_Entity.GetEntity(finddata[0].ClassSchedule_Id).ClassNumber;
                         new_a.Teacher = finddata[0].EmployeesInfo_Id == null ? "无" : Reconcile_Com.Employees_Entity.GetEntity(finddata[0].EmployeesInfo_Id).EmpName;
                         new_a.NeiRong = finddata[0].Curriculum_Id;
                         a_list.Add(new_a);
-                    }else if (finddata.Count>1)
+                    }
+                    else if (finddata.Count > 1)
                     {
                         List<string> sbRid = new List<string>();
                         List<string> sbclassname = new List<string>();
@@ -61,46 +62,46 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                         //int index = 0;
                         foreach (ReconcileView rr in finddata)
                         {
-                            int Idcount= sbRid.Where(r => r == rr.Id.ToString()).Count();
-                            if (Idcount<=0)
+                            int Idcount = sbRid.Where(r => r == rr.Id.ToString()).Count();
+                            if (Idcount <= 0)
                             {
                                 sbRid.Add(rr.Id.ToString());
                             }
 
                             int classcount = sbclassname.Where(cl => cl == rr.ClassNumber).Count();
-                            if (classcount<=0)
+                            if (classcount <= 0)
                             {
                                 sbclassname.Add(rr.ClassNumber);
                             }
                             string emp = rr.EmpName;
-                            int teachercount= sbTeacher.Where(t => t ==emp).Count();
+                            int teachercount = sbTeacher.Where(t => t == emp).Count();
                             if (teachercount <= 0)
-                            {                               
+                            {
                                 sbTeacher.Add(emp);
                             }
 
-                            int nrcount= sbNeiRong.Where(n => n == rr.Curriculum_Id).Count();
+                            int nrcount = sbNeiRong.Where(n => n == rr.Curriculum_Id).Count();
 
                             if (nrcount <= 0)
                             {
                                 sbNeiRong.Add(rr.Curriculum_Id);
                             }
-                             
+
                         }
-                         
-                        for (int i = sbRid.Count-1; i>=0; i--)
+
+                        for (int i = sbRid.Count - 1; i >= 0; i--)
                         {
-                            if (i==0)
+                            if (i == 0)
                             {
                                 idsb.Append(sbRid[i]);
                             }
                             else
                             {
-                                idsb.Append(sbRid[i]+",");
+                                idsb.Append(sbRid[i] + ",");
                             }
                         }
-                        
-                        for (int i = sbclassname.Count-1; i >=0; i--)
+
+                        for (int i = sbclassname.Count - 1; i >= 0; i--)
                         {
                             if (i == 0)
                             {
@@ -111,8 +112,8 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                                 classsb.Append(sbclassname[i] + ",");
                             }
                         }
-                      
-                        for (int i = sbTeacher.Count-1; i >= 0; i--)
+
+                        for (int i = sbTeacher.Count - 1; i >= 0; i--)
                         {
                             if (i == 0)
                             {
@@ -123,8 +124,8 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                                 teachersb.Append(sbTeacher[i] + ",");
                             }
                         }
-                        
-                         for (int i = sbNeiRong.Count-1; i >= 0; i--)
+
+                        for (int i = sbNeiRong.Count - 1; i >= 0; i--)
                         {
                             if (i == 0)
                             {
@@ -144,97 +145,120 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                     else
                     {
                         a_list.Add(new_a);
-                    }    
-                }        
-            }            
-             
+                    }
+                }
+            }
+
             else if (timename == "晚一" || timename == "晚二")
             {
                 foreach (Classroom c in classrooms)
                 {
-                    List<EvningSelfStudyView> finddata= e_list.Where(e => e.curd_name == timename && e.Classroom_id==c.Id).ToList();
-                    AnPaiData a = new AnPaiData();
-                    if (finddata.Count==1)
-                    {                        
-                        a.R_Id = finddata[0].id.ToString();
-                        a.ClassName =Reconcile_Com.ClassSchedule_Entity.GetEntity( finddata[0].ClassSchedule_id).ClassNumber;
-                        a.Teacher = finddata[0].EmpName;
-                        a_list.Add(a);
-                    }
-                    else if(finddata.Count >1)
+                    List<ReconcileView> findRecon = r_list.Where(e => e.Curse_Id == timename && e.ClassRoom_Id == c.Id).ToList();
+                    if (timename == "晚一")
                     {
-                        StringBuilder sbrid = new StringBuilder();
-                        StringBuilder sbclassname = new StringBuilder();
-                        StringBuilder sbteacher = new StringBuilder();
-                        List<string> rid = new List<string>();
-                        List<string> classname = new List<string>();
-                        List<string> teacher = new List<string>();
-                        //int index = 0;
-                        foreach (EvningSelfStudyView item in finddata)
-                        {
-                            int ridcount = rid.Where(r => r == item.id.ToString()).Count();
-                            if (ridcount<=0)
-                            {
-                                rid.Add(item.id.ToString());
-                            }
-
-                            int classnamecount = classname.Where(cl => cl == item.ClassNumber).Count();
-
-                            if (classnamecount<=0)
-                            {
-                                classname.Add(item.ClassNumber);
-                            }
-                            string emp = item.EmpName;
-                            int teachercount = classname.Where(t => t == emp).Count();
-                            if (teachercount<=0)
-                            {
-                                teacher.Add(emp);
-                            }                             
-                        }
-
-                        for (int i = (rid.Count-1); i >=0 ; i--)
-                        {
-                            if (i==0)
-                            {
-                                sbrid.Append(rid[i].ToString());
-                            }
-                            else
-                            {
-                                sbrid.Append(rid[i].ToString()+",");
-                            }
-                        }
-
-                        for (int i = (classname.Count-1); i >=0; i--)
-                        {
-                            if (i==0)
-                            {
-                                sbclassname.Append(classname[i]);
-                            }
-                            else
-                            {
-                                sbclassname.Append(classname[i]+",");
-                            }
-                        }
-
-                        for (int i = (teacher.Count-1); i >=0; i--)
-                        {
-                            if (i==0)
-                            {
-                                sbteacher.Append(teacher[i]);
-                            }
-                            else
-                            {
-                                sbteacher.Append(teacher[i]+",");
-                            }
-                        }
-                        a.R_Id = sbrid.ToString();
-                        a.ClassName = sbclassname.ToString();
-                        a.Teacher = sbteacher.ToString();
-                        a_list.Add(a);
+                        findRecon = r_list.Where(e => e.Curse_Id == "晚上12节" && e.ClassRoom_Id == c.Id).ToList();
+                    }
+                    else {
+                        findRecon = r_list.Where(e => e.Curse_Id == "晚上34节" && e.ClassRoom_Id == c.Id).ToList();
+                    }
+                    
+                    if (findRecon.Count > 0)
+                    {
+                        AnPaiData b = new AnPaiData();
+                        b.R_Id = findRecon[0].Id.ToString();
+                        b.ClassName = Reconcile_Com.ClassSchedule_Entity.GetEntity(findRecon[0].ClassSchedule_Id).ClassNumber;
+                        b.Teacher = findRecon[0].EmpName;
+                        a_list.Add(b);
                     }
                     else
                     {
-                        a_list.Add(a);
+
+
+                        List<EvningSelfStudyView> finddata = e_list.Where(e => e.curd_name == timename && e.Classroom_id == c.Id).ToList();
+                        AnPaiData a = new AnPaiData();
+                        if (finddata.Count == 1)
+                        {
+
+                            a.R_Id = finddata[0].id.ToString();
+                            a.ClassName = Reconcile_Com.ClassSchedule_Entity.GetEntity(finddata[0].ClassSchedule_id).ClassNumber;
+                            a.Teacher = finddata[0].EmpName;
+                            a_list.Add(a);
+                        }
+                        else if (finddata.Count > 1)
+                        {
+                            StringBuilder sbrid = new StringBuilder();
+                            StringBuilder sbclassname = new StringBuilder();
+                            StringBuilder sbteacher = new StringBuilder();
+                            List<string> rid = new List<string>();
+                            List<string> classname = new List<string>();
+                            List<string> teacher = new List<string>();
+                            //int index = 0;
+                            foreach (EvningSelfStudyView item in finddata)
+                            {
+                                int ridcount = rid.Where(r => r == item.id.ToString()).Count();
+                                if (ridcount <= 0)
+                                {
+                                    rid.Add(item.id.ToString());
+                                }
+
+                                int classnamecount = classname.Where(cl => cl == item.ClassNumber).Count();
+
+                                if (classnamecount <= 0)
+                                {
+                                    classname.Add(item.ClassNumber);
+                                }
+                                string emp = item.EmpName;
+                                int teachercount = classname.Where(t => t == emp).Count();
+                                if (teachercount <= 0)
+                                {
+                                    teacher.Add(emp);
+                                }
+                            }
+
+                            for (int i = (rid.Count - 1); i >= 0; i--)
+                            {
+                                if (i == 0)
+                                {
+                                    sbrid.Append(rid[i].ToString());
+                                }
+                                else
+                                {
+                                    sbrid.Append(rid[i].ToString() + ",");
+                                }
+                            }
+
+                            for (int i = (classname.Count - 1); i >= 0; i--)
+                            {
+                                if (i == 0)
+                                {
+                                    sbclassname.Append(classname[i]);
+                                }
+                                else
+                                {
+                                    sbclassname.Append(classname[i] + ",");
+                                }
+                            }
+
+                            for (int i = (teacher.Count - 1); i >= 0; i--)
+                            {
+                                if (i == 0)
+                                {
+                                    sbteacher.Append(teacher[i]);
+                                }
+                                else
+                                {
+                                    sbteacher.Append(teacher[i] + ",");
+                                }
+                            }
+                            a.R_Id = sbrid.ToString();
+                            a.ClassName = sbclassname.ToString();
+                            a.Teacher = sbteacher.ToString();
+                            a_list.Add(a);
+                        }
+                        else
+                        {
+                            a_list.Add(a);
+                        }
                     }
                 }
             }
@@ -253,8 +277,8 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             foreach (string item in id)
             {
                 AnPaiData a = new AnPaiData();
-                int number_id=  Convert.ToInt32(item);
-               Reconcile finddata= Reconcile_Entity.GetEntity(number_id);
+                int number_id = Convert.ToInt32(item);
+                Reconcile finddata = Reconcile_Entity.GetEntity(number_id);
                 a.R_Id = item;
                 a.ClassName = Reconcile_Com.ClassSchedule_Entity.GetEntity(finddata.ClassSchedule_Id).ClassNumber;
                 list.Add(a);
@@ -271,7 +295,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         public List<AnPaiData> GetEvningClassName(string[] id)
         {
             EvningSelfStudy_Entity = new EvningSelfStudyManeger();
-            return   EvningSelfStudy_Entity.GetClassname(id);
+            return EvningSelfStudy_Entity.GetClassname(id);
         }
     }
 }
