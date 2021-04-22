@@ -20,6 +20,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
     using SiliconValley.InformationSystem.Business.ClassSchedule_Business;
     using System.Xml;
     using SiliconValley.InformationSystem.Business.Cloudstorage_Business;
+    using System.IO;
+    using NPOI.HSSF.UserModel;
+    using SiliconValley.InformationSystem.Business.StudentBusiness;
 
     /// <summary>
     /// 满意度调查控制器
@@ -29,7 +32,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
     public class SatisfactionSurveyController : Controller
     {
 
-
+        BaseBusiness<SatisficingResultDetail> db_satisresultdetail = new BaseBusiness<SatisficingResultDetail>();
         // GET: Teaching/SatisfactionSurvey
         BaseBusiness<Department> db_dep = new BaseBusiness<Department>();
 
@@ -67,6 +70,269 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
             ViewBag.Permisslist = permisslist;
 
             return View();
+        }
+        /// <summary>
+        /// 食堂导出页面
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult CanteenExportView()
+        {
+            return View();
+        }
+        /// <summary>
+        /// 我的满意度学生查看
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult MySatisfactionCheck(int surveyResultID)
+        {
+            //提供 JoinSurveyStudents
+
+            var survey = db_survey.AllsatisficingResults().Where(d => d.ID == surveyResultID).FirstOrDefault();
+
+            var studentlist = db_survey.JoinSurveyStudents(surveyResultID);
+
+            ViewBag.SurveyConfigId = surveyResultID;
+
+            ViewBag.studentlist = studentlist;
+
+            return View();
+        }
+        /// <summary>
+        /// 食堂导出方法
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult CanteenExcel(string date)
+        {
+            var ajaxresult = new AjaxResult();
+            DateTime dt = DateTime.Parse(date);
+            string yys = dt.Year.ToString();
+            string mms = dt.Month.ToString();
+            MemoryStream bookStream = new MemoryStream();
+            var workbook = new HSSFWorkbook();
+            //表名
+            string Detailfilename = "食堂满意度调查表.xls";
+            //创建工作区
+            var sheet = workbook.CreateSheet();
+
+            #region 表头样式
+
+            HSSFCellStyle HeadercellStyle = (HSSFCellStyle)workbook.CreateCellStyle();
+            HSSFFont HeadercellFont = (HSSFFont)workbook.CreateFont();
+
+            HeadercellStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+            HeadercellFont.IsBold = true;
+
+            HeadercellStyle.SetFont(HeadercellFont);
+
+            #endregion
+
+
+            HSSFCellStyle ContentcellStyle = (HSSFCellStyle)workbook.CreateCellStyle();
+            HSSFFont ContentcellFont = (HSSFFont)workbook.CreateFont();
+
+            ContentcellStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+
+            CreateHeader();
+
+            int num = 1;
+            StudentInformationBusiness studet = new StudentInformationBusiness();
+            //string sql = "select * from CandidateInfo where Examination ='" + Examid + "'";
+            //var list = db_candidate.GetListBySql<CandidateInfo>(sql).ToList();
+
+            var xinxi = db_survey.satisficingConfigs().Where(d => d.Isitacanteen == true && d.CreateTime.Value.Year.ToString() == yys && d.CreateTime.Value.Month.ToString() == mms).ToList();
+            xinxi.ForEach(d =>
+            {
+                var row = (HSSFRow)sheet.CreateRow(num);
+                //string sqles = "select * from StudentInformation where StudentNumber = '" + d.StudentID + "'";
+                //var name = studet.GetListBySql<StudentInformation>(sqles).FirstOrDefault().Name;
+                var Schedule = db_class.GetList().Where(a => a.id == d.ClassNumber).FirstOrDefault().ClassNumber;
+                var staresultlist = db_survey.AllsatisficingResults().Where(c => c.SatisficingConfig == d.ID).ToList();
+                var total = 0;
+                var fenshu = 0;
+                staresultlist.ForEach(c =>
+                {
+                    var templist = db_satisresultdetail.GetList().Where(b => b.SatisficingBill == c.ID).ToList();
+
+                    templist.ForEach(x =>
+                    {
+                        total += (int)x.Scores;
+                    });
+                });
+
+                if (staresultlist.Count() == 0)
+                {
+                    fenshu = total / 1;
+                }
+                else
+                {
+                    fenshu = total / staresultlist.Count();
+                }
+                CreateCell(row, ContentcellStyle, 0, Schedule);//班级名字
+                CreateCell(row, ContentcellStyle, 1, "食堂");//调查对象
+                CreateCell(row, ContentcellStyle, 2, total.ToString());//总分
+                CreateCell(row, ContentcellStyle, 3, fenshu.ToString());//每个班的平均分
+
+                num++;
+
+            });
+            try
+            {
+                workbook.Write(bookStream);
+                bookStream.Seek(0, SeekOrigin.Begin);
+            }
+            catch (Exception ex)
+            {
+                ajaxresult.ErrorCode = 100;
+                ajaxresult.Msg = "导入失败，" + ex.Message;
+
+            }
+            return File(bookStream, "application / vnd.ms - excel", Detailfilename);
+
+            void CreateHeader()
+            {
+                HSSFRow Header = (HSSFRow)sheet.CreateRow(0);
+                Header.HeightInPoints = 40;
+                CreateCell(Header, HeadercellStyle, 0, "班级");
+                CreateCell(Header, HeadercellStyle, 1, "调查对象");
+                CreateCell(Header, HeadercellStyle, 2, "总分");
+                CreateCell(Header, HeadercellStyle, 3, "平均分");
+            }
+
+            void CreateCell(HSSFRow row, HSSFCellStyle TcellStyle, int index, string value)
+            {
+                HSSFCell Header_Name = (HSSFCell)row.CreateCell(index);
+
+                Header_Name.SetCellValue(value);
+
+                Header_Name.CellStyle = TcellStyle;
+            }
+        }
+        /// <summary>
+        /// 满意度导出页面
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult SatisfactionDerivationView()
+        {
+            return View();
+        }
+        /// <summary>
+        /// 满意度导出方法
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult TeacherExport(string date)
+        {
+            var ajaxresult = new AjaxResult();
+            DateTime dt = DateTime.Parse(date);
+            string yys = dt.Year.ToString();
+            string mms = dt.Month.ToString();
+            MemoryStream bookStream = new MemoryStream();
+            var workbook = new HSSFWorkbook();
+            //表名
+            string Detailfilename = "班主任教员满意度调查表.xls";
+            //创建工作区
+            var sheet = workbook.CreateSheet();
+
+            #region 表头样式
+
+            HSSFCellStyle HeadercellStyle = (HSSFCellStyle)workbook.CreateCellStyle();
+            HSSFFont HeadercellFont = (HSSFFont)workbook.CreateFont();
+
+            HeadercellStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+            HeadercellFont.IsBold = true;
+
+            HeadercellStyle.SetFont(HeadercellFont);
+
+            #endregion
+
+
+            HSSFCellStyle ContentcellStyle = (HSSFCellStyle)workbook.CreateCellStyle();
+            HSSFFont ContentcellFont = (HSSFFont)workbook.CreateFont();
+
+            ContentcellStyle.Alignment = NPOI.SS.UserModel.HorizontalAlignment.Center;
+
+            CreateHeader();
+
+            int num = 1;
+            StudentInformationBusiness studet = new StudentInformationBusiness();
+            var xinxi = db_survey.satisficingConfigs().Where(d => d.Isitacanteen == false && d.CreateTime.Value.Year.ToString() == yys && d.CreateTime.Value.Month.ToString() == mms).ToList();
+            xinxi.ForEach(d =>
+            {
+                var row = (HSSFRow)sheet.CreateRow(num);
+                var Schedule = db_class.GetList().Where(a => a.id == d.ClassNumber).FirstOrDefault();
+                var staresultlist = db_survey.AllsatisficingResults().Where(c => c.SatisficingConfig == d.ID).ToList();
+                //通过班级获取班主任
+                HeadmasterBusiness business = new HeadmasterBusiness();
+                var banzhuren = business.ClassHeadmaster(Schedule.id);
+                //获取教员的课程
+                var kecheng = db_course.GetList().Where(m => m.CurriculumID == d.CurriculumID).FirstOrDefault();
+                 //获取教员名称
+                 var jiaoyuanName = db_emp.GetList().Where(l =>l.EmployeeId == d.EmployeeId).FirstOrDefault();
+                var total = 0;
+                var fenshu = 0;
+                staresultlist.ForEach(c =>
+                {
+                    var templist = db_satisresultdetail.GetList().Where(b => b.SatisficingBill == c.ID).ToList();
+
+                    templist.ForEach(x =>
+                    {
+                        total += (int)x.Scores;
+                    });
+                });
+
+                if (staresultlist.Count() == 0)
+                {
+                    fenshu = total / 1;
+                }
+                else
+                {
+                    fenshu = total / staresultlist.Count();
+                }
+                CreateCell(row, ContentcellStyle, 0, Schedule.ClassNumber);//班级名字
+                CreateCell(row, ContentcellStyle, 1, jiaoyuanName.EmpName);//专业老师
+                CreateCell(row, ContentcellStyle, 2, kecheng==null?"空": kecheng.CourseName);//专业课程
+                CreateCell(row, ContentcellStyle, 3, fenshu.ToString());//总分
+                CreateCell(row, ContentcellStyle, 4, fenshu.ToString());//平均分
+                //CreateCell(row, ContentcellStyle, 5, banzhuren.EmpName);//班主任
+                //CreateCell(row, ContentcellStyle, 6, fenshu.ToString());//总分
+                //CreateCell(row, ContentcellStyle, 7, fenshu.ToString());//平均分
+                num++;
+
+            });
+            try
+            {
+                workbook.Write(bookStream);
+                bookStream.Seek(0, SeekOrigin.Begin);
+            }
+            catch (Exception ex)
+            {
+                ajaxresult.ErrorCode = 100;
+                ajaxresult.Msg = "导入失败，" + ex.Message;
+
+            }
+            return File(bookStream, "application / vnd.ms - excel", Detailfilename);
+
+            void CreateHeader()
+            {
+                HSSFRow Header = (HSSFRow)sheet.CreateRow(0);
+                Header.HeightInPoints = 40;
+                CreateCell(Header, HeadercellStyle, 0, "班级");
+                CreateCell(Header, HeadercellStyle, 1, "任课老师及班主任");
+                CreateCell(Header, HeadercellStyle, 2, "专业课程");
+                CreateCell(Header, HeadercellStyle, 3, "总分");
+                CreateCell(Header, HeadercellStyle, 4, "平均分");
+                //CreateCell(Header, HeadercellStyle, 5, "班主任");
+                //CreateCell(Header, HeadercellStyle, 6, "总分");
+                //CreateCell(Header, HeadercellStyle, 7, "平均分");
+            }
+
+            void CreateCell(HSSFRow row, HSSFCellStyle TcellStyle, int index, string value)
+            {
+                HSSFCell Header_Name = (HSSFCell)row.CreateCell(index);
+
+                Header_Name.SetCellValue(value);
+
+                Header_Name.CellStyle = TcellStyle;
+            }
         }
         /// <summary>
         /// 满意度注意事项页面
@@ -429,8 +695,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 result.Msg = ex.Message;
                 result.Data = null;
             }
-
-
             return Json(result, JsonRequestBehavior.AllowGet);
 
         }
@@ -442,7 +706,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
         /// <returns></returns>
         public ActionResult SurveyHistoryView()
         {
-
             //判断登录的角色
 
             Base_UserModel user = Base_UserBusiness.GetCurrentUser();
@@ -469,6 +732,60 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
 
         }
         /// <summary>
+        /// 获取历史食堂满意度
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult CanteenSelect(int limit,int page)
+        {
+            var xinxi = db_survey.satisficingConfigs().OrderByDescending(t => t.CreateTime).Where(d => d.Isitacanteen == true).ToList();
+            List<SatisficingConfig> skiplist = xinxi.Skip((page - 1) * limit).Take(limit).ToList();
+            List<SatisficingConfigDataView> resultlist = new List<SatisficingConfigDataView>();
+            foreach (var item in skiplist)
+            {
+                var tempobj = db_survey.ConvertToSatisficingConfigDataView(item);
+
+                resultlist.Add(tempobj);
+            }
+            var obj = new
+            {
+
+                code = 0,
+                msg = "",
+                count = xinxi.Count,
+                data = resultlist
+
+
+            };
+            return Json(obj, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
+        /// 获取食堂满意度查询
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult CanteenInquiry(int limit, int page)
+        {
+            var xinxi = db_survey.satisficingConfigs().OrderByDescending(t => t.CreateTime).Where(d =>   d.Isitacanteen == true).ToList();
+            List<SatisficingConfig> skiplist = xinxi.Skip((page - 1) * limit).Take(limit).ToList();
+            List<SatisficingConfigDataView> resultlist = new List<SatisficingConfigDataView>();
+            foreach (var item in skiplist)
+            {
+                var tempobj = db_survey.ConvertToSatisficingConfigDataView(item);
+
+                resultlist.Add(tempobj);
+            }
+            var obj = new
+            {
+
+                code = 0,
+                msg = "",
+                count = xinxi.Count,
+                data = resultlist
+
+
+            };
+            return Json(obj, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
         /// 获取我的满意度查询
         /// </summary>
         /// <returns></returns>
@@ -479,7 +796,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
             var xinxi = db_survey.satisficingConfigs().OrderByDescending(t=>t.CreateTime).Where(d => d.EmployeeId == user.EmpNumber).ToList();
             List<SatisficingConfig> skiplist = xinxi.Skip((page - 1) * limit).Take(limit).ToList();
             List<SatisficingConfigDataView> resultlist = new List<SatisficingConfigDataView>();
-
             foreach (var item in skiplist)
             {
                 var tempobj = db_survey.ConvertToSatisficingConfigDataView(item);
@@ -508,12 +824,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
 
         public ActionResult SurveyHistoryData(int limit, int page)
         {
-            Base_UserModel user = Base_UserBusiness.GetCurrentUser();
+            //Base_UserModel user = Base_UserBusiness.GetCurrentUser();
 
             //获取这些员工所在的部门
-
-            List<EmployeesInfo> emplist = db_survey.GetMyDepEmp(user);
-
+            EmployeesInfoManage yees = new EmployeesInfoManage();
+            //List<EmployeesInfo> emplist = db_survey.GetMyDepEmp(user);
+            string sql = "select * from EmployeesInfo";
+            var emplist = yees.GetListBySql<EmployeesInfo>(sql).ToList();
             var configtempList = db_survey.satisficingConfigs();
 
             var configList = new List<SatisficingConfig>();
@@ -650,8 +967,84 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
 
 
         }
+        /// <summary>
+        /// 对食堂满意度进行帅选
+        /// </summary>
+        /// <param name="empnumber"></param>
+        /// <param name="date"></param>
+        /// <param name="limit"></param>
+        /// <param name="page"></param>
+        /// <returns></returns>
+        public ActionResult CanteenSelection(string empnumber, string date, int limit, int page)
+        {
+            var list = db_survey.SurveyData_filters(empnumber, date);
 
+            var skiplist = list.Skip((page - 1) * limit).Take(limit);
 
+            List<SatisfactionSurveyDetailView> resultlist = new List<SatisfactionSurveyDetailView>();
+
+            foreach (var item in skiplist)
+            {
+                var tempobj = db_survey.AllsatisficingResults().Where(d => d.SatisficingConfig == item.ID).FirstOrDefault();
+
+                if (tempobj != null)
+                {
+                    var detail = db_survey.ConvertToViewModel(tempobj);
+
+                    if (detail != null)
+                        resultlist.Add(detail);
+                }
+            }
+
+            var obj = new
+            {
+                code = 0,
+                msg = "",
+                count = list.Count,
+                data = resultlist
+            };
+
+            return Json(obj, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
+        /// 对历史满意度调查记录进行查询
+        /// </summary>
+        /// <param name="empnumber"></param>
+        /// <param name="date"></param>
+        /// <param name="limit"></param>
+        /// <param name="page"></param>
+        /// <returns></returns>
+        public ActionResult SurveyDatafilters(string empnumber, string date, int limit, int page)
+        {
+            var list = db_survey.SurveyDatafilters(empnumber, date);
+
+            var skiplist = list.Skip((page - 1) * limit).Take(limit);
+
+            List<SatisfactionSurveyDetailView> resultlist = new List<SatisfactionSurveyDetailView>();
+
+            foreach (var item in skiplist)
+            {
+                var tempobj = db_survey.AllsatisficingResults().Where(d => d.SatisficingConfig == item.ID).FirstOrDefault();
+
+                if (tempobj != null)
+                {
+                    var detail = db_survey.ConvertToViewModel(tempobj);
+
+                    if (detail != null)
+                        resultlist.Add(detail);
+                }
+            }
+
+            var obj = new
+            {
+                code = 0,
+                msg = "",
+                count = list.Count,
+                data = resultlist
+            };
+
+            return Json(obj, JsonRequestBehavior.AllowGet);
+        }
 
         /// <summary>
         /// 对满意度调查记录进行帅选 
@@ -659,7 +1052,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
         /// <returns></returns>
         public ActionResult SurveyData_filter(string empnumber, string date, int limit, int page)
         {
-
+           
             var list = db_survey.SurveyData_filter(empnumber, date);
 
             var skiplist = list.Skip((page - 1) * limit).Take(limit);
@@ -695,15 +1088,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
         /// </summary>
         /// <returns></returns>
         /// 
-
         public ActionResult GetClassNumber(int page, int limit)
         {
 
             List<ClassTableView> resultlist = new List<ClassTableView>();
             List<ClassTableView> returnlist = new List<ClassTableView>();
-
-            //
-
             //当前用户
             Base_UserModel user = Base_UserBusiness.GetCurrentUser();
             var teacher = db_teacher.GetTeachers().Where(d => d.EmployeeId == user.EmpNumber).FirstOrDefault();
@@ -1274,7 +1663,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
             try
             {
                 resultlist = db_survey.Screen(1, 0);
-
                 result.Data = resultlist;
                 result.ErrorCode = 200;
                 result.Msg = "成功";
@@ -1295,7 +1683,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
         /// 提交食堂满意度问卷
         /// </summary>
         /// <returns></returns>
-        public ActionResult CanteenSubmission(List<SurveyCommitView> surveyCommit, int configId, string suggest)
+        public ActionResult CanteenSubmission(List<SurveyCommitHelper> list, int configId, string suggest)
         {
             AjaxResult result = new AjaxResult();
 
@@ -1327,13 +1715,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
 
                 List<SatisficingResultDetail> insertlIST = new List<SatisficingResultDetail>();
 
-                foreach (var item in surveyCommit)
+                foreach (var item in list)
                 {
                     SatisficingResultDetail detail = new SatisficingResultDetail();
                     detail.Remark = "";
                     detail.SatisficingBill = suResult.ID;
-                    detail.SatisficingItem = item.SurveyItemId;
-                    detail.Scores = item.Score;
+                    detail.SatisficingItem = item.contentId;
+                    detail.Scores = item.scores;
 
                     insertlIST.Add(detail);
 
@@ -1363,25 +1751,204 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
         /// 提交语文满意度问卷
         /// </summary>
         /// <returns></returns>
-        public ActionResult LanguageSubmission()
+        public ActionResult LanguageSubmission(List<SurveyCommitHelper> list, int configId, string suggest)
         {
-            return null;
+            AjaxResult result = new AjaxResult();
+
+            try
+            {
+                CloudstorageBusiness Bos = new CloudstorageBusiness();
+
+                var client = Bos.BosClient();
+                //获取当前登陆学生的学号
+                var studentnumber = Request.Cookies["StudentNumber"].Value.ToString();
+                //1. 添加结果表  2.添加详细表 
+                SatisficingResult Surveyresult = new SatisficingResult();
+                Surveyresult.Answerer = studentnumber;
+
+                var date = DateTime.Now;
+
+                Surveyresult.CreateDate = date;
+                Surveyresult.IsDel = false;
+                Surveyresult.SatisficingConfig = configId;
+                Surveyresult.Suggest = suggest;
+
+                db_survey.insertSatisfactionResult(Surveyresult);
+
+                BaseBusiness<SatisficingResult> dd = new BaseBusiness<SatisficingResult>();
+
+                var suResult = dd.GetList().Where(d => d.CreateDate.Value.ToString() == date.ToString()).FirstOrDefault();
+
+                //2 添加详细
+
+                List<SatisficingResultDetail> insertlIST = new List<SatisficingResultDetail>();
+
+                foreach (var item in list)
+                {
+                    SatisficingResultDetail detail = new SatisficingResultDetail();
+                    detail.Remark = "";
+                    detail.SatisficingBill = suResult.ID;
+                    detail.SatisficingItem = item.contentId;
+                    detail.Scores = item.scores;
+
+                    insertlIST.Add(detail);
+
+                }
+
+                BaseBusiness<SatisficingResultDetail> bas = new BaseBusiness<SatisficingResultDetail>();
+
+                bas.Insert(insertlIST);
+
+                result.ErrorCode = 200;
+                result.Msg = "成功";
+                result.Data = null;
+
+            }
+            catch (Exception ex)
+            {
+
+                result.ErrorCode = 500;
+                result.Msg = "失败";
+                result.Data = null;
+            }
+
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
         /// 提交数学满意度问卷
         /// </summary>
         /// <returns></returns>
-        public ActionResult MathematicsSubmission()
+        public ActionResult MathematicsSubmission(List<SurveyCommitHelper> list, int configId, string suggest)
         {
-            return null;
+            AjaxResult result = new AjaxResult();
+
+            try
+            {
+                CloudstorageBusiness Bos = new CloudstorageBusiness();
+
+                var client = Bos.BosClient();
+                //获取当前登陆学生的学号
+                var studentnumber = Request.Cookies["StudentNumber"].Value.ToString();
+                //1. 添加结果表  2.添加详细表 
+                SatisficingResult Surveyresult = new SatisficingResult();
+                Surveyresult.Answerer = studentnumber;
+
+                var date = DateTime.Now;
+
+                Surveyresult.CreateDate = date;
+                Surveyresult.IsDel = false;
+                Surveyresult.SatisficingConfig = configId;
+                Surveyresult.Suggest = suggest;
+
+                db_survey.insertSatisfactionResult(Surveyresult);
+
+                BaseBusiness<SatisficingResult> dd = new BaseBusiness<SatisficingResult>();
+
+                var suResult = dd.GetList().Where(d => d.CreateDate.Value.ToString() == date.ToString()).FirstOrDefault();
+
+                //2 添加详细
+
+                List<SatisficingResultDetail> insertlIST = new List<SatisficingResultDetail>();
+
+                foreach (var item in list)
+                {
+                    SatisficingResultDetail detail = new SatisficingResultDetail();
+                    detail.Remark = "";
+                    detail.SatisficingBill = suResult.ID;
+                    detail.SatisficingItem = item.contentId;
+                    detail.Scores = item.scores;
+
+                    insertlIST.Add(detail);
+
+                }
+
+                BaseBusiness<SatisficingResultDetail> bas = new BaseBusiness<SatisficingResultDetail>();
+
+                bas.Insert(insertlIST);
+
+
+                result.ErrorCode = 200;
+                result.Msg = "成功";
+                result.Data = null;
+
+            }
+            catch (Exception ex)
+            {
+
+                result.ErrorCode = 500;
+                result.Msg = "失败";
+                result.Data = null;
+            }
+
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
         /// 提交英语满意度问卷
         /// </summary>
         /// <returns></returns>
-        public ActionResult EnglishSubmission()
+        public ActionResult EnglishSubmission(List<SurveyCommitHelper> list, int configId, string suggest)
         {
-            return null;
+            AjaxResult result = new AjaxResult();
+
+            try
+            {
+                CloudstorageBusiness Bos = new CloudstorageBusiness();
+
+                var client = Bos.BosClient();
+                //获取当前登陆学生的学号
+                var studentnumber = Request.Cookies["StudentNumber"].Value.ToString();
+                //1. 添加结果表  2.添加详细表 
+                SatisficingResult Surveyresult = new SatisficingResult();
+                Surveyresult.Answerer = studentnumber;
+
+                var date = DateTime.Now;
+
+                Surveyresult.CreateDate = date;
+                Surveyresult.IsDel = false;
+                Surveyresult.SatisficingConfig = configId;
+                Surveyresult.Suggest = suggest;
+
+                db_survey.insertSatisfactionResult(Surveyresult);
+
+                BaseBusiness<SatisficingResult> dd = new BaseBusiness<SatisficingResult>();
+
+                var suResult = dd.GetList().Where(d => d.CreateDate.Value.ToString() == date.ToString()).FirstOrDefault();
+
+                //2 添加详细
+
+                List<SatisficingResultDetail> insertlIST = new List<SatisficingResultDetail>();
+
+                foreach (var item in list)
+                {
+                    SatisficingResultDetail detail = new SatisficingResultDetail();
+                    detail.Remark = "";
+                    detail.SatisficingBill = suResult.ID;
+                    detail.SatisficingItem = item.contentId;
+                    detail.Scores = item.scores;
+
+                    insertlIST.Add(detail);
+
+                }
+
+                BaseBusiness<SatisficingResultDetail> bas = new BaseBusiness<SatisficingResultDetail>();
+
+                bas.Insert(insertlIST);
+
+
+                result.ErrorCode = 200;
+                result.Msg = "成功";
+                result.Data = null;
+
+            }
+            catch (Exception ex)
+            {
+
+                result.ErrorCode = 500;
+                result.Msg = "失败";
+                result.Data = null;
+            }
+
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
         ///  提交班主任调查问卷

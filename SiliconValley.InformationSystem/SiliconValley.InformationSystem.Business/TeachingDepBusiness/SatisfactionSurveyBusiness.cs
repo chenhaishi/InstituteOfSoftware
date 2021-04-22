@@ -240,7 +240,7 @@ namespace SiliconValley.InformationSystem.Business.TeachingDepBusiness
             view.SatisficingConfigId = satisficingConfig.ID;
             //计算总分
             var staresultlist = this.AllsatisficingResults().Where(d => d.SatisficingConfig == satisficingConfig.ID).ToList();
-
+             
             var total = 0;
 
             staresultlist.ForEach(d=>
@@ -728,23 +728,55 @@ namespace SiliconValley.InformationSystem.Business.TeachingDepBusiness
 
             return resultEmplist;
         }
+        public List<SatisficingConfig> SurveyData_filters(string empnumber, string date)
+        {
+            //获取当前账号
+            Base_UserModel user = Base_UserBusiness.GetCurrentUser();
+            DateTime surveyDate = DateTime.Parse(date);
 
+            if (empnumber == null || empnumber == "")
+            {
+
+                return this.satisficingConfigs().Where(d => ((DateTime)d.CreateTime).Year == surveyDate.Year && ((DateTime)d.CreateTime).Month == surveyDate.Month && d.EmployeeId == null).ToList();
+            }
+            else
+            {
+                return this.satisficingConfigs().Where(d => d.EmployeeId == empnumber && ((DateTime)d.CreateTime).Year == surveyDate.Year && ((DateTime)d.CreateTime).Month == surveyDate.Month && d.EmployeeId == null).ToList();
+            }
+
+        }
         public List<SatisficingConfig> SurveyData_filter(string empnumber, string date)
+        {
+            //获取当前账号
+            Base_UserModel user = Base_UserBusiness.GetCurrentUser();
+            DateTime surveyDate = DateTime.Parse(date);
+
+            if (empnumber == null || empnumber == "")
+            {
+
+                return this.satisficingConfigs().Where(d => ((DateTime)d.CreateTime).Year == surveyDate.Year && ((DateTime)d.CreateTime).Month == surveyDate.Month && d.EmployeeId == user.EmpNumber).ToList();
+            }
+            else
+            {
+                return this.satisficingConfigs().Where(d => d.EmployeeId == empnumber && ((DateTime)d.CreateTime).Year == surveyDate.Year && ((DateTime)d.CreateTime ).Month == surveyDate.Month && d.EmployeeId == user.EmpNumber).ToList();
+            }
+
+        }
+        public List<SatisficingConfig> SurveyDatafilters(string empnumber, string date)
         {
             DateTime surveyDate = DateTime.Parse(date);
 
             if (empnumber == null || empnumber == "")
             {
 
-                return this.satisficingConfigs().Where(d => ((DateTime)d.CreateTime).Year == surveyDate.Year && ((DateTime)d.CreateTime).Month == surveyDate.Month).ToList();
+                return this.satisficingConfigs().Where(d => ((DateTime)d.CreateTime).Year == surveyDate.Year && ((DateTime)d.CreateTime).Month == surveyDate.Month && d.Isitacanteen ==false).ToList();
             }
             else
             {
-                return this.satisficingConfigs().Where(d => d.EmployeeId == empnumber && ((DateTime)d.CreateTime).Year == surveyDate.Year && ((DateTime)d.CreateTime).Month == surveyDate.Month).ToList();
+                return this.satisficingConfigs().Where(d => d.EmployeeId == empnumber && ((DateTime)d.CreateTime).Year == surveyDate.Year && ((DateTime)d.CreateTime).Month == surveyDate.Month && d.Isitacanteen == false).ToList();
             }
 
         }
-
 
         /// <summary>
         /// 获取参加满意度调查的学员
