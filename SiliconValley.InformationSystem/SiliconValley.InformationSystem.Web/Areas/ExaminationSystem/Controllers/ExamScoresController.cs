@@ -1212,7 +1212,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         public ActionResult ExamScoreDataes(int page, int limit, int examid)
         {
             List<StudentExamView> scorelist = new List<StudentExamView>();
-            List<CandidateInfo> multipleChoicelist = db_candidate.GetList().Where(d => d.Examination == examid).ToList();
+            string sql = "select * from CandidateInfo where Examination = '" + examid + "'";
+            List<CandidateInfo> multipleChoicelist = db_candidate.GetListBySql<CandidateInfo>(sql).ToList();
 
             for (int i = 0; i < multipleChoicelist.Count; i++)
             {

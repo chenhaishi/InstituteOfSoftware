@@ -175,12 +175,13 @@
             var sug = $("#sug").val();
             //发送请求
             layer.confirm('是否确认提交！', function (index) {
-                $.post("/Teaching/SatisfactionSurvey/", { list: resultArry, configId: configId, suggest: sug }, function (result) {
+                $.post("/Teaching/SatisfactionSurvey/EnglishSubmission", { list: resultArry, configId: configId, suggest: sug }, function (result) {
                     if (result.ErrorCode == 200) {
                         layer.msg('提交成功', { icon: 1, time: 2000 }, function () {
                             //当你在iframe页面关闭自身时
-                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                            parent.layer.close(index); //再执行关闭
+                            //var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            //parent.layer.close(index); //再执行关闭
+                            location.href = "/Teaching/SatisfactionSurvey/SatisfactionHomePage"
                         });
                     }
                     else {

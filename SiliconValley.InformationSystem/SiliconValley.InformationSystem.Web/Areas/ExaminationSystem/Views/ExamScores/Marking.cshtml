@@ -525,11 +525,13 @@
                         if (result.Data[0].question != "") {
                             var layerthtml = _.template($("#moban2").html());
 
-                              var label = $("<label></label>");
+                            var label = $("<label></label>");
                             var labels = $("<label style='font-size:18px;'></label>");
-                              label.text(result.Data[i].questionTitle.Title);
+                            label.text(result.Data[i].questionTitle.Title);
                             labels.text(result.Data[i].questionTitle.ReferenceAnswer);
-                            var layerdata = layerthtml({ index: i + 1, question: document.HTMLDOMtoString(label[0]), scores: result.Data[i].question.questionScores, answer: result.Data[i].question.answer, referenceanswer: document.HTMLDOMtoString(labels[0]) });
+                            var daan = $("<label></label>");
+                            daan.text(result.Data[i].question.answer);
+                            var layerdata = layerthtml({ index: i + 1, question: document.HTMLDOMtoString(label[0]), scores: result.Data[i].question.questionScores, answer: document.HTMLDOMtoString(daan[0]), referenceanswer: document.HTMLDOMtoString(labels[0]) });
 
                             $("#itemlist").append(layerdata);
                         } 

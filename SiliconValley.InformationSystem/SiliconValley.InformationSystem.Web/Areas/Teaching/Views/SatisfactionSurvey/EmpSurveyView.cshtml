@@ -6,71 +6,74 @@
 @section style{
 
     <style>
-        #mywarp {
-            width: 100%;
-            height: 600px;
-        }
 
         #emplist {
             float: left;
             width: 20%;
             margin-top: 50px;
         }
-
-        #surveytabel {
-            float: left;
-            width: 60%;
-        }
-
         #optiores {
             width: 100%;
             height: 60px;
         }
-
-        #Imagearea {
-            float: left;
-            width: 20%;
-        }
     </style>
-
     <link href="~/Scripts/dtree2.5.4/layui_ext/dtree/dtree.css" rel="stylesheet" />
     <link href="~/Scripts/dtree2.5.4/layui_ext/dtree/font/dtreefont.css" rel="stylesheet" />
-
 }
-
-<div id="mywarp">
-    <div id="title">
-        <h3 style="color:darkgray; text-align:center;">我的满意度调查历史记录册</h3>
-    </div>
-    <hr />
-    <div id="surveytabel">
-        <div id="optiores">
-            <label style="color:gray;">时间：</label> <input type="text" style="width:200px;display:inline-block;" class="layui-input" id="date1" placeholder="yyyy-MM" autocomplete="off">
+<div>
+    <div class="layui-tab layui-tab-card" lay-filter="docDemoTabBrief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">我的满意度</li>
+            <li>食堂满意度</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <h2 style="text-align:center;">我的满意度调查</h2>
+                <fieldset>
+                    <legend>条件查询</legend>
+                    <form class="layui-form" action="" lay-filter="formtest">
+                        <div class="layui-row layui-form-item">
+                            <div id="optiores">
+                                <label style="color:gray;">时间：</label> <input type="text" style="width:200px;display:inline-block;" class="layui-input" id="date1" placeholder="yyyy-MM" autocomplete="off">
+                            </div>
+                            <table class="layui-hide" id="dataTable" lay-filter="dataTable_filter"></table>
+                        </div>
+                    </form>
+                </fieldset>
+                <table id="CheckingIntab" lay-filter="CheckingIntab"></table>
+            </div>
+            <div class="layui-tab-item">
+                <h2 style="text-align:center;">食堂满意度调查</h2>
+                @*模糊查询*@
+                <fieldset>
+                    <legend>条件查询</legend>
+                    <form class="layui-form" action="" lay-filter="formtest">
+                        <div class="layui-row layui-form-item">
+                            <div class="layui-row layui-form-item">
+                                <div id="optiores">
+                                    <label style="color:gray;">时间：</label> <input type="text" style="width:200px;display:inline-block;" class="layui-input" id="dater" placeholder="yyyy-MM" autocomplete="off">
+                                </div>
+                                <table class="layui-hide" id="dataTabler" lay-filter="dataTable_filters"></table>
+                            </div>
+                        </div>
+                    </form>
+                </fieldset>
+            </div>
         </div>
-
-        <!--数据表格-->
-
-        <table class="layui-hide" id="dataTable" lay-filter="dataTable_filter"></table>
-
-
     </div>
-
-    <div id="Imagearea">
-
-    </div>
-
 </div>
 @section script{
-<script src="~/Areas/Teaching/Scripts/util.js"></script>
+    <script src="~/Areas/Teaching/Scripts/util.js"></script>
     <script>
-        layui.use(['table','laydate'], function () {
-            var table = layui.table; 
+        layui.use(['table', 'laydate', 'element'], function () {
+            var table = layui.table;
             var laydate = layui.laydate;
+            var element = layui.element;
             //渲染表格
             table.render({
-                elem: '#dataTable'
-                , id: "dataTable"
-                , url: '/Teaching/SatisfactionSurvey/Mysatisfaction'
+                elem: '#dataTabler'
+                , id: "dataTabler"
+                , url: '/Teaching/SatisfactionSurvey/CanteenInquiry'
                 , cols: [[
                     { type: 'checkbox' }
                     , { field: 'SatisficingConfigId', width: 100, title: 'ID', sort: true }
@@ -109,7 +112,48 @@
                 ]]
                 , page: true
             });
+            //渲染表格
+            table.render({
+                elem: '#dataTable'
+                , id: "dataTable"
+                , url: '/Teaching/SatisfactionSurvey/Mysatisfaction'
+                , cols: [[
+                    { type: 'checkbox' }    
+                    , { field: 'SatisficingConfigId', width: 100, title: 'ID', sort: true }
+                    , {
+                        field: 'investigationDate', width: 230, title: '调查时间', sort: true, templet: function (cel) {
 
+                            var cudate = cel.investigationDate;
+
+                            var dateUtc = cudate.substr(cudate.indexOf('(') + 1, 13);
+
+                            return formaDateUtc(dateUtc);
+
+                        }
+                    }
+                    , { field: 'TotalScore', width: 170, title: '总分' }
+                    , { field: 'ClassNumber', width: 150, title: '班级', templet: '<div>{{d.investigationClass.ClassNumber}}</div>' }
+                    , {
+                        field: 'CourseName', width: 150, title: '课程', templet: function (cel) {
+
+
+                            '<div>{{d.Curriculum.CourseName}}</div>'
+
+                            if (cel.Curriculum == null) {
+
+                                return "无"
+                            }
+                            else {
+                                return cel.Curriculum.CourseName
+                            }
+
+
+                        }
+                    }
+                    , { field: 'Average', width: 180, title: '平均分', sort: true }
+                ]]
+                , page: true
+            });
             laydate.render({
                 elem: '#date1', //指定元素
                 format: 'yyyy-MM',
@@ -129,6 +173,25 @@
 
                 }
             });
+            laydate.render({
+                elem: '#dater', //指定元素
+                format: 'yyyy-MM',
+                type: 'month',
+                trigger: 'click'//点击触发
+                , change: function (value, date, endDate) {
+
+                    table.reload('dataTabler', {
+                        url: '/Teaching/SatisfactionSurvey/CanteenSelection'
+                        , where: {
+                            empnumber: "",
+                            date: value
+
+                        } //设定异步数据接口的额外参数
+                        //,height: 300
+                    });
+
+                }
+            });
             //表格行双击事件
             //监听行双击事件
             table.on('rowDouble(dataTable_filter)', function (obj) {
@@ -138,7 +201,20 @@
                 layer.open({
                     type: 2,
                     title: "详细",
-                    area: [window.innerWidth / 1 + 'px', window.innerHeight / 1 + 'px'],
+                    area: ["1000px","100%"],
+                    //area: [window.innerWidth / 1 + 'px', window.innerHeight / 1 + 'px'],
+                    content: "/Teaching/SatisfactionSurvey/MySatisfactionCheck?surveyResultID=" + obj.data.SatisficingConfigId
+                });
+            });
+            table.on('rowDouble(dataTable_filters)', function (obj) {
+                //obj 同上
+                console.log(obj);
+
+                layer.open({
+                    type: 2,
+                    title: "详细",
+                    area: ["1000px", "100%"],
+                    //area: [window.innerWidth / 1 + 'px', window.innerHeight / 1 + 'px'],
                     content: "/Teaching/SatisfactionSurvey/checkSurveyView?surveyResultID=" + obj.data.SatisficingConfigId
                 });
             });
