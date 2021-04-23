@@ -111,11 +111,15 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 view.socialSecuritySubsidy = eseobj.SocialSecuritySubsidy;//社保补贴
                 #region 应发工资1赋值
                 var one = view.baseSalary + view.positionSalary;
+                var attendobj = msrmanage.GetAttendanceInfoByEmpid(item.EmployeeId, (DateTime)item.YearAndMonth);
+                if (attendobj!=null)
+                {
+                    view.SalaryOne = msrmanage.GetSalaryone(view.baseSalary, view.positionSalary, view.PerformanceSalary, view.netbookSubsidy, view.socialSecuritySubsidy, view.LeaveDeductions, attendobj.DaysoffDuration, view.toRegularDays, attendobj.AbsenteeismDays, attendobj.NonPersonalLeaveNum);
 
-                //view.SalaryOne = msrmanage.GetSalaryone(view.baseSalary,view.positionSalary, view.PerformanceSalary, view.netbookSubsidy, view.socialSecuritySubsidy,view.LeaveDeductions);
+                }
                 #endregion
                 //考勤表对象
-                var attendobj = msrmanage.GetAttendanceInfoByEmpid(item.EmployeeId, (DateTime)item.YearAndMonth);
+                //var attendobj = msrmanage.GetAttendanceInfoByEmpid(item.EmployeeId, (DateTime)item.YearAndMonth);
                 if (attendobj == null)
                 {
                     view.toRegularDays = null;//到勤天数

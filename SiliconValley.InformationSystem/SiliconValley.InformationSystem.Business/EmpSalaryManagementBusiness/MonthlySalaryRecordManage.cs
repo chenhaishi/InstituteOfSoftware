@@ -269,7 +269,8 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
         /// <summary>
         /// 计算应发工资1
         /// </summary>
-        /// <param name="one">基本工资+岗位工资</param>
+        /// <param name="baseSalary">基本工资</param>
+        /// <param name="positionSalary">岗位工资</param>
         /// <param name="PerformanceSalary">绩效工资</param>
         /// <param name="netbookSubsidy">笔记本补助</param>
         /// <param name="socialSecuritySubsidy">社保补贴</param>
