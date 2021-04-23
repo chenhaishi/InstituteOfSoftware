@@ -69,7 +69,7 @@
     <Reference Include="NPOI.2.5.1.0.Fakes">
       <HintPath>FakesAssemblies\NPOI.2.5.1.0.Fakes.dll</HintPath>
     </Reference>
-    <Reference Include="NPOI.OOXML">
+    <Reference Include="NPOI.OOXML, Version=2.5.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
       <HintPath>..\packages\NPOI.2.5.1\lib\net45\NPOI.OOXML.dll</HintPath>
     </Reference>
     <Reference Include="NPOI.OpenXml4Net, Version=2.5.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
