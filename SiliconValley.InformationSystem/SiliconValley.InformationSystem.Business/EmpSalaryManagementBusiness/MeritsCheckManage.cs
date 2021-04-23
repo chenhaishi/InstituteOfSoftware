@@ -306,22 +306,31 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
         }
         public AjaxResult ImportDataFormExcel(Stream stream, string contentType)
         {
-            var ajaxresult = new AjaxResult();
-            IWorkbook workbook = null;
-            if (contentType == "application/vnd.ms-excel")
+            var result = new AjaxResult();
+            try
             {
-                workbook = new HSSFWorkbook(stream);
-            }
+                IWorkbook workbook = null;
+                if (contentType == "application/vnd.ms-excel")
+                {
+                    workbook = new HSSFWorkbook(stream);
+                }
 
-            if (contentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-            {
-                workbook = new XSSFWorkbook(stream);
+                if (contentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                {
+                    workbook = new XSSFWorkbook(stream);
+                }
+                ISheet sheet = workbook.GetSheetAt(0);
+                 result = ExcelDeposit(sheet);
+                stream.Close();
+                stream.Dispose();
+                workbook.Close();
             }
-            ISheet sheet = workbook.GetSheetAt(0);
-            var result = ExcelDeposit(sheet);
-            stream.Close();
-            stream.Dispose();
-            workbook.Close();
+            catch (Exception e)
+            {
+                result.Msg = e.Message;
+                throw;
+            }
+          
 
             return result;
         }

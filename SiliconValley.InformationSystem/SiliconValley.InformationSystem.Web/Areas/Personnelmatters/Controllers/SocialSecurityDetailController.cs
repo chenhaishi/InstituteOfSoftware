@@ -338,7 +338,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
 
                 EmplSalaryEmbodyManage esemanage = new EmplSalaryEmbodyManage();
                 var emplSalary=  esemanage.GetEseByEmpid(so.EmployeeId);
-                emplSalary.PersonalSocialSecurity = soc.PersonalTotal;
+                emplSalary.PersonalSocialSecurity = s.PersonalTotal;
                 esemanage.Update(emplSalary);
 
                 result = social.Success();
@@ -360,6 +360,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         public ActionResult EditPaySicknessInsurance(SocialSecurityDetail soc)
         {
             SocialSecurityDetailManage social = new SocialSecurityDetailManage();
+            EmplSalaryEmbodyManage esemanage = new EmplSalaryEmbodyManage();
             AjaxResult result = new AjaxResult();
             try
             {
@@ -369,6 +370,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
 
                 social.Update(so);
                 rc.RemoveCache("InRedisSocialSecurityData");
+
+
+                var emplSalary = esemanage.GetEseByEmpid(so.EmployeeId);
+                emplSalary.PersonalSocialSecurity = so.PersonalTotal;
+                esemanage.Update(emplSalary);
                 result = social.Success();
             }
             catch (Exception e)
@@ -400,6 +406,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                     social.Update(item);
                    var salary= emplSalary.GetEseByEmpid(item.EmployeeId);
                     salary.PersonalSocialSecurity = item.PersonalTotal;
+                    emplSalary.Update(salary);
                     rc.RemoveCache("InRedisSocialSecurityData");
                     
                 }
