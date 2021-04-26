@@ -1214,7 +1214,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
             var student = ScheduleForTrainees.GetListBySql<ScheduleForTrainees>(sql).ToList();//查询班级里所有的学生
             foreach (var item in student)
             {
-                 string studentViewSQL = "select * from StudentFeeRecordListView where StudenID='" + item.StudentID + "' and Passornot='1'";//根据学生id查询出缴费数据
+                 string studentViewSQL = "select * from StudentFeeRecordListView where StudenID='" + item.StudentID + "' and Passornot='1' AddTime is not null";//根据学生id查询出缴费数据
                  studentView = StudentFeeRecordListView.GetListBySql<StudentFeeRecordListView>(studentViewSQL).ToList();
                  list = (from s in studentView
                             where s.StageName != null//分组对象
