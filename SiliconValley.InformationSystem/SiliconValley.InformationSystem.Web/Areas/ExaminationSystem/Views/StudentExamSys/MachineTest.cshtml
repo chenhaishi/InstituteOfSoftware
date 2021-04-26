@@ -253,14 +253,10 @@
                 var suffix = file.name.substr(index + 1); //文件拓展名
                 var mingzi = $("#mingzi").text();
                 var wenjianming = file.name;
-                var panduan = wenjianming.search(mingzi) != -1;
-                console.log(panduan);
-                if (suffix == "rar" || suffix == "zip") {
+                if (suffix == "rar" || suffix == "zip" || suffix =="7z") {
                     formData.append("rarfile", file);
-                } else if (panduan == -1) {
-                    layer.msg("压缩名请包含自己的名字");
-                } else {
-                    layer.msg("请将文件压缩后再上产 (rar,zip)");
+                }else {
+                    layer.msg("请将文件压缩后再上产 (rar,zip,7z)");
                 }
 
             });
@@ -283,7 +279,7 @@
 
                 var a = new Date()
                 a = a.getFullYear() + "-" + (a.getMonth() + 1) + "-" + a.getDate() + " " + a.getHours() + ":" + a.getMinutes();
-                if (currentDate > EndDate) {
+                if (a > EndDate) {
 
                     //自动点击提交
                     Commit(true);

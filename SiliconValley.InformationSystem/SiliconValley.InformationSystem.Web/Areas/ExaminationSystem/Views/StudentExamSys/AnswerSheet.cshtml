@@ -645,7 +645,7 @@
                 var a = new Date()
                 a = a.getFullYear() + "-" + (a.getMonth() + 1) + "-" + a.getDate() + " " + a.getHours() + ":" + a.getMinutes();
 
-                if (currentDate > EndDate) {
+                if (a > EndDate) {
 
                     //自动点击提交
                     Commit(true);

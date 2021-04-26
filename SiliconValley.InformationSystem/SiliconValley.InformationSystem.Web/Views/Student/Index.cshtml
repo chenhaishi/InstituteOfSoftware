@@ -101,7 +101,7 @@
     </style>
 </head>
 <body class="layui-layout-body">
-    <div class="layui-layout layui-layout-admin">
+    <div class="layui-layout layui-layout-admin" style="overflow-x:hidden">
         <div class="layui-header">
             <div class="layui-logo">硅谷信息化 学员平台</div>
             <!-- 头部区域（可配合layui已有的水平导航） -->
@@ -403,7 +403,7 @@
                             var serverTime = new Date().getTime();
                             var a = new Date()
                             a = a.getFullYear() + "-" + (a.getMonth() + 1) + "-" + a.getDate() + " " + a.getHours() + ":" + a.getMinutes();
-                            util.countdown(date, serverTime, function (date, serverTime, timer) {
+                            util.countdown(date, a, function (date, serverTime, timer) {
                                 str = date[0] + '天' + date[1] + '时' + date[2] + '分' + date[3] + '秒';
                                 layui.$('#test2').html(str);
                                 Countdown = date;

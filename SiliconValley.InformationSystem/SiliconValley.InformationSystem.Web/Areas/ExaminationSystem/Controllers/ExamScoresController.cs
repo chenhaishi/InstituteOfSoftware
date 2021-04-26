@@ -612,10 +612,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 var row = (HSSFRow)sheet.CreateRow(num);
                 string sqles = "select * from StudentInformation where StudentNumber = '" +d.StudentID +"'";
                 var name = studet.GetListBySql<StudentInformation>(sqles).FirstOrDefault().Name;
+                string fshu = "select * from TestScore where CandidateInfo = '"+ d.CandidateNumber +"'";
+                var score = db_examScores.GetListBySql<TestScore>(fshu).FirstOrDefault().ChooseScore;
                 CreateCell(row, ContentcellStyle, 0, Examid.ToString());//考场id
                 CreateCell(row, ContentcellStyle, 1, d.StudentID);//学员id
                 CreateCell(row, ContentcellStyle, 2, name);//学员名字
-
+                CreateCell(row, ContentcellStyle, 3, score.ToString());//选择题分数
                 num++;
 
             });
@@ -644,11 +646,15 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
                 CreateCell(Header, HeadercellStyle, 2, "学员名字");
 
-                CreateCell(Header, HeadercellStyle, 3, "解答题分数");
+                CreateCell(Header, HeadercellStyle, 3, "选择题分数");
 
-                CreateCell(Header, HeadercellStyle, 4, "机试分数");
+                CreateCell(Header, HeadercellStyle, 4, "解答题分数");
 
-                CreateCell(Header, HeadercellStyle, 5, "备注");
+                CreateCell(Header, HeadercellStyle, 5, "机试分数");
+
+                CreateCell(Header, HeadercellStyle, 6, "总分");
+
+                CreateCell(Header, HeadercellStyle, 7, "备注");
             }
 
             void CreateCell(HSSFRow row, HSSFCellStyle TcellStyle, int index, string value)
@@ -1212,7 +1218,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         public ActionResult ExamScoreDataes(int page, int limit, int examid)
         {
             List<StudentExamView> scorelist = new List<StudentExamView>();
-            List<CandidateInfo> multipleChoicelist = db_candidate.GetList().Where(d => d.Examination == examid).ToList();
+            string sql = "select * from CandidateInfo where Examination = '" + examid + "'";
+            List<CandidateInfo> multipleChoicelist = db_candidate.GetListBySql<CandidateInfo>(sql).ToList();
 
             for (int i = 0; i < multipleChoicelist.Count; i++)
             {

@@ -72,6 +72,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             ViewBag.ExamTypes = db_Paper.AllexamTypes();
 
+
             return View();
         }
         /// <summary>

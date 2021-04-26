@@ -1,0 +1,47 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>CanteenExportView</title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+    <script src="~/Scripts/layui/layui.js"></script>
+</head>
+<body>
+    <div>
+        <label style="color:gray;">选择时间：</label> <input type="text" style="width:200px;display:inline-block;" class="layui-input" id="date" placeholder="yyyy-MM" autocomplete="off">
+        <hr />
+        <a class="layui-btn layui-btn-normal" style="width:100%" id="daochu">导出</a>
+    </div>
+</body>
+</html>
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script>
+ layui.use(['table', 'laydate', 'element'], function () {
+    var table = layui.table;
+    var laydate = layui.laydate;
+     var element = layui.element;
+
+     laydate.render({
+         elem: '#date',
+         format: 'yyyy-MM',
+         type: 'month',
+     });
+     //导出数据
+     $("#daochu").click(function () {
+         var date = $("#date").val();
+         var close = layer.confirm('确认导出?', { icon: 3, title: '提示' }, function (index) {
+             console.log("条件：" + date);
+             layer.close(close); 
+             window.open("/Teaching/SatisfactionSurvey/CanteenExcel?date=" + date);
+         });
+     })
+    });
+
+</script>
+
+
