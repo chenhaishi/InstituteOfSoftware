@@ -33,8 +33,10 @@
                 </div>
             </div>
     </form>
-
-    <table class="layui-hide" id="test" lay-filter="test"></table>
+    <div>
+        <table class="layui-hide" id="test" lay-filter="test"></table>
+    </div>
+    
 
 
     @section script{
@@ -116,7 +118,7 @@
                         //按钮【按钮一】的回调
                         $.post("/Teachingquality/StudentUnion/DeleteActivty", { AID: data.AID }, function (r) {
                             if (r.code == 0) {
-                                bind()
+                                bind();
                                 layer.msg(r.msg);
                             }
                             else {
@@ -142,6 +144,7 @@
             });
         })
     };
+    bind();
 </script>
 
 }

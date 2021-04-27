@@ -214,12 +214,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
 
         }
         BaseBusiness<StudentActivity> list = new BaseBusiness<StudentActivity>();
+  
         //学生会列表显示
         public ActionResult Acticty_List(int page, int limit, string StuTitle)
         {
 
             var sql = "";
-
+            
             if (StuTitle == null)
             {
                 sql = "select* from StudentActivity where IsDelete='1'";

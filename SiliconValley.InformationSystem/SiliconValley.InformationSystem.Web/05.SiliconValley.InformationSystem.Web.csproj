@@ -5396,6 +5396,8 @@
     <Folder Include="Areas\Educational\Views\ShppingDetail\" />
     <Folder Include="Areas\Finance\Models\" />
     <Folder Include="Areas\flow\Controllers\" />
+    <Folder Include="Areas\InternalTraining\Models\" />
+    <Folder Include="Areas\InternalTraining\Views\Shared\" />
     <Folder Include="Areas\Logistics\Controllers\" />
     <Folder Include="Areas\Logistics\Models\" />
     <Folder Include="Areas\Logistics\Views\Shared\" />
