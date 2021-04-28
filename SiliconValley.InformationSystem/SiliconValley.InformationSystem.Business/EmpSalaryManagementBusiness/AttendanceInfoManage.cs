@@ -382,7 +382,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
 
                 if (contentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
                 {
-                    //workbook = new XSSFWorkbook(stream);
+                    workbook = new XSSFWorkbook(stream);
                 }
 
                 ISheet sheet = workbook.GetSheetAt(0);
@@ -521,6 +521,13 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     }
                     else
                     {
+                        if (!Regex.IsMatch(ddid, @"^[0-9]*$"))
+                        {
+                            attview.empname = name;
+                            attview.errorExplain = "钉钉号含有字符串！";
+                            attdatalist.Add(attview);
+                            continue;
+                        }
                         if (!empmanage.DDidIsExist(int.Parse(ddid)))
                         {
                             attview.empname = name;
@@ -548,14 +555,14 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                             else
                             {
                                     var emp = empmanage.GetEmpByDDid(Convert.ToInt32(ddid));
-                                    if (!this.IsExist(emp.EmployeeId, Convert.ToDateTime(year_month)))
-                                    {
-                                    attview.empname = name;
-                                    attview.errorExplain = "该员工这个月的考勤已存在！";
-                                    attdatalist.Add(attview);
-                                }
-                                else
-                                {
+                                //    if (!this.IsExist(emp.EmployeeId, Convert.ToDateTime(year_month)))
+                                //    {
+                                //    attview.empname = name;
+                                //    attview.errorExplain = "该员工这个月的考勤已存在！";
+                                //    attdatalist.Add(attview);
+                                //}
+                                //else
+                                //{
                                     atd.EmployeeId = emp.EmployeeId;
                                     if (!string.IsNullOrEmpty(year_month))
                                     {
@@ -593,8 +600,25 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                                                 }
                                             }
                                         }
+                                        #region 判断是否含有字符串
 
-                                        atd.LeaveDays = Convert.ToDecimal(leaveddays);
+                                        if (!Regex.IsMatch(deserveToRegularDays, @"^[0-9]+\.?[0-9]*$"))
+                                        {
+                                            attview.empname = name;
+                                        attview.errorExplain = "应到勤天数含有字符串！";
+                                            attdatalist.Add(attview);
+                                            continue;
+                                        }
+                                    if (!Regex.IsMatch(workeddays, @"^[0-9]+\.?[0-9]*$"))
+                                    {
+                                        attview.empname = name;
+                                        attview.errorExplain = "到勤天数含有字符串！";
+                                        attdatalist.Add(attview);
+                                        continue;
+                                    }
+                                    #endregion
+
+                                    atd.LeaveDays = Convert.ToDecimal(leaveddays);
                                         atd.LeaveRecord = leaveRecord;
 
                                         atd.WorkAbsentNum = Convert.ToInt32(workAbsentNum);
@@ -632,7 +656,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                                         rc.RemoveCache("InRedisATDData");
                                     }
                             }
-                            }
+                            //}
                         }
 
                     }
