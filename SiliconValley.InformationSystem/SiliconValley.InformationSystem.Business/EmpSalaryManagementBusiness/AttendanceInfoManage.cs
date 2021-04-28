@@ -605,7 +605,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                                         if (!Regex.IsMatch(deserveToRegularDays, @"^[0-9]+\.?[0-9]*$"))
                                         {
                                             attview.empname = name;
-                                            attview.errorExplain = "应到勤天数含有字符串！";
+                                        attview.errorExplain = "应到勤天数含有字符串！";
                                             attdatalist.Add(attview);
                                             continue;
                                         }
