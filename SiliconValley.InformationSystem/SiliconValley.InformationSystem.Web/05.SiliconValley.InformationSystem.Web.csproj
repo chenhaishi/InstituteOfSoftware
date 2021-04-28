@@ -3668,6 +3668,10 @@
     <Content Include="Areas\Teachingquality\Views\StudentUnion\Activty.cshtml" />
     <Content Include="Areas\Teachingquality\Views\StudentUnion\openActivty.cshtml" />
     <Content Include="Areas\Teachingquality\Views\ClassSchedule\OddNumberMyclass.cshtml" />
+    <Content Include="Areas\Educational\Views\Reconcile\OutExcel_s3s4View.cshtml" />
+    <Content Include="Areas\Educational\Views\Reconcile\Time_intervalView.cshtml" />
+    <Content Include="Areas\Educational\Views\Reconcile\TeacherReconfile.cshtml" />
+    <Content Include="Areas\Educational\Views\Staff_Cost_Statistics\ManageClassTime.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
