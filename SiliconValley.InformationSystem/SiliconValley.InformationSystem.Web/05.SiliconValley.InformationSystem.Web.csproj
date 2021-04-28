@@ -3665,6 +3665,9 @@
     <Content Include="Areas\Teaching\Views\SatisfactionSurvey\EnglishQuestionnaire.cshtml" />
     <Content Include="Areas\Teaching\Views\SatisfactionSurvey\SatisfactionHomePage.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\EmplSalaryEmbody\Import.cshtml" />
+    <Content Include="Areas\Teachingquality\Views\StudentUnion\Activty.cshtml" />
+    <Content Include="Areas\Teachingquality\Views\StudentUnion\openActivty.cshtml" />
+    <Content Include="Areas\Teachingquality\Views\ClassSchedule\OddNumberMyclass.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
