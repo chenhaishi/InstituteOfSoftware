@@ -506,6 +506,8 @@
     <Content Include="Areas\Obtainemployment\css\mycss.css" />
     <Content Include="Areas\Obtainemployment\Scripts\Drawing.js" />
     <Content Include="Areas\Obtainemployment\Scripts\opneentxml.js" />
+    <Content Include="Areas\Personnelmatters\Views\MonthlySalaryReview\FinancialAuditSalary.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\MonthlySalaryReview\SalaryApproval.cshtml" />
     <Content Include="Areas\Teachingquality\ClassImages\1.jpg" />
     <Content Include="Areas\Teachingquality\ClassImages\3.jpg" />
     <Content Include="Areas\Teachingquality\ClassImages\ClassImages.jpg" />
@@ -3599,8 +3601,6 @@
     <Content Include="Areas\Personnelmatters\Views\AttendanceStatistics\OTRDetail.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\AttendanceStatistics\OvertimeEdit.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\PerformanceAssess\AssessmentUpload.cshtml" />
-    <Content Include="Areas\Personnelmatters\Views\MonthlySalaryReview\FinancialAuditSalary.cshtml" />
-    <Content Include="Areas\Personnelmatters\Views\MonthlySalaryReview\SalaryApproval.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\EmpSalaryManagement\ModifyAbnormalData.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\EmpSalaryManagement\MonthlySalaryExport.cshtml" />
     <Content Include="Areas\ExaminationSystem\Views\ExamScores\MarkingPapers.cshtml" />
@@ -3665,6 +3665,9 @@
     <Content Include="Areas\Teaching\Views\SatisfactionSurvey\EnglishQuestionnaire.cshtml" />
     <Content Include="Areas\Teaching\Views\SatisfactionSurvey\SatisfactionHomePage.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\EmplSalaryEmbody\Import.cshtml" />
+    <Content Include="Areas\MyEducation\Views\JuniorCollege\Index.cshtml" />
+    <Content Include="Areas\MyEducation\Views\JuniorCollege\InsertNotRegisteredForJuniorCollege.cshtml" />
+    <Content Include="Areas\MyEducation\Views\JuniorCollege\JuniorCollegeEdit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />

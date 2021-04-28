@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
@@ -74,13 +75,13 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
         /// </summary>
         /// <param name="empid"></param>
         /// <returns></returns>
-        public bool EditEmpStateToMC(string empid,string time)
+        public bool EditEmpStateToMC(string empid, string time)
         {
             bool result = false;
             try
             {
                 var ymtime = DateTime.Parse(time);
-                var mc = this.GetEmpMCData().Where(e => e.EmployeeId == empid&&DateTime.Parse(e.YearAndMonth.ToString()).Year==ymtime.Year&&DateTime.Parse(e.YearAndMonth.ToString()).Month==ymtime.Month).FirstOrDefault();
+                var mc = this.GetEmpMCData().Where(e => e.EmployeeId == empid && DateTime.Parse(e.YearAndMonth.ToString()).Year == ymtime.Year && DateTime.Parse(e.YearAndMonth.ToString()).Month == ymtime.Month).FirstOrDefault();
                 mc.IsDel = true;
                 this.Update(mc);
                 rc.RemoveCache("InRedisMCData");
@@ -107,7 +108,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
             try
             {
                 var mcemp = this.GetEmpMCData().Where(s => s.EmployeeId == empid).FirstOrDefault();
-                if (mcemp!=null) {
+                if (mcemp != null) {
                     mcemp.FinalGrade = 100;
                     this.Update(mcemp);
                     rc.RemoveCache("InRedisMCData");
@@ -156,7 +157,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
 
         //            var empid=  emanage.GetList().Where(i=>i.DDAppId==int.Parse(ddid)).FirstOrDefault().EmployeeId;
         //            merits.EmployeeId = empid;
-                    
+
         //            if (!string.IsNullOrEmpty(Year))
         //            {
         //                string year = Year.Substring(0, 4);
@@ -168,7 +169,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
         //            {
         //                merits.FinalGrade = decimal.Parse(finalgrade);
         //            }
-                    
+
         //                 meritsCheck.Add(merits);                 
         //            }
 
@@ -195,35 +196,36 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 {
                     num++;
                     var getrow = sheet.GetRow(num);
-                    if (getrow==null)
+                    if (getrow == null)
                     {
                         break;
                     }
                     //if (!string.IsNullOrEmpty(getrow.GetCell(1).ToString()) || !string.IsNullOrEmpty(getrow.GetCell(0).ToString()) || !string.IsNullOrEmpty(getrow.GetCell(2).ToString()))
                     //{
-                        string Year = string.IsNullOrEmpty(Convert.ToString(sheet.GetRow(1).GetCell(0))) ? null : sheet.GetRow(1).GetCell(0).ToString();
-                        string name = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(0))) ? null : getrow.GetCell(0).ToString();
-                        string ddid = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(1))) ? null : getrow.GetCell(1).ToString();
-                        string finalgrade = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(2))) ? null : getrow.GetCell(2).ToString();
-                    
+                    string Year = string.IsNullOrEmpty(Convert.ToString(sheet.GetRow(1).GetCell(0))) ? null : sheet.GetRow(1).GetCell(0).ToString();
+                    string name = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(0))) ? null : getrow.GetCell(0).ToString();
+                    string ddid = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(1))) ? null : getrow.GetCell(1).ToString();
+                    string finalgrade = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(2))) ? null : getrow.GetCell(2).ToString();
 
 
 
-                        MeritsCheckErrorDataView errorDataView = new MeritsCheckErrorDataView();
-                        MeritsCheck merits1 = new MeritsCheck();
-                        if (string.IsNullOrEmpty(Year))
-                        {
-                            MeritsCheckErrorDataView err = new MeritsCheckErrorDataView();
-                            err.excelId = name;
-                            err.errorExplain = "原因是第二行时间未填";
-                            error.Add(err);
-                        }
-                        else
-                        {
-                            string year = Year.Substring(0, 4);
-                            string month = Year.Substring(5, 2);
-                          
-                        if (month.Substring(1,1)=="月")
+
+                    MeritsCheckErrorDataView errorDataView = new MeritsCheckErrorDataView();
+                    MeritsCheck merits1 = new MeritsCheck();
+                    #region 判断1
+                    if (string.IsNullOrEmpty(Year))
+                    {
+                        MeritsCheckErrorDataView err = new MeritsCheckErrorDataView();
+                        err.excelId = name;
+                        err.errorExplain = "原因是第二行时间未填";
+                        error.Add(err);
+                    }
+                    else
+                    {
+                        string year = Year.Substring(0, 4);
+                        string month = Year.Substring(5, 2);
+
+                        if (month.Substring(1, 1) == "月")
                         {
                             Year = year + "-" + month.Substring(0, 1) + "-" + 01;
                         }
@@ -232,49 +234,135 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                             Year = year + "-" + month + "-" + 01;
                         }
 
-                            if (string.IsNullOrEmpty(ddid))
+                        if (string.IsNullOrEmpty(ddid))
                         {
                             errorDataView.excelId = name;
                             errorDataView.errorExplain = "原因是该员工工号为空";
                             error.Add(errorDataView);
                         }
+                        else
+                        {
+                            var s = Regex.IsMatch(ddid, @"^[0-9]*$");
+                            if (!s)
+                            {
+                                errorDataView.excelId = name;
+                                errorDataView.errorExplain = "钉钉号含有字符串！";
+                                error.Add(errorDataView);
+                            }
                             else
-                        {
-                                if (!emanage.DDidIsExist(int.Parse(ddid)))
-                        {
-                            errorDataView.excelId = name;
-                            errorDataView.errorExplain = "原因是该员工钉钉号不存在！";
-                            error.Add(errorDataView);
-                        }
-                                else
-                        {
-                                var empid = emanage.GetList().Where(i => i.DDAppId == int.Parse(ddid)).FirstOrDefault().EmployeeId;
-                                //merits.EmployeeId = empid;
-                                if (string.IsNullOrEmpty(finalgrade))
                             {
-                                    //errorDataView.excelId = name;
-                                    //errorDataView.errorExplain = "原因是该员工绩效分为空！";
-                                    //error.Add(errorDataView);
-                                    finalgrade = "0";
-                            }
-                                    else
-                            {
-                                //merits1.EmployeeId = empid;
-                                //merits1.FinalGrade = int.Parse(finalgrade);
-                                //merits1.YearAndMonth = Convert.ToDateTime(Year);
-                                //merits1.IsDel = false;
-                                //merits1.IsApproval = false;
-                                //this.Insert(merits1);
-                                ExecuteSql("insert into MeritsCheck (EmployeeId,YearAndMonth,FinalGrade,IsDel,IsApproval)values(" + empid + ",'" + Year + "'," + finalgrade + ",0,0)");
-                                BusHelper.WriteSysLog("Excel文件导入成功", Entity.Base_SysManage.EnumType.LogType.Excle文件导入);
-                                rc.RemoveCache("InRedisMCData");
-                            }
-                        }
-                        }
-                        }
 
+                                if (!emanage.DDidIsExist(int.Parse(ddid)))
+                                {
+                                    errorDataView.excelId = name;
+                                    errorDataView.errorExplain = "原因是该员工钉钉号不存在！";
+                                    error.Add(errorDataView);
+                                }
+                                else
+                                {
+                                    var empid = emanage.GetList().Where(i => i.DDAppId == int.Parse(ddid)).FirstOrDefault().EmployeeId;
+                                    //merits.EmployeeId = empid;
+                                    if (string.IsNullOrEmpty(finalgrade))
+                                    {
+                                        //errorDataView.excelId = name;
+                                        //errorDataView.errorExplain = "原因是该员工绩效分为空！";
+                                        //error.Add(errorDataView);
+                                        finalgrade = "0";
+                                    }
+                                    else
+                                    {
+                                        if (!Regex.IsMatch(finalgrade, @"^[0-9]*$"))
+                                        {
+                                            errorDataView.excelId = name;
+                                            errorDataView.errorExplain = "绩效分含有字符串！";
+                                            error.Add(errorDataView);
+                                        }
+                                        else
+                                        {
+                                            //merits1.EmployeeId = empid;
+                                            //merits1.FinalGrade = int.Parse(finalgrade);
+                                            //merits1.YearAndMonth = Convert.ToDateTime(Year);
+                                            //merits1.IsDel = false;
+                                            //merits1.IsApproval = false;
+                                            //this.Insert(merits1);
+                                            ExecuteSql("insert into MeritsCheck (EmployeeId,YearAndMonth,FinalGrade,IsDel,IsApproval)values(" + empid + ",'" + Year + "'," + finalgrade + ",0,0)");
+                                            BusHelper.WriteSysLog("Excel文件导入成功", Entity.Base_SysManage.EnumType.LogType.Excle文件导入);
+                                            rc.RemoveCache("InRedisMCData");
+                                        }
+                                    }
+                                }
+                            }
+                        }
 
                     }
+                    #endregion
+                    #region 判断2
+                    //if (string.IsNullOrEmpty(Year))
+                    //{
+                    //    MeritsCheckErrorDataView err = new MeritsCheckErrorDataView();
+                    //    err.excelId = name;
+                    //    err.errorExplain = "原因是第二行时间未填";
+                    //    error.Add(err);
+                    //    continue;
+                    //}
+                    //string year = Year.Substring(0, 4);
+                    //string month = Year.Substring(5, 2);
+                    //if (month.Substring(1, 1) == "月")
+                    //{
+                    //    Year = year + "-" + month.Substring(0, 1) + "-" + 01;
+                    //}
+                    //else
+                    //{
+                    //    Year = year + "-" + month + "-" + 01;
+                    //}
+                    //if (string.IsNullOrEmpty(ddid))
+                    //{
+                    //    errorDataView.excelId = name;
+                    //    errorDataView.errorExplain = "原因是该员工工号为空";
+                    //    error.Add(errorDataView);
+                    //    continue;
+                    //}
+
+                    //var s = Regex.IsMatch(ddid, @"^[0-9]*$");
+                    //if (!s)
+                    //{
+                    //    errorDataView.excelId = name;
+                    //    errorDataView.errorExplain = "钉钉号含有字符串！";
+                    //    error.Add(errorDataView);
+                    //    continue;
+                    //}
+
+                    //if (!emanage.DDidIsExist(int.Parse(ddid)))
+                    //{
+                    //    errorDataView.excelId = name;
+                    //    errorDataView.errorExplain = "原因是该员工钉钉号不存在！";
+                    //    error.Add(errorDataView);
+                    //    continue;
+                    //}
+
+                    //var empid = emanage.GetList().Where(i => i.DDAppId == int.Parse(ddid)).FirstOrDefault().EmployeeId;
+                    //merits.EmployeeId = empid;
+                    //if (string.IsNullOrEmpty(finalgrade))
+                    //{
+                    //    errorDataView.excelId = name;
+                    //    errorDataView.errorExplain = "原因是该员工绩效分为空！";
+                    //    error.Add(errorDataView);
+                    //    finalgrade = "0";
+                    //}
+
+                    //if (!Regex.IsMatch(finalgrade, @"^[0-9]*$"))
+                    //{
+                    //    errorDataView.excelId = name;
+                    //    errorDataView.errorExplain = "绩效分含有字符串！";
+                    //    error.Add(errorDataView);
+                    //    continue;
+                    //}
+                    //ExecuteSql("insert into MeritsCheck (EmployeeId,YearAndMonth,FinalGrade,IsDel,IsApproval)values(" + empid + ",'" + Year + "'," + finalgrade + ",0,0)");
+                    //BusHelper.WriteSysLog("Excel文件导入成功", Entity.Base_SysManage.EnumType.LogType.Excle文件导入);
+                    //rc.RemoveCache("InRedisMCData");
+                    #endregion
+
+                }
 
 
                 int sum = num - 3;
@@ -320,7 +408,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     workbook = new XSSFWorkbook(stream);
                 }
                 ISheet sheet = workbook.GetSheetAt(0);
-                 result = ExcelDeposit(sheet);
+                result = ExcelDeposit(sheet);
                 stream.Close();
                 stream.Dispose();
                 workbook.Close();
@@ -330,7 +418,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                 result.Msg = e.Message;
                 throw;
             }
-          
+
 
             return result;
         }

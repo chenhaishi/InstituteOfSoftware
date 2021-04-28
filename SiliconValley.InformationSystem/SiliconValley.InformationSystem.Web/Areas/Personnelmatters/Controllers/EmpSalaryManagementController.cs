@@ -693,7 +693,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 CreateCell(row, ContentcellStyle, 21, d.PersonalIncomeTax.ToString());//个税
                 CreateCell(row, ContentcellStyle, 22, d.PayCardSalary.ToString());//实发工资(工资卡)
                 CreateCell(row, ContentcellStyle, 23,d.CashSalary.ToString());//实发工资(现金)
-                CreateCell(row, ContentcellStyle, 24,d.Total.ToString());//实发工资(现金)
+                CreateCell(row, ContentcellStyle, 24,d.Total.ToString());//合计
                 num++;
 
             });
