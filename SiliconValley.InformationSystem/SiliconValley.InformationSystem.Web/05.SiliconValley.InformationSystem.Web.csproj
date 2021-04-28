@@ -3662,6 +3662,9 @@
     <Content Include="Areas\InternalTraining\Views\web.config" />
     <Content Include="Areas\Teachingquality\Views\ClassSchedule\OddNumberMyclass.cshtml" />
     <Content Include="Areas\Educational\Views\Reconcile\OutExcel_s3s4View.cshtml" />
+    <Content Include="Areas\Educational\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Educational\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Educational\Views\Staff_Cost_Statistics\ManageClassTime.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
@@ -5398,7 +5401,6 @@
     <Folder Include="Areas\Educational\Views\InStock\" />
     <Folder Include="Areas\Educational\Views\IsGoodOrBad\" />
     <Folder Include="Areas\Educational\Views\PurchaseType\" />
-    <Folder Include="Areas\Educational\Views\Shared\" />
     <Folder Include="Areas\Educational\Views\ShppingDetail\" />
     <Folder Include="Areas\Finance\Models\" />
     <Folder Include="Areas\flow\Controllers\" />

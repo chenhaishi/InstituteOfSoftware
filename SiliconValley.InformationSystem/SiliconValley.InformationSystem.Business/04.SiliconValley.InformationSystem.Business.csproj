@@ -184,6 +184,7 @@
     <Compile Include="EducationalBusiness\BreakManeger.cs" />
     <Compile Include="EducationalBusiness\ClassroomManeger.cs" />
     <Compile Include="EducationalBusiness\ClassTeacherKeepManeger.cs" />
+    <Compile Include="EducationalBusiness\ClassTimeBusiness.cs" />
     <Compile Include="EducationalBusiness\DutyCostBusiness.cs" />
     <Compile Include="EducationalBusiness\EvningSelfStudyManeger.cs" />
     <Compile Include="EducationalBusiness\InternalTrainingCostBusiness.cs" />

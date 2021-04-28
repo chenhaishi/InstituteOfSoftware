@@ -67,6 +67,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
         public HeadmasterBusiness Headmaster_Entity = new HeadmasterBusiness();
 
+        public ClassTimeBusiness ClassTime_Entity = new ClassTimeBusiness();
+
         public Staff_Cost_StatisticsController()
         {
             db_staf_Cost = new Staff_Cost_StatisticssBusiness();
@@ -86,6 +88,151 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 select_list.Add(select);
             }
             return Json(select_list,JsonRequestBehavior.AllowGet);
+        }
+        
+        /// <summary>
+        /// 管理底课时页面
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ManageClassTime()
+        {
+            return View();
+        }
+        
+
+        public ActionResult GetClassTime(int limit, int page)
+        {
+            string sql = "select * from ManageClassTime where ClassTimeState != 0";
+            List<ManageClassTime> list = ClassTime_Entity.GetListBySql<ManageClassTime>(sql);
+            var resData = list.Select(
+                a => new {
+                    ID = a.ID,
+                    Emp_Name = EmployeesInfoManage_Entity.GetEntity(a.Emp_ID).EmpName,
+                    classTime = a.ClassTime,
+                    Dept_Name = EmployeesInfoManage_Entity.GetDeptByEmpid(a.Emp_ID).DeptName
+                });
+            var temp = new
+            {
+                code = 0,
+                count = resData.Count(),
+                msg = "",
+                data = resData.Skip((page - 1) * limit).Take(limit).ToList()
+            };
+
+            return Json(temp, JsonRequestBehavior.AllowGet);
+            
+        }
+
+        [HttpPost]
+        /// <summary>
+        /// 查询有多少老师是没有设置底课时
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult GetNOSetClassTime()
+        {
+            Department dept = EmployeesInfoManage_Entity.GetDeptByDname("s1、s2教学部");
+            Department dept1 = EmployeesInfoManage_Entity.GetDeptByDname("s3教学部");
+            Department dept2 = EmployeesInfoManage_Entity.GetDeptByDname("s4教学部");
+
+            List<EmployeesInfo> Emp_List = EmployeesInfoManage_Entity.GetEmpsByDeptid(dept.DeptId);
+            Emp_List.AddRange(EmployeesInfoManage_Entity.GetEmpsByDeptid(dept1.DeptId));
+            Emp_List.AddRange(EmployeesInfoManage_Entity.GetEmpsByDeptid(dept2.DeptId));
+
+            string sql = "select * from ManageClassTime where ClassTimeState =1";
+            List<ManageClassTime> ClassTime_List = ClassTime_Entity.GetListBySql<ManageClassTime>(sql);
+
+            foreach (var item in ClassTime_List)
+            {
+                foreach (var it in Emp_List)
+                {
+                    if (item.Emp_ID == it.EmployeeId)
+                    {
+                        Emp_List.Remove(it);
+                        break;
+                    }
+                }
+            }
+            return Json(Emp_List.Count(),JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 设置未设置底课时的教学老师
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult AddClassTime_Emp()
+        {
+            Department dept = EmployeesInfoManage_Entity.GetDeptByDname("s1、s2教学部");
+            Department dept1 = EmployeesInfoManage_Entity.GetDeptByDname("s3教学部");
+            Department dept2 = EmployeesInfoManage_Entity.GetDeptByDname("s4教学部");
+
+            List<EmployeesInfo> Emp_List = EmployeesInfoManage_Entity.GetEmpsByDeptid(dept.DeptId);
+            Emp_List.AddRange(EmployeesInfoManage_Entity.GetEmpsByDeptid(dept1.DeptId));
+            Emp_List.AddRange(EmployeesInfoManage_Entity.GetEmpsByDeptid(dept2.DeptId));
+
+            string sql = "select * from ManageClassTime where ClassTimeState =1";
+            List<ManageClassTime> ClassTime_List = ClassTime_Entity.GetListBySql<ManageClassTime>(sql);
+
+            foreach (var item in ClassTime_List)
+            {
+                foreach (var it in Emp_List)
+                {
+                    if (item.Emp_ID == it.EmployeeId) {
+                        Emp_List.Remove(it);
+                        break;
+                    }
+                }
+            }
+
+            List<ManageClassTime> time = new List<ManageClassTime>();
+            for (int i = 0; i < Emp_List.Count; i++)
+            {
+                ManageClassTime classtime = new ManageClassTime();
+                classtime.ID = Guid.NewGuid().ToString();
+
+                classtime.ClassTime = 50;
+                classtime.Emp_ID = Emp_List[i].EmployeeId;
+                classtime.ClassTimeState = 1;
+                time.Add(classtime);
+            }
+            ClassTime_Entity.Insert(time);
+
+            return Json(Emp_List.Count(),JsonRequestBehavior.AllowGet);
+        }
+        
+        /// <summary>
+        /// 批量修改底课时方法
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult UpdateClassTime(string [] str)
+        {
+            int classtimecount = Convert.ToInt16(Request.Form["ClassTime"]);
+            List<ManageClassTime> class_List = new List<ManageClassTime>();
+            for (int i = 0; i < str.Length; i++)
+            {
+                ManageClassTime classtime = ClassTime_Entity.GetEntity(str[i]);
+                classtime.ClassTime = classtimecount;
+                class_List.Add(classtime);
+            }
+            if (str.Length == class_List.Count())
+            {
+                ClassTime_Entity.Update(class_List);
+            }
+
+            return Json(class_List.Count(),JsonRequestBehavior.AllowGet);
+        }
+
+
+        [HttpPost]
+        public ActionResult UpdateSingleClassTime()
+        {
+            string ID = Request.Form["ID"];
+            int classcount = Convert.ToInt32(Request.Form["classTime"]);
+            ManageClassTime classtime = ClassTime_Entity.GetEntity(ID);
+            classtime.ClassTime = classcount;
+            ClassTime_Entity.Update(classtime);
+            return Json(JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
