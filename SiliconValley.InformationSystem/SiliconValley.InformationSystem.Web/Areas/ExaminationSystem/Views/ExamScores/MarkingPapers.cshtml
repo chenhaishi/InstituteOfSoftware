@@ -86,7 +86,7 @@
         <tbody>
             <tr>
                 <td colspan="2">
-                    <a id="YiJian" class="layui-btn layui-btn-danger" style="width:100%;color:white">一键下载机试</a>
+                    <a id="YiJian" class="layui-btn layui-btn-danger" style="width:100%;color:white">一键导出解答题</a>
                 </td>
             </tr>
             @*<tr>
@@ -215,7 +215,7 @@
         @*<a  id="xiazaimoban" class="layui-btn" style="color:white;width:20%">下载模板</a>*@
         <a class="layui-btn" style="color:white;width:20%" lay-event="OneClickUploadScore" id="OneClickUploadScore">一键上传分数</a>
         <a href="\ExaminationSystem\ExamScores\ExamScoreSearch" class="layui-btn layui-btn-danger" style="color:white;width:20%">查看分数</a>
-        <a href="\ExaminationSystem\ExamScores\Marking" class="layui-btn layui-btn-danger" style="color:white;width:20%">跳转查看笔试</a>
+        @*<a href="\ExaminationSystem\ExamScores\Marking" class="layui-btn layui-btn-danger" style="color:white;width:20%">跳转查看笔试</a>*@
     </div>
 </script>
 @section script{
@@ -470,7 +470,6 @@
                             text = "考试未结束";
                         }
 
-
                         var layerdata = layerthtml({ ExamTitle: ExamTitle, ExamRoom: ExamRoom, styleClass: styleClass, text: text, examid: result.Data[i].markingView.ExamID.ID, examroomid: result.Data[i].markingView.ExamRoom.Classroom_Id });
 
                         $("#stayMarkingArea  .tayMarkinglist").append(layerdata);
@@ -568,9 +567,6 @@
                                 $("#stulist").show();
 
                             });
-
-
-
                         }
                         else {
                             layer.msg('考试还未结束。。', { icon: 2 });
@@ -587,20 +583,24 @@
             
 
             })
-                //一键下载机试题
+                //一键导出解答题
                 $(document).off("click", "#YiJian").on("click", "#YiJian", function () {
                    
-                    layer.msg("功能优化中");
-        })
-                //一键下载解答题
-                    $(document).off("click", "#YiJianjd").on("click", "#YiJianjd", function () {
-                        var lodindex = layer.load(1);
-                        $.post("/ExaminationSystem/ExamScores/Exporter", { examid: Examid }, function () {
-                            
-                                layer.msg("前去C盘查收！");
-                            })
-                        layer.close(lodindex);
+                    var close = layer.confirm('确认导出解答题嘛?', { icon: 3, title: '提示' }, function (index) {
+                        console.log("条件：" + Examid);
+                        layer.close(close);
+                        window.open("/ExaminationSystem/ExamScores/ExportofAnswerQuestions?Examid=" + Examid);
+                    });
                 })
+                ////一键下载解答题
+                //    $(document).off("click", "#YiJianjd").on("click", "#YiJianjd", function () {
+                //        var lodindex = layer.load(1);
+                //        $.post("/ExaminationSystem/ExamScores/Exporter", { examid: Examid }, function () {
+                            
+                //                layer.msg("前去C盘查收！");
+                //            })
+                //        layer.close(lodindex);
+                //})
                 //提交分数               
                 $(document).off("click", "#recordScoresBtn").on("click", '#recordScoresBtn',function () {
                     //获取分数
