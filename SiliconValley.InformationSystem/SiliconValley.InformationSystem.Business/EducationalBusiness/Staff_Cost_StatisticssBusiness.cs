@@ -57,7 +57,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         public CandidateInfoBusiness Candi_Entity = new CandidateInfoBusiness();
         public CoursewaremakingBusiness Courseware_Entity = new CoursewaremakingBusiness();
         public BaseBusiness<InternalTrainingCost> InternalTraining = new BaseBusiness<InternalTrainingCost>();
-
+        public ClassTimeBusiness ClassTime_Entity = new ClassTimeBusiness();
         public Staff_Cost_StatisticssBusiness()
         {
             db_emp = new EmployeesInfoManage();
@@ -86,7 +86,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
             decimal? Cost_fee = 0;
             int QuanDay = 0;//全天课天数
-            int ClassTime = 50;//底课时
+            
             int Duty_fee = 0;//值班费
             int Invigilation_fee = 0;//监考费
             int Marking_fee = 0;//阅卷费
@@ -97,14 +97,16 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
             for (int i = 0; i < Emp_List.Count; i++)
             {
+
+                int ClassTime = ClassTime_Entity.GetList().Where(a=>a.Emp_ID==Emp_List[i].EmployeeId && a.ClassTimeState==1).FirstOrDefault().ClassTime;//底课时
                 Staff_CostView staff = new Staff_CostView();
 
                 DateTime NowTime = DateTime.Now;
 
-                if ((NowTime.Year - Emp_List[i].EntryTime.Year) >= 2)
-                {
-                    ClassTime = 40;
-                }
+                //if ((NowTime.Year - Emp_List[i].EntryTime.Year) >= 2)
+                //{
+                //    ClassTime = 40;
+                //}
                 
                 string sqlstr = $"select * from Reconcile  where Year(AnPaiDate)={dt.Year} and Month(AnPaiDate) = {dt.Month} and EmployeesInfo_Id ={ Emp_List[i].EmployeeId } and IsDelete = 0";
                 List<Reconcile> mydata = Reconcile_Entity.GetListBySql<Reconcile>(sqlstr).ToList();
