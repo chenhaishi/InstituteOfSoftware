@@ -18,22 +18,29 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
         {
             return View();
         }
-
+        /// <summary>
+        /// 项目答辩页面
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ProjectDefense()
+        {
+            return View();
+        }
         /// <summary>
         /// 考题讲解
         /// </summary>
         /// <returns></returns>
-        public ActionResult ExamquestionExplanation()
-        {
-            return View();
-        }
+        //public ActionResult ExamquestionExplanation()
+        //{
+        //    return View();
+        //}
         /// <summary>
         /// 考试讲解模块机试页面
         /// </summary>
         /// <returns></returns>
-        public ActionResult ExaminationModule()
-        {
-            return View();
-        }
+        //public ActionResult ExaminationModule()
+        //{
+        //    return View();
+        //}
     }
 }

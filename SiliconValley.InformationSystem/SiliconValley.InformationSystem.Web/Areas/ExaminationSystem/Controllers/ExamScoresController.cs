@@ -1342,17 +1342,24 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             List<StudentExamView> scorelist = new List<StudentExamView>();
             string sql = "select * from CandidateInfo where Examination = '" + examid + "'";
             List<CandidateInfo> multipleChoicelist = db_candidate.GetListBySql<CandidateInfo>(sql).ToList();
-
-            for (int i = 0; i < multipleChoicelist.Count; i++)
+            foreach (var item in multipleChoicelist)
             {
                 StudentExamView examView = new StudentExamView();
-                examView.StudentID = multipleChoicelist[i].StudentID;
-                examView.StudentName = db_student.GetEntity(multipleChoicelist[i].StudentID).Name;
-                examView.PaperTime = multipleChoicelist[i].PaperTime;
-                examView.ComputerPaperTime = multipleChoicelist[i].ComputerPaperTime;
+                examView.StudentID = item.StudentID;
+                examView.StudentName = db_student.GetEntity(item.StudentID).Name;
+                examView.PaperTime = item.PaperTime;
+                examView.ComputerPaperTime = item.ComputerPaperTime;
                 scorelist.Add(examView);
             }
-
+            //for (int i = 0; i < multipleChoicelist.Count; i++)
+            //{
+            //    StudentExamView examView = new StudentExamView();
+            //    examView.StudentID = multipleChoicelist[i].StudentID;
+            //    examView.StudentName = db_student.GetEntity(multipleChoicelist[i].StudentID).Name;
+            //    examView.PaperTime = multipleChoicelist[i].PaperTime;
+            //    examView.ComputerPaperTime = multipleChoicelist[i].ComputerPaperTime;
+            //    scorelist.Add(examView);
+            //}
             var obj = new
             {
 

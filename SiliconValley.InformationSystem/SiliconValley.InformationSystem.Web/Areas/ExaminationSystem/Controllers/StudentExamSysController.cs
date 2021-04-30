@@ -401,7 +401,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         /// </summary>
         /// <param name="examid"></param>
         /// <returns></returns>
-        public ActionResult ChoiceQuestionData(int examid)
+        public ActionResult ChoiceQuestionData(int examid) 
         {
             AjaxResult result = new AjaxResult();
             try

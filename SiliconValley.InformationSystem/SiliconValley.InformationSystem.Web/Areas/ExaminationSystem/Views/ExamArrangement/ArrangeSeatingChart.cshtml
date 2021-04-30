@@ -104,7 +104,7 @@
                     <th class="col-lg-2">姓名</th>
                     <th class="col-lg-2">性别</th>
                     <th class="col-lg-2">班级</th>
-                    <th class="col-lg-3">身份证</th>
+                    @*<th class="col-lg-3">身份证</th>*@
                 </tr>
             </thead>
             <tbody></tbody>
@@ -124,7 +124,7 @@
         <th class="col-lg-2">{{=name}}</th>
         <th class="col-lg-2">{{=sex}}</th>
         <th class="col-lg-2">{{=classname}}</th>
-        <th class="col-lg-2">{{=idcard}}</th>
+        @*<th class="col-lg-2">{{=idcard}}</th>*@
     </tr>
 </script>
 
@@ -191,7 +191,7 @@
                                     var layerthtml1 = _.template($("#seatmoban").html());
 
 
-                                    var layerdata = layerthtml1({ index: j+1, sex: seatlist[j].student.Sex, studentNumber: seatlist[j].student.StudentNumber, classname: seatlist[j].student.ClassName, name: seatlist[j].student.Name, idcard: seatlist[j].student.IdCard });
+                                    var layerdata = layerthtml1({ index: j+1, sex: seatlist[j].student.Sex, studentNumber: seatlist[j].student.StudentNumber, classname: seatlist[j].student.ClassName, name: seatlist[j].student.Name/*, idcard: seatlist[j].student.IdCard*/ });
 
                                     div.find("tbody").append(layerdata);
 

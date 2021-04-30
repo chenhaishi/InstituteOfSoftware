@@ -4,15 +4,15 @@
     <total>5</total>
     <level levelId="1">
       <name>简单</name>
-      
+
       <count levelId="1" name="简单" Percentage="80"></count>
       <count levelId="2" name="普通" Percentage="10"></count>
-    <count levelId="3" name="困难" Percentage="10"></count>
+      <count levelId="3" name="困难" Percentage="10"></count>
     </level>
 
     <level levelId="2">
       <name>普通</name>
-      
+
       <count levelId="1" name="简单" Percentage="40"></count>
       <count levelId="2" name="普通" Percentage="40"></count>
       <count levelId="3" name="困难" Percentage="20"></count>
@@ -20,7 +20,7 @@
 
     <level levelId="3">
       <name>困难</name>
-     
+
       <count levelId="1" name="简单" Percentage="10"></count>
       <count levelId="2" name="普通" Percentage="10"></count>
       <count levelId="3" name="困难" Percentage="80"></count>
@@ -38,7 +38,7 @@
 
     <level levelId="2">
       <name>普通</name>
-     
+
       <count levelId="1" name="简单" Percentage="40"></count>
       <count levelId="2" name="普通" Percentage="40"></count>
       <count levelId="3" name="困难" Percentage="20"></count>
