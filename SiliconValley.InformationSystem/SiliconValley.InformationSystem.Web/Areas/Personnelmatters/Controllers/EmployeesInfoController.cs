@@ -36,7 +36,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         // GET: Personnelmatters/EmployeesInfo
         public ActionResult Index()
         {
-          //var s=  Manage.GetBeijingTime();
             ViewBag.birth = GetTheGodOfLongevity().Count();
             ViewBag.contractEnd = ContractEndRemind().Count();
             var IsHR = JudgeIsHR();
