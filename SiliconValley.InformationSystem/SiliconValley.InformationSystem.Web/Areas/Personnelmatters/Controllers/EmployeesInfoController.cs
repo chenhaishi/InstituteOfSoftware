@@ -32,12 +32,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
     public class EmployeesInfoController : Controller
     {
         CloudstorageBusiness db_Bos = new CloudstorageBusiness();
-        EmployeesInfoManage employees = new EmployeesInfoManage();
        RedisCache rc;
         // GET: Personnelmatters/EmployeesInfo
         public ActionResult Index()
         {
-          var s= employees.GetBeijingTime();
             ViewBag.birth = GetTheGodOfLongevity().Count();
             ViewBag.contractEnd = ContractEndRemind().Count();
             var IsHR = JudgeIsHR();

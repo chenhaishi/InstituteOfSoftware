@@ -1221,21 +1221,22 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
         /// 从数据库获取时间
         ///</summary>
         ///<returns></returns>
-        public  DateTime GetBeijingTime()
+        public DateTime GetBeijingTime()
         {
-            string n="";
-          
+            string n = "";
+
             var s = this.GetDataTableWithSql("select GETDATE()");
             foreach (DataRow row in s.Rows)
             {
                 foreach (DataColumn column in s.Columns)
                 {
-                    var ll=row[column];
+                    var ll = row[column];
+                    n = ll.ToString();
                 }
             }
 
 
-            var datetime = DateTime.Now;
+            var datetime = Convert.ToDateTime(n);
             return datetime;
         }
         //月份及日期前面加个零
