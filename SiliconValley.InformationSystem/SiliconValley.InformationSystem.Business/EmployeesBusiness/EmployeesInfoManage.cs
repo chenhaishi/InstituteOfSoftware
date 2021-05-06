@@ -28,6 +28,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
     using SiliconValley.InformationSystem.Entity.Base_SysManage;
     using System.Net;
     using System.Text;
+    using System.Data;
 
     /// <summary>
     /// 员工业务类
@@ -1171,7 +1172,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
         {
             string mingci = string.Empty;
             // DateTime date = Convert.ToDateTime(Date());
-            DateTime date = DateTime.Now;
+            DateTime date = GetBeijingTime();
             string n = date.Year.ToString();//获取年份
             string y = MonthAndDay(Convert.ToInt32(date.Month)).ToString();//获取月份
             string d = MonthAndDay(Convert.ToInt32(date.Day)).ToString();//获取日期
@@ -1217,56 +1218,25 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
         }
 
         ///<summary>
-        /// 获取标准北京时间
+        /// 从数据库获取时间
         ///</summary>
         ///<returns></returns>
         public  DateTime GetBeijingTime()
         {
-            DateTime dt;
-            HttpWebRequest wrt = null;
-            HttpWebResponse wrp = null;
-            AjaxResult result = new AjaxResult();
-            try
+            string n="";
+          
+            var s = this.GetDataTableWithSql("select GETDATE()");
+            foreach (DataRow row in s.Rows)
             {
+                foreach (DataColumn column in s.Columns)
+                {
+                    var ll=row[column];
+                }
+            }
 
-               ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
 
-                wrt = (HttpWebRequest)WebRequest.Create("http://www.beijing-time.org/time.asp");
-                wrt.Method = "POST";
-                //wrt.UserAgent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)";
-                //wrt.ContentType = "application/x-www-form-urlencoded";
-                wrt.ContentLength = 0;
-                wrt.KeepAlive = false;
-                wrt.ProtocolVersion = HttpVersion.Version10;
-                wrp = (HttpWebResponse)wrt.GetResponse();
-
-                string year = wrp.LastModified.Year.ToString();
-                string month = wrp.LastModified.Month.ToString();
-                string day = wrp.LastModified.Day.ToString();
-                string hour = wrp.LastModified.Hour.ToString();
-                string minite = wrp.LastModified.Minute.ToString();
-                string second = wrp.LastModified.Second.ToString();
-                string curTime = year + "-" + month + "-" + day + " " + hour + ":" + minite + ":" + second;
-                dt = DateTime.Parse(curTime);
-            }
-            catch (WebException ex)
-            {
-                result.Msg = ex.Message;
-                return DateTime.Parse("2011-1-1");
-            }
-            catch (Exception ex)
-            {
-                result.Msg = ex.Message;
-                return DateTime.Parse("2011-1-1");
-            }
-            finally
-            {
-                if (wrp != null)
-                    wrp.Close();
-                if (wrt != null)
-                    wrt.Abort();
-            }
-            return dt;
+            var datetime = DateTime.Now;
+            return datetime;
         }
         //月份及日期前面加个零
         public string MonthAndDay(int a)
