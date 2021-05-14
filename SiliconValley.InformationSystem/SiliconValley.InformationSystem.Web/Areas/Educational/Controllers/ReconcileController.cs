@@ -501,6 +501,11 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
                     }
                     break;
+                case "就业":
+                    List<EmployeesInfo> list_saff = Reconcile_Com.GetObtainTeacher();//获取未辞职的就业部老师
+
+                    e_list.AddRange(list_saff);
+                    break;
             }
             List<SelectListItem> select = e_list.Select(s => new SelectListItem() { Value = s.EmployeeId, Text = s.EmpName }).ToList();
             return Json(select, JsonRequestBehavior.AllowGet);
@@ -566,12 +571,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 int Kcount = Convert.ToInt32(Math.Ceiling(Convert.ToDouble(find_c.CourseCount / 4.0)));
                 //判断该班级这个课程是否已排完课
                 int count = Reconcile_Entity.GetList().Where(r => r.Curriculum_Id == ke && r.ClassSchedule_Id == class_Id).ToList().Count;
-                if (count > 0 && ke != "软件工厂")
+                if (count > 0 && ke != "工厂项目")
                 {
                     a.Msg = Reconcile_Com.ClassSchedule_Entity.GetEntity(class_Id).ClassNumber + "的" + ke + "已有排课数据，为了避免重复，请删除之后再操作！！";
                     a.Success = false;
                 }
-                else if (count == Kcount && ke != "软件工厂")
+                else if (count == Kcount && ke != "工厂项目")
                 {
                     a.Msg = Reconcile_Com.ClassSchedule_Entity.GetEntity(class_Id).ClassNumber + "的" + ke + "已安排完排课,请安排其他课程！！";
                     a.Success = false;

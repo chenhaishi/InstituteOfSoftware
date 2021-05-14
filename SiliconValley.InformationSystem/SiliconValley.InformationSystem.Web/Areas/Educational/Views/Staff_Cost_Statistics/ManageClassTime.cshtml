@@ -1,0 +1,142 @@
+﻿
+@{
+    ViewBag.Title = "ManageClassTime";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>*@
+
+<script type="text/html" id="toolbarDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="AddClassTime">生成未设置底课时的员工<span class="layui-badge" id="count"></span></a>
+    <a class="layui-btn layui-btn-xs" lay-event="someUpdate">批量修改</a>
+</script>
+
+<form class="layui-form" hidden id="SomeUpdateForm">
+    <div class="layui-form-item">
+        <label class="layui-form-label">底课时</label>
+        <div class="layui-input-block">
+            <input type="text" name="ClassTime" required lay-verify="number" placeholder="请输入底课时" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label"></label>
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="someformDemo">立即提交</button>
+        </div>
+    </div>
+</form>
+
+<table id="demo" lay-filter="test"></table>
+
+<script>
+    layui.use(['table', 'form'], function () {
+        var table = layui.table;
+        var form = layui.form;
+
+        //第一个实例
+        var tableIns = table.render({
+            elem: '#demo'
+            , height: 612
+            , id: 'idTest'
+            , toolbar: '#toolbarDemo'
+            , url: '/Educational/Staff_Cost_Statistics/GetClassTime' //数据接口
+            , page: true //开启分页
+            , limit: 10
+            , limits: [10, 20, 25, 30]
+            , cols: [[ //表头
+                { type: 'checkbox', fixed: 'left' }
+                , { field: 'ID', title: 'ID', width: 80, hide: true, fixed: 'left' }
+                , { field: 'Emp_Name', title: '员工姓名', width: 400 }
+                , { field: 'classTime', title: '底课时', edit: 'number', width: 300, sort: true }
+                , { field: 'Dept_Name', title: '所在部门', width: 450 }
+            ]]
+
+        });
+
+        function flush() {
+            $.ajax({
+                url: '/Educational/Staff_Cost_Statistics/GetNOSetClassTime',
+                type: 'post',
+                success: function (res) {
+                    $("#count").text(res);
+                }
+            });
+        }
+        flush();
+        table.on('toolbar(test)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch (obj.event) {
+                case 'AddClassTime':
+                    $.ajax({
+                        url: '/Educational/Staff_Cost_Statistics/AddClassTime_Emp',
+                        type: 'post',
+                        success: function (res) {
+                            layer.msg("成功条数：" + res);
+                            tableIns.reload({
+                                where: {}
+                            });
+                        }
+                    });
+                    break;
+                case 'someUpdate':
+                    layer.open({
+                        type: 1,
+                        content: $('#SomeUpdateForm')
+                    });
+                    break;
+            };
+        });
+
+        form.on('submit(someformDemo)', function (data) {
+            var checkStatus = table.checkStatus('idTest');
+
+            var arr = [];
+
+            for (var i = 0; i < checkStatus.data.length; i++) {
+                arr.push(checkStatus.data[i].ID);
+            }
+            console.log(arr);
+            data.field.str = arr;
+
+
+            $.ajax({
+                url: '/Educational/Staff_Cost_Statistics/UpdateClassTime',
+                type: 'post',
+                data: data.field,
+                success: function (res) {
+                    layer.closeAll();
+                    tableIns.reload({
+                        where: {}
+                    });
+                    layer.msg("成功条数：" + res + "条");
+                }
+            });
+            return false;
+        });
+
+        table.on('edit(test)', function (obj) {
+            var value = obj.value //得到修改后的值
+                , data = obj.data //得到所在行所有键值
+                , field = obj.field; //得到字段
+
+
+            
+            $.ajax({
+                url: '/Educational/Staff_Cost_Statistics/UpdateSingleClassTime',
+                type: 'post',
+                data: data,
+                success: function (res) {
+                    tableIns.reload({
+                        where: {}
+                    });
+                    layer.msg("修改成功");
+                }
+            });
+            //layer.msg('[ID: ' + data.ID + '] ' + field + ' 字段更改为：' + value);
+        });
+    });
+</script>
+

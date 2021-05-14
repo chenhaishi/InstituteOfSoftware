@@ -106,6 +106,7 @@
     <Compile Include="Entity\Delte_StudentPutinfo.cs" />
     <Compile Include="Entity\DormitoryDeposit.cs" />
     <Compile Include="Entity\JuniorCollege.cs" />
+    <Compile Include="Entity\ManageClassTime.cs" />
     <Compile Include="Entity\MyBreak.cs" />
     <Compile Include="Entity\CancelLeaveApply.cs" />
     <Compile Include="Entity\Cancelreceipt.cs" />
@@ -429,6 +430,7 @@
     <Compile Include="ViewEntity\IdCard.cs" />
     <Compile Include="ViewEntity\InsuranceStudentView.cs" />
     <Compile Include="ViewEntity\InsuranceView.cs" />
+    <Compile Include="ViewEntity\JuniorCollegeView.cs" />
     <Compile Include="ViewEntity\layuitableview.cs" />
     <Compile Include="ViewEntity\ListStockGoods.cs" />
     <Compile Include="ViewEntity\LoadTree_ZhurenView.cs" />
@@ -436,7 +438,6 @@
     <Compile Include="ViewEntity\MeritsCheckView.cs" />
     <Compile Include="ViewEntity\MessagenotificationView.cs" />
     <Compile Include="ViewEntity\NetClientRecordView.cs" />
-    <Compile Include="ViewEntity\JuniorCollegeView.cs" />
     <Compile Include="ViewEntity\OvertimeRecordErrorDataView.cs" />
     <Compile Include="ViewEntity\OvertimeRecordView.cs" />
     <Compile Include="ViewEntity\PaySlipExcelError.cs" />

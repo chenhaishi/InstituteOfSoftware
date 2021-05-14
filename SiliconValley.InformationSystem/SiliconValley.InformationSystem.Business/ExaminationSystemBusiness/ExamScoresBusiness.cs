@@ -121,11 +121,11 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
                     //学号
                     string studentid = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(1))) ? null : getrow.GetCell(1).ToString();
                     //解答题分数
-                    string jiedati = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(4))) ? null : getrow.GetCell(3).ToString();
+                    string jiedati = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(4))) ? null : getrow.GetCell(4).ToString();
                     //机试分数
-                    string jishi = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(5))) ? null : getrow.GetCell(4).ToString();
+                    string jishi = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(5))) ? null : getrow.GetCell(5).ToString();
                     //备注
-                    string beizhu = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(7))) ? null : getrow.GetCell(5).ToString();
+                    string beizhu = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(7))) ? null : getrow.GetCell(7).ToString();
 
                     MeritsCheckErrorDataView errorDataView = new MeritsCheckErrorDataView();
                     MeritsCheck merits1 = new MeritsCheck();

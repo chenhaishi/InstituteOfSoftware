@@ -32,7 +32,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
     public class EmployeesInfoController : Controller
     {
         CloudstorageBusiness db_Bos = new CloudstorageBusiness();
-        RedisCache rc;
+       RedisCache rc;
         // GET: Personnelmatters/EmployeesInfo
         public ActionResult Index()
         {

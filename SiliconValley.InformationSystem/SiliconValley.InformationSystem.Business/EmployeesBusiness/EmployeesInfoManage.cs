@@ -26,6 +26,9 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
     using SiliconValley.InformationSystem.Business.Base_SysManage;
     using SiliconValley.InformationSystem.Entity;
     using SiliconValley.InformationSystem.Entity.Base_SysManage;
+    using System.Net;
+    using System.Text;
+    using System.Data;
 
     /// <summary>
     /// 员工业务类
@@ -1169,7 +1172,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
         {
             string mingci = string.Empty;
             // DateTime date = Convert.ToDateTime(Date());
-            DateTime date = DateTime.Now;
+            DateTime date = GetBeijingTime();
             string n = date.Year.ToString();//获取年份
             string y = MonthAndDay(Convert.ToInt32(date.Month)).ToString();//获取月份
             string d = MonthAndDay(Convert.ToInt32(date.Day)).ToString();//获取日期
@@ -1212,6 +1215,29 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
             }
             string EmpidResult = n + y + d + mingci;
             return EmpidResult;
+        }
+
+        ///<summary>
+        /// 从数据库获取时间
+        ///</summary>
+        ///<returns></returns>
+        public DateTime GetBeijingTime()
+        {
+            string n = "";
+
+            var s = this.GetDataTableWithSql("select GETDATE()");
+            foreach (DataRow row in s.Rows)
+            {
+                foreach (DataColumn column in s.Columns)
+                {
+                    var ll = row[column];
+                    n = ll.ToString();
+                }
+            }
+
+
+            var datetime = Convert.ToDateTime(n);
+            return datetime;
         }
         //月份及日期前面加个零
         public string MonthAndDay(int a)
