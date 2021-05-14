@@ -2211,7 +2211,9 @@
     <Content Include="Config\ExamCourseconfig.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Config\questionLevelConfig.xml" />
+    <Content Include="Config\questionLevelConfig.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Content\iconfont.css" />
     <Content Include="Content\iconfont.js" />
     <Content Include="Content\Login\style.css" />
@@ -2597,7 +2599,9 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Config\Province.json" />
-    <Content Include="Config\system.config" />
+    <Content Include="Config\system.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Config\SystemMenu.config">
       <SubType>Designer</SubType>
     </Content>
@@ -2820,6 +2824,7 @@
     <Content Include="Scripts\dtree2.5.4\layui_ext\dtree\font\dtreefont.css" />
     <Content Include="Scripts\dtree2.5.4\layui_ext\dtree\font\dtreefont.svg" />
     <Content Include="Scripts\dtree2.5.4\layui_ext\dtree\开发者日志.txt" />
+    <Content Include="Scripts\echarts.min.js" />
     <Content Include="Scripts\ECharts4.2.1\incubator-echarts-master.zip" />
     <Content Include="Scripts\ECharts4.2.1\incubator-echarts-master\.editorconfig" />
     <Content Include="Scripts\ECharts4.2.1\incubator-echarts-master\.eslintignore" />
@@ -3398,7 +3403,9 @@
     <Content Include="Areas\Capital\Views\Capital\PublicBorrowList.cshtml" />
     <Content Include="Areas\Capital\Views\Capital\DoPrefundingList.cshtml" />
     <Content Include="Config\MyExcelClass.json" />
-    <Content Include="Config\Obempstaff.config" />
+    <Content Include="Config\Obempstaff.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Config\UserMapRole.config">
       <SubType>Designer</SubType>
     </Content>
@@ -3655,6 +3662,7 @@
     <Content Include="Areas\Teachingquality\Views\ClassSchedule\OddNumberMyclass.cshtml" />
     <Content Include="Areas\Teachingquality\Views\StudentUnion\Activty.cshtml" />
     <Content Include="Areas\Teachingquality\Views\StudentUnion\openActivty.cshtml" />
+    <Content Include="Areas\Finance\Views\Pricedetails\Administrativetranslation.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />

@@ -1,0 +1,178 @@
+﻿
+@{
+    ViewBag.Title = "Administrativetranslation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@*<script src="~/Scripts/jquery-3.3.1.js"></script>*@
+<script src="~/Scripts/echarts.min.js"></script>
+<script src="~/Scripts/layui/layui.js"></script>
+<link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+<style>
+    .grid-demo-bg1 {
+        border: 1px solid #f00;
+        height: 150px;
+        /*position: absolute;*/
+        text-align: center;
+        line-height: 150px;
+    }
+
+    .grid-demo-bg2 {
+        border: 1px solid #f00;
+        height: 600px;
+    }
+
+    .grid-demo-bg1 {
+        background-color: #F2F2F2;
+    }
+
+        .grid-demo-bg1:hover {
+            background-color: #E6E6E6;
+        }
+
+    .ab-1 {
+        border: 1px solid #f00;
+        text-align: center;
+        line-height: 80px;
+        height: 50%;
+    }
+
+    .ab-2 {
+        border: 1px solid #f00;
+        text-align: center;
+        line-height: 80px;
+        height: 50%;
+    }
+
+</style>
+
+
+
+
+<div style="background-color: #00C6D7; padding: 10px 10px 10px 15px; border-bottom: 1px solid #ebeef5; display: block; font-size: 20px;">
+    数据统计
+</div>
+<div class="layui-row">
+    <div class="layui-col-sm2">
+        <div class="grid-demo grid-demo-bg1"><a href="#">在校人数总计:1500人</a></div>
+    </div>
+    <div class="layui-col-sm2">
+        <div class="grid-demo grid-demo-bg1"> <a href="#">宿舍住宿人数:1500人</a></div>
+    </div>
+    <div class="layui-col-sm2">
+        <div class="grid-demo grid-demo-bg1">
+            <div class="ab-1"><a href="#">自考本科人数:800人</a></div>
+            <div class="ab-1"><a href="#">成人高考:500人</a></div>
+        </div>
+    </div>
+    <div class="layui-col-sm2">
+        <div class="grid-demo grid-demo-bg1">
+            <div class="ab-2"><a href="#">S1考试合格率:80%</a></div>
+            <div class="ab-2"><a href="#">S2考试合格率:100%</a></div>
+        </div>
+    </div>
+    <div class="layui-col-sm2">
+        <div class="grid-demo grid-demo-bg1">
+            <div class="ab-2"><a href="#">企业总联系数量:3600家</a></div>
+            <div class="ab-2"><a href="#">建立企业合作总数量:300家</a></div>
+        </div>
+
+    </div>
+    <div class="layui-col-sm2">
+        <div class="grid-demo grid-demo-bg1"><a href="#">学生总就业率:80%</a></div>
+    </div>
+
+</div>
+
+<div class="layui-row">
+    <div class="layui-col-sm5">
+        <div class="grid-demo grid-demo-bg2" id="bin_tu">
+            @*<ul class="flow-default" id="LAY_demo1"></ul>*@
+        </div>
+    </div>
+    <div class="layui-col-sm5">
+        <div class="grid-demo grid-demo-bg2" id="mian"></div>
+    </div>
+    <div class="layui-col-sm2">
+        <div class="grid-demo grid-demo-bg2">25%</div>
+    </div>
+
+</div>
+
+<script>
+    var myChart = echarts.init(document.getElementById('mian'));
+    option = {
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            }
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis: [
+            {
+                type: 'category',
+                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                axisTick: {
+                    alignWithLabel: true
+                }
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value'
+            }
+        ],
+        series: [
+            {
+                name: '直接访问',
+                type: 'bar',
+                barWidth: '60%',
+                data: [10, 52, 200, 334, 390, 330, 220]
+            }
+        ]
+    };
+    myChart.setOption(option);
+</script>
+<script>
+    var myChart = echarts.init(document.getElementById('bin_tu'));
+   var option = {
+        title: {
+            left: 'center'
+        },
+        tooltip: {
+            trigger: 'item'
+        },
+        legend: {
+            orient: 'vertical',
+            left: 'left',
+        },
+        series: [
+            {
+                name: '访问来源',
+                type: 'pie',
+                radius: '50%',
+                data: [
+                    { value: 1048, name: '搜索引擎' },
+                    { value: 735, name: '直接访问' },
+                    { value: 580, name: '邮件营销' },
+                    { value: 484, name: '联盟广告' },
+                    { value: 300, name: '视频广告' }
+                ],
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }
+        ]
+    };
+    myChart.setOption(option);
+
+</script>

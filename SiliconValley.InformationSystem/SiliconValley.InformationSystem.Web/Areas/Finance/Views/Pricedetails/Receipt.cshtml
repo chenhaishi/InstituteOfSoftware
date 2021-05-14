@@ -75,7 +75,7 @@
         <div id="Name" style="position:absolute;left:93px;top:42px;"></div>
         <div id="classa" style="position:absolute;left:218px;top:42px;"></div>
         <div id="GrandName" style="position:absolute;left:340px;top:42px;"></div>
-        <div id="identitydocument" style="position:absolute;left:500px;top:42px;"></div>
+        <div id="identitydocument" style="position:absolute;left:490px;top:42px;"></div>
         <div style="height:214px">
             <table cellpadding="1" style="width:790px;">
                 <tr>
@@ -111,8 +111,8 @@
             <textarea id="Remarks" style="height:82px;width:130px;"></textarea>
 
         </div>
-        <div id="DaXie" style="position:absolute;left:188px;"></div>
-        <div id="pricent" style="position:absolute;left:530px;"></div>
+        <div id="DaXie" style="position:absolute;left:188px;top:205px"></div>
+        <div id="pricent" style="position:absolute;left:530px;top:205px"></div>
 
         <div style="width:390px;position:absolute;top:241px;left:102px;"> <input type="text" style="border:0px;height:12px;margin-top:12px;" id="Remark" class="layui-input" /></div>
 
@@ -173,23 +173,23 @@
             var Amountofmoney = Receiptdata[i].Amountofmoney + ".00";
         
             
-            $("#xiangmu").append($('<tr> <td colspan="4" style="text-align:center;">' + Receiptdata[i].GrandName+"阶段" + Receiptdata[i].ostitemsName + '</td> <td colspan="4" style="text-align:inherit;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + Amountofmoney + '</td></tr>'));
+            $("#xiangmu").append($('<tr> <td colspan="4" style="text-align:center;">' + Receiptdata[i].GrandName+"阶段" + Receiptdata[i].ostitemsName + '</td> <td colspan="4" style="text-align:inherit;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + Amountofmoney + '</td></tr>'));
 
 
             // $("#text thead").append($('<tr style="text-align:center;"><td colspan="6">' + Receiptdata[i].GrandName + Receiptdata[i].ostitemsName + '</td><td colspan="4">' + Amountofmoney + '</td></tr>'));
         } else if ( Receiptdata[i].Rategory == "重修费" || Receiptdata[i].Rategory == "驾校费") {
             var Amountofmoney = Receiptdata[i].Amountofmoney + ".00";
-            $("#xiangmu").append($('<tr style="height:55px;"> <td colspan="4" style="text-align:center;">' /*+ Receiptdata[i].Rategory*/ + Receiptdata[i].ostitemsName + '</td> <td colspan="4" style="text-align:inherit;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + Amountofmoney + '</td></tr>'));
+            $("#xiangmu").append($('<tr style="height:55px;"> <td colspan="4" style="text-align:center;">' /*+ Receiptdata[i].Rategory*/ + Receiptdata[i].ostitemsName + '</td> <td colspan="4" style="text-align:inherit;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + Amountofmoney + '</td></tr>'));
             // $("#text thead").append($('<tr style="text-align:center;"><td colspan="6">' + Receiptdata[i].Rategory+"：" + Receiptdata[i].ostitemsName + '</td><td colspan="4">' + Amountofmoney + '</td></tr>'));
         } else if (Receiptdata[i].Rategory == "预入费") {
           
             var Amountofmoney = Receiptdata[i].Amountofmoney + ".00";
-            $("#xiangmu").append($('<tr style="height:55px;"> <td colspan="4" style="text-align:center;">' + Receiptdata[i].ostitemsName + '</td> <td colspan="4" style="text-align:inherit;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + Amountofmoney + '</td></tr>'));
+            $("#xiangmu").append($('<tr style="height:55px;"> <td colspan="4" style="text-align:center;">' + Receiptdata[i].ostitemsName + '</td> <td colspan="4" style="text-align:inherit;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + Amountofmoney + '</td></tr>'));
           
             // $("#text thead").append($('<tr style="text-align:center;"><td colspan="6">' + Receiptdata[i].Rategory+"：" + Receiptdata[i].ostitemsName + '</td><td colspan="4">' + Amountofmoney + '</td></tr>'));
         } else if (Receiptdata[i].Rategory == "自考本科费用" ) {
             var Amountofmoney = Receiptdata[i].Amountofmoney + ".00";
-            $("#xiangmu").append($('<tr style=""> <td colspan="4" style="text-align:center;">' + Receiptdata[i].ostitemsName + '</td> <td colspan="4" style="text-align:inherit;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + Amountofmoney + '</td></tr>'));
+            $("#xiangmu").append($('<tr style=""> <td colspan="4" style="text-align:center;">' + Receiptdata[i].ostitemsName + '</td> <td colspan="4" style="text-align:inherit;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + Amountofmoney + '</td></tr>'));
         }
         if (Receiptdata[i].Rategory == "学杂费") {
 
@@ -199,7 +199,7 @@
             if (count ==3) {
                 count = 0;
 
-                $("#xuezai").append($('<tr> <td colspan="4" style="text-align:center;">' + ostitemsName.substring(0, ostitemsName.length - 1) + '</td> <td colspan="4" style="text-align:inherit;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + Amountofmoneys + '.00</td></tr>'));
+                $("#xuezai").append($('<tr> <td colspan="4" style="text-align:center;">' + ostitemsName.substring(0, ostitemsName.length - 1) + '</td> <td colspan="4" style="text-align:inherit;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + Amountofmoneys + '.00</td></tr>'));
 
                 //$("#text tbody").prepend($('<tr style="text-align:center;"><td colspan="6">' + ostitemsName.substring(0, ostitemsName.length - 1) + '</td><td colspan="4">' + Amountofmoneys + ".00" + '</td></tr>'));
                 ostitemsName = "";
