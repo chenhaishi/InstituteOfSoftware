@@ -96,6 +96,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         /// <returns></returns>
         public ActionResult ManageClassTime()
         {
+            ViewBag.NOSetCount = GetNOSetClassTime();
             return View();
         }
         
@@ -118,6 +119,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 msg = "",
                 data = resData.Skip((page - 1) * limit).Take(limit).ToList()
             };
+            
 
             return Json(temp, JsonRequestBehavior.AllowGet);
             
@@ -128,7 +130,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         /// 查询有多少老师是没有设置底课时
         /// </summary>
         /// <returns></returns>
-        public ActionResult GetNOSetClassTime()
+        public int GetNOSetClassTime()
         {
             Department dept = EmployeesInfoManage_Entity.GetDeptByDname("s1、s2教学部");
             Department dept1 = EmployeesInfoManage_Entity.GetDeptByDname("s3教学部");
@@ -152,7 +154,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                     }
                 }
             }
-            return Json(Emp_List.Count(),JsonRequestBehavior.AllowGet);
+            return Emp_List.Count();
         }
 
         /// <summary>
