@@ -5378,6 +5378,7 @@
     <Content Include="Scripts\laydate\theme\default\font\iconfont.ttf" />
     <Content Include="Scripts\laydate\theme\default\font\iconfont.woff" />
     <Content Include="uploadXLSXfile\Template\EmpInfoTemplate.xlsx" />
+    <Content Include="uploadXLSXfile\Template\DormitoryDepositTemplate.xlsx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
