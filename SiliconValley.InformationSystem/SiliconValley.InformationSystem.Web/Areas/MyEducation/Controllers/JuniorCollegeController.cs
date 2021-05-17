@@ -33,12 +33,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.MyEducation.Controllers
         // GET: MyEducation/JuniorCollege
         public ActionResult Index()
         {
+            //dbtext.Generate();
             ViewBag.ClassName = classScheduleBusiness.GetList().Where(a => a.IsDelete == false).Select(a => new SelectListItem { Text = a.ClassNumber, Value = a.ClassNumber }).ToList();
             return View();
         }
         public ActionResult GetData(int page, int limit, string AppCondition)
         {
-            //dbtext.Generate();
+           
             return Json(dbtext.GetData(page, limit, AppCondition), JsonRequestBehavior.AllowGet);
         }
         public ActionResult JuniorCollegeEdit(string id)

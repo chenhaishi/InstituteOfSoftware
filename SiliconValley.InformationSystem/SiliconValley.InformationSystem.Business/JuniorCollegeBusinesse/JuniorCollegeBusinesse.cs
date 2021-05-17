@@ -165,14 +165,19 @@ namespace SiliconValley.InformationSystem.Business.JuniorCollegeBusinesse
 
         public AjaxResult Generate()
         {
-           var result =new AjaxResult();
+            var result = new AjaxResult();
             try
             {
                 var list = studentInformationBusiness.GetListBySql<StudentInformation>("select *from StudentInformation where Education='大专'");
 
                 list.ForEach(i =>
                 {
+                    var ll = this.GetListBySql<JuniorCollege>("select * from JuniorCollege where StudentNumber='"+i.StudentNumber+"'");
+                    if (ll.Count()==0)
+                    {
                     InsertJuniorCollege(i.StudentNumber);
+                    }
+
                 });
             }
             catch (Exception e)
