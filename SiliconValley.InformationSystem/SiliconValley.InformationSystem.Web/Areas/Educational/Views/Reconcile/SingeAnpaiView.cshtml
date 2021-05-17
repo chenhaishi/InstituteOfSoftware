@@ -282,7 +282,7 @@
             form.on('select(kecheng)', function (data) {
 
                 console.log(data.elem[data.elem.selectedIndex].text);
-                if (data.elem[data.elem.selectedIndex].text == "工厂项目") {
+                if (data.elem[data.elem.selectedIndex].text == "工厂项目" || data.elem[data.elem.selectedIndex].text == "软件工厂") {
                     $("#time")[0].innerHTML = "";
                     $("#time").append("<option value='上午'>上午</option><option value='下午'>下午</option>");
                     form.render();

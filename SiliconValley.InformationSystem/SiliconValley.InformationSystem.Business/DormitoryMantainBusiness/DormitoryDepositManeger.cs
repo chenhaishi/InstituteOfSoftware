@@ -325,7 +325,7 @@ namespace SiliconValley.InformationSystem.Business.DormitoryMantainBusiness
             }
 
         }
-        
+
 
         /// <summary>
         /// 获取某个校区的某个月份的总维修费用
@@ -382,7 +382,7 @@ namespace SiliconValley.InformationSystem.Business.DormitoryMantainBusiness
         public decimal BaoxianguiStu(string stuNumber)
         {
             decimal Money = 0;
-            string sql = "select * from dormitorydeposit where MaintainGood = 2001 and stunumber = '"+stuNumber+"'";
+            string sql = "select * from dormitorydeposit where MaintainGood = 2001 and stunumber = '" + stuNumber + "'";
             List<DormitoryDeposit> list = GetListBySql<DormitoryDeposit>(sql);
             Money = list.Count * 10;
             //看学生是否住了宿舍
@@ -514,7 +514,7 @@ namespace SiliconValley.InformationSystem.Business.DormitoryMantainBusiness
             IWorkbook workbook = null;
 
             if (contentType == "application/vnd.ms-excel")
-            { 
+            {
                 workbook = new HSSFWorkbook(stream);
             }
 
@@ -531,9 +531,9 @@ namespace SiliconValley.InformationSystem.Business.DormitoryMantainBusiness
 
             return result;
         }
-         
+
         /// <summary>
-        /// 将excel数据类的数据存入到数据库的考勤表中
+        /// 
         /// </summary>
         /// <returns></returns>
         public AjaxResult ExcelImportAtdSql(ISheet sheet)
@@ -544,159 +544,171 @@ namespace SiliconValley.InformationSystem.Business.DormitoryMantainBusiness
             List<DormitoryInputError> ErrorList = new List<DormitoryInputError>();
             //try
             //{
-                //获取第二行数据（年月份）
-                //string time1 = sheet.GetRow(1).Cells[0].StringCellValue;
-                //string[] str = time1.Split('-');
-                //var time = str[1];
-                Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
+            //获取第二行数据（年月份）
+            //string time1 = sheet.GetRow(1).Cells[0].StringCellValue;
+            //string[] str = time1.Split('-');
+            //var time = str[1];
+            Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
 
-                int successcount = 0;
-                int totalcount = 0;
-                while (true)
+            int successcount = 0;
+            int totalcount = 0;
+            while (true)
+            {
+                num++;
+                var getrow = sheet.GetRow(num);
+                if (getrow == null)
                 {
-                    num++;
-                    var getrow = sheet.GetRow(num);
-                    if (getrow == null)
-                    {
-                        break;
+                    break;
+                }
+                #region 循环拿值
+                //宿舍号
+                string DormID = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(1))) ? null : getrow.GetCell(1).ToString();
+                //报修日期
+                string Repair_date = getrow.GetCell(2).ToString();
+                string[] temp = Repair_date.Split('-');
+                string month = temp[1].Substring(0, 2);
+                string date = temp[2] + "-" + month + "-" + temp[0];
+                DateTime dateTime = Convert.ToDateTime(date);
+
+                //宿舍人员
+                string Dorm_Person = getrow.GetCell(3).ToString();
+                //宿舍人员   分割后的
+                string[] Dorm_PersonList = Dorm_Person.Split('、');
+                totalcount += Dorm_PersonList.Length;
+                //维修内容
+                string RepairContent = getrow.GetCell(4).ToString();
+                //解决措施
+                string Solutions = getrow.GetCell(6).ToString();
+
+
+                //完成时间
+                DateTime flushDate = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(10))) ? dateTime : FormatDate(getrow.GetCell(10).ToString());
+                //班主任
+                string HeadMaster = getrow.GetCell(12).ToString();
+
+                #endregion
+
+
+                DormitoryDeposit deposit = new DormitoryDeposit();
+                DormitoryInputError DormError = new DormitoryInputError();
+                decimal price = Pricedormitoryarticles_Entity.GetList().Where(s => s.Nameofarticle == RepairContent).FirstOrDefault().Reentry;
+
+
+                for (int i = 0; i < Dorm_PersonList.Length; i++)
+                {
+                    if (string.IsNullOrEmpty(DormID))
+                    {//判断宿舍号是否为空
+                        DormError.StuName = Dorm_PersonList[i];
+                        DormError.HeadMaster = HeadMaster;
+                        DormError.ErrorInfo = "宿舍号为空！";
+                        ErrorList.Add(DormError);
                     }
-                    #region 循环拿值
-                    //宿舍号
-                    string DormID = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(1))) ? null : getrow.GetCell(1).ToString();
-                    //报修日期
-                    string Repair_date = getrow.GetCell(2).ToString();
-                    string[] temp = Repair_date.Split('-');
-                    string month = temp[1].Substring(0, 2);
-                    string date = temp[2] + "-" + month + "-" + temp[0];
-                    DateTime dateTime = Convert.ToDateTime(date);
-
-                    //宿舍人员
-                    string Dorm_Person = getrow.GetCell(3).ToString();
-                    //宿舍人员   分割后的
-                    string[] Dorm_PersonList = Dorm_Person.Split('、');
-                    totalcount += Dorm_PersonList.Length;
-                    //维修内容
-                    string RepairContent = getrow.GetCell(4).ToString();
-                    //解决措施
-                    string Solutions = getrow.GetCell(6).ToString();
-                    //应扣金额
-                    string KouMoney = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(7))) ? null : getrow.GetCell(7).ToString();
-                    //人均扣款
-                    string Deduction = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(9))) ? null : getrow.GetCell(9).ToString();
-                    //完成时间
-                    DateTime flushDate = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(10))) ? dateTime: FormatDate(getrow.GetCell(10).ToString());
-                    //班主任
-                    string HeadMaster = getrow.GetCell(12).ToString();
-
-                    #endregion
-                
-
-                    DormitoryDeposit deposit = new DormitoryDeposit();
-                    DormitoryInputError DormError = new DormitoryInputError();
-
-                   
-                    for (int i = 0; i < Dorm_PersonList.Length; i++)
+                    else
                     {
-                        if (string.IsNullOrEmpty(DormID))
-                        {//判断宿舍号是否为空
+                        if (string.IsNullOrEmpty(Dorm_Person))
+                        {
                             DormError.StuName = Dorm_PersonList[i];
                             DormError.HeadMaster = HeadMaster;
-                            DormError.ErrorInfo = "宿舍号为空！";
+                            DormError.ErrorInfo = "宿舍人员为空！";
                             ErrorList.Add(DormError);
                         }
-                            else
+                        else
                         {
-                            if (string.IsNullOrEmpty(Dorm_Person))
+                            if (string.IsNullOrEmpty(RepairContent))
                             {
                                 DormError.StuName = Dorm_PersonList[i];
                                 DormError.HeadMaster = HeadMaster;
-                                DormError.ErrorInfo = "宿舍人员为空！";
+                                DormError.ErrorInfo = "维修内容为空";
                                 ErrorList.Add(DormError);
                             }
                             else
                             {
-                                if (string.IsNullOrEmpty(RepairContent))
+                                if (ReturnStuID(Convert.ToInt32(DormID), Dorm_PersonList[i]) == "")
                                 {
                                     DormError.StuName = Dorm_PersonList[i];
                                     DormError.HeadMaster = HeadMaster;
-                                    DormError.ErrorInfo = "维修内容为空";
+                                    DormError.ErrorInfo = "该学生未注册信息或未调宿舍";
                                     ErrorList.Add(DormError);
                                 }
                                 else
                                 {
-                                    if (string.IsNullOrEmpty(Deduction))
+                                    if (DormInformation_Entity.GetList().Where(s => s.DormInfoName == DormID && s.IsDelete == false) == null)
                                     {
                                         DormError.StuName = Dorm_PersonList[i];
                                         DormError.HeadMaster = HeadMaster;
-                                        DormError.ErrorInfo = "人均扣款金额为空";
+                                        DormError.ErrorInfo = "找不到该宿舍！";
                                         ErrorList.Add(DormError);
                                     }
-                                    else {
-                                        if (ReturnStuID(Convert.ToInt32(DormID), Dorm_PersonList[i]) =="") {
-                                            DormError.StuName = Dorm_PersonList[i];
-                                            DormError.HeadMaster = HeadMaster;
-                                            DormError.ErrorInfo = "该学生未注册信息或未调宿舍";
-                                            ErrorList.Add(DormError);
-                                        }
-                                        else {
-                                            if (DormInformation_Entity.GetList().Where(s => s.DormInfoName == DormID && s.IsDelete == false)==null) {
-                                                DormError.StuName = Dorm_PersonList[i];
-                                                DormError.HeadMaster = HeadMaster;
-                                                DormError.ErrorInfo = "找不到该宿舍！";
-                                                ErrorList.Add(DormError);
+                                    else
+                                    {
+                                        string dormsql = "select * from DormInformation where DormInfoName = "+ DormID + " and IsDelete = 0";
+                                        DormInformation dorm = DormInformation_Entity.GetListBySql<DormInformation>(dormsql).FirstOrDefault();
+                                        string sqlstr = "select * from Accdationinformation where DormID = "+ dorm.ID + "  and EndDate is null";
+                                        List<Accdationinformation> accList = this.GetListBySql<Accdationinformation>(sqlstr);
+                                        string stuinfosql = "select * from StudentInformation where Name = '"+ Dorm_PersonList[i] + "' and IsDelete = 0";
+                                        List<StudentInformation> stuinfoList = StudentInformation_Entity.GetListBySql<StudentInformation>(stuinfosql);
+                                        int bedid = 0;
+                                        for (int h = 0; h < accList.Count; h++)
+                                        {
+                                            for (int g = 0; g < stuinfoList.Count; g++)
+                                            {
+                                                if (accList[h].Studentnumber == stuinfoList[g].StudentNumber) {
+                                                    bedid = accList[h].BedId;
+                                                    break;
+                                                }
                                             }
-                                            else {
-                                                deposit.ID = Guid.NewGuid().ToSequentialGuid();
-                                                deposit.Maintain = Convert.ToDateTime(dateTime);
-                                                deposit.DormId = Convert.ToInt16(GetDormInfoBy(DormID.ToString()));
-                                                deposit.StuNumber = ReturnStuID(Convert.ToInt32(DormID), Dorm_PersonList[i]);
-                                                deposit.MaintainGood = Pricedormitoryarticles_Entity.GetList().Where(s => s.Nameofarticle == RepairContent).FirstOrDefault().ID;
-                                                deposit.GoodPrice = Convert.ToDecimal(Deduction);
-                                                deposit.MaintainState = 1;
-                                                deposit.CreaDate = DateTime.Now;
-                                                deposit.EntryPersonnel = UserName.EmpNumber;
-                                                deposit.SettlementStaff = null;
-                                                deposit.ChuangNumber = 0;
-                                                deposit.RepairContent = RepairContent;
-                                                deposit.Solutions = Solutions;
-                                                deposit.CompleteTime = Convert.ToDateTime(flushDate);
-                                                deposit.Image = null;
-                                                this.Insert(deposit);
-                                                successcount += 1;
-                                            }
-                                             
                                         }
-                                        
+
+                                        deposit.ID = Guid.NewGuid().ToSequentialGuid();
+                                        deposit.Maintain = Convert.ToDateTime(dateTime);
+                                        deposit.DormId = Convert.ToInt16(GetDormInfoBy(DormID.ToString()));
+                                        deposit.StuNumber = ReturnStuID(Convert.ToInt32(DormID), Dorm_PersonList[i]);
+                                        deposit.MaintainGood = Pricedormitoryarticles_Entity.GetList().Where(s => s.Nameofarticle == RepairContent).FirstOrDefault().ID;
+                                        deposit.GoodPrice = price / Dorm_PersonList.Length;
+                                        deposit.MaintainState = 1;
+                                        deposit.CreaDate = DateTime.Now;
+                                        deposit.EntryPersonnel = UserName.EmpNumber;
+                                        deposit.SettlementStaff = null;
+                                        deposit.ChuangNumber = bedid;
+                                        deposit.RepairContent = RepairContent;
+                                        deposit.Solutions = Solutions;
+                                        deposit.CompleteTime = Convert.ToDateTime(flushDate);
+                                        deposit.Image = null;
+                                        this.Insert(deposit);
+                                        successcount += 1;
                                     }
+
                                 }
+
                             }
-
                         }
-                    }
 
+                    }
                 }
-                
-                if (successcount == totalcount)
-                {//说明没有出错数据，导入的数据全部添加成功
-                    ajaxresult.Success = true;
-                    ajaxresult.ErrorCode = 100;
-                    ajaxresult.Msg = successcount.ToString();
-                    ajaxresult.Data = ErrorList;
-                }
-                else
-                {//说明有出错数据，导入的数据条数就是导入的数据总数-错误数据总数
-                    ajaxresult.Success = true;
-                    ajaxresult.ErrorCode = 200;
-                    ajaxresult.Msg = (successcount).ToString();
-                    ajaxresult.Data = ErrorList;
-                }
+
+            }
+
+            if (successcount == totalcount)
+            {//说明没有出错数据，导入的数据全部添加成功
+                ajaxresult.Success = true;
+                ajaxresult.ErrorCode = 100;
+                ajaxresult.Msg = successcount.ToString();
+                ajaxresult.Data = ErrorList;
+            }
+            else
+            {//说明有出错数据，导入的数据条数就是导入的数据总数-错误数据总数
+                ajaxresult.Success = true;
+                ajaxresult.ErrorCode = 200;
+                ajaxresult.Msg = (successcount).ToString();
+                ajaxresult.Data = ErrorList;
+            }
             //}
             //catch (Exception ex)
             //{
-                //ajaxresult.Success = false;
-                //ajaxresult.ErrorCode = 500;
-                //ajaxresult.Msg = ex.Message;
-                //ajaxresult.Data = "0";
+            //ajaxresult.Success = false;
+            //ajaxresult.ErrorCode = 500;
+            //ajaxresult.Msg = ex.Message;
+            //ajaxresult.Data = "0";
             //}
             return ajaxresult;
         }
@@ -708,7 +720,7 @@ namespace SiliconValley.InformationSystem.Business.DormitoryMantainBusiness
         /// <returns></returns>
         public string GetDormInfoBy(string DormInfoName)
         {
-            string DormID="";
+            string DormID = "";
             Base_UserModel UserName = Base_UserBusiness.GetCurrentUser();//获取登录人信息
             Department department = EmpManage.GetDeptByEmpid(UserName.EmpNumber);
             List<DormInformation> DormList = DormInformation_Entity.GetList().Where(s => s.DormInfoName == DormInfoName && s.IsDelete == false).ToList();
@@ -720,7 +732,8 @@ namespace SiliconValley.InformationSystem.Business.DormitoryMantainBusiness
                     TungFloor tungFloor = TungFloo_Entity.GetListBySql<TungFloor>(sql).FirstOrDefault();
                     DormID = DormList.Where(s => s.TungFloorId == tungFloor.Id).FirstOrDefault().ID.ToString();
                 }
-                else {
+                else
+                {
                     string sql = "select * from TungFloor where Id=" + DormList[i].TungFloorId + " and TungId=34";
                     TungFloor tungFloor = TungFloo_Entity.GetListBySql<TungFloor>(sql).FirstOrDefault();
                     DormID = DormList.Where(s => s.TungFloorId == tungFloor.Id).FirstOrDefault().ID.ToString();
@@ -734,7 +747,8 @@ namespace SiliconValley.InformationSystem.Business.DormitoryMantainBusiness
         /// </summary>
         /// <param name="Time"></param>
         /// <returns></returns>
-        public DateTime FormatDate(string Time) {
+        public DateTime FormatDate(string Time)
+        {
             string[] temp = Time.Split('-');
             string month = temp[1].Substring(0, 2);
             string date = temp[2] + "-" + month + "-" + temp[0];
@@ -751,15 +765,17 @@ namespace SiliconValley.InformationSystem.Business.DormitoryMantainBusiness
         public string ReturnStuID(int Dorm, string name)
         {
             string StuID = "";
-            string sql = "select * from StudentInformation where Name='"+name+"'";
+            string sql = "select * from StudentInformation where Name='" + name + "'";
             List<StudentInformation> StudentList = StudentInformation_Entity.GetListBySql<StudentInformation>(sql);
             if (StudentList.Count == 1)
             {
                 StuID = StudentList[0].StudentNumber;
-            } else {
+            }
+            else
+            {
                 for (int i = 0; i < StudentList.Count; i++)
                 {
-                    string sql1 = "select * from Accdationinformation where Studentnumber='"+StudentList[i].StudentNumber+"'";
+                    string sql1 = "select * from Accdationinformation where Studentnumber='" + StudentList[i].StudentNumber + "'";
 
                     Accdationinformation AccInfo = Accdationinformation_Entity.GetListBySql<Accdationinformation>(sql1).FirstOrDefault();
                     if (AccInfo != null)
@@ -769,7 +785,8 @@ namespace SiliconValley.InformationSystem.Business.DormitoryMantainBusiness
                             StuID = StudentList[i].StudentNumber;
                         }
                     }
-                    else {
+                    else
+                    {
                         StuID = "";
                     }
                 }

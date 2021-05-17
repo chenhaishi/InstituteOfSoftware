@@ -3665,6 +3665,7 @@
     <Content Include="Areas\Educational\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Educational\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Educational\Views\Staff_Cost_Statistics\ManageClassTime.cshtml" />
+    <Content Include="Areas\DormitoryMaintenance\Views\DormitoryDeposit\ExcelInputView.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
@@ -5370,6 +5371,7 @@
     <Content Include="Scripts\laydate\theme\default\font\iconfont.eot" />
     <Content Include="Scripts\laydate\theme\default\font\iconfont.ttf" />
     <Content Include="Scripts\laydate\theme\default\font\iconfont.woff" />
+    <Content Include="uploadXLSXfile\Template\DormitoryDepositTemplate.xlsx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

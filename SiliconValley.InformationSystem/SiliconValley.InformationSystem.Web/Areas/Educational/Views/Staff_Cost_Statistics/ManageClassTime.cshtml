@@ -4,13 +4,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@*<script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-</script>*@
 
 <script type="text/html" id="toolbarDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="AddClassTime">生成未设置底课时的员工<span class="layui-badge" id="count"></span></a>
+
+    <a class="layui-btn layui-btn-xs" lay-event="AddClassTime">生成未设置底课时的员工<span class="layui-badge" id="count">@ViewBag.NOSetCount</span></a>
     <a class="layui-btn layui-btn-xs" lay-event="someUpdate">批量修改</a>
 </script>
 
@@ -39,13 +36,13 @@
         //第一个实例
         var tableIns = table.render({
             elem: '#demo'
-            , height: 612
+            , height: 850
             , id: 'idTest'
             , toolbar: '#toolbarDemo'
             , url: '/Educational/Staff_Cost_Statistics/GetClassTime' //数据接口
             , page: true //开启分页
-            , limit: 10
-            , limits: [10, 20, 25, 30]
+            , limit: 15
+            , limits: [15, 20, 30, 40]
             , cols: [[ //表头
                 { type: 'checkbox', fixed: 'left' }
                 , { field: 'ID', title: 'ID', width: 80, hide: true, fixed: 'left' }
@@ -56,36 +53,37 @@
 
         });
 
-        function flush() {
-            $.ajax({
-                url: '/Educational/Staff_Cost_Statistics/GetNOSetClassTime',
-                type: 'post',
-                success: function (res) {
-                    $("#count").text(res);
-                }
-            });
-        }
-        flush();
         table.on('toolbar(test)', function (obj) {
             var checkStatus = table.checkStatus(obj.config.id);
             switch (obj.event) {
                 case 'AddClassTime':
-                    $.ajax({
-                        url: '/Educational/Staff_Cost_Statistics/AddClassTime_Emp',
-                        type: 'post',
-                        success: function (res) {
-                            layer.msg("成功条数：" + res);
-                            tableIns.reload({
-                                where: {}
-                            });
-                        }
-                    });
+                    if ($("#count").text() == "0") {
+                        layer.msg("无用户底课时生成");
+                    } else {
+
+                        var index = layer.load();
+                        $.ajax({
+                            url: '/Educational/Staff_Cost_Statistics/AddClassTime_Emp',
+                            type: 'post',
+                            success: function (res) {
+                                layer.msg("成功条数：" + res);
+
+                                location.reload();
+                                layer.close(index);
+                            }
+                        });
+                    }
                     break;
                 case 'someUpdate':
-                    layer.open({
-                        type: 1,
-                        content: $('#SomeUpdateForm')
-                    });
+                    var checkStatus = table.checkStatus('idTest');
+                    if (checkStatus.data.length > 0) {
+                        layer.open({
+                            type: 1,
+                            content: $('#SomeUpdateForm')
+                        });
+                    } else {
+                        layer.msg("至少选中一条数据");
+                    }
                     break;
             };
         });
@@ -98,9 +96,7 @@
             for (var i = 0; i < checkStatus.data.length; i++) {
                 arr.push(checkStatus.data[i].ID);
             }
-            console.log(arr);
             data.field.str = arr;
-
 
             $.ajax({
                 url: '/Educational/Staff_Cost_Statistics/UpdateClassTime',
@@ -122,8 +118,6 @@
                 , data = obj.data //得到所在行所有键值
                 , field = obj.field; //得到字段
 
-
-            
             $.ajax({
                 url: '/Educational/Staff_Cost_Statistics/UpdateSingleClassTime',
                 type: 'post',
@@ -135,7 +129,6 @@
                     layer.msg("修改成功");
                 }
             });
-            //layer.msg('[ID: ' + data.ID + '] ' + field + ' 字段更改为：' + value);
         });
     });
 </script>
