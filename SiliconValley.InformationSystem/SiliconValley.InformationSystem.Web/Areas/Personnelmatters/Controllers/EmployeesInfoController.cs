@@ -43,9 +43,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             ViewBag.IsFinance = Finance();
             return View();
         }
-
+ 
         /// <summary>
-        /// 判断当前登录人是否属于人事部员工
+        ///  
         /// </summary>
         /// <returns></returns>
         public int JudgeIsHR() {
@@ -263,11 +263,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         /// <param name="page"></param>
         /// <param name="limit"></param>
         /// <returns></returns>
-        public ActionResult GetDelEmpData(int page, int limit)
+        public ActionResult GetDelEmpData(int page, int limit, string AppCondition)
         {
             EmployeesInfoManage empinfo = new EmployeesInfoManage();
             EmpTransactionManage etm = new EmpTransactionManage();
             var slist = empinfo.GetEmpInfoData().Where(e => e.IsDel == true).ToList();
+
             var list = slist.Select(e1 => new
             {
                 #region 两表查询的数据
@@ -302,11 +303,61 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 e1.Material,
                 e1.Remark,
                 e1.IsDel,
+                e1.PositionId,
                 deltime = etm.GetDelEmp(e1.EmployeeId).TransactionTime,//离职时间
                 delreason = etm.GetDelEmp(e1.EmployeeId).Reason//离职原因
                 #endregion
 
             }).ToList();
+            #region 查询
+            if (!string.IsNullOrEmpty(AppCondition))
+            {
+                string[] str = AppCondition.Split(',');
+                string ename = str[0];
+                string deptname = str[1];
+                string pname = str[2];
+                string Education = str[3];
+                string sex = str[4];
+                string PoliticsStatus = str[5];
+                string start_time = str[6];
+                string end_time = str[7];
+                list = list.Where(e => e.EmpName.Contains(ename)).ToList();
+                if (!string.IsNullOrEmpty(deptname))
+                {
+
+                    list = list.Where(e => empinfo.GetDept((int)e.PositionId).DeptId == int.Parse(deptname)).ToList();
+                }
+                if (!string.IsNullOrEmpty(pname))
+                {
+                    list = list.Where(e => e.PositionId == int.Parse(pname)).ToList();
+                }
+                if (!string.IsNullOrEmpty(Education))
+                {
+                    list = list.Where(e => e.Education == Education).ToList();
+                }
+                if (!string.IsNullOrEmpty(sex))
+                {
+                    list = list.Where(e => e.Sex == sex).ToList();
+                }
+                if (!string.IsNullOrEmpty(PoliticsStatus))
+                {
+                    list = list.Where(e => e.PoliticsStatus == PoliticsStatus).ToList();
+                }
+
+                if (!string.IsNullOrEmpty(start_time))
+                {
+
+                    DateTime stime = Convert.ToDateTime(start_time + " 00:00:00.000");
+                    list = list.Where(a => a.deltime >= stime).ToList();
+                }
+                if (!string.IsNullOrEmpty(end_time))
+                {
+                    DateTime etime = Convert.ToDateTime(end_time + " 23:59:59.999");
+                    list = list.Where(a => a.deltime <= etime).ToList();
+                }
+            }
+            #endregion;
+
             var mylist = list.OrderByDescending(d=>d.deltime).Skip((page - 1) * limit).Take(limit).ToList();
 
             var newobj = new
