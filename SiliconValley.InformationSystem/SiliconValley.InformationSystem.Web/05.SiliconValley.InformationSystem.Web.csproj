@@ -306,6 +306,7 @@
     <Compile Include="Areas\Market\Controllers\StudentDataKeepController.cs" />
     <Compile Include="Areas\Market\MarketAreaRegistration.cs" />
     <Compile Include="Areas\MyEducation\Controllers\EducationController.cs" />
+    <Compile Include="Areas\MyEducation\Controllers\JuniorCollegeController.cs" />
     <Compile Include="Areas\MyEducation\MyEducationAreaRegistration.cs" />
     <Compile Include="Areas\Obtainemployment\Controllers\BusinessManagementController.cs" />
     <Compile Include="Areas\Obtainemployment\Controllers\CDinterviewController.cs" />
@@ -332,6 +333,7 @@
     <Compile Include="Areas\Personnelmatters\Controllers\EmpOverTimeRecordController.cs" />
     <Compile Include="Areas\Personnelmatters\Controllers\EmpSalaryManagementController.cs" />
     <Compile Include="Areas\Personnelmatters\Controllers\EmpTransactionRecordController.cs" />
+    <Compile Include="Areas\Personnelmatters\Controllers\MonthlySalaryReviewController.cs" />
     <Compile Include="Areas\Personnelmatters\Controllers\PerformanceAssessController.cs" />
     <Compile Include="Areas\Personnelmatters\Controllers\RecruitingDataSummaryController.cs" />
     <Compile Include="Areas\Personnelmatters\Controllers\SocialSecurityDetailController.cs" />
@@ -3712,6 +3714,10 @@
     <Content Include="Areas\Teaching\Views\SatisfactionSurvey\MySatisfactionCheck.cshtml" />
     <Content Include="Areas\Teaching\Views\Exam\ProjectDefense.cshtml" />
     <Content Include="Areas\Teaching\Views\Class\ArrangeTeacherleadClass.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\EmplSalaryEmbody\Import.cshtml" />
+    <Content Include="Areas\MyEducation\Views\JuniorCollege\Index.cshtml" />
+    <Content Include="Areas\MyEducation\Views\JuniorCollege\InsertNotRegisteredForJuniorCollege.cshtml" />
+    <Content Include="Areas\MyEducation\Views\JuniorCollege\JuniorCollegeEdit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
