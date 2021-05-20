@@ -97,8 +97,11 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
             for (int i = 0; i < Emp_List.Count; i++)
             {
-
-                int ClassTime = ClassTime_Entity.GetList().Where(a=>a.Emp_ID==Emp_List[i].EmployeeId && a.ClassTimeState==1).FirstOrDefault().ClassTime;//底课时
+                Department d = db_emp.GetDeptByEmpid(Emp_List[i].EmployeeId);
+                int ClassTime = 0;
+                if (d.DeptName.Contains("教学")) {
+                     ClassTime = ClassTime_Entity.GetList().Where(a => a.Emp_ID == Emp_List[i].EmployeeId && a.ClassTimeState == 1).FirstOrDefault().ClassTime;//底课时
+                }
                 Staff_CostView staff = new Staff_CostView();
 
                 DateTime NowTime = DateTime.Now;
@@ -149,24 +152,24 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                     QuanDay += Cost_EndClass(AnPaiGroup[k].Key, Emp_List[i].EmployeeId);
                 }
 
-                if (EmployeesInfoManage_Entity.GetPositionByEmpid(Emp_List[i].EmployeeId).PositionName == "教学主任")
-                {
-                    ClassTime = ClassTime * QuanDay / WorkDay;
-                }
+                //if (EmployeesInfoManage_Entity.GetPositionByEmpid(Emp_List[i].EmployeeId).PositionName == "教学主任")
+                //{
+                //    ClassTime = ClassTime * QuanDay / WorkDay;
+                //}
 
                 if (!EmployeesInfoManage_Entity.GetDeptByEmpid(Emp_List[i].EmployeeId).DeptName.Contains("s1、s2教学部"))
                 {
                     ClassTime = 0;
                 }
 
-                if (Emp_List[i].EmployeeId == "202005300026") {
-                    ClassTime = 30;
-                }
+                //if (Emp_List[i].EmployeeId == "202005300026") {
+                //    ClassTime = 30;
+                //}
 
-                int FirstStage = 0;//第一阶段  预科，S1,S2 ---55
-                int SecondStage = 0;//第二阶段 S3,   ----65
-                int ThreeStage = 0;//S4 ----70   测试和ui ----65    班级名称中UI和CUI为UI班，TA为测试班
-                int OtherStage = 0;//其他  语，数，英，职素，班会，军事
+                int  FirstStage = 0;//第一阶段  预科，S1,S2 ---55
+                int  SecondStage = 0;//第二阶段 S3,   ----65
+                int  ThreeStage = 0;//S4 ----70   测试和ui ----65    班级名称中UI和CUI为UI班，TA为测试班
+                int  OtherStage = 0;//其他  语，数，英，职素，班会，军事
                 for (int j = 0; j < ClassGroup.Count; j++)
                 {
                     //判断是否为“前预科”
