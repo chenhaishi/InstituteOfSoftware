@@ -87,40 +87,85 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 select.Value = Emp[i].EmployeeId;
                 select_list.Add(select);
             }
-            return Json(select_list,JsonRequestBehavior.AllowGet);
+            return Json(select_list, JsonRequestBehavior.AllowGet);
         }
-        
+
         /// <summary>
         /// 管理底课时页面
         /// </summary>
         /// <returns></returns>
         public ActionResult ManageClassTime()
         {
+            var deps = db_staf_Cost.GetDepartmentbyjiaoxue();
+
+            ViewBag.deptlist = deps;
+
+            ViewBag.NOSetCount = GetNOSetClassTime();
+
             return View();
         }
-        
 
-        public ActionResult GetClassTime(int limit, int page)
+
+        public ActionResult GetClassTime(int limit, int page, string dept = null)
         {
+
             string sql = "select * from ManageClassTime where ClassTimeState != 0";
             List<ManageClassTime> list = ClassTime_Entity.GetListBySql<ManageClassTime>(sql);
-            var resData = list.Select(
-                a => new {
+
+            if (dept != "0" && dept != null)
+            {
+                List<EmployeesInfo> emp_list = EmployeesInfoManage_Entity.GetEmpsByDeptid(Convert.ToInt32(dept));
+                List<ManageClassTime> templist = new List<ManageClassTime>();
+                for (int i = 0; i < emp_list.Count; i++)
+                {
+                    for (int k = 0; k < list.Count; k++)
+                    {
+                        if (emp_list[i].EmployeeId == list[k].Emp_ID)
+                        {
+                            templist.Add(list[k]);
+                            break;
+                        }
+
+                    }
+
+                }
+                var resData = templist.Select(
+                a => new
+                {
                     ID = a.ID,
                     Emp_Name = EmployeesInfoManage_Entity.GetEntity(a.Emp_ID).EmpName,
                     classTime = a.ClassTime,
                     Dept_Name = EmployeesInfoManage_Entity.GetDeptByEmpid(a.Emp_ID).DeptName
                 });
-            var temp = new
+                var temp = new
+                {
+                    code = 0,
+                    count = resData.Count(),
+                    msg = "",
+                    data = resData.Skip((page - 1) * limit).Take(limit).ToList()
+                };
+                return Json(temp, JsonRequestBehavior.AllowGet);
+            }
+            else
             {
-                code = 0,
-                count = resData.Count(),
-                msg = "",
-                data = resData.Skip((page - 1) * limit).Take(limit).ToList()
-            };
+                var resData = list.Select(
+                a => new
+                {
+                    ID = a.ID,
+                    Emp_Name = EmployeesInfoManage_Entity.GetEntity(a.Emp_ID).EmpName,
+                    classTime = a.ClassTime,
+                    Dept_Name = EmployeesInfoManage_Entity.GetDeptByEmpid(a.Emp_ID).DeptName
+                });
+                var temp = new
+                {
+                    code = 0,
+                    count = resData.Count(),
+                    msg = "",
+                    data = resData.Skip((page - 1) * limit).Take(limit).ToList()
+                };
+                return Json(temp, JsonRequestBehavior.AllowGet);
+            }
 
-            return Json(temp, JsonRequestBehavior.AllowGet);
-            
         }
 
         [HttpPost]
@@ -128,8 +173,15 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         /// 查询有多少老师是没有设置底课时
         /// </summary>
         /// <returns></returns>
-        public ActionResult GetNOSetClassTime()
+        public int GetNOSetClassTime()
         {
+            //List<Department> deptlist = db_staf_Cost.GetDepartmentbyjiaoxue();
+            //List<EmployeesInfo> Emp_List = new List<EmployeesInfo>();
+            //for (int i = 0; i < deptlist.Count; i++)
+            //{
+            //    Emp_List.AddRange(EmployeesInfoManage_Entity.GetEmpsByDeptid(deptlist[i].DeptId);
+            //}
+
             Department dept = EmployeesInfoManage_Entity.GetDeptByDname("s1、s2教学部");
             Department dept1 = EmployeesInfoManage_Entity.GetDeptByDname("s3教学部");
             Department dept2 = EmployeesInfoManage_Entity.GetDeptByDname("s4教学部");
@@ -152,7 +204,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                     }
                 }
             }
-            return Json(Emp_List.Count(),JsonRequestBehavior.AllowGet);
+            return Emp_List.Count();
         }
 
         /// <summary>
@@ -177,7 +229,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             {
                 foreach (var it in Emp_List)
                 {
-                    if (item.Emp_ID == it.EmployeeId) {
+                    if (item.Emp_ID == it.EmployeeId)
+                    {
                         Emp_List.Remove(it);
                         break;
                     }
@@ -197,15 +250,15 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             }
             ClassTime_Entity.Insert(time);
 
-            return Json(Emp_List.Count(),JsonRequestBehavior.AllowGet);
+            return Json(Emp_List.Count(), JsonRequestBehavior.AllowGet);
         }
-        
+
         /// <summary>
         /// 批量修改底课时方法
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult UpdateClassTime(string [] str)
+        public ActionResult UpdateClassTime(string[] str)
         {
             int classtimecount = Convert.ToInt16(Request.Form["ClassTime"]);
             List<ManageClassTime> class_List = new List<ManageClassTime>();
@@ -220,7 +273,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 ClassTime_Entity.Update(class_List);
             }
 
-            return Json(class_List.Count(),JsonRequestBehavior.AllowGet);
+            return Json(class_List.Count(), JsonRequestBehavior.AllowGet);
         }
 
 
@@ -400,13 +453,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 foreach (var item in list)
                 {
 
-                        var data = db_staf_Cost.Staff_CostData(item.EmployeeId, DateTime.Parse(date), workingDays);
+                    var data = db_staf_Cost.Staff_CostData(item.EmployeeId, DateTime.Parse(date), workingDays);
 
-                        var obj = db_staf_Cost.Statistics_Cost(data);
+                    var obj = db_staf_Cost.Statistics_Cost(data);
 
-                        result.Add(obj);
+                    result.Add(obj);
 
-                        detaillist.Add(data);
+                    detaillist.Add(data);
                 }
 
                 string Detailfilename = DateTime.Parse(date).Year + "-" + DateTime.Parse(date).Month + "费用统计明细表";
@@ -497,7 +550,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             {
                 WorkDay = WorkDay - jiejiari;
             }
-            string sql = "select * from EmployeesInfo where EmployeeId = "+empid+"";
+            string sql = "select * from EmployeesInfo where EmployeeId = " + empid + "";
             List<EmployeesInfo> Emp_List = EmployeesInfoManage_Entity.GetListBySql<EmployeesInfo>(sql);
             List<Staff_CostView> staff_list = db_staf_Cost.CostTimeFee(Emp_List, dt, WorkDay);
             var data = new
@@ -683,7 +736,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             return Json(obj, JsonRequestBehavior.AllowGet);
 
         }
-        
+
         public ActionResult Emp_Cost_Statististics(string data)
         {
             return View();
@@ -698,40 +751,42 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         /// <param name="jiejiari">节假日天数</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult TempFunction(string date, int [] DeptID, string IsDanxiu,int jiejiari)
+        public ActionResult TempFunction(string date, int[] DeptID, string IsDanxiu, int jiejiari)
         {
             DateTime dt = Convert.ToDateTime(date.Substring(0, 4) + "-" + date.Substring(5, 2));
 
             int WorkDay = 0;
             if (IsDanxiu == "0")
             {
-                WorkDay = WorkDaysOfyearmonth(dt.Year, dt.Month, true); 
+                WorkDay = WorkDaysOfyearmonth(dt.Year, dt.Month, true);
             }
-            else {
+            else
+            {
                 WorkDay = WorkDaysOfyearmonth(dt.Year, dt.Month, false);
             }
 
             //节假日天数 >0  用工作日天数减去节假日天数
-            if (jiejiari >0) {
+            if (jiejiari > 0)
+            {
                 WorkDay = WorkDay - jiejiari;
             }
 
-            List<EmployeesInfo> Emp_List = new List<EmployeesInfo>() ;
-            
+            List<EmployeesInfo> Emp_List = new List<EmployeesInfo>();
+
             for (int i = 0; i < DeptID.Length; i++)
             {
                 Emp_List.AddRange(EmployeesInfoManage_Entity.GetEmpsByDeptid(DeptID[i]));
             }
 
-            List<Staff_CostView> staff_list = db_staf_Cost.CostTimeFee(Emp_List,dt,WorkDay);
-            
-             AjaxResult ajaxResult = new AjaxResult();
+            List<Staff_CostView> staff_list = db_staf_Cost.CostTimeFee(Emp_List, dt, WorkDay);
+
+            AjaxResult ajaxResult = new AjaxResult();
             ajaxResult.Msg = "统计完成";
             SessionHelper.Session["Cost_Emp_list"] = staff_list;
-            
+
             return Json(ajaxResult, JsonRequestBehavior.AllowGet);
         }
-        
+
         /// <summary>
         /// 课时费统计    写入Excel
         /// </summary>
@@ -739,12 +794,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         [HttpPost]
         public ActionResult CostDataToExcel()
         {
-            
+
             List<Staff_CostView> list = SessionHelper.Session["Cost_Emp_list"] as List<Staff_CostView>;
 
             var ajaxresult = new { data = list };
             return Json(ajaxresult, JsonRequestBehavior.AllowGet);
-            
+
         }
 
         /// <summary>
@@ -758,7 +813,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             ViewBag.deps = deps;
             return View();
         }
-        
+
         /// <summary>
         /// 计算当月工作日天数
         /// </summary>
@@ -782,7 +837,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                         workday--;
                     }
                 }
-                else {
+                else
+                {
                     indata = Convert.ToDateTime(year.ToString() + "/" + month.ToString() + "/" + i.ToString());
                     if (indata.DayOfWeek == DayOfWeek.Sunday || indata.DayOfWeek == DayOfWeek.Saturday)
                     {

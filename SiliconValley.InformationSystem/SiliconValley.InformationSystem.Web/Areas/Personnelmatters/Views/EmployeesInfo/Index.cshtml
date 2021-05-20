@@ -153,7 +153,103 @@
         </div>
 
         <div class="layui-tab-item">
-            @*操作栏*@
+            @*离职员工信息查询*@
+            <fieldset>
+                <legend>条件查询</legend>
+                <form class="layui-form" action="" lay-filter="formtest">
+                    <div class="layui-row layui-form-item">
+                        <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
+                            <label class="layui-form-label">姓名：</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="EmpName2" name="EmpName2" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
+                            <label class="layui-form-label" style="width:100px;">所属部门:</label>
+                            <div class="layui-input-inline">
+                                <select name="deptid2" id="deptid2" style="width:130px;" lay-filter="deptidfilter2" lay-search="">
+                                    <option value="">请选择所属部门</option>
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
+                            <label class="layui-form-label" style="width:100px;">所属岗位:</label>
+                            <div class="layui-input-inline">
+                                <select name="PositionId2" id="PositionId2" lay-search="" style="width:130px;">
+                                    <option value="">--请选择--</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
+                            <label class="layui-form-label">学历:</label>
+                            <div class="layui-input-inline">
+                                <select name="Education2" id="Education2" style="width:130px;">
+                                    <option value="">--请选择--</option>
+                                    <option value="大专">大专</option>
+                                    <option value="博士">博士</option>
+                                    <option value="硕士">硕士</option>
+                                    <option value="本科">本科</option>
+                                    <option value="高中">高中</option>
+                                    <option value="中专">中专</option>
+                                    <option value="初中">初中</option>
+                                    <option value="小学">小学</option>
+                                    <option value="群众">群众</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-row layui-form-item">
+                        <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
+                            <label class="layui-form-label" style="margin-left:-10px;">性别:</label>
+                            <div class="layui-input-inline" style="margin-left:10px;">
+                                <select name="Sex2" id="Sex2">
+                                    <option value="">--请选择--</option>
+                                    <option value="男">男</option>
+                                    <option value="女">女</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
+                            <label class="layui-form-label" style="width:100px;">政治面貌:</label>
+                            <div class="layui-input-inline">
+                                <select name="PoliticsStatus2" id="PoliticsStatus2">
+                                    <option value="">--请选择--</option>
+                                    <option value="党员">党员</option>
+                                    <option value="团员">团员</option>
+                                    <option value="群众">群众</option>
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label" style="width:120px;margin-left:-10px;">离职时间：</label>
+                            <div class="layui-inline">
+                                <label class="layui-form-label" style="margin-left:-20px;">从：</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" id="start_time2" name="start_time2" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-inline" style="margin-left:-50px;">
+                                <label class="layui-form-label">至：</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" id="end_time2" name="end_time2" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <button class="layui-btn " type="button" id="Conditionselect2" style="margin-left:20px;"><i class="layui-icon layui-icon-search"></i>查询</button>
+
+                        </div>
+
+
+                    </div>
+
+
+
+
+                </form>
+            </fieldset>
             <script type="text/html" id="barDemo2">
                 <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="detail">详情查看</a>
                 <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="ETRdetails">异动详情</a>
@@ -446,6 +542,7 @@
                 });
                
             });
+           
 
             //日期
             var startTime = laydate.render({
@@ -541,6 +638,32 @@
                 ]]
                 , page: true
             });
+
+            $("#Conditionselect2").click(function () {
+                var ename = $("#EmpName2").val();//员工姓名
+                var deptname = $("#deptid2").val();//员工所属部门
+                var pname = $("#PositionId2").val();//员工所属岗位
+                var Education = $("#Education2").val();//学历
+                var sex = $("#Sex2").val();//性别
+                var PoliticsStatus = $("#PoliticsStatus2").val();
+                var start_time = $("#start_time2").val();//起始时间
+                var end_time = $("#end_time2").val();//终止时间
+
+                layui.use(['table'], function () {
+                    var table = layui.table;
+                    table.reload('myEmpInfo2', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        }, where: {
+                            AppCondition: ename + "," + deptname + "," + pname + "," + Education + "," + sex + "," + PoliticsStatus + "," + start_time + "," + end_time
+                        }
+
+                    });
+
+                    condition = ename + "," + deptname + "," + pname + "," + Education + "," + sex + "," + PoliticsStatus + "," + start_time + "," + end_time;
+                });
+
+            });
             //监听行工具事件
             table.on('tool(emptab2)', function (obj) {
                 var data = obj.data;
@@ -585,7 +708,35 @@
              
             });
 
-
+            //日期
+            var startTime2 = laydate.render({
+                elem: '#start_time2',
+                done: function (value, date) {
+                    console.log(value);
+                    console.log(date);
+                    endTime.config.min = {
+                        year: date.year,
+                        month: date.month - 1,//关键
+                        date: date.date,
+                        hours: date.hours,
+                        minutes: date.minutes,
+                        seconds: date.seconds
+                    }
+                }
+            });
+            var endTime2 = laydate.render({
+                elem: '#end_time2',
+                done: function (value, date) {
+                    startTime.config.max = {
+                        year: date.year,
+                        month: date.month - 1,//关键
+                        date: date.date,
+                        hours: date.hours,
+                        minutes: date.minutes,
+                        seconds: date.seconds
+                    }
+                }
+            });
         });
 
         //生日提醒
@@ -799,6 +950,53 @@
             })
             layui.form.render("select");
 
+            $.ajax({
+                url: '/Personnelmatters/EmployeesInfo/BindDeptSelect',
+                data: {},
+                dataType: "json",
+                success: function (resultData) {
+                    $("#deptid2").empty();
+                    if (resultData.code == 0) {
+
+                        $("#deptid2").append(new Option("请选择部门", ""));
+                        $.each(resultData.data, function (index, item) {
+                            $('#deptid2').append(new Option(item.DeptName, item.DeptId));
+                        });
+                    } else {
+                        $("#deptid2").append(new Option("暂无数据", ""));
+                    }
+
+                    layui.form.render("select");
+                }
+            });
+
+            //级联子项目
+            //select 监听
+            form.on('select(deptidfilter2)', function (data) {
+                var value = data.value;  //select选中的值
+                $.ajax({
+                    url: "/Personnelmatters/EmployeesInfo/BindPositionSelect",
+                    data: { deptid: value },
+                    dataType: "json",
+                    success: function (resultData) {
+                        if (resultData.code == 0) {
+                            //清空赋值
+                            $("#PositionId2").empty();
+                            //console.log(resultData.data);
+                            $("#PositionId2").append(new Option("请选择岗位", ""));
+                            $.each(resultData.data, function (index, item) {
+                                //赋值
+                                $('#PositionId2')
+                                    .append(new Option(item.PositionName, item.Pid));
+                            });
+                        } else {
+                            $("#PositionId2").append(new Option("暂无数据", ""));
+                        }
+                        layui.form.render("select");
+                    }
+                });
+            })
+            layui.form.render("select");
         });
     </script>
 

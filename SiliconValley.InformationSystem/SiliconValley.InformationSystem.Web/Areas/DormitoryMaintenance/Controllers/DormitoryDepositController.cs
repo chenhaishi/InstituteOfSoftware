@@ -66,7 +66,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.DormitoryMaintenance.Control
             for (int i = 0; i < HeadClassList.Count; i++)
             {
                 string ScheduleSql = "select * from ScheduleForTrainees where  ID_ClassName=" + HeadClassList[i].ClassID + "";
-                ScheduleList = ScheduleManeger.GetListBySql<ScheduleForTrainees>(ScheduleSql);
+                ScheduleList.AddRange(ScheduleManeger.GetListBySql<ScheduleForTrainees>(ScheduleSql));
             }
             List<DormitoryDeposit> DormDepositList = new List<DormitoryDeposit>();
             for (int i = 0; i < listall.Count; i++)
