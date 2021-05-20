@@ -3672,6 +3672,7 @@
     <Content Include="Areas\Educational\Views\Reconcile\Time_intervalView.cshtml" />
     <Content Include="Areas\Educational\Views\Reconcile\TeacherReconfile.cshtml" />
     <Content Include="Areas\Educational\Views\Staff_Cost_Statistics\ManageClassTime.cshtml" />
+    <Content Include="Areas\DormitoryMaintenance\Views\DormitoryDeposit\ExcelInputView.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
