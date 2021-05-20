@@ -297,8 +297,8 @@
 
 
         }
-        <h4 style="text-align:center;">其他班级</h4>
-        <div id="otherclass">
+        <h4 style="text-align:center;">历史带班记录</h4>
+        <div id="otherclass" >
             @*<div style="height:50px;">
                 <button type="button" classnumber="@item.classid" style="margin-top:0px !important;" class="layui-btn classbtn">@item.ClassNumber <span style="padding:0px;  margin-left:5px;height:40px; font-size:18px;">@item.GradeName 阶段</span></button>
             </div>
@@ -327,38 +327,38 @@
             <div style="margin-left:50px;" id="info">
 
                 <div class="studentInfoItem studentname">
-                    <label>姓名：</label><span>唐敏</span>
+                    <label>姓名：</label><span></span>
                 </div>
                 <div class="studentInfoItem sex">
-                    <label>性别：</label><span>女</span>
+                    <label>性别：</label><span></span>
                 </div>
                 <div class="studentInfoItem birthday">
-                    <label>生日：</label><span>2000-09-12</span>
+                    <label>生日：</label><span></span>
                 </div>
                 <div class="studentInfoItem xueli">
-                    <label>学历：</label><span>专科</span>
+                    <label>学历：</label><span></span>
                 </div>
                 <div class="studentInfoItem address">
-                    <label>住址：</label><span>湖南长沙 邵阳市</span>
+                    <label>住址：</label><span></span>
                 </div>
                 <div class="studentInfoItem qq">
-                    <label>QQ：</label><span>265659498</span>
+                    <label>QQ：</label><span></span>
                 </div>
                 <div class="studentInfoItem wechat">
-                    <label>微信：</label><span>265fdsa</span>
+                    <label>微信：</label><span></span>
                 </div>
                 <div class="studentInfoItem phone">
-                    <label>电话：</label><span>13723860463</span>
+                    <label>电话：</label><span></span>
                 </div>
 
                 <div class="studentInfoItem classnumber">
-                    <label>班级：</label><span>1710NA</span>
+                    <label>班级：</label><span></span>
                 </div>
                 <div class="studentInfoItem grand">
-                    <label>阶段：</label><span>S3</span>
+                    <label>阶段：</label><span></span>
                 </div>
                 <div class="studentInfoItem major">
-                    <label>专业：</label><span>JAVA</span>
+                    <label>专业：</label><span></span>
                 </div>
 
             </div>
@@ -394,7 +394,7 @@
     <script type="text/template" id="otherClass">
 
         <div style="height:50px;">
-            <button type="button" classnumber="{{=classid}}" style="margin-top:0px !important;" class="layui-btn classbtn">{{=classnumber}} <span style="padding:0px;  margin-left:5px;height:40px; font-size:18px;">{{grandname}}阶段</span></button>
+            <button type="button" disabled="disabled" style="margin-top:0px !important;" class="layui-btn classbtn">{{=classnumber}}</button>
         </div>
         <div style="margin:0 auto; height:30px; border:1px solid #6579ee;width:1px;">
 
@@ -431,7 +431,7 @@
         <div class="classinfodiv">
             <span>阶段：</span><label>{{=grandName}}</label>
         </div>
-
+         
         <hr />
     </script>
 

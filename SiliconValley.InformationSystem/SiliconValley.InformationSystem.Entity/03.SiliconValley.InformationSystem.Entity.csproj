@@ -569,6 +569,7 @@
     <Compile Include="ViewEntity\XYK_Data\Student .cs" />
     <Compile Include="ViewEntity\zhongyike\InternalTraView.cs" />
     <Compile Include="ViewEntity\zhongyike\MyExamCurren.cs" />
+    <Compile Include="ViewEntity\zhongyike\TeachNameView.cs" />
     <Compile Include="ViewEntity\ZhuanghuanluData.cs" />
     <Compile Include="ZhuceShowData.cs" />
   </ItemGroup>

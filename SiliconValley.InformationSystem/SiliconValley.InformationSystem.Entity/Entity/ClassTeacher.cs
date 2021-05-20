@@ -37,5 +37,10 @@ namespace SiliconValley.InformationSystem.Entity.MyEntity
         public DateTime BeginDate { get; set; }
 
         public Nullable<DateTime> EndDate { get; set; }
+
+        /// <summary>
+        /// 班级状态 false为未毕业班 true为毕业班
+        /// </summary>
+        //public Nullable<bool> ClassStatus { get; set; }
     }
 }

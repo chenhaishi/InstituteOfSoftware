@@ -39,10 +39,10 @@ function GetClassInfo(classnumber,successcallback, errorcallback) {
 function loadOtherClass() {
 
     $.get("/Teaching/Class/LoadOtherClass", function (result) {
-
+       
         if (result.ErrorCode == 200) {
 
-
+            console.log(result);
             for (var i = 0; i < result.Data.length; i++) {
 
 

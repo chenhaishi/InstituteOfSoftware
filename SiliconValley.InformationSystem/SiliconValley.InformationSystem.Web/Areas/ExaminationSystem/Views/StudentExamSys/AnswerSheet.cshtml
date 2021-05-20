@@ -218,7 +218,7 @@
             for (var i = 0; i < arr_key.length; i++) {
                 console.log(arr_key[i]);
                 formData.set(arr_key[i], "");
-                console.log(".............");
+                //console.log(".............");
             }
         }
         var TotalScores = 40;
@@ -290,10 +290,10 @@
                             var title = $("<label></label>");
                             title.text(RESULT.Data.data[i].Title);
 
-                            console.log(document.HTMLDOMtoString(title[0]));
-                            console.log(document.HTMLDOMtoString(a[0]));
-                            console.log(document.HTMLDOMtoString(b[0]));
-                            console.log(document.HTMLDOMtoString(c[0])); console.log(document.HTMLDOMtoString(d[0]));
+                            //console.log(document.HTMLDOMtoString(title[0]));
+                            //console.log(document.HTMLDOMtoString(a[0]));
+                            //console.log(document.HTMLDOMtoString(b[0]));
+                            //console.log(document.HTMLDOMtoString(c[0])); console.log(document.HTMLDOMtoString(d[0]));
                             var htmldate = html({ questionid: RESULT.Data.data[i].Id, index: i + 1, question: document.HTMLDOMtoString(title[0]), A: document.HTMLDOMtoString(a[0]), B: document.HTMLDOMtoString(b[0]), C: document.HTMLDOMtoString(c[0]), D: document.HTMLDOMtoString(d[0]), score: itemscores });
                             $("#choicequestion").append(htmldate);
 
@@ -315,7 +315,7 @@
                 var index = layer.load(2, { time: 10 * 1000 }); //又换了种风格，并且设定最长等待10秒
                 $.post('/ExaminationSystem/StudentExamSys/answerQuestionData', { examid: examid }, function (RESULT) {
                     questionCount += RESULT.Data.length;
-                    console.log(RESULT);
+                    //console.log(RESULT);
                     if (RESULT.ErrorCode == 200) {
 
                         layer.close(index);
@@ -331,7 +331,7 @@
                                 }
                             }
 
-                            console.log(".....");
+                            //console.log(".....");
                             var html = _.template($("#answerquestionmoban").html());
                             var htmldate = html({ questionid: RESULT.Data.data[i].ID, index: i + 1, question: RESULT.Data.data[i].Title, score: itemscores });
 
@@ -455,7 +455,7 @@
 
                     //获取答案
                     var answer = $(elem).find(".desc").val();
-                    console.log(answer);
+                    //console.log(answer);
                     //获取题目分数
                     var questionScores = $(elem).find(".hidescore").val();
 
