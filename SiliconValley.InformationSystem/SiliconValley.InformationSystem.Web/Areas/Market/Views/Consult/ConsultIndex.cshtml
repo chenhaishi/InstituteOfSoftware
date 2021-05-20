@@ -2,21 +2,19 @@
 @{
     ViewBag.Title = "ConsultIndex";
     Layout = "~/Views/Shared/_Layout.cshtml";
-   // Layout = null;
+    // Layout = null;
 }
 @using SiliconValley.InformationSystem.Entity.MyEntity
 @using SiliconValley.InformationSystem.Entity.ViewEntity
 
 @section style{
     <style>
-        .container, .front, .back
-        {
+        .container, .front, .back {
             width: 80px;
             height: 40px;
         }
 
-        .flip
-        {
+        .flip {
             position: relative;
             transition: 0.6s;
             transform-style: preserve-3d;
@@ -24,99 +22,84 @@
 
 
 
-        .front
-        {
+        .front {
             z-index: 2;
             line-height: 40px;
             cursor: pointer;
         }
 
 
-        .container:hover .flip
-        {
+        .container:hover .flip {
             transform: rotateY(0deg);
         }
 
-        .SpanCssenght1
-        {
+        .SpanCssenght1 {
             font-family: STSong;
             text-align: center;
             font-size: 15px;
             font-weight: 800;
         }
 
-        .ImageCssEight1
-        {
+        .ImageCssEight1 {
             width: 80px;
             height: 40px;
         }
 
-        #divleft
-        {
+        #divleft {
             float: left;
             width: 10%;
         }
 
-        #divright
-        {
+        #divright {
             margin-left: 30px;
             float: left;
             width: 85%;
         }
 
-        .RedCss
-        {
+        .RedCss {
             background-color: red;
         }
 
-        .GreenCss
-        {
+        .GreenCss {
             background-color: #009688;
         }
 
-        .btnCenDivCss
-        {
+        .btnCenDivCss {
             text-align: left;
             margin-top: 10px;
         }
 
-        .btnCssEnght1
-        {
+        .btnCssEnght1 {
             width: 70px;
             height: 35px;
             padding-left: 8px;
             line-height: 35px;
         }
 
-        body .demo-class2 .layui-layer-title
-        {
+        body .demo-class2 .layui-layer-title {
             background: #ffd800;
             color: #fff;
             border: none;
         }
 
-        body .demo-class .layui-layer-title
-        {
+        body .demo-class .layui-layer-title {
             background: #009688;
             color: #fff;
             border: none;
         }
 
-        .spanCssone
-        {
+        .spanCssone {
             font-size: 25px;
             font-family: STSong
         }
 
-        .demo-class2 .layui-layer-btn a
-        {
+        .demo-class2 .layui-layer-btn a {
             background: #ffd800;
             color: #fff;
             border: none;
         }
 
-        .DivCssfont
-        {
+        .DivCssfont {
             font-size: 24px;
             font-family: STSong;
             color: black;
@@ -131,8 +114,8 @@
             <input type="text" class="form-control" id="JangzMan" name="JangzMan" placeholder="学生姓名">
         </div>
     </div>
-    <button  class="layui-btn layui-btn-radius layui-btn-primary"   onclick="serchBtnOne()">查询</button>
-    <button  class="layui-btn" style="border-radius:10px;height:35px" onclick="serchBtnTwo()">分量</button>
+    <button class="layui-btn layui-btn-radius layui-btn-primary" onclick="serchBtnOne()">查询</button>
+    <button class="layui-btn" style="border-radius:10px;height:35px" onclick="serchBtnTwo()">分量</button>
     <hr />
 </div>
 
@@ -226,7 +209,8 @@
 
 
 @section script{
-    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts-all-3.js"></script>
+    @*<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts-all-3.js"></script>*@
+    <script src="https://cdn.bootcss.com/echarts/3.7.1/echarts.min.js"></script>
     <script>
         function HiddenMiddle() {
             $("#div_right_middle").hide();
@@ -441,10 +425,10 @@
                     });
                 }
 
-    
+
                 ////这个方法是用于显示饼状图的
                 var myChart2 = echarts.init(document.getElementById('Yuang'));
-                function ShowRangImage(MonthName) {                 
+                function ShowRangImage(MonthName) {
                     var legendData = [];
                     var seriesData = [];
                     var selected = {};//自定义了一个对象
@@ -512,7 +496,7 @@
                                 ]
                             };
                             myChart2.setOption(option2);
-                            layer.close(indexs2); 
+                            layer.close(indexs2);
                         }
                     });
                 }
@@ -524,10 +508,10 @@
                     success: function (data) {
                         // 使用刚指定的配置项和数据显示图表。
                         myChart.setOption(myoption(data));
-                        layer.close(indexs); 
+                        layer.close(indexs);
                     }
-                });               
-            });             
+                });
+            });
         });
         //点击btn获取学生跟踪信息
         function InputClick(studentid) {
@@ -559,7 +543,7 @@
                     layer.msg('学生姓名不能为空!!!', { icon: 2 })
                 });
             } else {
-               
+
                 $.ajax({
                     url: '/Market/Consult/SeracherIsno/' + StudentName,
                     success: function (SucData) {
@@ -604,8 +588,8 @@
                 });
 
             }
-        } 
-        function serchBtnTwo () {
+        }
+        function serchBtnTwo() {
             layui.use('layer', function () {
                 var layer = layui.layer;
                 layer.open({
@@ -618,7 +602,7 @@
                     , skin: 'demo-class'
                 });
             });
-        } 
+        }
     </script>
 }
 

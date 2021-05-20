@@ -563,6 +563,19 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 ).ToList();
         }
 
+        /// <summary>
+        /// 获取包含教学的部门
+        /// </summary>
+        /// <returns></returns>
+        public List<Department> GetDepartmentbyjiaoxue()
+        {
+            DepartmentBusiness.DepartmentManage tempdb_dep = new DepartmentBusiness.DepartmentManage();
+
+            return tempdb_dep.GetDepartments().Where(
+                s => s.DeptName.Contains("教学")
+                ).ToList();
+        }
+
 
         /// <summary>
         /// 获取统计需要的数据  
