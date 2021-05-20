@@ -43,8 +43,6 @@ namespace SiliconValley.InformationSystem.Business.TeachingDepBusiness
             return this.GetList().Where(d => d.IsDel == false).ToList();
         }
 
-
-
         /// <summary>
         /// 获取我的班级
         /// </summary>
@@ -58,7 +56,7 @@ namespace SiliconValley.InformationSystem.Business.TeachingDepBusiness
 
             BaseBusiness<ClassSchedule> classdb = new BaseBusiness<ClassSchedule>();
 
-            var classlisttemp = classdb.GetList().Where(d => d.IsDelete == false && d.ClassStatus == false).ToList();
+            var classlisttemp = classdb.GetList().Where(d => d.IsDelete == false && d.ClassStatus == false && d.ClassstatusID ==null).ToList();
 
             List<ClassSchedule> resultlist = new List<ClassSchedule>();
 

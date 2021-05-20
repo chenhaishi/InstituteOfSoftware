@@ -3711,6 +3711,7 @@
     <Content Include="Areas\Teaching\Views\SatisfactionSurvey\SatisfactionDerivationView.cshtml" />
     <Content Include="Areas\Teaching\Views\SatisfactionSurvey\MySatisfactionCheck.cshtml" />
     <Content Include="Areas\Teaching\Views\Exam\ProjectDefense.cshtml" />
+    <Content Include="Areas\Teaching\Views\Class\ArrangeTeacherleadClass.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />

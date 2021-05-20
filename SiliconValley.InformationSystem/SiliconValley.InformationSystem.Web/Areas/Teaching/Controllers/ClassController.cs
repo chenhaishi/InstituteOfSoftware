@@ -14,14 +14,22 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
     using SiliconValley.InformationSystem.Entity.Entity;
     using SiliconValley.InformationSystem.Entity.MyEntity;
     using SiliconValley.InformationSystem.Entity.ViewEntity;
+    using SiliconValley.InformationSystem.Business.ClassSchedule_Business;
     using SiliconValley.InformationSystem.Util;
+    using SiliconValley.InformationSystem.Entity.ViewEntity.zhongyike;
 
     [CheckLogin]
     public class ClassController : Controller
     {
+        public static string HeadteID;
         // GET: Teaching/Class
+        //员工信息
+        EmployeesInfoManage employeesInfoManage = new EmployeesInfoManage();
+        //班级
+        ClassScheduleBusiness ClasHead = new ClassScheduleBusiness();
 
-
+        //班主任带班
+        BaseBusiness<HeadClass> HeadClassEnti = new BaseBusiness<HeadClass>();
         private readonly TeacherClassBusiness db_teacherclass;
         private readonly TeacherBusiness db_teacher;
         private readonly StuHomeWorkBusiness db_homework;
@@ -30,6 +38,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
         /// 学员对应班级的业务类实例
         /// </summary>
         private readonly BaseBusiness<ScheduleForTrainees> db_student_class;
+        private readonly HeadmasterBusiness dbtext;
+        private readonly ClassTeacherBusiness db_classteacher;
 
         public ClassController()
         {
@@ -37,8 +47,85 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
             db_teacherclass = new TeacherClassBusiness();
             db_teacher = new TeacherBusiness();
             db_student_class = new BaseBusiness<ScheduleForTrainees>();
+            dbtext = new HeadmasterBusiness();
+            db_classteacher = new ClassTeacherBusiness();
+        }
+        /// <summary>
+        /// 确定安排教员带班
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult SetUpaShiftLeader()
+        {
+            string ClassName = Request.QueryString["ClassName"];
+
+            return Json(db_classteacher.HeadClassEntis(HeadteID.ToString(), ClassName), JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
+        /// 安排教员带班
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ArrangeTeacherleadClass(string ID)
+        {
+            //Int64 HeadteID = Convert.ToInt64(ID);
+            HeadteID = ID;
+
+            ViewBag.HeadMa = HeadmasreClass(ID);
+            //获取教员的名字
+            string sql = "select * from EmployeesInfo where EmployeeId = '"+ ID + "'";
+            ViewBag.Name = employeesInfoManage.GetListBySql<EmployeesInfo>(sql).FirstOrDefault().EmpName;
+            //ViewBag.Name = employeesInfoManage.GetEntity(dbtext.GetEntity(HeadteID).informatiees_Id).EmpName;
+            return View();
         }
 
+        public string HeadmasreClass(string ID)
+        {
+            BaseBusiness<Teacher> teach = new BaseBusiness<Teacher>();
+            var teachid = teach.GetList().Where(k => k.EmployeeId == ID).FirstOrDefault().TeacherID;
+            //阶段
+            GrandBusiness Grandcontext = new GrandBusiness();
+            //拿到该教员负责班级的阶段
+            List<Grand> grands = Grandcontext.GetList();
+            //var x1s = dbtext.GetEntity(HeadteID);
+            //教员部门名称
+            string DeptName = employeesInfoManage.GetDeptByEmpid(ID).DeptName;
+            //带班人
+            object obj = new object();
+            //该教员所有可负责的班级
+            //string sql = "select * from ClassTeacher";
+            //var jiaoyuandaiban = db_classteacher.GetListBySql<ClassTeacher>(sql).ToList();
+            List<ClassSchedule> classesList = new List<ClassSchedule>();
+            foreach (var item in grands)
+            {
+                classesList.AddRange(ClasHead.GetList().Where(a => a.ClassstatusID == null && a.grade_Id == item.Id).ToList());
+            }
+            List<ClassSchedule> ListClass = classesList;
+            List<ClassSchedule> MyClass = new List<ClassSchedule>();
+            //获取这个老师所带的班
+            var x = db_classteacher.GetList().Where(a => a.IsDel == false && a.TeacherID == teachid && a.EndDate == null).ToList();
+            //获取不是这个老师所带的班
+            var x1 = db_classteacher.GetList().Where(a => a.IsDel == false && a.TeacherID != teachid && a.EndDate == null).ToList();
+            //0
+            foreach (var item in x)
+            {
+                var classstudent = classesList.Where(a => a.IsDelete == false && a.ClassStatus == false && a.id == item.ClassNumber).FirstOrDefault();
+                if (classstudent != null)
+                {
+                    MyClass.Add(classstudent);
+                }
+
+            }
+            foreach (var item in x1)
+            {
+                ListClass = ListClass.Where(a => a.IsDelete == false && a.ClassStatus == false && a.id != item.ClassNumber).ToList();
+            }
+
+            var data = new
+            {
+                d1 = ListClass.Select(c => new { value = c.id, title = c.ClassNumber + "(" + ClasHead.GetClassGrand(c.id, 222) + ")" }).ToList(),
+                d2 = MyClass.Select(c => new { title = c.ClassNumber + "(" + ClasHead.GetClassGrand(c.id, 222) + ")", value = c.id }).ToList()
+            };
+            return Newtonsoft.Json.JsonConvert.SerializeObject(data);
+        }
         public ActionResult Index()
         {
 
@@ -76,46 +163,41 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
             return View();
         }
 
-
+        /// <summary>
+        /// 历史带班记录
+        /// </summary>
+        /// <returns></returns>
         public ActionResult LoadOtherClass()
-        {
+      {
             AjaxResult result = new AjaxResult();
 
             try
             {
-                var teacherlist = db_teacher.GetTeachers();
-
+                //获取所以教员
+                //var teacherlist = db_teacher.GetTeachers();
+                //获取当前账号信息
                 Base_UserModel user = Base_UserBusiness.GetCurrentUser();
+               List<TeachNameView>  name = new List<TeachNameView>();
+                //List<ClassTableView> classlist = new List<ClassTableView>();
 
-                List<ClassTableView> classlist = new List<ClassTableView>();
-
-                SatisfactionSurveyBusiness dd = new SatisfactionSurveyBusiness();
-
-                var emplist = dd.GetMyDepEmp(user);
-
-                foreach (var item in emplist)
+                //SatisfactionSurveyBusiness dd = new SatisfactionSurveyBusiness();
+                BaseBusiness<Teacher> teach = new BaseBusiness<Teacher>();
+                var teachid = teach.GetList().Where(k => k.EmployeeId == user.EmpNumber).FirstOrDefault().TeacherID;
+                BaseBusiness<ClassSchedule> classsch = new BaseBusiness<ClassSchedule>();
+                
+                //获取这个老师历史所带班级记录
+                var tempteachaerclass = db_teacherclass.GetList().Where(a => a.TeacherID == teachid && a.IsDel == true && a.EndDate != null ).ToList();
+                foreach (var item in tempteachaerclass)
                 {
-                    if (item.EmployeeId != user.EmpNumber)
-                    {
-                        var tempteacher = teacherlist.Where(d => d.EmployeeId == item.EmployeeId).FirstOrDefault();
-
-                        if (tempteacher != null)
-                        {
-                            var tempteachaerclass = db_teacherclass.GetCrrentMyClass(tempteacher.TeacherID);
-
-                            foreach (var item1 in tempteachaerclass)
-                            {
-                                var temp = db_teacherclass.GetClassTableView(item1);
-
-                                classlist.Add(temp);
-                            }
-                        }
-                    }
+                    TeachNameView TNV = new TeachNameView();
+                    var mingzi = classsch.GetList().Where(c=>c.id == item.ClassNumber).FirstOrDefault().ClassNumber;
+                    TNV.ClassNumber = mingzi;
+                    name.Add(TNV);
                 }
 
                 result.ErrorCode = 200;
                 result.Msg = "成功";
-                result.Data = classlist;
+                result.Data = name;
             }
             catch (Exception)
             {
