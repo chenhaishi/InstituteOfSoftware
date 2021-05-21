@@ -271,7 +271,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                                     }
                                     else
                                     {
-                                        if (!Regex.IsMatch(finalgrade, @"^[0-9]*$"))
+                                        if (!Regex.IsMatch(finalgrade, @"^[0-9]+\.?[0-9]*$"))
                                         {
                                             errorDataView.excelId = name;
                                             errorDataView.errorExplain = "绩效分含有字符串！";
