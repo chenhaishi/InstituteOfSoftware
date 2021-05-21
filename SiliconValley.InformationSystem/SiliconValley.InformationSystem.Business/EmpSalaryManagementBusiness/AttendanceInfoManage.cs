@@ -555,15 +555,15 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                             else
                             {
                                     var emp = empmanage.GetEmpByDDid(Convert.ToInt32(ddid));
-                                //    if (!this.IsExist(emp.EmployeeId, Convert.ToDateTime(year_month)))
-                                //    {
-                                //    attview.empname = name;
-                                //    attview.errorExplain = "该员工这个月的考勤已存在！";
-                                //    attdatalist.Add(attview);
-                                //}
-                                //else
-                                //{
-                                    atd.EmployeeId = emp.EmployeeId;
+                                    if (!this.IsExist(emp.EmployeeId, Convert.ToDateTime(year_month)))
+                                    {
+                                        attview.empname = name;
+                                        attview.errorExplain = "该员工这个月的考勤已存在！";
+                                        attdatalist.Add(attview);
+                                    }
+                                    else
+                                    {
+                                        atd.EmployeeId = emp.EmployeeId;
                                     if (!string.IsNullOrEmpty(year_month))
                                     {
                                         atd.YearAndMonth = Convert.ToDateTime(year_month);
@@ -656,7 +656,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                                         rc.RemoveCache("InRedisATDData");
                                     }
                             }
-                            //}
+                            }
                         }
 
                     }
