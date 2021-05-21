@@ -242,6 +242,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                         }
                         else
                         {
+
                             var s = Regex.IsMatch(ddid, @"^[0-9]*$");
                             if (!s)
                             {
@@ -261,6 +262,13 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                                 else
                                 {
                                     var empid = emanage.GetList().Where(i => i.DDAppId == int.Parse(ddid)).FirstOrDefault().EmployeeId;
+                                    var atd = this.GetListBySql<MeritsCheck>("select * from MeritsCheck where EmployeeId='" + empid + "' and YEAR(YearAndMonth)=" + year + " and MONTH(YearAndMonth)=" + month).Count();
+                                    if (atd != 0)
+                                    {
+                                        errorDataView.excelId = name;
+                                        errorDataView.errorExplain = "原因是该员工这个月的绩效已存在！";
+                                        error.Add(errorDataView);
+                                    }
                                     //merits.EmployeeId = empid;
                                     if (string.IsNullOrEmpty(finalgrade))
                                     {
@@ -271,7 +279,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                                     }
                                     else
                                     {
-                                        if (!Regex.IsMatch(finalgrade, @"^[0-9]*$"))
+                                        if (!Regex.IsMatch(finalgrade, @"^[0-9]+\.?[0-9]*$"))
                                         {
                                             errorDataView.excelId = name;
                                             errorDataView.errorExplain = "绩效分含有字符串！";

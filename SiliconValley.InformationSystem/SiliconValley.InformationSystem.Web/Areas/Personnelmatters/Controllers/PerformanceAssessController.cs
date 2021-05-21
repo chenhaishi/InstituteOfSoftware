@@ -345,7 +345,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         /// <returns></returns>
         public FileStreamResult AssessmentDownFile()
         {
-            string rr = Server.MapPath("/uploadXLSXfile/Template/绩效模板.xlsx");  //获取下载文件的路径         
+            string rr = Server.MapPath("/uploadXLSXfile/Template/绩效模板.xls");  //获取下载文件的路径         
             FileStream stream = new FileStream(rr, FileMode.Open);
             return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", Server.UrlEncode("绩效模板.xlsx"));
         }
