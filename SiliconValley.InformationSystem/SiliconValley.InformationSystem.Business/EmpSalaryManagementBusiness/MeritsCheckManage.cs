@@ -228,6 +228,7 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                         if (month.Substring(1, 1) == "月")
                         {
                             Year = year + "-" + month.Substring(0, 1) + "-" + 01;
+                            month = month.Substring(0, 1);
                         }
                         else
                         {

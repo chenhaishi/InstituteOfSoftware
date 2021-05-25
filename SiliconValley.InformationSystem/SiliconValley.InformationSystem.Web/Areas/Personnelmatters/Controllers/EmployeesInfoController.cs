@@ -1454,6 +1454,28 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             }
             return Json(ajaxresult, JsonRequestBehavior.AllowGet);
         }
+        public ActionResult AddressUpload()//当文件类型错误，则excelfile=null
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult AddressUpload(HttpPostedFileBase excelfile)//当文件类型错误，则excelfile=null
+        {
+            Stream filestream = excelfile.InputStream;
+            EmployeesInfoManage empmanage = new EmployeesInfoManage();
+            var result = empmanage.ImportAddressAataFromExcel(filestream, excelfile.ContentType);
 
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
+        /// 绩效模板下载
+        /// </summary>
+        /// <returns></returns>
+        public FileStreamResult AddressDownFile()
+        {
+            string rr = Server.MapPath("/uploadXLSXfile/Template/绩效模板.xls");  //获取下载文件的路径         
+            FileStream stream = new FileStream(rr, FileMode.Open);
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", Server.UrlEncode("绩效模板.xlsx"));
+        }
     }
 }
