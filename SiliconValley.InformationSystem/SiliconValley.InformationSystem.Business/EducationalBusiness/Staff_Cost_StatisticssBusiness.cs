@@ -352,7 +352,13 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                     {
                         string CandiSql = "select * from CandidateInfo where Examination =" + ExamList[0].ID + "";
                         List<CandidateInfo> CandiList = Candi_Entity.GetListBySql<CandidateInfo>(CandiSql);
-                        StuCount += CandiList.Count;
+                        for (int r = 0; r < CandiList.Count; r++)
+                        {
+                            if (CandiList[r].Paper != null || CandiList[r].ComputerPaper!=null) {
+                                StuCount += 1;
+                            }
+                        }
+                        
                     }
                 }
                 //读取配置文件
@@ -456,9 +462,25 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 Internal_training_fee = Internal_count_one * 55 + Internal_count_two * 65;
                 #endregion
 
+                int totalmoney = 0;
+                int Class = FirstStage + SecondStage + ThreeStage + OtherStage;
+                if (Cost_fee <= 0) {
+                    Cost_fee = 0;
+                }
+                if (ClassTime <= 0) {
+                    ClassTime = 0;
+                }
+                if (totalmoney<=0) {
+                    totalmoney = 0;
+                }
+                if (Class <= 0) {
+                    Class = 0;
+                }
+                
                 staff.DiClassTime = ClassTime;
-                staff.ClassTime = FirstStage + SecondStage + ThreeStage + OtherStage;
-                staff.totalmoney = Convert.ToInt32(Cost_fee) + Duty_fee + Invigilation_fee + Marking_fee + Super_class + Internal_training_fee + RD_fee;
+                staff.ClassTime = Class;
+                totalmoney = Convert.ToInt32(Cost_fee) + Duty_fee + Invigilation_fee + Marking_fee + Super_class + Internal_training_fee + RD_fee;
+                staff.totalmoney = totalmoney;
                 staff.Cost_fee = Cost_fee;
                 staff.Duty_fee = Duty_fee;
                 staff.Invigilation_fee = Invigilation_fee;
