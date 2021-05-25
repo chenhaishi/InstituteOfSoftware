@@ -277,7 +277,8 @@
                 }
             })
             var OperNO = $("#OperNO").val();
-            if (OperNO > 0) {
+            console.log(OperNO);
+            if (OperNO == 0) {
                 $("#iscoo").attr("checked", "checked");
                 var compiled = _.template($("#coomuban").html());
                 var html = compiled();
@@ -439,14 +440,15 @@
 
                     });
 
-                } else {
+                }
+                else {
 
-                    layer.msg('正在删除', { time: 1000, icon: 16 }, function () {
-                        layer.msg('成功删除', { icon: 1 })
+                    //layer.msg('正在删除', { time: 1000, icon: 16 }, function () {
+                    //    layer.msg('成功删除', { icon: 1 })
                         $("#OperNO").val("0");
                         $("#coobobo").html("");
 
-                    });
+                    //});
 
                 }
             });

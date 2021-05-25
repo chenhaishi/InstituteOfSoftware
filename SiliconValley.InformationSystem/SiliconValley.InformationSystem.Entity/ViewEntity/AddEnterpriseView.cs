@@ -25,6 +25,8 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity
         public string Remark { get; set; }
         //联系人
         public string EntContacts { get; set; }
+        //是否合作
+        public bool close { get; set; }
         //联系方式
         public string EntPhone { get; set; }
     }

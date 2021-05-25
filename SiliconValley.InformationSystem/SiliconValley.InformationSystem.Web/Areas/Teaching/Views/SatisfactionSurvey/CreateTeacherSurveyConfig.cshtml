@@ -17,10 +17,6 @@
         <hr />
 
         <form class="layui-form">
-
-
-
-
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label">选择班级</label>
@@ -41,18 +37,27 @@
                 </div>
             </div>
             <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">选择日期</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="date" id="date" lay-filter="date" lay-verify="date" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
                 @*<label class="layui-form-label">阶段</label>
-                <div class="layui-input-inline">
-                    <select name="Grand" lay-filter="major">
-                        <option value="0">请选择</option>
-                        @{
-                            foreach (var item in ViewBag.Grand as List<Grand>)
-                            {
-                                <option value="@item.Id">@item.GrandName</option>
-                            }
+            <div class="layui-input-inline">
+                <select name="Grand" lay-filter="major">
+                    <option value="0">请选择</option>
+                    @{
+                        foreach (var item in ViewBag.Grand as List<Grand>)
+                        {
+                            <option value="@item.Id">@item.GrandName</option>
                         }
-                    </select>
-                </div>*@
+                    }
+                </select>
+            </div>*@
+
                 <label class="layui-form-label">课程</label>
                 <div class="layui-input-inline">
                     <select lay-verify="required" name="course" id="course" lay-search="">
@@ -114,23 +119,27 @@
                         </div>
                     </div>
                 </div>
-                </div>
-                <div style="width:100%;">
-                    <button style="width:100%" id="commit" type="button" class="layui-btn layui-btn-danger">生成</button>
-                </div>
+            </div>
+            <div style="width:100%;">
+                <button style="width:100%" id="commit" type="button" class="layui-btn layui-btn-danger">生成</button>
+            </div>
 
-</form>
+        </form>
     </div>
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/layui/layui.js"></script>
 
     <script>
 
-        layui.use(['form', 'layer'], function () {
-
+        layui.use(['laydate', 'form', 'layer'], function () {
+            var laydate = layui.laydate;
             var form = layui.form;
             var layer = layui.layer;
-
+            laydate.render({
+                elem: '#date',
+                format: 'yyyy-MM-dd',
+                //type: 'month',
+            });
             form.on('select(classnumber)', function () {
                 var banji = $("#classnumber").val();
                 console.log(banji);
@@ -145,7 +154,7 @@
                         $("#LaoShi").hide();
                     }
                 })
-            });      
+            });
             form.on('select(bumeng)', function (data) {
                 var value = data.value;  //select选中的值
                 console.log("选中值" + value);
@@ -203,8 +212,10 @@
                 var shuxue = $("#sxlaoshi").val();
                 //获取英语老师
                 var yingyu = $("#yylaoshi").val();
-
-                if (classnumber == 0 || skill == "" || laoshi == "") {
+                //获取时间
+                var riqi = $("#date").val();
+                console.log(riqi);
+                if (classnumber == 0 || skill == "" || laoshi == "" || riqi == "") {
                     layer.msg("请选择");
 
                     return;
@@ -214,7 +225,7 @@
 
                     //发送请求
 
-                    $.post('/Teaching/SatisfactionSurvey/CreateTeacherSurveyConfig', { classnumber: classnumber, Curriculum: skill, laoshi: laoshi, yuwen: yuwen, shuxue: shuxue, yingyu: yingyu }, function (data) {
+                    $.post('/Teaching/SatisfactionSurvey/CreateTeacherSurveyConfig', { classnumber: classnumber, Curriculum: skill, laoshi: laoshi, yuwen: yuwen, shuxue: shuxue, yingyu: yingyu, riqi: riqi }, function (data) {
 
                         if (data.ErrorCode == 200) {
 

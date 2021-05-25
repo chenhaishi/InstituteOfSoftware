@@ -142,9 +142,13 @@
                             @Html.TextBoxFor(a => a.Remark, new Dictionary<string, object>() { { "class", "layui-input" } })
                         </div>
                     </div>
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                        <label class="layui-form-label">合作</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="close" lay-skin="switch" lay-text="true|false">
+                        </div>
+                    </div>
                 </div>
-
-
             </div>
             <div class="layui-form-item">
                 <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
@@ -314,6 +318,7 @@
             //监听提交
             form.on('submit(demo1)', function (data) {
                 var jsonStr = data.field;
+                console.log(jsonStr);
                 $(".Requirements").each(function (i) {
                     EntSpeeArry[i].Requirements = $(this).val();
                 });

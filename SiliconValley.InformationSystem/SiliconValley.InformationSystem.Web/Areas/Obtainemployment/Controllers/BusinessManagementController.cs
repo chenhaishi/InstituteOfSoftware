@@ -63,6 +63,14 @@ namespace SiliconValley.InformationSystem.Web.Areas.Obtainemployment.Controllers
 
         }
         /// <summary>
+        /// 访谈页面
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult BusinessInterview()
+        {
+            return View();
+        }
+        /// <summary>
         /// 根据专业ID以及企业ID查找企业专业对像
         /// </summary>
         /// <param name="SpecID">专业id</param>
@@ -234,7 +242,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Obtainemployment.Controllers
             enterpriseInfo.EntNature = jsonStr.EntNature;
             enterpriseInfo.EntScale = jsonStr.EntScale;
             enterpriseInfo.EntWelfare = jsonStr.EntWelfare;
-            enterpriseInfo.IsDel = false;
+            enterpriseInfo.IsDel = jsonStr.close;
             enterpriseInfo.Remark = jsonStr.Remark;
             enterpriseInfo.CooData = DateTime.Now;
             enterpriseInfo.EntContacts = jsonStr.EntContacts;
