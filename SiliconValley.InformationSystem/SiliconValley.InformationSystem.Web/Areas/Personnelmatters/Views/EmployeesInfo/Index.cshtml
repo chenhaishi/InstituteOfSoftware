@@ -128,6 +128,7 @@
                             <button class="layui-btn layui-btn-sm headbtn" lay-event="BatchExport"><i class="layui-icon layui-icon-upload-drag"></i>excel批量导出</button>
                             @*<a href="/Personnelmatters/EmployeesInfo/EmpInfoToExcel" class="layui-btn"><i class="layui-icon">&#xe601;</i>批量导出</a>*@
                             <button class="layui-btn layui-btn-sm headbtn" lay-event="DeptAndPositionOperation"><i class="layui-icon layui-icon-app"></i>部门及岗位管理</button>
+                           <button class="layui-btn layui-btn-sm headbtn" lay-event="AddressUpload"><i class="layui-icon layui-icon-upload-drag"></i>excel导入地址信息</button>
 
                         }
                     }
@@ -343,6 +344,7 @@
                         , { field: 'Position', title: '所属岗位', width: 110, sort: true }
                         , { field: 'Phone', title: '电话号码', sort: true, width: 110, edit: 'text' }
                         , { field: 'Sex', title: '性别', sort: true, width: 90, templet: '#switchTp2', unresize: true }
+                        //, { field: 'Sex', title: '性别', sort: true, width: 90, hide: true }
                         , { field: 'IdCardNum', title: '身份证号码', sort: true, width: 120, edit: 'text' }
                         , { field: 'EntryTime', title: '入职时间', sort: true, width: 110, templet: function (d) { return GetYMD(d.EntryTime) } }
                         , { field: 'PositiveDate', title: '转正日期', sort: true, width: 110, templet: function (d) { return GetYMD(d.PositiveDate) } }
@@ -391,6 +393,9 @@
                         break;
                     case 'DeptAndPositionOperation':
                         DeptAndPositionOperation();
+                        break;
+                    case 'AddressUpload':
+                        AddressUpload();
                         break;
                 };
             });
@@ -808,7 +813,21 @@
 
             })
         }
+        //导入地址信息
+        function AddressUpload() {
+            layui.use(['layer'], function (args) {
+                var layer = layui.layer;      //layui对象
 
+                layer.open({
+                    type: 2
+                    , area: ["800px", "500px"]
+                    , title: "导入地址信息"
+                    , content: '/Personnelmatters/EmployeesInfo/AddressUpload'
+                    , anim: 2
+                });
+
+            })
+        }
        
         //部门和岗位的管理
         function DeptAndPositionOperation() {
