@@ -2125,7 +2125,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
         /// <returns></returns>
 
         [HttpPost]
-        public ActionResult CreateHeadMasterSurveyConfig(int classnumber)
+        public ActionResult CreateHeadMasterSurveyConfig(int classnumber,DateTime riqi)
         {
 
                AjaxResult result = new AjaxResult();
@@ -2133,7 +2133,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 var headclass  = db_headclass.GetList().Where(d => d.IsDelete == false && d.ClassID == classnumber).FirstOrDefault();
                var master = db_headmaster.GetList().Where(d => d.ID == headclass.LeaderID).FirstOrDefault();
                var user = db_emp.GetInfoByEmpID(master.informatiees_Id);
-                 var date = DateTime.Now;
+                 var date = riqi;
                 var templist =  db_survey.satisficingConfigs().Where(d => d.EmployeeId == user.EmployeeId && DateTime.Parse(d.CreateTime.ToString()).Year == date.Year && DateTime.Parse(d.CreateTime.ToString()).Month == date.Month && d.ClassNumber == classnumber).ToList();
                 if (templist.Count != 0)
                 {
@@ -2145,7 +2145,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 }
                 SatisficingConfig satisficingConfig = new SatisficingConfig();
                 satisficingConfig.ClassNumber = classnumber;
-                satisficingConfig.CreateTime = DateTime.Now;
+                satisficingConfig.CreateTime = riqi;
                 satisficingConfig.CurriculumID = null;
                 satisficingConfig.EmployeeId = user.EmployeeId;
                 satisficingConfig.IsDel = false;
@@ -2324,17 +2324,18 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
         /// <returns></returns>
 
         [HttpPost]
-        public ActionResult CreateTeacherSurveyConfig(int classnumber, int Curriculum,string laoshi,string yuwen,string shuxue,string yingyu)
+        public ActionResult CreateTeacherSurveyConfig(int classnumber, int Curriculum,string laoshi,string yuwen,string shuxue,string yingyu,DateTime riqi)
         {
 
             AjaxResult result = new AjaxResult();
             try
             {
                 Base_UserModel user = Base_UserBusiness.GetCurrentUser();
-                BaseBusiness<ClassSchedule> classdb = new BaseBusiness<ClassSchedule>();
+                //BaseBusiness<ClassSchedule> classdb = new BaseBusiness<ClassSchedule>();
                 //查出评价班级
-                var classlisttemp = classdb.GetList().Where(d => d.IsDelete == false && d.id == classnumber).FirstOrDefault().ClassNumber;
-                var templist = db_survey.satisficingConfigs().Where(d => d.IsDel == false && d.EmployeeId == laoshi && d.ClassNumber == classnumber).ToList();
+                //var classlisttemp = classdb.GetList().Where(d => d.IsDelete == false && d.id == classnumber).FirstOrDefault().ClassNumber;
+                var date = riqi;
+                var templist = db_survey.satisficingConfigs().Where(d => d.IsDel == false && d.EmployeeId == laoshi && d.ClassNumber == classnumber && DateTime.Parse(d.CreateTime.ToString()).Year == date.Year && DateTime.Parse(d.CreateTime.ToString()).Month == date.Month).ToList();
                  if (templist.Count !=0)
                 {
                     //已经存在
@@ -2345,7 +2346,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 }
                 SatisficingConfig satisficingConfig = new SatisficingConfig();
                 satisficingConfig.ClassNumber = classnumber;
-                satisficingConfig.CreateTime = DateTime.Now;
+                satisficingConfig.CreateTime = riqi;
                 satisficingConfig.CurriculumID = Curriculum;
                 satisficingConfig.EmployeeId = laoshi;
                 satisficingConfig.IsDel = false;
@@ -2362,17 +2363,17 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 satisficingConfig.CutoffDate = DateTime.Now.AddHours(int.Parse(defaultTime));
                 db_survey.AddSatisficingConfig(satisficingConfig);
                 //生成班主任的满意度调查问卷
-                CreateHeadMasterSurveyConfig(classnumber);
+                CreateHeadMasterSurveyConfig(classnumber,riqi);
                 //生成食堂满意度问卷
-                CanteenQuestionnaire(classnumber);
+                CanteenQuestionnaire(classnumber,riqi);
                 //生成语文老师满意度问卷
                 //生成数学老师满意度问卷
                 //生成英语老师满意度问卷
                 if (yuwen != null && shuxue != null && yingyu != null)
                 {
-                    ChineseSatisfaction(classnumber,yuwen);
-                    MathematicsSatisfaction(classnumber, shuxue);
-                    EnglishSatisfaction(classnumber, yingyu);
+                    ChineseSatisfaction(classnumber,yuwen,riqi);
+                    MathematicsSatisfaction(classnumber, shuxue,riqi);
+                    EnglishSatisfaction(classnumber, yingyu,riqi);
                 }
 
                 result.Data = null;
@@ -2396,15 +2397,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
         /// 生成食堂满意度问卷
         /// </summary>
         /// <returns></returns>
-        public ActionResult CanteenQuestionnaire(int classnumber)
+        public ActionResult CanteenQuestionnaire(int classnumber,DateTime riqi)
         {
             AjaxResult result = new AjaxResult();
             Base_UserModel user = Base_UserBusiness.GetCurrentUser();
-            BaseBusiness<ClassSchedule> classdb = new BaseBusiness<ClassSchedule>();
-            //查出评价班级
-            var classlisttemp = classdb.GetList().Where(d => d.IsDelete == false && d.id == classnumber).FirstOrDefault().ClassNumber;
+            //BaseBusiness<ClassSchedule> classdb = new BaseBusiness<ClassSchedule>();
+            ////查出评价班级
+            //var classlisttemp = classdb.GetList().Where(d => d.IsDelete == false && d.id == classnumber).FirstOrDefault().ClassNumber;
             //查出这个月这个班的食堂满意度有没有生成
-            var templist = db_survey.satisficingConfigs().Where(d => d.IsDel == false && d.EmployeeId == null && d.ClassNumber == classnumber && d.Isitacanteen == true).ToList();
+            var date = riqi;
+            var templist = db_survey.satisficingConfigs().Where(d => d.IsDel == false && d.EmployeeId == null && d.ClassNumber == classnumber && d.Isitacanteen == true && DateTime.Parse(d.CreateTime.ToString()).Year == date.Year && DateTime.Parse(d.CreateTime.ToString()).Month == date.Month).ToList();
             if (templist.Count != 0)
             {
                 //已经存在
@@ -2415,7 +2417,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
             }
             SatisficingConfig satisficingConfig = new SatisficingConfig();
             satisficingConfig.ClassNumber = classnumber;
-            satisficingConfig.CreateTime = DateTime.Now;
+            satisficingConfig.CreateTime = riqi;
             satisficingConfig.CurriculumID = null;
             satisficingConfig.EmployeeId = null;
             satisficingConfig.IsDel = false;
@@ -2437,15 +2439,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
         /// 语文老师满意度问卷
         /// </summary>
         /// <returns></returns>
-        public ActionResult ChineseSatisfaction(int classnumber,string yuwu)
+        public ActionResult ChineseSatisfaction(int classnumber,string yuwu,DateTime riqi)
         {
             AjaxResult result = new AjaxResult();
             Base_UserModel user = Base_UserBusiness.GetCurrentUser();
-            BaseBusiness<ClassSchedule> classdb = new BaseBusiness<ClassSchedule>();
-            //查出评价班级
-            var classlisttemp = classdb.GetList().Where(d => d.IsDelete == false && d.id == classnumber).FirstOrDefault().ClassNumber;
+            //BaseBusiness<ClassSchedule> classdb = new BaseBusiness<ClassSchedule>();
+            ////查出评价班级
+            //var classlisttemp = classdb.GetList().Where(d => d.IsDelete == false && d.id == classnumber).FirstOrDefault().ClassNumber;
             //查出这个月这个班的食堂满意度有没有生成
-            var templist = db_survey.satisficingConfigs().Where(d => d.IsDel == false && d.EmployeeId == null && d.ClassNumber == classnumber && d.Isitayuwen == true).ToList();
+            var date = riqi;
+            var templist = db_survey.satisficingConfigs().Where(d => d.IsDel == false && d.EmployeeId == null && d.ClassNumber == classnumber && d.Isitayuwen == true && DateTime.Parse(d.CreateTime.ToString()).Year == date.Year && DateTime.Parse(d.CreateTime.ToString()).Month == date.Month).ToList();
             if (templist.Count != 0)
             {
                 //已经存在
@@ -2456,7 +2459,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
             }
             SatisficingConfig satisficingConfig = new SatisficingConfig();
             satisficingConfig.ClassNumber = classnumber;
-            satisficingConfig.CreateTime = DateTime.Now;
+            satisficingConfig.CreateTime = riqi;
             satisficingConfig.CurriculumID = 8;
             satisficingConfig.EmployeeId = yuwu;
             satisficingConfig.IsDel = false;
@@ -2478,15 +2481,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
         /// 数学老师满意度问卷
         /// </summary>
         /// <returns></returns>
-        public ActionResult MathematicsSatisfaction(int classnumber,string shuxue)
+        public ActionResult MathematicsSatisfaction(int classnumber,string shuxue,DateTime riqi)
         {
             AjaxResult result = new AjaxResult();
             Base_UserModel user = Base_UserBusiness.GetCurrentUser();
-            BaseBusiness<ClassSchedule> classdb = new BaseBusiness<ClassSchedule>();
-            //查出评价班级
-            var classlisttemp = classdb.GetList().Where(d => d.IsDelete == false && d.id == classnumber).FirstOrDefault().ClassNumber;
+            //BaseBusiness<ClassSchedule> classdb = new BaseBusiness<ClassSchedule>();
+            ////查出评价班级
+            //var classlisttemp = classdb.GetList().Where(d => d.IsDelete == false && d.id == classnumber).FirstOrDefault().ClassNumber;
             //查出这个月这个班的食堂满意度有没有生成
-            var templist = db_survey.satisficingConfigs().Where(d => d.IsDel == false && d.EmployeeId == null && d.ClassNumber == classnumber && d.isitashuxue == true).ToList();
+            var date = riqi;
+            var templist = db_survey.satisficingConfigs().Where(d => d.IsDel == false && d.EmployeeId == null && d.ClassNumber == classnumber && d.isitashuxue == true && DateTime.Parse(d.CreateTime.ToString()).Year == date.Year && DateTime.Parse(d.CreateTime.ToString()).Month == date.Month).ToList();
             if (templist.Count != 0)
             {
                 //已经存在
@@ -2497,7 +2501,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
             }
             SatisficingConfig satisficingConfig = new SatisficingConfig();
             satisficingConfig.ClassNumber = classnumber;
-            satisficingConfig.CreateTime = DateTime.Now;
+            satisficingConfig.CreateTime = riqi;
             satisficingConfig.CurriculumID = 9;
             satisficingConfig.EmployeeId = shuxue;
             satisficingConfig.IsDel = false;
@@ -2519,15 +2523,16 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
         /// 英语老师满意度问卷
         /// </summary>
         /// <returns></returns>
-        public ActionResult EnglishSatisfaction(int classnumber,string yingyu)
+        public ActionResult EnglishSatisfaction(int classnumber,string yingyu,DateTime riqi)
         {
             AjaxResult result = new AjaxResult();
             Base_UserModel user = Base_UserBusiness.GetCurrentUser();
-            BaseBusiness<ClassSchedule> classdb = new BaseBusiness<ClassSchedule>();
-            //查出评价班级
-            var classlisttemp = classdb.GetList().Where(d => d.IsDelete == false && d.id == classnumber).FirstOrDefault().ClassNumber;
+            //BaseBusiness<ClassSchedule> classdb = new BaseBusiness<ClassSchedule>();
+            ////查出评价班级
+            //var classlisttemp = classdb.GetList().Where(d => d.IsDelete == false && d.id == classnumber).FirstOrDefault().ClassNumber;
             //查出这个月这个班的食堂满意度有没有生成
-            var templist = db_survey.satisficingConfigs().Where(d => d.IsDel == false && d.EmployeeId == null && d.ClassNumber == classnumber && d.isitayingyu == true).ToList();
+            var date = riqi;
+            var templist = db_survey.satisficingConfigs().Where(d => d.IsDel == false && d.EmployeeId == null && d.ClassNumber == classnumber && d.isitayingyu == true && DateTime.Parse(d.CreateTime.ToString()).Year == date.Year && DateTime.Parse(d.CreateTime.ToString()).Month == date.Month).ToList();
             if (templist.Count != 0)
             {
                 //已经存在
@@ -2538,7 +2543,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
             }
             SatisficingConfig satisficingConfig = new SatisficingConfig();
             satisficingConfig.ClassNumber = classnumber;
-            satisficingConfig.CreateTime = DateTime.Now;
+            satisficingConfig.CreateTime = riqi;
             satisficingConfig.CurriculumID = 10;
             satisficingConfig.EmployeeId = yingyu;
             satisficingConfig.IsDel = false;
