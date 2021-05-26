@@ -2123,6 +2123,7 @@ namespace SiliconValley.InformationSystem.Business.StudentmanagementBusinsess
         /// </summary>
         /// <param name="Studentid">学号</param>
         /// <returns></returns>
+        /// 
         public decimal PreentryfeeFinet(string Studentid)
         {
             var x = Preentryfeebusenn.GetList().Where(a => a.keeponrecordid == studentInformationBusiness.GetEntity(Studentid).StudentPutOnRecord_Id && a.IsDit == false && a.Refundornot == null).ToList();

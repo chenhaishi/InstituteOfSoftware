@@ -9,20 +9,22 @@
 <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
 <style>
     .grid-demo-bg1 {
-        border: 1px solid #f00;
+        border: 1px solid #E6E6E6;
         height: 150px;
         /*position: absolute;*/
         text-align: center;
         line-height: 150px;
+        font-size: 18px;
     }
 
     .grid-demo-bg2 {
-        border: 1px solid #f00;
+        font-size: 18px;
+        /*border: 1px solid #f00;*/
         height: 600px;
     }
 
     .grid-demo-bg1 {
-        background-color: #F2F2F2;
+        background-color: #fff;
     }
 
         .grid-demo-bg1:hover {
@@ -30,28 +32,67 @@
         }
 
     .ab-1 {
-        border: 1px solid #f00;
+        /*border: 1px solid #f00;*/
         text-align: center;
         line-height: 80px;
         height: 50%;
     }
 
     .ab-2 {
-        border: 1px solid #f00;
+        /*border: 1px solid #f00;*/
         text-align: center;
         line-height: 80px;
         height: 50%;
     }
 
+    #maxDiv {
+        overflow: auto;
+        height:683px;
+    }
+
+    .yidong {
+        /*border: 1px solid #f00;*/
+        height: 180px;
+        text-align: center;
+        letter-spacing: 5px;
+        line-height: 50px
+    }
+
+    .banji {
+        /*border: 1px solid #f00;*/
+        text-align: center;
+        line-height:100px;
+        height: 100px;
+    }
+
+    .xiangmu {
+        /*border: 1px solid #f00;*/
+        text-align: center;
+        line-height: 100px;
+        height: 100px;
+    }
+
+    .gongyu {
+        /*border: 1px solid #f00;*/
+        text-align: center;
+        line-height: 100px;
+        height: 100px;
+    }
+    a {
+        color: black;
+    }
+        a:hover {
+            color: #00C6D7;
+        }
 </style>
 
 
 
 
-<div style="background-color: #00C6D7; padding: 10px 10px 10px 15px; border-bottom: 1px solid #ebeef5; display: block; font-size: 20px;">
-    数据统计
-</div>
 <div class="layui-row">
+    <div style="background-color: #00C6D7; padding: 10px 10px 10px 15px; border-bottom: 1px solid #ebeef5; display: block; font-size: 20px;color:white">
+        数据统计
+    </div>
     <div class="layui-col-sm2">
         <div class="grid-demo grid-demo-bg1"><a href="#">在校人数总计:1500人</a></div>
     </div>
@@ -85,94 +126,180 @@
 
 <div class="layui-row">
     <div class="layui-col-sm5">
-        <div class="grid-demo grid-demo-bg2" id="bin_tu">
-            @*<ul class="flow-default" id="LAY_demo1"></ul>*@
+        <div class="layui-bg-gray" style="padding: 15px;">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-card">
+                    <div class="layui-card-header">就业部企业访问数统计</div>
+                    <div class="layui-card-body">
+                        <div class="grid-demo grid-demo-bg2" id="bin_tu">
+                            @*<ul class="flow-default" id="LAY_demo1"></ul>*@
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+        
     </div>
     <div class="layui-col-sm5">
-        <div class="grid-demo grid-demo-bg2" id="mian"></div>
+        <div class="layui-bg-gray" style="padding: 15px;">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-card">
+                    <div class="layui-card-header">湖南硅谷阶段升学数据分析</div>
+                    <div class="layui-card-body">
+                        <div class="grid-demo grid-demo-bg2" id="mian"></div>
+                        
+                    
+                    </div>
+                </div>
+            </div>
+        </div>
+       
     </div>
-    <div class="layui-col-sm2">
-        <div class="grid-demo grid-demo-bg2">25%</div>
-    </div>
+            <div class="layui-col-sm2" style="padding:7px;">
+                <div class="grid-demo grid-demo-bg2" id="maxDiv">
 
-</div>
+                    <div class="layui-bg-gray" style="padding: 10px;">
+                        <div class="layui-row layui-col-space15">
+                            <div class="layui-card">
+                                <div class="layui-card-header">学员异动数据分析</div>
+                                <div class="layui-card-body">
+                                    <div class="yidong">
+                                        <div><a href="#">开除:50人</a></div>
+                                        <div><a href="#">退学:20人</a></div>
+                                        <div><a href="#">休学:50人</a></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-<script>
-    var myChart = echarts.init(document.getElementById('mian'));
-    option = {
-        tooltip: {
-            trigger: 'axis',
-            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
-                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-            }
-        },
-        grid: {
-            left: '3%',
-            right: '4%',
-            bottom: '3%',
-            containLabel: true
-        },
-        xAxis: [
-            {
-                type: 'category',
-                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                axisTick: {
-                    alignWithLabel: true
-                }
-            }
-        ],
-        yAxis: [
-            {
-                type: 'value'
-            }
-        ],
-        series: [
-            {
-                name: '直接访问',
-                type: 'bar',
-                barWidth: '60%',
-                data: [10, 52, 200, 334, 390, 330, 220]
-            }
-        ]
-    };
-    myChart.setOption(option);
-</script>
-<script>
-    var myChart = echarts.init(document.getElementById('bin_tu'));
-   var option = {
-        title: {
-            left: 'center'
-        },
-        tooltip: {
-            trigger: 'item'
-        },
-        legend: {
-            orient: 'vertical',
-            left: 'left',
-        },
-        series: [
-            {
-                name: '访问来源',
-                type: 'pie',
-                radius: '50%',
-                data: [
-                    { value: 1048, name: '搜索引擎' },
-                    { value: 735, name: '直接访问' },
-                    { value: 580, name: '邮件营销' },
-                    { value: 484, name: '联盟广告' },
-                    { value: 300, name: '视频广告' }
-                ],
-                emphasis: {
-                    itemStyle: {
-                        shadowBlur: 10,
-                        shadowOffsetX: 0,
-                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    </div>
+                    <div class="layui-bg-gray" style="padding: 10px;">
+                        <div class="layui-row layui-col-space15">
+                            <div class="layui-card">
+                                <div class="layui-card-header">学院班级总数量</div>
+                                <div class="layui-card-body">
+                                    <div class="banji">
+                                        <div class="banji">
+                                            <div><a href="#">班级总计:50班级</a></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="layui-bg-gray" style="padding: 10px;">
+                        <div class="layui-row layui-col-space15">
+                            <div class="layui-card">
+                                <div class="layui-card-header">就业城市公寓总数量</div>
+                                <div class="layui-card-body">
+                                    <div class="banji">
+                                        <div class="gongyu">
+                                            <div><a href="#">公寓总计:50个</a></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="layui-bg-gray" style="padding: 10px;">
+                        <div class="layui-row layui-col-space15">
+                            <div class="layui-card">
+                                <div class="layui-card-header">学院项目答辩总数量</div>
+                                <div class="layui-card-body">
+                                    <div class="banji">
+                                        <div class="xiangmu">
+                                            <div><a href="#">项目答辩总计:50场</a></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+
+        <script>
+            var myChart = echarts.init(document.getElementById('mian'));
+            option = {
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                        type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
                     }
-                }
-            }
-        ]
-    };
-    myChart.setOption(option);
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: [
+                    {
+                        type: 'category',
+                        data: ['Y1', 'Ca', 'S1', 'S2', 'S3'],
+                        axisTick: {
+                            alignWithLabel: true
+                        }
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value'
+                    }
+                ],
+                series: [
+                    {
+                        name: '升学率',
+                        type: 'bar',
+                        barWidth: '60%',
+                        data: [10, 52, 20, 34, 50, 50, 20]
+                    }
+                ]
+            };
+            myChart.setOption(option);
+        </script>
+        <script>
+            var myChart = echarts.init(document.getElementById('bin_tu'));
+            var option = {
+                title: {
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item'
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left',
+                },
+                series: [
+                    {
+                        name: '企业数据访问量',
+                        type: 'pie',
+                        radius: '50%',
+                        data: [
+                            { value: 1048, name: '周炯' },
+                            { value: 735, name: '杨雪' },
+                            { value: 580, name: '何强' },
+                            { value: 484, name: '石一磊' },
+                            { value: 300, name: '周峰' }
+                        ],
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+            myChart.setOption(option);
 
-</script>
+        </script>
