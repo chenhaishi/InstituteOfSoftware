@@ -57,6 +57,8 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         public CandidateInfoBusiness Candi_Entity = new CandidateInfoBusiness();
         public CoursewaremakingBusiness Courseware_Entity = new CoursewaremakingBusiness();
         public BaseBusiness<InternalTrainingCost> InternalTraining = new BaseBusiness<InternalTrainingCost>();
+
+        public BaseBusiness<TeacherNight> TeacherNight_Entity = new BaseBusiness<TeacherNight>();
         public ClassTimeBusiness ClassTime_Entity = new ClassTimeBusiness();
         public Staff_Cost_StatisticssBusiness()
         {
@@ -295,8 +297,8 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 }
 
 
-                #region//计算值班费
-                //查询当年 年月的值班数据
+                #region//计算值班费  班主任及教员值班计算
+                //查询当年 年月的值班数据   教员值班
                 string TeacherAddsql = @"select * from TeacherAddorBeonDutyView  where YEAR(Anpaidate)=" + dt.Year + "" +
                     " and Month(Anpaidate)=" + dt.Month + " and IsDels=0";
                 List<TeacherAddorBeonDutyView> TearcherAdd_List = teacherAddorBeonDutyView_Entity.GetListBySql<TeacherAddorBeonDutyView>(TeacherAddsql);
@@ -321,10 +323,23 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                         Duty_fee += 80;
                     }
                 }
-                #endregion
 
-                #region//计算监考费
-                int InvigilationCount = 0;
+
+                //班主任值班
+                if (EmployeesInfoManage_Entity.GetDeptByEmpid(Emp_List[i].EmployeeId).DeptName.Contains("教质部"))
+                {
+                    string TearcherNightsq = "select * from TeacherNightView where Tearcher_Id = "+ Emp_List[i].EmployeeId + " and YEAR(OrwatchDate)="+dt.Year+" and MONTH(OrwatchDate)="+dt.Month+ " and TypeName='班主任晚自习' and IsDelete=0";
+                    List<TeacherNight> TeacherNightList = TeacherNight_Entity.GetListBySql<TeacherNight>(TearcherNightsq);
+                    Duty_fee += TeacherNightList.Count * 50;
+
+                    string TearcherNightsq1 = "select * from TeacherNightView where Tearcher_Id = " + Emp_List[i].EmployeeId + " and YEAR(OrwatchDate)=" + dt.Year + " and MONTH(OrwatchDate)=" + dt.Month + " and TypeName='周末值班' and IsDelete=0";
+                    List<TeacherNight> TeacherNightList1 = TeacherNight_Entity.GetListBySql<TeacherNight>(TearcherNightsq1);
+                    Duty_fee += TeacherNightList1.Count * 100;
+                } 
+                    #endregion
+
+                    #region//计算监考费
+                    int InvigilationCount = 0;
                 string ExaminationRoomSql = "select * from ExaminationRoom where Invigilator1 = '" + Emp_List[i].EmployeeId + "' or Invigilator2='" + Emp_List[i].EmployeeId + "'";
                 List<ExaminationRoom> ExamRoomList = ExaminationRoom_Entity.GetListBySql<ExaminationRoom>(ExaminationRoomSql);
                 for (int t = 0; t < ExamRoomList.Count; t++)
