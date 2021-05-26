@@ -248,6 +248,7 @@
     <Compile Include="Areas\Courseware\CoursewareAreaRegistration.cs" />
     <Compile Include="Areas\DormitoryMaintenance\Controllers\DormitoryDepositController.cs" />
     <Compile Include="Areas\DormitoryMaintenance\Controllers\DormitoryMantainPriceController.cs" />
+    <Compile Include="Areas\DormitoryMaintenance\Controllers\StuApartmentController.cs" />
     <Compile Include="Areas\DormitoryMaintenance\DormitoryMaintenanceAreaRegistration.cs" />
     <Compile Include="Areas\Dormitory\Controllers\BasicsController.cs" />
     <Compile Include="Areas\Dormitory\Controllers\DormitoryInfoController.cs" />
@@ -5408,6 +5409,7 @@
     <Folder Include="Areas\Courseware\首页\word文档\Y1\" />
     <Folder Include="Areas\DormitoryMaintenance\Models\" />
     <Folder Include="Areas\DormitoryMaintenance\Views\Shared\" />
+    <Folder Include="Areas\DormitoryMaintenance\Views\StuApartment\" />
     <Folder Include="Areas\Educational\Models\" />
     <Folder Include="Areas\Educational\Views\CheckGoods\" />
     <Folder Include="Areas\Educational\Views\Check\" />
