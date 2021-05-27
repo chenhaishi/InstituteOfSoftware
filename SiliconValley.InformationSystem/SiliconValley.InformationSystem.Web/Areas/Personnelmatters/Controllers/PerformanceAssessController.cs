@@ -347,7 +347,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         {
             string rr = Server.MapPath("/uploadXLSXfile/Template/绩效模板.xls");  //获取下载文件的路径         
             FileStream stream = new FileStream(rr, FileMode.Open);
-            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", Server.UrlEncode("绩效模板.xlsx"));
+            return File(stream, "application/vnd.ms-excel", Server.UrlEncode("绩效模板.xls"));
         }
         public ActionResult AssessmentTimePeriodQuery(string  empid)
         {

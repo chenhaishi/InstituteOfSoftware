@@ -532,9 +532,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         /// <returns></returns>        
         public FileStreamResult DownFile()
         {
-            string rr = Server.MapPath("/uploadXLSXfile/Template/EmpInfoTemplate.xlsx");  //获取下载文件的路径         
+            string rr = Server.MapPath("/uploadXLSXfile/Template/EmpInfoTemplate.xls");  //获取下载文件的路径         
             FileStream stream = new FileStream(rr, FileMode.Open);
-            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", Server.UrlEncode("ExcleTemplate.xlsx"));
+            return File(stream, "application/vnd.ms-excel", Server.UrlEncode("ExcleTemplate.xls"));
         }
         #endregion
 
@@ -1473,9 +1473,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         /// <returns></returns>
         public FileStreamResult AddressDownFile()
         {
-            string rr = Server.MapPath("/uploadXLSXfile/Template/绩效模板.xls");  //获取下载文件的路径         
+            string rr = Server.MapPath("/uploadXLSXfile/Template/AddressInformation.xls");  //获取下载文件的路径         
             FileStream stream = new FileStream(rr, FileMode.Open);
-            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", Server.UrlEncode("绩效模板.xlsx"));
+            return File(stream, "application/vnd.ms-excel", Server.UrlEncode("AddressInformation.xls"));
         }
     }
 }
