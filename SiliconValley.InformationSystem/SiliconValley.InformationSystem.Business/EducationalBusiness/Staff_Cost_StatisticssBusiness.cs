@@ -82,27 +82,28 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         /// <param name="dt">日期</param>
         /// <param name="WorkDay">工作日</param>
         /// <returns></returns>
-        public List<Staff_CostView> CostTimeFee(List<EmployeesInfo> Emp_List,DateTime dt, int WorkDay)
+        public List<Staff_CostView> CostTimeFee(List<EmployeesInfo> Emp_List, DateTime dt, int WorkDay)
         {
             List<Staff_CostView> staff_list = new List<Staff_CostView>();
 
             decimal? Cost_fee = 0;
             int QuanDay = 0;//全天课天数
-            
+
             int Duty_fee = 0;//值班费
             int Invigilation_fee = 0;//监考费
             int Marking_fee = 0;//阅卷费
             int Super_class = 0;//超带班
             int Internal_training_fee = 0;//内训费
             int RD_fee = 0;//研发费
-            
+
 
             for (int i = 0; i < Emp_List.Count; i++)
             {
                 Department d = db_emp.GetDeptByEmpid(Emp_List[i].EmployeeId);
                 int ClassTime = 0;
-                if (d.DeptName.Contains("教学")) {
-                     ClassTime = ClassTime_Entity.GetList().Where(a => a.Emp_ID == Emp_List[i].EmployeeId && a.ClassTimeState == 1).FirstOrDefault().ClassTime;//底课时
+                if (d.DeptName.Contains("教学"))
+                {
+                    ClassTime = ClassTime_Entity.GetList().Where(a => a.Emp_ID == Emp_List[i].EmployeeId && a.ClassTimeState == 1).FirstOrDefault().ClassTime;//底课时
                 }
                 Staff_CostView staff = new Staff_CostView();
 
@@ -112,7 +113,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 //{
                 //    ClassTime = 40;
                 //}
-                
+
                 string sqlstr = $"select * from Reconcile  where Year(AnPaiDate)={dt.Year} and Month(AnPaiDate) = {dt.Month} and EmployeesInfo_Id ={ Emp_List[i].EmployeeId } and IsDelete = 0";
                 List<Reconcile> mydata = Reconcile_Entity.GetListBySql<Reconcile>(sqlstr).ToList();
 
@@ -159,19 +160,16 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 //    ClassTime = ClassTime * QuanDay / WorkDay;
                 //}
 
-                if (!EmployeesInfoManage_Entity.GetDeptByEmpid(Emp_List[i].EmployeeId).DeptName.Contains("s1、s2教学部"))
-                {
-                    ClassTime = 0;
-                }
 
                 //if (Emp_List[i].EmployeeId == "202005300026") {
                 //    ClassTime = 30;
                 //}
 
-                int  FirstStage = 0;//第一阶段  预科，S1,S2 ---55
-                int  SecondStage = 0;//第二阶段 S3,   ----65
-                int  ThreeStage = 0;//S4 ----70   测试和ui ----65    班级名称中UI和CUI为UI班，TA为测试班
-                int  OtherStage = 0;//其他  语，数，英，职素，班会，军事
+                int FirstStage = 0;//第一阶段  预科，S1,S2 ---55
+                int SecondStage = 0;//第二阶段 S3,   ----65
+                int ThreeStage = 0;//S4 ----70   测试和ui ----65    班级名称中UI和CUI为UI班，TA为测试班
+                int OtherStage = 0;//其他  语，数，英，职素，班会，军事
+                bool IsTrue = false;
                 for (int j = 0; j < ClassGroup.Count; j++)
                 {
                     //判断是否为“前预科”
@@ -195,7 +193,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                     else
                     {
                         //根据课程名称获取第一条数据 && && a.Curriculum_Id != ""
-                        Reconcile reconcile = mydata.Where(a => a.Curriculum_Id == ClassGroup[j].Key && a.IsDelete==false).FirstOrDefault();
+                        Reconcile reconcile = mydata.Where(a => a.Curriculum_Id == ClassGroup[j].Key && a.IsDelete == false).FirstOrDefault();
                         //根据班级id查询单条数据
                         ClassSchedule classSchedule = ClassSchedule_Entity.GetEntity(reconcile.ClassSchedule_Id);
                         //根据课程名称以及阶段id筛选
@@ -210,51 +208,53 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                             !a.CourseName.Contains("军事"))
                             .FirstOrDefault(a => a.CourseName == reconcile.Curriculum_Id && a.Grand_Id == classSchedule.grade_Id);
 
-                        if (curriculum != null) {
-                            
-                        if (curriculum.CourseName.Contains("语文") ||
-                            curriculum.CourseName.Contains("数学") ||
-                            curriculum.CourseName.Contains("英语") ||
-                            curriculum.CourseName.Contains("班会") ||
-                            curriculum.CourseName.Contains("军事"))
-                        {
-                            OtherStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
-                        }
-                        else if (curriculum.CourseName.Contains("职素"))
+                        if (curriculum != null)
                         {
 
-                            int zhisuClassTime = Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
-                            int totalClassTime = (zhisuClassTime / 4) + zhisuClassTime;
-                            OtherStage += totalClassTime;
-                        }
-                        else
-                        {
-                             Grand grand = Grand_Entity.GetEntity(curriculum1.Grand_Id);
-                            if (grand.GrandName.Contains("S1") || grand.GrandName.Contains("S2") || grand.GrandName.Contains("Y1"))
+                            if (curriculum.CourseName.Contains("语文") ||
+                                curriculum.CourseName.Contains("数学") ||
+                                curriculum.CourseName.Contains("英语") ||
+                                curriculum.CourseName.Contains("班会") ||
+                                curriculum.CourseName.Contains("军事"))
                             {
-                                FirstStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
+                                OtherStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
                             }
-                            else if (grand.GrandName.Contains("S3"))
+                            else if (curriculum.CourseName.Contains("职素"))
                             {
-                                SecondStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
+
+                                int zhisuClassTime = Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
+                                int totalClassTime = (zhisuClassTime / 4) + zhisuClassTime;
+                                OtherStage += totalClassTime;
                             }
-                            else if (grand.GrandName.Contains("S4"))
+                            else
                             {
+                                Grand grand = Grand_Entity.GetEntity(curriculum1.Grand_Id);
+                                if (grand.GrandName.Contains("S1") || grand.GrandName.Contains("S2") || grand.GrandName.Contains("Y1"))
+                                {
+                                    FirstStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
+                                }
+                                else if (grand.GrandName.Contains("S3"))
+                                {
+                                    SecondStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
+                                }
+                                else if (grand.GrandName.Contains("S4"))
+                                {
                                     if (classSchedule.ClassNumber.Contains("UI") || classSchedule.ClassNumber.Contains("CUI") || classSchedule.ClassNumber.Contains("TA"))
                                     {
                                         SecondStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
                                     }
-                                    else {
-                                         ThreeStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
+                                    else
+                                    {
+                                        ThreeStage += Reconcile_Entity.GetTeacherClassCount(dt.Year, dt.Month, Emp_List[i].EmployeeId, curriculum.CourseName, true);
                                     }
+                                }
                             }
                         }
-                    }
                     }
                 }
                 //课时费计算总额    //底课时
 
-                List<Reconcile> dabianList = mydata.Where(a=>a.Curriculum_Id == "项目答辩").ToList();//计算项目答辩的课时
+                List<Reconcile> dabianList = mydata.Where(a => a.Curriculum_Id == "项目答辩").ToList();//计算项目答辩的课时
                 for (int k = 0; k < dabianList.Count; k++)
                 {
                     ClassSchedule s = ClassSchedule_Entity.GetEntity(dabianList[k].ClassSchedule_Id);
@@ -262,27 +262,36 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                     {
                         FirstStage += 2;
                     }
-                    else {
+                    else
+                    {
                         SecondStage += 2;
                     }
                 }
 
                 if (FirstStage > 0)
                 {
-
                     FirstStage = FirstStage - ClassTime;
+                    IsTrue = true;
                     Cost_fee += FirstStage * 55;
                 }
 
                 if (SecondStage > 0)
                 {
-                    SecondStage = SecondStage - ClassTime;
+                    if (!IsTrue)
+                    {
+                        SecondStage = SecondStage - ClassTime;
+                    }
+                    
                     Cost_fee += SecondStage * 65;
                 }
 
                 if (ThreeStage > 0)
                 {
-                    ThreeStage = ThreeStage - ClassTime;
+                    if (!IsTrue)
+                    {
+                        ThreeStage = ThreeStage - ClassTime;
+                    }
+                        
                     Cost_fee += ThreeStage * 70;
                 }
 
@@ -328,18 +337,18 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 //班主任值班
                 if (EmployeesInfoManage_Entity.GetDeptByEmpid(Emp_List[i].EmployeeId).DeptName.Contains("教质部"))
                 {
-                    string TearcherNightsq = "select * from TeacherNightView where Tearcher_Id = "+ Emp_List[i].EmployeeId + " and YEAR(OrwatchDate)="+dt.Year+" and MONTH(OrwatchDate)="+dt.Month+ " and TypeName='班主任晚自习' and IsDelete=0";
+                    string TearcherNightsq = "select * from TeacherNightView where Tearcher_Id = " + Emp_List[i].EmployeeId + " and YEAR(OrwatchDate)=" + dt.Year + " and MONTH(OrwatchDate)=" + dt.Month + " and TypeName='班主任晚自习' and IsDelete=0";
                     List<TeacherNight> TeacherNightList = TeacherNight_Entity.GetListBySql<TeacherNight>(TearcherNightsq);
                     Duty_fee += TeacherNightList.Count * 50;
 
                     string TearcherNightsq1 = "select * from TeacherNightView where Tearcher_Id = " + Emp_List[i].EmployeeId + " and YEAR(OrwatchDate)=" + dt.Year + " and MONTH(OrwatchDate)=" + dt.Month + " and TypeName='周末值班' and IsDelete=0";
                     List<TeacherNight> TeacherNightList1 = TeacherNight_Entity.GetListBySql<TeacherNight>(TearcherNightsq1);
                     Duty_fee += TeacherNightList1.Count * 100;
-                } 
-                    #endregion
+                }
+                #endregion
 
-                    #region//计算监考费
-                    int InvigilationCount = 0;
+                #region//计算监考费
+                int InvigilationCount = 0;
                 string ExaminationRoomSql = "select * from ExaminationRoom where Invigilator1 = '" + Emp_List[i].EmployeeId + "' or Invigilator2='" + Emp_List[i].EmployeeId + "'";
                 List<ExaminationRoom> ExamRoomList = ExaminationRoom_Entity.GetListBySql<ExaminationRoom>(ExaminationRoomSql);
                 for (int t = 0; t < ExamRoomList.Count; t++)
@@ -369,11 +378,12 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                         List<CandidateInfo> CandiList = Candi_Entity.GetListBySql<CandidateInfo>(CandiSql);
                         for (int r = 0; r < CandiList.Count; r++)
                         {
-                            if (CandiList[r].Paper != null || CandiList[r].ComputerPaper!=null) {
+                            if (CandiList[r].Paper != null || CandiList[r].ComputerPaper != null)
+                            {
                                 StuCount += 1;
                             }
                         }
-                        
+
                     }
                 }
                 //读取配置文件
@@ -389,7 +399,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 #endregion
 
                 #region////计算教材研发费用
-                
+
                 var PPT_NodeCost = xmlRoot.GetElementsByTagName("PPT_NodeCost")[0].InnerText;
                 var TextBook_NodeCost = xmlRoot.GetElementsByTagName("TextBook_NodeCost")[0].InnerText;
                 string CoursewareSql = "select * from Coursewaremaking where year(submissiontime)=" + dt.Year + " and month(submissiontime)=" + dt.Year + " and RampdpersonID =" + Emp_List[i].EmployeeId + "";
@@ -408,7 +418,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 #endregion
 
                 #region//计算班主任超带班   7-15天  200    15-30天   300  
-                
+
                 int jibenban = 3;  //主任带班2个   班主任带班3个
                 if (EmployeesInfoManage_Entity.GetDeptByEmpid(Emp_List[i].EmployeeId).DeptName.Contains("教质部"))
                 {
@@ -459,10 +469,10 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 #endregion
 
                 #region//计算内训费
-                
+
                 int Internal_count_one = 0;//Y1  S1 S2
                 int Internal_count_two = 0;//Y2 Ca S3 S4
-                string Internalsql = "select * from InternalTrainingCost where Trainer="+Emp_List[i].EmployeeId+" and Year(Time)="+dt.Year+" and MONTH(Time)="+dt.Month+" and IsUsing=0";
+                string Internalsql = "select * from InternalTrainingCost where Trainer=" + Emp_List[i].EmployeeId + " and Year(Time)=" + dt.Year + " and MONTH(Time)=" + dt.Month + " and IsUsing=0";
                 List<InternalTrainingCost> Internallist = InternalTraining.GetListBySql<InternalTrainingCost>(Internalsql);
                 for (int k = 0; k < Internallist.Count; k++)
                 {
@@ -470,7 +480,8 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                     {
                         Internal_count_one += Internallist[k].ClassHours;
                     }
-                    else {
+                    else
+                    {
                         Internal_count_two += Internallist[k].ClassHours;
                     }
                 }
@@ -479,19 +490,23 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
                 int totalmoney = 0;
                 int Class = FirstStage + SecondStage + ThreeStage + OtherStage;
-                if (Cost_fee <= 0) {
+                if (Cost_fee <= 0)
+                {
                     Cost_fee = 0;
                 }
-                if (ClassTime <= 0) {
+                if (ClassTime <= 0)
+                {
                     ClassTime = 0;
                 }
-                if (totalmoney<=0) {
+                if (totalmoney <= 0)
+                {
                     totalmoney = 0;
                 }
-                if (Class <= 0) {
+                if (Class <= 0)
+                {
                     Class = 0;
                 }
-                
+
                 staff.DiClassTime = ClassTime;
                 staff.ClassTime = Class;
                 totalmoney = Convert.ToInt32(Cost_fee) + Duty_fee + Invigilation_fee + Marking_fee + Super_class + Internal_training_fee + RD_fee;
@@ -596,8 +611,8 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             DepartmentBusiness.DepartmentManage tempdb_dep = new DepartmentBusiness.DepartmentManage();
 
             return tempdb_dep.GetDepartments().Where(
-                s => s.DeptName.Contains("教学") 
-                || s.DeptName.Contains("教质") 
+                s => s.DeptName.Contains("教学")
+                || s.DeptName.Contains("教质")
                 || s.DeptName.Contains("教导大队")
                 || s.DeptName.Contains("信息")
                 ).ToList();
@@ -634,12 +649,12 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             Staff_Cost_StatisticesDetailView resultObj = new Staff_Cost_StatisticesDetailView(); //返回值
 
             resultObj.emp = empObj;
-         
+
             resultObj.teachingitems = teachingitems(empObj, date);
-            
+
             //职业素养课，语数外 体育 课时
             resultObj.otherTeaccher_count = teachingitems(empObj, date, "other");
-                
+
             //内训课时
             resultObj.InternalTraining_Count = InternalTraining_Count(empObj);
 
@@ -694,7 +709,8 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
                             //在进行阶段分类
 
-                            resultlist.ForEach(d => {
+                            resultlist.ForEach(d =>
+                            {
 
                                 var item = retulist.Where(x => x.grand == d.Grand).FirstOrDefault();
                                 if (item == null)
@@ -707,7 +723,8 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                                 }
                                 else
                                 {
-                                    retulist.ForEach(c => {
+                                    retulist.ForEach(c =>
+                                    {
 
                                         if (c.grand == d.Grand)
                                         {
@@ -726,7 +743,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
                 if (dep.DeptName.Contains("教学"))
                 {
-                    
+
 
                     BaseBusiness<Teachingtraining> temptedb_achtran = new BaseBusiness<Teachingtraining>();
 
@@ -739,13 +756,14 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
                     var teacher = tempdb_teacher.GetTeachers(isContains_Jiaowu: false, IsNeedDimission: true).Where(d => d.EmployeeId == emp.EmployeeId).FirstOrDefault();
 
-                 
+
                     var resultlist = templist.Where(d => d.Trainee == teacher.TeacherID).ToList();
                     //在进行阶段分类
 
-                    resultlist.ForEach(d=> {
+                    resultlist.ForEach(d =>
+                    {
 
-                       var item = retulist.Where(x => x.grand == d.Grand).FirstOrDefault();
+                        var item = retulist.Where(x => x.grand == d.Grand).FirstOrDefault();
                         if (item == null)
                         {
                             grand_number grand_Number = new grand_number();
@@ -756,7 +774,8 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                         }
                         else
                         {
-                            retulist.ForEach(c => {
+                            retulist.ForEach(c =>
+                            {
 
                                 if (c.grand == d.Grand)
                                 {
@@ -766,7 +785,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                         }
 
                     });
-                  
+
 
                 }
 
@@ -784,7 +803,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             }
             #endregion
 
-            
+
             #region 阅卷份数
             int MarkingNumber()
             {
@@ -921,7 +940,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         /// 判断一个日期是否为节假日
         /// </summary>
         /// <returns></returns>
-        public  bool iSHoliday(string date)
+        public bool iSHoliday(string date)
         {
 
 
@@ -931,7 +950,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             PostVars.Add("d", DateTime.Parse(date).ToShortDateString());//参数
             try
             {
-                byte[] byRemoteInfo =  WebClientObj.UploadValues("http://easybots.cn/api/holiday.php", "POST", PostVars);//请求地址,传参方式,参数集合
+                byte[] byRemoteInfo = WebClientObj.UploadValues("http://easybots.cn/api/holiday.php", "POST", PostVars);//请求地址,传参方式,参数集合
                 string sRemoteInfo = System.Text.Encoding.UTF8.GetString(byRemoteInfo);//获取返回值
                 string result = JObject.Parse(sRemoteInfo)[date].ToString();
                 if (result == "0")
@@ -966,7 +985,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             //responseStream.Dispose();
             return isHoliday;
         }
-        
+
         /// <summary>
         /// 获取工作日的天数
         /// </summary>
@@ -1013,7 +1032,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 return resultlist;
             }
 
-            resultlist = db_exscore.AllExamScores().Where(d=>d.CreateTime!=null).ToList().
+            resultlist = db_exscore.AllExamScores().Where(d => d.CreateTime != null).ToList().
 
                 Where(d => ((DateTime)d.CreateTime).Year == date.Year && ((DateTime)d.CreateTime).Month == date.Month).
 
@@ -1068,8 +1087,8 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
                         dtt = dtt.AddDays(1);
                         continue;
-                        
-                        
+
+
                     }
 
                     if (type == "单休")
@@ -1079,10 +1098,10 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                             dtt = dtt.AddDays(1);
                             num++;
                             continue;
-                            
+
                         }
 
-                        
+
                     }
 
                     if (type == "双休")
@@ -1093,7 +1112,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                             num++;
                             continue;
                         }
-   
+
                     }
 
                     dtt = dtt.AddDays(1);
@@ -1106,20 +1125,20 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
 
         }
-        
+
         /// <summary>
         /// 获取上专业课的课时
         /// </summary>
         /// <param name="emp"></param>
         /// <param name="date"></param>
         /// <returns></returns>
-        public List<TeachingItem> teachingitems(EmployeesInfo emp, DateTime date, string type="skill")
+        public List<TeachingItem> teachingitems(EmployeesInfo emp, DateTime date, string type = "skill")
         {
             //从排课数据里面获取到这个老师上的专业课
             var templist = ScreenReconcile(emp.EmployeeId, date, type: type);
 
             return GetteachingNum();
-            
+
             List<TeachingItem> GetteachingNum()
             {
                 CourseBusiness tempdb_course = new CourseBusiness();
@@ -1138,7 +1157,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                             {
                                 if (type == "skill")
                                 {
-                                    
+
 
                                     if (item.Curse_Id.Contains("12") || item.Curse_Id.Contains("34")) item1.NodeNumber += 2;
 
@@ -1151,7 +1170,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                                     item1.NodeNumber += 2;
 
 
-                                } 
+                                }
                             }
                         }
                     }
@@ -1160,7 +1179,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                     {
                         TeachingItem teachingItem = new TeachingItem();
                         teachingItem.Course = course.CurriculumID;
-                        
+
 
                         if (type == "skill")
                         {
@@ -1175,7 +1194,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                             teachingItem.NodeNumber += 2;
                         }
                         //创建新的
-                       
+
 
                         result.Add(teachingItem);
                     }
@@ -1184,7 +1203,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
                 return result;
             }
-            
+
         }
 
         public bool IsContains(List<TeachingItem> teachingItems, int course)
@@ -1255,7 +1274,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             return result;
 
         }
-        
+
         /// <summary>
         /// 计算底课时
         /// </summary>
@@ -1315,7 +1334,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             }
 
 
-            if(dep.DeptName.Contains("教学部")  && !db_emp.GetPobjById( emp.PositionId).PositionName.Contains("教务")) //****************************教员的底课时计算方式******************************
+            if (dep.DeptName.Contains("教学部") && !db_emp.GetPobjById(emp.PositionId).PositionName.Contains("教务")) //****************************教员的底课时计算方式******************************
             {
                 result = bottomTeacherHours_teacher();
 
@@ -1336,9 +1355,9 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
                     //获取到工作日
 
-                    
 
-                    int workingdateCount = string.IsNullOrEmpty(workingDays.ToString()) ? this.WorkingDate(date):workingDays;
+
+                    int workingdateCount = string.IsNullOrEmpty(workingDays.ToString()) ? this.WorkingDate(date) : workingDays;
 
                     //获取标准底课时
                     var MinimumCourseHours = (float)teacher.MinimumCourseHours;
@@ -1371,7 +1390,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             #endregion
 
         }
-        
+
         //保存详细数据
         public void SaveStaff_CostData(List<Staff_Cost_StatisticesDetailView> data, List<Cose_StatisticsItems> Cost, string filename)
         {
@@ -1382,7 +1401,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
             }
             var workbook = new HSSFWorkbook();
-            
+
             //创建工作区
             var sheet = workbook.CreateSheet("课时费费用详细");
 
@@ -1399,7 +1418,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             #endregion
 
 
-          
+
             HSSFCellStyle ContentcellStyle = (HSSFCellStyle)workbook.CreateCellStyle();
             HSSFFont ContentcellFont = (HSSFFont)workbook.CreateFont();
 
@@ -1473,7 +1492,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
                 leixunlist.ForEach(x =>
                 {
-                    var grand = dbgrand.AllGrand().Where(c=>c.Id == x.grand).FirstOrDefault();
+                    var grand = dbgrand.AllGrand().Where(c => c.Id == x.grand).FirstOrDefault();
 
 
                     if (grand.GrandName.Contains("S1"))
@@ -1521,11 +1540,11 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
                 float otherTeaccher_count = 0;
 
-                d.otherTeaccher_count.ForEach(o=>
+                d.otherTeaccher_count.ForEach(o =>
                 {
                     otherTeaccher_count += o.NodeNumber;
                 });
-                
+
                 CreateCell(row, ContentcellStyle, 12, otherTeaccher_count.ToString());
                 CreateCell(row, ContentcellStyle, 13, d.BottomClassHour.ToString());
                 CreateCell(row, ContentcellStyle, 14, d.SatisfactionScore.ToString());
@@ -1550,7 +1569,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
             stream.Close();
             FileInfo fileinfo = new FileInfo(pathName);
-            
+
             CloudstorageBusiness Bos = new CloudstorageBusiness();
 
             var client = Bos.BosClient();
@@ -1614,7 +1633,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             }
 
         }
-        
+
         /// <summary>
         /// 费用统计
         /// </summary>
@@ -1622,7 +1641,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         /// <param name="date">日期</param>
         public Cose_StatisticsItems Statistics_Cost(Staff_Cost_StatisticesDetailView data)
         {
-           
+
             Cose_StatisticsItems result = new Cose_StatisticsItems();
 
             result.Emp = data.emp;
@@ -1632,7 +1651,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             ///课时费
             result.EachingHourCost = (decimal)this.EachingHourCost(data.teachingitems, data.BottomClassHour, data.SatisfactionScore);
 
-            result.OtherTeachingCost = OtherTeachingCost(data.otherTeaccher_count , data.BottomClassHour);
+            result.OtherTeachingCost = OtherTeachingCost(data.otherTeaccher_count, data.BottomClassHour);
 
             ///值班费
             result.DutyCost = Duty_Cost(data.Duty_Count);
@@ -1650,7 +1669,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             ///
             result.InternalTrainingCost = this.InternalTrainingCost(data.InternalTraining_Count, result.Emp);
 
-              
+
             return result;
         }
 
@@ -1754,9 +1773,9 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             foreach (var item in teachingItems)
             {
 
-                var course = tempdb_course.GetCurriculas().Where(d=>d.CurriculumID == item.Course).FirstOrDefault();
+                var course = tempdb_course.GetCurriculas().Where(d => d.CurriculumID == item.Course).FirstOrDefault();
 
-                var grand = tempdb_grand.AllGrand().Where(d=>d.Id == course.Grand_Id).FirstOrDefault();
+                var grand = tempdb_grand.AllGrand().Where(d => d.Id == course.Grand_Id).FirstOrDefault();
 
                 if (bottomTeacherHours == 0)
                     break;
@@ -1932,7 +1951,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             {
                 int num = 0;
 
-                list.ForEach(d=>
+                list.ForEach(d =>
                 {
                     num += d.number;
                 });
@@ -1952,7 +1971,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
                 list.ForEach(d =>
                 {
-          
+
                     var nodelist = Professionala.ChildNodes;
 
                     foreach (XmlElement item in nodelist)
@@ -1986,13 +2005,13 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         /// <returns></returns>
         public int TeachingMaterial_Node(string empid, DateTime date)
         {
-            
+
             BaseBusiness<Coursewaremaking> tempdbb = new BaseBusiness<Coursewaremaking>();
 
-            var templist = tempdbb.GetList().Where(d=>d.Submissiontime.Year == date.Year && d.Submissiontime.Month == date.Month).ToList().Where(d=>d.RampDpersonID == empid && d.MakingType=="Word").ToList();
+            var templist = tempdbb.GetList().Where(d => d.Submissiontime.Year == date.Year && d.Submissiontime.Month == date.Month).ToList().Where(d => d.RampDpersonID == empid && d.MakingType == "Word").ToList();
 
             return templist == null ? 0 : templist.Count;
-            
+
         }
 
         /// <summary>
@@ -2058,11 +2077,12 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
             CourseBusiness tempdb_course = new CourseBusiness();
 
-            items.ForEach(d=> {
+            items.ForEach(d =>
+            {
 
                 //获取课程费用
-             
-                Curriculum course = tempdb_course.GetCurriculas().Where(x=>x.CurriculumID == d.Course).FirstOrDefault();
+
+                Curriculum course = tempdb_course.GetCurriculas().Where(x => x.CurriculumID == d.Course).FirstOrDefault();
 
                 decimal nodenumber = 0;
 
@@ -2100,12 +2120,12 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 return null;
             }
 
-            
+
             var workbook = new HSSFWorkbook();
 
             //创建工作区
             var sheet = workbook.CreateSheet("费用统计");
-   
+
             #region 表头样式
 
             HSSFCellStyle HeadercellStyle = (HSSFCellStyle)workbook.CreateCellStyle();
@@ -2113,7 +2133,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
             HeadercellStyle.Alignment = HorizontalAlignment.Center;
             HeadercellFont.IsBold = true;
-  
+
             HeadercellStyle.SetFont(HeadercellFont);
 
             #endregion
@@ -2123,7 +2143,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             HSSFCellStyle ContentcellStyle = (HSSFCellStyle)workbook.CreateCellStyle();
             HSSFFont ContentcellFont = (HSSFFont)workbook.CreateFont();
 
-            ContentcellStyle.Alignment = HorizontalAlignment.Center;          
+            ContentcellStyle.Alignment = HorizontalAlignment.Center;
             #endregion
 
             #region 创建表头
@@ -2156,17 +2176,17 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
 
             foreach (var item in data)
             {
-                 //填充数据
+                //填充数据
 
-                 //创建行
-                 HSSFRow contentRow = (HSSFRow)sheet.CreateRow(count);
+                //创建行
+                HSSFRow contentRow = (HSSFRow)sheet.CreateRow(count);
                 contentRow.HeightInPoints = 35;
 
                 //填充单元格
 
                 CreateCell(contentRow, ContentcellStyle, 0, item.Emp.EmpName);
 
-                CreateCell(contentRow,ContentcellStyle, 1, db_emp.GetPobjById(item.Emp.PositionId).PositionName);
+                CreateCell(contentRow, ContentcellStyle, 1, db_emp.GetPobjById(item.Emp.PositionId).PositionName);
 
                 CreateCell(contentRow, ContentcellStyle, 2, item.EachingHourCost.ToString());
 
@@ -2187,11 +2207,11 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 count++;
             }
 
-            string LOACpathName = System.Web.HttpContext.Current.Server.MapPath("/Areas/Educational/CostHistoryFiles/" + fileName+".xls");
+            string LOACpathName = System.Web.HttpContext.Current.Server.MapPath("/Areas/Educational/CostHistoryFiles/" + fileName + ".xls");
 
             string pathName = $"/CostHistoryFiles/{fileName}.xls";
 
-            FileStream stream = new FileStream(LOACpathName, FileMode.Create,FileAccess.ReadWrite);
+            FileStream stream = new FileStream(LOACpathName, FileMode.Create, FileAccess.ReadWrite);
 
             CloudstorageBusiness Bos = new CloudstorageBusiness();
 
@@ -2204,7 +2224,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             var FILEINFO = new FileInfo(LOACpathName);
 
             client.PutObject("xinxihua", pathName, FILEINFO);
-           
+
             workbook.Close();
 
             return pathName;
@@ -2233,14 +2253,14 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
             DirectoryInfo directory = new DirectoryInfo(path);
 
             //获取文件夹下所有文件
-            FileInfo [] files = directory.GetFiles();
+            FileInfo[] files = directory.GetFiles();
 
-            
+
             foreach (var file in files)
             {
                 result.Add(file);
             }
-            
+
             return result;
 
 
