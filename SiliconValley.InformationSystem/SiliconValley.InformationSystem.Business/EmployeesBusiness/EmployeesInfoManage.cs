@@ -612,6 +612,10 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
                     //获取第num行"电话号码"列的数据
                     string phonenum = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(7))) ? null : getrow.GetCell(7).ToString();
                     //获取第num行"性别"列的数据
+                    if (getrow.GetCell(8).CellType == CellType.Formula)
+                    {
+                        getrow.GetCell(8).SetCellType(CellType.String);
+                    }
                     string empsex = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(8))) ? "女" : getrow.GetCell(8).ToString();
                     //获取第num行"年龄"列的数据
                     string empage = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(9))) ? null : getrow.GetCell(9).ToString();
@@ -627,7 +631,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
                     //获取第num行"转正后工资"列的数据（必填）
                     string salary = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(14))) ? null : getrow.GetCell(14).ToString();
                     //获取第num行"学历"列的数据
-                    string education = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(15))) ? "大专" : getrow.GetCell(15).ToString();
+                    string education = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(15))) ? "群众" : getrow.GetCell(15).ToString();
                     //获取第num行"合同起始日期"列的数据
                     string contractStartTime = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(17))) ? null : getrow.GetCell(17).ToString();
                     //获取第num行"合同终止日期"列的数据
@@ -645,7 +649,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
                     //获取第num行"身份证有效期"列的数据
                     string idcardIndate = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(24))) ? null : getrow.GetCell(24).ToString();
                     //获取第num行"政治面貌"列的数据
-                    string politicsStatus = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(25))) ? "党员" : getrow.GetCell(25).ToString();
+                    string politicsStatus = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(25))) ? "群众" : getrow.GetCell(25).ToString();
                     //获取第num行"社保起始月份"列的数据
                     string SSstartTime = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(26))) ? null : getrow.GetCell(26).ToString();
                     //获取第num行"银行卡号"列的数据
@@ -692,12 +696,16 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
                     {
                         empview.contractEndTime = Convert.ToDateTime(contractEndTime);
                     }
+                    if (!string.IsNullOrEmpty(idcardIndate))
+                    {
+                        empview.idcardIndate = Convert.ToDateTime(idcardIndate);
+                    }
                     empview.birthday = birthday;
                     empview.urgentphone = urgentphone;
                     empview.domicileAddress = domicileAddress;
                     empview.address = address;
                     empview.maritalStatus = maritalStatus == "已婚" ? true : false;
-                    empview.idcardIndate = Convert.ToDateTime(idcardIndate);
+                    //empview.idcardIndate = Convert.ToDateTime(idcardIndate);
                     empview.politicsStatus = politicsStatus;
                     if (!string.IsNullOrEmpty(SSstartTime) && !SSstartTime.Equals("/"))
                     {
