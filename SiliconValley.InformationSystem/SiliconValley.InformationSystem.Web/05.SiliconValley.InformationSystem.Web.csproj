@@ -5381,11 +5381,11 @@
     <Content Include="Scripts\laydate\theme\default\font\iconfont.eot" />
     <Content Include="Scripts\laydate\theme\default\font\iconfont.ttf" />
     <Content Include="Scripts\laydate\theme\default\font\iconfont.woff" />
-    <Content Include="uploadXLSXfile\Template\EmpInfoTemplate.xlsx" />
     <Content Include="uploadXLSXfile\Template\AttendenceTemplate.xls" />
     <Content Include="uploadXLSXfile\Template\绩效模板.xls" />
     <Content Include="uploadXLSXfile\Template\OvertimeTemplate.xls" />
     <Content Include="uploadXLSXfile\Template\AddressInformation.xls" />
+    <Content Include="uploadXLSXfile\Template\EmpInfoTemplate.xls" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
