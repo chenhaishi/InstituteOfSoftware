@@ -358,7 +358,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         {
             string rr = Server.MapPath("/uploadXLSXfile/Template/AttendenceTemplate.xls");  //获取下载文件的路径         
             FileStream stream = new FileStream(rr, FileMode.Open);
-            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", Server.UrlEncode("ExcleTemplate.xlsx"));
+            return File(stream, "application/vnd.ms-excel", Server.UrlEncode("ExcleTemplate.xls"));
         }
 
         /// <summary>
@@ -385,7 +385,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
         {
             string rr = Server.MapPath("/uploadXLSXfile/Template/OvertimeTemplate.xls");  //获取下载文件的路径         
             FileStream stream = new FileStream(rr, FileMode.Open);
-            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", Server.UrlEncode("OvertimeTemplate.xlsx"));
+            return File(stream, "application/vnd.ms-excel", Server.UrlEncode("OvertimeTemplate.xls"));
         }
 
         #endregion
