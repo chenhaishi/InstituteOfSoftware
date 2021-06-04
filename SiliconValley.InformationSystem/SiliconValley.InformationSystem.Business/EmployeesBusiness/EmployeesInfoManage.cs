@@ -612,6 +612,10 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
                     //获取第num行"电话号码"列的数据
                     string phonenum = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(7))) ? null : getrow.GetCell(7).ToString();
                     //获取第num行"性别"列的数据
+                    if (getrow.GetCell(8).CellType == CellType.Formula)
+                    {
+                        getrow.GetCell(8).SetCellType(CellType.String);
+                    }
                     string empsex = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(8))) ? "女" : getrow.GetCell(8).ToString();
                     //获取第num行"年龄"列的数据
                     string empage = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(9))) ? null : getrow.GetCell(9).ToString();
@@ -627,7 +631,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
                     //获取第num行"转正后工资"列的数据（必填）
                     string salary = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(14))) ? null : getrow.GetCell(14).ToString();
                     //获取第num行"学历"列的数据
-                    string education = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(15))) ? "大专" : getrow.GetCell(15).ToString();
+                    string education = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(15))) ? "群众" : getrow.GetCell(15).ToString();
                     //获取第num行"合同起始日期"列的数据
                     string contractStartTime = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(17))) ? null : getrow.GetCell(17).ToString();
                     //获取第num行"合同终止日期"列的数据
@@ -645,7 +649,7 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
                     //获取第num行"身份证有效期"列的数据
                     string idcardIndate = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(24))) ? null : getrow.GetCell(24).ToString();
                     //获取第num行"政治面貌"列的数据
-                    string politicsStatus = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(25))) ? "党员" : getrow.GetCell(25).ToString();
+                    string politicsStatus = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(25))) ? "群众" : getrow.GetCell(25).ToString();
                     //获取第num行"社保起始月份"列的数据
                     string SSstartTime = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(26))) ? null : getrow.GetCell(26).ToString();
                     //获取第num行"银行卡号"列的数据
@@ -692,12 +696,16 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
                     {
                         empview.contractEndTime = Convert.ToDateTime(contractEndTime);
                     }
+                    if (!string.IsNullOrEmpty(idcardIndate))
+                    {
+                        empview.idcardIndate = Convert.ToDateTime(idcardIndate);
+                    }
                     empview.birthday = birthday;
                     empview.urgentphone = urgentphone;
                     empview.domicileAddress = domicileAddress;
                     empview.address = address;
                     empview.maritalStatus = maritalStatus == "已婚" ? true : false;
-                    empview.idcardIndate = Convert.ToDateTime(idcardIndate);
+                    //empview.idcardIndate = Convert.ToDateTime(idcardIndate);
                     empview.politicsStatus = politicsStatus;
                     if (!string.IsNullOrEmpty(SSstartTime) && !SSstartTime.Equals("/"))
                     {
@@ -1102,6 +1110,115 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
             }
 
         }
+
+        #region 导入员工地址信息并修改
+        /// <summary>
+        /// 修改地址信息
+        /// </summary>
+        /// <returns></returns>
+        public AjaxResult ExcelImportAddressData(ISheet sheet)
+        {
+            var ajaxresult = new AjaxResult();
+            EmployeesInfoManage manage = new EmployeesInfoManage();
+            List<EmpErrorDataView> emperrorlist = new List<EmpErrorDataView>();
+            int num = 0;
+            try
+            {
+                while (true)
+                {
+                    num++;
+                    var getrow = sheet.GetRow(num);
+                    if (getrow == null)
+                    {
+                        break;
+                    }
+                    string ddid = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(0))) ? null : getrow.GetCell(0).ToString();
+                    string name = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(1))) ? null : getrow.GetCell(1).ToString();
+                    string domicileAddress = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(2))) ? null : getrow.GetCell(2).ToString();
+                    string address = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(3))) ? null : getrow.GetCell(3).ToString();
+
+                    if (string.IsNullOrEmpty(ddid))
+                    {
+                        EmpErrorDataView emperror = new EmpErrorDataView();
+                        emperror.excelId = name;
+                        emperror.errorExplain = "钉钉号为空";
+                        emperrorlist.Add(emperror);
+                        continue;
+                    }
+                    if (!DDidIsExist(int.Parse(ddid)))
+                    {
+                        EmpErrorDataView emperror = new EmpErrorDataView();
+                        emperror.excelId = name;
+                        emperror.errorExplain = "不存在该钉钉号";
+                        emperrorlist.Add(emperror);
+                        continue;
+                    }
+                    //if (string.IsNullOrEmpty(DomicileAddress))
+                    //{
+                    //    DomicileAddress = "";
+                    //}
+                    //if (string.IsNullOrEmpty(Address))
+                    //{
+                    //    Address = "";
+                    //}
+                    //var emp = GetEmpByDDid(int.Parse(ddid));
+                    //emp.DomicileAddress = domicileAddress;
+                    //emp.Address = address;
+                    //this.Update(emp);
+                    this.ExecuteSql("update EmployeesInfo set DomicileAddress='"+domicileAddress+"',Address='"+address+"' where DDAppId="+int.Parse(ddid));
+                }
+
+                ajaxresult = Success();
+                int exceldatasum = num - 1;
+                if (exceldatasum - emperrorlist.Count() == exceldatasum)
+                {//说明没有出错数据，导入的数据全部添加成功
+                    ajaxresult.Success = true;
+                    ajaxresult.ErrorCode = 100;
+                    ajaxresult.Msg = exceldatasum.ToString();
+                    ajaxresult.Data = emperrorlist;
+                }
+                else
+                {//说明有出错数据，导入的数据条数就是导入的数据总数-错误数据总数
+                    ajaxresult.Success = true;
+                    ajaxresult.ErrorCode = 200;
+                    ajaxresult.Msg = (exceldatasum - emperrorlist.Count()).ToString();
+                    ajaxresult.Data = emperrorlist;
+                }
+            }
+            catch (Exception ex)
+            {
+                ajaxresult.Success = false;
+                ajaxresult.ErrorCode = 500;
+                ajaxresult.Msg = ex.Message;
+                ajaxresult.Data = "0";
+            }
+            return ajaxresult;
+        }
+
+        public AjaxResult ImportAddressAataFromExcel(Stream stream, string contentType)
+        {
+            var ajaxresult = new AjaxResult();
+            IWorkbook workbook = null;
+
+            if (contentType == "application/vnd.ms-excel")
+            {
+                workbook = new HSSFWorkbook(stream);
+            }
+
+            if (contentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            {
+                workbook = new XSSFWorkbook(stream);
+            }
+
+            ISheet sheet = workbook.GetSheetAt(0);
+            var result = ExcelImportAddressData(sheet);
+            stream.Close();
+            stream.Dispose();
+            workbook.Close();
+
+            return result;
+        }
+        #endregion
         #endregion
 
         /// <summary>

@@ -192,6 +192,7 @@
                     success: function (successdata) {
                         console.log(successdata);
                         jstungid = successdata.data[0].nodeId;
+                        console.log(jstungid);
                         jsfloorid = successdata.data[0].children[0].nodeId;
                         //可以重载所有基础参数
                         myDTree.reload(
