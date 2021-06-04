@@ -344,7 +344,7 @@
                         , { field: 'Position', title: '所属岗位', width: 110, sort: true }
                         , { field: 'Phone', title: '电话号码', sort: true, width: 110, edit: 'text' }
                         , { field: 'Sex', title: '性别', sort: true, width: 90, templet: '#switchTp2', unresize: true }
-                        //, { field: 'Sex', title: '性别', sort: true, width: 90, hide: true }
+                        , { field: 'Sex', title: '性别', sort: true, width: 90, hide: true }
                         , { field: 'IdCardNum', title: '身份证号码', sort: true, width: 120, edit: 'text' }
                         , { field: 'EntryTime', title: '入职时间', sort: true, width: 110, templet: function (d) { return GetYMD(d.EntryTime) } }
                         , { field: 'PositiveDate', title: '转正日期', sort: true, width: 110, templet: function (d) { return GetYMD(d.PositiveDate) } }
@@ -408,7 +408,7 @@
                     layer.open({
                         type: 2,
                         content: '/Personnelmatters/EmployeesInfo/EditEmp/?id=' + empid
-                        , area: ["950px", "900px"]
+                        , area: ["950px", "920px"]
                         , title: '编辑员工信息'
                         , shade: 0.8
                         , anim: 4
