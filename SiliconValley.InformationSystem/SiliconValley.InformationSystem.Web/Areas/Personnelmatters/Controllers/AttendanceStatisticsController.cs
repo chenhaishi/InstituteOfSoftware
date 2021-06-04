@@ -613,5 +613,35 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
 
             return Json(result, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
+        public  ActionResult Delete()
+        {
+            AjaxResult result = new AjaxResult();
+           AttendanceInfoManage attendance = new AttendanceInfoManage();
+            try
+            {
+                if (!string.IsNullOrEmpty(FirstTime))
+                {
+                    var time = Convert.ToDateTime(FirstTime);
+                    attendance.ExecuteSql("delete from AttendanceInfo where datepart(yyyy,YearAndMonth)='" + time.Year + "' and DATEPART(mm,YearAndMonth)='" + time.Month + "'");
+                    result.Success = true;
+                    result.Msg = "删除成功";
+                }
+                else
+                {
+                    result.Success = false;
+                    result.Msg = "删除失败，未能获取时间";
+                }
+
+            }
+            catch (Exception)
+            {
+                result.Success = false;
+                result.Msg = "删除失败";
+                throw;
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
     }
 }
