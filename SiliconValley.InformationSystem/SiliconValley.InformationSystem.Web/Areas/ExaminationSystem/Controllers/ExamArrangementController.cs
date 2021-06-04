@@ -44,6 +44,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         private readonly CourseBusiness db_course;
 
         private readonly ExamScoresBusiness db_scores;
+        private readonly ClassScheduleBusiness db_classsched;
+        private readonly ScheduleForTraineesBusiness db_schedule;
+        private readonly CandidateInfoBusiness db_candidateinfo;
+
         public ExamArrangementController()
         {
             db_Paper = new ExaminationPaperBusiness();
@@ -61,6 +65,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
             db_grand = new GrandBusiness();
             db_course = new CourseBusiness();
             db_scores = new ExamScoresBusiness();
+           db_classsched =  new ClassScheduleBusiness();
+          db_schedule =  new ScheduleForTraineesBusiness();
+            db_candidateinfo=  new CandidateInfoBusiness();
         }
 
         // GET: ExaminationSystem/ExamArrangement
@@ -82,6 +89,76 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
         public ActionResult Examinationroomoperation()
         {
             return View();
+        }
+        /// <summary>
+        /// 一键录入班级人员名单
+        /// </summary>
+        /// <param name="className"></param>
+        /// <returns></returns>
+        public ActionResult ExaminationOnekey(int className, int examid)
+        {
+            Business.TeachingDepBusiness.TeacherClassBusiness dbteacherclass = new TeacherClassBusiness();
+            AjaxResult result = new AjaxResult();
+            try
+            {
+                var exam = db_examination.AllExamination().Where(d => d.ID == examid).FirstOrDefault();
+                if (db_examination.IsEnd(exam))
+                {
+                    result.ErrorCode = 400;
+                    result.Msg = "失败";
+                    result.Data = null;
+                }
+                else
+                {
+                    //根据className查出这个班级的人员
+                    var classsch = db_classsched.GetList().Where(d => d.id == className).FirstOrDefault().ClassNumber;
+                    var renyuan = db_schedule.GetList().Where(b => b.ClassID == classsch && b.CurrentClass == true).ToList();
+                    foreach (var item in renyuan)
+                    {
+
+                        var tempstu = db_examination.AllCandidateInfo(examid).Where(d => d.StudentID == item.StudentID).FirstOrDefault();
+
+                        if (tempstu == null)
+                        {
+                            CandidateInfo candidateInfo = new CandidateInfo();
+                            candidateInfo.CandidateNumber = Guid.NewGuid().ToString();
+                            candidateInfo.ComputerPaper = null;
+                            candidateInfo.Examination = examid;
+                            candidateInfo.IsReExam = false;
+                            candidateInfo.Paper = null;
+                            candidateInfo.StudentID = item.StudentID;
+                            candidateInfo.ClassId = dbteacherclass.GetScheduleByStudent(item.StudentID).id;
+
+                            db_candidateinfo.Insert(candidateInfo);
+                        }
+
+                    }
+
+                    BaseBusiness<CandidateInfo> dbcnad = new BaseBusiness<CandidateInfo>();
+
+
+
+                    renyuan.ForEach(s =>
+                    {
+                        var stu = dbcnad.GetIQueryable().Where(c => c.Examination == examid && c.StudentID == s.StudentID).FirstOrDefault();
+                        //初始化成绩单
+                        db_scores.InitExamScores(examid, stu.CandidateNumber);
+                    });
+
+
+                    result.ErrorCode = 200;
+                    result.Msg = "成功";
+                    result.Data = null;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                result.ErrorCode = 500;
+                result.Msg = "失败";
+                result.Data = null;
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
         /// 考试发布编辑页面

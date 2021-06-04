@@ -224,6 +224,8 @@
     <Compile Include="Employment\EmpStaffAndStuBusiness.cs" />
     <Compile Include="Employment\EnterpriseInfoBusiness.cs" />
     <Compile Include="Employment\EntSpeeBusiness.cs" />
+    <Compile Include="Employment\InterviewRecordBusiness.cs" />
+    <Compile Include="Employment\InterviewTimeTypeBusiness.cs" />
     <Compile Include="Employment\ProTeacher.cs" />
     <Compile Include="Employment\QuarterBusiness.cs" />
     <Compile Include="Employment\SelfObtainRcoredBusiness.cs" />

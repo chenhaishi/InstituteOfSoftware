@@ -12,6 +12,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using SiliconValley.InformationSystem.Business.Common;
+using SiliconValley.InformationSystem.Entity;
 
 namespace SiliconValley.InformationSystem.Web.Areas.Obtainemployment.Controllers
 {
@@ -43,6 +44,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Obtainemployment.Controllers
         /// </summary>
         private Base_UserBusiness base_UserBusiness;
         private EmploymentStaffBusiness dbEmploymentStaff;
+        /// <summary>
+        /// 访谈记录类
+        /// </summary>
+        private InterviewRecordBusiness interRC;
 
         /// <summary>
         /// 判断在企业专业表中，专业id是否对应这个一个企业Id
@@ -66,9 +71,39 @@ namespace SiliconValley.InformationSystem.Web.Areas.Obtainemployment.Controllers
         /// 访谈页面
         /// </summary>
         /// <returns></returns>
-        public ActionResult BusinessInterview()
+        public ActionResult BusinessInterview(int id)
         {
+            ViewBag.id = id;
             return View();
+        }
+        /// <summary>
+        /// 添加企业访谈记录
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult AddBusinessInterview(int qiyeid, int selectfangtan,string fangtangjilu)
+        {
+            AjaxResult AjaxResultss = new AjaxResult();
+            interRC = new InterviewRecordBusiness();
+            InterviewRecord inter = new InterviewRecord();
+            inter.Title = fangtangjilu;
+            inter.TimeTypeID = selectfangtan;
+            inter.EnterpriseInfoID = qiyeid.ToString();
+            inter.ShiJian = DateTime.Now;
+            try
+            {
+                interRC.Insert(inter);
+                AjaxResultss.Success = true;
+                AjaxResultss.Msg = "添加成功";
+            }
+            catch (Exception ex)
+            {
+
+                AjaxResultss.Success = false;
+                AjaxResultss.Msg = ex.Message;
+            }
+
+            return Json(AjaxResultss, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
         /// 根据专业ID以及企业ID查找企业专业对像
@@ -581,7 +616,17 @@ namespace SiliconValley.InformationSystem.Web.Areas.Obtainemployment.Controllers
 
             return Json(AjaxResultss, JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// 访谈类型触发访谈内容方法
+        /// </summary>
+        /// <returns></returns>
+        public string InterviewContent(string qiyeid,int MrDWhyShow)
+        {
+           
+            var neirong = interRC.GetIQueryable().Where(d => d.TimeTypeID == MrDWhyShow && d.EnterpriseInfoID == qiyeid).FirstOrDefault().Title;
 
+            return neirong;
+        }
         /// <summary>
         /// 详细页面
         /// </summary>
@@ -599,7 +644,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Obtainemployment.Controllers
             enterdetailView.EntName = enterobj.EntName;
             enterdetailView.EntNature = enterobj.EntNature;
             enterdetailView.EntScale = enterobj.EntScale;
-            enterdetailView.EntWelfare = enterobj.EntWelfare;
+            enterdetailView.EntWelfare = enterobj.EntWelfare;   
             enterdetailView.Remark = enterobj.Remark;
             enterdetailView.EntContacts = enterobj.EntContacts;
             enterdetailView.EntPhone = enterobj.EntPhone;
@@ -613,7 +658,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Obtainemployment.Controllers
             }).ToList();
 
             ViewBag.NowSpee = Newtonsoft.Json.JsonConvert.SerializeObject(ListEntSpee);
-
+            ViewBag.id = id;
             return View(enterdetailView);
         }
         #endregion
