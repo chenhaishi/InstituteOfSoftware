@@ -1,0 +1,90 @@
+﻿
+@{
+    Layout = null;
+}
+@using SiliconValley.InformationSystem.Entity.ViewEntity
+<!DOCTYPE html>
+<link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/layui/layui.js"></script>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>BusinessInterview</title>
+</head>
+<body>
+    <form>
+        <input value="@ViewBag.id" id="qiyeid" disabled />
+        <div>
+            <h2 align="center">访谈</h2><hr />
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                    <label class="layui-form-label">访谈类型</label>
+                    <div class="layui-input-block">
+                        <select name="selectfangtan" id="selectfangtan" lay-filter="selectfangtan">
+                            <option value="1" selected>每日</option>
+                            <option value="2">每周</option>
+                            <option value="3">每月</option>
+                            <option value="4">二月后</option>
+                            <option value="5">半年后</option>
+                            <option value="6">一年后</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row layui-form-item">
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                    <label class="layui-form-label">记录访谈</label>
+                    <div class="layui-input-block">
+                        <textarea placeholder="请输入内容" class="layui-textarea" id="fangtangjilu"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" id="tianjia">添加</button>
+                    </div>
+                </div>
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" id="clode">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    
+
+</body>
+</html>
+<script>
+    $("#tianjia").click(function () {
+        var qiyeid = $("#qiyeid").val();
+        console.log(qiyeid);
+        var selectfangtan = $("#selectfangtan").val();
+        console.log(selectfangtan)
+        var fangtangjilu = $("#fangtangjilu").val();
+        console.log(fangtangjilu)
+        $.ajax({
+            type: "post",
+            url: "/Obtainemployment/BusinessManagement/AddBusinessInterview",
+            data: { qiyeid: qiyeid, selectfangtan: selectfangtan, fangtangjilu: fangtangjilu },
+            success: function (Result) {
+                console.log(Result.Success);
+                if (Result.Success == true) {
+                    var index = parent.layer.getFrameIndex(window.name);
+                    parent.MrDLayer.close(index); //再执行关闭
+                }
+            },
+            error: function () {
+
+            }
+        });
+    });
+    $("#clode").click(function () {
+        //先得到当前iframe层的索引
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.MrDLayer.close(index); //再执行关闭
+    });
+</script>

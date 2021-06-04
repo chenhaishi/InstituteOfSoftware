@@ -346,6 +346,8 @@
     <Compile Include="Entity\UnemployedStudent.cs" />
     <Compile Include="Entity\Warehouse.cs" />
     <Compile Include="Feedetails.cs" />
+    <Compile Include="InterviewRecord.cs" />
+    <Compile Include="InterviewTimeType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Registerforexamination.cs" />
     <Compile Include="SqlDate.cs" />

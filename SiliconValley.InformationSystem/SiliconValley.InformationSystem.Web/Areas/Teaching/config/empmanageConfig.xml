@@ -2,7 +2,7 @@
 <root>
  <!--满意度调查单配置-->
 
-  <defaultCutOffDate value="12"></defaultCutOffDate> <!--设置满意度调查单的填写截止时长 默认 5 小时 -->
+  <defaultCutOffDate value="120"></defaultCutOffDate> <!--设置满意度调查单的填写截止时长 默认 5 小时 -->
   
   <!--权限配置-->
   <permissions>

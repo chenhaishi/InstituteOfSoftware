@@ -360,7 +360,6 @@ namespace SiliconValley.InformationSystem.Business.ExaminationSystemBusiness
         /// </summary>
         /// <param name="studentlist"></param>
         /// <param name="examid"></param>
-
         public void subscribeExam(Dictionary<string, bool> studentlist, int examid)
         {
             TeachingDepBusiness.TeacherClassBusiness dbteacherclass = new TeacherClassBusiness();

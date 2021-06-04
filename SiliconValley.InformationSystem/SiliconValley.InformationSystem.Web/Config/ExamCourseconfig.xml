@@ -423,4 +423,13 @@
   <exam id="33055">
     <course id="111" />
   </exam>
+  <exam id="33056">
+    <course id="26" />
+  </exam>
+  <exam id="33057">
+    <course id="63" />
+  </exam>
+  <exam id="33058">
+    <course id="0" />
+  </exam>
 </root>
