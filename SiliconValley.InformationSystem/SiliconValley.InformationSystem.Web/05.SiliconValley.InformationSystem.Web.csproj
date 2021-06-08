@@ -3675,6 +3675,7 @@
     <Content Include="Areas\MyEducation\Views\JuniorCollege\InsertNotRegisteredForJuniorCollege.cshtml" />
     <Content Include="Areas\MyEducation\Views\JuniorCollege\JuniorCollegeEdit.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\EmployeesInfo\AddressUpload.cshtml" />
+    <Content Include="Areas\Educational\Views\Staff_Cost_Statistics\ManageClassTime.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
