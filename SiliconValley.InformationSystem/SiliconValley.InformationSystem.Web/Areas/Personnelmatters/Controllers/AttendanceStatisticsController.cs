@@ -626,11 +626,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                     var time = Convert.ToDateTime(FirstTime);
                     attendance.ExecuteSql("delete from AttendanceInfo where datepart(yyyy,YearAndMonth)='" + time.Year + "' and DATEPART(mm,YearAndMonth)='" + time.Month + "'");
                     result.Success = true;
+                    result.ErrorCode = 200;
                     result.Msg = "删除成功";
                 }
                 else
                 {
                     result.Success = false;
+                    result.ErrorCode = 200;
                     result.Msg = "删除失败，未能获取时间";
                 }
 
@@ -638,6 +640,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
             catch (Exception)
             {
                 result.Success = false;
+                result.ErrorCode = 100;
                 result.Msg = "删除失败";
                 throw;
             }
