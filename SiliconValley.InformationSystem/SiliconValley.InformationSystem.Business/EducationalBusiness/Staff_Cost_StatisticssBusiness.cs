@@ -316,7 +316,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                     from m in TearcherAdd_List
                     group m by m.Anpaidate into list
                     select list).ToList();
-
+                
                 //一节  50    两节   80
                 for (int g = 0; g < TeacherAddGroup.Count; g++)
                 {
