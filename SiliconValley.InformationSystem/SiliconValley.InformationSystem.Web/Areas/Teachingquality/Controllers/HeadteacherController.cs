@@ -212,6 +212,14 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
         {
             return Json(dbtext.ListTeamleaderdistributionView(), JsonRequestBehavior.AllowGet);
         }
+        /// <summary>
+        /// 获取已毕业班级分布图
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult graduationTeam()
+        {
+            return Json(dbtext.graduationView(), JsonRequestBehavior.AllowGet);
+        }
         //班主任接班记录
         public ActionResult Successionrecord()
         {

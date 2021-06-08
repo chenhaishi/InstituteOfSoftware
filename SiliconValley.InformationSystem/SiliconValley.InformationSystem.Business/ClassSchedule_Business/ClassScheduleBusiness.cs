@@ -150,6 +150,14 @@ namespace SiliconValley.InformationSystem.Business.ClassSchedule_Business
           return  this.GetList().Where(a => a.ClassstatusID == null).ToList();
         }
         /// <summary>
+        /// 获取已毕业的班级
+        /// </summary>
+        /// <returns></returns>
+        public List<ClassSchedule> ClassListGraduation()
+        {
+            return this.GetList().Where(a => a.ClassstatusID !=null && a.ClassstatusID==3).ToList();
+        }
+        /// <summary>
         /// 排除相同数据
         /// </summary>
         /// <param name="scheduleForTrainees"></param>

@@ -52,6 +52,7 @@
                         <option value="Stage" selected="">阶段</option>
                         <option value="HeadmasterName">班主任</option>
                         <option value="Major">方向</option>
+                        <option value="graduation">毕业班</option>
                     </select>
                 </div>
             </div>
@@ -64,6 +65,10 @@
 
 
 </div>
+@*<div id="Text_Context">
+
+
+</div>*@
 
 @section script{
     <script src="~/Areas/Teachingquality/js/AjaxAddupdate.js"></script>
@@ -72,9 +77,10 @@
 <script>
     function showLoad() {
 
-        return layer.msg('正在加载数据中！请稍后...', { icon: 16, shade: [0.5, '#f5f5f5'], scrollbar: false, offset: 'auto', time: 800000 });
+        return layer.msg('正在加载数据中！请稍后...', { icon: 16, shade: [0.5, '#f5f5f5'], scrollbar: false, offset: 'auto', time: 500000 });
 
     }
+ 
     var Team = "";
     layui.use(['table', 'layer', 'element', 'form'], function () {
         var table = layui.table;
@@ -82,7 +88,7 @@
         var form = layui.form;
         var element = layui.element;
         $.ajax({
-            url: '/Teachingquality/Headteacher/ListTeam',
+            url: '/Teachingquality/Headteacher/ListTeam',//这是打开页面时首次访问
             type: 'post',
             async: true,
             cache: false,
@@ -90,7 +96,10 @@
             beforeSend: function () {//执行中
                 i = showLoad();
             },
+          
             success: function (data) {//执行成功
+                //console.log("ssssssss")
+                //console.log(data);
                 closeLoad(i);
                 Team = data;
                 //第一次加载
@@ -133,44 +142,88 @@
         }
         //加载数据
         function Listdome(Type) {
+        
             var select1 = unique(Team, Type);
 
             var select = select1.sort(compare(Type));
 
             for (var i = 0; i < select.length; i++) {
                 var Name = "";
-                console.log(select);
-                if (Type == "Stage") { Name = select[i].Stage } else if (Type == "HeadmasterName") { Name = select[i].HeadmasterName; } else { Name = select[i].Major };
+                //console.log(select);
+                if (Type == "Stage") { Name = select[i].Stage } else if (Type == "HeadmasterName") { Name = select[i].HeadmasterName; }  else { Name = select[i].Major };
                 var dome = $('<div class="div1"><div style="text-align:center;"><label style="font-size:14pt;">' + Name + '</label></div></div>');
                 for (var A = 0; A < Team.length; A++) {
+                    
                     var TeamName = "";
-                    if (Type == "Stage") { TeamName = Team[A].Stage } else if (Type == "HeadmasterName") { TeamName = Team[A].HeadmasterName; } else { TeamName = Team[A].Major };
+                    if (Type == "Stage") { TeamName = Team[A].Stage } else if (Type == "HeadmasterName") { TeamName = Team[A].HeadmasterName; }   else { TeamName = Team[A].Major };
 
                     if (Name == TeamName) {
-                        var div2 = $(' <div class="Title hover" id=' + Team[A].Stage+'>  <input type="text" style="display:none" value=' + Team[A].ClassID + ' /> <div style="font-size:22pt;text-align:center;margin-top:10px;">' + Team[A].ClassName + '</div></div>');
+                        console.log(Name);
+                        console.log(TeamName);
+                        var div2 = $(' <div class="Title hover" id=' + Team[A].Stage + '>  <input type="text" style="display:none" value=' + Team[A].ClassID + ' /> <div style="font-size:22pt;text-align:center;margin-top:10px;">' + Team[A].ClassName + '</div></div>');
 
                         if (Type == "Stage") {
 
 
                             div2.append($('<div style="font-size:17pt;text-align:center;margin-top:-2px;">' + Team[A].Major + '</div><div style="font-size:14pt;margin-top:-2px;text-align:center;"><div style="position:relative;left:20px;"><img src="' + Team[A].HeadmasterImages + '" class="round_icon" /></div> <label style="position:relative;top:-35px;left:3px;">' + Team[A].HeadmasterName + '</label></div>'));
                         } else if (Type == "HeadmasterName") {
-
+                            console.log(Type);
                             div2.append($('<div style="font-size:17pt;text-align:center;margin-top:-2px;">' + Team[A].Stage + '</div><div style="font-size:14pt;margin-top:-2px;text-align:center;"><div style="position:relative;left:20px;"><img src="' + Team[A].HeadmasterImages + '" class="round_icon" /></div> <label style="position:relative;top:-30px;left:10px;">' + Team[A].Major + '</label></div>'));
-                        } else {
+                        }
 
+                       
+                        else {
+                            console.log(Type);
                             div2.append($('<div style="font-size:17pt;text-align:center;margin-top:-2px;">' + Team[A].Stage + '</div><div style="font-size:14pt;margin-top:-2px;text-align:center;"><div style="position:relative;left:20px;"><img src="' + Team[A].HeadmasterImages + '" class="round_icon" /></div> <label style="position:relative;top:-30px;left:10px;">' + Team[A].HeadmasterName + '</label></div>'));
                         }
 
                         dome.append(div2);
                     }
 
-                }
+                } /*$("#Text_Context").append(dome);*/
+                //$("#Text_Context").append(dome);
                 $("#context").append(dome);
-                console.log("添加");
+               
+                //console.log("添加");
             }
         }
 
+        function Listdome111(Type) {
 
+            var select1 = unique(Team, Type);
+
+            var select = select1.sort(compare(Type));
+
+            for (var i = 0; i < select.length; i++) {
+                var Name = "";
+                //console.log(select);
+                if (Type == "graduation") { Name = "毕业班" }
+
+                var dome = $('<div class="div1"><div style="text-align:center;"><label style="font-size:14pt;">' + Name + '</label></div></div>');
+                for (var A = 0; A < Team.length; A++) {
+
+                    var TeamName = "";
+                    if (Type == "graduation") { TeamName = "毕业班" }
+                    console.log(Name);
+                    console.log(TeamName);
+                    if (Name == TeamName) {
+                        console.log(Name);
+                        console.log(TeamName);
+                        var div2 = $(' <div class="Title hover" id=' + Team[A].Stage + '>  <input type="text" style="display:none" value=' + Team[A].ClassID + ' /> <div style="font-size:22pt;text-align:center;margin-top:10px;">' + Team[A].ClassName + '</div></div>');
+                        if (Type == "graduation") {
+                            div2.append($('<div style="font-size:17pt;text-align:center;margin-top:-2px;">' + Team[A].Stage + '</div><div style="font-size:14pt;margin-top:-2px;text-align:center;"><div style="position:relative;left:20px;"><img src="' + Team[A].HeadmasterImages + '" class="round_icon" /></div> <label style="position:relative;top:-30px;left:10px;">' + Team[A].Major + '</label></div>'));
+                        }
+                        
+
+                        dome.append(div2);
+                    }
+
+                }
+                $("#context").append(dome);
+
+                //console.log("添加");
+            }
+        }
             var element = layui.element;
             var form = layui.form;
             var layer = layui.layer;
@@ -178,7 +231,123 @@
             form.on('select(college)', function (data) {
                 $($("#context").children()).remove();
                 console.log(data.value);
-                Listdome(data.value);
+                if (data.value == "graduation") {//这里是拿到值做判断，然后在进行方法查询，仙女明白了这个代码的意思吗
+                    $($("#context").children()).remove();
+                    console.log("1111")
+                    $.ajax({
+                        url: '/Teachingquality/Headteacher/graduationTeam',
+                        type: 'post',
+                        async: true,
+                        cache: false,
+
+                        beforeSend: function () {//执行中
+                            i = showLoad();
+                        },
+
+                        success: function (data) {//执行成功
+
+                            console.log(data);
+                            closeLoad(i);
+                            Team = data;
+                            ////第一次加载
+                            //$($("#Text_Context").children()).remove();
+                            Listdome111("graduation");
+                        }
+                        , error: function (xmlhttprequest, textstatus, message) {
+                            closeLoad(i);
+
+                        }
+                    });
+
+                }
+                else if (data.value == "Stage") {
+                    //$($("#context").children()).remove();
+                    $.ajax({
+                        url: '/Teachingquality/Headteacher/ListTeam',//这是打开页面时首次访问
+                        type: 'post',
+                        async: true,
+                        cache: false,
+
+                        beforeSend: function () {//执行中
+                            i = showLoad();
+                        },
+
+                        success: function (data) {//执行成功
+                            //console.log("ssssssss")
+                            //console.log(data);
+                            closeLoad(i);
+                            Team = data;
+                            //第一次加载
+
+                            Listdome("Stage");
+
+                        }
+                        , error: function (xmlhttprequest, textstatus, message) {
+                            closeLoad(i);
+
+                        }
+                    });
+
+                }
+                else if (data.value == "HeadmasterName") {
+                    //$($("#context").children()).remove();
+                    $.ajax({
+                        url: '/Teachingquality/Headteacher/ListTeam',//这是打开页面时首次访问
+                        type: 'post',
+                        async: true,
+                        cache: false,
+
+                        beforeSend: function () {//执行中
+                            i = showLoad();
+                        },
+
+                        success: function (data) {//执行成功
+                            //console.log("ssssssss")
+                            //console.log(data);
+                            closeLoad(i);
+                            Team = data;
+                            //第一次加载
+
+                            Listdome("HeadmasterName");
+
+                        }
+                        , error: function (xmlhttprequest, textstatus, message) {
+                            closeLoad(i);
+
+                        }
+                    });
+
+                }
+                else {
+                    $.ajax({
+                        url: '/Teachingquality/Headteacher/ListTeam',//这是打开页面时首次访问
+                        type: 'post',
+                        async: true,
+                        cache: false,
+
+                        beforeSend: function () {//执行中
+                            i = showLoad();
+                        },
+
+                        success: function (data) {//执行成功
+                            //console.log("ssssssss")
+                            //console.log(data);
+                            closeLoad(i);
+                            Team = data;
+                            //第一次加载
+
+                            Listdome("Major");
+
+                        }
+                        , error: function (xmlhttprequest, textstatus, message) {
+                            closeLoad(i);
+
+                        }
+                    });
+                }
+                
+                
+               
 
             });
        
