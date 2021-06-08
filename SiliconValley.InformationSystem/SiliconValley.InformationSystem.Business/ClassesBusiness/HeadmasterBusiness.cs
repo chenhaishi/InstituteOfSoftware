@@ -373,6 +373,30 @@ namespace SiliconValley.InformationSystem.Business.ClassesBusiness
             return professionala;
         }
         /// <summary>
+        /// 毕业班数据查询
+        /// </summary>
+        /// <returns></returns>
+        public List<TeamleaderdistributionView> graduationView()
+        {
+            //班级业务
+            ClassScheduleBusiness classScheduleBusiness = new ClassScheduleBusiness();
+
+            CloudstorageBusiness db_Bos = new CloudstorageBusiness();
+            var ClassZ = classScheduleBusiness.ClassListGraduation();
+
+            return ClassZ.Select(a => new TeamleaderdistributionView
+            {
+                HeadmasterName = classScheduleBusiness.HeadSraffFine(a.id).EmployeeId == null ? "无带班老师" : classScheduleBusiness.HeadSraffFine(a.id).EmpName,
+
+                ClassName = classScheduleBusiness.GetEntity(a.id).ClassNumber,
+                ClassID = (int)a.id,
+                Stage = classScheduleBusiness.GetClassGrand((int)a.id, 222),
+                Major = classScheduleBusiness.GetClassGrand((int)a.id, 1),
+                HeadmasterImages = classScheduleBusiness.HeadSraffFine(a.id).EmployeeId == null ? "" : db_Bos.ImagesFine("xinxihua", "EmpImage", classScheduleBusiness.HeadSraffFine(a.id).Image, 10),
+                ClassStatus = a.ClassStatus
+            }).ToList();
+        }
+        /// <summary>
         /// 班主任带班数据
         /// </summary>
         /// <returns></returns>
@@ -383,18 +407,18 @@ namespace SiliconValley.InformationSystem.Business.ClassesBusiness
 
             CloudstorageBusiness db_Bos = new CloudstorageBusiness();
             var ClassZ=  classScheduleBusiness.ClassList();
-           
+
             return ClassZ.Select(a => new TeamleaderdistributionView
             {
-                HeadmasterName = classScheduleBusiness.HeadSraffFine(a.id).EmployeeId==null?"无带班老师": classScheduleBusiness.HeadSraffFine(a.id).EmpName,
-              
-                ClassName = classScheduleBusiness.GetEntity(a.id).ClassNumber,
-                ClassID=(int)a.id,
-                 Stage= classScheduleBusiness.GetClassGrand((int)a.id, 222),
-                 Major= classScheduleBusiness.GetClassGrand((int)a.id, 1),
-                 HeadmasterImages= classScheduleBusiness.HeadSraffFine(a.id).EmployeeId == null?"": db_Bos.ImagesFine("xinxihua", "EmpImage", classScheduleBusiness.HeadSraffFine(a.id).Image, 10) 
+                HeadmasterName = classScheduleBusiness.HeadSraffFine(a.id).EmployeeId == null ? "无带班老师" : classScheduleBusiness.HeadSraffFine(a.id).EmpName,
 
-            }).ToList();
+                ClassName = classScheduleBusiness.GetEntity(a.id).ClassNumber,
+                ClassID = (int)a.id,
+                Stage = classScheduleBusiness.GetClassGrand((int)a.id, 222),
+                Major = classScheduleBusiness.GetClassGrand((int)a.id, 1),
+                HeadmasterImages = classScheduleBusiness.HeadSraffFine(a.id).EmployeeId == null ? "" : db_Bos.ImagesFine("xinxihua", "EmpImage", classScheduleBusiness.HeadSraffFine(a.id).Image, 10),
+                 ClassStatus = a.ClassStatus==true
+           }).ToList();
         }
         /// <summary>
         ///通过班主任获取带班记录

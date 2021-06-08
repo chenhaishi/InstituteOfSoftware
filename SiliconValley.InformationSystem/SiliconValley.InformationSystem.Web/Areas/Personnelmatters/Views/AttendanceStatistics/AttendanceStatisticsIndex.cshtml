@@ -6,12 +6,13 @@
 @*头部工具栏*@
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
-      @*  <button class="layui-btn layui-btn-sm" lay-event="InportTime"><i class="layui-icon layui-icon-upload-drag"></i>打卡时间导入</button>*@
+        @*  <button class="layui-btn layui-btn-sm" lay-event="InportTime"><i class="layui-icon layui-icon-upload-drag"></i>打卡时间导入</button>*@
         <button class="layui-btn layui-btn-sm" lay-event="BatchImport"><i class="layui-icon layui-icon-upload-drag"></i>excel考勤导入</button>
         <button class="layui-btn layui-btn-sm" lay-event="OvertimeRecordImport"><i class="layui-icon layui-icon-upload-drag"></i>excel加班记录导入</button>
         @*<button class="layui-btn layui-btn-sm" lay-event="BatchAdd"><i class="layui-icon layui-icon-addition"></i>批量添加</button>*@
         <button class="layui-btn layui-btn-sm" lay-event="timeanddaysChange"><i class="layui-icon layui-icon-search"></i>查看记录</button>
         <button class="layui-btn layui-btn-sm" lay-event="Approved"><i class="layui-icon layui-icon-edit"></i>确认审批</button>
+        <button class="layui-btn layui-btn-sm" lay-event="Delete"><i class="layui-icon layui-icon-close"></i>删除本月数据</button>
     </div>
 </script>
 @*操作栏*@
@@ -258,6 +259,40 @@
                             });
                         } else {
                             layer.msg("没有数据可审批!");
+                        }
+                        break;
+                      case 'Delete':
+                        var time = '@ViewBag.yearandmonth';
+                        console.log("我的时间：" + JSON.stringify(time));
+                        if (JSON.stringify(time) != "{}") {
+                            layer.confirm('是否要删除' + time + '的数据?', { icon: 3, title: '提示' }, function (index) {
+                                $.ajax({
+                                    type: "post",
+                                    dataType: "json",
+                                    async: false,
+                                    url: "/Personnelmatters/AttendanceStatistics/Delete",
+                                    data: { time: time },
+                                    //报错请加入以下三行，则ajax提交无问题
+                                    //cache: false,
+                                    //processData: false,
+                                    //contentType: false,
+                                    success: function (data) {
+                                        if (data.ErrorCode == 200) {
+                                            layer.alert(data.Msg, { icon: 1 }, function (index) {
+                                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                                window.parent.location.reload();
+                                                parent.layer.close(index);
+                                            });
+
+                                        } else {
+                                            layer.msg("系统错误,请联系后台管理员!");
+                                        }
+                                    }
+                                });
+                            });
+
+                        } else {
+                            layer.msg("没有数据可删除!");
                         }
                         break;
                 };
