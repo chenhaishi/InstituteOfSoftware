@@ -298,7 +298,6 @@
 
             //发请求获取未满的宿舍
             function getUninhabiteddormdata(jsdata) {
-                console.log(jsdata);
                 var jsprosex = jsdata.Sex;
                 if (jsdata.Sex == "男") {
                     jsprosex = true;
@@ -306,8 +305,6 @@
                 if (jsdata.Sex == "女") {
                     jsprosex = false;
                 }
-                
-                console.log(jstungid);
                 $.ajax({
                     url: '/Dormitory/NewbornR/ChoiceInfo',
                     type: 'GET',

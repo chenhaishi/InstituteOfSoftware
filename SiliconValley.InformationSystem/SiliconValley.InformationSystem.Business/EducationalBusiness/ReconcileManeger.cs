@@ -2835,9 +2835,15 @@ Curriculum_Id like '职素' or Curriculum_Id like '班会' or Curriculum_Id like
                         }
 
                     }
-                    else
+                    else if (item.Curse_Id == "上午" || item.Curse_Id == "下午")
                     {
                         number += 4;
+                    }
+                    else if (item.Curse_Id == "上午3节" || item.Curse_Id == "下午3节")
+                    {
+                        number += 3;
+                    } else if (item.Curse_Id == "上午1节" || item.Curse_Id == "下午1节") {
+                        number += 1;
                     }
                 }
             }
