@@ -23,8 +23,19 @@ namespace SiliconValley.InformationSystem.Business.DormitoryBusiness
         /// </summary>
         /// <returns></returns>
         public List<StudentInformation> GetStudentInSchoolData() {
-            
+            //
           return  this.GetListBySql<StudentInformation>("select * from StudentInformation where IsDelete=0 and State is NULL").ToList();
+        }
+
+        /// <summary>
+        /// 获取所有的在校生
+        /// </summary>
+        /// <returns></returns>
+        public List<StudentInformation> GetStudentInSchoolData1()
+        {
+
+            return this.GetListBySql<StudentInformation>("select * from StudentInformation where State =8 or State is null and IsDelete=0").ToList();
+           // return this.GetList().Where(a => a.);
         }
 
         /// <summary>
@@ -34,7 +45,7 @@ namespace SiliconValley.InformationSystem.Business.DormitoryBusiness
         /// <returns></returns>
         public StudentInformation GetStudent(string StudentNumber)
         {
-            return this.GetStudentInSchoolData().Where(a => a.StudentNumber == StudentNumber).FirstOrDefault();
+            return this.GetStudentInSchoolData1().Where(a => a.StudentNumber == StudentNumber).FirstOrDefault();
         }
 
         /// <summary>
