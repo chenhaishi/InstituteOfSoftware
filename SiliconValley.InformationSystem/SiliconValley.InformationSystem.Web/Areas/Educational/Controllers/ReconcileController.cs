@@ -1052,6 +1052,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             list.Add(new SelectListItem() { Text = "晚上1/2节", Value = "晚上1/2节" });
             list.Add(new SelectListItem() { Text = "晚上3/4节", Value = "晚上3/4节" });
             list.Add(new SelectListItem() { Text = "晚上", Value = "晚上" });
+            list.Add(new SelectListItem() { Text = "上午3节", Value = "上午3节" });
+            list.Add(new SelectListItem() { Text = "下午3节", Value = "下午3节" });
+            list.Add(new SelectListItem() { Text = "上午1节", Value = "上午1节" });
+            list.Add(new SelectListItem() { Text = "下午1节", Value = "下午1节" });
             ViewBag.Time = list;
             ReconView data = new ReconView()
             {

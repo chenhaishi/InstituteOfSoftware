@@ -1280,6 +1280,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Dormitory.Controllers
                 ajaxResult.Data = "";
             }
             
+
             return Json(ajaxResult,JsonRequestBehavior.AllowGet);
         }
         /// <summary>
