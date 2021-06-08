@@ -35,5 +35,9 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity
         /// 专业
         /// </summary>
         public string Major { get; set; }
+        /// <summary>
+        /// 是否毕业 0=不是 1=不是
+        /// </summary>
+        public Nullable<bool> ClassStatus { get; set; }
     }
 }
