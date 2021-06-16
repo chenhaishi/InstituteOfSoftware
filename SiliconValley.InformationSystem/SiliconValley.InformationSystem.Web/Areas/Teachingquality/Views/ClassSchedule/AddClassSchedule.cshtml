@@ -95,7 +95,8 @@
         //正则表达式
         form.verify({
             Name: function (value, item) { //value：表单的值、item：表单的DOM对象
-                if (!/^[a-zA-Z0-9]{6,10}$/.test(value)) {
+                //console.log
+                if (!/^[a-zA-Z0-9\u4e00-\u9fa5]{6,10}$/.test(value)) {
                     return '班级名称6-10位组成';
                 }
 

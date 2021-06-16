@@ -228,6 +228,8 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IPHander\IPDisablePolicyFilter.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\XZAdminHomeController.cs" />
     <Compile Include="Areas\BaseSysManage\BaseSysManageAreaRegistration.cs" />
     <Compile Include="Areas\BaseSysManage\Controllers\Base_PermissionController.cs" />
     <Compile Include="Areas\BaseSysManage\Controllers\Base_UserRoleController.cs" />
@@ -577,6 +579,7 @@
     <Content Include="Areas\Teaching\Scripts\Tdrag.js" />
     <Content Include="assets\Assets_L1\assets\css\app.css" />
     <Content Include="assets\Assets_L1\assets\css\app.min.css" />
+    <Content Include="assets\Assets_L1\assets\css\iconfont.css" />
     <Content Include="assets\Assets_L1\assets\images\attached-files\img-1.jpg" />
     <Content Include="assets\Assets_L1\assets\images\attached-files\img-2.jpg" />
     <Content Include="assets\Assets_L1\assets\images\attached-files\img-3.jpg" />
@@ -612,6 +615,7 @@
     <Content Include="assets\Assets_L1\assets\images\users\avatar-7.jpg" />
     <Content Include="assets\Assets_L1\assets\images\users\avatar-8.jpg" />
     <Content Include="assets\Assets_L1\assets\images\users\avatar-9.jpg" />
+    <Content Include="assets\Assets_L1\assets\js\iconfont.js" />
     <Content Include="assets\Assets_L1\assets\js\jquery.app.js" />
     <Content Include="assets\Assets_L1\assets\js\jquery.calendar.js" />
     <Content Include="assets\Assets_L1\assets\js\jquery.chartist.js" />
@@ -3662,7 +3666,8 @@
     <Content Include="Areas\Teachingquality\Views\ClassSchedule\OddNumberMyclass.cshtml" />
     <Content Include="Areas\Teachingquality\Views\StudentUnion\Activty.cshtml" />
     <Content Include="Areas\Teachingquality\Views\StudentUnion\openActivty.cshtml" />
-    <Content Include="Areas\Finance\Views\Pricedetails\Administrativetranslation.cshtml" />
+    <Content Include="Areas\Admin\Views\web.config" />
+    <Content Include="Areas\Admin\Views\XZAdminHome\AdminHomeIndex.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
@@ -5372,6 +5377,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\Admin\Models\" />
+    <Folder Include="Areas\Admin\Views\Shared\" />
     <Folder Include="Areas\BaseSysManage\Models\" />
     <Folder Include="Areas\BaseSysManage\Views\Shared\" />
     <Folder Include="Areas\Capital\Models\" />
