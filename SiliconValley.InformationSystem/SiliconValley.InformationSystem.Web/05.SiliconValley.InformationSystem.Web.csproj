@@ -95,8 +95,9 @@
     <Reference Include="NPOI">
       <HintPath>..\packages\NPOI.2.5.1\lib\net40\NPOI.dll</HintPath>
     </Reference>
-    <Reference Include="NPOI.OOXML">
-      <HintPath>..\packages\NPOI.2.5.1\lib\net45\NPOI.OOXML.dll</HintPath>
+    <Reference Include="NPOI.OOXML, Version=2.5.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Bin\NPOI.OOXML.dll</HintPath>
     </Reference>
     <Reference Include="Oracle.ManagedDataAccess, Version=4.122.18.3, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -227,6 +228,8 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IPHander\IPDisablePolicyFilter.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\XZAdminHomeController.cs" />
     <Compile Include="Areas\BaseSysManage\BaseSysManageAreaRegistration.cs" />
     <Compile Include="Areas\BaseSysManage\Controllers\Base_PermissionController.cs" />
     <Compile Include="Areas\BaseSysManage\Controllers\Base_UserRoleController.cs" />
@@ -248,7 +251,6 @@
     <Compile Include="Areas\Courseware\CoursewareAreaRegistration.cs" />
     <Compile Include="Areas\DormitoryMaintenance\Controllers\DormitoryDepositController.cs" />
     <Compile Include="Areas\DormitoryMaintenance\Controllers\DormitoryMantainPriceController.cs" />
-    <Compile Include="Areas\DormitoryMaintenance\Controllers\StuApartmentController.cs" />
     <Compile Include="Areas\DormitoryMaintenance\DormitoryMaintenanceAreaRegistration.cs" />
     <Compile Include="Areas\Dormitory\Controllers\BasicsController.cs" />
     <Compile Include="Areas\Dormitory\Controllers\DormitoryInfoController.cs" />
@@ -288,8 +290,6 @@
     <Compile Include="Areas\Finance\Controllers\PricedetailsController.cs" />
     <Compile Include="Areas\Finance\FinanceAreaRegistration.cs" />
     <Compile Include="Areas\flow\flowAreaRegistration.cs" />
-    <Compile Include="Areas\InternalTraining\Controllers\InternalTraController.cs" />
-    <Compile Include="Areas\InternalTraining\InternalTrainingAreaRegistration.cs" />
     <Compile Include="Areas\Logistics\LogisticsAreaRegistration.cs" />
     <Compile Include="Areas\Market\Controllers\BiddingRecordController.cs" />
     <Compile Include="Areas\Market\Controllers\ChannelStaffController.cs" />
@@ -307,7 +307,6 @@
     <Compile Include="Areas\Market\Controllers\StudentDataKeepController.cs" />
     <Compile Include="Areas\Market\MarketAreaRegistration.cs" />
     <Compile Include="Areas\MyEducation\Controllers\EducationController.cs" />
-    <Compile Include="Areas\MyEducation\Controllers\JuniorCollegeController.cs" />
     <Compile Include="Areas\MyEducation\MyEducationAreaRegistration.cs" />
     <Compile Include="Areas\Obtainemployment\Controllers\BusinessManagementController.cs" />
     <Compile Include="Areas\Obtainemployment\Controllers\CDinterviewController.cs" />
@@ -334,7 +333,6 @@
     <Compile Include="Areas\Personnelmatters\Controllers\EmpOverTimeRecordController.cs" />
     <Compile Include="Areas\Personnelmatters\Controllers\EmpSalaryManagementController.cs" />
     <Compile Include="Areas\Personnelmatters\Controllers\EmpTransactionRecordController.cs" />
-    <Compile Include="Areas\Personnelmatters\Controllers\MonthlySalaryReviewController.cs" />
     <Compile Include="Areas\Personnelmatters\Controllers\PerformanceAssessController.cs" />
     <Compile Include="Areas\Personnelmatters\Controllers\RecruitingDataSummaryController.cs" />
     <Compile Include="Areas\Personnelmatters\Controllers\SocialSecurityDetailController.cs" />
@@ -581,6 +579,7 @@
     <Content Include="Areas\Teaching\Scripts\Tdrag.js" />
     <Content Include="assets\Assets_L1\assets\css\app.css" />
     <Content Include="assets\Assets_L1\assets\css\app.min.css" />
+    <Content Include="assets\Assets_L1\assets\css\iconfont.css" />
     <Content Include="assets\Assets_L1\assets\images\attached-files\img-1.jpg" />
     <Content Include="assets\Assets_L1\assets\images\attached-files\img-2.jpg" />
     <Content Include="assets\Assets_L1\assets\images\attached-files\img-3.jpg" />
@@ -616,6 +615,7 @@
     <Content Include="assets\Assets_L1\assets\images\users\avatar-7.jpg" />
     <Content Include="assets\Assets_L1\assets\images\users\avatar-8.jpg" />
     <Content Include="assets\Assets_L1\assets\images\users\avatar-9.jpg" />
+    <Content Include="assets\Assets_L1\assets\js\iconfont.js" />
     <Content Include="assets\Assets_L1\assets\js\jquery.app.js" />
     <Content Include="assets\Assets_L1\assets\js\jquery.calendar.js" />
     <Content Include="assets\Assets_L1\assets\js\jquery.chartist.js" />
@@ -2215,7 +2215,9 @@
     <Content Include="Config\ExamCourseconfig.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Config\questionLevelConfig.xml" />
+    <Content Include="Config\questionLevelConfig.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Content\iconfont.css" />
     <Content Include="Content\iconfont.js" />
     <Content Include="Content\Login\style.css" />
@@ -2601,7 +2603,9 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Config\Province.json" />
-    <Content Include="Config\system.config" />
+    <Content Include="Config\system.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Config\SystemMenu.config">
       <SubType>Designer</SubType>
     </Content>
@@ -2824,6 +2828,7 @@
     <Content Include="Scripts\dtree2.5.4\layui_ext\dtree\font\dtreefont.css" />
     <Content Include="Scripts\dtree2.5.4\layui_ext\dtree\font\dtreefont.svg" />
     <Content Include="Scripts\dtree2.5.4\layui_ext\dtree\开发者日志.txt" />
+    <Content Include="Scripts\echarts.min.js" />
     <Content Include="Scripts\ECharts4.2.1\incubator-echarts-master.zip" />
     <Content Include="Scripts\ECharts4.2.1\incubator-echarts-master\.editorconfig" />
     <Content Include="Scripts\ECharts4.2.1\incubator-echarts-master\.eslintignore" />
@@ -3402,7 +3407,9 @@
     <Content Include="Areas\Capital\Views\Capital\PublicBorrowList.cshtml" />
     <Content Include="Areas\Capital\Views\Capital\DoPrefundingList.cshtml" />
     <Content Include="Config\MyExcelClass.json" />
-    <Content Include="Config\Obempstaff.config" />
+    <Content Include="Config\Obempstaff.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Config\UserMapRole.config">
       <SubType>Designer</SubType>
     </Content>
@@ -3656,25 +3663,11 @@
     <Content Include="Areas\Finance\Views\Pricedetails\Student_arrearage.cshtml" />
     <Content Include="Areas\Finance\Views\Pricedetails\Get_List_Entrydataexport.cshtml" />
     <Content Include="Areas\Finance\Views\Pricedetails\Get_List_GetPreentryfeet.cshtml" />
-    <Content Include="Areas\InternalTraining\Views\InternalTra\AddInternalTraIndex.cshtml" />
-    <Content Include="Areas\InternalTraining\Views\InternalTra\InternalTraIndex.cshtml" />
-    <Content Include="Areas\InternalTraining\Views\InternalTra\XiuGaiInternalTraIndex.cshtml" />
-    <Content Include="Areas\InternalTraining\Views\web.config" />
-    <Content Include="Areas\Teaching\Views\SatisfactionSurvey\CanteenSatisfaction.cshtml" />
-    <Content Include="Areas\Teaching\Views\SatisfactionSurvey\ChineseQuestionnaire.cshtml" />
-    <Content Include="Areas\Teaching\Views\SatisfactionSurvey\MathematicsQuestionnaire.cshtml" />
-    <Content Include="Areas\Teaching\Views\SatisfactionSurvey\EnglishQuestionnaire.cshtml" />
-    <Content Include="Areas\Teaching\Views\SatisfactionSurvey\SatisfactionHomePage.cshtml" />
-    <Content Include="Areas\Teaching\Views\SatisfactionSurvey\CanteenExportView.cshtml" />
-    <Content Include="Areas\Teaching\Views\SatisfactionSurvey\SatisfactionDerivationView.cshtml" />
-    <Content Include="Areas\Teaching\Views\SatisfactionSurvey\MySatisfactionCheck.cshtml" />
-    <Content Include="Areas\Teaching\Views\Exam\ProjectDefense.cshtml" />
-    <Content Include="Areas\Teaching\Views\Class\ArrangeTeacherleadClass.cshtml" />
-    <Content Include="Areas\Personnelmatters\Views\EmplSalaryEmbody\Import.cshtml" />
-    <Content Include="Areas\MyEducation\Views\JuniorCollege\Index.cshtml" />
-    <Content Include="Areas\MyEducation\Views\JuniorCollege\InsertNotRegisteredForJuniorCollege.cshtml" />
-    <Content Include="Areas\MyEducation\Views\JuniorCollege\JuniorCollegeEdit.cshtml" />
-    <Content Include="Areas\Personnelmatters\Views\EmployeesInfo\AddressUpload.cshtml" />
+    <Content Include="Areas\Teachingquality\Views\ClassSchedule\OddNumberMyclass.cshtml" />
+    <Content Include="Areas\Teachingquality\Views\StudentUnion\Activty.cshtml" />
+    <Content Include="Areas\Teachingquality\Views\StudentUnion\openActivty.cshtml" />
+    <Content Include="Areas\Admin\Views\web.config" />
+    <Content Include="Areas\Admin\Views\XZAdminHome\AdminHomeIndex.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
@@ -5381,14 +5374,11 @@
     <Content Include="Scripts\laydate\theme\default\font\iconfont.eot" />
     <Content Include="Scripts\laydate\theme\default\font\iconfont.ttf" />
     <Content Include="Scripts\laydate\theme\default\font\iconfont.woff" />
-    <Content Include="uploadXLSXfile\Template\AttendenceTemplate.xls" />
-    <Content Include="uploadXLSXfile\Template\绩效模板.xls" />
-    <Content Include="uploadXLSXfile\Template\OvertimeTemplate.xls" />
-    <Content Include="uploadXLSXfile\Template\AddressInformation.xls" />
-    <Content Include="uploadXLSXfile\Template\EmpInfoTemplate.xls" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\Admin\Models\" />
+    <Folder Include="Areas\Admin\Views\Shared\" />
     <Folder Include="Areas\BaseSysManage\Models\" />
     <Folder Include="Areas\BaseSysManage\Views\Shared\" />
     <Folder Include="Areas\Capital\Models\" />
@@ -5409,7 +5399,6 @@
     <Folder Include="Areas\Courseware\首页\word文档\Y1\" />
     <Folder Include="Areas\DormitoryMaintenance\Models\" />
     <Folder Include="Areas\DormitoryMaintenance\Views\Shared\" />
-    <Folder Include="Areas\DormitoryMaintenance\Views\StuApartment\" />
     <Folder Include="Areas\Educational\Models\" />
     <Folder Include="Areas\Educational\Views\CheckGoods\" />
     <Folder Include="Areas\Educational\Views\Check\" />
