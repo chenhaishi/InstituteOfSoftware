@@ -93,6 +93,7 @@
     <div id="mytop">
         <button class="layui-btn layui-btn-danger" id="subscribeExam"><i class="layui-icon layui-icon-rate-solid"></i>预约考试</button>
         <button class="layui-btn layui-btn-danger" id="cancelsubscribeExam"><i class="layui-icon layui-icon-rate"></i>取消预约</button>
+        
         <a href="/ExaminationSystem/ExamArrangement/ArrangeSeatingChart" class="layui-btn layui-btn-normal">生成座位表</a>
     </div>
 
@@ -108,23 +109,25 @@
 
                     <div class="layui-form-item">
                         <div class="layui-inline">
-                            <label class="layui-form-label">班级：</label>
+                            <label class="layui-form-label">班级</label>
                             <div class="layui-input-inline">
-                                <select lay-filter="classlist" name="className">
+                                <select lay-filter="classlist" id="className" name="className">
                                     <option value="0">全部</option>
                                     @{
                                         foreach (var item in ViewBag.myClass as List<ClassSchedule>)
                                         {
-                                    <option value="@item.id">@item.ClassNumber</option>
+                                            <option value="@item.id">@item.ClassNumber</option>
                                         }
                                     }
 
                                 </select>
                             </div>
                         </div>
-
+                        <a class="layui-btn" id="yijian">一键录入班级人员</a>
+                    </div>
+                    <div class="layui-form-item">
                         <div class="layui-inline">
-                            <label class="layui-form-label">姓名：</label>
+                            <label class="layui-form-label">姓名</label>
                             <div class="layui-input-inline">
                                 <input type="text" name="Name" value="" class="layui-input">
                             </div>
@@ -141,7 +144,7 @@
 
 
 
-                </form>
+</form>
 
             </div>
 
@@ -257,7 +260,7 @@
                 ]]
                 , page: true
             });
-
+            
             $.post('/ExaminationSystem/ExamArrangement/GetNoEndExamination', {}, function (data) {
 
                 console.log(data);
@@ -299,7 +302,51 @@
                     }
                 });
             });
+            //一键录入班级人员
+            $("#yijian").click(function () {
+                layer.open({
+                    type: 1
+                    , content: '是否确认录入名单'
+                    , btn: ['确认', '取消']
+                    , yes: function () {
+                        //班级id
+                        var className = $("#className").val();
+                        //考场id
+                        var examid = "";
 
+                        $(".examintaionitem .layui-form-radio").each(function () {
+
+
+                            var Ischeck = $(this).hasClass("layui-form-radioed");
+
+                            if (Ischeck) {
+
+                                //获取选中的考试ID
+                                examid = $(this).parent().attr("examid");
+                            }
+                        });
+                        console.log(examid);
+                        if (className == 0) {
+                            layer.msg("请选择班级");
+                        } else {
+                            $.post("/ExaminationSystem/ExamArrangement/ExaminationOnekey", { className: className, examid: examid }, function (data) {
+                                if (data.ErrorCode == 400) {
+                                    layer.msg("考试已经结束！");
+                                    return;
+                                }
+                                if (data.ErrorCode == 200) {
+                                    layer.msg("报名成功！");
+                                } else {
+                                    layer.msg("错误");
+                                }
+                            });
+                        }
+                    }, btn2: function () {
+                        layer.closeAll();
+                    }
+                });
+                
+            })
 
             //点击预约
             $("#subscribeExam").click(function () {

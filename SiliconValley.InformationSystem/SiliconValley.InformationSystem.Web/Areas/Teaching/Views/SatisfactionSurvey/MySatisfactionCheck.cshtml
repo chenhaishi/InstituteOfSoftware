@@ -43,12 +43,12 @@
             <ul class="studentlist">
 
                 @{
-                        int i = 1;
+                        
                         foreach (var item in ViewBag.studentlist as List<StudentInformation>)
                         {
                         
-                        <li class="student"><code style="letter-spacing:8px; font-size:20px; color:black; background-color:white;" studentnumber="@item.StudentNumber">@i</code></li>
-                        i++;
+                        <li class="student"><code style="letter-spacing:8px; font-size:20px; color:black; background-color:white;" studentnumber="@item.StudentNumber">@item.Name</code></li>
+                        
                     }
                 }
 

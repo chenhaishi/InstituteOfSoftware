@@ -95,9 +95,8 @@
     <Reference Include="NPOI">
       <HintPath>..\packages\NPOI.2.5.1\lib\net40\NPOI.dll</HintPath>
     </Reference>
-    <Reference Include="NPOI.OOXML, Version=2.5.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Bin\NPOI.OOXML.dll</HintPath>
+    <Reference Include="NPOI.OOXML">
+      <HintPath>..\packages\NPOI.2.5.1\lib\net45\NPOI.OOXML.dll</HintPath>
     </Reference>
     <Reference Include="Oracle.ManagedDataAccess, Version=4.122.18.3, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -228,8 +227,6 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IPHander\IPDisablePolicyFilter.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
-    <Compile Include="Areas\Admin\Controllers\XZAdminHomeController.cs" />
     <Compile Include="Areas\BaseSysManage\BaseSysManageAreaRegistration.cs" />
     <Compile Include="Areas\BaseSysManage\Controllers\Base_PermissionController.cs" />
     <Compile Include="Areas\BaseSysManage\Controllers\Base_UserRoleController.cs" />
@@ -290,6 +287,8 @@
     <Compile Include="Areas\Finance\Controllers\PricedetailsController.cs" />
     <Compile Include="Areas\Finance\FinanceAreaRegistration.cs" />
     <Compile Include="Areas\flow\flowAreaRegistration.cs" />
+    <Compile Include="Areas\InternalTraining\Controllers\InternalTraController.cs" />
+    <Compile Include="Areas\InternalTraining\InternalTrainingAreaRegistration.cs" />
     <Compile Include="Areas\Logistics\LogisticsAreaRegistration.cs" />
     <Compile Include="Areas\Market\Controllers\BiddingRecordController.cs" />
     <Compile Include="Areas\Market\Controllers\ChannelStaffController.cs" />
@@ -538,6 +537,45 @@
     <Content Include="Areas\Teachingquality\studentImg\20051997080200010.jpg" />
     <Content Include="Areas\Teachingquality\studentImg\default.jpg" />
     <Content Include="Areas\Teachingquality\StuImages\2019年10月14日.jpg" />
+    <Content Include="Areas\Teaching\assets\css\admin.css" />
+    <Content Include="Areas\Teaching\assets\css\amazeui.datatables.min.css" />
+    <Content Include="Areas\Teaching\assets\css\amazeui.min.css" />
+    <Content Include="Areas\Teaching\assets\css\app.css" />
+    <Content Include="Areas\Teaching\assets\css\fullcalendar.min.css" />
+    <Content Include="Areas\Teaching\assets\css\fullcalendar.print.css" />
+    <Content Include="Areas\Teaching\assets\img\a5.png" />
+    <Content Include="Areas\Teaching\assets\img\k.jpg" />
+    <Content Include="Areas\Teaching\assets\img\logo.png" />
+    <Content Include="Areas\Teaching\assets\img\logoa.png" />
+    <Content Include="Areas\Teaching\assets\img\logob.png" />
+    <Content Include="Areas\Teaching\assets\img\user01.png" />
+    <Content Include="Areas\Teaching\assets\img\user02.png" />
+    <Content Include="Areas\Teaching\assets\img\user03.png" />
+    <Content Include="Areas\Teaching\assets\img\user04.png" />
+    <Content Include="Areas\Teaching\assets\img\user05.png" />
+    <Content Include="Areas\Teaching\assets\img\user06.png" />
+    <Content Include="Areas\Teaching\assets\img\user07.png" />
+    <Content Include="Areas\Teaching\assets\i\app-icon72x72%402x.png" />
+    <Content Include="Areas\Teaching\assets\i\examples\admin-chrome.png" />
+    <Content Include="Areas\Teaching\assets\i\examples\admin-firefox.png" />
+    <Content Include="Areas\Teaching\assets\i\examples\admin-ie.png" />
+    <Content Include="Areas\Teaching\assets\i\examples\admin-opera.png" />
+    <Content Include="Areas\Teaching\assets\i\examples\admin-safari.png" />
+    <Content Include="Areas\Teaching\assets\i\examples\adminPage.png" />
+    <Content Include="Areas\Teaching\assets\i\examples\blogPage.png" />
+    <Content Include="Areas\Teaching\assets\i\examples\landing.png" />
+    <Content Include="Areas\Teaching\assets\i\examples\landingPage.png" />
+    <Content Include="Areas\Teaching\assets\i\examples\loginPage.png" />
+    <Content Include="Areas\Teaching\assets\i\examples\sidebarPage.png" />
+    <Content Include="Areas\Teaching\assets\i\favicon.png" />
+    <Content Include="Areas\Teaching\assets\i\startup-640x1096.png" />
+    <Content Include="Areas\Teaching\assets\js\amazeui.datatables.min.js" />
+    <Content Include="Areas\Teaching\assets\js\app.js" />
+    <Content Include="Areas\Teaching\assets\js\dataTables.responsive.min.js" />
+    <Content Include="Areas\Teaching\assets\js\fullcalendar.min.js" />
+    <Content Include="Areas\Teaching\assets\js\jquery.min.js" />
+    <Content Include="Areas\Teaching\assets\js\moment.js" />
+    <Content Include="Areas\Teaching\assets\js\theme.js" />
     <Content Include="Areas\Teaching\config\empmanageConfig.xml">
       <SubType>Designer</SubType>
     </Content>
@@ -579,7 +617,6 @@
     <Content Include="Areas\Teaching\Scripts\Tdrag.js" />
     <Content Include="assets\Assets_L1\assets\css\app.css" />
     <Content Include="assets\Assets_L1\assets\css\app.min.css" />
-    <Content Include="assets\Assets_L1\assets\css\iconfont.css" />
     <Content Include="assets\Assets_L1\assets\images\attached-files\img-1.jpg" />
     <Content Include="assets\Assets_L1\assets\images\attached-files\img-2.jpg" />
     <Content Include="assets\Assets_L1\assets\images\attached-files\img-3.jpg" />
@@ -615,7 +652,6 @@
     <Content Include="assets\Assets_L1\assets\images\users\avatar-7.jpg" />
     <Content Include="assets\Assets_L1\assets\images\users\avatar-8.jpg" />
     <Content Include="assets\Assets_L1\assets\images\users\avatar-9.jpg" />
-    <Content Include="assets\Assets_L1\assets\js\iconfont.js" />
     <Content Include="assets\Assets_L1\assets\js\jquery.app.js" />
     <Content Include="assets\Assets_L1\assets\js\jquery.calendar.js" />
     <Content Include="assets\Assets_L1\assets\js\jquery.chartist.js" />
@@ -2215,9 +2251,7 @@
     <Content Include="Config\ExamCourseconfig.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Config\questionLevelConfig.xml">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="Config\questionLevelConfig.xml" />
     <Content Include="Content\iconfont.css" />
     <Content Include="Content\iconfont.js" />
     <Content Include="Content\Login\style.css" />
@@ -2603,9 +2637,7 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Config\Province.json" />
-    <Content Include="Config\system.config">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="Config\system.config" />
     <Content Include="Config\SystemMenu.config">
       <SubType>Designer</SubType>
     </Content>
@@ -2828,7 +2860,6 @@
     <Content Include="Scripts\dtree2.5.4\layui_ext\dtree\font\dtreefont.css" />
     <Content Include="Scripts\dtree2.5.4\layui_ext\dtree\font\dtreefont.svg" />
     <Content Include="Scripts\dtree2.5.4\layui_ext\dtree\开发者日志.txt" />
-    <Content Include="Scripts\echarts.min.js" />
     <Content Include="Scripts\ECharts4.2.1\incubator-echarts-master.zip" />
     <Content Include="Scripts\ECharts4.2.1\incubator-echarts-master\.editorconfig" />
     <Content Include="Scripts\ECharts4.2.1\incubator-echarts-master\.eslintignore" />
@@ -3407,9 +3438,7 @@
     <Content Include="Areas\Capital\Views\Capital\PublicBorrowList.cshtml" />
     <Content Include="Areas\Capital\Views\Capital\DoPrefundingList.cshtml" />
     <Content Include="Config\MyExcelClass.json" />
-    <Content Include="Config\Obempstaff.config">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="Config\Obempstaff.config" />
     <Content Include="Config\UserMapRole.config">
       <SubType>Designer</SubType>
     </Content>
@@ -3663,11 +3692,27 @@
     <Content Include="Areas\Finance\Views\Pricedetails\Student_arrearage.cshtml" />
     <Content Include="Areas\Finance\Views\Pricedetails\Get_List_Entrydataexport.cshtml" />
     <Content Include="Areas\Finance\Views\Pricedetails\Get_List_GetPreentryfeet.cshtml" />
-    <Content Include="Areas\Teachingquality\Views\ClassSchedule\OddNumberMyclass.cshtml" />
-    <Content Include="Areas\Teachingquality\Views\StudentUnion\Activty.cshtml" />
-    <Content Include="Areas\Teachingquality\Views\StudentUnion\openActivty.cshtml" />
-    <Content Include="Areas\Admin\Views\web.config" />
-    <Content Include="Areas\Admin\Views\XZAdminHome\AdminHomeIndex.cshtml" />
+    <Content Include="Areas\InternalTraining\Views\InternalTra\AddInternalTraIndex.cshtml" />
+    <Content Include="Areas\InternalTraining\Views\InternalTra\InternalTraIndex.cshtml" />
+    <Content Include="Areas\InternalTraining\Views\InternalTra\XiuGaiInternalTraIndex.cshtml" />
+    <Content Include="Areas\InternalTraining\Views\web.config" />
+    <Content Include="Areas\Teaching\Views\SatisfactionSurvey\CanteenSatisfaction.cshtml" />
+    <Content Include="Areas\Teaching\Views\SatisfactionSurvey\ChineseQuestionnaire.cshtml" />
+    <Content Include="Areas\Teaching\Views\SatisfactionSurvey\MathematicsQuestionnaire.cshtml" />
+    <Content Include="Areas\Teaching\Views\SatisfactionSurvey\EnglishQuestionnaire.cshtml" />
+    <Content Include="Areas\Teaching\Views\SatisfactionSurvey\SatisfactionHomePage.cshtml" />
+    <Content Include="Areas\Teaching\assets\css\app.less" />
+    <Content Include="Areas\Teaching\assets\fonts\fontawesome-webfont.eot" />
+    <Content Include="Areas\Teaching\assets\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Areas\Teaching\assets\fonts\fontawesome-webfont.woff" />
+    <Content Include="Areas\Teaching\assets\fonts\fontawesome-webfont.woff2" />
+    <Content Include="Areas\Teaching\assets\fonts\FontAwesome.otf" />
+    <Content Include="Areas\Teaching\Views\SatisfactionSurvey\CanteenExportView.cshtml" />
+    <Content Include="Areas\Teaching\Views\SatisfactionSurvey\SatisfactionDerivationView.cshtml" />
+    <Content Include="Areas\Teaching\Views\SatisfactionSurvey\MySatisfactionCheck.cshtml" />
+    <Content Include="Areas\Teaching\Views\Exam\ProjectDefense.cshtml" />
+    <Content Include="Areas\Teaching\Views\Class\ArrangeTeacherleadClass.cshtml" />
+    <Content Include="Areas\Obtainemployment\Views\BusinessManagement\BusinessInterview.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
@@ -5377,8 +5422,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Areas\Admin\Models\" />
-    <Folder Include="Areas\Admin\Views\Shared\" />
     <Folder Include="Areas\BaseSysManage\Models\" />
     <Folder Include="Areas\BaseSysManage\Views\Shared\" />
     <Folder Include="Areas\Capital\Models\" />
