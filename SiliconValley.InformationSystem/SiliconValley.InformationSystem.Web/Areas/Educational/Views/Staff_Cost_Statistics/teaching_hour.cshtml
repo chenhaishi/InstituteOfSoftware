@@ -51,21 +51,6 @@
                                 </div>
                             </div>
 
-                            <div class="layui-form-item" style="height:50px">
-                                <label class="layui-form-label">单休双休</label>
-                                <div class="layui-input-inline">
-                                    <input type="radio" name="IsDanxiu1" value="0" title="单休">
-                                    <input type="radio" name="IsDanxiu1" value="1" title="双休" checked>
-                                </div>
-                            </div>
-
-                            <div class="layui-form-item" style="display:none">
-                                <label class="layui-form-label">节假日天数</label>
-                                <div class="layui-input-inline">
-                                    <input type="number" name="jiejiari" value="0" style="width:400px" class="layui-input">
-                                </div>
-                            </div>
-
                             <div class="layui-form-item">
                                 <div class="layui-input-block">
                                     <button class="layui-btn layui-btn-radius" lay-submit lay-filter="Btn_Cost1">开始统计</button>&emsp;
@@ -76,59 +61,7 @@
                         </div>
                     </div>
                 </div>
-                @*<div class="layui-colla-item">
-                    <h2 class="layui-colla-title">
-                        有法定节假日
-                        <i class="layui-icon layui-colla-icon"></i>
-                    </h2>
-                    <div class="layui-colla-content layui-show">
-                        <div class="layui-form" action="">
-
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">部门</label>
-                                <div class="layui-input-block">
-                                        @{
-                                            foreach (var item in ViewBag.deps as List<Department>)
-                                            {
-                                                <input type="checkbox" name="DeptID" value="@item.DeptId" title="@item.DeptName">
-                                            }
-                                        }
-                                </div>
-                            </div>
-
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">日期</label>
-                                <div class="layui-input-inline">
-                                    <input type="text" class="layui-input" name="date" style="width:400px" id="test12" placeholder="yyyy年MM月">
-                                </div>
-                            </div>
-
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">节假日天数</label>
-                                <div class="layui-input-inline">
-                                    <input type="number" name="jiejiari" class="layui-input" style="width:400px">
-                                </div>
-                            </div>
-
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">单休双休</label>
-                                <div class="layui-input-inline">
-                                    <input type="radio" name="IsDanxiu" value="0" title="单休">
-                                    <input type="radio" name="IsDanxiu" value="1" title="双休" checked>
-                                </div>
-                            </div>
-
-                            <div class="layui-form-item">
-                                <div class="layui-input-block">
-                                    <button class="layui-btn layui-btn-radius" lay-submit lay-filter="Btn_Cost">开始统计</button>&emsp;
-                                    <button class="layui-btn layui-btn-radius layui-btn-normal" lay-submit lay-filter="Btn_SaveExcel">下载文件</button>&emsp;
-                                    <button class="layui-btn layui-btn-radius layui-btn-warm" lay-submit lay-filter="Btn_UpExcel">上传保存文件</button>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>*@
+                
             </div>
     </div>
 </body>
@@ -203,16 +136,13 @@
                     arr[i] = $(this).val();
                 });
                 var index = layer.load();
-                console.log(arr);
                 $.ajax({
                     url: "/Educational/Staff_Cost_Statistics/TempFunction",
                     type: "POST",
                     traditional:true,
                     data: {
                         date: value.date,
-                        DeptID: arr,
-                        IsDanxiu: value.IsDanxiu1,
-                        jiejiari: value.jiejiari
+                        DeptID: arr
                     },
                     success: function (res) {
                         layer.close(index);
@@ -267,12 +197,12 @@
         //});
 
         form.on('submit(Btn_SaveExcel1)', function (data) {
+            var brand4 = $("#test11").val().substr($("#test11").val().length - 3);
             $.ajax({
                 url: '/Educational/Staff_Cost_Statistics/CostDataToExcel',
                 data: data.field,
                 type: 'post',
                 success: function (res) {
-                    console.log(res);
                     //列标题，逗号隔开，每一个逗号就是隔开一个单元格
                     let str = ``;
                     //增加\t为了不让表格显示科学计数法或者其他格式
@@ -296,30 +226,16 @@
                     var link = document.createElement("a");
                     link.href = uri;
                     //对下载的文件命名
-                    link.download = "课时费.xls";
+
+
+                      link.download = "教务处" + brand4+"课时费总表.xls";
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
                 }
             });
         });
-        //上传将文件保存到百度云对象储存
-        //form.on('submit(Btn_UpExcel)', function (data) {
-        //    $.ajax({
-        //        url: "/Educational/Staff_Cost_Statistics/UpExcel_Bos",
-        //        type: "post",
-        //        data: {
-        //            deptid: $("#dep_select").val(),
-        //            date: $("#test11").val()
-        //        },
-        //        success: function (res) {
-        //            layer.alert(res.Msg, {
-        //                skin: 'layui-layer-molv' //样式类名
-        //                , closeBtn: 0
-        //            });
-        //        }
-        //    });
-        //});
+       
         //上传将文件保存到百度云对象储存
         form.on('submit(Btn_UpExcel1)', function (data) {
             $.ajax({

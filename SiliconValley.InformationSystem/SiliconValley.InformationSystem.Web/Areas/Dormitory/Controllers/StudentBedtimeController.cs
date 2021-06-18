@@ -497,11 +497,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.Dormitory.Controllers
                             Maintain = endtime,
                             DormId = DorId,
                             StuNumber = stuNumber[i],
+                            //ChuangNumber = accinfo.BedId,
                             MaintainGood = Price_List.ID,
                             GoodPrice = months * 10,
                             MaintainState = 1,
                             CreaDate = DateTime.Now,
                             RepairContent = "每月扣除的保险柜金额",
+                            CompleteTime = DateTime.Now,
                             EntryPersonnel = UserName.EmpNumber
                         };
                         Dormitory_Entity.Insert(dormitory);

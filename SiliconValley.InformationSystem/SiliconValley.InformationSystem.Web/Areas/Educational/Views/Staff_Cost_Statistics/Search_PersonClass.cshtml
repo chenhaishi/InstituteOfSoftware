@@ -45,20 +45,20 @@
                 </div>
             </div>
 
-            <div class="layui-form-item">
+            @*<div class="layui-form-item">
                 <label class="layui-form-label">节假日天数</label>
                 <div class="layui-input-inline" style="width:400px">
                     <input type="number" name="jiejiari" value="0" class="layui-input">
                 </div>
-            </div>
+            </div>*@
 
-            <div class="layui-form-item">
+            @*<div class="layui-form-item">
                 <label class="layui-form-label">单休双休</label>
                 <div class="layui-input-inline" style="width:400px">
                     <input type="radio" name="IsDanxiu1" value="0" title="单休">
                     <input type="radio" name="IsDanxiu1" value="1" title="双休" checked>
                 </div>
-            </div>
+            </div>*@
 
             <div class="layui-form-item">
                 <div class="layui-input-block">
@@ -129,9 +129,7 @@
                 url: '/Educational/Staff_Cost_Statistics/PersonalCostStatics1',
                 where: { //设定异步数据接口的额外参数，任意设
                     "empid": data.dep_per,
-                    "date": data.date,
-                    "IsDanxiu": data.IsDanxiu1,
-                    "jiejiari": data.jiejiari
+                    "date": data.date
                 }
             });
         });

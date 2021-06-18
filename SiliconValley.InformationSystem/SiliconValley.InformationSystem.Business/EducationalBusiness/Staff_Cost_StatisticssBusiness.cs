@@ -82,7 +82,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         /// <param name="dt">日期</param>
         /// <param name="WorkDay">工作日</param>
         /// <returns></returns>
-        public List<Staff_CostView> CostTimeFee(List<EmployeesInfo> Emp_List, DateTime dt, int WorkDay)
+        public List<Staff_CostView> CostTimeFee(List<EmployeesInfo> Emp_List, DateTime dt)
         {
             List<Staff_CostView> staff_list = new List<Staff_CostView>();
 
@@ -254,6 +254,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 }
                 //课时费计算总额    //底课时
 
+                //项目答辩课时
                 List<Reconcile> dabianList = mydata.Where(a => a.Curriculum_Id == "项目答辩").ToList();//计算项目答辩的课时
                 for (int k = 0; k < dabianList.Count; k++)
                 {
@@ -267,6 +268,50 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                         SecondStage += 2;
                     }
                 }
+
+
+                //加强课课时计算
+                List<Reconcile> jiaqiangList = mydata.Where(a=>a.Curriculum_Id == "加强课").ToList();
+                for (int k = 0; k < jiaqiangList.Count; k++)
+                {
+                    ClassSchedule s = ClassSchedule_Entity.GetEntity(jiaqiangList[k].ClassSchedule_Id);
+                    Grand grand = Grand_Entity.GetEntity(s.grade_Id);
+                    if (grand.GrandName.Contains("S1") || grand.GrandName.Contains("S2") || grand.GrandName.Contains("Y1"))
+                    {
+                        if (jiaqiangList[k].Curse_Id.Contains("12") || jiaqiangList[k].Curse_Id.Contains("34")) {
+                            FirstStage += 2;
+                        } else if (jiaqiangList[k].Curse_Id == "上午" || jiaqiangList[k].Curse_Id == "下午") {
+                            FirstStage += 4;
+                        } else if (jiaqiangList[k].Curse_Id == "上午3节" || jiaqiangList[k].Curse_Id == "下午3节") {
+                            FirstStage += 3;
+                        } else if (jiaqiangList[k].Curse_Id == "上午1节" || jiaqiangList[k].Curse_Id == "下午1节") {
+                            FirstStage += 1;
+                        }
+                    }
+                    else if (grand.GrandName.Contains("S3"))
+                    {
+                        if (jiaqiangList[k].Curse_Id.Contains("12") || jiaqiangList[k].Curse_Id.Contains("34"))
+                        {
+                            SecondStage += 2;
+                        }
+                        else if (jiaqiangList[k].Curse_Id == "上午" || jiaqiangList[k].Curse_Id == "下午")
+                        {
+                            SecondStage += 4;
+                        }
+                        else if (jiaqiangList[k].Curse_Id == "上午3节" || jiaqiangList[k].Curse_Id == "下午3节")
+                        {
+                            SecondStage += 3;
+                        }
+                        else if (jiaqiangList[k].Curse_Id == "上午1节" || jiaqiangList[k].Curse_Id == "下午1节")
+                        {
+                            SecondStage += 1;
+                        }
+                    } else if (grand.GrandName.Contains("S4")) {
+
+                    }
+                }
+
+
 
                 if (FirstStage > 0)
                 {
@@ -334,7 +379,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 }
 
 
-                //班主任值班
+                //班主任值班   //以及班主任的班级升学活动计算
                 if (EmployeesInfoManage_Entity.GetDeptByEmpid(Emp_List[i].EmployeeId).DeptName.Contains("教质部"))
                 {
                     string TearcherNightsq = "select * from TeacherNightView where Tearcher_Id = " + Emp_List[i].EmployeeId + " and YEAR(OrwatchDate)=" + dt.Year + " and MONTH(OrwatchDate)=" + dt.Month + " and TypeName='班主任晚自习' and IsDelete=0";
@@ -344,6 +389,27 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                     string TearcherNightsq1 = "select * from TeacherNightView where Tearcher_Id = " + Emp_List[i].EmployeeId + " and YEAR(OrwatchDate)=" + dt.Year + " and MONTH(OrwatchDate)=" + dt.Month + " and TypeName='周末值班' and IsDelete=0";
                     List<TeacherNight> TeacherNightList1 = TeacherNight_Entity.GetListBySql<TeacherNight>(TearcherNightsq1);
                     Duty_fee += TeacherNightList1.Count * 100;
+
+                    //计算班级升学活动
+                    List<Reconcile> shengxueList = mydata.Where(a => a.Curriculum_Id == "班级升学活动").ToList();//计算班级升学活动
+                    for (int k = 0; k < shengxueList.Count; k++)
+                    {
+                        if (shengxueList[k].Curse_Id.Contains("12") || shengxueList[k].Curse_Id.Contains("34")) {
+                            OtherStage += 2;
+                        }
+                        else if (shengxueList[k].Curse_Id == "上午" || shengxueList[k].Curse_Id == "下午")
+                        {
+                            OtherStage += 4;
+                        }
+                        else if (shengxueList[k].Curse_Id == "上午3节" || shengxueList[k].Curse_Id == "下午3节")
+                        {
+                            OtherStage += 3;
+                        }
+                        else if (shengxueList[k].Curse_Id == "上午1节" || shengxueList[k].Curse_Id == "下午1节")
+                        {
+                            OtherStage += 1;
+                        }
+                    }
                 }
                 #endregion
 
