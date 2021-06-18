@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Data.Linq;
@@ -528,31 +529,31 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         }
 
         [HttpGet]
-        public ActionResult PersonalCostStatics1(string empid, string date, string IsDanxiu, int jiejiari)
+        public ActionResult PersonalCostStatics1(string empid, string date)
         {
 
 
             AjaxResult result = new AjaxResult();
             DateTime dt = Convert.ToDateTime(date.Substring(0, 4) + "-" + date.Substring(5, 2));
 
-            int WorkDay = 0;
-            if (IsDanxiu == "0")
-            {
-                WorkDay = WorkDaysOfyearmonth(dt.Year, dt.Month, true);
-            }
-            else
-            {
-                WorkDay = WorkDaysOfyearmonth(dt.Year, dt.Month, false);
-            }
+            //int WorkDay = 0;
+            //if (IsDanxiu == "0")
+            //{
+            //    WorkDay = WorkDaysOfyearmonth(dt.Year, dt.Month, true);
+            //}
+            //else
+            //{
+            //    WorkDay = WorkDaysOfyearmonth(dt.Year, dt.Month, false);
+            //}
 
             //节假日天数 >0  用工作日天数减去节假日天数
-            if (jiejiari > 0)
-            {
-                WorkDay = WorkDay - jiejiari;
-            }
+            //if (jiejiari > 0)
+            //{
+            //    WorkDay = WorkDay - jiejiari;
+            //}
             string sql = "select * from EmployeesInfo where EmployeeId = " + empid + "";
             List<EmployeesInfo> Emp_List = EmployeesInfoManage_Entity.GetListBySql<EmployeesInfo>(sql);
-            List<Staff_CostView> staff_list = db_staf_Cost.CostTimeFee(Emp_List, dt, WorkDay);
+            List<Staff_CostView> staff_list = db_staf_Cost.CostTimeFee(Emp_List, dt);
             var data = new
             {
                 code = 0,
@@ -751,25 +752,25 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
         /// <param name="jiejiari">节假日天数</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult TempFunction(string date, int[] DeptID, string IsDanxiu, int jiejiari)
+        public ActionResult TempFunction(string date, int[] DeptID)
         {
             DateTime dt = Convert.ToDateTime(date.Substring(0, 4) + "-" + date.Substring(5, 2));
 
-            int WorkDay = 0;
-            if (IsDanxiu == "0")
-            {
-                WorkDay = WorkDaysOfyearmonth(dt.Year, dt.Month, true);
-            }
-            else
-            {
-                WorkDay = WorkDaysOfyearmonth(dt.Year, dt.Month, false);
-            }
+            //int WorkDay = 0;
+            //if (IsDanxiu == "0")
+            //{
+            //    WorkDay = WorkDaysOfyearmonth(dt.Year, dt.Month, true);
+            //}
+            //else
+            //{
+            //    WorkDay = WorkDaysOfyearmonth(dt.Year, dt.Month, false);
+            //}
 
-            //节假日天数 >0  用工作日天数减去节假日天数
-            if (jiejiari > 0)
-            {
-                WorkDay = WorkDay - jiejiari;
-            }
+            ////节假日天数 >0  用工作日天数减去节假日天数
+            //if (jiejiari > 0)
+            //{
+            //    WorkDay = WorkDay - jiejiari;
+            //}
 
             List<EmployeesInfo> Emp_List = new List<EmployeesInfo>();
 
@@ -778,7 +779,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                 Emp_List.AddRange(EmployeesInfoManage_Entity.GetEmpsByDeptid(DeptID[i]));
             }
 
-            List<Staff_CostView> staff_list = db_staf_Cost.CostTimeFee(Emp_List, dt, WorkDay);
+            List<Staff_CostView> staff_list = db_staf_Cost.CostTimeFee(Emp_List, dt);
 
             AjaxResult ajaxResult = new AjaxResult();
             ajaxResult.Msg = "统计完成";

@@ -98,12 +98,7 @@
                      
                 } else if (obj.event === 'del') {
                     layer.confirm('确定结束入住吗？', function (index) {
-                        //layer.open({
-                        //    type: 2,
-                        //    content: ' /Dormitory/StudentBedtime/ChangDorView/' + data.StuNumber,
-                        //    area: ['1000px', '600px']
-                        //});
-
+                        
                         $.ajax({
                             url: '/Dormitory/StudentBedtime/EndFunction',
                             type: 'POST',
@@ -130,20 +125,10 @@
     });
 
     function SercherFuntion() {
-        console.log($("select[name='classNumber']").val());
             table.reload('StudentTable', {
                 url: '/Dormitory/StudentBedtime/StudentChangDorData'
                 , where: { "classNumber": $("select[name='classNumber']").val() }
             });
-            //$.ajax({
-            //    url: '/Dormitory/StudentBedtime/StudentChangDorData',
-            //    data: { "stuname": $("#stuName").val() },
-            //    success: function (res) {
-
-            //    }
-            //});
-      
-
     }
 
 </script>

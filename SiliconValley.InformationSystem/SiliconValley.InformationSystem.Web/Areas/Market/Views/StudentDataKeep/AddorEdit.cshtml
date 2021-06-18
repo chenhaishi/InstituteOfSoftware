@@ -115,7 +115,7 @@
         </div>
         <div class="layui-row layui-form-item">
             <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
-                <label class="layui-form-label">电 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 话:</label>
+                <label class="layui-form-label needTextColor">电 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 话:</label>
                 <div class="layui-input-block">
                     @Html.TextBoxFor(s => s.StuPhone, new Dictionary<string, object>() { { "placeholder", "联系电话" }, { "class", "layui-input linu" } ,{ "lay-verify" , "Replay" } })
                 </div>
@@ -454,8 +454,8 @@
 
         //提交数据
         form.on('submit(tijiao)', function (data) {            
-            if (data.field.IdCard == "") {
-                layer.msg("身份证必须填", { icon: 2, shade: 0.8 });
+            if (data.field.StuPhone == "" && data.field.StuWeiXin == "" && data.field.StuQQ == "") {
+                layer.msg("电话、微信、QQ至少要填一个！", { icon: 2, shade: 0.8 });
             } else if (data.field.StuAddress == "" && data.field.StuSchoolName == "") {
                 layer.msg("籍贯、学校！至少要填一个！", { icon: 2, shade: 0.8 });
             } else if (data.field.EmployeesInfo_Id == "") {
