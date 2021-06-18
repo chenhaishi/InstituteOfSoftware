@@ -8,6 +8,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Admin.Controllers
 {
     public class XZAdminHomeController : Controller
     {
+        
         // GET: Admin/XZAdminHome
         public ActionResult AdminHomeIndex()
         {
