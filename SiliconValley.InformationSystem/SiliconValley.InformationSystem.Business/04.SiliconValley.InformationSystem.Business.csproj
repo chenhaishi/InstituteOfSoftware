@@ -114,6 +114,10 @@
     <Compile Include="00Cache\BaseCache\BaseCache.T.cs" />
     <Compile Include="00Cache\BaseCache\IBaseCache.T.cs" />
     <Compile Include="00Cache\Base_UserModelCache.cs" />
+    <Compile Include="Admin\HSFAdminHome_Businesscs.cs" />
+    <Compile Include="Admin\HTAdminHome_Business.cs" />
+    <Compile Include="Admin\XYKAdminHome_Business.cs" />
+    <Compile Include="Admin\ZYKAdminHome_Business.cs" />
     <Compile Include="AttendanceAnormalyBusiness\AttendanceAnormalyDetailsManage.cs" />
     <Compile Include="AttendanceAnormalyBusiness\AttendanceAnormalyManage.cs" />
     <Compile Include="BaiduAPI_Business\IdentificationBusines.cs" />
