@@ -35,7 +35,8 @@
                 <input type="file" id="file" name="excelfile" />
             </div>
         </div>
-        <a href="/Personnelmatters/AttendanceStatistics/DownFile" style="margin-left:30px;" class="layui-btn"><i class="layui-icon">&#xe601;</i>模板下载</a>
+        @*<a href="/Personnelmatters/AttendanceStatistics/DownFile" style="margin-left:30px;" class="layui-btn"><i class="layui-icon">&#xe601;</i>模板下载</a>*@
+        <a href="/uploadXLSXfile/Template/SocialSecurity.xls" download="SocialSecurity.xls" style="margin-left:30px;" class="layui-btn"><i class="layui-icon">&#xe601;</i>模板下载</a>
         <hr />
 
         <div id="tipMsg">
@@ -128,28 +129,28 @@
                         layer.close(loadindex);
                         if (data.Success) {
 
-                        //    var msg = "";
-                        //    if (data.ErrorCode == 100) {//没有一条数据出错
-                        //         msg = "录入成功!  录入数量：" + data.Msg;
-                        //    } else if (data.ErrorCode == 200) {
-                        //        var errdata = data.Data;//录入错误的数据
-                        //        var detailerrdata = "";
-                        //        for (var i = 0; i < errdata.length; i++) {
-                        //            detailerrdata += errdata[i].empname + "的考勤数据录入出错，原因是：" + errdata[i].errorExplain + "<br/>";
-                        //        };
-                        //         msg = "成功录入" + data.Msg + "条数据" + errdata.length +
-                        //            "条数据录入失败。失败数据分析如下：</br>" + detailerrdata;
-                        //    }
+                            var msg = "";
+                            if (data.ErrorCode == 100) {//没有一条数据出错
+                                 msg = "录入成功!  录入数量：" + data.Msg;
+                            } else if (data.ErrorCode == 200) {
+                                var errdata = data.Data;//录入错误的数据
+                                var detailerrdata = "";
+                                for (var i = 0; i < errdata.length; i++) {
+                                    detailerrdata += errdata[i].empname + "的数据录入出错，原因是：" + errdata[i].errorExplain + "<br/>";
+                                };
+                                 msg = "成功录入" + data.Msg + "条数据" + errdata.length +
+                                    "条数据录入失败。失败数据分析如下：</br>" + detailerrdata;
+                            }
                         //    //098
                             layer.alert(msg, { icon: 1 }, function () {
-                                //// window.document.location.reload();
-                                //var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                                //window.parent.location.reload();
-                                //parent.layer.close(index);
+                                 window.document.location.reload();
+                                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                window.parent.location.reload();
+                                parent.layer.close(index);
 
                             });
-                        //} else {
-                        //    layer.alert(data.Msg, { icon: 2 });
+                        } else {
+                            layer.alert(data.Msg, { icon: 2 });
                         }
 
 
