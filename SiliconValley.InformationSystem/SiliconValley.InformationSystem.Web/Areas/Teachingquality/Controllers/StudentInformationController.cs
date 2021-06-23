@@ -26,7 +26,7 @@ using BaiduBce;
 using BaiduBce.Auth;
 using BaiduBce.Services.Bos.Model;
 using SiliconValley.InformationSystem.Entity.ViewEntity;
-using SiliconValley.InformationSystem.Business.JuniorCollegeBusinesse;
+using SiliconValley.InformationSystem.Business.CollegeDegreeBusinesse;
 
 namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
 {  //学员信息模块
