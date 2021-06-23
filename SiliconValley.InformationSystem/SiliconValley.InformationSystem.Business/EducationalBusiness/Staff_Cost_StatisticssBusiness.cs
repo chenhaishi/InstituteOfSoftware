@@ -311,6 +311,54 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                     }
                 }
 
+                //计算软件工厂的课时，先S4课时减去软件工厂课时，然后加上软件工厂课时乘1.3倍
+                int ruanjianclassTime = 0;//软件工厂且高于40人的课时变量
+                List<Reconcile> ruanjianList = mydata.Where(a=>a.Curriculum_Id == "软件工厂").ToList();//获取整个月的软件工厂排课
+                if (ruanjianList.Count>0) {
+                    
+                var ruanjianGroup = (
+                    from m in ruanjianList
+                    group m by m.AnPaiDate into list
+                    select list).ToList();
+                for (int k = 0; k < ruanjianGroup.Count; k++)//循环某一天的软件工厂课程
+                {
+                    List<Reconcile> Recon = ruanjianList.Where(a=>a.AnPaiDate == ruanjianGroup[k].Key).ToList();
+                    var Group = (
+                    from m in Recon
+                    group m by m.Curse_Id into list
+                    select list).ToList();
+
+                    for (int g = 0; g < Group.Count; g++)//循环上课时间段
+                    {
+                        List<Reconcile> CurseList = Recon.Where(a=>a.Curse_Id == Group[g].Key).ToList();//获取某一个上个时间段的数据，例如上午
+                        for (int h = 0; h < CurseList.Count; h++)//循环上午或者下午时间段的数据
+                        {
+                            int classcount = 0;//某一时间段上课的总人数
+                            //获取班级编号
+                            string classschsql = "select * from ClassSchedule where id="+CurseList[h].ClassSchedule_Id+ " and ClassstatusID is null";
+                            ClassSchedule classSchedule = ClassSchedule_Entity.GetListBySql<ClassSchedule>(classschsql).FirstOrDefault();
+
+                            //获取班级有多少个学生
+                            string Schsql = "select * from ScheduleForTrainees where ClassID = '"+classSchedule.ClassNumber+"' and CurrentClass = 1";
+                            List<ScheduleForTrainees> scheduleFor = ScheduleForTrainees_Entity.GetListBySql<ScheduleForTrainees>(Schsql);
+                            classcount += scheduleFor.Count;
+                            if (classcount>=40) {
+                                if (Group[g].Key.Contains("12") || Group[g].Key.Contains("34")) {
+                                    ruanjianclassTime += 2;
+                                } else if (Group[g].Key == "上午" || Group[g].Key == "下午") {
+                                    ruanjianclassTime += 4;
+                                } else if (Group[g].Key == "上午3节" || Group[g].Key == "下午3节") {
+                                    ruanjianclassTime += 3;
+                                } else if (Group[g].Key == "上午1节" || Group[g].Key == "下午1节") {
+                                    ruanjianclassTime += 1;
+                                }
+                            }
+                        }
+                    }
+                }
+                }
+                ThreeStage = ThreeStage - ruanjianclassTime;
+                ThreeStage = ThreeStage + Convert.ToInt16(ruanjianclassTime * 1.3);
 
 
                 if (FirstStage > 0)
@@ -351,7 +399,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 }
 
 
-                #region//计算值班费  班主任及教员值班计算
+                #region//计算值班费  班主任及教员值班计算   班级升学活动
                 //查询当年 年月的值班数据   教员值班
                 string TeacherAddsql = @"select * from TeacherAddorBeonDutyView  where YEAR(Anpaidate)=" + dt.Year + "" +
                     " and Month(Anpaidate)=" + dt.Month + " and IsDels=0";

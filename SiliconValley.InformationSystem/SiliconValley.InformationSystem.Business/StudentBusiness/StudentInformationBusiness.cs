@@ -244,7 +244,7 @@ namespace SiliconValley.InformationSystem.Business.StudentBusiness
             string n = date.Year.ToString().Substring(2);//获取年份
             //学员总数Mylist("StudentInformation")
             var laststr = this.GetList().Where(a => Convert.ToDateTime(a.InsitDate).Year.ToString("yyyy-MM-dd").Substring(2).ToString() == n).Count() + 1;
-            string sfz = IDnumber.Substring(6, 8);
+            string sfz = IDnumber.Substring(14,4);
             string y = Month(Convert.ToInt32(date.Month)).ToString();
             // string count = Count().ToString();
             string count = laststr.ToString();
