@@ -3673,6 +3673,13 @@
     <Content Include="Areas\Obtainemployment\Views\BusinessManagement\BusinessInterview.cshtml" />
     <Content Include="Areas\Admin\Views\web.config" />
     <Content Include="Areas\Admin\Views\XZAdminHome\AdminHomeIndex.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\EmployeesInfo\AddressUpload.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\EmplSalaryEmbody\Import.cshtml" />
+    <Content Include="Areas\MyEducation\Views\JuniorCollege\Index.cshtml" />
+    <Content Include="Areas\MyEducation\Views\JuniorCollege\InsertNotRegisteredForJuniorCollege.cshtml" />
+    <Content Include="Areas\MyEducation\Views\JuniorCollege\JuniorCollegeEdit.cshtml" />
+    <Content Include="Areas\MyEducation\Views\Education\AchievementDetails.cshtml" />
+    <Content Include="Areas\MyEducation\Views\Education\AchievementImport.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
@@ -5371,15 +5378,16 @@
     <Content Include="Views\Home\Scores.cshtml" />
     <Content Include="uploadXLSXfile\ConsultUploadfile\Kaoqin\kaoqin.xlsx" />
     <Content Include="uploadXLSXfile\Zhiban\班主任值班模板.xlsx" />
-    <Content Include="uploadXLSXfile\Template\AttendenceTemplate.xlsx" />
     <Content Include="uploadXLSXfile\Template\班主任值班模板.xlsx" />
-    <Content Include="uploadXLSXfile\Template\OvertimeTemplate.xlsx" />
-    <Content Include="uploadXLSXfile\Template\绩效模板.xlsx" />
     <Content Include="uploadXLSXfile\Template\Scoretemplate.xls" />
     <Content Include="Scripts\laydate\theme\default\font\iconfont.eot" />
     <Content Include="Scripts\laydate\theme\default\font\iconfont.ttf" />
     <Content Include="Scripts\laydate\theme\default\font\iconfont.woff" />
     <Content Include="uploadXLSXfile\Template\SocialSecurity.xls" />
+    <Content Include="uploadXLSXfile\Template\AttendenceTemplate.xls" />
+    <Content Include="uploadXLSXfile\Template\AddressInformation.xls" />
+    <Content Include="uploadXLSXfile\Template\OvertimeTemplate.xls" />
+    <Content Include="uploadXLSXfile\Template\绩效模板.xls" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
