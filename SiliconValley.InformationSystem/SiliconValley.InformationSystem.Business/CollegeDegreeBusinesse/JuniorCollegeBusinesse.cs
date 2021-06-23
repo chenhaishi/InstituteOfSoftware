@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SiliconValley.InformationSystem.Business.JuniorCollegeBusinesse
+namespace SiliconValley.InformationSystem.Business.CollegeDegreeBusinesse
 {
    public  class JuniorCollegeBusinesse:BaseBusiness<JuniorCollege>
     {
@@ -265,7 +265,10 @@ namespace SiliconValley.InformationSystem.Business.JuniorCollegeBusinesse
             }
             return result;
         }
-
+        public int NumberOfJuniorCollegeStudents()
+        {
+            return this.GetList().Where(i => i.IsDelete == false).Count();
+        }
 
     }
 }

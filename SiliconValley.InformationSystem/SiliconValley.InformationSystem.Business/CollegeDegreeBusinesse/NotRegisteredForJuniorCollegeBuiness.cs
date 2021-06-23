@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SiliconValley.InformationSystem.Business.JuniorCollegeBusinesse
+namespace SiliconValley.InformationSystem.Business.CollegeDegreeBusinesse
 {
    public class NotRegisteredForJuniorCollegeBuiness:BaseBusiness<NotRegisteredForJuniorCollege>
     {
