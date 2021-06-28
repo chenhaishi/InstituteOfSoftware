@@ -335,7 +335,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Personnelmatters.Controllers
                 so.IsDel = soc.IsDel;
                 social.Update(so);
                 rc.RemoveCache("InRedisSocialSecurityData");
-
+                 
                 EmplSalaryEmbodyManage esemanage = new EmplSalaryEmbodyManage();
                 var emplSalary=  esemanage.GetEseByEmpid(so.EmployeeId);
                 emplSalary.PersonalSocialSecurity = s.PersonalTotal;

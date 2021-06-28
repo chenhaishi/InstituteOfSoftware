@@ -1,6 +1,6 @@
 ﻿using SiliconValley.InformationSystem.Business;
 using SiliconValley.InformationSystem.Business.ClassSchedule_Business;
-using SiliconValley.InformationSystem.Business.JuniorCollegeBusinesse;
+using SiliconValley.InformationSystem.Business.CollegeDegreeBusinesse;
 using SiliconValley.InformationSystem.Business.StudentBusiness;
 using SiliconValley.InformationSystem.Entity.Entity;
 using SiliconValley.InformationSystem.Entity.MyEntity;

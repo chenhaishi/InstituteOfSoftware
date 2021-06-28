@@ -259,8 +259,8 @@
     <Compile Include="FinaceBusines\CostitemsBusiness.cs" />
     <Compile Include="FinanceBusiness\FinanceModelBusiness.cs" />
     <Compile Include="ipRequestBusiness\ClientBusiness.cs" />
-    <Compile Include="JuniorCollegeBusinesse\JuniorCollegeBusinesse.cs" />
-    <Compile Include="JuniorCollegeBusinesse\NotRegisteredForJuniorCollegeBuiness.cs" />
+    <Compile Include="CollegeDegreeBusinesse\JuniorCollegeBusinesse.cs" />
+    <Compile Include="CollegeDegreeBusinesse\NotRegisteredForJuniorCollegeBuiness.cs" />
     <Compile Include="Logger\ElasticSearchLogger.cs" />
     <Compile Include="Logger\ILogger.cs" />
     <Compile Include="Logger\LoggerFactory.cs" />
