@@ -69,13 +69,13 @@
     <div id="shouju" style="position:absolute;">
         <img src="~/Areas/Finance/images/shouju.jpg" style="width:672px;z-index:0;margin-top:-32px;margin-left:29px;" />
     </div>
-    <div style="z-index:999;position:absolute;top:73px;left:10px;height:200px;" id="text">
+    <div style="z-index:999;position:absolute;top:66px;left:10px;height:200px;" id="text">
 
-        <div id="AddDate" style="position:absolute;left:540px;top:16px;">   <input type="text" class="layui-input" id="AddDate" placeholder="yyyy-MM--dd"></div>
-        <div id="Name" style="position:absolute;left:93px;top:38px;"></div>
-        <div id="classa" style="position:absolute;left:218px;top:38px;"></div>
-        <div id="GrandName" style="position:absolute;left:340px;top:38px;"></div>
-        <div id="identitydocument" style="position:absolute;left:490px;top:38px;"></div>
+        <div id="AddDate" style="position:absolute;left:510px;top:16px;">   <input type="text" class="layui-input" id="AddDate" placeholder="yyyy-MM--dd"></div>
+        <div id="Name" style="position:absolute;left:93px;top:42px;"></div>
+        <div id="classa" style="position:absolute;left:218px;top:42px;"></div>
+        <div id="GrandName" style="position:absolute;left:340px;top:42px;"></div>
+        <div id="identitydocument" style="position:absolute;left:490px;top:42px;"></div>
         <div style="height:214px">
             <table cellpadding="1" style="width:790px;">
                 <tr>
@@ -107,7 +107,7 @@
 
             </table>
         </div>
-        <div style="position:absolute;top:267px;left:294px;">
+        <div style="position:absolute;top:275px;left:294px;">
             <textarea id="Remarks" style="height:80px;width:130px;"></textarea>
 
         </div>
@@ -214,7 +214,7 @@
 
     if (count < 3 && count != 0) {
      
-        $("#xuezai").append($('<tr> <td colspan="4" style="text-align:center;"><div>' + ostitemsName.substring(0, ostitemsName.length - 1) + '</div></td> <td colspan="4" style="text-align:inherit;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + Amountofmoneys + '.00</td></tr>'));
+        $("#xuezai").append($('<tr> <td colspan="4" style="text-align:center;"><div>' + ostitemsName.substring(0, ostitemsName.length - 1) + '</div></td> <td colspan="4" style="text-align:inherit;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + Amountofmoneys + '.00</td></tr>'));
 
     //    $("#text tbody").before($('<tr style="text-align:center;"><td colspan="6">' + ostitemsName.substring(0, ostitemsName.length - 1) + '</td><td colspan="4">' + Amountofmoneys + ".00" + '</td></tr>'));
     }

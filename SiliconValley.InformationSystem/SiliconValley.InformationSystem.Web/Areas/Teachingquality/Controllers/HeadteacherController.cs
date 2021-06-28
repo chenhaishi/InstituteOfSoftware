@@ -50,7 +50,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
             if (dbtext.GetList().Where(a => a.informatiees_Id == user.EmpNumber).FirstOrDefault() != null)
             {
                 //employeesInfoManage.GetDeptByEmpid(user.EmpNumber).DeptId;//部门
-                list= dbtext.GetList().Where(a =>  employeesInfoManage.GetDeptByEmpid(a.informatiees_Id).DeptId == employeesInfoManage.GetDeptByEmpid(user.EmpNumber).DeptId&&a.IsDelete==false).ToList();
+                list= dbtext.GetList().Where(a =>  employeesInfoManage.GetDeptByEmpid(a.informatiees_Id).DeptId == employeesInfoManage.GetDeptByEmpid(user.EmpNumber).DeptId&&a.IsDelete==false ).ToList();
             }
                 //    List<EmployeesInfo> EmployeesInfoList = new List<EmployeesInfo>();
                 var emp=   employeesInfoManage.GetList();

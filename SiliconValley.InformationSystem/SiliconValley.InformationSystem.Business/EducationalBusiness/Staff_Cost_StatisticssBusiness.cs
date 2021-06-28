@@ -82,7 +82,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
         /// <param name="dt">日期</param>
         /// <param name="WorkDay">工作日</param>
         /// <returns></returns>
-        public List<Staff_CostView> CostTimeFee(List<EmployeesInfo> Emp_List, DateTime dt, int WorkDay)
+        public List<Staff_CostView> CostTimeFee(List<EmployeesInfo> Emp_List, DateTime dt)
         {
             List<Staff_CostView> staff_list = new List<Staff_CostView>();
 
@@ -254,6 +254,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 }
                 //课时费计算总额    //底课时
 
+                //项目答辩课时
                 List<Reconcile> dabianList = mydata.Where(a => a.Curriculum_Id == "项目答辩").ToList();//计算项目答辩的课时
                 for (int k = 0; k < dabianList.Count; k++)
                 {
@@ -267,6 +268,98 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                         SecondStage += 2;
                     }
                 }
+
+
+                //加强课课时计算
+                List<Reconcile> jiaqiangList = mydata.Where(a=>a.Curriculum_Id == "加强课").ToList();
+                for (int k = 0; k < jiaqiangList.Count; k++)
+                {
+                    ClassSchedule s = ClassSchedule_Entity.GetEntity(jiaqiangList[k].ClassSchedule_Id);
+                    Grand grand = Grand_Entity.GetEntity(s.grade_Id);
+                    if (grand.GrandName.Contains("S1") || grand.GrandName.Contains("S2") || grand.GrandName.Contains("Y1"))
+                    {
+                        if (jiaqiangList[k].Curse_Id.Contains("12") || jiaqiangList[k].Curse_Id.Contains("34")) {
+                            FirstStage += 2;
+                        } else if (jiaqiangList[k].Curse_Id == "上午" || jiaqiangList[k].Curse_Id == "下午") {
+                            FirstStage += 4;
+                        } else if (jiaqiangList[k].Curse_Id == "上午3节" || jiaqiangList[k].Curse_Id == "下午3节") {
+                            FirstStage += 3;
+                        } else if (jiaqiangList[k].Curse_Id == "上午1节" || jiaqiangList[k].Curse_Id == "下午1节") {
+                            FirstStage += 1;
+                        }
+                    }
+                    else if (grand.GrandName.Contains("S3"))
+                    {
+                        if (jiaqiangList[k].Curse_Id.Contains("12") || jiaqiangList[k].Curse_Id.Contains("34"))
+                        {
+                            SecondStage += 2;
+                        }
+                        else if (jiaqiangList[k].Curse_Id == "上午" || jiaqiangList[k].Curse_Id == "下午")
+                        {
+                            SecondStage += 4;
+                        }
+                        else if (jiaqiangList[k].Curse_Id == "上午3节" || jiaqiangList[k].Curse_Id == "下午3节")
+                        {
+                            SecondStage += 3;
+                        }
+                        else if (jiaqiangList[k].Curse_Id == "上午1节" || jiaqiangList[k].Curse_Id == "下午1节")
+                        {
+                            SecondStage += 1;
+                        }
+                    } else if (grand.GrandName.Contains("S4")) {
+
+                    }
+                }
+
+                //计算软件工厂的课时，先S4课时减去软件工厂课时，然后加上软件工厂课时乘1.3倍
+                int ruanjianclassTime = 0;//软件工厂且高于40人的课时变量
+                List<Reconcile> ruanjianList = mydata.Where(a=>a.Curriculum_Id == "软件工厂").ToList();//获取整个月的软件工厂排课
+                if (ruanjianList.Count>0) {
+                    
+                var ruanjianGroup = (
+                    from m in ruanjianList
+                    group m by m.AnPaiDate into list
+                    select list).ToList();
+                for (int k = 0; k < ruanjianGroup.Count; k++)//循环某一天的软件工厂课程
+                {
+                    List<Reconcile> Recon = ruanjianList.Where(a=>a.AnPaiDate == ruanjianGroup[k].Key).ToList();
+                    var Group = (
+                    from m in Recon
+                    group m by m.Curse_Id into list
+                    select list).ToList();
+
+                    for (int g = 0; g < Group.Count; g++)//循环上课时间段
+                    {
+                        List<Reconcile> CurseList = Recon.Where(a=>a.Curse_Id == Group[g].Key).ToList();//获取某一个上个时间段的数据，例如上午
+                        for (int h = 0; h < CurseList.Count; h++)//循环上午或者下午时间段的数据
+                        {
+                            int classcount = 0;//某一时间段上课的总人数
+                            //获取班级编号
+                            string classschsql = "select * from ClassSchedule where id="+CurseList[h].ClassSchedule_Id+ " and ClassstatusID is null";
+                            ClassSchedule classSchedule = ClassSchedule_Entity.GetListBySql<ClassSchedule>(classschsql).FirstOrDefault();
+
+                            //获取班级有多少个学生
+                            string Schsql = "select * from ScheduleForTrainees where ClassID = '"+classSchedule.ClassNumber+"' and CurrentClass = 1";
+                            List<ScheduleForTrainees> scheduleFor = ScheduleForTrainees_Entity.GetListBySql<ScheduleForTrainees>(Schsql);
+                            classcount += scheduleFor.Count;
+                            if (classcount>=40) {
+                                if (Group[g].Key.Contains("12") || Group[g].Key.Contains("34")) {
+                                    ruanjianclassTime += 2;
+                                } else if (Group[g].Key == "上午" || Group[g].Key == "下午") {
+                                    ruanjianclassTime += 4;
+                                } else if (Group[g].Key == "上午3节" || Group[g].Key == "下午3节") {
+                                    ruanjianclassTime += 3;
+                                } else if (Group[g].Key == "上午1节" || Group[g].Key == "下午1节") {
+                                    ruanjianclassTime += 1;
+                                }
+                            }
+                        }
+                    }
+                }
+                }
+                ThreeStage = ThreeStage - ruanjianclassTime;
+                ThreeStage = ThreeStage + Convert.ToInt16(ruanjianclassTime * 1.3);
+
 
                 if (FirstStage > 0)
                 {
@@ -306,7 +399,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 }
 
 
-                #region//计算值班费  班主任及教员值班计算
+                #region//计算值班费  班主任及教员值班计算   班级升学活动
                 //查询当年 年月的值班数据   教员值班
                 string TeacherAddsql = @"select * from TeacherAddorBeonDutyView  where YEAR(Anpaidate)=" + dt.Year + "" +
                     " and Month(Anpaidate)=" + dt.Month + " and IsDels=0";
@@ -334,7 +427,7 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                 }
 
 
-                //班主任值班
+                //班主任值班   //以及班主任的班级升学活动计算
                 if (EmployeesInfoManage_Entity.GetDeptByEmpid(Emp_List[i].EmployeeId).DeptName.Contains("教质部"))
                 {
                     string TearcherNightsq = "select * from TeacherNightView where Tearcher_Id = " + Emp_List[i].EmployeeId + " and YEAR(OrwatchDate)=" + dt.Year + " and MONTH(OrwatchDate)=" + dt.Month + " and TypeName='班主任晚自习' and IsDelete=0";
@@ -344,6 +437,27 @@ namespace SiliconValley.InformationSystem.Business.EducationalBusiness
                     string TearcherNightsq1 = "select * from TeacherNightView where Tearcher_Id = " + Emp_List[i].EmployeeId + " and YEAR(OrwatchDate)=" + dt.Year + " and MONTH(OrwatchDate)=" + dt.Month + " and TypeName='周末值班' and IsDelete=0";
                     List<TeacherNight> TeacherNightList1 = TeacherNight_Entity.GetListBySql<TeacherNight>(TearcherNightsq1);
                     Duty_fee += TeacherNightList1.Count * 100;
+
+                    //计算班级升学活动
+                    List<Reconcile> shengxueList = mydata.Where(a => a.Curriculum_Id == "班级升学活动").ToList();//计算班级升学活动
+                    for (int k = 0; k < shengxueList.Count; k++)
+                    {
+                        if (shengxueList[k].Curse_Id.Contains("12") || shengxueList[k].Curse_Id.Contains("34")) {
+                            OtherStage += 2;
+                        }
+                        else if (shengxueList[k].Curse_Id == "上午" || shengxueList[k].Curse_Id == "下午")
+                        {
+                            OtherStage += 4;
+                        }
+                        else if (shengxueList[k].Curse_Id == "上午3节" || shengxueList[k].Curse_Id == "下午3节")
+                        {
+                            OtherStage += 3;
+                        }
+                        else if (shengxueList[k].Curse_Id == "上午1节" || shengxueList[k].Curse_Id == "下午1节")
+                        {
+                            OtherStage += 1;
+                        }
+                    }
                 }
                 #endregion
 

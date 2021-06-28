@@ -1076,5 +1076,9 @@ namespace SiliconValley.InformationSystem.Business.EnrollmentBusiness
             };
             return data;
         }
+        public int NumberOfUndergraduates()
+        {
+            return this.GetList().Where(i=>i.IsDelete==false).Count();
+        }
     }
 }

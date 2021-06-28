@@ -1573,10 +1573,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             
         }
 
-        public ActionResult Administrativetranslation()
-        {
-            return View();
-        }
+     
 
     } 
 }
