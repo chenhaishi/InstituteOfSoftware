@@ -12,6 +12,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Admin.Controllers
         // GET: Admin/XZAdminHome
         public ActionResult AdminHomeIndex()
         {
+            
             return View();
         }
     }
