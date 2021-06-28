@@ -86,7 +86,14 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
             
             return View();
         }
-
+        /// <summary>
+        /// 教员班级带班列表
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Teacherclasslist()
+        {
+            return View();
+        }
 
         /// <summary>
         /// 教员列表

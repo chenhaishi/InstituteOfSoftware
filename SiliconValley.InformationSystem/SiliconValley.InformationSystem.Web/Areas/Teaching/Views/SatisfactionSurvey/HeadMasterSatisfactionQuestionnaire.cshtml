@@ -35,7 +35,7 @@
 <body>
     <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
         <ul class="layui-tab-title">
-            <li><a id="zhuyi">满意度问卷注意事项</a></li>
+            @*<li><a id="zhuyi">满意度问卷注意事项</a></li>*@
             <li><a id="zhuanye">专业老师满意度调查</a></li>
             <li class="layui-this"><a>班主任满意度调查</a></li>
             <li><a id="shitang">食堂满意度调查</a></li>
@@ -234,13 +234,13 @@
 
                     if (result.ErrorCode == 200) {
 
-                        //layer.msg('提交成功', { icon: 1, time: 2000 }, function () {
+                        layer.msg('提交成功', { icon: 1, time: 2000 }, function () {
 
                             //当你在iframe页面关闭自身时
-                            //var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                            //parent.layer.close(index); //再执行关闭
-                            location.href = "/Teaching/SatisfactionSurvey/SatisfactionHomePage"
-                        //});
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.layer.close(index); //再执行关闭
+                            //location.href = "/Teaching/SatisfactionSurvey/SatisfactionHomePage"
+                        });
 
                     }
 

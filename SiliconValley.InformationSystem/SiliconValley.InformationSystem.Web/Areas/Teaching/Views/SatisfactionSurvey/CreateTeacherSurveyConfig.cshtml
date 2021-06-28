@@ -35,7 +35,14 @@
                         </select>
                     </div>
                 </div>
+
             </div>
+            @*<div class="layui-form-item">
+                <div class="layui-inline">
+                    <input type="text" placeholder="输入班级" class="layui-input" />
+                    <button type="button" class="layui-btn layui-btn-danger">查询</button>
+                </div>
+            </div>*@
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label">选择日期</label>
@@ -45,21 +52,9 @@
                 </div>
             </div>
             <div class="layui-form-item">
-                @*<label class="layui-form-label">阶段</label>
-            <div class="layui-input-inline">
-                <select name="Grand" lay-filter="major">
-                    <option value="0">请选择</option>
-                    @{
-                        foreach (var item in ViewBag.Grand as List<Grand>)
-                        {
-                            <option value="@item.Id">@item.GrandName</option>
-                        }
-                    }
-                </select>
-            </div>*@
-
-                <label class="layui-form-label">课程</label>
+                <label class="layui-form-label">选择课程</label>
                 <div class="layui-input-inline">
+
                     <select lay-verify="required" name="course" id="course" lay-search="">
                         <option value="0" selected>--请选择--</option>
                         @{
@@ -69,8 +64,15 @@
                             }
                         }
                     </select>
+
                 </div>
             </div>
+            @*<div class="layui-form-item">
+                <div class="layui-inline">
+                    <input type="text" placeholder="输入课程" class="layui-input" />
+                    <button type="button" class="layui-btn layui-btn-danger">查询</button>
+                </div>
+            </div>*@
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label">选择部门</label>
@@ -222,15 +224,14 @@
                 }
 
                 layer.confirm("确定", function (index) {
-
+                    var loadindex = layer.load(1);
                     //发送请求
-
                     $.post('/Teaching/SatisfactionSurvey/CreateTeacherSurveyConfig', { classnumber: classnumber, Curriculum: skill, laoshi: laoshi, yuwen: yuwen, shuxue: shuxue, yingyu: yingyu, riqi: riqi }, function (data) {
-
+                       
                         if (data.ErrorCode == 200) {
 
                             layer.msg("生成成功");
-
+                            layer.close(loadindex);
                             yuwen = "";
 
                             shuxue = "";
@@ -241,11 +242,13 @@
                         if (data.ErrorCode == 300) {
 
                             layer.msg("抱歉 ！本月满意度单已存在，下个月再来吧");
+                            layer.close(loadindex);
                         }
 
                         if (data.ErrorCode == 500) {
 
                             layer.msg("抱歉！服务器错误");
+                            layer.close(loadindex);
                         }
 
                     });

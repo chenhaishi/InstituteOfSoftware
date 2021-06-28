@@ -202,12 +202,14 @@
         <div class="layui-btn-container">
             <button class="layui-btn layui-btn-sm" lay-event="EditMajorAdnGrand">专业 / 阶段</button>
             <button class="layui-btn layui-btn-sm" lay-event="ArrangeClasses">安排带班</button>
+            <button class="layui-btn layui-btn-sm" lay-event="banji">带班班级详情</button>
+           
         </div>
     </script>
 
     <script type="text/html" id="editBar">
         <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="banji">班级</a>
+        @*<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="banji">班级</a>*@
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="detail">详情</a>
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="editgoodmajor">擅长的课程</a>
     </script>
@@ -388,6 +390,15 @@
                             }
                         });
                         break;
+                    case 'banji':
+                        layer.open({
+                            type: 2,
+                            skin: "demo-class",
+                            area: ["1000px", "100%"],
+                            title: "教员班级详情",
+                            content: "/Teaching/Teacher/Teacherclasslist/"
+                        })
+                        break;
                 };
             });
 
@@ -449,16 +460,7 @@
 
 
                     });
-                } else if (obj.event === 'banji') {
-                    layer.open({
-                        type: 2,
-                        skin: "demo-class",
-                        area: ["1000px", "500px"],
-                        title: "教员(" + name + ")所带班级",
-                        content:"",
-                    })
-
-                }
+                } 
 
             });
 
