@@ -433,34 +433,33 @@
             
             //满意度问卷点击事件
             $("#Teacher").click(function () {
-                layer.open({
-                    title: "调查问卷",
-                    type: 2,
-                    area: ['1050px', '100%'],
-                    content: "/Teaching/SatisfactionSurvey/SatisfactionHomePage"
-                });
-                //$.post("/Teaching/SatisfactionSurvey/IsHaveSatisfaction", { type: "teacher" }, function (data) {
-                //    if (data.ErrorCode == 200) {
-                //        if (data.Data.length > 0) {
-                //            layer.open({
-                //                title: "调查问卷",
-                //                type: 2,
-                //                area: ['950px', '100%'],
-                //                content: "/Teaching/SatisfactionSurvey/TeacherSatisfactionQuestionnaire?surveyId=" + data.Data[0].ID
-                //            });
-                //        }
-
-                //        else {
-
-                //            layer.msg('当前没有课填写的满意度调查单', { icon: 2 });
-
-                //        }
-                //    }
-                //    else {
-                //        layer.msg('数据加载异常。。', { icon: 2 });
-                //    }
-
+                //layer.open({
+                //    title: "调查问卷",
+                //    type: 2,
+                //    area: ['1050px', '100%'],
+                //    content: "/Teaching/SatisfactionSurvey/SatisfactionHomePage"
                 //});
+                $.post("/Teaching/SatisfactionSurvey/IsHaveSatisfaction", { type: "teacher" }, function (data) {
+                    if (data.ErrorCode == 200) {
+                        if (data.Data.length > 0) {
+                            layer.open({
+                                title: "调查问卷",
+                                type: 2,
+                                area: ['1050px', '100%'],
+                                content: "/Teaching/SatisfactionSurvey/TeacherSatisfactionQuestionnaire?surveyId=" + data.Data[0].ID
+                            });
+                        }
+                        else {
+
+                            layer.msg('当前没有可填写的满意度调查单', { icon: 2 });
+
+                        }
+                    }
+                    else {
+                        layer.msg('数据加载异常。。', { icon: 2 });
+                    }
+
+                });
             });
             //成绩查询按钮
             $("#examScoreSearch").click(function () {
