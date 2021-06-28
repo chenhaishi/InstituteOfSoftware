@@ -552,7 +552,7 @@ namespace SiliconValley.InformationSystem.Business.TeachingDepBusiness
         /// <returns></returns>
         public List<SatisficingConfig> GetSatisficingConfigsByStudent(string student, string type)
         {
-            List<SatisficingConfig> result = new List<SatisficingConfig>();
+            //List<SatisficingConfig> result = new List<SatisficingConfig>();
 
             //条件 未到满意度填写截止日期 为当前学员的班级 未填写过
             //获取学员当前班级
@@ -589,20 +589,20 @@ namespace SiliconValley.InformationSystem.Business.TeachingDepBusiness
             }
             if (list.Count == 0)
             {
-                return result;
+                return list;
             }
 
-            foreach (var item in list)
-            {
-                //证明未填写过
-                var tempobj = GetSatisficingResult(student, item.ID);
+            //foreach (var item in list)
+            //{
+            //    //证明未填写过
+            //    var tempobj = GetSatisficingResult(student, item.ID);
 
-                if (tempobj == null)
-                {
-                    result.Add(item);
-                }
-            }
-            return result;
+            //    if (tempobj == null)
+            //    {
+                    //result.Add(list);
+            //    }
+            //}
+            return list;
         }
 
         public SatisficingConfigView ConvertToview(SatisficingConfig satisficingConfig)

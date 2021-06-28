@@ -1,0 +1,68 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Teacherclasslist</title>
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/Scripts/css/buttonStyle.css" rel="stylesheet" />
+    <link href="~/Scripts/vendor/bootstrap/bootstrap.min.css" rel="stylesheet" /> 
+        <style>
+            .Title {
+                width: 200px;
+                height: 130px;
+                border: 1px solid red;
+                float: left;
+                margin-left: 10px;
+                margin-top: 10px;
+                background-position-y: -40px;
+                color: #1cc09f;
+            }
+
+            .div1 {
+                width: 100%;
+                float: left;
+                border-bottom: 1px solid #808080;
+                margin-left: 40px;
+                margin-top: 40px;
+            }
+
+            .round_icon {
+                width: 44px;
+                height: 44px;
+                display: flex;
+                border-radius: 50%;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+            }
+
+            .hover {
+                background-image: url('/Images/班级.jpg');
+            }
+        </style>
+    
+</head>
+<body>
+    <div id="context">
+
+
+    </div>
+</body>
+</html>
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/layui/layui.js"></script>
+<script src="~/Scripts/underscore.js"></script>
+<script>
+    function showLoad() {
+
+        return layer.msg('正在加载数据中！请稍后...', { icon: 16, shade: [0.5, '#f5f5f5'], scrollbar: false, offset: 'auto', time: 800000 });
+
+    }
+
+</script>
