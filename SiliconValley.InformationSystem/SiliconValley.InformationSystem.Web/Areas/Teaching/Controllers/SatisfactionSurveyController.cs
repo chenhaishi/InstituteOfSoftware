@@ -1709,8 +1709,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 d.isitayingyu == false &&
                 d.Isitayuwen == false &&
                 DateTime.Parse(d.CutoffDate.ToString()).Year == DateTime.Now.Year &&
-                DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month ||
-                DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month + 1).FirstOrDefault().ID;
+                (DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month ||
+                DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month + 1)).FirstOrDefault().ID;
                 //查出这个学生已经生成的评价进行编辑
                 //SatisficingResult Surveyresult = new SatisficingResult();
                 BaseBusiness<SatisficingResult> resultes = new BaseBusiness<SatisficingResult>();
@@ -1811,8 +1811,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 d.isitayingyu == false &&
                 d.Isitayuwen == true &&
                 DateTime.Parse(d.CutoffDate.ToString()).Year == DateTime.Now.Year &&
-                DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month ||
-                DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month + 1).FirstOrDefault().ID;
+                (DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month ||
+                DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month + 1)).FirstOrDefault().ID;
                 //查出这个学生已经生成的评价进行编辑
                 //SatisficingResult Surveyresult = new SatisficingResult();
                 BaseBusiness<SatisficingResult> resultes = new BaseBusiness<SatisficingResult>();
@@ -1912,8 +1912,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 d.isitayingyu == false &&
                 d.Isitayuwen == false &&
                 DateTime.Parse(d.CutoffDate.ToString()).Year == DateTime.Now.Year &&
-                DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month ||
-                DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month + 1).FirstOrDefault().ID;
+                (DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month ||
+                DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month + 1)).FirstOrDefault().ID;
                 //查出这个学生已经生成的评价进行编辑
                 //SatisficingResult Surveyresult = new SatisficingResult();
                 BaseBusiness<SatisficingResult> resultes = new BaseBusiness<SatisficingResult>();
@@ -2014,8 +2014,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 d.isitayingyu == true &&
                 d.Isitayuwen == false &&
                 DateTime.Parse(d.CutoffDate.ToString()).Year == DateTime.Now.Year &&
-                DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month ||
-                DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month + 1).FirstOrDefault().ID;
+                (DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month ||
+                DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month + 1)).FirstOrDefault().ID;
                 //查出这个学生已经生成的评价进行编辑
                 //SatisficingResult Surveyresult = new SatisficingResult();
                 BaseBusiness<SatisficingResult> resultes = new BaseBusiness<SatisficingResult>();
@@ -2120,8 +2120,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 d.isitayingyu == false &&
                 d.Isitayuwen == false &&
                 DateTime.Parse(d.CutoffDate.ToString()).Year == DateTime.Now.Year &&
-                DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month ||
-                DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month + 1).FirstOrDefault().ID;
+                (DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month ||
+                DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month + 1)).FirstOrDefault().ID;
                 //查出这个学生已经生成的评价进行编辑
                 //SatisficingResult Surveyresult = new SatisficingResult();
                 BaseBusiness<SatisficingResult> resultes = new BaseBusiness<SatisficingResult>();
@@ -2225,8 +2225,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 d.isitayingyu == false &&
                 d.Isitayuwen == false && 
                 DateTime.Parse(d.CutoffDate.ToString()).Year == DateTime.Now.Year &&
-                DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month ||
-                DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month + 1).FirstOrDefault().ID;
+                (DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month ||
+                DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month + 1)).FirstOrDefault().ID;
                 //查出这个学生已经生成的评价进行编辑
                 //SatisficingResult Surveyresult = new SatisficingResult();
                 BaseBusiness<SatisficingResult> resultes = new BaseBusiness<SatisficingResult>();
