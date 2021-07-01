@@ -2621,8 +2621,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 c.isitayingyu == false &&
                 c.Isitayuwen == false &&
                 DateTime.Parse(c.CutoffDate.ToString()).Year == DateTime.Now.Year &&
-                DateTime.Parse(c.CutoffDate.ToString()).Month == DateTime.Now.Month || 
-                DateTime.Parse(c.CutoffDate.ToString()).Month == DateTime.Now.Month+1).FirstOrDefault().ID;
+                (DateTime.Parse(c.CutoffDate.ToString()).Month == DateTime.Now.Month || 
+                DateTime.Parse(c.CutoffDate.ToString()).Month == DateTime.Now.Month+1)).FirstOrDefault().ID;
                 //将这个班级学生的评价表生成
                 SatisficingResult Surveyresult = new SatisficingResult();
                 foreach (var item in renyuan)

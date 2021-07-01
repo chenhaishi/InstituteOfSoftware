@@ -53,7 +53,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Obtainemployment.Controllers
 
             }
             var returnlist = new List<MrDEmployStaffView>();
-
+             
             foreach (var item in MrDEmpInfoData)
             {
                 EmployeesInfo info = MrDEmployStaffBus.GetEmployeesInfoByID(item.EmployeesInfo_Id);
