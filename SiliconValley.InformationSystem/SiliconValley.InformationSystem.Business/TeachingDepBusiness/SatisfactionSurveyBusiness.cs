@@ -233,9 +233,11 @@ namespace SiliconValley.InformationSystem.Business.TeachingDepBusiness
         {
 
             SatisficingConfigDataView view = new SatisficingConfigDataView();
-            view.Curriculum = db_course.GetCurriculas().Where(d => d.CurriculumID == satisficingConfig.CurriculumID).FirstOrDefault();
+            string sql = "select * from Curriculum where CurriculumID = '"+ satisficingConfig.CurriculumID + "'";
+            view.Curriculum = db_course.GetListBySql<Curriculum>(sql).FirstOrDefault();
             view.Emp = db_emp.GetList().Where(d => d.EmployeeId == satisficingConfig.EmployeeId && d.IsDel == false).FirstOrDefault();
-            view.investigationClass = db_class.GetList().Where(d => d.id == satisficingConfig.ClassNumber).FirstOrDefault(); 
+            var sqls = "select * from ClassSchedule where id = '"+ satisficingConfig.ClassNumber + "'";
+            view.investigationClass = db_class.GetListBySql<ClassSchedule>(sqls).FirstOrDefault();
             view.investigationDate = (DateTime)satisficingConfig.CreateTime;
             view.SatisficingConfigId = satisficingConfig.ID;
             //计算总分
@@ -259,7 +261,7 @@ namespace SiliconValley.InformationSystem.Business.TeachingDepBusiness
                 view.Average = total / 1;
             }
             else {
-                view.Average = total / staresultlist.Count;
+               view.Average = total / staresultlist.Count;
             }
             return view;
 

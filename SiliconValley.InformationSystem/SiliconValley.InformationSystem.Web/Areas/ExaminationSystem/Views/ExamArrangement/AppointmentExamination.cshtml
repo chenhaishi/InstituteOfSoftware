@@ -306,7 +306,8 @@
             $("#yijian").click(function () {
                 layer.open({
                     type: 1
-                    , content: '是否确认录入名单'
+                    , content: '<div style="padding: 15px;font-size: 22px">是否确认一键录入学员名单</div>'
+                    , area: ['390px', '260px']
                     , btn: ['确认', '取消']
                     , yes: function () {
                         //班级id
@@ -336,8 +337,10 @@
                                 }
                                 if (data.ErrorCode == 200) {
                                     layer.msg("报名成功！");
+                                    layer.closeAll();
                                 } else {
                                     layer.msg("错误");
+                                    
                                 }
                             });
                         }
