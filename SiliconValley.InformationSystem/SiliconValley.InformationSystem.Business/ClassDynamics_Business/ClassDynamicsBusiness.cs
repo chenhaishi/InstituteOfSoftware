@@ -26,7 +26,7 @@ namespace SiliconValley.InformationSystem.Business.ClassDynamics_Business
         /// <returns></returns>
         public object ClassBindTX()
         {
-            return this.GetList().Where(d => d.ApplicationRepairID != null && d.States == 1 && d.IsaDopt == true).Count();
+            return this.GetList().Where(d => d.ApplicationRepairID != null  && d.IsaDopt == true).Count();
         }
         /// <summary>
         /// 获取所有退学的总人数
@@ -34,7 +34,7 @@ namespace SiliconValley.InformationSystem.Business.ClassDynamics_Business
         /// <returns></returns>
         public object ClassBindXX()
         {
-            return this.GetList().Where(d => d.SuspensionofschoolID != null && d.States == 5 && d.IsaDopt == true).Count();
+            return this.GetList().Where(d => d.SuspensionofschoolID != null  && d.IsaDopt == true).Count();
         }
 
 

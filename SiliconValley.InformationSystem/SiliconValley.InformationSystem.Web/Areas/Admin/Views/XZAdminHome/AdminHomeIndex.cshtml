@@ -99,7 +99,7 @@
         数据统计
     </div>
     <div class="layui-col-sm2">
-        <div class="grid-demo grid-demo-bg1"><span class="fa fa-user-circle-o"></span><a href="#">在校人数总计:1500人</a></div>
+        <div class="grid-demo grid-demo-bg1"><span class="fa fa-user-circle-o"></span><a href="#">在校人数总计:@ViewBag.StudentCount 人</a></div>
     </div>
     <div class="layui-col-sm2">
         <div class="grid-demo grid-demo-bg1"><span class="fa fa-building-o"></span> <a href="#">宿舍住宿人数:1500人</a></div>
@@ -169,9 +169,9 @@
                         <div class="layui-card-header">学员异动数据分析</div>
                         <div class="layui-card-body">
                             <div class="yidong">
-                                <div><span class="fa fa-window-close"></span><a href="#">开除:50人</a></div>
-                                <div><span class="fa fa-minus-square"></span><a href="#">退学:20人</a></div>
-                                <div><span class="fa fa-check-square"></span><a href="#">休学:50人</a></div>
+                                <div><span class="fa fa-window-close"></span><a href="#">开除:@ViewBag.StudentExpel 人</a></div>
+                                <div><span class="fa fa-minus-square"></span><a href="#">退学:@ViewBag.StudentDropout 人</a></div>
+                                <div><span class="fa fa-check-square"></span><a href="#">休学:@ViewBag.StudentSuspensionof 人</a></div>
                             </div>
                         </div>
                     </div>
@@ -185,7 +185,7 @@
                         <div class="layui-card-body">
                             <div class="banji">
                                 <div class="banji">
-                                    <div><span class="fa fa-tags"></span><a href="#">班级总计:50班级</a></div>
+                                    <div><span class="fa fa-tags"></span><a href="#">班级总计:@ViewBag.StudentClassSum 班级</a></div>
                                 </div>
                             </div>
                              
@@ -250,7 +250,7 @@
         xAxis: [
             {
                 type: 'category',
-                data: ['Y1', 'Ca', 'S1', 'S2', 'S3'],
+                data: ['Y1', 'S1', 'S2', 'S3'],
                 axisTick: {
                     alignWithLabel: true
                 }

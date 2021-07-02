@@ -9,9 +9,11 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity.XYK_Data
     /// <summary>
     /// 阶段升学率实体类
     /// </summary>
-   public class AvgGrand
+    public class AvgGrand
     {
         //阶段升学率
         public float sum { get; set; }
+
+       
     }
 }

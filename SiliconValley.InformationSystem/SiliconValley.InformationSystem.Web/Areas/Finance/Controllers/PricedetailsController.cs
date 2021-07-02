@@ -933,7 +933,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
             preentryfeeView.Name = "高中生待定";
             preentryfeeViews.Add(preentryfeeView);
 
-          var cls=  classScheduleBusiness.GetList().Where(a => a.IsDelete == false && a.ClassStatus == false && a.ClassstatusID == null && a.grade_Id == 1 || a.grade_Id == 1002).OrderByDescending(a=>a.grade_Id).Select(a=>new PreentryfeeView { gradeName= classScheduleBusiness.GetClassGrand(a.id,2), Name=a.ClassNumber }).ToList();
+          var cls=  classScheduleBusiness.GetList().Where(a => a.IsDelete == false && a.ClassStatus == false && a.ClassstatusID == null && (a.grade_Id == 1 || a.grade_Id == 1002)).OrderByDescending(a=>a.grade_Id).Select(a=>new PreentryfeeView { gradeName= classScheduleBusiness.GetClassGrand(a.id,2), Name=a.ClassNumber }).ToList();
             preentryfeeViews.AddRange(cls);
             ViewBag.preentryfeeViews= preentryfeeViews.Select(a => new SelectListItem { Value = a.Name+","+a.gradeName, Text = a.Name });
             ViewBag.ExportStudentBeanData = stuDataKeepAndRecordBusiness.findId(id.ToString());
