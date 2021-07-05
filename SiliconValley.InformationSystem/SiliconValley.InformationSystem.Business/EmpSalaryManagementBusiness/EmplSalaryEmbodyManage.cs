@@ -275,21 +275,23 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     {
                         break;
                     }
-                    string ddid = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(0))) ? null : getrow.GetCell(0).ToString();
-                    string name = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(1))) ? null : getrow.GetCell(1).ToString();
-                    string contributionbase = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(2))) ? null : getrow.GetCell(2).ToString();
-                    string personalSocialsecurity = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(3))) ? null : getrow.GetCell(3).ToString();
-                    
-                   var empid= manage.GetEmpByDDid(int.Parse(ddid));
+                    string IdCardNum = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(1))) ? null : getrow.GetCell(1).ToString();
+                    string name = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(2))) ? null : getrow.GetCell(2).ToString();
+                    string contributionbase = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(5))) ? null : getrow.GetCell(5).ToString();
+                    string personalSocialsecurity = string.IsNullOrEmpty(Convert.ToString(getrow.GetCell(49))) ? null : getrow.GetCell(49).ToString();
+                    error = name;
+                    var empid = manage.GetListBySql<EmployeesInfo>("select *from EmployeesInfo where IdCardNum='" + IdCardNum + "'").FirstOrDefault();
 
                     AttendanceInfoErrorDataView attview = new AttendanceInfoErrorDataView();
-                    if (string.IsNullOrEmpty(ddid))
-                    {//判断员工钉钉号是否为空
+                    if (empid == null)
+                    {
+                        //判断该员工是否存在
                         attview.empname = name;
-                        attview.errorExplain = "工号为空！";
+                        attview.errorExplain = "不存在该员工";
                         attdatalist.Add(attview);
                         continue;
                     }
+
                     if (string.IsNullOrEmpty(contributionbase))
                     {
                         contributionbase = "0";
@@ -298,68 +300,57 @@ namespace SiliconValley.InformationSystem.Business.EmpSalaryManagementBusiness
                     {
                         personalSocialsecurity = "0";
                     }
-                    if (!Regex.IsMatch(ddid, @"^[0-9]*$"))
-                        {
-                            attview.empname = name;
-                            attview.errorExplain = "钉钉号含有字符串！";
-                            attdatalist.Add(attview);
-                            continue;
-                        }
-                    if (!manage.DDidIsExist(int.Parse(ddid)))
-                        {
-                            attview.empname = name;
-                            attview.errorExplain = "不存在该工号！";
-                            attdatalist.Add(attview);
-                        continue;
-                    }
-                    if (!Regex.IsMatch(contributionbase, @"^[0-9]+\.?[0-9]*$"))
-                    {
-                        attview.empname = name;
-                        attview.errorExplain = "社保缴费基数含有字符串！";
-                        attdatalist.Add(attview);
-                        continue;
-                    }
-                    if (!Regex.IsMatch(personalSocialsecurity, @"^[0-9]+\.?[0-9]*$"))
-                    {
-                        attview.empname = name;
-                        attview.errorExplain = "个人社保含有字符串！";
-                        attdatalist.Add(attview);
-                        continue;
-                    }
+
+                    //if (!Regex.IsMatch(contributionbase, @"^[0-9]+\.?[0-9]*$"))
+                    //{
+                    //    attview.empname = name;
+                    //    attview.errorExplain = "社保缴费基数含有字符串！";
+                    //    attdatalist.Add(attview);
+                    //    continue;
+                    //}
+                    //if (!Regex.IsMatch(personalSocialsecurity, @"^[0-9]+\.?[0-9]*$"))
+                    //{
+                    //    attview.empname = name;
+                    //    attview.errorExplain = "个人社保含有字符串！";
+                    //    attdatalist.Add(attview);
+                    //    continue; 
                     var s = this.GetList().Where(i => i.EmployeeId == empid.EmployeeId).FirstOrDefault();
+                    if (s==null)
+                    {
+                        attview.empname = name;
+                        attview.errorExplain = "工资体系表不存在该员工的数据";
+                        attdatalist.Add(attview);
+                        continue;
+                    }
                     s.ContributionBase = int.Parse(contributionbase);
                     s.PersonalSocialSecurity = decimal.Parse(personalSocialsecurity);
                     this.Update(s);
                 }
-                   
-
-                   
-                    
-                
 
                 ajaxresult = Success();
-                int exceldatasum = num - 3;
-                if (exceldatasum - attdatalist.Count() == exceldatasum)
-                {//说明没有出错数据，导入的数据全部添加成功
-                    ajaxresult.Success = true;
-                    ajaxresult.ErrorCode = 100;
-                    ajaxresult.Msg = exceldatasum.ToString();
-                    ajaxresult.Data = attdatalist;
-                }
-                else
-                {//说明有出错数据，导入的数据条数就是导入的数据总数-错误数据总数
-                    ajaxresult.Success = true;
-                    ajaxresult.ErrorCode = 200;
-                    ajaxresult.Msg = (exceldatasum - attdatalist.Count()).ToString();
-                    ajaxresult.Data = attdatalist;
-                }
+                    int exceldatasum = num - 3;
+                    if (exceldatasum - attdatalist.Count() == exceldatasum)
+                    {//说明没有出错数据，导入的数据全部添加成功
+                        ajaxresult.Success = true;
+                        ajaxresult.ErrorCode = 100;
+                        ajaxresult.Msg = exceldatasum.ToString();
+                        ajaxresult.Data = attdatalist;
+                    }
+                    else
+                    {//说明有出错数据，导入的数据条数就是导入的数据总数-错误数据总数
+                        ajaxresult.Success = true;
+                        ajaxresult.ErrorCode = 200;
+                        ajaxresult.Msg = (exceldatasum - attdatalist.Count()).ToString();
+                        ajaxresult.Data = attdatalist;
+                    }
+                
             }
             catch (Exception ex)
             {
                 ajaxresult.Success = false;
                 ajaxresult.ErrorCode = 500;
-                ajaxresult.Msg = ex.Message;
-                ajaxresult.Data = "0";
+                ajaxresult.Msg = ex.Message+error;
+                 ajaxresult.Data = "0";
             }
             return ajaxresult;
         }
