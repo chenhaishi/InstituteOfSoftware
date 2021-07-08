@@ -352,6 +352,7 @@
                     });
                 }
                 else {
+                    
                     if (data.value == "0") {
                         //清空childview_room
                         $("#childvieroom_div")[0].innerHTML = "";
@@ -361,9 +362,13 @@
                         //通过课程，日期，时间段获取任课老师
                         //获取课程
                         var type = $("#childview_Currtype").val();//获取上课类型
+                        var typetext = $("#childview_currname").val();//
+                        console.log(typetext);
                         var tt = type.substr(0, 2);
                         var curr = $("#childview_currname").val();
                         var mydata2 = { "Time": anpaiTime, "timeName": data.value, "Curr": curr, "class_id": classnumber }
+                        console.log("type"+type);
+                        console.log("tt"+tt);
                         if (type != "0") {
                             var indexmy = layer.load(1);
                             if (type == "专业课") {
@@ -385,6 +390,7 @@
                             } else if (tt != "0" && tt != "专业") {
                                 //根据其他课程（职素，英语，数学，语文）获取任课老师
                                 var Getdata = { "Curr": tt, "Time": anpaiTime, "timeName": data.value, "class_id": classnumber };
+
                                 $.ajax({
                                     url: '/Educational/Reconcile/GetNoMajoiThercher',
                                     type: 'POST',
@@ -403,10 +409,50 @@
                                             layer.msg("没有合适的老师!!!", { icon: 2, shade: 0.8 });
                                             layer.close(indexmy);
                                         }
-                                         
+
                                     }
                                 });
                             }
+                        } else if (typetext == "班级升学活动") {
+                            var Getdata = { "Curr": tt, "Time": anpaiTime, "timeName": data.value, "class_id": classnumber, "typetext": typetext };
+
+                            $.ajax({
+                                url: '/Educational/Reconcile/GetNoMajoiThercher',
+                                type: 'POST',
+                                data: Getdata,
+                                success: function (suc) {
+                                    $("#childteacher_div")[0].innerHTML = "";//任课老师div为空
+                                    if (suc.length > 0) {
+                                        var teacher_child = $('<select id="teacher_child" name="teacher_child" lay-filter="teacher_child"></select>');
+                                        for (var i = 0; i < suc.length; i++) {
+                                            $('<option value=' + suc[i].Value + '>' + suc[i].Text + '</option>').appendTo(teacher_child);
+                                            $("#childteacher_div").append(teacher_child);
+                                        }
+                                        form.render(); //更新全部
+                                        layer.close(indexmy);
+                                    } else {
+                                        layer.msg("没有合适的老师!!!", { icon: 2, shade: 0.8 });
+                                        layer.close(indexmy);
+                                    }
+
+                                }
+                            });
+                        } else {
+                            $.ajax({
+                                url: '/Educational/Reconcile/GetTeacher',
+                                data: mydata2,
+                                type: "POST",
+                                success: function (succ) {
+                                    $("#childteacher_div")[0].innerHTML = "";
+                                    var teacher_child = $('<select id="teacher_child" name="teacher_child" lay-filter="teacher_child"></select>');
+                                    for (var i = 0; i < succ.length; i++) {
+                                        $('<option value=' + succ[i].Value + '>' + succ[i].Text + '</option>').appendTo(teacher_child);
+                                        $("#childteacher_div").append(teacher_child);
+                                    }
+                                    layer.close(indexmy);
+                                    form.render(); //更新全部
+                                }
+                            });
                         }
                     }
                 }
