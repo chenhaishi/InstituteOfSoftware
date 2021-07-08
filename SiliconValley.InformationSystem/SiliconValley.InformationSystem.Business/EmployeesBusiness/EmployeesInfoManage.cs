@@ -199,6 +199,16 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
         }
 
         /// <summary>
+        /// 筛选教质部所有员工 
+        /// </summary>
+        /// <returns></returns>
+        public List<EmployeesInfo> GetEmpJiaozhi()
+        {
+            return this.GetAll().Where(s =>
+            this.GetDeptByPid(s.PositionId).DeptName.Contains("教质部")).ToList();
+        }
+
+        /// <summary>
         /// 渠道
         /// </summary>
         private ChannelStaffBusiness dbchannel;

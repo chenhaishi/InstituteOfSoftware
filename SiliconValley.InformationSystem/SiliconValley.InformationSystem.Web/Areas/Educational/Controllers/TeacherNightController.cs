@@ -287,11 +287,15 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
 
         public ActionResult EditMasterView(string id)
         {
-            //根据Ids获取值班数据
+              
             string[] ids = id.Split(',');
-            DateTime? time = null;
+            DateTime time = DateTime.Now;
             List<string> findlist = new List<string>();
+            List<string> findlist1 = new List<string>();
             EmployeesInfoManage e = new EmployeesInfoManage();
+
+            List<EmployeesInfo> EmpList = e.GetEmpJiaozhi();
+
             foreach (string item in ids)
             {
                 if (!string.IsNullOrEmpty(item))
@@ -301,47 +305,86 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                     if (finda != null)
                     {
                         time = finda.OrwatchDate;
-                        findlist.Add(e.GetEntity(TeacherNight_Entity.GetEntity(intid).Tearcher_Id).EmpName);
+                        //findlist.Add(e.GetEntity(TeacherNight_Entity.GetEntity(intid).Tearcher_Id).EmpName);
                     }
 
                 }
             }
+            string sql = "select * from TeacherNight where Year(OrwatchDate)="+time.Year+" and month(OrwatchDate)="+time.Month+" and day(OrwatchDate)="+time.Day +"";
+            List<TeacherNight> nlist = TeacherNight_Entity.GetListBySql<TeacherNight>(sql);
+
+            for (int k = 0; k < nlist.Count; k++)
+            {
+                for (int g = 0; g < EmpList.Count; g++)
+                {
+                    if (EmpList[g].EmployeeId == nlist[k].Tearcher_Id)
+                    {
+                        EmpList.Remove(EmpList[g]);
+                        
+                    }
+                }
+            }
+
+            for (int i = 0; i < EmpList.Count; i++)
+            {
+
+                findlist.Add(EmpList[i].EmployeeId);
+                findlist1.Add(EmpList[i].EmpName);
+            }
+
 
             ViewBag.time = time;
             ViewBag.teachers = findlist;
-            ViewBag.ids = id;
+            ViewBag.teachers1 = findlist1;
+            //ViewBag.ids = id;
             return View();
         }
         [HttpPost]
         public ActionResult EditMasterFunction()
         {
             string[] ids = Request.Form["ids"].Split(',');
-            string[] teachers = Request.Form["Teachers"].Split(',');
+            //string[] teachers = Request.Form["Teachers"].Split(',');
             DateTime time = Convert.ToDateTime(Request.Form["time"]);
             List<TeacherNight> oldlist = new List<TeacherNight>();
-            EmployeesInfoManage e = new EmployeesInfoManage();
-            foreach (string item in ids)
+            //EmployeesInfoManage e = new EmployeesInfoManage();
+
+            string sql = "select * from TeacherNight where Year(OrwatchDate)="+time.Year+" and month(OrwatchDate)="+time.Month+" and day(OrwatchDate)="+time.Day+"";
+            TeacherNight T = TeacherNight_Entity.GetListBySql<TeacherNight>(sql).FirstOrDefault();
+
+            for (int i = 0; i < ids.Length-1; i++)
             {
-                if (!string.IsNullOrEmpty(item))
-                {
-                    int id = Convert.ToInt32(item);
-                    TeacherNight find = TeacherNight_Entity.GetEntity(id);
-                    var name = teachers.Where(t => t == e.GetEntity(find.Tearcher_Id).EmpName).FirstOrDefault();
-                    if (name == null)
-                    {
-                        TeacherNight_Entity.Delete(find);
-                    }
-                    else
-                    {
-                        if (find.OrwatchDate != time)
-                        {
-                            find.OrwatchDate = time;
-                            oldlist.Add(find);
-                        }
-                    }
-                }
+                TeacherNight night = new TeacherNight();
+                night.AttendDate = DateTime.Now;
+                night.BeOnDuty_Id = T.BeOnDuty_Id;
+                night.IsDelete = false;
+                night.OrwatchDate = time;
+                night.Tearcher_Id = ids[i];
+                //new_t.timename = types == true ? "晚自习值班" : "周末值班";
+                oldlist.Add(night);
             }
-            AjaxResult a = TeacherNight_Entity.Edit_Data(oldlist);
+
+            //foreach (string item in ids)
+            //{
+            //    if (!string.IsNullOrEmpty(item))
+            //    {
+            //        int id = Convert.ToInt32(item);
+            //        TeacherNight find = TeacherNight_Entity.GetEntity(id);
+            //        var name = teachers.Where(t => t == e.GetEntity(find.Tearcher_Id).EmpName).FirstOrDefault();
+            //        if (name == null)
+            //        {
+            //            TeacherNight_Entity.Delete(find);
+            //        }
+            //        else
+            //        {
+            //            if (find.OrwatchDate != time)
+            //            {
+            //                find.OrwatchDate = time;
+            //                oldlist.Add(find);
+            //            }
+            //        }
+            //    }
+            //}
+            AjaxResult a = TeacherNight_Entity.Add_data(oldlist);
             return Json(a, JsonRequestBehavior.AllowGet);
         }
 

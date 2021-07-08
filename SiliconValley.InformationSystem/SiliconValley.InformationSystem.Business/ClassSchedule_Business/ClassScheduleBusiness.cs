@@ -2003,9 +2003,10 @@ namespace SiliconValley.InformationSystem.Business.ClassSchedule_Business
                     //退学的将学生移除宿舍并结算保险柜押金
                     int? ApplicationDropoutID = x.ApplicationDropoutID;
 
-                    ApplicationDropout ApPEntity = ApplicationDropoutBusiness.GetEntity(ApplicationDropoutID);
+                    ApplicationDropout ApPEntity = ApplicationDropoutBusiness.GetEntity(ApplicationDropoutID);  
                     Accdationinformation Acc = Accdation.GetListBySql<Accdationinformation>("select * from Accdationinformation where studentnumber = " + x.Studentnumber + " and EndDate is null").FirstOrDefault();
                     //删除宿舍
+                    if (Acc !=null) {
                     Accdation = new AccdationinformationBusiness();
                     Accdation.delacc(x.Studentnumber);
                     if (ApplicationDropoutID !=null) {
@@ -2033,10 +2034,9 @@ namespace SiliconValley.InformationSystem.Business.ClassSchedule_Business
                         };
                         Dormitory_Entity.Insert(dormitory);
                     }
-                    
+                    }
 
                     
-
                     x.IsaDopt = true;
                     var StudenClass = ss.GetList().Where(a => a.StudentID == x.Studentnumber && a.CurrentClass == true).FirstOrDefault();
                     StudenClass.CurrentClass = false;
