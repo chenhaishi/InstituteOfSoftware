@@ -229,17 +229,18 @@
                 var configId = $("#configId").val();
 
                 //layer.confirm('是否确认提交！', function (index) {
-
+                var loadindex = layer.load(1);
                 $.post("/Teaching/SatisfactionSurvey/SurveyQuectionCommitHeadMaster", { surveyCommit: resultlist, configId: configId, suggest: proposal }, function (result) {
 
                     if (result.ErrorCode == 200) {
 
                         layer.msg("提交成功!");
-
+                        layer.close(loadindex);
                     }
 
                     else {
                         layer.msg('服务器错误。。', { icon: 2 });
+                        layer.close(loadindex);
                     }
                     layer.close(index);
                     });

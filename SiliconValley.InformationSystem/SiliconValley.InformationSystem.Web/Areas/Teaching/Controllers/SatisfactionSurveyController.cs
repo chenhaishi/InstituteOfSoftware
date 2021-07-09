@@ -1697,7 +1697,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 var studentnumber = Request.Cookies["StudentNumber"].Value.ToString();
                 //获取这个学生所在的班级
                 BaseBusiness<ScheduleForTrainees> schedul = new BaseBusiness<ScheduleForTrainees>();
-                var banji = schedul.GetList().Where(d => d.StudentID == studentnumber).FirstOrDefault().ClassID;
+                var banji = schedul.GetList().Where(d => d.StudentID == studentnumber && d.CurrentClass == true).FirstOrDefault().ClassID;
                 BaseBusiness<ClassSchedule> classschedule = new BaseBusiness<ClassSchedule>();
                 var banjiid = classschedule.GetList().Where(d => d.ClassNumber.ToString() == banji).FirstOrDefault().id;
                 //获取这个学生这个月要填写的专业老师满意度调查
@@ -1799,7 +1799,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 var studentnumber = Request.Cookies["StudentNumber"].Value.ToString();
                 //获取这个学生所在的班级
                 BaseBusiness<ScheduleForTrainees> schedul = new BaseBusiness<ScheduleForTrainees>();
-                var banji = schedul.GetList().Where(d => d.StudentID == studentnumber).FirstOrDefault().ClassID;
+                var banji = schedul.GetList().Where(d => d.StudentID == studentnumber && d.CurrentClass == true).FirstOrDefault().ClassID;
                 BaseBusiness<ClassSchedule> classschedule = new BaseBusiness<ClassSchedule>();
                 var banjiid = classschedule.GetList().Where(d => d.ClassNumber.ToString() == banji).FirstOrDefault().id;
                 //获取这个学生这个月要填写的专业老师满意度调查
@@ -1900,9 +1900,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 var studentnumber = Request.Cookies["StudentNumber"].Value.ToString();
                 //获取这个学生所在的班级
                 BaseBusiness<ScheduleForTrainees> schedul = new BaseBusiness<ScheduleForTrainees>();
-                var banji = schedul.GetList().Where(d => d.StudentID == studentnumber).FirstOrDefault().ClassID;
+                var banji = schedul.GetList().Where(d => d.StudentID == studentnumber && d.CurrentClass == true).FirstOrDefault().ClassID;
                 BaseBusiness<ClassSchedule> classschedule = new BaseBusiness<ClassSchedule>();
-                var banjiid = classschedule.GetList().Where(d => d.ClassNumber.ToString() == banji).FirstOrDefault().id;
+                var banjiid = classschedule.GetList().Where(d => d.ClassNumber.ToString() == banji ).FirstOrDefault().id;
                 //获取这个学生这个月要填写的专业老师满意度调查
                 BaseBusiness<SatisficingConfig> config = new BaseBusiness<SatisficingConfig>();
                 var zhuanye = config.GetList().Where(d => d.ClassNumber == banjiid &&
@@ -2002,9 +2002,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 var studentnumber = Request.Cookies["StudentNumber"].Value.ToString();
                 //获取这个学生所在的班级
                 BaseBusiness<ScheduleForTrainees> schedul = new BaseBusiness<ScheduleForTrainees>();
-                var banji = schedul.GetList().Where(d => d.StudentID == studentnumber).FirstOrDefault().ClassID;
+                var banji = schedul.GetList().Where(d => d.StudentID == studentnumber && d.CurrentClass == true).FirstOrDefault().ClassID;
                 BaseBusiness<ClassSchedule> classschedule = new BaseBusiness<ClassSchedule>();
-                var banjiid = classschedule.GetList().Where(d => d.ClassNumber.ToString() == banji).FirstOrDefault().id;
+                var banjiid = classschedule.GetList().Where(d => d.ClassNumber.ToString() == banji ).FirstOrDefault().id;
                 //获取这个学生这个月要填写的专业老师满意度调查
                 BaseBusiness<SatisficingConfig> config = new BaseBusiness<SatisficingConfig>();
                 var zhuanye = config.GetList().Where(d => d.ClassNumber == banjiid &&
@@ -2108,9 +2108,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 var studentnumber = Request.Cookies["StudentNumber"].Value.ToString();
                 //获取这个学生所在的班级
                 BaseBusiness<ScheduleForTrainees> schedul = new BaseBusiness<ScheduleForTrainees>();
-                var banji = schedul.GetList().Where(d => d.StudentID == studentnumber).FirstOrDefault().ClassID;
+                var banji = schedul.GetList().Where(d => d.StudentID == studentnumber && d.CurrentClass == true).FirstOrDefault().ClassID;
                 BaseBusiness<ClassSchedule> classschedule = new BaseBusiness<ClassSchedule>();
-                var banjiid = classschedule.GetList().Where(d => d.ClassNumber.ToString() == banji).FirstOrDefault().id;
+                var banjiid = classschedule.GetList().Where(d => d.ClassNumber.ToString() == banji ).FirstOrDefault().id;
                 //获取这个学生这个月要填写的专业老师满意度调查
                 BaseBusiness<SatisficingConfig> config = new BaseBusiness<SatisficingConfig>();
                 var zhuanye = config.GetList().Where(d => d.ClassNumber == banjiid &&
@@ -2213,17 +2213,20 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 var studentnumber = Request.Cookies["StudentNumber"].Value.ToString();
                 //获取这个学生所在的班级
                 BaseBusiness<ScheduleForTrainees> schedul = new BaseBusiness<ScheduleForTrainees>();
-                var banji = schedul.GetList().Where(d => d.StudentID == studentnumber).FirstOrDefault().ClassID;
+                var banji = schedul.GetList().Where(d => d.StudentID == studentnumber && d.CurrentClass == true).FirstOrDefault().ClassID;
                 BaseBusiness<ClassSchedule> classschedule = new BaseBusiness<ClassSchedule>();
                 var banjiid = classschedule.GetList().Where(d => d.ClassNumber.ToString() == banji).FirstOrDefault().id;
                 //获取这个学生这个月要填写的专业老师满意度调查
                 BaseBusiness<SatisficingConfig> config = new BaseBusiness<SatisficingConfig>();
+                //string sql = "select * from SatisficingConfig where ClassNumber = '" + banjiid + "' and IsDel = 0 and CurriculumID IS NULL and Isitacanteen = 0 and isitashuxue = 0 and isitayingyu = 0 and Isitayuwen = 0 and YEAR(CutoffDate) = '" + DateTime.Now.Year + "' and (Month(CutoffDate) = '" + DateTime.Now.Month + "' or Month(CutoffDate) = '"+ DateTime.Now.Month + 1 + "')";
+                //var zhuanye = config.GetListBySql<SatisficingConfig>(sql).FirstOrDefault().ID;
                 var zhuanye = config.GetList().Where(d => d.ClassNumber == banjiid &&
                 d.CurriculumID != null &&
+                d.EmployeeId != null &&
                 d.Isitacanteen == false &&
                 d.isitashuxue == false &&
                 d.isitayingyu == false &&
-                d.Isitayuwen == false && 
+                d.Isitayuwen == false &&
                 DateTime.Parse(d.CutoffDate.ToString()).Year == DateTime.Now.Year &&
                 (DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month ||
                 DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month + 1)).FirstOrDefault().ID;
