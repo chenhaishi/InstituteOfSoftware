@@ -79,6 +79,10 @@ namespace SiliconValley.InformationSystem.Business.Channel
         public bool DelChannelStaff(string empid)
         {
             ChannelStaff channelStaff = this.GetChannelByEmpID(empid);
+            if (channelStaff==null)
+            {
+                return true ;
+            }
             channelStaff.IsDel = true;
             channelStaff.QuitDate = DateTime.Now;
             bool result = false;
