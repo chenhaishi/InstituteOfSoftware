@@ -174,15 +174,10 @@
             var sug = $("#sug").val();
             console.log(resultArry);
             //发送请求
-            layer.confirm('是否确认提交！', function (index) {
+            //layer.confirm('是否确认提交！', function (index) {
                 $.post("/Teaching/SatisfactionSurvey/CanteenSubmission", { list: resultArry, configId: configId, suggest: sug }, function (result) {
                     if (result.ErrorCode == 200) {
-                        layer.msg('提交成功', { icon: 1, time: 2000 }, function () {
-                            //当你在iframe页面关闭自身时
-                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                            parent.layer.close(index); //再执行关闭
-                            //location.href = "/Teaching/SatisfactionSurvey/SatisfactionHomePage"
-                        });
+                        layer.msg("提交成功!");
                     }
                     else {
                         layer.msg('服务器错误。。', { icon: 2 });
@@ -190,7 +185,7 @@
                     layer.close(index);
                 })
 
-            });
+            //});
 
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
 
