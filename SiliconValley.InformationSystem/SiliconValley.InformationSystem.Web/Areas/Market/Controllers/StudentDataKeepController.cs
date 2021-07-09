@@ -911,7 +911,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Market.Controllers
                     create_s.EmployeesInfo_Id = t.Rows[i][9].ToString();//备案人
                     create_s.Party = t.Rows[i][10].ToString();
                     create_s.QQ = t.Rows[i][11].ToString();
-                    create_s.Reak = t.Rows[i][12].ToString();//备注                    
+                    create_s.Reak = t.Rows[i][12].ToString();//备注   
                     new_listStudent.Add(create_s);
                 }
                 DeleteFile();

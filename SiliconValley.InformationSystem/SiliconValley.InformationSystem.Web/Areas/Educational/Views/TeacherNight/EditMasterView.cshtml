@@ -30,26 +30,29 @@
                 <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
                     <label class="LableCss1">值班老师:</label>
                     <div class="layui-input-block">
-                     
+
                         @{
                             List<string> list = ViewBag.teachers as List<string>;
-                            foreach (string item in list)
+                            List<string> list1 = ViewBag.teachers1 as List<string>;
+                            for (int i = 0; i < list.Count; i++)
                             {
-                                <input type="checkbox" name="teacher" lay-skin="primary" id="teacher" title="@item" checked="checked">
+                                <input type="checkbox" name="teacher" lay-skin="primary" id="teacher" value="@list[i]" title="@list1[i]">
                             }
+
+                           
                         }
                     </div>
                 </div>
             </div>
-              
+
+        </div>
+        <div class="layui-row layui-form-item">
+            <div class="layui-col-xs12 layui-col-sm12 layui-col-md12" style="text-align:center;">
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="EditTrue">点击修改</button>
+                <button type="button" class="layui-btn" onclick="Myclose()">取消关闭</button>
             </div>
-            <div class="layui-row layui-form-item">
-                <div class="layui-col-xs12 layui-col-sm12 layui-col-md12" style="text-align:center;">
-                    <button type="submit" class="layui-btn" lay-submit="" lay-filter="EditTrue">点击修改</button>
-                    <button type="button" class="layui-btn" onclick="Myclose()">取消关闭</button>
-                </div>
-            </div>
-</form>
+        </div>
+    </form>
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/layui/layui.js"></script>
     <script>
@@ -66,27 +69,32 @@
 
             //监听提交
             form.on('submit(EditTrue)', function (data) {
-                var teacher=""; 
-                $(":checked").each(function (index,ele) {
-                    teacher = teacher + $(ele)[0].title + ",";                  
+                var teacher = "";
+                $(":checked").each(function (index, ele) {
+                    teacher = teacher + $(ele)[0].title + ",";
                 });
 
-               // console.log(teacher);
+                var ids = "";
+                $(":checked").each(function (index, ele) {
+                    ids = ids + $(ele)[0].value + ",";
+                });
+
+                console.log(ids);
                 $.ajax({
                     url: '/Educational/TeacherNight/EditMasterFunction',
-                        data: { "ids": data.field.Id, "Teachers": teacher, "time": data.field.OrwatchDate },
-                        type: 'POST',
-                        success: function (sudata) {
-                            if (sudata.Success == false) {
-                                layer.msg(sudata.Msg, { icon: 2 });
-                            } else {
-                                layer.msg(sudata.Msg, { icon: 1, shade: 0.8 }, function () {
-                                    window.parent.TableFulsh();
-                                    Myclose();
-                                });
-                            }
+                    data: { "ids": ids, "Teachers": teacher, "time": data.field.OrwatchDate },
+                    type: 'POST',
+                    success: function (sudata) {
+                        if (sudata.Success == false) {
+                            layer.msg(sudata.Msg, { icon: 2 });
+                        } else {
+                            layer.msg(sudata.Msg, { icon: 1, shade: 0.8 }, function () {
+                                window.parent.TableFulsh();
+                                Myclose();
+                            });
                         }
-                    });
+                    }
+                });
                 return false;
             });
         })
