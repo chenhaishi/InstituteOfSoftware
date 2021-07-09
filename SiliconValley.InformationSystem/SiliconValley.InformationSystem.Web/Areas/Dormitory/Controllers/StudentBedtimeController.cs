@@ -267,7 +267,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Dormitory.Controllers
             list.ForEach(l =>
             {
                 StudentInformation student = StudentInfo_Entity.GetEntity(l.Studentnumber);
-                string Schsql = "select * from ScheduleForTrainees where StudentID = " + student.StudentNumber + " and CurrentClass=1";
+                string Schsql = "select * from ScheduleForTrainees where StudentID = '" + student.StudentNumber + "' and CurrentClass=1";
                 ScheduleForTrainees schedule = Schedule_Entity.GetListBySql<ScheduleForTrainees>(Schsql).FirstOrDefault();
                 if (student != null)
                 {
