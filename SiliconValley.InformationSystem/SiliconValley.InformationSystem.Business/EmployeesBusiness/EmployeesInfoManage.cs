@@ -570,8 +570,8 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
             return ajaxresult;
         }
 
-        public AjaxResult d()
-        {
+        public AjaxResult d() { 
+        
             Base_UserBusiness user = new Base_UserBusiness();
             EmplSalaryEmbodyManage empsemanage = new EmplSalaryEmbodyManage();//员工工资体系表
             var ajaxresult = new AjaxResult();
