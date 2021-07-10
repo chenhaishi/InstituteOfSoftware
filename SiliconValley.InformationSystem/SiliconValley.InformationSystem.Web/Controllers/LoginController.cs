@@ -57,7 +57,8 @@ namespace SiliconValley.InformationSystem.Web.Controllers
                             err.Success = true;
                             err.Msg = "登陆成功!";
                             err.Data = "/Base_SysManage/Base_SysMenu/Index";
-                        BusHelper.WriteSysLog("登陆成功", Entity.Base_SysManage.EnumType.LogType.账号登陆 );
+
+                        BusHelper.WriteSysLog("登陆成功", Entity.Base_SysManage.EnumType.LogType.用户登陆);
                         //获取权限
 
                         var permisslist = PermissionManage.GetOperatorPermissionValues();
