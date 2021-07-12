@@ -241,13 +241,15 @@ namespace SiliconValley.InformationSystem.Business.TeachingDepBusiness
             view.investigationDate = (DateTime)satisficingConfig.CreateTime;
             view.SatisficingConfigId = satisficingConfig.ID;
             //计算总分
-            var staresultlist = this.AllsatisficingResults().Where(d => d.SatisficingConfig == satisficingConfig.ID).ToList();
+            string sqles = "select * from SatisficingResult where SatisficingConfig = '" + satisficingConfig.ID + "'";
+            var staresultlist = this.GetListBySql<SatisficingResult>(sqles).ToList();
              
             var total = 0;
 
             staresultlist.ForEach(d=>
             {
-                 var templist = db_satisresultdetail.GetList().Where(b => b.SatisficingBill == d.ID).ToList();
+                string sqlees = "select * from SatisficingResultDetail where SatisficingBill = '" + d.ID + "'";
+                var templist = db_satisresultdetail.GetListBySql<SatisficingResultDetail>(sqlees).ToList();
 
                 templist.ForEach(x=>
                 {

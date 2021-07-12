@@ -767,7 +767,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
         /// <returns></returns>
         public ActionResult CanteenInquiry(int limit, int page)
         {
-            var xinxi = db_survey.satisficingConfigs().OrderByDescending(t => t.CreateTime).Where(d =>   d.Isitacanteen == true).ToList();
+            string sql = "select * from SatisficingConfig order by CreateTime";
+            var xinxi = db_congig.GetListBySql<SatisficingConfig>(sql).Where(d => d.Isitacanteen == true).ToList();
+            //var xinxi = db_survey.satisficingConfigs().OrderByDescending(t => t.CreateTime).Where(d =>   d.Isitacanteen == true).ToList();
             List<SatisficingConfig> skiplist = xinxi.Skip((page - 1) * limit).Take(limit).ToList();
             List<SatisficingConfigDataView> resultlist = new List<SatisficingConfigDataView>();
             foreach (var item in skiplist)
@@ -796,7 +798,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
         {
             //获取当前账号
             Base_UserModel user = Base_UserBusiness.GetCurrentUser();
-            var xinxi = db_survey.satisficingConfigs().OrderByDescending(t=>t.CreateTime).Where(d => d.EmployeeId == user.EmpNumber).ToList();
+            string sql = "select * from SatisficingConfig order by CreateTime";
+            var xinxi = db_congig.GetListBySql<SatisficingConfig>(sql).Where(d => d.EmployeeId == user.EmpNumber).ToList();
+            //var xinxi = db_survey.satisficingConfigs().OrderByDescending(t=>t.CreateTime).Where(d => d.EmployeeId == user.EmpNumber).ToList();
             List<SatisficingConfig> skiplist = xinxi.Skip((page - 1) * limit).Take(limit).ToList();
             List<SatisficingConfigDataView> resultlist = new List<SatisficingConfigDataView>();
             foreach (var item in skiplist)
@@ -820,11 +824,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
         }
 
         /// <summary>
-        /// 获取员工的满意度调查记录
+        /// 获取历史员工的满意度调查记录
         /// </summary>
         /// <param name="empid"></param>
         /// <returns></returns>
-
         public ActionResult SurveyHistoryData(int limit, int page)
         {
             //Base_UserModel user = Base_UserBusiness.GetCurrentUser();
@@ -832,23 +835,24 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
             //获取这些员工所在的部门
             EmployeesInfoManage yees = new EmployeesInfoManage();
             //List<EmployeesInfo> emplist = db_survey.GetMyDepEmp(user);
-            string sql = "select * from EmployeesInfo";
-            var emplist = yees.GetListBySql<EmployeesInfo>(sql).ToList();
-            var configtempList = db_survey.satisficingConfigs();
+            //string sql = "select * from EmployeesInfo";
+            //var emplist = yees.GetListBySql<EmployeesInfo>(sql).ToList();
 
-            var configList = new List<SatisficingConfig>();
+            //var configList = new List<SatisficingConfig>(); 
 
-            foreach (var item in emplist)
-            {
-               var templist = configtempList.Where(d=>d.EmployeeId == item.EmployeeId).ToList();
+            //foreach (var item in emplist)
+            //{
+                string sqls = "select * from SatisficingConfig order by CreateTime ";
+                var templist = db_congig.GetListBySql<SatisficingConfig>(sqls).Where(d=>d.IsDel == false && d.EmployeeId != null).ToList();
+               //var templist = db_survey.satisficingConfigs().Where(d=>d.EmployeeId == item.EmployeeId).ToList();
 
-                if (templist != null)
-                {
-                    configList.AddRange(templist);
-                }
-            }
+                //if (templist != null)
+                //{
+                //    configList.AddRange(templist);
+                //}
+            //}
 
-            var skiplist = configList.OrderByDescending(d=>d.CreateTime).Skip((page - 1) * limit).Take(limit).ToList();
+            var skiplist = templist.Skip((page - 1) * limit).Take(limit).ToList();
 
             List<SatisficingConfigDataView> detaillist = new List<SatisficingConfigDataView>();
 
@@ -862,7 +866,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
             var obj = new {
                 code=0,
                 msg="",
-                count = configList.Count,
+                count = templist.Count,
                 data = detaillist
 
             };
@@ -1699,9 +1703,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 var studentnumber = Request.Cookies["StudentNumber"].Value.ToString();
                 //获取这个学生所在的班级
                 BaseBusiness<ScheduleForTrainees> schedul = new BaseBusiness<ScheduleForTrainees>();
-                var banji = schedul.GetList().Where(d => d.StudentID == studentnumber && d.CurrentClass == true).FirstOrDefault().ClassID;
+                string sql = "select * from ScheduleForTrainees where StudentID = '" + studentnumber + "' and CurrentClass = true";
+                var banji = schedul.GetListBySql<ScheduleForTrainees>(sql).FirstOrDefault().ClassID;
+                //var banji = schedul.GetList().Where(d => d.StudentID == studentnumber && d.CurrentClass == true).FirstOrDefault().ClassID;
                 BaseBusiness<ClassSchedule> classschedule = new BaseBusiness<ClassSchedule>();
-                var banjiid = classschedule.GetList().Where(d => d.ClassNumber.ToString() == banji).FirstOrDefault().id;
+                string sqls = "select * from ClassSchedule where ClassNumber = '" + banji + "'";
+                var banjiid = classschedule.GetListBySql<ClassSchedule>(sqls).FirstOrDefault().id;
+                //var banjiid = classschedule.GetList().Where(d => d.ClassNumber.ToString() == banji).FirstOrDefault().id;
                 //获取这个学生这个月要填写的专业老师满意度调查
                 BaseBusiness<SatisficingConfig> config = new BaseBusiness<SatisficingConfig>();
                 var zhuanye = config.GetList().Where(d => d.ClassNumber == banjiid &&
@@ -1716,7 +1724,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 //查出这个学生已经生成的评价进行编辑
                 //SatisficingResult Surveyresult = new SatisficingResult();
                 BaseBusiness<SatisficingResult> resultes = new BaseBusiness<SatisficingResult>();
-                var pingjia = resultes.GetList().Where(d => d.Answerer == studentnumber && d.SatisficingConfig == zhuanye).FirstOrDefault();
+                var sqles = "select * from SatisficingResult where Answerer = '" + studentnumber + "' and SatisficingConfig = '" + zhuanye + "'";
+                var pingjia = resultes.GetListBySql<SatisficingResult>(sqles).FirstOrDefault();
+                //var pingjia = resultes.GetList().Where(d => d.Answerer == studentnumber && d.SatisficingConfig == zhuanye).FirstOrDefault();
                 pingjia.Suggest = suggest;
                 var date = DateTime.Now;
                 pingjia.CreateDate = date;
@@ -1726,7 +1736,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 BaseBusiness<SatisficingResultDetail> detail = new BaseBusiness<SatisficingResultDetail>();
                 foreach (var item in list)
                 {
-                    var xgfenshu = detail.GetList().Where(d => d.SatisficingBill == pingjia.ID && d.SatisficingItem == item.contentId).FirstOrDefault();
+                    string sqlxg = "select * from SatisficingResultDetail where SatisficingBill = '" + pingjia.ID + "' and SatisficingItem = '" + item.contentId + "'";
+                    var xgfenshu = detail.GetListBySql<SatisficingResultDetail>(sqlxg).FirstOrDefault();
+                    //var xgfenshu = detail.GetList().Where(d => d.SatisficingBill == pingjia.ID && d.SatisficingItem == item.contentId).FirstOrDefault();
                     xgfenshu.Remark = "";
                     xgfenshu.Scores = item.scores;
                     detail.Update(xgfenshu);
@@ -1801,9 +1813,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 var studentnumber = Request.Cookies["StudentNumber"].Value.ToString();
                 //获取这个学生所在的班级
                 BaseBusiness<ScheduleForTrainees> schedul = new BaseBusiness<ScheduleForTrainees>();
-                var banji = schedul.GetList().Where(d => d.StudentID == studentnumber && d.CurrentClass == true).FirstOrDefault().ClassID;
+                string sql = "select * from ScheduleForTrainees where StudentID = '" + studentnumber + "' and CurrentClass = true";
+                var banji = schedul.GetListBySql<ScheduleForTrainees>(sql).FirstOrDefault().ClassID;
+                //var banji = schedul.GetList().Where(d => d.StudentID == studentnumber && d.CurrentClass == true).FirstOrDefault().ClassID;
                 BaseBusiness<ClassSchedule> classschedule = new BaseBusiness<ClassSchedule>();
-                var banjiid = classschedule.GetList().Where(d => d.ClassNumber.ToString() == banji).FirstOrDefault().id;
+                string sqls = "select * from ClassSchedule where ClassNumber = '" + banji + "'";
+                var banjiid = classschedule.GetListBySql<ClassSchedule>(sqls).FirstOrDefault().id;
+                //var banjiid = classschedule.GetList().Where(d => d.ClassNumber.ToString() == banji).FirstOrDefault().id;
                 //获取这个学生这个月要填写的专业老师满意度调查
                 BaseBusiness<SatisficingConfig> config = new BaseBusiness<SatisficingConfig>();
                 var zhuanye = config.GetList().Where(d => d.ClassNumber == banjiid &&
@@ -1818,7 +1834,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 //查出这个学生已经生成的评价进行编辑
                 //SatisficingResult Surveyresult = new SatisficingResult();
                 BaseBusiness<SatisficingResult> resultes = new BaseBusiness<SatisficingResult>();
-                var pingjia = resultes.GetList().Where(d => d.Answerer == studentnumber && d.SatisficingConfig == zhuanye).FirstOrDefault();
+                var sqles = "select * from SatisficingResult where Answerer = '" + studentnumber + "' and SatisficingConfig = '" + zhuanye + "'";
+                var pingjia = resultes.GetListBySql<SatisficingResult>(sqles).FirstOrDefault();
+                //var pingjia = resultes.GetList().Where(d => d.Answerer == studentnumber && d.SatisficingConfig == zhuanye).FirstOrDefault();
                 pingjia.Suggest = suggest;
                 var date = DateTime.Now;
                 pingjia.CreateDate = date;
@@ -1828,7 +1846,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 BaseBusiness<SatisficingResultDetail> detail = new BaseBusiness<SatisficingResultDetail>();
                 foreach (var item in list)
                 {
-                    var xgfenshu = detail.GetList().Where(d => d.SatisficingBill == pingjia.ID && d.SatisficingItem == item.contentId).FirstOrDefault();
+                    string sqlxg = "select * from SatisficingResultDetail where SatisficingBill = '" + pingjia.ID + "' and SatisficingItem = '" + item.contentId + "'";
+                    var xgfenshu = detail.GetListBySql<SatisficingResultDetail>(sqlxg).FirstOrDefault();
+                    //var xgfenshu = detail.GetList().Where(d => d.SatisficingBill == pingjia.ID && d.SatisficingItem == item.contentId).FirstOrDefault();
                     xgfenshu.Remark = "";
                     xgfenshu.Scores = item.scores;
                     detail.Update(xgfenshu);
@@ -1902,9 +1922,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 var studentnumber = Request.Cookies["StudentNumber"].Value.ToString();
                 //获取这个学生所在的班级
                 BaseBusiness<ScheduleForTrainees> schedul = new BaseBusiness<ScheduleForTrainees>();
-                var banji = schedul.GetList().Where(d => d.StudentID == studentnumber && d.CurrentClass == true).FirstOrDefault().ClassID;
+                string sql = "select * from ScheduleForTrainees where StudentID = '" + studentnumber + "' and CurrentClass = true";
+                var banji = schedul.GetListBySql<ScheduleForTrainees>(sql).FirstOrDefault().ClassID;
+                //var banji = schedul.GetList().Where(d => d.StudentID == studentnumber && d.CurrentClass == true).FirstOrDefault().ClassID;
                 BaseBusiness<ClassSchedule> classschedule = new BaseBusiness<ClassSchedule>();
-                var banjiid = classschedule.GetList().Where(d => d.ClassNumber.ToString() == banji ).FirstOrDefault().id;
+                string sqls = "select * from ClassSchedule where ClassNumber = '" + banji + "'";
+                var banjiid = classschedule.GetListBySql<ClassSchedule>(sqls).FirstOrDefault().id;
+                //var banjiid = classschedule.GetList().Where(d => d.ClassNumber.ToString() == banji ).FirstOrDefault().id;
                 //获取这个学生这个月要填写的专业老师满意度调查
                 BaseBusiness<SatisficingConfig> config = new BaseBusiness<SatisficingConfig>();
                 var zhuanye = config.GetList().Where(d => d.ClassNumber == banjiid &&
@@ -1919,7 +1943,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 //查出这个学生已经生成的评价进行编辑
                 //SatisficingResult Surveyresult = new SatisficingResult();
                 BaseBusiness<SatisficingResult> resultes = new BaseBusiness<SatisficingResult>();
-                var pingjia = resultes.GetList().Where(d => d.Answerer == studentnumber && d.SatisficingConfig == zhuanye).FirstOrDefault();
+                var sqles = "select * from SatisficingResult where Answerer = '" + studentnumber + "' and SatisficingConfig = '" + zhuanye + "'";
+                var pingjia = resultes.GetListBySql<SatisficingResult>(sqles).FirstOrDefault();
+                //var pingjia = resultes.GetList().Where(d => d.Answerer == studentnumber && d.SatisficingConfig == zhuanye).FirstOrDefault();
                 pingjia.Suggest = suggest;
                 var date = DateTime.Now;
                 pingjia.CreateDate = date;
@@ -1929,7 +1955,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 BaseBusiness<SatisficingResultDetail> detail = new BaseBusiness<SatisficingResultDetail>();
                 foreach (var item in list)
                 {
-                    var xgfenshu = detail.GetList().Where(d => d.SatisficingBill == pingjia.ID && d.SatisficingItem == item.contentId).FirstOrDefault();
+                    string sqlxg = "select * from SatisficingResultDetail where SatisficingBill = '" + pingjia.ID + "' and SatisficingItem = '" + item.contentId + "'";
+                    var xgfenshu = detail.GetListBySql<SatisficingResultDetail>(sqlxg).FirstOrDefault();
+                    //var xgfenshu = detail.GetList().Where(d => d.SatisficingBill == pingjia.ID && d.SatisficingItem == item.contentId).FirstOrDefault();
                     xgfenshu.Remark = "";
                     xgfenshu.Scores = item.scores;
                     detail.Update(xgfenshu);
@@ -2004,9 +2032,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 var studentnumber = Request.Cookies["StudentNumber"].Value.ToString();
                 //获取这个学生所在的班级
                 BaseBusiness<ScheduleForTrainees> schedul = new BaseBusiness<ScheduleForTrainees>();
-                var banji = schedul.GetList().Where(d => d.StudentID == studentnumber && d.CurrentClass == true).FirstOrDefault().ClassID;
+                string sql = "select * from ScheduleForTrainees where StudentID = '" + studentnumber + "' and CurrentClass = true";
+                var banji = schedul.GetListBySql<ScheduleForTrainees>(sql).FirstOrDefault().ClassID;
+                //var banji = schedul.GetList().Where(d => d.StudentID == studentnumber && d.CurrentClass == true).FirstOrDefault().ClassID;
                 BaseBusiness<ClassSchedule> classschedule = new BaseBusiness<ClassSchedule>();
-                var banjiid = classschedule.GetList().Where(d => d.ClassNumber.ToString() == banji ).FirstOrDefault().id;
+                string sqls = "select * from ClassSchedule where ClassNumber = '" + banji + "'";
+                var banjiid = classschedule.GetListBySql<ClassSchedule>(sqls).FirstOrDefault().id;
+                //var banjiid = classschedule.GetList().Where(d => d.ClassNumber.ToString() == banji ).FirstOrDefault().id;
                 //获取这个学生这个月要填写的专业老师满意度调查
                 BaseBusiness<SatisficingConfig> config = new BaseBusiness<SatisficingConfig>();
                 var zhuanye = config.GetList().Where(d => d.ClassNumber == banjiid &&
@@ -2021,7 +2053,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 //查出这个学生已经生成的评价进行编辑
                 //SatisficingResult Surveyresult = new SatisficingResult();
                 BaseBusiness<SatisficingResult> resultes = new BaseBusiness<SatisficingResult>();
-                var pingjia = resultes.GetList().Where(d => d.Answerer == studentnumber && d.SatisficingConfig == zhuanye).FirstOrDefault();
+                var sqles = "select * from SatisficingResult where Answerer = '" + studentnumber + "' and SatisficingConfig = '" + zhuanye + "'";
+                var pingjia = resultes.GetListBySql<SatisficingResult>(sqles).FirstOrDefault();
+                //var pingjia = resultes.GetList().Where(d => d.Answerer == studentnumber && d.SatisficingConfig == zhuanye).FirstOrDefault();
                 pingjia.Suggest = suggest;
                 var date = DateTime.Now;
                 pingjia.CreateDate = date;
@@ -2031,7 +2065,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 BaseBusiness<SatisficingResultDetail> detail = new BaseBusiness<SatisficingResultDetail>();
                 foreach (var item in list)
                 {
-                    var xgfenshu = detail.GetList().Where(d => d.SatisficingBill == pingjia.ID && d.SatisficingItem == item.contentId).FirstOrDefault();
+                    string sqlxg = "select * from SatisficingResultDetail where SatisficingBill = '" + pingjia.ID + "' and SatisficingItem = '" + item.contentId + "'";
+                    var xgfenshu = detail.GetListBySql<SatisficingResultDetail>(sqlxg).FirstOrDefault();
+                    //var xgfenshu = detail.GetList().Where(d => d.SatisficingBill == pingjia.ID && d.SatisficingItem == item.contentId).FirstOrDefault();
                     xgfenshu.Remark = "";
                     xgfenshu.Scores = item.scores;
                     detail.Update(xgfenshu);
@@ -2110,9 +2146,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 var studentnumber = Request.Cookies["StudentNumber"].Value.ToString();
                 //获取这个学生所在的班级
                 BaseBusiness<ScheduleForTrainees> schedul = new BaseBusiness<ScheduleForTrainees>();
-                var banji = schedul.GetList().Where(d => d.StudentID == studentnumber && d.CurrentClass == true).FirstOrDefault().ClassID;
+                string sql = "select * from ScheduleForTrainees where StudentID = '" + studentnumber + "' and CurrentClass = true";
+                var banji = schedul.GetListBySql<ScheduleForTrainees>(sql).FirstOrDefault().ClassID;
+                //var banji = schedul.GetList().Where(d => d.StudentID == studentnumber && d.CurrentClass == true).FirstOrDefault().ClassID;
                 BaseBusiness<ClassSchedule> classschedule = new BaseBusiness<ClassSchedule>();
-                var banjiid = classschedule.GetList().Where(d => d.ClassNumber.ToString() == banji ).FirstOrDefault().id;
+                string sqls = "select * from ClassSchedule where ClassNumber = '" + banji + "'";
+                var banjiid = classschedule.GetListBySql<ClassSchedule>(sqls).FirstOrDefault().id;
+                //var banjiid = classschedule.GetList().Where(d => d.ClassNumber.ToString() == banji ).FirstOrDefault().id;
                 //获取这个学生这个月要填写的专业老师满意度调查
                 BaseBusiness<SatisficingConfig> config = new BaseBusiness<SatisficingConfig>();
                 var zhuanye = config.GetList().Where(d => d.ClassNumber == banjiid &&
@@ -2127,7 +2167,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 //查出这个学生已经生成的评价进行编辑
                 //SatisficingResult Surveyresult = new SatisficingResult();
                 BaseBusiness<SatisficingResult> resultes = new BaseBusiness<SatisficingResult>();
-                var pingjia = resultes.GetList().Where(d => d.Answerer == studentnumber && d.SatisficingConfig == zhuanye).FirstOrDefault();
+                var sqles = "select * from SatisficingResult where Answerer = '" + studentnumber + "' and SatisficingConfig = '" + zhuanye + "'";
+                var pingjia = resultes.GetListBySql<SatisficingResult>(sqles).FirstOrDefault();
+                //var pingjia = resultes.GetList().Where(d => d.Answerer == studentnumber && d.SatisficingConfig == zhuanye).FirstOrDefault();
                 pingjia.Suggest = suggest;
                 var date = DateTime.Now;
                 pingjia.CreateDate = date;
@@ -2137,7 +2179,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 BaseBusiness<SatisficingResultDetail> detail = new BaseBusiness<SatisficingResultDetail>();
                 foreach (var item in surveyCommit)
                 {
-                    var xgfenshu = detail.GetList().Where(d => d.SatisficingBill == pingjia.ID && d.SatisficingItem == item.SurveyItemId).FirstOrDefault();
+                    string sqlxg = "select * from SatisficingResultDetail where SatisficingBill = '" + pingjia.ID + "' and SatisficingItem = '" + item.SurveyItemId + "'";
+                    var xgfenshu = detail.GetListBySql<SatisficingResultDetail>(sqlxg).FirstOrDefault();
+                    //var xgfenshu = detail.GetList().Where(d => d.SatisficingBill == pingjia.ID && d.SatisficingItem == item.SurveyItemId).FirstOrDefault();
                     xgfenshu.Remark = "";
                     xgfenshu.Scores = item.Score;
                     detail.Update(xgfenshu);
@@ -2215,9 +2259,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 var studentnumber = Request.Cookies["StudentNumber"].Value.ToString();
                 //获取这个学生所在的班级
                 BaseBusiness<ScheduleForTrainees> schedul = new BaseBusiness<ScheduleForTrainees>();
-                var banji = schedul.GetList().Where(d => d.StudentID == studentnumber && d.CurrentClass == true).FirstOrDefault().ClassID;
+                string sql = "select * from ScheduleForTrainees where StudentID = '"+ studentnumber + "' and CurrentClass = true";
+                var banji = schedul.GetListBySql<ScheduleForTrainees>(sql).FirstOrDefault().ClassID;
+                //var banji = schedul.GetList().Where(d => d.StudentID == studentnumber && d.CurrentClass == true).FirstOrDefault().ClassID;
                 BaseBusiness<ClassSchedule> classschedule = new BaseBusiness<ClassSchedule>();
-                var banjiid = classschedule.GetList().Where(d => d.ClassNumber.ToString() == banji).FirstOrDefault().id;
+                string sqls = "select * from ClassSchedule where ClassNumber = '"+ banji + "'";
+                var banjiid = classschedule.GetListBySql<ClassSchedule>(sqls).FirstOrDefault().id;
+                //var banjiid = classschedule.GetList().Where(d => d.ClassNumber == banji).FirstOrDefault().id;
                 //获取这个学生这个月要填写的专业老师满意度调查
                 BaseBusiness<SatisficingConfig> config = new BaseBusiness<SatisficingConfig>();
                 //string sql = "select * from SatisficingConfig where ClassNumber = '" + banjiid + "' and IsDel = 0 and CurriculumID IS NULL and Isitacanteen = 0 and isitashuxue = 0 and isitayingyu = 0 and Isitayuwen = 0 and YEAR(CutoffDate) = '" + DateTime.Now.Year + "' and (Month(CutoffDate) = '" + DateTime.Now.Month + "' or Month(CutoffDate) = '"+ DateTime.Now.Month + 1 + "')";
@@ -2235,7 +2283,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 //查出这个学生已经生成的评价进行编辑
                 //SatisficingResult Surveyresult = new SatisficingResult();
                 BaseBusiness<SatisficingResult> resultes = new BaseBusiness<SatisficingResult>();
-                var pingjia = resultes.GetList().Where(d => d.Answerer == studentnumber && d.SatisficingConfig == zhuanye).FirstOrDefault();
+                var sqles = "select * from SatisficingResult where Answerer = '" + studentnumber + "' and SatisficingConfig = '" + zhuanye + "'";
+                var pingjia = resultes.GetListBySql<SatisficingResult>(sqles).FirstOrDefault();
+                //var pingjia = resultes.GetList().Where(d => d.Answerer == studentnumber && d.SatisficingConfig == zhuanye).FirstOrDefault();
                 pingjia.Suggest = suggest;
                 var date = DateTime.Now;
                 pingjia.CreateDate = date;
@@ -2245,7 +2295,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 BaseBusiness<SatisficingResultDetail> detail = new BaseBusiness<SatisficingResultDetail>();
                 foreach (var item in list)
                 {
-                    var xgfenshu = detail.GetList().Where(d => d.SatisficingBill == pingjia.ID && d.SatisficingItem == item.contentId).FirstOrDefault();
+                    string sqlxg = "select * from SatisficingResultDetail where SatisficingBill = '" + pingjia.ID + "' and SatisficingItem = '"+ item.contentId + "'";
+                    var xgfenshu = detail.GetListBySql<SatisficingResultDetail>(sqlxg).FirstOrDefault();
+                    //var xgfenshu = detail.GetList().Where(d => d.SatisficingBill == pingjia.ID && d.SatisficingItem == item.contentId).FirstOrDefault();
                     xgfenshu.Remark = "";
                     xgfenshu.Scores = item.scores;
                     detail.Update(xgfenshu);

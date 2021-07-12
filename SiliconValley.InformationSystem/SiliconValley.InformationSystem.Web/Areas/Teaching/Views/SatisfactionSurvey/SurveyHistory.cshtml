@@ -1,9 +1,7 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "SurveyHistory";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 @section style{
 
     <style>
@@ -63,7 +61,6 @@
     </div>
 </div>
 @*<ul id="demoTree" class="dtree" data-id="0"></ul>*@
-
 @section script{
     <script src="~/Areas/Teaching/Scripts/util.js"></script>
     <script>
@@ -121,6 +118,7 @@
             table.render({
                 elem: '#dataTabler'
                 , id: "dataTabler"
+                , toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
                 , url: '/Teaching/SatisfactionSurvey/CanteenSelect'
                 , cols: [[
                     { type: 'checkbox' }
@@ -164,6 +162,7 @@
             table.render({
                 elem: '#dataTable'
                 , id: "dataTable"
+                , toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
                 , url: '/Teaching/SatisfactionSurvey/SurveyHistoryData'
                 , cols: [[
                     { type: 'checkbox' }
@@ -197,8 +196,6 @@
                 ]]
                 , page: true
             });
-
-
             laydate.render({
                 elem: '#date1', //指定元素
                 format: 'yyyy-MM',
@@ -237,7 +234,6 @@
 
                 }
             });
-     
             //绑定节点点击
             //dtree.on("node('demoTree')", function (obj) {
 
