@@ -58,9 +58,10 @@ namespace SiliconValley.InformationSystem.Web.Controllers
                             err.Msg = "登陆成功!";
                             err.Data = "/Base_SysManage/Base_SysMenu/Index";
 
-                            //获取权限
+                        BusHelper.WriteSysLog("登陆成功", Entity.Base_SysManage.EnumType.LogType.用户登陆);
+                        //获取权限
 
-                            var permisslist = PermissionManage.GetOperatorPermissionValues();
+                        var permisslist = PermissionManage.GetOperatorPermissionValues();
 
                             SessionHelper.Session["OperatorPermission"] = permisslist;
                             return Json(err, JsonRequestBehavior.AllowGet);
