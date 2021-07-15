@@ -3672,6 +3672,7 @@
     <Content Include="Areas\Teaching\Views\Teacher\Teacherclasslist.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\EmplSalaryEmbody\Import.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\EmployeesInfo\AddressUpload.cshtml" />
+    <Content Include="Areas\Educational\Views\Staff_Cost_Statistics\ManageClassTime.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
