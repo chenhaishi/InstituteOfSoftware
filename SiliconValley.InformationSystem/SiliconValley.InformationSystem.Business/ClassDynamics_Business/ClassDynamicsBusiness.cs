@@ -18,7 +18,8 @@ namespace SiliconValley.InformationSystem.Business.ClassDynamics_Business
         /// <returns></returns>
         public object ClassBindKC()
         {
-            return this.GetList().Where(d => d.ExpelsID != null && d.States == 6 && d.IsaDopt == true).Count();
+            BaseBusiness<Entity.Entity.Expels> expels = new BaseBusiness<Entity.Entity.Expels>();
+            return expels.GetList().Count();
         }
         /// <summary>
         /// 获取所有退学的总人数
@@ -26,15 +27,17 @@ namespace SiliconValley.InformationSystem.Business.ClassDynamics_Business
         /// <returns></returns>
         public object ClassBindTX()
         {
-            return this.GetList().Where(d => d.ApplicationRepairID != null && d.States == 1 && d.IsaDopt == true).Count();
+            BaseBusiness<ApplicationDropout> ApplicationDropout = new BaseBusiness<ApplicationDropout>();
+            return ApplicationDropout.GetList().Count();
         }
         /// <summary>
-        /// 获取所有退学的总人数
+        /// 获取所有休学的总人数
         /// </summary>
         /// <returns></returns>
         public object ClassBindXX()
         {
-            return this.GetList().Where(d => d.SuspensionofschoolID != null && d.States == 5 && d.IsaDopt == true).Count();
+            BaseBusiness<Entity.Entity.Suspensionofschool> Suspensionofschool = new BaseBusiness<Entity.Entity.Suspensionofschool>();
+            return Suspensionofschool.GetList().Count();
         }
 
 

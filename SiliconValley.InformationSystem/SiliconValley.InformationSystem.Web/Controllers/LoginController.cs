@@ -57,10 +57,14 @@ namespace SiliconValley.InformationSystem.Web.Controllers
                             err.Success = true;
                             err.Msg = "登陆成功!";
                             err.Data = "/Base_SysManage/Base_SysMenu/Index";
+                        //log4net.ILog log = log4net.LogManager.GetLogger(typeof(HomeController));
 
-                            //获取权限
+                        //log.Info("这个是 Info Level 的日志！");
 
-                            var permisslist = PermissionManage.GetOperatorPermissionValues();
+                        //log.Error("这个是 Error Level 的日志！");
+                        //获取权限
+
+                        var permisslist = PermissionManage.GetOperatorPermissionValues();
 
                             SessionHelper.Session["OperatorPermission"] = permisslist;
                             return Json(err, JsonRequestBehavior.AllowGet);

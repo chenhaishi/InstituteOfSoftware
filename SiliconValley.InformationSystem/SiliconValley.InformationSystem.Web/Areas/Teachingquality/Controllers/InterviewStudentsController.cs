@@ -135,9 +135,8 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
             {
                 list = list.Where(a => a.Dateofinterview <= Convert.ToDateTime(qEndTime)).ToList();
             }
-
-
-            var mylist = list.Select(a => new
+           
+                var mylist = list.Select(a => new
             {
                 ID = a.ID,
                 InterviewTopics = a.InterviewTopics, //谈话标题
