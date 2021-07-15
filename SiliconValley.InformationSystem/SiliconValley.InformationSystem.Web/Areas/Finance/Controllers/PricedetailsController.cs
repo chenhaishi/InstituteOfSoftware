@@ -122,7 +122,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
         }
         //学员缴费操作页面
         public ActionResult Studentpayment()
-        {
+        { 
          
             return View();
         }
@@ -328,7 +328,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
                 // string person = Request.QueryString["person"];
                 //序列化
                 // var  personlist = serializer.Deserialize<List<StudentFeeRecord>>(person);
-
+                 
                 ViewBag.student = JsonConvert.SerializeObject(dbtext.StudentFind(personlist.FirstOrDefault().StudenID));
                 ViewBag.Receiptdata = JsonConvert.SerializeObject(dbtext.Receiptdata(personlist));
             }
@@ -350,7 +350,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Finance.Controllers
                     identitydocument = personlist[0].Remarks,
                     classa = stuid[1],
                     GrandName = GrandName,
-                    method = Preentryfeebusenn.GetList().Where(d => d.identitydocument == personlist[0].Remarks).SingleOrDefault().Reamk
+                    method = Preentryfeebusenn.GetList().Where(d => d.identitydocument == personlist[0].Remarks && d.IsDit!=true).SingleOrDefault().Reamk
                 };
                 List<object> objlist = new List<object>();
                 

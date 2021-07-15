@@ -335,7 +335,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teachingquality.Controllers
             return Json(dbtext.Expelperation(ID, Secss, State), JsonRequestBehavior.AllowGet);
         }
         /// <summary>
-        /// 退学申请页面表单
+        /// 退学申请页面表单    
         /// </summary>
         /// <returns></returns>
         [HttpGet]

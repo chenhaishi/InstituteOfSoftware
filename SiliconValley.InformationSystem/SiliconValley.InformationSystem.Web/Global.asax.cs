@@ -22,7 +22,7 @@ namespace SiliconValley.InformationSystem.Web
         {
             //注册路由
             RouteConfig.RegisterRoutes(RouteTable.Routes);
-            
+            log4net.Config.XmlConfigurator.Configure();//日志配置
             //注册全局异常捕捉器
           //FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             //BundleConfig.RegisterBundles(BundleTable.Bundles);

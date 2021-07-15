@@ -61,34 +61,34 @@ namespace SiliconValley.InformationSystem.Business.Admin
         /// 获取所有阶段数据（除去Y2）
         /// </summary>
         /// <returns></returns>
-        public object StudentGrand()
+        public List<Grand> StudentGrand()
         {
-            return Grand.GetList().Where(d => d.Id != 1006).ToList();
+            return Grand.GetList().Where(d => d.Id != 1006 && d.Id!=4&&d.Id!=1002).ToList();
         }
         /// <summary>
         /// 算每个阶段升学率
         /// </summary>
         /// <returns></returns>
-        public object StudentAvgGrand(DateTime date)//创建一个实体类，往里面加数据
-        {
-            List<Entity.ViewEntity.XYK_Data.AvgGrand> avgGrands = new List<Entity.ViewEntity.XYK_Data.AvgGrand>();
-            var time = DateTime.Now.Year.ToString();
-            var avgSql = "";
-            if (date == null)
-            {
-                 avgSql = "select grade_Id,sum(班级人数) as countsum from (select *, (select count(studentId) from ScheduleForTrainees where ClassID = cs.ClassNumber and CurrentClass = 0 and AddDate like '%" + time + "%') as 班级人数 from ClassSchedule cs) as temp where ClassstatusID = 4 group by grade_Id ";//获取当前年份
-            }
-            else
-            {
-                avgSql = "select grade_Id,sum(班级人数) as countsum from (select *, (select count(studentId) from ScheduleForTrainees where ClassID = cs.ClassNumber and CurrentClass = 0 and AddDate like '%" + date + "%') as 班级人数 from ClassSchedule cs) as temp where ClassstatusID = 4 group by grade_Id ";//当前时间
-            }
+        //public object StudentAvgGrand(DateTime date)//创建一个实体类，往里面加数据
+        //{
+        //    List<Entity.ViewEntity.XYK_Data.AvgGrand> avgGrands = new List<Entity.ViewEntity.XYK_Data.AvgGrand>();
+        //    var time = DateTime.Now.Year.ToString();
+        //    var avgSql = "";
+        //    if (date == null)
+        //    {
+        //         avgSql = "select grade_Id,sum(班级人数) as countsum from (select *, (select count(studentId) from ScheduleForTrainees where ClassID = cs.ClassNumber and CurrentClass = 0 and AddDate like '%" + time + "%') as 班级人数 from ClassSchedule cs) as temp where ClassstatusID = 4 group by grade_Id ";//获取当前年份
+        //    }
+        //    else
+        //    {
+        //        avgSql = "select grade_Id,sum(班级人数) as countsum from (select *, (select count(studentId) from ScheduleForTrainees where ClassID = cs.ClassNumber and CurrentClass = 0 and AddDate like '%" + date + "%') as 班级人数 from ClassSchedule cs) as temp where ClassstatusID = 4 group by grade_Id ";//当前时间
+        //    }
              
-            var avg = view_StudentAvg.GetListBySql<ScheduleForTrainees>(avgSql).ToList();
+        //    var avg = view_StudentAvg.GetListBySql<ScheduleForTrainees>(avgSql).ToList();
 
-            return avg;
+        //    return avg;
 
 
-        }
+        //}
 
 
     }
