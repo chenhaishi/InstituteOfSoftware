@@ -233,19 +233,23 @@ namespace SiliconValley.InformationSystem.Business.TeachingDepBusiness
         {
 
             SatisficingConfigDataView view = new SatisficingConfigDataView();
-            view.Curriculum = db_course.GetCurriculas().Where(d => d.CurriculumID == satisficingConfig.CurriculumID).FirstOrDefault();
+            string sql = "select * from Curriculum where CurriculumID = '"+ satisficingConfig.CurriculumID + "'";
+            view.Curriculum = db_course.GetListBySql<Curriculum>(sql).FirstOrDefault();
             view.Emp = db_emp.GetList().Where(d => d.EmployeeId == satisficingConfig.EmployeeId && d.IsDel == false).FirstOrDefault();
-            view.investigationClass = db_class.GetList().Where(d => d.id == satisficingConfig.ClassNumber).FirstOrDefault(); 
+            var sqls = "select * from ClassSchedule where id = '"+ satisficingConfig.ClassNumber + "'";
+            view.investigationClass = db_class.GetListBySql<ClassSchedule>(sqls).FirstOrDefault();
             view.investigationDate = (DateTime)satisficingConfig.CreateTime;
             view.SatisficingConfigId = satisficingConfig.ID;
             //计算总分
-            var staresultlist = this.AllsatisficingResults().Where(d => d.SatisficingConfig == satisficingConfig.ID).ToList();
+            string sqles = "select * from SatisficingResult where SatisficingConfig = '" + satisficingConfig.ID + "'";
+            var staresultlist = this.GetListBySql<SatisficingResult>(sqles).ToList();
              
             var total = 0;
 
             staresultlist.ForEach(d=>
             {
-                 var templist = db_satisresultdetail.GetList().Where(b => b.SatisficingBill == d.ID).ToList();
+                string sqlees = "select * from SatisficingResultDetail where SatisficingBill = '" + d.ID + "'";
+                var templist = db_satisresultdetail.GetListBySql<SatisficingResultDetail>(sqlees).ToList();
 
                 templist.ForEach(x=>
                 {
@@ -259,7 +263,7 @@ namespace SiliconValley.InformationSystem.Business.TeachingDepBusiness
                 view.Average = total / 1;
             }
             else {
-                view.Average = total / staresultlist.Count;
+               view.Average = total / staresultlist.Count;
             }
             return view;
 
@@ -552,7 +556,7 @@ namespace SiliconValley.InformationSystem.Business.TeachingDepBusiness
         /// <returns></returns>
         public List<SatisficingConfig> GetSatisficingConfigsByStudent(string student, string type)
         {
-            List<SatisficingConfig> result = new List<SatisficingConfig>();
+            //List<SatisficingConfig> result = new List<SatisficingConfig>();
 
             //条件 未到满意度填写截止日期 为当前学员的班级 未填写过
             //获取学员当前班级
@@ -589,20 +593,20 @@ namespace SiliconValley.InformationSystem.Business.TeachingDepBusiness
             }
             if (list.Count == 0)
             {
-                return result;
+                return list;
             }
 
-            foreach (var item in list)
-            {
-                //证明未填写过
-                var tempobj = GetSatisficingResult(student, item.ID);
+            //foreach (var item in list)
+            //{
+            //    //证明未填写过
+            //    var tempobj = GetSatisficingResult(student, item.ID);
 
-                if (tempobj == null)
-                {
-                    result.Add(item);
-                }
-            }
-            return result;
+            //    if (tempobj == null)
+            //    {
+                    //result.Add(list);
+            //    }
+            //}
+            return list;
         }
 
         public SatisficingConfigView ConvertToview(SatisficingConfig satisficingConfig)

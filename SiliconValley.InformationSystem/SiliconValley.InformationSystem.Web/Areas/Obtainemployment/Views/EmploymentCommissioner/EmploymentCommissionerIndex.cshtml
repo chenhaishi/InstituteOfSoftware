@@ -35,9 +35,9 @@
                         </select>
                     </div>
                 </div>
-
+                <button id="tinajiaquyu" class="layui-btn layui-btn-radius layui-btn-primary">添加就业区域</button>
             </div>
-
+           
         </form>
 
 
@@ -75,9 +75,8 @@
         </div>
 
         <button id="serchBtn2" class="layui-btn layui-btn-radius layui-btn-primary">查询</button>
-
+        
     </div>
-
     <div>
         <table class="layui-hide" id="EmpStaffTab" lay-filter="EmpStaffTab_filter"></table>
     </div>
@@ -109,7 +108,6 @@
                 , url: '/Obtainemployment/EmploymentCommissioner/SearchData/'
                 , page: true
                 , cols: [[
-                  
                     { field: 'EmploymentStaffID', title: 'ID', hide: true }
                     , { field: 'EmployeeId', title: '员工编号'/*, sort: true*/ }
                     , { field: 'EmpName', title: '姓名' }
@@ -179,6 +177,14 @@
                 });
 
             });
+            $("#tinajiaquyu").click(function () {
+                layer.open({
+                    type: 2,
+                    content: "/Obtainemployment/EmploymentAreas/EmploymentAreasAdd",
+                    title: "添加区域",
+                    area: ['590px', '290px'],
+                });
+            })
         });
 
        
@@ -221,6 +227,7 @@
             });
 
         });
+        
     </script>
 }
 

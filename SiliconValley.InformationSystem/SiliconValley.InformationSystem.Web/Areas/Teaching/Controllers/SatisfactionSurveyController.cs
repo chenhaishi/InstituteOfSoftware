@@ -41,13 +41,13 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
         EmployeesInfoManage db_emp = new EmployeesInfoManage();
 
         BaseBusiness<Headmaster> db_headmaster = new BaseBusiness<Headmaster>();
-
+        BaseBusiness<SatisficingConfig> db_congig = new BaseBusiness<SatisficingConfig>();
         Base_UserMapRoeBusinessL db_userrole = new Base_UserMapRoeBusinessL();
-
+        BaseBusiness<SatisficingItem> db_item = new BaseBusiness<SatisficingItem>();
         private readonly SatisfactionSurveyBusiness db_survey;
 
         TeacherClassBusiness db_teacherclass = new TeacherClassBusiness();
-
+        BaseBusiness<SatisficingResult> db_result = new BaseBusiness<SatisficingResult>();
         BaseBusiness<ClassSchedule> db_class = new BaseBusiness<ClassSchedule>();
         //学员班级
         ClassScheduleBusiness classScheduleBusiness = new ClassScheduleBusiness();
@@ -56,14 +56,15 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
 
         private readonly TeacherBusiness db_teacher;
         private readonly CourseBusiness db_course;
-
+        private readonly ScheduleForTraineesBusiness db_schedule;
         public SatisfactionSurveyController()
         {
             db_survey = new SatisfactionSurveyBusiness();
 
-
+            db_schedule = new ScheduleForTraineesBusiness();
             db_course = new CourseBusiness();
             db_teacher = new TeacherBusiness();
+            
         }
         public ActionResult SatisfactionIndex()
         {
@@ -766,7 +767,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
         /// <returns></returns>
         public ActionResult CanteenInquiry(int limit, int page)
         {
-            var xinxi = db_survey.satisficingConfigs().OrderByDescending(t => t.CreateTime).Where(d =>   d.Isitacanteen == true).ToList();
+            string sql = "select * from SatisficingConfig order by CreateTime";
+            var xinxi = db_congig.GetListBySql<SatisficingConfig>(sql).Where(d => d.Isitacanteen == true).ToList();
+            //var xinxi = db_survey.satisficingConfigs().OrderByDescending(t => t.CreateTime).Where(d =>   d.Isitacanteen == true).ToList();
             List<SatisficingConfig> skiplist = xinxi.Skip((page - 1) * limit).Take(limit).ToList();
             List<SatisficingConfigDataView> resultlist = new List<SatisficingConfigDataView>();
             foreach (var item in skiplist)
@@ -795,7 +798,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
         {
             //获取当前账号
             Base_UserModel user = Base_UserBusiness.GetCurrentUser();
-            var xinxi = db_survey.satisficingConfigs().OrderByDescending(t=>t.CreateTime).Where(d => d.EmployeeId == user.EmpNumber).ToList();
+            string sql = "select * from SatisficingConfig order by CreateTime";
+            var xinxi = db_congig.GetListBySql<SatisficingConfig>(sql).Where(d => d.EmployeeId == user.EmpNumber).ToList();
+            //var xinxi = db_survey.satisficingConfigs().OrderByDescending(t=>t.CreateTime).Where(d => d.EmployeeId == user.EmpNumber).ToList();
             List<SatisficingConfig> skiplist = xinxi.Skip((page - 1) * limit).Take(limit).ToList();
             List<SatisficingConfigDataView> resultlist = new List<SatisficingConfigDataView>();
             foreach (var item in skiplist)
@@ -819,11 +824,10 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
         }
 
         /// <summary>
-        /// 获取员工的满意度调查记录
+        /// 获取历史员工的满意度调查记录
         /// </summary>
         /// <param name="empid"></param>
         /// <returns></returns>
-
         public ActionResult SurveyHistoryData(int limit, int page)
         {
             //Base_UserModel user = Base_UserBusiness.GetCurrentUser();
@@ -831,23 +835,24 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
             //获取这些员工所在的部门
             EmployeesInfoManage yees = new EmployeesInfoManage();
             //List<EmployeesInfo> emplist = db_survey.GetMyDepEmp(user);
-            string sql = "select * from EmployeesInfo";
-            var emplist = yees.GetListBySql<EmployeesInfo>(sql).ToList();
-            var configtempList = db_survey.satisficingConfigs();
+            //string sql = "select * from EmployeesInfo";
+            //var emplist = yees.GetListBySql<EmployeesInfo>(sql).ToList();
 
-            var configList = new List<SatisficingConfig>();
+            //var configList = new List<SatisficingConfig>(); 
 
-            foreach (var item in emplist)
-            {
-               var templist = configtempList.Where(d=>d.EmployeeId == item.EmployeeId).ToList();
+            //foreach (var item in emplist)
+            //{
+                string sqls = "select * from SatisficingConfig order by CreateTime ";
+                var templist = db_congig.GetListBySql<SatisficingConfig>(sqls).Where(d=>d.IsDel == false && d.EmployeeId != null).ToList();
+               //var templist = db_survey.satisficingConfigs().Where(d=>d.EmployeeId == item.EmployeeId).ToList();
 
-                if (templist != null)
-                {
-                    configList.AddRange(templist);
-                }
-            }
+                //if (templist != null)
+                //{
+                //    configList.AddRange(templist);
+                //}
+            //}
 
-            var skiplist = configList.OrderByDescending(d=>d.CreateTime).Skip((page - 1) * limit).Take(limit).ToList();
+            var skiplist = templist.Skip((page - 1) * limit).Take(limit).ToList();
 
             List<SatisficingConfigDataView> detaillist = new List<SatisficingConfigDataView>();
 
@@ -861,7 +866,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
             var obj = new {
                 code=0,
                 msg="",
-                count = configList.Count,
+                count = templist.Count,
                 data = detaillist
 
             };
@@ -1696,42 +1701,84 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 var client = Bos.BosClient();
                 //获取当前登陆学生的学号
                 var studentnumber = Request.Cookies["StudentNumber"].Value.ToString();
-                //1. 添加结果表  2.添加详细表 
-                SatisficingResult Surveyresult = new SatisficingResult();
-                Surveyresult.Answerer = studentnumber;
-
+                //获取这个学生所在的班级
+                BaseBusiness<ScheduleForTrainees> schedul = new BaseBusiness<ScheduleForTrainees>();
+                string sql = "select * from ScheduleForTrainees where StudentID = '" + studentnumber + "' and CurrentClass = true";
+                var banji = schedul.GetListBySql<ScheduleForTrainees>(sql).FirstOrDefault().ClassID;
+                //var banji = schedul.GetList().Where(d => d.StudentID == studentnumber && d.CurrentClass == true).FirstOrDefault().ClassID;
+                BaseBusiness<ClassSchedule> classschedule = new BaseBusiness<ClassSchedule>();
+                string sqls = "select * from ClassSchedule where ClassNumber = '" + banji + "'";
+                var banjiid = classschedule.GetListBySql<ClassSchedule>(sqls).FirstOrDefault().id;
+                //var banjiid = classschedule.GetList().Where(d => d.ClassNumber.ToString() == banji).FirstOrDefault().id;
+                //获取这个学生这个月要填写的专业老师满意度调查
+                BaseBusiness<SatisficingConfig> config = new BaseBusiness<SatisficingConfig>();
+                var zhuanye = config.GetList().Where(d => d.ClassNumber == banjiid &&
+                d.CurriculumID == null &&
+                d.Isitacanteen == true &&
+                d.isitashuxue == false &&
+                d.isitayingyu == false &&
+                d.Isitayuwen == false &&
+                DateTime.Parse(d.CutoffDate.ToString()).Year == DateTime.Now.Year &&
+                (DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month ||
+                DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month + 1)).FirstOrDefault().ID;
+                //查出这个学生已经生成的评价进行编辑
+                //SatisficingResult Surveyresult = new SatisficingResult();
+                BaseBusiness<SatisficingResult> resultes = new BaseBusiness<SatisficingResult>();
+                var sqles = "select * from SatisficingResult where Answerer = '" + studentnumber + "' and SatisficingConfig = '" + zhuanye + "'";
+                var pingjia = resultes.GetListBySql<SatisficingResult>(sqles).FirstOrDefault();
+                //var pingjia = resultes.GetList().Where(d => d.Answerer == studentnumber && d.SatisficingConfig == zhuanye).FirstOrDefault();
+                pingjia.Suggest = suggest;
                 var date = DateTime.Now;
-
-                Surveyresult.CreateDate = date;
-                Surveyresult.IsDel = false;
-                Surveyresult.SatisficingConfig = configId;
-                Surveyresult.Suggest = suggest;
-
-                db_survey.insertSatisfactionResult(Surveyresult);
-
-                BaseBusiness<SatisficingResult> dd = new BaseBusiness<SatisficingResult>();
-
-                var suResult = dd.GetList().Where(d => d.CreateDate.Value.ToString() == date.ToString()).FirstOrDefault();
-
-                //2 添加详细
-
-                List<SatisficingResultDetail> insertlIST = new List<SatisficingResultDetail>();
-
+                pingjia.CreateDate = date;
+                pingjia.IsDel = false;
+                resultes.Update(pingjia);
+                //查出这个学生已经生成的满意度内容分数表就行编辑
+                BaseBusiness<SatisficingResultDetail> detail = new BaseBusiness<SatisficingResultDetail>();
                 foreach (var item in list)
                 {
-                    SatisficingResultDetail detail = new SatisficingResultDetail();
-                    detail.Remark = "";
-                    detail.SatisficingBill = suResult.ID;
-                    detail.SatisficingItem = item.contentId;
-                    detail.Scores = item.scores;
-
-                    insertlIST.Add(detail);
-
+                    string sqlxg = "select * from SatisficingResultDetail where SatisficingBill = '" + pingjia.ID + "' and SatisficingItem = '" + item.contentId + "'";
+                    var xgfenshu = detail.GetListBySql<SatisficingResultDetail>(sqlxg).FirstOrDefault();
+                    //var xgfenshu = detail.GetList().Where(d => d.SatisficingBill == pingjia.ID && d.SatisficingItem == item.contentId).FirstOrDefault();
+                    xgfenshu.Remark = "";
+                    xgfenshu.Scores = item.scores;
+                    detail.Update(xgfenshu);
                 }
+                ////1. 添加结果表  2.添加详细表 
+                //SatisficingResult Surveyresult = new SatisficingResult();
+                //Surveyresult.Answerer = studentnumber;
 
-                BaseBusiness<SatisficingResultDetail> bas = new BaseBusiness<SatisficingResultDetail>();
+                //var date = DateTime.Now;
 
-                bas.Insert(insertlIST);
+                //Surveyresult.CreateDate = date;
+                //Surveyresult.IsDel = false;
+                //Surveyresult.SatisficingConfig = configId;
+                //Surveyresult.Suggest = suggest;
+
+                //db_survey.insertSatisfactionResult(Surveyresult);
+
+                //BaseBusiness<SatisficingResult> dd = new BaseBusiness<SatisficingResult>();
+
+                //var suResult = dd.GetList().Where(d => d.CreateDate.Value.ToString() == date.ToString()).FirstOrDefault();
+
+                ////2 添加详细
+
+                //List<SatisficingResultDetail> insertlIST = new List<SatisficingResultDetail>();
+
+                //foreach (var item in list)
+                //{
+                //    SatisficingResultDetail detail = new SatisficingResultDetail();
+                //    detail.Remark = "";
+                //    detail.SatisficingBill = suResult.ID;
+                //    detail.SatisficingItem = item.contentId;
+                //    detail.Scores = item.scores;
+
+                //    insertlIST.Add(detail);
+
+                //}
+
+                //BaseBusiness<SatisficingResultDetail> bas = new BaseBusiness<SatisficingResultDetail>();
+
+                //bas.Insert(insertlIST);
 
 
                 result.ErrorCode = 200;
@@ -1764,42 +1811,84 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 var client = Bos.BosClient();
                 //获取当前登陆学生的学号
                 var studentnumber = Request.Cookies["StudentNumber"].Value.ToString();
-                //1. 添加结果表  2.添加详细表 
-                SatisficingResult Surveyresult = new SatisficingResult();
-                Surveyresult.Answerer = studentnumber;
-
+                //获取这个学生所在的班级
+                BaseBusiness<ScheduleForTrainees> schedul = new BaseBusiness<ScheduleForTrainees>();
+                string sql = "select * from ScheduleForTrainees where StudentID = '" + studentnumber + "' and CurrentClass = true";
+                var banji = schedul.GetListBySql<ScheduleForTrainees>(sql).FirstOrDefault().ClassID;
+                //var banji = schedul.GetList().Where(d => d.StudentID == studentnumber && d.CurrentClass == true).FirstOrDefault().ClassID;
+                BaseBusiness<ClassSchedule> classschedule = new BaseBusiness<ClassSchedule>();
+                string sqls = "select * from ClassSchedule where ClassNumber = '" + banji + "'";
+                var banjiid = classschedule.GetListBySql<ClassSchedule>(sqls).FirstOrDefault().id;
+                //var banjiid = classschedule.GetList().Where(d => d.ClassNumber.ToString() == banji).FirstOrDefault().id;
+                //获取这个学生这个月要填写的专业老师满意度调查
+                BaseBusiness<SatisficingConfig> config = new BaseBusiness<SatisficingConfig>();
+                var zhuanye = config.GetList().Where(d => d.ClassNumber == banjiid &&
+                d.CurriculumID != null &&
+                d.Isitacanteen == false &&
+                d.isitashuxue == false &&
+                d.isitayingyu == false &&
+                d.Isitayuwen == true &&
+                DateTime.Parse(d.CutoffDate.ToString()).Year == DateTime.Now.Year &&
+                (DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month ||
+                DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month + 1)).FirstOrDefault().ID;
+                //查出这个学生已经生成的评价进行编辑
+                //SatisficingResult Surveyresult = new SatisficingResult();
+                BaseBusiness<SatisficingResult> resultes = new BaseBusiness<SatisficingResult>();
+                var sqles = "select * from SatisficingResult where Answerer = '" + studentnumber + "' and SatisficingConfig = '" + zhuanye + "'";
+                var pingjia = resultes.GetListBySql<SatisficingResult>(sqles).FirstOrDefault();
+                //var pingjia = resultes.GetList().Where(d => d.Answerer == studentnumber && d.SatisficingConfig == zhuanye).FirstOrDefault();
+                pingjia.Suggest = suggest;
                 var date = DateTime.Now;
-
-                Surveyresult.CreateDate = date;
-                Surveyresult.IsDel = false;
-                Surveyresult.SatisficingConfig = configId;
-                Surveyresult.Suggest = suggest;
-
-                db_survey.insertSatisfactionResult(Surveyresult);
-
-                BaseBusiness<SatisficingResult> dd = new BaseBusiness<SatisficingResult>();
-
-                var suResult = dd.GetList().Where(d => d.CreateDate.Value.ToString() == date.ToString()).FirstOrDefault();
-
-                //2 添加详细
-
-                List<SatisficingResultDetail> insertlIST = new List<SatisficingResultDetail>();
-
+                pingjia.CreateDate = date;
+                pingjia.IsDel = false;
+                resultes.Update(pingjia);
+                //查出这个学生已经生成的满意度内容分数表就行编辑
+                BaseBusiness<SatisficingResultDetail> detail = new BaseBusiness<SatisficingResultDetail>();
                 foreach (var item in list)
                 {
-                    SatisficingResultDetail detail = new SatisficingResultDetail();
-                    detail.Remark = "";
-                    detail.SatisficingBill = suResult.ID;
-                    detail.SatisficingItem = item.contentId;
-                    detail.Scores = item.scores;
-
-                    insertlIST.Add(detail);
-
+                    string sqlxg = "select * from SatisficingResultDetail where SatisficingBill = '" + pingjia.ID + "' and SatisficingItem = '" + item.contentId + "'";
+                    var xgfenshu = detail.GetListBySql<SatisficingResultDetail>(sqlxg).FirstOrDefault();
+                    //var xgfenshu = detail.GetList().Where(d => d.SatisficingBill == pingjia.ID && d.SatisficingItem == item.contentId).FirstOrDefault();
+                    xgfenshu.Remark = "";
+                    xgfenshu.Scores = item.scores;
+                    detail.Update(xgfenshu);
                 }
+                //1. 添加结果表  2.添加详细表 
+                //SatisficingResult Surveyresult = new SatisficingResult();
+                //Surveyresult.Answerer = studentnumber;
 
-                BaseBusiness<SatisficingResultDetail> bas = new BaseBusiness<SatisficingResultDetail>();
+                //var date = DateTime.Now;
 
-                bas.Insert(insertlIST);
+                //Surveyresult.CreateDate = date;
+                //Surveyresult.IsDel = false;
+                //Surveyresult.SatisficingConfig = configId;
+                //Surveyresult.Suggest = suggest;
+
+                //db_survey.insertSatisfactionResult(Surveyresult);
+
+                //BaseBusiness<SatisficingResult> dd = new BaseBusiness<SatisficingResult>();
+
+                //var suResult = dd.GetList().Where(d => d.CreateDate.Value.ToString() == date.ToString()).FirstOrDefault();
+
+                ////2 添加详细
+
+                //List<SatisficingResultDetail> insertlIST = new List<SatisficingResultDetail>();
+
+                //foreach (var item in list)
+                //{
+                //    SatisficingResultDetail detail = new SatisficingResultDetail();
+                //    detail.Remark = "";
+                //    detail.SatisficingBill = suResult.ID;
+                //    detail.SatisficingItem = item.contentId;
+                //    detail.Scores = item.scores;
+
+                //    insertlIST.Add(detail);
+
+                //}
+
+                //BaseBusiness<SatisficingResultDetail> bas = new BaseBusiness<SatisficingResultDetail>();
+
+                //bas.Insert(insertlIST);
 
                 result.ErrorCode = 200;
                 result.Msg = "成功";
@@ -1831,42 +1920,84 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 var client = Bos.BosClient();
                 //获取当前登陆学生的学号
                 var studentnumber = Request.Cookies["StudentNumber"].Value.ToString();
-                //1. 添加结果表  2.添加详细表 
-                SatisficingResult Surveyresult = new SatisficingResult();
-                Surveyresult.Answerer = studentnumber;
-
+                //获取这个学生所在的班级
+                BaseBusiness<ScheduleForTrainees> schedul = new BaseBusiness<ScheduleForTrainees>();
+                string sql = "select * from ScheduleForTrainees where StudentID = '" + studentnumber + "' and CurrentClass = true";
+                var banji = schedul.GetListBySql<ScheduleForTrainees>(sql).FirstOrDefault().ClassID;
+                //var banji = schedul.GetList().Where(d => d.StudentID == studentnumber && d.CurrentClass == true).FirstOrDefault().ClassID;
+                BaseBusiness<ClassSchedule> classschedule = new BaseBusiness<ClassSchedule>();
+                string sqls = "select * from ClassSchedule where ClassNumber = '" + banji + "'";
+                var banjiid = classschedule.GetListBySql<ClassSchedule>(sqls).FirstOrDefault().id;
+                //var banjiid = classschedule.GetList().Where(d => d.ClassNumber.ToString() == banji ).FirstOrDefault().id;
+                //获取这个学生这个月要填写的专业老师满意度调查
+                BaseBusiness<SatisficingConfig> config = new BaseBusiness<SatisficingConfig>();
+                var zhuanye = config.GetList().Where(d => d.ClassNumber == banjiid &&
+                d.CurriculumID != null &&
+                d.Isitacanteen == false &&
+                d.isitashuxue == true &&
+                d.isitayingyu == false &&
+                d.Isitayuwen == false &&
+                DateTime.Parse(d.CutoffDate.ToString()).Year == DateTime.Now.Year &&
+                (DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month ||
+                DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month + 1)).FirstOrDefault().ID;
+                //查出这个学生已经生成的评价进行编辑
+                //SatisficingResult Surveyresult = new SatisficingResult();
+                BaseBusiness<SatisficingResult> resultes = new BaseBusiness<SatisficingResult>();
+                var sqles = "select * from SatisficingResult where Answerer = '" + studentnumber + "' and SatisficingConfig = '" + zhuanye + "'";
+                var pingjia = resultes.GetListBySql<SatisficingResult>(sqles).FirstOrDefault();
+                //var pingjia = resultes.GetList().Where(d => d.Answerer == studentnumber && d.SatisficingConfig == zhuanye).FirstOrDefault();
+                pingjia.Suggest = suggest;
                 var date = DateTime.Now;
-
-                Surveyresult.CreateDate = date;
-                Surveyresult.IsDel = false;
-                Surveyresult.SatisficingConfig = configId;
-                Surveyresult.Suggest = suggest;
-
-                db_survey.insertSatisfactionResult(Surveyresult);
-
-                BaseBusiness<SatisficingResult> dd = new BaseBusiness<SatisficingResult>();
-
-                var suResult = dd.GetList().Where(d => d.CreateDate.Value.ToString() == date.ToString()).FirstOrDefault();
-
-                //2 添加详细
-
-                List<SatisficingResultDetail> insertlIST = new List<SatisficingResultDetail>();
-
+                pingjia.CreateDate = date;
+                pingjia.IsDel = false;
+                resultes.Update(pingjia);
+                //查出这个学生已经生成的满意度内容分数表就行编辑
+                BaseBusiness<SatisficingResultDetail> detail = new BaseBusiness<SatisficingResultDetail>();
                 foreach (var item in list)
                 {
-                    SatisficingResultDetail detail = new SatisficingResultDetail();
-                    detail.Remark = "";
-                    detail.SatisficingBill = suResult.ID;
-                    detail.SatisficingItem = item.contentId;
-                    detail.Scores = item.scores;
-
-                    insertlIST.Add(detail);
-
+                    string sqlxg = "select * from SatisficingResultDetail where SatisficingBill = '" + pingjia.ID + "' and SatisficingItem = '" + item.contentId + "'";
+                    var xgfenshu = detail.GetListBySql<SatisficingResultDetail>(sqlxg).FirstOrDefault();
+                    //var xgfenshu = detail.GetList().Where(d => d.SatisficingBill == pingjia.ID && d.SatisficingItem == item.contentId).FirstOrDefault();
+                    xgfenshu.Remark = "";
+                    xgfenshu.Scores = item.scores;
+                    detail.Update(xgfenshu);
                 }
+                //1. 添加结果表  2.添加详细表 
+                //SatisficingResult Surveyresult = new SatisficingResult();
+                //Surveyresult.Answerer = studentnumber;
 
-                BaseBusiness<SatisficingResultDetail> bas = new BaseBusiness<SatisficingResultDetail>();
+                //var date = DateTime.Now;
 
-                bas.Insert(insertlIST);
+                //Surveyresult.CreateDate = date;
+                //Surveyresult.IsDel = false;
+                //Surveyresult.SatisficingConfig = configId;
+                //Surveyresult.Suggest = suggest;
+
+                //db_survey.insertSatisfactionResult(Surveyresult);
+
+                //BaseBusiness<SatisficingResult> dd = new BaseBusiness<SatisficingResult>();
+
+                //var suResult = dd.GetList().Where(d => d.CreateDate.Value.ToString() == date.ToString()).FirstOrDefault();
+
+                ////2 添加详细
+
+                //List<SatisficingResultDetail> insertlIST = new List<SatisficingResultDetail>();
+
+                //foreach (var item in list)
+                //{
+                //    SatisficingResultDetail detail = new SatisficingResultDetail();
+                //    detail.Remark = "";
+                //    detail.SatisficingBill = suResult.ID;
+                //    detail.SatisficingItem = item.contentId;
+                //    detail.Scores = item.scores;
+
+                //    insertlIST.Add(detail);
+
+                //}
+
+                //BaseBusiness<SatisficingResultDetail> bas = new BaseBusiness<SatisficingResultDetail>();
+
+                //bas.Insert(insertlIST);
 
 
                 result.ErrorCode = 200;
@@ -1899,42 +2030,84 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 var client = Bos.BosClient();
                 //获取当前登陆学生的学号
                 var studentnumber = Request.Cookies["StudentNumber"].Value.ToString();
-                //1. 添加结果表  2.添加详细表 
-                SatisficingResult Surveyresult = new SatisficingResult();
-                Surveyresult.Answerer = studentnumber;
-
+                //获取这个学生所在的班级
+                BaseBusiness<ScheduleForTrainees> schedul = new BaseBusiness<ScheduleForTrainees>();
+                string sql = "select * from ScheduleForTrainees where StudentID = '" + studentnumber + "' and CurrentClass = true";
+                var banji = schedul.GetListBySql<ScheduleForTrainees>(sql).FirstOrDefault().ClassID;
+                //var banji = schedul.GetList().Where(d => d.StudentID == studentnumber && d.CurrentClass == true).FirstOrDefault().ClassID;
+                BaseBusiness<ClassSchedule> classschedule = new BaseBusiness<ClassSchedule>();
+                string sqls = "select * from ClassSchedule where ClassNumber = '" + banji + "'";
+                var banjiid = classschedule.GetListBySql<ClassSchedule>(sqls).FirstOrDefault().id;
+                //var banjiid = classschedule.GetList().Where(d => d.ClassNumber.ToString() == banji ).FirstOrDefault().id;
+                //获取这个学生这个月要填写的专业老师满意度调查
+                BaseBusiness<SatisficingConfig> config = new BaseBusiness<SatisficingConfig>();
+                var zhuanye = config.GetList().Where(d => d.ClassNumber == banjiid &&
+                d.CurriculumID != null &&
+                d.Isitacanteen == false &&
+                d.isitashuxue == false &&
+                d.isitayingyu == true &&
+                d.Isitayuwen == false &&
+                DateTime.Parse(d.CutoffDate.ToString()).Year == DateTime.Now.Year &&
+                (DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month ||
+                DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month + 1)).FirstOrDefault().ID;
+                //查出这个学生已经生成的评价进行编辑
+                //SatisficingResult Surveyresult = new SatisficingResult();
+                BaseBusiness<SatisficingResult> resultes = new BaseBusiness<SatisficingResult>();
+                var sqles = "select * from SatisficingResult where Answerer = '" + studentnumber + "' and SatisficingConfig = '" + zhuanye + "'";
+                var pingjia = resultes.GetListBySql<SatisficingResult>(sqles).FirstOrDefault();
+                //var pingjia = resultes.GetList().Where(d => d.Answerer == studentnumber && d.SatisficingConfig == zhuanye).FirstOrDefault();
+                pingjia.Suggest = suggest;
                 var date = DateTime.Now;
-
-                Surveyresult.CreateDate = date;
-                Surveyresult.IsDel = false;
-                Surveyresult.SatisficingConfig = configId;
-                Surveyresult.Suggest = suggest;
-
-                db_survey.insertSatisfactionResult(Surveyresult);
-
-                BaseBusiness<SatisficingResult> dd = new BaseBusiness<SatisficingResult>();
-
-                var suResult = dd.GetList().Where(d => d.CreateDate.Value.ToString() == date.ToString()).FirstOrDefault();
-
-                //2 添加详细
-
-                List<SatisficingResultDetail> insertlIST = new List<SatisficingResultDetail>();
-
+                pingjia.CreateDate = date;
+                pingjia.IsDel = false;
+                resultes.Update(pingjia);
+                //查出这个学生已经生成的满意度内容分数表就行编辑
+                BaseBusiness<SatisficingResultDetail> detail = new BaseBusiness<SatisficingResultDetail>();
                 foreach (var item in list)
                 {
-                    SatisficingResultDetail detail = new SatisficingResultDetail();
-                    detail.Remark = "";
-                    detail.SatisficingBill = suResult.ID;
-                    detail.SatisficingItem = item.contentId;
-                    detail.Scores = item.scores;
-
-                    insertlIST.Add(detail);
-
+                    string sqlxg = "select * from SatisficingResultDetail where SatisficingBill = '" + pingjia.ID + "' and SatisficingItem = '" + item.contentId + "'";
+                    var xgfenshu = detail.GetListBySql<SatisficingResultDetail>(sqlxg).FirstOrDefault();
+                    //var xgfenshu = detail.GetList().Where(d => d.SatisficingBill == pingjia.ID && d.SatisficingItem == item.contentId).FirstOrDefault();
+                    xgfenshu.Remark = "";
+                    xgfenshu.Scores = item.scores;
+                    detail.Update(xgfenshu);
                 }
+                //1. 添加结果表  2.添加详细表 
+                //SatisficingResult Surveyresult = new SatisficingResult();
+                //Surveyresult.Answerer = studentnumber;
 
-                BaseBusiness<SatisficingResultDetail> bas = new BaseBusiness<SatisficingResultDetail>();
+                //var date = DateTime.Now;
 
-                bas.Insert(insertlIST);
+                //Surveyresult.CreateDate = date;
+                //Surveyresult.IsDel = false;
+                //Surveyresult.SatisficingConfig = configId;
+                //Surveyresult.Suggest = suggest;
+
+                //db_survey.insertSatisfactionResult(Surveyresult);
+
+                //BaseBusiness<SatisficingResult> dd = new BaseBusiness<SatisficingResult>();
+
+                //var suResult = dd.GetList().Where(d => d.CreateDate.Value.ToString() == date.ToString()).FirstOrDefault();
+
+                ////2 添加详细
+
+                //List<SatisficingResultDetail> insertlIST = new List<SatisficingResultDetail>();
+
+                //foreach (var item in list)
+                //{
+                //    SatisficingResultDetail detail = new SatisficingResultDetail();
+                //    detail.Remark = "";
+                //    detail.SatisficingBill = suResult.ID;
+                //    detail.SatisficingItem = item.contentId;
+                //    detail.Scores = item.scores;
+
+                //    insertlIST.Add(detail);
+
+                //}
+
+                //BaseBusiness<SatisficingResultDetail> bas = new BaseBusiness<SatisficingResultDetail>();
+
+                //bas.Insert(insertlIST);
 
 
                 result.ErrorCode = 200;
@@ -1971,42 +2144,84 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 var client = Bos.BosClient();
                 //获取当前登陆学生的学号
                 var studentnumber = Request.Cookies["StudentNumber"].Value.ToString();
-                //1. 添加结果表  2.添加详细表 
-                SatisficingResult Surveyresult = new SatisficingResult();
-                Surveyresult.Answerer = studentnumber;
-
+                //获取这个学生所在的班级
+                BaseBusiness<ScheduleForTrainees> schedul = new BaseBusiness<ScheduleForTrainees>();
+                string sql = "select * from ScheduleForTrainees where StudentID = '" + studentnumber + "' and CurrentClass = true";
+                var banji = schedul.GetListBySql<ScheduleForTrainees>(sql).FirstOrDefault().ClassID;
+                //var banji = schedul.GetList().Where(d => d.StudentID == studentnumber && d.CurrentClass == true).FirstOrDefault().ClassID;
+                BaseBusiness<ClassSchedule> classschedule = new BaseBusiness<ClassSchedule>();
+                string sqls = "select * from ClassSchedule where ClassNumber = '" + banji + "'";
+                var banjiid = classschedule.GetListBySql<ClassSchedule>(sqls).FirstOrDefault().id;
+                //var banjiid = classschedule.GetList().Where(d => d.ClassNumber.ToString() == banji ).FirstOrDefault().id;
+                //获取这个学生这个月要填写的专业老师满意度调查
+                BaseBusiness<SatisficingConfig> config = new BaseBusiness<SatisficingConfig>();
+                var zhuanye = config.GetList().Where(d => d.ClassNumber == banjiid &&
+                d.CurriculumID == null &&
+                d.Isitacanteen == false &&
+                d.isitashuxue == false &&
+                d.isitayingyu == false &&
+                d.Isitayuwen == false &&
+                DateTime.Parse(d.CutoffDate.ToString()).Year == DateTime.Now.Year &&
+                (DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month ||
+                DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month + 1)).FirstOrDefault().ID;
+                //查出这个学生已经生成的评价进行编辑
+                //SatisficingResult Surveyresult = new SatisficingResult();
+                BaseBusiness<SatisficingResult> resultes = new BaseBusiness<SatisficingResult>();
+                var sqles = "select * from SatisficingResult where Answerer = '" + studentnumber + "' and SatisficingConfig = '" + zhuanye + "'";
+                var pingjia = resultes.GetListBySql<SatisficingResult>(sqles).FirstOrDefault();
+                //var pingjia = resultes.GetList().Where(d => d.Answerer == studentnumber && d.SatisficingConfig == zhuanye).FirstOrDefault();
+                pingjia.Suggest = suggest;
                 var date = DateTime.Now;
-
-                Surveyresult.CreateDate = date;
-                Surveyresult.IsDel = false;
-                Surveyresult.SatisficingConfig = configId;
-                Surveyresult.Suggest = suggest;
-
-                db_survey.insertSatisfactionResult(Surveyresult);
-
-                BaseBusiness<SatisficingResult> dd = new BaseBusiness<SatisficingResult>();
-
-                var suResult = dd.GetList().Where(d => d.CreateDate.Value.ToString() == date.ToString()).FirstOrDefault();
-
-                //2 添加详细
-
-                List<SatisficingResultDetail> insertlIST = new List<SatisficingResultDetail>();
-
+                pingjia.CreateDate = date;
+                pingjia.IsDel = false;
+                resultes.Update(pingjia);
+                //查出这个学生已经生成的满意度内容分数表就行编辑
+                BaseBusiness<SatisficingResultDetail> detail = new BaseBusiness<SatisficingResultDetail>();
                 foreach (var item in surveyCommit)
                 {
-                    SatisficingResultDetail detail = new SatisficingResultDetail();
-                    detail.Remark = "";
-                    detail.SatisficingBill = suResult.ID;
-                    detail.SatisficingItem = item.SurveyItemId;
-                    detail.Scores = item.Score;
-
-                    insertlIST.Add(detail);
-
+                    string sqlxg = "select * from SatisficingResultDetail where SatisficingBill = '" + pingjia.ID + "' and SatisficingItem = '" + item.SurveyItemId + "'";
+                    var xgfenshu = detail.GetListBySql<SatisficingResultDetail>(sqlxg).FirstOrDefault();
+                    //var xgfenshu = detail.GetList().Where(d => d.SatisficingBill == pingjia.ID && d.SatisficingItem == item.SurveyItemId).FirstOrDefault();
+                    xgfenshu.Remark = "";
+                    xgfenshu.Scores = item.Score;
+                    detail.Update(xgfenshu);
                 }
+                ////1. 添加结果表  2.添加详细表 
+                //SatisficingResult Surveyresult = new SatisficingResult();
+                //Surveyresult.Answerer = studentnumber;
 
-                BaseBusiness<SatisficingResultDetail> bas = new BaseBusiness<SatisficingResultDetail>();
+                //var date = DateTime.Now;
 
-                bas.Insert(insertlIST);
+                //Surveyresult.CreateDate = date;
+                //Surveyresult.IsDel = false;
+                //Surveyresult.SatisficingConfig = configId;
+                //Surveyresult.Suggest = suggest;
+
+                //db_survey.insertSatisfactionResult(Surveyresult);
+
+                //BaseBusiness<SatisficingResult> dd = new BaseBusiness<SatisficingResult>();
+
+                //var suResult = dd.GetList().Where(d => d.CreateDate.Value.ToString() == date.ToString()).FirstOrDefault();
+
+                ////2 添加详细
+
+                //List<SatisficingResultDetail> insertlIST = new List<SatisficingResultDetail>();
+
+                //foreach (var item in surveyCommit)
+                //{
+                //    SatisficingResultDetail detail = new SatisficingResultDetail();
+                //    detail.Remark = "";
+                //    detail.SatisficingBill = suResult.ID;
+                //    detail.SatisficingItem = item.SurveyItemId;
+                //    detail.Scores = item.Score;
+
+                //    insertlIST.Add(detail);
+
+                //}
+
+                //BaseBusiness<SatisficingResultDetail> bas = new BaseBusiness<SatisficingResultDetail>();
+
+                //bas.Insert(insertlIST);
 
 
                 result.ErrorCode = 200;
@@ -2033,51 +2248,92 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
         public ActionResult commitTeacherSurvey(List<SurveyCommitHelper> list, string suggest,int configId)
         {
             AjaxResult result = new AjaxResult();
-
             try
             {
 
                 //1. 添加结果表  2.添加详细表 
                 CloudstorageBusiness Bos = new CloudstorageBusiness();
-
+                
                 var client = Bos.BosClient();
                 //获取当前登陆学生的学号
                 var studentnumber = Request.Cookies["StudentNumber"].Value.ToString();
-                SatisficingResult Surveyresult = new SatisficingResult();
-                Surveyresult.Answerer = studentnumber;
-
+                //获取这个学生所在的班级
+                BaseBusiness<ScheduleForTrainees> schedul = new BaseBusiness<ScheduleForTrainees>();
+                string sql = "select * from ScheduleForTrainees where StudentID = '"+ studentnumber + "' and CurrentClass = true";
+                var banji = schedul.GetListBySql<ScheduleForTrainees>(sql).FirstOrDefault().ClassID;
+                //var banji = schedul.GetList().Where(d => d.StudentID == studentnumber && d.CurrentClass == true).FirstOrDefault().ClassID;
+                BaseBusiness<ClassSchedule> classschedule = new BaseBusiness<ClassSchedule>();
+                string sqls = "select * from ClassSchedule where ClassNumber = '"+ banji + "'";
+                var banjiid = classschedule.GetListBySql<ClassSchedule>(sqls).FirstOrDefault().id;
+                //var banjiid = classschedule.GetList().Where(d => d.ClassNumber == banji).FirstOrDefault().id;
+                //获取这个学生这个月要填写的专业老师满意度调查
+                BaseBusiness<SatisficingConfig> config = new BaseBusiness<SatisficingConfig>();
+                //string sql = "select * from SatisficingConfig where ClassNumber = '" + banjiid + "' and IsDel = 0 and CurriculumID IS NULL and Isitacanteen = 0 and isitashuxue = 0 and isitayingyu = 0 and Isitayuwen = 0 and YEAR(CutoffDate) = '" + DateTime.Now.Year + "' and (Month(CutoffDate) = '" + DateTime.Now.Month + "' or Month(CutoffDate) = '"+ DateTime.Now.Month + 1 + "')";
+                //var zhuanye = config.GetListBySql<SatisficingConfig>(sql).FirstOrDefault().ID;
+                var zhuanye = config.GetList().Where(d => d.ClassNumber == banjiid &&
+                d.CurriculumID != null &&
+                d.EmployeeId != null &&
+                d.Isitacanteen == false &&
+                d.isitashuxue == false &&
+                d.isitayingyu == false &&
+                d.Isitayuwen == false &&
+                DateTime.Parse(d.CutoffDate.ToString()).Year == DateTime.Now.Year &&
+                (DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month ||
+                DateTime.Parse(d.CutoffDate.ToString()).Month == DateTime.Now.Month + 1)).FirstOrDefault().ID;
+                //查出这个学生已经生成的评价进行编辑
+                //SatisficingResult Surveyresult = new SatisficingResult();
+                BaseBusiness<SatisficingResult> resultes = new BaseBusiness<SatisficingResult>();
+                var sqles = "select * from SatisficingResult where Answerer = '" + studentnumber + "' and SatisficingConfig = '" + zhuanye + "'";
+                var pingjia = resultes.GetListBySql<SatisficingResult>(sqles).FirstOrDefault();
+                //var pingjia = resultes.GetList().Where(d => d.Answerer == studentnumber && d.SatisficingConfig == zhuanye).FirstOrDefault();
+                pingjia.Suggest = suggest;
                 var date = DateTime.Now;
+                pingjia.CreateDate = date;
+                pingjia.IsDel = false;
+                resultes.Update(pingjia); 
+                //查出这个学生已经生成的满意度内容分数表就行编辑
+                BaseBusiness<SatisficingResultDetail> detail = new BaseBusiness<SatisficingResultDetail>();
+                foreach (var item in list)
+                {
+                    string sqlxg = "select * from SatisficingResultDetail where SatisficingBill = '" + pingjia.ID + "' and SatisficingItem = '"+ item.contentId + "'";
+                    var xgfenshu = detail.GetListBySql<SatisficingResultDetail>(sqlxg).FirstOrDefault();
+                    //var xgfenshu = detail.GetList().Where(d => d.SatisficingBill == pingjia.ID && d.SatisficingItem == item.contentId).FirstOrDefault();
+                    xgfenshu.Remark = "";
+                    xgfenshu.Scores = item.scores;
+                    detail.Update(xgfenshu);
+                }
 
-                Surveyresult.CreateDate = date;
-                Surveyresult.IsDel = false;
-                Surveyresult.SatisficingConfig = configId;
-                Surveyresult.Suggest = suggest;
+                //SatisficingResult Surveyresult = new SatisficingResult();
+                //Surveyresult.Answerer = studentnumber;
+                //Surveyresult.CreateDate = date;
+                //Surveyresult.IsDel = false;
+                //Surveyresult.SatisficingConfig = configId;
+                //Surveyresult.Suggest = suggest;
+                //db_survey.insertSatisfactionResult(Surveyresult);
 
-                db_survey.insertSatisfactionResult(Surveyresult);
+                //BaseBusiness<SatisficingResult> dd = new BaseBusiness<SatisficingResult>();
 
-                BaseBusiness<SatisficingResult> dd = new BaseBusiness<SatisficingResult>();
-
-                var suResult = dd.GetList().Where(d => d.CreateDate.Value.ToString() == date.ToString()).FirstOrDefault();
+                //var suResult = dd.GetList().Where(d => d.CreateDate.Value.ToString() == date.ToString()).FirstOrDefault();
 
                 //2 添加详细
 
-                List<SatisficingResultDetail> insertlIST = new List<SatisficingResultDetail>();
+                //List<SatisficingResultDetail> insertlIST = new List<SatisficingResultDetail>();
 
-                foreach (var item in list)
-                {
-                    SatisficingResultDetail detail = new SatisficingResultDetail();
-                    detail.Remark = "";
-                    detail.SatisficingBill = suResult.ID;
-                    detail.SatisficingItem = item.contentId;
-                    detail.Scores = item.scores;
+                //foreach (var item in list)
+                //{
+                //    SatisficingResultDetail detail = new SatisficingResultDetail();
+                //    detail.Remark = "";
+                //    detail.SatisficingBill = pingjia.ID;
+                //    detail.SatisficingItem = item.contentId;
+                //    detail.Scores = item.scores;
 
-                    insertlIST.Add(detail);
+                //    insertlIST.Add(detail);
 
-                }
+                //}
 
-                BaseBusiness<SatisficingResultDetail> bas = new BaseBusiness<SatisficingResultDetail>();
+                //BaseBusiness<SatisficingResultDetail> bas = new BaseBusiness<SatisficingResultDetail>();
 
-                bas.Insert(insertlIST);
+                //bas.Insert(insertlIST);
 
 
                 result.ErrorCode = 200;
@@ -2123,7 +2379,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
         /// </summary>
         /// <param name="classnumber"></param>
         /// <returns></returns>
-
         [HttpPost]
         public ActionResult CreateHeadMasterSurveyConfig(int classnumber,DateTime riqi)
         {
@@ -2160,7 +2415,57 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 var defaultTime = ((XmlElement)xmlRoot.GetElementsByTagName("defaultCutOffDate")[0]).Attributes["value"].Value;
                 satisficingConfig.CutoffDate = DateTime.Now.AddHours(int.Parse(defaultTime));
                 db_survey.AddSatisficingConfig(satisficingConfig);
-                return Json(result,JsonRequestBehavior.AllowGet);
+                //获取这个班级所有的学生
+                var classsch = db_class.GetList().Where(d => d.id == classnumber).FirstOrDefault().ClassNumber;
+                var renyuan = db_schedule.GetList().Where(b => b.ClassID == classsch && b.CurrentClass == true).ToList();
+               //获取这个月班级班主任老师满意度人员表的id   获取年月日
+               var config = db_congig.GetList().Where(c => c.ClassNumber == classnumber &&
+               c.IsDel == false &&
+               c.CurriculumID == null &&
+               c.Isitacanteen == false &&
+               c.isitashuxue == false &&
+               c.isitayingyu == false &&
+               c.Isitayuwen == false &&
+               DateTime.Parse(c.CutoffDate.ToString()).Year == DateTime.Now.Year &&
+               (DateTime.Parse(c.CutoffDate.ToString()).Month == DateTime.Now.Month ||
+               DateTime.Parse(c.CutoffDate.ToString()).Month == DateTime.Now.Month + 1)).FirstOrDefault().ID;
+               //将这个班级学生的评价表生成
+               SatisficingResult Surveyresult = new SatisficingResult();
+               foreach (var item in renyuan)
+               {
+                   Surveyresult.Answerer = item.StudentID;
+                   Surveyresult.CreateDate = DateTime.Now;
+                   Surveyresult.IsDel = false;
+                   Surveyresult.SatisficingConfig = config;
+                   Surveyresult.Suggest = "";
+                   db_result.Insert(Surveyresult);
+               }
+            //获取满意度选项内容id
+            var itemes = db_item.GetList().Where(l => l.ItemType == 2002 ).ToList();
+            //将这个班级学生的内容选项分数表生成
+            BaseBusiness<SatisficingResult> dd = new BaseBusiness<SatisficingResult>();
+            
+            List<SatisficingResultDetail> insertlIST = new List<SatisficingResultDetail>();
+            foreach (var items in renyuan)
+            {
+                SatisficingResultDetail detail = new SatisficingResultDetail();
+                var suResult = dd.GetList().Where(d => DateTime.Parse(d.CreateDate.ToString()).Year == DateTime.Now.Year &&
+                DateTime.Parse(d.CreateDate.ToString()).Month == DateTime.Now.Month &&
+                d.Answerer == items.StudentID &&
+                d.SatisficingConfig == config).FirstOrDefault();
+                foreach (var itemm in itemes)
+                {
+                    detail.Remark = "";
+                    detail.SatisficingBill = suResult.ID;
+                    detail.SatisficingItem = itemm.ItemID;
+                    detail.Scores = 0;
+                    insertlIST.Add(detail);
+                    BaseBusiness<SatisficingResultDetail> bas = new BaseBusiness<SatisficingResultDetail>();
+                    bas.Insert(detail);
+                }
+            }
+
+            return Json(result,JsonRequestBehavior.AllowGet);
         }
 
 
@@ -2322,10 +2627,9 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
         /// <param name="Curriculum"></param>
         /// <param name="laoshi"></param>
         /// <returns></returns>
-
         [HttpPost]
-        public ActionResult CreateTeacherSurveyConfig(int classnumber, int Curriculum,string laoshi,string yuwen,string shuxue,string yingyu,DateTime riqi)
-        {
+        public ActionResult CreateTeacherSurveyConfig(int classnumber, int Curriculum, string laoshi, string yuwen, string shuxue, string yingyu, DateTime riqi)
+         {
 
             AjaxResult result = new AjaxResult();
             try
@@ -2336,7 +2640,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 //var classlisttemp = classdb.GetList().Where(d => d.IsDelete == false && d.id == classnumber).FirstOrDefault().ClassNumber;
                 var date = riqi;
                 var templist = db_survey.satisficingConfigs().Where(d => d.IsDel == false && d.EmployeeId == laoshi && d.ClassNumber == classnumber && DateTime.Parse(d.CreateTime.ToString()).Year == date.Year && DateTime.Parse(d.CreateTime.ToString()).Month == date.Month).ToList();
-                 if (templist.Count !=0)
+                if (templist.Count != 0)
                 {
                     //已经存在
                     result.ErrorCode = 300;
@@ -2359,9 +2663,57 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 XmlDocument xmlDocument = new XmlDocument();
                 xmlDocument.Load(System.Web.HttpContext.Current.Server.MapPath("/Areas/Teaching/config/empmanageConfig.xml"));
                 var xmlRoot = xmlDocument.DocumentElement;
-                var defaultTime =( (XmlElement)xmlRoot.GetElementsByTagName("defaultCutOffDate")[0]).Attributes["value"].Value ;
+                var defaultTime = ((XmlElement)xmlRoot.GetElementsByTagName("defaultCutOffDate")[0]).Attributes["value"].Value;
                 satisficingConfig.CutoffDate = DateTime.Now.AddHours(int.Parse(defaultTime));
                 db_survey.AddSatisficingConfig(satisficingConfig);
+                //获取这个班级所有的学生
+                var classsch = db_class.GetList().Where(d => d.id == classnumber).FirstOrDefault().ClassNumber;
+                var renyuan = db_schedule.GetList().Where(b => b.ClassID == classsch && b.CurrentClass == true).ToList();
+                //获取这个月班级专业老师满意度人员表的id   获取年月日
+                var config = db_congig.GetList().Where(c => c.ClassNumber == classnumber &&
+                c.IsDel == false &&
+                c.CurriculumID != null &&
+                c.Isitacanteen == false &&
+                c.isitashuxue == false &&
+                c.isitayingyu == false &&
+                c.Isitayuwen == false &&
+                DateTime.Parse(c.CutoffDate.ToString()).Year == DateTime.Now.Year &&
+                (DateTime.Parse(c.CutoffDate.ToString()).Month == DateTime.Now.Month || 
+                DateTime.Parse(c.CutoffDate.ToString()).Month == DateTime.Now.Month+1)).FirstOrDefault().ID;
+                //将这个班级学生的评价表生成
+                SatisficingResult Surveyresult = new SatisficingResult();
+                foreach (var item in renyuan)
+                {
+                    Surveyresult.Answerer = item.StudentID;
+                    Surveyresult.CreateDate = DateTime.Now;
+                    Surveyresult.IsDel = false;
+                    Surveyresult.SatisficingConfig = config;
+                    Surveyresult.Suggest = "";
+                    db_result.Insert(Surveyresult);
+                }
+                //获取满意度选项内容id
+                var itemes = db_item.GetList().Where(l => l.ItemType == 1 || l.ItemType == 1002 || l.ItemType == 1003).ToList();
+                //将这个班级学生的内容选项分数表生成
+                BaseBusiness<SatisficingResult> dd = new BaseBusiness<SatisficingResult>();
+                List<SatisficingResultDetail> insertlIST = new List<SatisficingResultDetail>();
+                foreach (var items in renyuan)
+                {
+                    SatisficingResultDetail detail = new SatisficingResultDetail();
+                    var suResult = dd.GetList().Where(d => DateTime.Parse(d.CreateDate.ToString()).Year == DateTime.Now.Year &&
+                    DateTime.Parse(d.CreateDate.ToString()).Month == DateTime.Now.Month &&
+                    d.Answerer == items.StudentID &&
+                    d.SatisficingConfig == config).FirstOrDefault();
+                    foreach (var itemm in itemes)
+                    {
+                        detail.Remark = "";
+                        detail.SatisficingBill = suResult.ID;
+                        detail.SatisficingItem = itemm.ItemID;
+                        detail.Scores = 0;
+                        insertlIST.Add(detail);
+                        BaseBusiness<SatisficingResultDetail> bas = new BaseBusiness<SatisficingResultDetail>();
+                        bas.Insert(detail);
+                    }
+                }
                 //生成班主任的满意度调查问卷
                 CreateHeadMasterSurveyConfig(classnumber,riqi);
                 //生成食堂满意度问卷
@@ -2433,6 +2785,55 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
             var defaultTime = ((XmlElement)xmlRoot.GetElementsByTagName("defaultCutOffDate")[0]).Attributes["value"].Value;
             satisficingConfig.CutoffDate = DateTime.Now.AddHours(int.Parse(defaultTime));
             db_survey.AddSatisficingConfig(satisficingConfig);
+            //获取这个班级所有的学生
+            var classsch = db_class.GetList().Where(d => d.id == classnumber).FirstOrDefault().ClassNumber;
+            var renyuan = db_schedule.GetList().Where(b => b.ClassID == classsch && b.CurrentClass == true).ToList();
+            //获取这个月班级食堂满意度人员表的id   获取年月日
+            var config = db_congig.GetList().Where(c => c.ClassNumber == classnumber &&
+            c.IsDel == false &&
+            c.CurriculumID == null &&
+            c.Isitacanteen == true &&
+            c.isitashuxue == false &&
+            c.isitayingyu == false &&
+            c.Isitayuwen == false &&
+            DateTime.Parse(c.CutoffDate.ToString()).Year == DateTime.Now.Year &&
+            (DateTime.Parse(c.CutoffDate.ToString()).Month == DateTime.Now.Month ||
+            DateTime.Parse(c.CutoffDate.ToString()).Month == DateTime.Now.Month + 1)).FirstOrDefault().ID;
+            //将这个班级学生的评价表生成
+            SatisficingResult Surveyresult = new SatisficingResult();
+            foreach (var item in renyuan)
+            {
+                Surveyresult.Answerer = item.StudentID;
+                Surveyresult.CreateDate = DateTime.Now;
+                Surveyresult.IsDel = false;
+                Surveyresult.SatisficingConfig = config;
+                Surveyresult.Suggest = "";
+                db_result.Insert(Surveyresult);
+            }
+            //获取满意度选项内容id
+            var itemes = db_item.GetList().Where(l => l.ItemType == 2004 || l.ItemType == 2005 || l.ItemType == 2006).ToList();
+            //将这个班级学生的内容选项分数表生成
+            BaseBusiness<SatisficingResult> dd = new BaseBusiness<SatisficingResult>();
+
+            List<SatisficingResultDetail> insertlIST = new List<SatisficingResultDetail>();
+            foreach (var items in renyuan)
+            {
+                SatisficingResultDetail detail = new SatisficingResultDetail();
+                var suResult = dd.GetList().Where(d => DateTime.Parse(d.CreateDate.ToString()).Year == DateTime.Now.Year &&
+                DateTime.Parse(d.CreateDate.ToString()).Month == DateTime.Now.Month &&
+                d.Answerer == items.StudentID &&
+               d.SatisficingConfig == config).FirstOrDefault();
+                foreach (var itemm in itemes)
+                {
+                    detail.Remark = "";
+                    detail.SatisficingBill = suResult.ID;
+                    detail.SatisficingItem = itemm.ItemID;
+                    detail.Scores = 0;
+                    insertlIST.Add(detail);
+                    BaseBusiness<SatisficingResultDetail> bas = new BaseBusiness<SatisficingResultDetail>();
+                    bas.Insert(detail);
+                }
+            }
             return Json(result, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
@@ -2475,6 +2876,55 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
             var defaultTime = ((XmlElement)xmlRoot.GetElementsByTagName("defaultCutOffDate")[0]).Attributes["value"].Value;
             satisficingConfig.CutoffDate = DateTime.Now.AddHours(int.Parse(defaultTime));
             db_survey.AddSatisficingConfig(satisficingConfig);
+            //获取这个班级所有的学生
+            var classsch = db_class.GetList().Where(d => d.id == classnumber).FirstOrDefault().ClassNumber;
+            var renyuan = db_schedule.GetList().Where(b => b.ClassID == classsch && b.CurrentClass == true).ToList();
+            //获取这个月班级专业老师满意度人员表的id   获取年月日
+            var config = db_congig.GetList().Where(c => c.ClassNumber == classnumber &&
+            c.IsDel == false &&
+            c.CurriculumID != null &&
+            c.Isitacanteen == false &&
+            c.isitashuxue == false &&
+            c.isitayingyu == false &&
+            c.Isitayuwen == true &&
+            DateTime.Parse(c.CutoffDate.ToString()).Year == DateTime.Now.Year &&
+            (DateTime.Parse(c.CutoffDate.ToString()).Month == DateTime.Now.Month ||
+            DateTime.Parse(c.CutoffDate.ToString()).Month == DateTime.Now.Month + 1)).FirstOrDefault().ID;
+            //将这个班级学生的评价表生成
+            SatisficingResult Surveyresult = new SatisficingResult();
+            foreach (var item in renyuan)
+            {
+                Surveyresult.Answerer = item.StudentID;
+                Surveyresult.CreateDate = DateTime.Now;
+                Surveyresult.IsDel = false;
+                Surveyresult.SatisficingConfig = config;
+                Surveyresult.Suggest = "";
+                db_result.Insert(Surveyresult);
+            }
+            //获取满意度选项内容id
+            var itemes = db_item.GetList().Where(l => l.ItemType == 1 || l.ItemType == 1002 || l.ItemType == 1003).ToList();
+            //将这个班级学生的内容选项分数表生成
+            BaseBusiness<SatisficingResult> dd = new BaseBusiness<SatisficingResult>();
+            
+            List<SatisficingResultDetail> insertlIST = new List<SatisficingResultDetail>();
+            foreach (var items in renyuan)
+            {
+                SatisficingResultDetail detail = new SatisficingResultDetail();
+                var suResult = dd.GetList().Where(d => DateTime.Parse(d.CreateDate.ToString()).Year == DateTime.Now.Year &&
+                DateTime.Parse(d.CreateDate.ToString()).Month == DateTime.Now.Month &&
+                d.Answerer == items.StudentID &&
+               d.SatisficingConfig == config).FirstOrDefault();
+                foreach (var itemm in itemes)
+                {
+                    detail.Remark = "";
+                    detail.SatisficingBill = suResult.ID;
+                    detail.SatisficingItem = itemm.ItemID;
+                    detail.Scores = 0;
+                    insertlIST.Add(detail);
+                    BaseBusiness<SatisficingResultDetail> bas = new BaseBusiness<SatisficingResultDetail>();
+                    bas.Insert(detail);
+                }
+            }
             return Json(result, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
@@ -2517,6 +2967,55 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
             var defaultTime = ((XmlElement)xmlRoot.GetElementsByTagName("defaultCutOffDate")[0]).Attributes["value"].Value;
             satisficingConfig.CutoffDate = DateTime.Now.AddHours(int.Parse(defaultTime));
             db_survey.AddSatisficingConfig(satisficingConfig);
+            //获取这个班级所有的学生
+            var classsch = db_class.GetList().Where(d => d.id == classnumber).FirstOrDefault().ClassNumber;
+            var renyuan = db_schedule.GetList().Where(b => b.ClassID == classsch && b.CurrentClass == true).ToList();
+            //获取这个月班级专业老师满意度人员表的id   获取年月日
+            var config = db_congig.GetList().Where(c => c.ClassNumber == classnumber &&
+            c.IsDel == false &&
+            c.CurriculumID != null &&
+            c.Isitacanteen == false &&
+            c.isitashuxue == true &&
+            c.isitayingyu == false &&
+            c.Isitayuwen == false &&
+            DateTime.Parse(c.CutoffDate.ToString()).Year == DateTime.Now.Year &&
+            (DateTime.Parse(c.CutoffDate.ToString()).Month == DateTime.Now.Month ||
+            DateTime.Parse(c.CutoffDate.ToString()).Month == DateTime.Now.Month + 1)).FirstOrDefault().ID;
+            //将这个班级学生的评价表生成
+            SatisficingResult Surveyresult = new SatisficingResult();
+            foreach (var item in renyuan)
+            {
+                Surveyresult.Answerer = item.StudentID;
+                Surveyresult.CreateDate = DateTime.Now;
+                Surveyresult.IsDel = false;
+                Surveyresult.SatisficingConfig = config;
+                Surveyresult.Suggest = "";
+                db_result.Insert(Surveyresult);
+            }
+            //获取满意度选项内容id
+            var itemes = db_item.GetList().Where(l => l.ItemType == 1 || l.ItemType == 1002 || l.ItemType == 1003).ToList();
+            //将这个班级学生的内容选项分数表生成
+            BaseBusiness<SatisficingResult> dd = new BaseBusiness<SatisficingResult>();
+            
+            List<SatisficingResultDetail> insertlIST = new List<SatisficingResultDetail>();
+            foreach (var items in renyuan)
+            {
+                SatisficingResultDetail detail = new SatisficingResultDetail();
+                var suResult = dd.GetList().Where(d => DateTime.Parse(d.CreateDate.ToString()).Year == DateTime.Now.Year &&
+                DateTime.Parse(d.CreateDate.ToString()).Month == DateTime.Now.Month &&
+                d.Answerer == items.StudentID &&
+               d.SatisficingConfig == config).FirstOrDefault();
+                foreach (var itemm in itemes)
+                {
+                    detail.Remark = "";
+                    detail.SatisficingBill = suResult.ID;
+                    detail.SatisficingItem = itemm.ItemID;
+                    detail.Scores = 0;
+                    insertlIST.Add(detail);
+                    BaseBusiness<SatisficingResultDetail> bas = new BaseBusiness<SatisficingResultDetail>();
+                    bas.Insert(detail);
+                }
+            }
             return Json(result, JsonRequestBehavior.AllowGet);
         }
         /// <summary>
@@ -2559,6 +3058,55 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
             var defaultTime = ((XmlElement)xmlRoot.GetElementsByTagName("defaultCutOffDate")[0]).Attributes["value"].Value;
             satisficingConfig.CutoffDate = DateTime.Now.AddHours(int.Parse(defaultTime));
             db_survey.AddSatisficingConfig(satisficingConfig);
+            //获取这个班级所有的学生
+            var classsch = db_class.GetList().Where(d => d.id == classnumber).FirstOrDefault().ClassNumber;
+            var renyuan = db_schedule.GetList().Where(b => b.ClassID == classsch && b.CurrentClass == true).ToList();
+            //获取这个月班级专业老师满意度人员表的id   获取年月日
+            var config = db_congig.GetList().Where(c => c.ClassNumber == classnumber &&
+            c.IsDel == false &&
+            c.CurriculumID != null &&
+            c.Isitacanteen == false &&
+            c.isitashuxue == false && 
+            c.isitayingyu == true &&
+            c.Isitayuwen == false &&
+            DateTime.Parse(c.CutoffDate.ToString()).Year == DateTime.Now.Year &&
+            (DateTime.Parse(c.CutoffDate.ToString()).Month == DateTime.Now.Month ||
+            DateTime.Parse(c.CutoffDate.ToString()).Month == DateTime.Now.Month + 1)).FirstOrDefault().ID;
+            //将这个班级学生的评价表生成
+            SatisficingResult Surveyresult = new SatisficingResult();
+            foreach (var item in renyuan)
+            {
+                Surveyresult.Answerer = item.StudentID;
+                Surveyresult.CreateDate = DateTime.Now;
+                Surveyresult.IsDel = false;
+                Surveyresult.SatisficingConfig = config;
+                Surveyresult.Suggest = "";
+                db_result.Insert(Surveyresult);
+            }
+            //获取满意度选项内容id
+            var itemes = db_item.GetList().Where(l => l.ItemType == 1 || l.ItemType == 1002 || l.ItemType == 1003).ToList();
+            //将这个班级学生的内容选项分数表生成
+            BaseBusiness<SatisficingResult> dd = new BaseBusiness<SatisficingResult>();
+           
+            List<SatisficingResultDetail> insertlIST = new List<SatisficingResultDetail>();
+            foreach (var items in renyuan)
+            {
+                SatisficingResultDetail detail = new SatisficingResultDetail();
+                var suResult = dd.GetList().Where(d => DateTime.Parse(d.CreateDate.ToString()).Year == DateTime.Now.Year &&
+                DateTime.Parse(d.CreateDate.ToString()).Month == DateTime.Now.Month &&
+                d.Answerer == items.StudentID &&
+               d.SatisficingConfig == config).FirstOrDefault();
+                foreach (var itemm in itemes)
+                {
+                    detail.Remark = "";
+                    detail.SatisficingBill = suResult.ID;
+                    detail.SatisficingItem = itemm.ItemID;
+                    detail.Scores = 0;
+                    insertlIST.Add(detail);
+                    BaseBusiness<SatisficingResultDetail> bas = new BaseBusiness<SatisficingResultDetail>();
+                    bas.Insert(detail);
+                }
+            }
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
@@ -2588,7 +3136,6 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
                 var client = Bos.BosClient();
                 //获取当前登陆学生的学号
                 var studentNumber = Request.Cookies["StudentNumber"].Value.ToString();
-
                 var data = db_survey.GetSatisficingConfigsByStudent(studentNumber, type);
                 result.Data = data;
                 result.Msg = "成功";
@@ -2756,7 +3303,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Teaching.Controllers
 
                var res = db_survey.ConvertToViewModel(surveyResult);
 
-
+                 
                 result.Data = res;
                 result.Msg = "成功";
                 result.ErrorCode = 200;

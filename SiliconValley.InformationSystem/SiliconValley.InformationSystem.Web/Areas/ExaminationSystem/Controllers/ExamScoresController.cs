@@ -1351,21 +1351,12 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
                 examView.ComputerPaperTime = item.ComputerPaperTime;
                 scorelist.Add(examView);
             }
-            //for (int i = 0; i < multipleChoicelist.Count; i++)
-            //{
-            //    StudentExamView examView = new StudentExamView();
-            //    examView.StudentID = multipleChoicelist[i].StudentID;
-            //    examView.StudentName = db_student.GetEntity(multipleChoicelist[i].StudentID).Name;
-            //    examView.PaperTime = multipleChoicelist[i].PaperTime;
-            //    examView.ComputerPaperTime = multipleChoicelist[i].ComputerPaperTime;
-            //    scorelist.Add(examView);
-            //}
             var obj = new
             {
 
                 code = 0,
                 msg = "",
-                count = scorelist.Count,
+                //count = scorelist.Count,
                 data = scorelist
 
 
@@ -1384,16 +1375,19 @@ namespace SiliconValley.InformationSystem.Web.Areas.ExaminationSystem.Controller
 
             if (classiD == "0")
             {
-                list1 = db_examScores.GetIQueryable().ToList().Where(d => d.Examination == int.Parse(examid)).ToList();
+                string sql = "select * from TestScore where Examination = '"+ int.Parse(examid) + "'";
+                list1 = db_examScores.GetListBySql<TestScore>(sql).ToList();
             }
             else
             {
+                string sqls = "select * from TestScore where Examination = '" + int.Parse(examid) + "'";
                 //帅选班级
-               var templist = db_examScores.GetIQueryable().ToList().Where(d => d.Examination == int.Parse(examid)).ToList();
+                var templist = db_examScores.GetListBySql<TestScore>(sqls).ToList();
 
                 foreach (var item in templist)
                 {
-                    var tempobj1 = db_exam.AllCandidateInfo(int.Parse(examid)).Where(d => d.CandidateNumber == item.CandidateInfo).FirstOrDefault();
+                    string sqles = "select * from CandidateInfo Examination = '" + int.Parse(examid) + "' and CandidateNumber  = '"+ item.CandidateInfo + "'";
+                    var tempobj1 = db_exam.GetListBySql<CandidateInfo>(sqles).FirstOrDefault();
 
                     if (tempobj1 != null)
                     {

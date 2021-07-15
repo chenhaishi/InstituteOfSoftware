@@ -32,7 +32,7 @@ namespace SiliconValley.InformationSystem.Entity.ViewEntity
         /// </summary>
         public Curriculum Curriculum { get; set; }
 
-        public float Average { get; set; }
+        public double Average { get; set; }
 
 
     }

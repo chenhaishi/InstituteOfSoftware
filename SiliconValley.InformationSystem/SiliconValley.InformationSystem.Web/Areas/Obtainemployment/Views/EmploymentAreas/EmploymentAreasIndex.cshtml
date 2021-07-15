@@ -73,7 +73,7 @@
                         if (d.IsDel) {
                              return "<span style=color:red;>禁用</span>"
                         } else {
-                            return '启用'
+                            return '启用' 
                         }
                     }
                 }
@@ -82,11 +82,9 @@
                         return TimeChange(d.Date);
                     }
                 }
-
                 , { field: 'Remark', title: '备注' }
                 , { field: 'IsDel', title: '是否启用', width: 120, templet: '#switchTpl', unresize: true }
             ]]
-
         });
         //监听性别操作
         form.on('switch(IsDel)', function (obj) {

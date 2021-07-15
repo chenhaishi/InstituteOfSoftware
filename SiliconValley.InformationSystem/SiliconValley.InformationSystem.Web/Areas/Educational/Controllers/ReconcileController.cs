@@ -405,6 +405,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
             string currname = Request.Form["Curr"];//获取课程类型
             string timename = Request.Form["timeName"];//获取上课时间
             int class_id = Convert.ToInt32(Request.Form["class_id"]);//获取班级
+            string typetext = Request.Form["typetext"];//获取类型文字
             List<EmployeesInfo> e_list = new List<EmployeesInfo>();
             PositionManage position = new PositionManage();
             ClassSchedule find_c = Reconcile_Com.ClassSchedule_Entity.GetEntity(class_id);//获取班级数据
@@ -505,6 +506,33 @@ namespace SiliconValley.InformationSystem.Web.Areas.Educational.Controllers
                     List<EmployeesInfo> list_saff = Reconcile_Com.GetObtainTeacher();//获取未辞职的就业部老师
 
                     e_list.AddRange(list_saff);
+                    break;
+                case "0":
+                    if (typetext=="班级升学活动") {
+                    Grand find_g2 = Reconcile_Com.GetGrand_Id().Where(g => g.GrandName.Equals("S4", StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
+                    if (find_c.grade_Id == find_g2.Id)
+                    {
+                        EmploymentStaff find_saff = Reconcile_Com.EmploymentStaff_Entity.GetStaffByclassid(find_c.id);
+                        bool s1 = Reconcile_Entity.IsHaveClass(find_saff.EmployeesInfo_Id, timename, anpai);
+                        if (s1 == false)
+                        {
+                            e_list.Add(Reconcile_Com.Employees_Entity.GetEntity(find_saff.EmployeesInfo_Id));
+                        }
+                    }
+                    else
+                    {
+                        EmployeesInfo e = Reconcile_Com.GetZhisuTeacher(class_id).Data as EmployeesInfo;
+                        if (e != null)
+                        {
+                            bool s1 = Reconcile_Entity.IsHaveClass(e.EmployeeId, timename, anpai);
+                            if (s1 == false)
+                            {
+                                e_list.Add(e);
+                            }
+                        }
+
+                    }
+                    }
                     break;
             }
             List<SelectListItem> select = e_list.Select(s => new SelectListItem() { Value = s.EmployeeId, Text = s.EmpName }).ToList();

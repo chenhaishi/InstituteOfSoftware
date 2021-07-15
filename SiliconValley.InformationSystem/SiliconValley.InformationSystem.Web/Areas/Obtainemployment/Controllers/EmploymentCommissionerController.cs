@@ -46,6 +46,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Obtainemployment.Controllers
         {
             MrDEmployStaffBus = new EmploymentStaffBusiness();
             MrDEmployAreBus = new EmploymentAreasBusiness();
+            //根据部门查出没离职的就业专员
             var MrDEmpInfoData = MrDEmployStaffBus.GetALl().OrderByDescending(a => a.ID).ToList();
             if (areaid>0)
             {
@@ -53,7 +54,7 @@ namespace SiliconValley.InformationSystem.Web.Areas.Obtainemployment.Controllers
 
             }
             var returnlist = new List<MrDEmployStaffView>();
-
+             
             foreach (var item in MrDEmpInfoData)
             {
                 EmployeesInfo info = MrDEmployStaffBus.GetEmployeesInfoByID(item.EmployeesInfo_Id);

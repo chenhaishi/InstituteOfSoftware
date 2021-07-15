@@ -202,6 +202,16 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
         }
 
         /// <summary>
+        /// 筛选教质部所有员工 
+        /// </summary>
+        /// <returns></returns>
+        public List<EmployeesInfo> GetEmpJiaozhi()
+        {
+            return this.GetAll().Where(s =>
+            this.GetDeptByPid(s.PositionId).DeptName.Contains("教质部")).ToList();
+        }
+
+        /// <summary>
         /// 渠道
         /// </summary>
         private ChannelStaffBusiness dbchannel;
@@ -570,6 +580,47 @@ namespace SiliconValley.InformationSystem.Business.EmployeesBusiness
             return ajaxresult;
         }
 
+        public AjaxResult d() { 
+        
+            Base_UserBusiness user = new Base_UserBusiness();
+            EmplSalaryEmbodyManage empsemanage = new EmplSalaryEmbodyManage();//员工工资体系表
+            var ajaxresult = new AjaxResult();
+            try
+            {
+                var lizhi = this.GetList().Where(i=>i.IsDel==true).ToList();
+                ChannelStaffBusiness csmanage = new ChannelStaffBusiness();
+                var sc = empsemanage.GetList().Where(i => i.IsDel == false).ToList();
+                //result = csmanage.DelChannelStaff(emp.EmployeeId);
+                //var l = sc.Where(i=>i.IsDel==true);
+                foreach (var item in lizhi)
+                {
+                    foreach (var i in sc)
+                    {
+                        if (item.EmployeeId==i.EmployeeId)
+                        {
+                            DelEmpToCorrespondingDept(item);
+
+                            var useremp = user.GetUserByEmpid(item.EmployeeId);
+                            if (useremp != null)
+                            {
+                                ajaxresult = user.Change(item.EmployeeId, false);//将该员工的账号禁用且密码改为后台设置的默认密码
+                            }
+                            var empse = empsemanage.GetEseByEmpid(item.EmployeeId);
+                            if (empse != null)
+                            {
+                                empse.IsDel = true;
+                                 empsemanage.Update(empse);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ajaxresult = this.Error(ex.Message);
+            }
+            return ajaxresult;
+        }
         #region 员工数据批量导入和导出
         /// <summary>
         /// 将导过来的excel数据赋给员工视图类中
