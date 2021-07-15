@@ -250,7 +250,7 @@ namespace SiliconValley.InformationSystem.Business.StudentBusiness
             string count = laststr.ToString();
             if (count.Length < 2)
                 mingci = gradeName+"000" + count;
-            else if (count.Length < 3)
+            else if (count.Length < 3) 
                 mingci = gradeName+"00" + count;
             else if (count.Length < 4)
                 mingci = gradeName+"0" + count;
