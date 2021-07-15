@@ -244,13 +244,13 @@ namespace SiliconValley.InformationSystem.Business.StudentBusiness
             string n = date.Year.ToString().Substring(2);//获取年份
             //学员总数Mylist("StudentInformation")
             var laststr = this.GetList().Where(a => Convert.ToDateTime(a.InsitDate).Year.ToString("yyyy-MM-dd").Substring(2).ToString() == n).Count() + 1;
-            string sfz = IDnumber.Substring(14,4);
+            string sfz = IDnumber.Substring(12,6);
             string y = Month(Convert.ToInt32(date.Month)).ToString();
             // string count = Count().ToString();
             string count = laststr.ToString();
             if (count.Length < 2)
                 mingci = gradeName+"000" + count;
-            else if (count.Length < 3)
+            else if (count.Length < 3) 
                 mingci = gradeName+"00" + count;
             else if (count.Length < 4)
                 mingci = gradeName+"0" + count;
