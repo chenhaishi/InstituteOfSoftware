@@ -2004,7 +2004,7 @@ namespace SiliconValley.InformationSystem.Business.ClassSchedule_Business
                     int? ApplicationDropoutID = x.ApplicationDropoutID;
 
                     ApplicationDropout ApPEntity = ApplicationDropoutBusiness.GetEntity(ApplicationDropoutID);  
-                    Accdationinformation Acc = Accdation.GetListBySql<Accdationinformation>("select * from Accdationinformation where studentnumber = " + x.Studentnumber + " and EndDate is null").FirstOrDefault();
+                    Accdationinformation Acc = Accdation.GetListBySql<Accdationinformation>("select * from Accdationinformation where studentnumber = '" + x.Studentnumber + "' and EndDate is null").FirstOrDefault();
                     //删除宿舍
                     if (Acc !=null) {
                     Accdation = new AccdationinformationBusiness();
