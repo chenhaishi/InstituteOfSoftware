@@ -227,6 +227,8 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IPHander\IPDisablePolicyFilter.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\XZAdminHomeController.cs" />
     <Compile Include="Areas\BaseSysManage\BaseSysManageAreaRegistration.cs" />
     <Compile Include="Areas\BaseSysManage\Controllers\Base_PermissionController.cs" />
     <Compile Include="Areas\BaseSysManage\Controllers\Base_UserRoleController.cs" />
@@ -306,6 +308,7 @@
     <Compile Include="Areas\Market\Controllers\StudentDataKeepController.cs" />
     <Compile Include="Areas\Market\MarketAreaRegistration.cs" />
     <Compile Include="Areas\MyEducation\Controllers\EducationController.cs" />
+    <Compile Include="Areas\MyEducation\Controllers\JuniorCollegeController.cs" />
     <Compile Include="Areas\MyEducation\MyEducationAreaRegistration.cs" />
     <Compile Include="Areas\Obtainemployment\Controllers\BusinessManagementController.cs" />
     <Compile Include="Areas\Obtainemployment\Controllers\CDinterviewController.cs" />
@@ -332,7 +335,6 @@
     <Compile Include="Areas\Personnelmatters\Controllers\EmpOverTimeRecordController.cs" />
     <Compile Include="Areas\Personnelmatters\Controllers\EmpSalaryManagementController.cs" />
     <Compile Include="Areas\Personnelmatters\Controllers\EmpTransactionRecordController.cs" />
-    <Compile Include="Areas\Personnelmatters\Controllers\MonthlySalaryReviewController.cs" />
     <Compile Include="Areas\Personnelmatters\Controllers\PerformanceAssessController.cs" />
     <Compile Include="Areas\Personnelmatters\Controllers\RecruitingDataSummaryController.cs" />
     <Compile Include="Areas\Personnelmatters\Controllers\SocialSecurityDetailController.cs" />
@@ -3669,10 +3671,16 @@
     <Content Include="Areas\Teaching\Views\Exam\ProjectDefense.cshtml" />
     <Content Include="Areas\Teaching\Views\Class\ArrangeTeacherleadClass.cshtml" />
     <Content Include="Areas\Obtainemployment\Views\BusinessManagement\BusinessInterview.cshtml" />
-    <Content Include="Areas\Teaching\Views\Teacher\Teacherclasslist.cshtml" />
-    <Content Include="Areas\Personnelmatters\Views\EmplSalaryEmbody\Import.cshtml" />
+    <Content Include="Areas\Admin\Views\web.config" />
+    <Content Include="Areas\Admin\Views\XZAdminHome\AdminHomeIndex.cshtml" />
     <Content Include="Areas\Personnelmatters\Views\EmployeesInfo\AddressUpload.cshtml" />
-    <Content Include="Areas\Educational\Views\Staff_Cost_Statistics\ManageClassTime.cshtml" />
+    <Content Include="Areas\Personnelmatters\Views\EmplSalaryEmbody\Import.cshtml" />
+    <Content Include="Areas\MyEducation\Views\JuniorCollege\Index.cshtml" />
+    <Content Include="Areas\MyEducation\Views\JuniorCollege\InsertNotRegisteredForJuniorCollege.cshtml" />
+    <Content Include="Areas\MyEducation\Views\JuniorCollege\JuniorCollegeEdit.cshtml" />
+    <Content Include="Areas\MyEducation\Views\Education\AchievementDetails.cshtml" />
+    <Content Include="Areas\MyEducation\Views\Education\AchievementImport.cshtml" />
+    <Content Include="Areas\Teachingquality\Views\ClassSchedule\OddNumberMyclass.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <Content Include="Scripts\dtree2.5.4\layui\font\iconfont.eot" />
@@ -5376,14 +5384,16 @@
     <Content Include="Scripts\laydate\theme\default\font\iconfont.eot" />
     <Content Include="Scripts\laydate\theme\default\font\iconfont.ttf" />
     <Content Include="Scripts\laydate\theme\default\font\iconfont.woff" />
-    <Content Include="uploadXLSXfile\Template\AddressInformation.xls" />
-    <Content Include="uploadXLSXfile\Template\AttendenceTemplate.xls" />
-    <Content Include="uploadXLSXfile\Template\OvertimeTemplate.xls" />
     <Content Include="uploadXLSXfile\Template\SocialSecurity.xls" />
+    <Content Include="uploadXLSXfile\Template\AttendenceTemplate.xls" />
+    <Content Include="uploadXLSXfile\Template\AddressInformation.xls" />
+    <Content Include="uploadXLSXfile\Template\OvertimeTemplate.xls" />
     <Content Include="uploadXLSXfile\Template\绩效模板.xls" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\Admin\Models\" />
+    <Folder Include="Areas\Admin\Views\Shared\" />
     <Folder Include="Areas\BaseSysManage\Models\" />
     <Folder Include="Areas\BaseSysManage\Views\Shared\" />
     <Folder Include="Areas\Capital\Models\" />
